@@ -158,6 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new PullDynamicScheduleUpdateResponse(
                                        request,
+                                       ChargingProfileStatus.Rejected,
                                        Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
@@ -168,6 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          response.ToJSON(
                                              false,
                                              parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateResponseSerializer,
+                                             parentNetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                          )

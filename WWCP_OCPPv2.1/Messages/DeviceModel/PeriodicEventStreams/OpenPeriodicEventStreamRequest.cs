@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -128,14 +130,94 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:OpenPeriodicEventStreamRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ConstantStreamDataType": {
+        //             "javaType": "ConstantStreamData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "Uniquely identifies the stream",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "params": {
+        //                     "$ref": "#/definitions/PeriodicEventStreamParamsType"
+        //                 },
+        //                 "variableMonitoringId": {
+        //                     "description": "Id of monitor used to report his event. It can be a preconfigured or hardwired monitor.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id",
+        //                 "variableMonitoringId",
+        //                 "params"
+        //             ]
+        //         },
+        //         "PeriodicEventStreamParamsType": {
+        //             "javaType": "PeriodicEventStreamParams",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "interval": {
+        //                     "description": "Time in seconds after which stream data is sent.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "values": {
+        //                     "description": "Number of items to be sent together in stream.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "constantStreamData": {
+        //             "$ref": "#/definitions/ConstantStreamDataType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "constantStreamData"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomOpenPeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an OpenPeriodicEventStream request.
@@ -147,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomOpenPeriodicEventStreamRequestParser">A delegate to parse custom OpenPeriodicEventStream requests.</param>
         public static OpenPeriodicEventStreamRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
-                                                           SourceRouting                                             Destination,
+                                                           SourceRouting                                                 Destination,
                                                            NetworkPath                                                   NetworkPath,
                                                            CustomJObjectParserDelegate<OpenPeriodicEventStreamRequest>?  CustomOpenPeriodicEventStreamRequestParser   = null)
         {
@@ -159,8 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          NetworkPath,
                          out var openPeriodicEventStreamRequest,
                          out var errorResponse,
-                         CustomOpenPeriodicEventStreamRequestParser) &&
-                openPeriodicEventStreamRequest is not null)
+                         CustomOpenPeriodicEventStreamRequestParser))
             {
                 return openPeriodicEventStreamRequest;
             }
@@ -185,12 +266,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="OpenPeriodicEventStreamRequest">The parsed OpenPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                              JSON,
-                                       Request_Id                           RequestId,
-                                       SourceRouting                    Destination,
-                                       NetworkPath                          NetworkPath,
-                                       out OpenPeriodicEventStreamRequest?  OpenPeriodicEventStreamRequest,
-                                       out String?                          ErrorResponse)
+        public static Boolean TryParse(JObject                                                   JSON,
+                                       Request_Id                                                RequestId,
+                                       SourceRouting                                             Destination,
+                                       NetworkPath                                               NetworkPath,
+                                       [NotNullWhen(true)]  out OpenPeriodicEventStreamRequest?  OpenPeriodicEventStreamRequest,
+                                       [NotNullWhen(false)] out String?                          ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
@@ -213,10 +294,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomOpenPeriodicEventStreamRequestParser">A delegate to parse custom OpenPeriodicEventStream requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       SourceRouting                                             Destination,
+                                       SourceRouting                                                 Destination,
                                        NetworkPath                                                   NetworkPath,
-                                       out OpenPeriodicEventStreamRequest?                           OpenPeriodicEventStreamRequest,
-                                       out String?                                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out OpenPeriodicEventStreamRequest?      OpenPeriodicEventStreamRequest,
+                                       [NotNullWhen(false)] out String?                              ErrorResponse,
                                        CustomJObjectParserDelegate<OpenPeriodicEventStreamRequest>?  CustomOpenPeriodicEventStreamRequestParser)
         {
 
@@ -231,8 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              "constant stream data",
                                              OCPPv2_1.ConstantStreamData.TryParse,
                                              out ConstantStreamData? ConstantStreamData,
-                                             out ErrorResponse) ||
-                     ConstantStreamData is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }

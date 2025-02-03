@@ -187,6 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         request.ToJSON(
                             true,
                             parentNetworkingNode.OCPP.CustomNotifySettlementRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomContactSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),

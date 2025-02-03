@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -140,7 +142,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventNotificationType">The event notification type of the message.</param>
         /// <param name="Component">The component for which event is notified.</param>
         /// <param name="Variable">The variable for which event is notified.</param>
-        /// 
         /// <param name="Severity">Severity associated with monitor in variableMonitoringId or the hardwired notification [Optional/Required].</param>
         /// <param name="Cause">An optional event identification that is considered to be the cause for this event.</param>
         /// <param name="TechCode">An optional technical (error) code as reported by the component.</param>
@@ -156,7 +157,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          EventNotificationType   EventNotificationType,
                          Component               Component,
                          Variable                Variable,
-
                          Severities?             Severity               = null,
                          Event_Id?               Cause                  = null,
                          String?                 TechCode               = null,
@@ -177,7 +177,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.EventNotificationType  = EventNotificationType;
             this.Component              = Component;
             this.Variable               = Variable;
-
             this.Severity               = Severity;
             this.Cause                  = Cause;
             this.TechCode               = TechCode;
@@ -196,7 +195,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            this.EventNotificationType.GetHashCode()       * 37 ^
                            this.Component.            GetHashCode()       * 31 ^
                            this.Variable.             GetHashCode()       * 29 ^
-
                           (this.Severity?.            GetHashCode() ?? 0) * 23 ^
                           (this.Cause?.               GetHashCode() ?? 0) * 19 ^
                           (this.TechCode?.            GetHashCode() ?? 0) * 17 ^
@@ -204,7 +202,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           (this.Cleared?.             GetHashCode() ?? 0) *  7 ^
                           (this.TransactionId?.       GetHashCode() ?? 0) *  5 ^
                           (this.VariableMonitoringId?.GetHashCode() ?? 0) *  3 ^
-
                            base.                      GetHashCode();
 
             }
@@ -216,78 +213,86 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "EventDataType": {
-        //   "description": "Class to report an event notification for a component-variable.",
-        //   "javaType": "EventData",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Class to report an event notification for a component-variable.",
+        //     "javaType": "EventData",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "eventId": {
+        //             "description": "Identifies the event. This field can be referred to as a cause by other events.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "timestamp": {
+        //             "description": "Timestamp of the moment the report was generated.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "trigger": {
+        //             "$ref": "#/definitions/EventTriggerEnumType"
+        //         },
+        //         "cause": {
+        //             "description": "Refers to the Id of an event that is considered to be the cause for this event.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "actualValue": {
+        //             "description": "Actual value (_attributeType_ Actual) of the variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
+        //             "type": "string",
+        //             "maxLength": 2500
+        //         },
+        //         "techCode": {
+        //             "description": "Technical (error) code as reported by component.",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "techInfo": {
+        //             "description": "Technical detail information as reported by component.",
+        //             "type": "string",
+        //             "maxLength": 500
+        //         },
+        //         "cleared": {
+        //             "description": "_Cleared_ is set to true to report the clearing of a monitored situation, i.e. a 'return to normal'. ",
+        //             "type": "boolean"
+        //         },
+        //         "transactionId": {
+        //             "description": "If an event notification is linked to a specific transaction, this field can be used to specify its transactionId.",
+        //             "type": "string",
+        //             "maxLength": 36
+        //         },
+        //         "component": {
+        //             "$ref": "#/definitions/ComponentType"
+        //         },
+        //         "variableMonitoringId": {
+        //             "description": "Identifies the VariableMonitoring which triggered the event.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "eventNotificationType": {
+        //             "$ref": "#/definitions/EventNotificationEnumType"
+        //         },
+        //         "variable": {
+        //             "$ref": "#/definitions/VariableType"
+        //         },
+        //         "severity": {
+        //             "description": "*(2.1)* Severity associated with the monitor in _variableMonitoringId_ or with the hardwired notification.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "eventId": {
-        //       "description": "Identifies the event. This field can be referred to as a cause by other events.",
-        //       "type": "integer"
-        //     },
-        //     "timestamp": {
-        //       "description": "Timestamp of the moment the report was generated.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "trigger": {
-        //       "$ref": "#/definitions/EventTriggerEnumType"
-        //     },
-        //     "cause": {
-        //       "description": "Refers to the Id of an event that is considered to be the cause for this event.",
-        //       "type": "integer"
-        //     },
-        //     "actualValue": {
-        //       "description": "Actual value (_attributeType_ Actual) of the variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
-        //       "type": "string",
-        //       "maxLength": 2500
-        //     },
-        //     "techCode": {
-        //       "description": "Technical (error) code as reported by component.",
-        //       "type": "string",
-        //       "maxLength": 50
-        //     },
-        //     "techInfo": {
-        //       "description": "Technical detail information as reported by component.",
-        //       "type": "string",
-        //       "maxLength": 500
-        //     },
-        //     "cleared": {
-        //       "description": "_Cleared_ is set to true to report the clearing of a monitored situation, i.e. a 'return to normal'. ",
-        //       "type": "boolean"
-        //     },
-        //     "transactionId": {
-        //       "description": "If an event notification is linked to a specific transaction, this field can be used to specify its transactionId.",
-        //       "type": "string",
-        //       "maxLength": 36
-        //     },
-        //     "component": {
-        //       "$ref": "#/definitions/ComponentType"
-        //     },
-        //     "variableMonitoringId": {
-        //       "description": "Identifies the VariableMonitoring which triggered the event.",
-        //       "type": "integer"
-        //     },
-        //     "eventNotificationType": {
-        //       "$ref": "#/definitions/EventNotificationEnumType"
-        //     },
-        //     "variable": {
-        //       "$ref": "#/definitions/VariableType"
-        //     }
-        //   },
-        //   "required": [
-        //     "eventId",
-        //     "timestamp",
-        //     "trigger",
-        //     "actualValue",
-        //     "eventNotificationType",
-        //     "component",
-        //     "variable"
-        //   ]
+        //     "required": [
+        //         "eventId",
+        //         "timestamp",
+        //         "trigger",
+        //         "actualValue",
+        //         "eventNotificationType",
+        //         "component",
+        //         "variable"
+        //     ]
         // }
 
         #endregion
@@ -306,8 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var eventData,
                          out var errorResponse,
-                         CustomEventDataParser) &&
-                eventData is not null)
+                         CustomEventDataParser))
             {
                 return eventData;
             }
@@ -329,9 +333,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EventData">The parsed eventData.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out EventData?  EventData,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                              JSON,
+                                       [NotNullWhen(true)]  out EventData?  EventData,
+                                       [NotNullWhen(false)] out String?     ErrorResponse)
 
             => TryParse(JSON,
                         out EventData,
@@ -347,8 +351,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomEventDataParser">A delegate to parse custom event data JSON objects.</param>
         public static Boolean TryParse(JObject                                  JSON,
-                                       out EventData?                           EventData,
-                                       out String?                              ErrorResponse,
+                                       [NotNullWhen(true)]  out EventData?      EventData,
+                                       [NotNullWhen(false)] out String?         ErrorResponse,
                                        CustomJObjectParserDelegate<EventData>?  CustomEventDataParser)
         {
 
@@ -399,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryText("actualValue",
                                              "actual value",
-                                             out String ActualValue,
+                                             out String? ActualValue,
                                              out ErrorResponse))
                 {
                     return false;
@@ -426,8 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              "component",
                                              OCPPv2_1.Component.TryParse,
                                              out Component? Component,
-                                             out ErrorResponse) ||
-                     Component is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -440,8 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              "variable",
                                              OCPPv2_1.Variable.TryParse,
                                              out Variable? Variable,
-                                             out ErrorResponse) ||
-                     Variable is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }

@@ -900,9 +900,9 @@ namespace cloud.charging.open.protocols.OCPP
             unchecked
             {
 
-                return Id.                        GetHashCode()        * 31 ^
-                      (Model?.                    GetHashCode()  ?? 0) * 29 ^
-                      (ModelURL?.                 GetHashCode()  ?? 0) * 27 ^
+                return Id.                        GetHashCode()        * 37 ^
+                      (Model?.                    GetHashCode()  ?? 0) * 31 ^
+                      (ModelURL?.                 GetHashCode()  ?? 0) * 29 ^
                       (HardwareVersion?.          GetHashCode()  ?? 0) * 23 ^
                       (FirmwareVersion?.          GetHashCode()  ?? 0) * 19 ^
                       (Manufacturer?.             GetHashCode()  ?? 0) * 17 ^

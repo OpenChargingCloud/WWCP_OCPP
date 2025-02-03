@@ -67,8 +67,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Create a new BatterySwap response.
         /// </summary>
         /// <param name="Request">The BatterySwap request leading to this response.</param>
-        /// <param name="Status">The success or failure of the BatterySwap request.</param>
-        /// <param name="StatusInfo">Optional detailed status information.</param>
         /// 
         /// <param name="Result">The machine-readable result code.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response message.</param>

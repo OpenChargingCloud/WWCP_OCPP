@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
@@ -185,14 +186,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("limit",
                                          "charging rate limit",
-                                         out Decimal chargingRateLimit,
+                                         out ChargingRateValue ChargingRateLimit,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var ChargingRateLimit = ChargingRateValue.Parse(chargingRateLimit,
-                                                                ChargingRateUnits.Unknown);
 
                 #endregion
 

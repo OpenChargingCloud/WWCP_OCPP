@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using Newtonsoft.Json.Linq;
@@ -34,14 +35,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class JSONExtensions
     {
 
-        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Decimal,                out ErrorResponse)
+        #region ParseOptional  (this JSON, PropertyName, PropertyDescription, out ChargingRateUnits, out ErrorResponse)
 
         public static Boolean ParseOptional(this JObject            JSON,
                                             String                  PropertyName,
                                             String                  PropertyDescription,
                                             out ChargingRateValue?  DecimalValue,
-                                            out String?             ErrorResponse,
-                                            ChargingRateUnits       Unit   = ChargingRateUnits.Unknown)
+                                            out String?             ErrorResponse)
 
         {
 
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var value))
-                    DecimalValue  = ChargingRateValue.Parse(value, Unit);
+                    DecimalValue  = ChargingRateValue.Parse(value);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -76,6 +76,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
             return false;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory (this JSON, PropertyName, PropertyDescription, out ChargingRateValue, out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject                                JSON,
+                                             String                                      PropertyName,
+                                             String                                      PropertyDescription,
+                                                                  out ChargingRateValue  ChargingRateValue,
+                                             [NotNullWhen(false)] out String?            ErrorResponse)
+        {
+
+            ChargingRateValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            ChargingRateValue  = ChargingRateValue.Parse(decimalValue);
+            ErrorResponse      = null;
+            return true;
 
         }
 

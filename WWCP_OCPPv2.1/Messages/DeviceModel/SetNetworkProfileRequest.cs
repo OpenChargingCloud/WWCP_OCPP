@@ -144,250 +144,263 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SetNetworkProfileRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:SetNetworkProfileRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "APNAuthenticationEnumType": {
+        //             "description": "Authentication method.",
+        //             "javaType": "APNAuthenticationEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "PAP",
+        //                 "CHAP",
+        //                 "NONE",
+        //                 "AUTO"
+        //             ]
+        //         },
+        //         "OCPPInterfaceEnumType": {
+        //             "description": "Applicable Network Interface. Charging Station is allowed to use a different network interface to connect if the given one does not work.",
+        //             "javaType": "OCPPInterfaceEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Wired0",
+        //                 "Wired1",
+        //                 "Wired2",
+        //                 "Wired3",
+        //                 "Wireless0",
+        //                 "Wireless1",
+        //                 "Wireless2",
+        //                 "Wireless3",
+        //                 "Any"
+        //             ]
+        //         },
+        //         "OCPPTransportEnumType": {
+        //             "description": "Defines the transport protocol (e.g. SOAP or JSON). Note: SOAP is not supported in OCPP 2.x, but is supported by earlier versions of OCPP.",
+        //             "javaType": "OCPPTransportEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "SOAP",
+        //                 "JSON"
+        //             ]
+        //         },
+        //         "OCPPVersionEnumType": {
+        //             "description": "*(2.1)* This field is ignored, since the OCPP version to use is determined during the websocket handshake. The field is only kept for backwards compatibility with the OCPP 2.0.1 JSON schema.",
+        //             "javaType": "OCPPVersionEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "OCPP12",
+        //                 "OCPP15",
+        //                 "OCPP16",
+        //                 "OCPP20",
+        //                 "OCPP201",
+        //                 "OCPP21"
+        //             ]
+        //         },
+        //         "VPNEnumType": {
+        //             "description": "Type of VPN",
+        //             "javaType": "VPNEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "IKEv2",
+        //                 "IPSec",
+        //                 "L2TP",
+        //                 "PPTP"
+        //             ]
+        //         },
+        //         "APNType": {
+        //             "description": "Collection of configuration data needed to make a data-connection over a cellular network.\r\n\r\nNOTE: When asking a GSM modem to dial in, it is possible to specify which mobile operator should be used. This can be done with the mobile country code (MCC) in combination with a mobile network code (MNC). Example: If your preferred network is Vodafone Netherlands, the MCC=204 and the MNC=04 which means the key PreferredNetwork = 20404 Some modems allows to specify a preferred network, which means, if this network is not available, a different network is used. If you specify UseOnlyPreferredNetwork and this network is not available, the modem will not dial in.",
+        //             "javaType": "APN",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "apn": {
+        //                     "description": "The Access Point Name as an URL.",
+        //                     "type": "string",
+        //                     "maxLength": 2000
+        //                 },
+        //                 "apnUserName": {
+        //                     "description": "APN username.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "apnPassword": {
+        //                     "description": "*(2.1)* APN Password.",
+        //                     "type": "string",
+        //                     "maxLength": 64
+        //                 },
+        //                 "simPin": {
+        //                     "description": "SIM card pin code.",
+        //                     "type": "integer"
+        //                 },
+        //                 "preferredNetwork": {
+        //                     "description": "Preferred network, written as MCC and MNC concatenated. See note.",
+        //                     "type": "string",
+        //                     "maxLength": 6
+        //                 },
+        //                 "useOnlyPreferredNetwork": {
+        //                     "description": "Default: false. Use only the preferred Network, do\r\nnot dial in when not available. See Note.",
+        //                     "type": "boolean",
+        //                     "default": false
+        //                 },
+        //                 "apnAuthentication": {
+        //                     "$ref": "#/definitions/APNAuthenticationEnumType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "apn",
+        //                 "apnAuthentication"
+        //             ]
+        //         },
+        //         "NetworkConnectionProfileType": {
+        //             "description": "The NetworkConnectionProfile defines the functional and technical parameters of a communication link.",
+        //             "javaType": "NetworkConnectionProfile",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "apn": {
+        //                     "$ref": "#/definitions/APNType"
+        //                 },
+        //                 "ocppVersion": {
+        //                     "$ref": "#/definitions/OCPPVersionEnumType"
+        //                 },
+        //                 "ocppInterface": {
+        //                     "$ref": "#/definitions/OCPPInterfaceEnumType"
+        //                 },
+        //                 "ocppTransport": {
+        //                     "$ref": "#/definitions/OCPPTransportEnumType"
+        //                 },
+        //                 "messageTimeout": {
+        //                     "description": "Duration in seconds before a message send by the Charging Station via this network connection times-out.\r\nThe best setting depends on the underlying network and response times of the CSMS.\r\nIf you are looking for a some guideline: use 30 seconds as a starting point.",
+        //                     "type": "integer"
+        //                 },
+        //                 "ocppCsmsUrl": {
+        //                     "description": "URL of the CSMS(s) that this Charging Station communicates with, without the Charging Station identity part. +\r\nThe SecurityCtrlr.Identity field is appended to _ocppCsmsUrl_ to provide the full websocket URL.",
+        //                     "type": "string",
+        //                     "maxLength": 2000
+        //                 },
+        //                 "securityProfile": {
+        //                     "description": "This field specifies the security profile used when connecting to the CSMS with this NetworkConnectionProfile.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "identity": {
+        //                     "description": "*(2.1)* Charging Station identity to be used as the basic authentication username.",
+        //                     "type": "string",
+        //                     "maxLength": 48
+        //                 },
+        //                 "basicAuthPassword": {
+        //                     "description": "*(2.1)* BasicAuthPassword to use for security profile 1 or 2.",
+        //                     "type": "string",
+        //                     "maxLength": 64
+        //                 },
+        //                 "vpn": {
+        //                     "$ref": "#/definitions/VPNType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "ocppInterface",
+        //                 "ocppTransport",
+        //                 "messageTimeout",
+        //                 "ocppCsmsUrl",
+        //                 "securityProfile"
+        //             ]
+        //         },
+        //         "VPNType": {
+        //             "description": "VPN Configuration settings",
+        //             "javaType": "VPN",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "server": {
+        //                     "description": "VPN Server Address",
+        //                     "type": "string",
+        //                     "maxLength": 2000
+        //                 },
+        //                 "user": {
+        //                     "description": "VPN User",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "group": {
+        //                     "description": "VPN group.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "password": {
+        //                     "description": "*(2.1)* VPN Password.",
+        //                     "type": "string",
+        //                     "maxLength": 64
+        //                 },
+        //                 "key": {
+        //                     "description": "VPN shared secret.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "$ref": "#/definitions/VPNEnumType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "server",
+        //                 "user",
+        //                 "password",
+        //                 "key",
+        //                 "type"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "APNAuthenticationEnumType": {
-        //       "description": "APN. APN_ Authentication. APN_ Authentication_ Code\r\nurn:x-oca:ocpp:uid:1:568828\r\nAuthentication method.",
-        //       "javaType": "APNAuthenticationEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "CHAP",
-        //         "NONE",
-        //         "PAP",
-        //         "AUTO"
-        //       ]
-        //     },
-        //     "OCPPInterfaceEnumType": {
-        //       "description": "Applicable Network Interface.",
-        //       "javaType": "OCPPInterfaceEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Wired0",
-        //         "Wired1",
-        //         "Wired2",
-        //         "Wired3",
-        //         "Wireless0",
-        //         "Wireless1",
-        //         "Wireless2",
-        //         "Wireless3"
-        //       ]
-        //     },
-        //     "OCPPTransportEnumType": {
-        //       "description": "Communication_ Function. OCPP_ Transport. OCPP_ Transport_ Code\r\nurn:x-oca:ocpp:uid:1:569356\r\nDefines the transport protocol (e.g. SOAP or JSON). Note: SOAP is not supported in OCPP 2.0, but is supported by other versions of OCPP.",
-        //       "javaType": "OCPPTransportEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "JSON",
-        //         "SOAP"
-        //       ]
-        //     },
-        //     "OCPPVersionEnumType": {
-        //       "description": "Communication_ Function. OCPP_ Version. OCPP_ Version_ Code\r\nurn:x-oca:ocpp:uid:1:569355\r\nDefines the OCPP version used for this communication function.",
-        //       "javaType": "OCPPVersionEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "OCPP12",
-        //         "OCPP15",
-        //         "OCPP16",
-        //         "OCPP20"
-        //       ]
-        //     },
-        //     "VPNEnumType": {
-        //       "description": "VPN. Type. VPN_ Code\r\nurn:x-oca:ocpp:uid:1:569277\r\nType of VPN",
-        //       "javaType": "VPNEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "IKEv2",
-        //         "IPSec",
-        //         "L2TP",
-        //         "PPTP"
-        //       ]
-        //     },
-        //     "APNType": {
-        //       "description": "APN\r\nurn:x-oca:ocpp:uid:2:233134\r\nCollection of configuration data needed to make a data-connection over a cellular network.\r\n\r\nNOTE: When asking a GSM modem to dial in, it is possible to specify which mobile operator should be used. This can be done with the mobile country code (MCC) in combination with a mobile network code (MNC). Example: If your preferred network is Vodafone Netherlands, the MCC=204 and the MNC=04 which means the key PreferredNetwork = 20404 Some modems allows to specify a preferred network, which means, if this network is not available, a different network is used. If you specify UseOnlyPreferredNetwork and this network is not available, the modem will not dial in.",
-        //       "javaType": "APN",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "configurationSlot": {
+        //             "description": "Slot in which the configuration should be stored.",
+        //             "type": "integer"
+        //         },
+        //         "connectionData": {
+        //             "$ref": "#/definitions/NetworkConnectionProfileType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "apn": {
-        //           "description": "APN. APN. URI\r\nurn:x-oca:ocpp:uid:1:568814\r\nThe Access Point Name as an URL.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         },
-        //         "apnUserName": {
-        //           "description": "APN. APN. User_ Name\r\nurn:x-oca:ocpp:uid:1:568818\r\nAPN username.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "apnPassword": {
-        //           "description": "APN. APN. Password\r\nurn:x-oca:ocpp:uid:1:568819\r\nAPN Password.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "simPin": {
-        //           "description": "APN. SIMPIN. PIN_ Code\r\nurn:x-oca:ocpp:uid:1:568821\r\nSIM card pin code.",
-        //           "type": "integer"
-        //         },
-        //         "preferredNetwork": {
-        //           "description": "APN. Preferred_ Network. Mobile_ Network_ ID\r\nurn:x-oca:ocpp:uid:1:568822\r\nPreferred network, written as MCC and MNC concatenated. See note.",
-        //           "type": "string",
-        //           "maxLength": 6
-        //         },
-        //         "useOnlyPreferredNetwork": {
-        //           "description": "APN. Use_ Only_ Preferred_ Network. Indicator\r\nurn:x-oca:ocpp:uid:1:568824\r\nDefault: false. Use only the preferred Network, do\r\nnot dial in when not available. See Note.",
-        //           "type": "boolean",
-        //           "default": false
-        //         },
-        //         "apnAuthentication": {
-        //           "$ref": "#/definitions/APNAuthenticationEnumType"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "apn",
-        //         "apnAuthentication"
-        //       ]
         //     },
-        //     "NetworkConnectionProfileType": {
-        //       "description": "Communication_ Function\r\nurn:x-oca:ocpp:uid:2:233304\r\nThe NetworkConnectionProfile defines the functional and technical parameters of a communication link.",
-        //       "javaType": "NetworkConnectionProfile",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "apn": {
-        //           "$ref": "#/definitions/APNType"
-        //         },
-        //         "ocppVersion": {
-        //           "$ref": "#/definitions/OCPPVersionEnumType"
-        //         },
-        //         "ocppTransport": {
-        //           "$ref": "#/definitions/OCPPTransportEnumType"
-        //         },
-        //         "ocppCsmsUrl": {
-        //           "description": "Communication_ Function. OCPP_ Central_ System_ URL. URI\r\nurn:x-oca:ocpp:uid:1:569357\r\nURL of the CSMS(s) that this Charging Station  communicates with.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         },
-        //         "messageTimeout": {
-        //           "description": "Duration in seconds before a message send by the Charging Station via this network connection times-out.\r\nThe best setting depends on the underlying network and response times of the CSMS.\r\nIf you are looking for a some guideline: use 30 seconds as a starting point.",
-        //           "type": "integer"
-        //         },
-        //         "securityProfile": {
-        //           "description": "This field specifies the security profile used when connecting to the CSMS with this NetworkConnectionProfile.",
-        //           "type": "integer"
-        //         },
-        //         "ocppInterface": {
-        //           "$ref": "#/definitions/OCPPInterfaceEnumType"
-        //         },
-        //         "vpn": {
-        //           "$ref": "#/definitions/VPNType"
-        //         }
-        //       },
-        //       "required": [
-        //         "ocppVersion",
-        //         "ocppTransport",
-        //         "ocppCsmsUrl",
-        //         "messageTimeout",
-        //         "securityProfile",
-        //         "ocppInterface"
-        //       ]
-        //     },
-        //     "VPNType": {
-        //       "description": "VPN\r\nurn:x-oca:ocpp:uid:2:233268\r\nVPN Configuration settings",
-        //       "javaType": "VPN",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "server": {
-        //           "description": "VPN. Server. URI\r\nurn:x-oca:ocpp:uid:1:569272\r\nVPN Server Address",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         },
-        //         "user": {
-        //           "description": "VPN. User. User_ Name\r\nurn:x-oca:ocpp:uid:1:569273\r\nVPN User",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "group": {
-        //           "description": "VPN. Group. Group_ Name\r\nurn:x-oca:ocpp:uid:1:569274\r\nVPN group.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "password": {
-        //           "description": "VPN. Password. Password\r\nurn:x-oca:ocpp:uid:1:569275\r\nVPN Password.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "key": {
-        //           "description": "VPN. Key. VPN_ Key\r\nurn:x-oca:ocpp:uid:1:569276\r\nVPN shared secret.",
-        //           "type": "string",
-        //           "maxLength": 255
-        //         },
-        //         "type": {
-        //           "$ref": "#/definitions/VPNEnumType"
-        //         }
-        //       },
-        //       "required": [
-        //         "server",
-        //         "user",
-        //         "password",
-        //         "key",
-        //         "type"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "configurationSlot": {
-        //       "description": "Slot in which the configuration should be stored.",
-        //       "type": "integer"
-        //     },
-        //     "connectionData": {
-        //       "$ref": "#/definitions/NetworkConnectionProfileType"
-        //     }
-        //   },
-        //   "required": [
-        //     "configurationSlot",
-        //     "connectionData"
-        //   ]
+        //     "required": [
+        //         "configurationSlot",
+        //         "connectionData"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSetNetworkProfileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SetNetworkProfile request.
@@ -402,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetNetworkProfileRequestParser">A delegate to parse custom SetNetworkProfile requests.</param>
         public static SetNetworkProfileRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     SourceRouting                                       Destination,
+                                                     SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               RequestTimestamp                       = null,
                                                      TimeSpan?                                               RequestTimeout                         = null,
@@ -431,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetNetworkProfileRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetNetworkProfileRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetNetworkProfile request.
@@ -448,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetNetworkProfileRequestParser">A delegate to parse custom SetNetworkProfile requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       SourceRouting                                       Destination,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SetNetworkProfileRequest?      SetNetworkProfileRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,

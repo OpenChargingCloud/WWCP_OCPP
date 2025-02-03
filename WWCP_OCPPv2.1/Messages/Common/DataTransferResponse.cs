@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "$ref": "#/definitions/StatusInfoType"
         //         },
         //         "data": {
-        //             "description": "Data without specified length or format, in response to request.\r\n"
+        //             "description": "Data without specified length or format, in response to request."
         //         },
         //         "customData": {
         //             "$ref": "#/definitions/CustomDataType"

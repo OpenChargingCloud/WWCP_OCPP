@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -37,16 +39,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The timestamp of the reported value(s).
+        /// The offset relative to _basetime_ of this message.
+        /// _basetime_ + _t_ is timestamp of recorded value.
         /// </summary>
         [Mandatory]
-        public DateTime  Timestamp    { get; }
+        public TimeSpan  TimeOffset    { get; }
 
         /// <summary>
         /// The reported value(s).
         /// </summary>
         [Mandatory]
-        public String    Values       { get; }
+        public String    Values        { get; }
 
         #endregion
 
@@ -55,24 +58,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new stream data element.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the reported value(s).</param>
+        /// <param name="TimeOffset">The offset relative to _basetime_ of this message. _basetime_ + _t_ is timestamp of recorded value.</param>
         /// <param name="Values">The reported value(s).</param>
-        public StreamDataElement(DateTime  Timestamp,
+        public StreamDataElement(TimeSpan  TimeOffset,
                                  String    Values)
         {
 
-            this.Timestamp  = Timestamp;
-            this.Values     = Values;
+            this.TimeOffset  = TimeOffset;
+            this.Values      = Values;
 
         }
 
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "javaType": "StreamDataElement",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "t": {
+        //             "description": "Offset relative to _basetime_ of this message. _basetime_ + _t_ is timestamp of recorded value.",
+        //             "type": "number"
+        //         },
+        //         "v": {
+        //             "type": "string",
+        //             "maxLength": 2500
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "t",
+        //         "v"
+        //     ]
+        // }
 
         #endregion
 
@@ -90,8 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var streamDataElement,
                          out var errorResponse,
-                         CustomStreamDataElementParser) &&
-                streamDataElement is not null)
+                         CustomStreamDataElementParser))
             {
                 return streamDataElement;
             }
@@ -112,9 +134,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="StreamDataElement">The parsed stream data element.</param>
-        public static Boolean TryParse(JObject                 JSON,
-                                       out StreamDataElement?  StreamDataElement,
-                                       out String?             ErrorResponse)
+        public static Boolean TryParse(JObject                                      JSON,
+                                       [NotNullWhen(true)]  out StreamDataElement?  StreamDataElement,
+                                       [NotNullWhen(false)] out String?             ErrorResponse)
 
             => TryParse(JSON,
                         out StreamDataElement,
@@ -129,8 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StreamDataElement">The parsed stream data element.</param>
         /// <param name="CustomStreamDataElementParser">An optional delegate to parse custom stream data elements.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out StreamDataElement?                           StreamDataElement,
-                                       out String?                                      ErrorResponse,
+                                       [NotNullWhen(true)]  out StreamDataElement?      StreamDataElement,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse,
                                        CustomJObjectParserDelegate<StreamDataElement>?  CustomStreamDataElementParser   = null)
         {
 
@@ -139,11 +161,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 StreamDataElement = default;
 
-                #region Timestamp    [mandatory]
+                #region TimeOffset    [mandatory]
 
                 if (!JSON.ParseMandatory("t",
                                          "timestamp",
-                                         out DateTime Timestamp,
+                                         out TimeSpan Timestamp,
                                          out ErrorResponse))
                 {
                     return false;
@@ -151,11 +173,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Values       [mandatory]
+                #region Values        [mandatory]
 
                 if (!JSON.ParseMandatoryText("v",
                                              "value(s)",
-                                             out String Values,
+                                             out String? Values,
                                              out ErrorResponse))
                 {
                     return false;
@@ -197,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var json = JSONObject.Create(
-                           new JProperty("t",   Timestamp.ToIso8601()),
+                           new JProperty("t",   TimeOffset.TotalSeconds),
                            new JProperty("v",   Values)
                        );
 
@@ -357,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 throw new ArgumentNullException(nameof(StreamDataElement),
                                                 "The given stream data element must not be null!");
 
-            var c = Timestamp.ToIso8601().CompareTo(StreamDataElement.Timestamp.ToIso8601());
+            var c = TimeOffset.CompareTo(StreamDataElement.TimeOffset);
 
             if (c == 0)
                 c = String.Compare(Values,
@@ -397,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => StreamDataElement is not null &&
 
-               Timestamp.Equals(StreamDataElement.Timestamp) &&
+               TimeOffset.Equals(StreamDataElement.TimeOffset) &&
                Values.   Equals(StreamDataElement.Values);
 
         #endregion
@@ -415,8 +437,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return Timestamp.GetHashCode() * 3 ^
-                       Values.   GetHashCode();
+                return TimeOffset.GetHashCode() * 3 ^
+                       Values.    GetHashCode();
 
             }
         }
@@ -430,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"'{Values}' @ {Timestamp}";
+            => $"'{Values}' @ +{TimeOffset.TotalSeconds} seconds";
 
         #endregion
 

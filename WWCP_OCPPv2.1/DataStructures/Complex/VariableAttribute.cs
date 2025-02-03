@@ -124,37 +124,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "VariableAttributeType": {
-        //   "description": "Attribute data of a variable.",
-        //   "javaType": "VariableAttribute",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "type": {
-        //       "$ref": "#/definitions/AttributeEnumType"
-        //     },
-        //     "value": {
-        //       "description": "Value of the attribute. May only be omitted when mutability is set to 'WriteOnly'.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
-        //       "type": "string",
-        //       "maxLength": 2500
-        //     },
-        //     "mutability": {
-        //       "$ref": "#/definitions/MutabilityEnumType"
-        //     },
-        //     "persistent": {
-        //       "description": "If true, value will be persistent across system reboots or power down. Default when omitted is false.",
-        //       "type": "boolean",
-        //       "default": false
-        //     },
-        //     "constant": {
-        //       "description": "If true, value that will never be changed by the Charging Station at runtime. Default when omitted is false.",
-        //       "type": "boolean",
-        //       "default": false
+        // {
+        //     "description": "Attribute data of a variable.",
+        //     "javaType": "VariableAttribute",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "type": {
+        //             "$ref": "#/definitions/AttributeEnumType"
+        //         },
+        //         "value": {
+        //             "description": "Value of the attribute. May only be omitted when mutability is set to 'WriteOnly'.
+        //                             The Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt;
+        //                             can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue.
+        //                             The max size of these values will always remain equal.",
+        //             "type": "string",
+        //             "maxLength": 2500
+        //         },
+        //         "mutability": {
+        //             "$ref": "#/definitions/MutabilityEnumType"
+        //         },
+        //         "persistent": {
+        //             "description": "If true, value will be persistent across system reboots or power down. Default when omitted is false.",
+        //             "type": "boolean",
+        //             "default": false
+        //         },
+        //         "constant": {
+        //             "description": "If true, value that will never be changed by the Charging Station at runtime. Default when omitted is false.",
+        //             "type": "boolean",
+        //             "default": false
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     }
-        //   }
         // }
 
         #endregion
@@ -298,12 +301,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                VariableAttribute = new VariableAttribute(AttributeType,
-                                                          Value,
-                                                          Mutability,
-                                                          Persistent,
-                                                          Constant,
-                                                          CustomData);
+                VariableAttribute = new VariableAttribute(
+                                        AttributeType,
+                                        Value,
+                                        Mutability,
+                                        Persistent,
+                                        Constant,
+                                        CustomData
+                                    );
 
                 if (CustomVariableAttributeParser is not null)
                     VariableAttribute = CustomVariableAttributeParser(JSON,

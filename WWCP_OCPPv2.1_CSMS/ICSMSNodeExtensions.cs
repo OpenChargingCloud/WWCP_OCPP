@@ -2295,29 +2295,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateDynamicSchedule       (Destination, ChargingProfileId, Limit = null, ...)
+        #region UpdateDynamicSchedule       (Destination, ChargingProfileId, ScheduleUpdate, ...)
 
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
         /// <param name="Destination">The networking node identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
-        /// 
-        /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
-        /// <param name="Limit_L2">Optional charging rate limit in chargingRateUnit on phase L2.</param>
-        /// <param name="Limit_L3">Optional charging rate limit in chargingRateUnit on phase L3.</param>
-        /// 
-        /// <param name="DischargeLimit">Optional discharging limit in chargingRateUnit.</param>
-        /// <param name="DischargeLimit_L2">Optional discharging limit in chargingRateUnit on phase L2.</param>
-        /// <param name="DischargeLimit_L3">Optional discharging limit in chargingRateUnit on phase L3.</param>
-        /// 
-        /// <param name="Setpoint">Optional setpoint in chargingRateUnit.</param>
-        /// <param name="Setpoint_L2">Optional setpoint in chargingRateUnit on phase L2.</param>
-        /// <param name="Setpoint_L3">Optional setpoint in chargingRateUnit on phase L3.</param>
-        /// 
-        /// <param name="SetpointReactive">Optional setpoint for reactive power (or current) in chargingRateUnit.</param>
-        /// <param name="SetpointReactive_L2">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.</param>
-        /// <param name="SetpointReactive_L3">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.</param>
+        /// <param name="ScheduleUpdate">The charging schedule to update.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
@@ -2332,22 +2317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             UpdateDynamicSchedule(this ICSMSNode           CSMS,
                                   SourceRouting            Destination,
                                   ChargingProfile_Id       ChargingProfileId,
-
-                                  ChargingRateValue?       Limit                 = null,
-                                  ChargingRateValue?       Limit_L2              = null,
-                                  ChargingRateValue?       Limit_L3              = null,
-
-                                  ChargingRateValue?       DischargeLimit        = null,
-                                  ChargingRateValue?       DischargeLimit_L2     = null,
-                                  ChargingRateValue?       DischargeLimit_L3     = null,
-
-                                  ChargingRateValue?       Setpoint              = null,
-                                  ChargingRateValue?       Setpoint_L2           = null,
-                                  ChargingRateValue?       Setpoint_L3           = null,
-
-                                  ChargingRateValue?       SetpointReactive      = null,
-                                  ChargingRateValue?       SetpointReactive_L2   = null,
-                                  ChargingRateValue?       SetpointReactive_L3   = null,
+                                  ChargingScheduleUpdate   ScheduleUpdate,
 
                                   IEnumerable<KeyPair>?    SignKeys              = null,
                                   IEnumerable<SignInfo>?   SignInfos             = null,
@@ -2368,22 +2338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            Destination,
                            ChargingProfileId,
-
-                           Limit,
-                           Limit_L2,
-                           Limit_L3,
-
-                           DischargeLimit,
-                           DischargeLimit_L2,
-                           DischargeLimit_L3,
-
-                           Setpoint,
-                           Setpoint_L2,
-                           Setpoint_L3,
-
-                           SetpointReactive,
-                           SetpointReactive_L2,
-                           SetpointReactive_L3,
+                           ScheduleUpdate,
 
                            SignKeys,
                            SignInfos,

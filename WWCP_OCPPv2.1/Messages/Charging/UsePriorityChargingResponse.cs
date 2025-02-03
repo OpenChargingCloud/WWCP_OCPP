@@ -56,19 +56,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext           Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the UsePriorityChargingl request.
         /// </summary>
-        public GenericStatus  Status        { get; }
+        public PriorityChargingStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?    StatusInfo    { get; }
+        public StatusInfo?             StatusInfo    { get; }
 
         #endregion
 
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public UsePriorityChargingResponse(UsePriorityChargingRequest  Request,
-                                           GenericStatus               Status,
+                                           PriorityChargingStatus      Status,
                                            StatusInfo?                 StatusInfo            = null,
 
                                            Result?                     Result                = null,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 hashCode = this.Status.     GetHashCode()       * 5 ^
                           (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
-                           base.GetHashCode();
+                           base.            GetHashCode();
 
             }
 
@@ -146,14 +146,84 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:UsePriorityChargingResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "PriorityChargingStatusEnumType": {
+        //             "description": "Result of the request.",
+        //             "javaType": "PriorityChargingStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "NoProfile"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/PriorityChargingStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomUsePriorityChargingResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an UsePriorityCharging response.
@@ -163,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUsePriorityChargingResponseParser">A delegate to parse custom UsePriorityCharging responses.</param>
         public static UsePriorityChargingResponse Parse(UsePriorityChargingRequest                                 Request,
                                                         JObject                                                    JSON,
-                                                        SourceRouting                                          Destination,
+                                                        SourceRouting                                              Destination,
                                                         NetworkPath                                                NetworkPath,
                                                         DateTime?                                                  ResponseTimestamp                         = null,
                                                         CustomJObjectParserDelegate<UsePriorityChargingResponse>?  CustomUsePriorityChargingResponseParser   = null,
@@ -194,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out UsePriorityChargingResponse, out ErrorResponse, CustomUsePriorityChargingResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out UsePriorityChargingResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UsePriorityCharging response.
@@ -206,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUsePriorityChargingResponseParser">A delegate to parse custom UsePriorityCharging responses.</param>
         public static Boolean TryParse(UsePriorityChargingRequest                                 Request,
                                        JObject                                                    JSON,
-                                       SourceRouting                                          Destination,
+                                       SourceRouting                                              Destination,
                                        NetworkPath                                                NetworkPath,
                                        [NotNullWhen(true)]  out UsePriorityChargingResponse?      UsePriorityChargingResponse,
                                        [NotNullWhen(false)] out String?                           ErrorResponse,
@@ -225,9 +295,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "generic status",
-                                         GenericStatusExtensions.TryParse,
-                                         out GenericStatus Status,
+                                         "priority charging status",
+                                         PriorityChargingStatusExtensions.TryParse,
+                                         out PriorityChargingStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -390,9 +460,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => new (
 
                    Request,
-                   GenericStatus.Rejected,
+                   PriorityChargingStatus.Rejected,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -417,11 +487,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The UsePriorityCharging request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static UsePriorityChargingResponse FormationViolation(UsePriorityChargingRequest  Request,
-                                                                     String                           ErrorDescription)
+                                                                     String                      ErrorDescription)
 
             => new (Request,
-                    GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    PriorityChargingStatus.Rejected,
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -432,11 +502,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The UsePriorityCharging request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static UsePriorityChargingResponse SignatureError(UsePriorityChargingRequest  Request,
-                                                                 String                           ErrorDescription)
+                                                                 String                      ErrorDescription)
 
             => new (Request,
-                    GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    PriorityChargingStatus.Rejected,
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -447,11 +517,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The UsePriorityCharging request.</param>
         /// <param name="Description">An optional error description.</param>
         public static UsePriorityChargingResponse Failed(UsePriorityChargingRequest  Request,
-                                                         String?                          Description   = null)
+                                                         String?                     Description   = null)
 
             => new (Request,
-                    GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    PriorityChargingStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -460,11 +530,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The UsePriorityCharging request.</param>
         /// <param name="Exception">The exception.</param>
         public static UsePriorityChargingResponse ExceptionOccured(UsePriorityChargingRequest  Request,
-                                                                   Exception                        Exception)
+                                                                   Exception                   Exception)
 
             => new (Request,
-                    GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    PriorityChargingStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               EVSE_Id?                 EVSEId                = null,
                                               ChargingProfile?         ChargingProfile       = null,
                                               IdToken?                 GroupIdToken          = null,
-                                              TransactionLimits?       TransactionLimits     = null,
+                                              TransactionLimits?       TransactionLimits     = null, // OCPP CSE Extension!
 
                                               IEnumerable<KeyPair>?    SignKeys              = null,
                                               IEnumerable<SignInfo>?   SignInfos             = null,
@@ -186,471 +186,1062 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:RequestStartTransactionRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:RequestStartTransactionRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ChargingProfileKindEnumType": {
+        //             "description": "Indicates the kind of schedule.",
+        //             "javaType": "ChargingProfileKindEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Absolute",
+        //                 "Recurring",
+        //                 "Relative",
+        //                 "Dynamic"
+        //             ]
+        //         },
+        //         "ChargingProfilePurposeEnumType": {
+        //             "description": "Defines the purpose of the schedule transferred by this profile",
+        //             "javaType": "ChargingProfilePurposeEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ChargingStationExternalConstraints",
+        //                 "ChargingStationMaxProfile",
+        //                 "TxDefaultProfile",
+        //                 "TxProfile",
+        //                 "PriorityCharging",
+        //                 "LocalGeneration"
+        //             ]
+        //         },
+        //         "ChargingRateUnitEnumType": {
+        //             "description": "The unit of measure in which limits and setpoints are expressed.",
+        //             "javaType": "ChargingRateUnitEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "W",
+        //                 "A"
+        //             ]
+        //         },
+        //         "CostKindEnumType": {
+        //             "description": "The kind of cost referred to in the message element amount",
+        //             "javaType": "CostKindEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "CarbonDioxideEmission",
+        //                 "RelativePricePercentage",
+        //                 "RenewableGenerationPercentage"
+        //             ]
+        //         },
+        //         "OperationModeEnumType": {
+        //             "description": "*(2.1)* Charging operation mode to use during this time interval. When absent defaults to `ChargingOnly`.",
+        //             "javaType": "OperationModeEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Idle",
+        //                 "ChargingOnly",
+        //                 "CentralSetpoint",
+        //                 "ExternalSetpoint",
+        //                 "ExternalLimits",
+        //                 "CentralFrequency",
+        //                 "LocalFrequency",
+        //                 "LocalLoadBalancing"
+        //             ]
+        //         },
+        //         "RecurrencyKindEnumType": {
+        //             "description": "Indicates the start point of a recurrence.",
+        //             "javaType": "RecurrencyKindEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Daily",
+        //                 "Weekly"
+        //             ]
+        //         },
+        //         "AbsolutePriceScheduleType": {
+        //             "description": "The AbsolutePriceScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.\r\n\r\nimage::images/AbsolutePriceSchedule-Simple.png[]",
+        //             "javaType": "AbsolutePriceSchedule",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "timeAnchor": {
+        //                     "description": "Starting point of price schedule.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "priceScheduleID": {
+        //                     "description": "Unique ID of price schedule",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "priceScheduleDescription": {
+        //                     "description": "Description of the price schedule.",
+        //                     "type": "string",
+        //                     "maxLength": 160
+        //                 },
+        //                 "currency": {
+        //                     "description": "Currency according to ISO 4217.",
+        //                     "type": "string",
+        //                     "maxLength": 3
+        //                 },
+        //                 "language": {
+        //                     "description": "String that indicates what language is used for the human readable strings in the price schedule. Based on ISO 639.",
+        //                     "type": "string",
+        //                     "maxLength": 8
+        //                 },
+        //                 "priceAlgorithm": {
+        //                     "description": "A string in URN notation which shall uniquely identify an algorithm that defines how to compute an energy fee sum for a specific power profile based on the EnergyFee information from the PriceRule elements.",
+        //                     "type": "string",
+        //                     "maxLength": 2000
+        //                 },
+        //                 "minimumCost": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "maximumCost": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "priceRuleStacks": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/PriceRuleStackType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 1024
+        //                 },
+        //                 "taxRules": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/TaxRuleType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 10
+        //                 },
+        //                 "overstayRuleList": {
+        //                     "$ref": "#/definitions/OverstayRuleListType"
+        //                 },
+        //                 "additionalSelectedServices": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/AdditionalSelectedServicesType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 5
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "timeAnchor",
+        //                 "priceScheduleID",
+        //                 "currency",
+        //                 "language",
+        //                 "priceAlgorithm",
+        //                 "priceRuleStacks"
+        //             ]
+        //         },
+        //         "AdditionalInfoType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "AdditionalInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalIdToken": {
+        //                     "description": "*(2.1)* This field specifies the additional IdToken.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "additionalIdToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "AdditionalSelectedServicesType": {
+        //             "description": "Part of ISO 15118-20 price schedule.",
+        //             "javaType": "AdditionalSelectedServices",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "serviceFee": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "serviceName": {
+        //                     "description": "Human readable string to identify this service.",
+        //                     "type": "string",
+        //                     "maxLength": 80
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "serviceName",
+        //                 "serviceFee"
+        //             ]
+        //         },
+        //         "ChargingProfileType": {
+        //             "description": "A ChargingProfile consists of 1 to 3 ChargingSchedules with a list of ChargingSchedulePeriods, describing the amount of power or current that can be delivered per time interval.\r\n\r\nimage::images/ChargingProfile-Simple.png[]",
+        //             "javaType": "ChargingProfile",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "Id of ChargingProfile. Unique within charging station. Id can have a negative value. This is useful to distinguish charging profiles from an external actor (external constraints) from charging profiles received from CSMS.",
+        //                     "type": "integer"
+        //                 },
+        //                 "stackLevel": {
+        //                     "description": "Value determining level in hierarchy stack of profiles. Higher values have precedence over lower values. Lowest level is 0.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "chargingProfilePurpose": {
+        //                     "$ref": "#/definitions/ChargingProfilePurposeEnumType"
+        //                 },
+        //                 "chargingProfileKind": {
+        //                     "$ref": "#/definitions/ChargingProfileKindEnumType"
+        //                 },
+        //                 "recurrencyKind": {
+        //                     "$ref": "#/definitions/RecurrencyKindEnumType"
+        //                 },
+        //                 "validFrom": {
+        //                     "description": "Point in time at which the profile starts to be valid. If absent, the profile is valid as soon as it is received by the Charging Station.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "validTo": {
+        //                     "description": "Point in time at which the profile stops to be valid. If absent, the profile is valid until it is replaced by another profile.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "transactionId": {
+        //                     "description": "SHALL only be included if ChargingProfilePurpose is set to TxProfile in a SetChargingProfileRequest. The transactionId is used to match the profile to a specific transaction.",
+        //                     "type": "string",
+        //                     "maxLength": 36
+        //                 },
+        //                 "maxOfflineDuration": {
+        //                     "description": "*(2.1)* Period in seconds that this charging profile remains valid after the Charging Station has gone offline. After this period the charging profile becomes invalid for as long as it is offline and the Charging Station reverts back to a valid profile with a lower stack level. \r\nIf _invalidAfterOfflineDuration_ is true, then this charging profile will become permanently invalid.\r\nA value of 0 means that the charging profile is immediately invalid while offline. When the field is absent, then  no timeout applies and the charging profile remains valid when offline.",
+        //                     "type": "integer"
+        //                 },
+        //                 "chargingSchedule": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/ChargingScheduleType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 3
+        //                 },
+        //                 "invalidAfterOfflineDuration": {
+        //                     "description": "*(2.1)* When set to true this charging profile will not be valid anymore after being offline for more than _maxOfflineDuration_. +\r\n    When absent defaults to false.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "dynUpdateInterval": {
+        //                     "description": "*(2.1)*  Interval in seconds after receipt of last update, when to request a profile update by sending a PullDynamicScheduleUpdateRequest message.\r\n    A value of 0 or no value means that no update interval applies. +\r\n    Only relevant in a dynamic charging profile.",
+        //                     "type": "integer"
+        //                 },
+        //                 "dynUpdateTime": {
+        //                     "description": "*(2.1)* Time at which limits or setpoints in this charging profile were last updated by a PullDynamicScheduleUpdateRequest or UpdateDynamicScheduleRequest or by an external actor. +\r\n    Only relevant in a dynamic charging profile.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "priceScheduleSignature": {
+        //                     "description": "*(2.1)* ISO 15118-20 signature for all price schedules in _chargingSchedules_. +\r\nNote: for 256-bit elliptic curves (like secp256k1) the ECDSA signature is 512 bits (64 bytes) and for 521-bit curves (like secp521r1) the signature is 1042 bits. This equals 131 bytes, which can be encoded as base64 in 176 bytes.",
+        //                     "type": "string",
+        //                     "maxLength": 256
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id",
+        //                 "stackLevel",
+        //                 "chargingProfilePurpose",
+        //                 "chargingProfileKind",
+        //                 "chargingSchedule"
+        //             ]
+        //         },
+        //         "ChargingSchedulePeriodType": {
+        //             "description": "Charging schedule period structure defines a time period in a charging schedule. It is used in: CompositeScheduleType and in ChargingScheduleType. When used in a NotifyEVChargingScheduleRequest only _startPeriod_, _limit_, _limit_L2_, _limit_L3_ are relevant.",
+        //             "javaType": "ChargingSchedulePeriod",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "startPeriod": {
+        //                     "description": "Start of the period, in seconds from the start of schedule. The value of StartPeriod also defines the stop time of the previous period.",
+        //                     "type": "integer"
+        //                 },
+        //                 "limit": {
+        //                     "description": "Optional only when not required by the _operationMode_, as in CentralSetpoint, ExternalSetpoint, ExternalLimits, LocalFrequency,  LocalLoadBalancing. +\r\nCharging rate limit during the schedule period, in the applicable _chargingRateUnit_. \r\nThis SHOULD be a non-negative value; a negative value is only supported for backwards compatibility with older systems that use a negative value to specify a discharging limit.\r\nWhen using _chargingRateUnit_ = `W`, this field represents the sum of the power of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //                     "type": "number"
+        //                 },
+        //                 "limit_L2": {
+        //                     "description": "*(2.1)* Charging rate limit on phase L2  in the applicable _chargingRateUnit_. ",
+        //                     "type": "number"
+        //                 },
+        //                 "limit_L3": {
+        //                     "description": "*(2.1)* Charging rate limit on phase L3  in the applicable _chargingRateUnit_. ",
+        //                     "type": "number"
+        //                 },
+        //                 "numberPhases": {
+        //                     "description": "The number of phases that can be used for charging. +\r\nFor a DC EVSE this field should be omitted. +\r\nFor an AC EVSE a default value of _numberPhases_ = 3 will be assumed if the field is absent.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0,
+        //                     "maximum": 3.0
+        //                 },
+        //                 "phaseToUse": {
+        //                     "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It\u2019s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0,
+        //                     "maximum": 3.0
+        //                 },
+        //                 "dischargeLimit": {
+        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ that the EV is allowed to discharge with. Note, these are negative values in order to be consistent with _setpoint_, which can be positive and negative.  +\r\nFor AC this field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //                     "type": "number",
+        //                     "maximum": 0.0
+        //                 },
+        //                 "dischargeLimit_L2": {
+        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L2 that the EV is allowed to discharge with. ",
+        //                     "type": "number",
+        //                     "maximum": 0.0
+        //                 },
+        //                 "dischargeLimit_L3": {
+        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L3 that the EV is allowed to discharge with. ",
+        //                     "type": "number",
+        //                     "maximum": 0.0
+        //                 },
+        //                 "setpoint": {
+        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow as close as possible. Use negative values for discharging. +\r\nWhen a limit and/or _dischargeLimit_ are given the overshoot when following _setpoint_ must remain within these values.\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //                     "type": "number"
+        //                 },
+        //                 "setpoint_L2": {
+        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L2 as close as possible.",
+        //                     "type": "number"
+        //                 },
+        //                 "setpoint_L3": {
+        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L3 as close as possible. ",
+        //                     "type": "number"
+        //                 },
+        //                 "setpointReactive": {
+        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow as closely as possible. Positive values for inductive, negative for capacitive reactive power or current.  +\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //                     "type": "number"
+        //                 },
+        //                 "setpointReactive_L2": {
+        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L2 as closely as possible. ",
+        //                     "type": "number"
+        //                 },
+        //                 "setpointReactive_L3": {
+        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L3 as closely as possible. ",
+        //                     "type": "number"
+        //                 },
+        //                 "preconditioningRequest": {
+        //                     "description": "*(2.1)* If  true, the EV should attempt to keep the BMS preconditioned for this time interval.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "evseSleep": {
+        //                     "description": "*(2.1)* If true, the EVSE must turn off power electronics/modules associated with this transaction. Default value when absent is false.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "v2xBaseline": {
+        //                     "description": "*(2.1)* Power value that, when present, is used as a baseline on top of which values from _v2xFreqWattCurve_ and _v2xSignalWattCurve_ are added.",
+        //                     "type": "number"
+        //                 },
+        //                 "operationMode": {
+        //                     "$ref": "#/definitions/OperationModeEnumType"
+        //                 },
+        //                 "v2xFreqWattCurve": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/V2XFreqWattPointType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 20
+        //                 },
+        //                 "v2xSignalWattCurve": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/V2XSignalWattPointType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 20
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "startPeriod"
+        //             ]
+        //         },
+        //         "ChargingScheduleType": {
+        //             "description": "Charging schedule structure defines a list of charging periods, as used in: NotifyEVChargingScheduleRequest and ChargingProfileType. When used in a NotifyEVChargingScheduleRequest only _duration_ and _chargingSchedulePeriod_ are relevant and _chargingRateUnit_ must be 'W'. +\r\nAn ISO 15118-20 session may provide either an _absolutePriceSchedule_ or a _priceLevelSchedule_. An ISO 15118-2 session can only provide a_salesTariff_ element. The field _digestValue_ is used when price schedule or sales tariff are signed.\r\n\r\nimage::images/ChargingSchedule-Simple.png[]",
+        //             "javaType": "ChargingSchedule",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "type": "integer"
+        //                 },
+        //                 "limitAtSoC": {
+        //                     "$ref": "#/definitions/LimitAtSoCType"
+        //                 },
+        //                 "startSchedule": {
+        //                     "description": "Starting point of an absolute schedule or recurring schedule.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "duration": {
+        //                     "description": "Duration of the charging schedule in seconds. If the duration is left empty, the last period will continue indefinitely or until end of the transaction in case startSchedule is absent.",
+        //                     "type": "integer"
+        //                 },
+        //                 "chargingRateUnit": {
+        //                     "$ref": "#/definitions/ChargingRateUnitEnumType"
+        //                 },
+        //                 "minChargingRate": {
+        //                     "description": "Minimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. ",
+        //                     "type": "number"
+        //                 },
+        //                 "powerTolerance": {
+        //                     "description": "*(2.1)* Power tolerance when following EVPowerProfile.",
+        //                     "type": "number"
+        //                 },
+        //                 "signatureId": {
+        //                     "description": "*(2.1)* Id of this element for referencing in a signature.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "digestValue": {
+        //                     "description": "*(2.1)* Base64 encoded hash (SHA256 for ISO 15118-2, SHA512 for ISO 15118-20) of the EXI price schedule element. Used in signature.",
+        //                     "type": "string",
+        //                     "maxLength": 88
+        //                 },
+        //                 "useLocalTime": {
+        //                     "description": "*(2.1)* Defaults to false. When true, disregard time zone offset in dateTime fields of  _ChargingScheduleType_ and use unqualified local time at Charging Station instead.\r\n This allows the same `Absolute` or `Recurring` charging profile to be used in both summer and winter time.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "chargingSchedulePeriod": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/ChargingSchedulePeriodType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 1024
+        //                 },
+        //                 "randomizedDelay": {
+        //                     "description": "*(2.1)* Defaults to 0. When _randomizedDelay_ not equals zero, then the start of each &lt;&lt;cmn_chargingscheduleperiodtype,ChargingSchedulePeriodType&gt;&gt; is delayed by a randomly chosen number of seconds between 0 and _randomizedDelay_.  Only allowed for TxProfile and TxDefaultProfile.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "salesTariff": {
+        //                     "$ref": "#/definitions/SalesTariffType"
+        //                 },
+        //                 "absolutePriceSchedule": {
+        //                     "$ref": "#/definitions/AbsolutePriceScheduleType"
+        //                 },
+        //                 "priceLevelSchedule": {
+        //                     "$ref": "#/definitions/PriceLevelScheduleType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id",
+        //                 "chargingRateUnit",
+        //                 "chargingSchedulePeriod"
+        //             ]
+        //         },
+        //         "ConsumptionCostType": {
+        //             "javaType": "ConsumptionCost",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "startValue": {
+        //                     "description": "The lowest level of consumption that defines the starting point of this consumption block. The block interval extends to the start of the next interval.",
+        //                     "type": "number"
+        //                 },
+        //                 "cost": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/CostType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 3
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "startValue",
+        //                 "cost"
+        //             ]
+        //         },
+        //         "CostType": {
+        //             "javaType": "Cost",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "costKind": {
+        //                     "$ref": "#/definitions/CostKindEnumType"
+        //                 },
+        //                 "amount": {
+        //                     "description": "The estimated or actual cost per kWh",
+        //                     "type": "integer"
+        //                 },
+        //                 "amountMultiplier": {
+        //                     "description": "Values: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier",
+        //                     "type": "integer"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "costKind",
+        //                 "amount"
+        //             ]
+        //         },
+        //         "IdTokenType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "IdToken",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalInfo": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/AdditionalInfoType"
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "idToken": {
+        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "idToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "LimitAtSoCType": {
+        //             "javaType": "LimitAtSoC",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "soc": {
+        //                     "description": "The SoC value beyond which the charging rate limit should be applied.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0,
+        //                     "maximum": 100.0
+        //                 },
+        //                 "limit": {
+        //                     "description": "Charging rate limit beyond the SoC value.\r\nThe unit is defined by _chargingSchedule.chargingRateUnit_.",
+        //                     "type": "number"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "soc",
+        //                 "limit"
+        //             ]
+        //         },
+        //         "OverstayRuleListType": {
+        //             "description": "Part of ISO 15118-20 price schedule.",
+        //             "javaType": "OverstayRuleList",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "overstayPowerThreshold": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "overstayRule": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/OverstayRuleType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 5
+        //                 },
+        //                 "overstayTimeThreshold": {
+        //                     "description": "Time till overstay is applied in seconds.",
+        //                     "type": "integer"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "overstayRule"
+        //             ]
+        //         },
+        //         "OverstayRuleType": {
+        //             "description": "Part of ISO 15118-20 price schedule.",
+        //             "javaType": "OverstayRule",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "overstayFee": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "overstayRuleDescription": {
+        //                     "description": "Human readable string to identify the overstay rule.",
+        //                     "type": "string",
+        //                     "maxLength": 32
+        //                 },
+        //                 "startTime": {
+        //                     "description": "Time in seconds after trigger of the parent Overstay Rules for this particular fee to apply.",
+        //                     "type": "integer"
+        //                 },
+        //                 "overstayFeePeriod": {
+        //                     "description": "Time till overstay will be reapplied",
+        //                     "type": "integer"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "startTime",
+        //                 "overstayFeePeriod",
+        //                 "overstayFee"
+        //             ]
+        //         },
+        //         "PriceLevelScheduleEntryType": {
+        //             "description": "Part of ISO 15118-20 price schedule.",
+        //             "javaType": "PriceLevelScheduleEntry",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "duration": {
+        //                     "description": "The amount of seconds that define the duration of this given PriceLevelScheduleEntry.",
+        //                     "type": "integer"
+        //                 },
+        //                 "priceLevel": {
+        //                     "description": "Defines the price level of this PriceLevelScheduleEntry (referring to NumberOfPriceLevels). Small values for the PriceLevel represent a cheaper PriceLevelScheduleEntry. Large values for the PriceLevel represent a more expensive PriceLevelScheduleEntry.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "duration",
+        //                 "priceLevel"
+        //             ]
+        //         },
+        //         "PriceLevelScheduleType": {
+        //             "description": "The PriceLevelScheduleType is modeled after the same type that is defined in ISO 15118-20, such that if it is supplied by an EMSP as a signed EXI message, the conversion from EXI to JSON (in OCPP) and back to EXI (for ISO 15118-20) does not change the digest and therefore does not invalidate the signature.",
+        //             "javaType": "PriceLevelSchedule",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "priceLevelScheduleEntries": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/PriceLevelScheduleEntryType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 100
+        //                 },
+        //                 "timeAnchor": {
+        //                     "description": "Starting point of this price schedule.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "priceScheduleId": {
+        //                     "description": "Unique ID of this price schedule.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "priceScheduleDescription": {
+        //                     "description": "Description of the price schedule.",
+        //                     "type": "string",
+        //                     "maxLength": 32
+        //                 },
+        //                 "numberOfPriceLevels": {
+        //                     "description": "Defines the overall number of distinct price level elements used across all PriceLevelSchedules.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "timeAnchor",
+        //                 "priceScheduleId",
+        //                 "numberOfPriceLevels",
+        //                 "priceLevelScheduleEntries"
+        //             ]
+        //         },
+        //         "PriceRuleStackType": {
+        //             "description": "Part of ISO 15118-20 price schedule.",
+        //             "javaType": "PriceRuleStack",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "duration": {
+        //                     "description": "Duration of the stack of price rules.  he amount of seconds that define the duration of the given PriceRule(s).",
+        //                     "type": "integer"
+        //                 },
+        //                 "priceRule": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/PriceRuleType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 8
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "duration",
+        //                 "priceRule"
+        //             ]
+        //         },
+        //         "PriceRuleType": {
+        //             "description": "Part of ISO 15118-20 price schedule.",
+        //             "javaType": "PriceRule",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "parkingFeePeriod": {
+        //                     "description": "The duration of the parking fee period (in seconds).\r\nWhen the time enters into a ParkingFeePeriod, the ParkingFee will apply to the session. .",
+        //                     "type": "integer"
+        //                 },
+        //                 "carbonDioxideEmission": {
+        //                     "description": "Number of grams of CO2 per kWh.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "renewableGenerationPercentage": {
+        //                     "description": "Percentage of the power that is created by renewable resources.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0,
+        //                     "maximum": 100.0
+        //                 },
+        //                 "energyFee": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "parkingFee": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "powerRangeStart": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "energyFee",
+        //                 "powerRangeStart"
+        //             ]
+        //         },
+        //         "RationalNumberType": {
+        //             "description": "Part of ISO 15118-20 price schedule.",
+        //             "javaType": "RationalNumber",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "exponent": {
+        //                     "description": "The exponent to base 10 (dec)",
+        //                     "type": "integer"
+        //                 },
+        //                 "value": {
+        //                     "description": "Value which shall be multiplied.",
+        //                     "type": "integer"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "exponent",
+        //                 "value"
+        //             ]
+        //         },
+        //         "RelativeTimeIntervalType": {
+        //             "javaType": "RelativeTimeInterval",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "start": {
+        //                     "description": "Start of the interval, in seconds from NOW.",
+        //                     "type": "integer"
+        //                 },
+        //                 "duration": {
+        //                     "description": "Duration of the interval, in seconds.",
+        //                     "type": "integer"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "start"
+        //             ]
+        //         },
+        //         "SalesTariffEntryType": {
+        //             "javaType": "SalesTariffEntry",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "relativeTimeInterval": {
+        //                     "$ref": "#/definitions/RelativeTimeIntervalType"
+        //                 },
+        //                 "ePriceLevel": {
+        //                     "description": "Defines the price level of this SalesTariffEntry (referring to NumEPriceLevels). Small values for the EPriceLevel represent a cheaper TariffEntry. Large values for the EPriceLevel represent a more expensive TariffEntry.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "consumptionCost": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/ConsumptionCostType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 3
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "relativeTimeInterval"
+        //             ]
+        //         },
+        //         "SalesTariffType": {
+        //             "description": "A SalesTariff provided by a Mobility Operator (EMSP) .\r\nNOTE: This dataType is based on dataTypes from &lt;&lt;ref-ISOIEC15118-2,ISO 15118-2&gt;&gt;.",
+        //             "javaType": "SalesTariff",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "SalesTariff identifier used to identify one sales tariff. An SAID remains a unique identifier for one schedule throughout a charging session.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "salesTariffDescription": {
+        //                     "description": "A human readable title/short description of the sales tariff e.g. for HMI display purposes.",
+        //                     "type": "string",
+        //                     "maxLength": 32
+        //                 },
+        //                 "numEPriceLevels": {
+        //                     "description": "Defines the overall number of distinct price levels used across all provided SalesTariff elements.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "salesTariffEntry": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/SalesTariffEntryType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id",
+        //                 "salesTariffEntry"
+        //             ]
+        //         },
+        //         "TaxRuleType": {
+        //             "description": "Part of ISO 15118-20 price schedule.",
+        //             "javaType": "TaxRule",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "taxRuleID": {
+        //                     "description": "Id for the tax rule.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "taxRuleName": {
+        //                     "description": "Human readable string to identify the tax rule.",
+        //                     "type": "string",
+        //                     "maxLength": 100
+        //                 },
+        //                 "taxIncludedInPrice": {
+        //                     "description": "Indicates whether the tax is included in any price or not.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "appliesToEnergyFee": {
+        //                     "description": "Indicates whether this tax applies to Energy Fees.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "appliesToParkingFee": {
+        //                     "description": "Indicates whether this tax applies to Parking Fees.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "appliesToOverstayFee": {
+        //                     "description": "Indicates whether this tax applies to Overstay Fees.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "appliesToMinimumMaximumCost": {
+        //                     "description": "Indicates whether this tax applies to Minimum/Maximum Cost.",
+        //                     "type": "boolean"
+        //                 },
+        //                 "taxRate": {
+        //                     "$ref": "#/definitions/RationalNumberType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "taxRuleID",
+        //                 "appliesToEnergyFee",
+        //                 "appliesToParkingFee",
+        //                 "appliesToOverstayFee",
+        //                 "appliesToMinimumMaximumCost",
+        //                 "taxRate"
+        //             ]
+        //         },
+        //         "V2XFreqWattPointType": {
+        //             "description": "*(2.1)* A point of a frequency-watt curve.",
+        //             "javaType": "V2XFreqWattPoint",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "frequency": {
+        //                     "description": "Net frequency in Hz.",
+        //                     "type": "number"
+        //                 },
+        //                 "power": {
+        //                     "description": "Power in W to charge (positive) or discharge (negative) at specified frequency.",
+        //                     "type": "number"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "frequency",
+        //                 "power"
+        //             ]
+        //         },
+        //         "V2XSignalWattPointType": {
+        //             "description": "*(2.1)* A point of a signal-watt curve.",
+        //             "javaType": "V2XSignalWattPoint",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "signal": {
+        //                     "description": "Signal value from an AFRRSignalRequest.",
+        //                     "type": "integer"
+        //                 },
+        //                 "power": {
+        //                     "description": "Power in W to charge (positive) or discharge (negative) at specified frequency.",
+        //                     "type": "number"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "signal",
+        //                 "power"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ChargingProfileKindEnumType": {
-        //       "description": "Charging_ Profile. Charging_ Profile_ Kind. Charging_ Profile_ Kind_ Code\r\nurn:x-oca:ocpp:uid:1:569232\r\nIndicates the kind of schedule.",
-        //       "javaType": "ChargingProfileKindEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Absolute",
-        //         "Recurring",
-        //         "Relative"
-        //       ]
-        //     },
-        //     "ChargingProfilePurposeEnumType": {
-        //       "description": "Charging_ Profile. Charging_ Profile_ Purpose. Charging_ Profile_ Purpose_ Code\r\nurn:x-oca:ocpp:uid:1:569231\r\nDefines the purpose of the schedule transferred by this profile",
-        //       "javaType": "ChargingProfilePurposeEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ChargingStationExternalConstraints",
-        //         "ChargingStationMaxProfile",
-        //         "TxDefaultProfile",
-        //         "TxProfile"
-        //       ]
-        //     },
-        //     "ChargingRateUnitEnumType": {
-        //       "description": "Charging_ Schedule. Charging_ Rate_ Unit. Charging_ Rate_ Unit_ Code\r\nurn:x-oca:ocpp:uid:1:569238\r\nThe unit of measure Limit is expressed in.",
-        //       "javaType": "ChargingRateUnitEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "W",
-        //         "A"
-        //       ]
-        //     },
-        //     "CostKindEnumType": {
-        //       "description": "Cost. Cost_ Kind. Cost_ Kind_ Code\r\nurn:x-oca:ocpp:uid:1:569243\r\nThe kind of cost referred to in the message element amount",
-        //       "javaType": "CostKindEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "CarbonDioxideEmission",
-        //         "RelativePricePercentage",
-        //         "RenewableGenerationPercentage"
-        //       ]
-        //     },
-        //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.",
-        //       "javaType": "IdTokenEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Central",
-        //         "eMAID",
-        //         "ISO14443",
-        //         "ISO15693",
-        //         "KeyCode",
-        //         "Local",
-        //         "MacAddress",
-        //         "NoAuthorization"
-        //       ]
-        //     },
-        //     "RecurrencyKindEnumType": {
-        //       "description": "Charging_ Profile. Recurrency_ Kind. Recurrency_ Kind_ Code\r\nurn:x-oca:ocpp:uid:1:569233\r\nIndicates the start point of a recurrence.",
-        //       "javaType": "RecurrencyKindEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Daily",
-        //         "Weekly"
-        //       ]
-        //     },
-        //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "AdditionalInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evseId": {
+        //             "description": "Number of the EVSE on which to start the transaction. EvseId SHALL be &gt; 0",
+        //             "type": "integer",
+        //             "minimum": 1.0
         //         },
-        //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
-        //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "additionalIdToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "ChargingProfileType": {
-        //       "description": "Charging_ Profile\r\nurn:x-oca:ocpp:uid:2:233255\r\nA ChargingProfile consists of ChargingSchedule, describing the amount of power or current that can be delivered per time interval.",
-        //       "javaType": "ChargingProfile",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nId of ChargingProfile.",
-        //           "type": "integer"
-        //         },
-        //         "stackLevel": {
-        //           "description": "Charging_ Profile. Stack_ Level. Counter\r\nurn:x-oca:ocpp:uid:1:569230\r\nValue determining level in hierarchy stack of profiles. Higher values have precedence over lower values. Lowest level is 0.",
-        //           "type": "integer"
-        //         },
-        //         "chargingProfilePurpose": {
-        //           "$ref": "#/definitions/ChargingProfilePurposeEnumType"
-        //         },
-        //         "chargingProfileKind": {
-        //           "$ref": "#/definitions/ChargingProfileKindEnumType"
-        //         },
-        //         "recurrencyKind": {
-        //           "$ref": "#/definitions/RecurrencyKindEnumType"
-        //         },
-        //         "validFrom": {
-        //           "description": "Charging_ Profile. Valid_ From. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569234\r\nPoint in time at which the profile starts to be valid. If absent, the profile is valid as soon as it is received by the Charging Station.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "validTo": {
-        //           "description": "Charging_ Profile. Valid_ To. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569235\r\nPoint in time at which the profile stops to be valid. If absent, the profile is valid until it is replaced by another profile.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "chargingSchedule": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/ChargingScheduleType"
-        //           },
-        //           "minItems": 1,
-        //           "maxItems": 3
-        //         },
-        //         "transactionId": {
-        //           "description": "SHALL only be included if ChargingProfilePurpose is set to TxProfile. The transactionId is used to match the profile to a specific transaction.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         }
-        //       },
-        //       "required": [
-        //         "id",
-        //         "stackLevel",
-        //         "chargingProfilePurpose",
-        //         "chargingProfileKind",
-        //         "chargingSchedule"
-        //       ]
-        //     },
-        //     "ChargingSchedulePeriodType": {
-        //       "description": "Charging_ Schedule_ Period\r\nurn:x-oca:ocpp:uid:2:233257\r\nCharging schedule period structure defines a time period in a charging schedule.",
-        //       "javaType": "ChargingSchedulePeriod",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "startPeriod": {
-        //           "description": "Charging_ Schedule_ Period. Start_ Period. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569240\r\nStart of the period, in seconds from the start of schedule. The value of StartPeriod also defines the stop time of the previous period.",
-        //           "type": "integer"
-        //         },
-        //         "limit": {
-        //           "description": "Charging_ Schedule_ Period. Limit. Measure\r\nurn:x-oca:ocpp:uid:1:569241\r\nCharging rate limit during the schedule period, in the applicable chargingRateUnit, for example in Amperes (A) or Watts (W). Accepts at most one digit fraction (e.g. 8.1).",
-        //           "type": "number"
-        //         },
-        //         "numberPhases": {
-        //           "description": "Charging_ Schedule_ Period. Number_ Phases. Counter\r\nurn:x-oca:ocpp:uid:1:569242\r\nThe number of phases that can be used for charging. If a number of phases is needed, numberPhases=3 will be assumed unless another number is given.",
-        //           "type": "integer"
-        //         },
-        //         "phaseToUse": {
-        //           "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It’s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "startPeriod",
-        //         "limit"
-        //       ]
-        //     },
-        //     "ChargingScheduleType": {
-        //       "description": "Charging_ Schedule\r\nurn:x-oca:ocpp:uid:2:233256\r\nCharging schedule structure defines a list of charging periods, as used in: GetCompositeSchedule.conf and ChargingProfile. ",
-        //       "javaType": "ChargingSchedule",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identifies the ChargingSchedule.",
-        //           "type": "integer"
-        //         },
-        //         "startSchedule": {
-        //           "description": "Charging_ Schedule. Start_ Schedule. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569237\r\nStarting point of an absolute schedule. If absent the schedule will be relative to start of charging.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "duration": {
-        //           "description": "Charging_ Schedule. Duration. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569236\r\nDuration of the charging schedule in seconds. If the duration is left empty, the last period will continue indefinitely or until end of the transaction if chargingProfilePurpose = TxProfile.",
-        //           "type": "integer"
-        //         },
-        //         "chargingRateUnit": {
-        //           "$ref": "#/definitions/ChargingRateUnitEnumType"
-        //         },
-        //         "chargingSchedulePeriod": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/ChargingSchedulePeriodType"
-        //           },
-        //           "minItems": 1,
-        //           "maxItems": 1024
-        //         },
-        //         "minChargingRate": {
-        //           "description": "Charging_ Schedule. Min_ Charging_ Rate. Numeric\r\nurn:x-oca:ocpp:uid:1:569239\r\nMinimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. Accepts at most one digit fraction (e.g. 8.1)",
-        //           "type": "number"
-        //         },
-        //         "salesTariff": {
-        //           "$ref": "#/definitions/SalesTariffType"
-        //         }
-        //       },
-        //       "required": [
-        //         "id",
-        //         "chargingRateUnit",
-        //         "chargingSchedulePeriod"
-        //       ]
-        //     },
-        //     "ConsumptionCostType": {
-        //       "description": "Consumption_ Cost\r\nurn:x-oca:ocpp:uid:2:233259",
-        //       "javaType": "ConsumptionCost",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "startValue": {
-        //           "description": "Consumption_ Cost. Start_ Value. Numeric\r\nurn:x-oca:ocpp:uid:1:569246\r\nThe lowest level of consumption that defines the starting point of this consumption block. The block interval extends to the start of the next interval.",
-        //           "type": "number"
-        //         },
-        //         "cost": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/CostType"
-        //           },
-        //           "minItems": 1,
-        //           "maxItems": 3
-        //         }
-        //       },
-        //       "required": [
-        //         "startValue",
-        //         "cost"
-        //       ]
-        //     },
-        //     "CostType": {
-        //       "description": "Cost\r\nurn:x-oca:ocpp:uid:2:233258",
-        //       "javaType": "Cost",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "costKind": {
-        //           "$ref": "#/definitions/CostKindEnumType"
-        //         },
-        //         "amount": {
-        //           "description": "Cost. Amount. Amount\r\nurn:x-oca:ocpp:uid:1:569244\r\nThe estimated or actual cost per kWh",
-        //           "type": "integer"
-        //         },
-        //         "amountMultiplier": {
-        //           "description": "Cost. Amount_ Multiplier. Integer\r\nurn:x-oca:ocpp:uid:1:569245\r\nValues: -3..3, The amountMultiplier defines the exponent to base 10 (dec). The final value is determined by: amount * 10 ^ amountMultiplier",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "costKind",
-        //         "amount"
-        //       ]
-        //     },
-        //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "IdToken",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalInfo": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/AdditionalInfoType"
-        //           },
-        //           "minItems": 1
+        //         "groupIdToken": {
+        //             "$ref": "#/definitions/IdTokenType"
         //         },
         //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
-        //           "type": "string",
-        //           "maxLength": 36
+        //             "$ref": "#/definitions/IdTokenType"
         //         },
-        //         "type": {
-        //           "$ref": "#/definitions/IdTokenEnumType"
-        //         }
-        //       },
-        //       "required": [
-        //         "idToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "RelativeTimeIntervalType": {
-        //       "description": "Relative_ Timer_ Interval\r\nurn:x-oca:ocpp:uid:2:233270",
-        //       "javaType": "RelativeTimeInterval",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //         "remoteStartId": {
+        //             "description": "Id given by the server to this start request. The Charging Station will return this in the &lt;&lt;transactioneventrequest, TransactionEventRequest&gt;&gt;, letting the server know which transaction was started for this request. Use to start a transaction.",
+        //             "type": "integer"
+        //         },
+        //         "chargingProfile": {
+        //             "$ref": "#/definitions/ChargingProfileType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "start": {
-        //           "description": "Relative_ Timer_ Interval. Start. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569279\r\nStart of the interval, in seconds from NOW.",
-        //           "type": "integer"
-        //         },
-        //         "duration": {
-        //           "description": "Relative_ Timer_ Interval. Duration. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569280\r\nDuration of the interval, in seconds.",
-        //           "type": "integer"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "start"
-        //       ]
         //     },
-        //     "SalesTariffEntryType": {
-        //       "description": "Sales_ Tariff_ Entry\r\nurn:x-oca:ocpp:uid:2:233271",
-        //       "javaType": "SalesTariffEntry",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "relativeTimeInterval": {
-        //           "$ref": "#/definitions/RelativeTimeIntervalType"
-        //         },
-        //         "ePriceLevel": {
-        //           "description": "Sales_ Tariff_ Entry. E_ Price_ Level. Unsigned_ Integer\r\nurn:x-oca:ocpp:uid:1:569281\r\nDefines the price level of this SalesTariffEntry (referring to NumEPriceLevels). Small values for the EPriceLevel represent a cheaper TariffEntry. Large values for the EPriceLevel represent a more expensive TariffEntry.",
-        //           "type": "integer",
-        //           "minimum": 0.0
-        //         },
-        //         "consumptionCost": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/ConsumptionCostType"
-        //           },
-        //           "minItems": 1,
-        //           "maxItems": 3
-        //         }
-        //       },
-        //       "required": [
-        //         "relativeTimeInterval"
-        //       ]
-        //     },
-        //     "SalesTariffType": {
-        //       "description": "Sales_ Tariff\r\nurn:x-oca:ocpp:uid:2:233272\r\nNOTE: This dataType is based on dataTypes from &lt;&lt;ref-ISOIEC15118-2,ISO 15118-2&gt;&gt;.",
-        //       "javaType": "SalesTariff",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nSalesTariff identifier used to identify one sales tariff. An SAID remains a unique identifier for one schedule throughout a charging session.",
-        //           "type": "integer"
-        //         },
-        //         "salesTariffDescription": {
-        //           "description": "Sales_ Tariff. Sales. Tariff_ Description\r\nurn:x-oca:ocpp:uid:1:569283\r\nA human readable title/short description of the sales tariff e.g. for HMI display purposes.",
-        //           "type": "string",
-        //           "maxLength": 32
-        //         },
-        //         "numEPriceLevels": {
-        //           "description": "Sales_ Tariff. Num_ E_ Price_ Levels. Counter\r\nurn:x-oca:ocpp:uid:1:569284\r\nDefines the overall number of distinct price levels used across all provided SalesTariff elements.",
-        //           "type": "integer"
-        //         },
-        //         "salesTariffEntry": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/SalesTariffEntryType"
-        //           },
-        //           "minItems": 1,
-        //           "maxItems": 1024
-        //         }
-        //       },
-        //       "required": [
-        //         "id",
-        //         "salesTariffEntry"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "evseId": {
-        //       "description": "Number of the EVSE on which to start the transaction. EvseId SHALL be &gt; 0",
-        //       "type": "integer"
-        //     },
-        //     "groupIdToken": {
-        //       "$ref": "#/definitions/IdTokenType"
-        //     },
-        //     "idToken": {
-        //       "$ref": "#/definitions/IdTokenType"
-        //     },
-        //     "remoteStartId": {
-        //       "description": "Id given by the server to this start request. The Charging Station might return this in the &lt;&lt;transactioneventrequest, TransactionEventRequest&gt;&gt;, letting the server know which transaction was started for this request. Use to start a transaction.",
-        //       "type": "integer"
-        //     },
-        //     "chargingProfile": {
-        //       "$ref": "#/definitions/ChargingProfileType"
-        //     }
-        //   },
-        //   "required": [
-        //     "remoteStartId",
-        //     "idToken"
-        //   ]
+        //     "required": [
+        //         "remoteStartId",
+        //         "idToken"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomRequestStartTransactionRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a RequestStartTransaction request.
@@ -665,7 +1256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomRequestStartTransactionRequestParser">A delegate to parse custom RequestStartTransaction requests.</param>
         public static RequestStartTransactionRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
-                                                           SourceRouting                                             Destination,
+                                                           SourceRouting                                                 Destination,
                                                            NetworkPath                                                   NetworkPath,
                                                            DateTime?                                                     RequestTimestamp                             = null,
                                                            TimeSpan?                                                     RequestTimeout                               = null,
@@ -694,7 +1285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out RequestStartTransactionRequest, out ErrorResponse, CustomRequestStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out RequestStartTransactionRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a RequestStartTransaction request.
@@ -711,7 +1302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomRequestStartTransactionRequestParser">A delegate to parse custom RequestStartTransaction requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       SourceRouting                                             Destination,
+                                       SourceRouting                                                 Destination,
                                        NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out RequestStartTransactionRequest?      RequestStartTransactionRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse,
@@ -916,37 +1507,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// 
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(Boolean                                                                               IncludeJSONLDContext                             = false,
-                              CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?                      CustomRequestStartTransactionRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                   = null,
-                              CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                  = null,
-                              CustomJObjectSerializerDelegate<LimitAtSoC>?                                      CustomLimitAtSoCSerializer                   = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                 = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer           = null,
-                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                 = null,
-                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer               = null,
-                              CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                      = null,
-                              CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                 = null,
-                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer             = null,
-                              CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                  = null,
-                              CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                             = null,
+        public JObject ToJSON(Boolean                                                                                 IncludeJSONLDContext                             = false,
+                              CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?                        CustomRequestStartTransactionRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdToken>?                                               CustomIdTokenSerializer                          = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?                                        CustomAdditionalInfoSerializer                   = null,
+                              CustomJObjectSerializerDelegate<ChargingProfile>?                                       CustomChargingProfileSerializer                  = null,
+                              CustomJObjectSerializerDelegate<LimitAtSoC>?                                            CustomLimitAtSoCSerializer                       = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>?                                      CustomChargingScheduleSerializer                 = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                                CustomChargingSchedulePeriodSerializer           = null,
+                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                      CustomV2XFreqWattEntrySerializer                 = null,
+                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                    CustomV2XSignalWattEntrySerializer               = null,
+                              CustomJObjectSerializerDelegate<SalesTariff>?                                           CustomSalesTariffSerializer                      = null,
+                              CustomJObjectSerializerDelegate<SalesTariffEntry>?                                      CustomSalesTariffEntrySerializer                 = null,
+                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                  CustomRelativeTimeIntervalSerializer             = null,
+                              CustomJObjectSerializerDelegate<ConsumptionCost>?                                       CustomConsumptionCostSerializer                  = null,
+                              CustomJObjectSerializerDelegate<Cost>?                                                  CustomCostSerializer                             = null,
 
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer            = null,
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                   = null,
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                        = null,
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                          = null,
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                 = null,
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                     = null,
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalSelectedService>?        CustomAdditionalServiceSerializer                = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?      CustomAbsolutePriceScheduleSerializer            = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?             CustomPriceRuleStackSerializer                   = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                  CustomPriceRuleSerializer                        = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                    CustomTaxRuleSerializer                          = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?           CustomOverstayRuleListSerializer                 = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?               CustomOverstayRuleSerializer                     = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalSelectedService>?  CustomAdditionalServiceSerializer                = null,
 
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               = null,
-                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?         CustomPriceLevelScheduleSerializer               = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?    CustomPriceLevelScheduleEntrySerializer          = null,
 
-                              CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                = null,
+                              CustomJObjectSerializerDelegate<TransactionLimits>?                                     CustomTransactionLimitsSerializer                = null,
 
-                              CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       = null)
+                              CustomJObjectSerializerDelegate<Signature>?                                             CustomSignatureSerializer                        = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                                            CustomCustomDataSerializer                       = null)
         {
 
             var json = JSONObject.Create(

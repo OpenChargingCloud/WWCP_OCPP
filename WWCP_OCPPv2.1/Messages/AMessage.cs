@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The message identification.
         /// </summary>
         [Mandatory]
-        public Request_Id            RequestId              { get; set; }
+        public Request_Id            MessageId              { get; set; }
 
         /// <summary>
         /// The timestamp of the request message creation.
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         CustomData?              CustomData            = null,
 
-                        Request_Id?              RequestId             = null,
+                        Request_Id?              MessageId             = null,
                         DateTime?                MessageTimestamp      = null,
                         EventTracking_Id?        EventTrackingId       = null,
                         NetworkPath?             NetworkPath           = null,
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Destination          = Destination;
             this.Action               = Action;
 
-            this.RequestId            = RequestId           ?? Request_Id.NewRandom();
+            this.MessageId            = MessageId           ?? Request_Id.NewRandom();
             this.MessageTimestamp     = MessageTimestamp    ?? Timestamp.Now;
             this.EventTrackingId      = EventTrackingId     ?? EventTracking_Id.New;
             this.NetworkPath          = NetworkPath         ?? NetworkPath.Empty;
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 hashCode = this.Destination.     GetHashCode() * 13 ^
                            this.NetworkPath.     GetHashCode() * 11 ^
                            this.Action.          GetHashCode() *  7 ^
-                           this.RequestId.       GetHashCode() *  5 ^
+                           this.MessageId.       GetHashCode() *  5 ^
                            this.MessageTimestamp.GetHashCode() *  3 ^
                            this.EventTrackingId. GetHashCode();
 
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var json = JSONObject.Create(
-                           new JProperty("id",               RequestId.       ToString()),
+                           new JProperty("id",               MessageId.       ToString()),
                            new JProperty("timestamp",        MessageTimestamp.ToIso8601()),
                            new JProperty("eventTrackingId",  EventTrackingId. ToString()),
                          //  new JProperty("connection",       Connection?.     ToJSON()),
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => ADatagram is not null &&
 
                NetworkPath.     Equals(ADatagram.NetworkPath)      &&
-               RequestId.       Equals(ADatagram.RequestId)        &&
+               MessageId.       Equals(ADatagram.MessageId)        &&
                MessageTimestamp.Equals(ADatagram.MessageTimestamp) &&
                EventTrackingId. Equals(ADatagram.EventTrackingId)  &&
                Action.          Equals(ADatagram.Action)           &&
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Action}/{RequestId} '{DestinationId}' via [{NetworkPath}]";
+            => $"{Action}/{MessageId} '{DestinationId}' via [{NetworkPath}]";
 
         #endregion
 

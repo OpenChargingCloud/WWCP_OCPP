@@ -57,7 +57,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public JSONLDContext    Context
             => DefaultJSONLDContext;
 
-
+        /// <summary>
+        /// The requestId to be used in ReportDERControlRequest.
+        /// </summary>
+        [Mandatory]
         public Int32            GetDERControlRequestId    { get; }
 
         /// <summary>
@@ -75,8 +78,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public DERControlType?  ControlType               { get; }
 
         /// <summary>
-        /// The optional identification of Distributed Energy Resource (DER) control setting to clear.
-        /// When omitted all settings for _controlType_ are cleared.
+        /// The optional identification of the Distributed Energy Resource (DER) control setting to get.
+        /// When omitted all settings for _controlType_ are retrieved.
         /// </summary>
         [Optional]
         public DERControl_Id?   ControlId                 { get; }
@@ -89,9 +92,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new GetDERControl request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="GetDERControlRequestId">The requestId to be used in ReportDERControlRequest.</param>
         /// <param name="IsDefault">True: Get a default Distributed Energy Resource (DER) control; False: Get scheduled Distributed Energy Resource (DER) control.</param>
         /// <param name="ControlType">The optional type of all Distributed Energy Resource (DER) control settings to be cleared. Not used when _controlId_ is provided.</param>
-        /// <param name="ControlId">The optional identification of Distributed Energy Resource (DER) control setting to be cleared. When omitted all settings for _controlType_ are cleared.</param>
+        /// <param name="ControlId">The optional identification of the Distributed Energy Resource (DER) control setting to get. When omitted all settings for _controlType_ are retrieved.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>

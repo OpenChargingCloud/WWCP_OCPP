@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext    Context
+        public JSONLDContext       Context
             => DefaultJSONLDContext;
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// To indicate a free transaction, the central system SHALL send 0.00.
         /// </summary>
         [Optional]
-        public Decimal?         TotalCost                 { get; }
+        public Decimal?            TotalCost                 { get; }
 
         /// <summary>
         /// The optional charging priority from a business point of view.
@@ -78,21 +78,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Also the chargingPriority in TransactionEventResponse overrules the one in IdTokenInfoType.
         /// </summary>
         [Optional]
-        public Int16?           ChargingPriority          { get; }
+        public Int16?              ChargingPriority          { get; }
 
         /// <summary>
         /// The optional information about the authorization status, expiry and group id.
         /// This is required when the transactionEventRequest contained an identification token.
         /// </summary>
         [Optional]
-        public IdTokenInfo?     IdTokenInfo               { get; }
+        public IdTokenInfo?        IdTokenInfo               { get; }
+
+        /// <summary>
+        /// Optional cost, energy, time or SoC limits of the transaction.
+        /// </summary>
+        [Optional]
+        public TransactionLimits?  TransactionLimits         { get; }
 
         /// <summary>
         /// The optional personal message that should be shown to the EV driver.
         /// This can also be used to provide updated tariff information.
         /// </summary>
         [Optional]
-        public MessageContent?  UpdatedPersonalMessage    { get; }
+        public MessageContent?     UpdatedPersonalMessage    { get; }
 
         #endregion
 
@@ -105,6 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="TotalCost">The optional final total cost of the charging transaction, including taxes.</param>
         /// <param name="ChargingPriority">The optional charging priority from a business point of view.</param>
         /// <param name="IdTokenInfo">The optional information about the authorization status, expiry and group id.</param>
+        /// <param name="TransactionLimits">Optional cost, energy, time or SoC limits of the transaction.</param>
         /// <param name="UpdatedPersonalMessage">The optional personal message that should be shown to the EV driver.</param>
         /// 
         /// <param name="Result">The machine-readable result code.</param>
@@ -122,6 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         Decimal?                 TotalCost                = null,
                                         Int16?                   ChargingPriority         = null,
                                         IdTokenInfo?             IdTokenInfo              = null,
+                                        TransactionLimits?       TransactionLimits        = null,
                                         MessageContent?          UpdatedPersonalMessage   = null,
 
                                         Result?                  Result                   = null,
@@ -160,14 +168,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.TotalCost               = TotalCost;
             this.ChargingPriority        = ChargingPriority;
             this.IdTokenInfo             = IdTokenInfo;
+            this.TransactionLimits       = TransactionLimits;
             this.UpdatedPersonalMessage  = UpdatedPersonalMessage;
 
             unchecked
             {
 
-                hashCode = (this.TotalCost?.             GetHashCode() ?? 0) * 11 ^
-                           (this.ChargingPriority?.      GetHashCode() ?? 0) *  7 ^
-                           (this.IdTokenInfo?.           GetHashCode() ?? 0) *  5 ^
+                hashCode = (this.TotalCost?.             GetHashCode() ?? 0) * 13 ^
+                           (this.ChargingPriority?.      GetHashCode() ?? 0) * 11 ^
+                           (this.IdTokenInfo?.           GetHashCode() ?? 0) *  7 ^
+                           (this.TransactionLimits?.     GetHashCode() ?? 0) *  5 ^
                            (this.UpdatedPersonalMessage?.GetHashCode() ?? 0) *  3 ^
                             base.                        GetHashCode();
 
@@ -181,232 +191,261 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:TransactionEventResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:TransactionEventResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "AuthorizationStatusEnumType": {
+        //             "description": "Current status of the ID Token.",
+        //             "javaType": "AuthorizationStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Blocked",
+        //                 "ConcurrentTx",
+        //                 "Expired",
+        //                 "Invalid",
+        //                 "NoCredit",
+        //                 "NotAllowedTypeEVSE",
+        //                 "NotAtThisLocation",
+        //                 "NotAtThisTime",
+        //                 "Unknown"
+        //             ]
+        //         },
+        //         "MessageFormatEnumType": {
+        //             "description": "Format of the message.",
+        //             "javaType": "MessageFormatEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ASCII",
+        //                 "HTML",
+        //                 "URI",
+        //                 "UTF8",
+        //                 "QRCODE"
+        //             ]
+        //         },
+        //         "AdditionalInfoType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "AdditionalInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalIdToken": {
+        //                     "description": "*(2.1)* This field specifies the additional IdToken.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "additionalIdToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "IdTokenInfoType": {
+        //             "description": "Contains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.",
+        //             "javaType": "IdTokenInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "status": {
+        //                     "$ref": "#/definitions/AuthorizationStatusEnumType"
+        //                 },
+        //                 "cacheExpiryDateTime": {
+        //                     "description": "Date and Time after which the token must be considered invalid.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "chargingPriority": {
+        //                     "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. ",
+        //                     "type": "integer"
+        //                 },
+        //                 "groupIdToken": {
+        //                     "$ref": "#/definitions/IdTokenType"
+        //                 },
+        //                 "language1": {
+        //                     "description": "Preferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //                     "type": "string",
+        //                     "maxLength": 8
+        //                 },
+        //                 "language2": {
+        //                     "description": "Second preferred user interface language of identifier user. Don\u2019t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //                     "type": "string",
+        //                     "maxLength": 8
+        //                 },
+        //                 "evseId": {
+        //                     "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.",
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "type": "integer",
+        //                         "minimum": 0.0
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "personalMessage": {
+        //                     "$ref": "#/definitions/MessageContentType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "status"
+        //             ]
+        //         },
+        //         "IdTokenType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "IdToken",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalInfo": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/AdditionalInfoType"
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "idToken": {
+        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "idToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "MessageContentType": {
+        //             "description": "Contains message details, for a message to be displayed on a Charging Station.",
+        //             "javaType": "MessageContent",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "format": {
+        //                     "$ref": "#/definitions/MessageFormatEnumType"
+        //                 },
+        //                 "language": {
+        //                     "description": "Message language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //                     "type": "string",
+        //                     "maxLength": 8
+        //                 },
+        //                 "content": {
+        //                     "description": "*(2.1)* Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "format",
+        //                 "content"
+        //             ]
+        //         },
+        //         "TransactionLimitType": {
+        //             "description": "Cost, energy, time or SoC limit for a transaction.",
+        //             "javaType": "TransactionLimit",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "maxCost": {
+        //                     "description": "Maximum allowed cost of transaction in currency of tariff.",
+        //                     "type": "number"
+        //                 },
+        //                 "maxEnergy": {
+        //                     "description": "Maximum allowed energy in Wh to charge in transaction.",
+        //                     "type": "number"
+        //                 },
+        //                 "maxTime": {
+        //                     "description": "Maximum duration of transaction in seconds from start to end.",
+        //                     "type": "integer"
+        //                 },
+        //                 "maxSoC": {
+        //                     "description": "Maximum State of Charge of EV in percentage.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0,
+        //                     "maximum": 100.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "AuthorizationStatusEnumType": {
-        //       "description": "ID_ Token. Status. Authorization_ Status\r\nurn:x-oca:ocpp:uid:1:569372\r\nCurrent status of the ID Token.",
-        //       "javaType": "AuthorizationStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Blocked",
-        //         "ConcurrentTx",
-        //         "Expired",
-        //         "Invalid",
-        //         "NoCredit",
-        //         "NotAllowedTypeEVSE",
-        //         "NotAtThisLocation",
-        //         "NotAtThisTime",
-        //         "Unknown"
-        //       ]
-        //     },
-        //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.",
-        //       "javaType": "IdTokenEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Central",
-        //         "eMAID",
-        //         "ISO14443",
-        //         "ISO15693",
-        //         "KeyCode",
-        //         "Local",
-        //         "MacAddress",
-        //         "NoAuthorization"
-        //       ]
-        //     },
-        //     "MessageFormatEnumType": {
-        //       "description": "Message_ Content. Format. Message_ Format_ Code\r\nurn:x-enexis:ecdm:uid:1:570848\r\nFormat of the message.",
-        //       "javaType": "MessageFormatEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ASCII",
-        //         "HTML",
-        //         "URI",
-        //         "UTF8"
-        //       ]
-        //     },
-        //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "AdditionalInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
-        //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "additionalIdToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "IdTokenInfoType": {
-        //       "description": "ID_ Token\r\nurn:x-oca:ocpp:uid:2:233247\r\nContains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.",
-        //       "javaType": "IdTokenInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "status": {
-        //           "$ref": "#/definitions/AuthorizationStatusEnumType"
-        //         },
-        //         "cacheExpiryDateTime": {
-        //           "description": "ID_ Token. Expiry. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569373\r\nDate and Time after which the token must be considered invalid.",
-        //           "type": "string",
-        //           "format": "date-time"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "totalCost": {
+        //             "description": "When _eventType_ of TransactionEventRequest is Updated, then this value contains the running cost. When _eventType_ of TransactionEventRequest is Ended, then this contains the final total cost of this transaction, including taxes, in the currency configured with the Configuration Variable: Currency. Absence of this value does not imply that the transaction was free. To indicate a free transaction, the CSMS SHALL send a value of 0.00.",
+        //             "type": "number"
         //         },
         //         "chargingPriority": {
-        //           "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. ",
-        //           "type": "integer"
-        //         },
-        //         "language1": {
-        //           "description": "ID_ Token. Language1. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569374\r\nPreferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //           "type": "string",
-        //           "maxLength": 8
-        //         },
-        //         "evseId": {
-        //           "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.",
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
+        //             "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; is temporarily, so it may not be set in the &lt;&lt;cmn_idtokeninfotype,IdTokenInfoType&gt;&gt; afterwards. Also the chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; has a higher priority than the one in &lt;&lt;cmn_idtokeninfotype,IdTokenInfoType&gt;&gt;.  ",
         //             "type": "integer"
-        //           },
-        //           "minItems": 1
         //         },
-        //         "groupIdToken": {
-        //           "$ref": "#/definitions/IdTokenType"
+        //         "idTokenInfo": {
+        //             "$ref": "#/definitions/IdTokenInfoType"
         //         },
-        //         "language2": {
-        //           "description": "ID_ Token. Language2. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569375\r\nSecond preferred user interface language of identifier user. Don’t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //           "type": "string",
-        //           "maxLength": 8
+        //         "transactionLimit": {
+        //             "$ref": "#/definitions/TransactionLimitType"
         //         },
-        //         "personalMessage": {
-        //           "$ref": "#/definitions/MessageContentType"
-        //         }
-        //       },
-        //       "required": [
-        //         "status"
-        //       ]
-        //     },
-        //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "IdToken",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //         "updatedPersonalMessage": {
+        //             "$ref": "#/definitions/MessageContentType"
+        //         },
+        //         "updatedPersonalMessageExtra": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/MessageContentType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 4
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalInfo": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/AdditionalInfoType"
-        //           },
-        //           "minItems": 1
-        //         },
-        //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
-        //         "type": {
-        //           "$ref": "#/definitions/IdTokenEnumType"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "idToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "MessageContentType": {
-        //       "description": "Message_ Content\r\nurn:x-enexis:ecdm:uid:2:234490\r\nContains message details, for a message to be displayed on a Charging Station.",
-        //       "javaType": "MessageContent",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "format": {
-        //           "$ref": "#/definitions/MessageFormatEnumType"
-        //         },
-        //         "language": {
-        //           "description": "Message_ Content. Language. Language_ Code\r\nurn:x-enexis:ecdm:uid:1:570849\r\nMessage language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //           "type": "string",
-        //           "maxLength": 8
-        //         },
-        //         "content": {
-        //           "description": "Message_ Content. Content. Message\r\nurn:x-enexis:ecdm:uid:1:570852\r\nMessage contents.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "format",
-        //         "content"
-        //       ]
         //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "totalCost": {
-        //       "description": "SHALL only be sent when charging has ended. Final total cost of this transaction, including taxes. In the currency configured with the Configuration Variable: &lt;&lt;configkey-currency,`Currency`&gt;&gt;. When omitted, the transaction was NOT free. To indicate a free transaction, the CSMS SHALL send 0.00.",
-        //       "type": "number"
-        //     },
-        //     "chargingPriority": {
-        //       "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; is temporarily, so it may not be set in the &lt;&lt;cmn_idtokeninfotype,IdTokenInfoType&gt;&gt; afterwards. Also the chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules the one in &lt;&lt;cmn_idtokeninfotype,IdTokenInfoType&gt;&gt;.  ",
-        //       "type": "integer"
-        //     },
-        //     "idTokenInfo": {
-        //       "$ref": "#/definitions/IdTokenInfoType"
-        //     },
-        //     "updatedPersonalMessage": {
-        //       "$ref": "#/definitions/MessageContentType"
-        //     }
-        //   }
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomTransactionEventRequestParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a TransactionEvent response.
@@ -416,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom TransactionEvent responses.</param>
         public static TransactionEventResponse Parse(TransactionEventRequest                                 Request,
                                                      JObject                                                 JSON,
-                                                     SourceRouting                                       Destination,
+                                                     SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               ResponseTimestamp                      = null,
                                                      CustomJObjectParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null,
@@ -431,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (TryParse(Request,
                          JSON,
-                     Destination,
+                         Destination,
                          NetworkPath,
                          out var transactionEventResponse,
                          out var errorResponse,
@@ -454,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out TransactionEventResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out TransactionEventResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a TransactionEvent response.
@@ -465,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTransactionEventResponseParser">A delegate to parse custom TransactionEvent responses.</param>
         public static Boolean TryParse(TransactionEventRequest                                 Request,
                                        JObject                                                 JSON,
-                                       SourceRouting                                       Destination,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out TransactionEventResponse?      TransactionEventResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -524,6 +563,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region TransactionLimits         [optional]
+
+                if (JSON.ParseOptionalJSON("transactionLimit",
+                                           "transaction limits",
+                                           OCPPv2_1.TransactionLimits.TryParse,
+                                           out TransactionLimits? TransactionLimits,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region UpdatedPersonalMessage    [optional]
 
                 if (JSON.ParseOptionalJSON("updatedPersonalMessage",
@@ -573,11 +626,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                TotalCost,
                                                ChargingPriority,
                                                IdTokenInfo,
+                                               TransactionLimits,
                                                UpdatedPersonalMessage,
+
                                                null,
                                                ResponseTimestamp,
 
-                                           Destination,
+                                               Destination,
                                                NetworkPath,
 
                                                null,
@@ -616,6 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional infos.</param>
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
+        /// <param name="CustomTransactionLimitsSerializer">A delegate to serialize custom transaction limits.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(Boolean                                                     IncludeJSONLDContext                       = false,
@@ -624,6 +680,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<IdToken>?                   CustomIdTokenSerializer                    = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?            CustomAdditionalInfoSerializer             = null,
                               CustomJObjectSerializerDelegate<MessageContent>?            CustomMessageContentSerializer             = null,
+                              CustomJObjectSerializerDelegate<TransactionLimits>?         CustomTransactionLimitsSerializer          = null,
                               CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
@@ -652,6 +709,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            UpdatedPersonalMessage is not null
                                ? new JProperty("updatedPersonalMessage",   UpdatedPersonalMessage.ToJSON(CustomMessageContentSerializer,
+                                                                                                         CustomCustomDataSerializer))
+                               : null,
+
+                           TransactionLimits is not null
+                               ? new JProperty("transactionLimit",         TransactionLimits.     ToJSON(CustomTransactionLimitsSerializer,
                                                                                                          CustomCustomDataSerializer))
                                : null,
 
@@ -704,7 +766,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    null,
                    null,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   null,
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -732,7 +795,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   String                   ErrorDescription)
 
             => new (Request,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -746,7 +809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                               String                   ErrorDescription)
 
             => new (Request,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -760,7 +823,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                       String?                  Description   = null)
 
             => new (Request,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -772,7 +835,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 Exception                Exception)
 
             => new (Request,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -856,6 +919,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
              ((IdTokenInfo            is     null &&  TransactionEventResponse.IdTokenInfo            is     null) ||
                IdTokenInfo            is not null &&  TransactionEventResponse.IdTokenInfo            is not null && IdTokenInfo.           Equals(TransactionEventResponse.IdTokenInfo))            &&
 
+             ((TransactionLimits      is     null &&  TransactionEventResponse.TransactionLimits      is     null) ||
+               TransactionLimits      is not null &&  TransactionEventResponse.TransactionLimits      is not null && TransactionLimits.     Equals(TransactionEventResponse.TransactionLimits))      &&
+
              ((UpdatedPersonalMessage is     null &&  TransactionEventResponse.UpdatedPersonalMessage is     null) ||
                UpdatedPersonalMessage is not null &&  TransactionEventResponse.UpdatedPersonalMessage is not null && UpdatedPersonalMessage.Equals(TransactionEventResponse.UpdatedPersonalMessage)) &&
 
@@ -896,6 +962,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    IdTokenInfo is not null
                        ? "Id token info: "            + IdTokenInfo
+                       : null,
+
+                   TransactionLimits is not null
+                       ? "limits: "                   + TransactionLimits
                        : null,
 
                    UpdatedPersonalMessage is not null

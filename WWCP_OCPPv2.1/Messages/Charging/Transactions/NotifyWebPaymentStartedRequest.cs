@@ -140,14 +140,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:NotifyWebPaymentStartedRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be
+        //                             extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evseId": {
+        //             "description": "EVSE id for which transaction is requested.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "timeout": {
+        //             "description": "Timeout value in seconds after which no result of web payment process (e.g. QR code scanning) is to be expected anymore.",
+        //             "type": "integer"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "evseId",
+        //         "timeout"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyWebPaymentStartedRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyWebPaymentStarted request.
@@ -164,9 +204,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                            Request_Id                                                    RequestId,
                                                            SourceRouting                                                 Destination,
                                                            NetworkPath                                                   NetworkPath,
-                                                           DateTime?                                                     RequestTimestamp                   = null,
-                                                           TimeSpan?                                                     RequestTimeout                     = null,
-                                                           EventTracking_Id?                                             EventTrackingId                    = null,
+                                                           DateTime?                                                     RequestTimestamp                             = null,
+                                                           TimeSpan?                                                     RequestTimeout                               = null,
+                                                           EventTracking_Id?                                             EventTrackingId                              = null,
                                                            CustomJObjectParserDelegate<NotifyWebPaymentStartedRequest>?  CustomNotifyWebPaymentStartedRequestParser   = null)
         {
 
@@ -191,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyWebPaymentStartedRequest, out ErrorResponse, CustomNotifyWebPaymentStartedRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyWebPaymentStartedRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyWebPaymentStarted request.

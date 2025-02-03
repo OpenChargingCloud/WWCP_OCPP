@@ -141,14 +141,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:NotifyPriorityChargingRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "transactionId": {
+        //             "description": "The transaction for which priority charging is requested.",
+        //             "type": "string",
+        //             "maxLength": 36
+        //         },
+        //         "activated": {
+        //             "description": "True if priority charging was activated. False if it has stopped using the priority charging profile.",
+        //             "type": "boolean"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "transactionId",
+        //         "activated"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyPriorityChargingRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyPriorityCharging request.
@@ -163,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom NotifyPriorityCharging requests.</param>
         public static NotifyPriorityChargingRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          SourceRouting                                            Destination,
+                                                          SourceRouting                                                Destination,
                                                           NetworkPath                                                  NetworkPath,
                                                           DateTime?                                                    RequestTimestamp                            = null,
                                                           TimeSpan?                                                    RequestTimeout                              = null,
@@ -192,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyPriorityCharging request.
@@ -209,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom NotifyPriorityCharging requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       SourceRouting                                            Destination,
+                                       SourceRouting                                                Destination,
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out NotifyPriorityChargingRequest?      NotifyPriorityChargingRequest,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,

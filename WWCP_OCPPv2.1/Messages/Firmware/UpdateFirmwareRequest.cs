@@ -171,96 +171,97 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:UpdateFirmwareRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:UpdateFirmwareRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "FirmwareType": {
+        //             "description": "Represents a copy of the firmware that can be loaded/updated on the Charging Station.",
+        //             "javaType": "Firmware",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "location": {
+        //                     "description": "URI defining the origin of the firmware.",
+        //                     "type": "string",
+        //                     "maxLength": 2000
+        //                 },
+        //                 "retrieveDateTime": {
+        //                     "description": "Date and time at which the firmware shall be retrieved.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "installDateTime": {
+        //                     "description": "Date and time at which the firmware shall be installed.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "signingCertificate": {
+        //                     "description": "Certificate with which the firmware was signed.\r\nPEM encoded X.509 certificate.",
+        //                     "type": "string",
+        //                     "maxLength": 5500
+        //                 },
+        //                 "signature": {
+        //                     "description": "Base64 encoded firmware signature.",
+        //                     "type": "string",
+        //                     "maxLength": 800
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "location",
+        //                 "retrieveDateTime"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "FirmwareType": {
-        //       "description": "Firmware\r\nurn:x-enexis:ecdm:uid:2:233291\r\nRepresents a copy of the firmware that can be loaded/updated on the Charging Station.",
-        //       "javaType": "Firmware",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "retries": {
+        //             "description": "This specifies how many times Charging Station must retry to download the firmware before giving up. If this field is not present, it is left to Charging Station to decide how many times it wants to retry.\r\nIf the value is 0, it means: no retries.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "retryInterval": {
+        //             "description": "The interval in seconds after which a retry may be attempted. If this field is not present, it is left to Charging Station to decide how long to wait between attempts.",
+        //             "type": "integer"
+        //         },
+        //         "requestId": {
+        //             "description": "The Id of this request",
+        //             "type": "integer"
+        //         },
+        //         "firmware": {
+        //             "$ref": "#/definitions/FirmwareType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "location": {
-        //           "description": "Firmware. Location. URI\r\nurn:x-enexis:ecdm:uid:1:569460\r\nURI defining the origin of the firmware.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         },
-        //         "retrieveDateTime": {
-        //           "description": "Firmware. Retrieve. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569461\r\nDate and time at which the firmware shall be retrieved.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "installDateTime": {
-        //           "description": "Firmware. Install. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569462\r\nDate and time at which the firmware shall be installed.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "signingCertificate": {
-        //           "description": "Certificate with which the firmware was signed.\r\nPEM encoded X.509 certificate.",
-        //           "type": "string",
-        //           "maxLength": 5500
-        //         },
-        //         "signature": {
-        //           "description": "Firmware. Signature. Signature\r\nurn:x-enexis:ecdm:uid:1:569464\r\nBase64 encoded firmware signature.",
-        //           "type": "string",
-        //           "maxLength": 800
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "location",
-        //         "retrieveDateTime"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "retries": {
-        //       "description": "This specifies how many times Charging Station must try to download the firmware before giving up. If this field is not present, it is left to Charging Station to decide how many times it wants to retry.",
-        //       "type": "integer"
-        //     },
-        //     "retryInterval": {
-        //       "description": "The interval in seconds after which a retry may be attempted. If this field is not present, it is left to Charging Station to decide how long to wait between attempts.",
-        //       "type": "integer"
-        //     },
-        //     "requestId": {
-        //       "description": "The Id of this request",
-        //       "type": "integer"
-        //     },
-        //     "firmware": {
-        //       "$ref": "#/definitions/FirmwareType"
-        //     }
-        //   },
-        //   "required": [
-        //     "requestId",
-        //     "firmware"
-        //   ]
+        //     "required": [
+        //         "requestId",
+        //         "firmware"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUpdateFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an update firmware request.
@@ -304,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UpdateFirmwareRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an update firmware request.

@@ -1786,7 +1786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                 TriggerReason:           TriggerReason.Authorized,
                                                 SequenceNumber:          0,
                                                 TransactionInfo:         new Transaction(
-                                                                             TransactionId:       Transaction_Id.NewRandom,
+                                                                             Id:       Transaction_Id.NewRandom,
                                                                              ChargingState:       ChargingStates.Charging,
                                                                              TimeSpentCharging:   TimeSpan.FromSeconds(3),
                                                                              StoppedReason:       null,
@@ -2222,10 +2222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       ChargingSchedulePeriods:   [
                                                                                                      new ChargingSchedulePeriod(
                                                                                                          StartPeriod:      TimeSpan.Zero,
-                                                                                                         Limit:            ChargingRateValue.Parse(
-                                                                                                                               20,
-                                                                                                                               ChargingRateUnits.Watts
-                                                                                                                           ),
+                                                                                                         Limit:            ChargingRateValue.ParseWatts(20),
                                                                                                          NumberOfPhases:   3,
                                                                                                          PhaseToUse:       PhasesToUse.Three,
                                                                                                          CustomData:       null
@@ -2233,7 +2230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                  ],
                                                                       StartSchedule:             Timestamp.Now,
                                                                       Duration:                  TimeSpan.FromMinutes(30),
-                                                                      MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
+                                                                      MinChargingRate:           ChargingRateValue.ParseWatts(6),
                                                                       SalesTariff:               new SalesTariff(
                                                                                                      Id:                   SalesTariff_Id.NewRandom,
                                                                                                      SalesTariffEntries:   [
@@ -2422,7 +2419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                          EVSEId:                            EVSE_Id.Parse("1"),
                                          ChargingProfiles:                  [
                                                                                 new ChargingProfile(
-                                                                                    ChargingProfileId:        ChargingProfile_Id.NewRandom,
+                                                                                    Id:        ChargingProfile_Id.NewRandom,
                                                                                     StackLevel:               1,
                                                                                     ChargingProfilePurpose:   ChargingProfilePurpose.TxDefaultProfile,
                                                                                     ChargingProfileKind:      ChargingProfileKinds.   Absolute,
@@ -2433,10 +2430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                                       ChargingSchedulePeriods:   [
                                                                                                                                                      new ChargingSchedulePeriod(
                                                                                                                                                          StartPeriod:      TimeSpan.Zero,
-                                                                                                                                                         Limit:            ChargingRateValue.Parse(
-                                                                                                                                                                               20,
-                                                                                                                                                                               ChargingRateUnits.Watts
-                                                                                                                                                                           ),
+                                                                                                                                                         Limit:            ChargingRateValue.ParseWatts(20),
                                                                                                                                                          NumberOfPhases:   3,
                                                                                                                                                          PhaseToUse:       PhasesToUse.Three,
                                                                                                                                                          CustomData:       null
@@ -2444,7 +2438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                                                                  ],
                                                                                                                       StartSchedule:             Timestamp.Now,
                                                                                                                       Duration:                  TimeSpan.FromMinutes(30),
-                                                                                                                      MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
+                                                                                                                      MinChargingRate:           ChargingRateValue.ParseWatts(6),
                                                                                                                       SalesTariff:               new SalesTariff(
                                                                                                                                                      Id:                   SalesTariff_Id.NewRandom,
                                                                                                                                                      SalesTariffEntries:   [
@@ -2565,10 +2559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                   ChargingSchedulePeriods:   [
                                                                                                                  new ChargingSchedulePeriod(
                                                                                                                      StartPeriod:      TimeSpan.Zero,
-                                                                                                                     Limit:            ChargingRateValue.Parse(
-                                                                                                                                           20,
-                                                                                                                                           ChargingRateUnits.Watts
-                                                                                                                                       ),
+                                                                                                                     Limit:            ChargingRateValue.ParseWatts(20),
                                                                                                                      NumberOfPhases:   3,
                                                                                                                      PhaseToUse:       PhasesToUse.Three,
                                                                                                                      CustomData:       null
@@ -2576,7 +2567,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                              ],
                                                                                   StartSchedule:             Timestamp.Now,
                                                                                   Duration:                  TimeSpan.FromMinutes(30),
-                                                                                  MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
+                                                                                  MinChargingRate:           ChargingRateValue.ParseWatts(6),
                                                                                   SalesTariff:               new SalesTariff(
                                                                                                                  Id:                   SalesTariff_Id.NewRandom,
                                                                                                                  SalesTariffEntries:   [
@@ -2773,7 +2764,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                          StatusInfo:            "status...infoo!",
                                          ReceiptId:             ReceiptId.Parse("rid123"),
                                          ReceiptURL:            URL.Parse("https://example.org/payments/123"),
-                                         InvoiceNumber:         InvoiceNumber.Parse("inum123"),
+                                         VATCompany:            new Contact(
+                                                                    Name:         "GraphDefined GmbH",
+                                                                    Address1:     "Biberweg 18",
+                                                                    City:         "Jena",
+                                                                    Country:      "Germany",
+                                                                    Address2:     "",
+                                                                    PostalCode:   "07749",
+                                                                    CustomData:   null
+                                                                ),
+                                         VATNumber:             "inum123",
 
                                          CustomData:            null
 
@@ -2854,22 +2854,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                      );
 
 
+                Assert.That(response.ChargingScheduleUpdate,  Is.Not.Null);
+
                 //ToDo: Find a way to set the correct data type of the ChargingRateUnits!
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 1, ChargingRateUnits.Unknown),   response.Limit);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 2, ChargingRateUnits.Unknown),   response.Limit_L2);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 3, ChargingRateUnits.Unknown),   response.Limit_L3);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse( 1),   response.ChargingScheduleUpdate.Limit);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse( 2),   response.ChargingScheduleUpdate.Limit_L2);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse( 3),   response.ChargingScheduleUpdate.Limit_L3);
 
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(-4, ChargingRateUnits.Unknown),   response.DischargeLimit);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(-5, ChargingRateUnits.Unknown),   response.DischargeLimit_L2);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(-6, ChargingRateUnits.Unknown),   response.DischargeLimit_L3);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse(-4),   response.ChargingScheduleUpdate.DischargeLimit);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse(-5),   response.ChargingScheduleUpdate.DischargeLimit_L2);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse(-6),   response.ChargingScheduleUpdate.DischargeLimit_L3);
 
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 7, ChargingRateUnits.Unknown),   response.Setpoint);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 8, ChargingRateUnits.Unknown),   response.Setpoint_L2);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 9, ChargingRateUnits.Unknown),   response.Setpoint_L3);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse( 7),   response.ChargingScheduleUpdate.Setpoint);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse( 8),   response.ChargingScheduleUpdate.Setpoint_L2);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse( 9),   response.ChargingScheduleUpdate.Setpoint_L3);
 
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(10, ChargingRateUnits.Unknown),   response.SetpointReactive);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(11, ChargingRateUnits.Unknown),   response.SetpointReactive_L2);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(12, ChargingRateUnits.Unknown),   response.SetpointReactive_L3);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse(10),   response.ChargingScheduleUpdate.SetpointReactive);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse(11),   response.ChargingScheduleUpdate.SetpointReactive_L2);
+                ClassicAssert.AreEqual(ChargingRateValue.Parse(12),   response.ChargingScheduleUpdate.SetpointReactive_L3);
 
 
                 ClassicAssert.AreEqual(1,                                                        pullDynamicScheduleUpdateRequests.Count);

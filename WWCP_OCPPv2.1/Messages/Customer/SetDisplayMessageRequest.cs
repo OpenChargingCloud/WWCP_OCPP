@@ -133,202 +133,217 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SetDisplayMessageRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:SetDisplayMessageRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "MessageFormatEnumType": {
+        //             "description": "Format of the message.",
+        //             "javaType": "MessageFormatEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ASCII",
+        //                 "HTML",
+        //                 "URI",
+        //                 "UTF8",
+        //                 "QRCODE"
+        //             ]
+        //         },
+        //         "MessagePriorityEnumType": {
+        //             "description": "With what priority should this message be shown",
+        //             "javaType": "MessagePriorityEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "AlwaysFront",
+        //                 "InFront",
+        //                 "NormalCycle"
+        //             ]
+        //         },
+        //         "MessageStateEnumType": {
+        //             "description": "During what state should this message be shown. When omitted this message should be shown in any state of the Charging Station.",
+        //             "javaType": "MessageStateEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Charging",
+        //                 "Faulted",
+        //                 "Idle",
+        //                 "Unavailable",
+        //                 "Suspended",
+        //                 "Discharging"
+        //             ]
+        //         },
+        //         "ComponentType": {
+        //             "description": "A physical or logical component",
+        //             "javaType": "Component",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "evse": {
+        //                     "$ref": "#/definitions/EVSEType"
+        //                 },
+        //                 "name": {
+        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "EVSEType": {
+        //             "description": "Electric Vehicle Supply Equipment",
+        //             "javaType": "EVSE",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "connectorId": {
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id"
+        //             ]
+        //         },
+        //         "MessageContentType": {
+        //             "description": "Contains message details, for a message to be displayed on a Charging Station.",
+        //             "javaType": "MessageContent",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "format": {
+        //                     "$ref": "#/definitions/MessageFormatEnumType"
+        //                 },
+        //                 "language": {
+        //                     "description": "Message language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //                     "type": "string",
+        //                     "maxLength": 8
+        //                 },
+        //                 "content": {
+        //                     "description": "*(2.1)* Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "format",
+        //                 "content"
+        //             ]
+        //         },
+        //         "MessageInfoType": {
+        //             "description": "Contains message details, for a message to be displayed on a Charging Station.",
+        //             "javaType": "MessageInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "display": {
+        //                     "$ref": "#/definitions/ComponentType"
+        //                 },
+        //                 "id": {
+        //                     "description": "Unique id within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "priority": {
+        //                     "$ref": "#/definitions/MessagePriorityEnumType"
+        //                 },
+        //                 "state": {
+        //                     "$ref": "#/definitions/MessageStateEnumType"
+        //                 },
+        //                 "startDateTime": {
+        //                     "description": "From what date-time should this message be shown. If omitted: directly.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "endDateTime": {
+        //                     "description": "Until what date-time should this message be shown, after this date/time this message SHALL be removed.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "transactionId": {
+        //                     "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.",
+        //                     "type": "string",
+        //                     "maxLength": 36
+        //                 },
+        //                 "message": {
+        //                     "$ref": "#/definitions/MessageContentType"
+        //                 },
+        //                 "messageExtra": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/MessageContentType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 4
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id",
+        //                 "priority",
+        //                 "message"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "MessageFormatEnumType": {
-        //       "description": "Message_ Content. Format. Message_ Format_ Code\r\nurn:x-enexis:ecdm:uid:1:570848\r\nFormat of the message.",
-        //       "javaType": "MessageFormatEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ASCII",
-        //         "HTML",
-        //         "URI",
-        //         "UTF8"
-        //       ]
-        //     },
-        //     "MessagePriorityEnumType": {
-        //       "description": "Message_ Info. Priority. Message_ Priority_ Code\r\nurn:x-enexis:ecdm:uid:1:569253\r\nWith what priority should this message be shown",
-        //       "javaType": "MessagePriorityEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "AlwaysFront",
-        //         "InFront",
-        //         "NormalCycle"
-        //       ]
-        //     },
-        //     "MessageStateEnumType": {
-        //       "description": "Message_ Info. State. Message_ State_ Code\r\nurn:x-enexis:ecdm:uid:1:569254\r\nDuring what state should this message be shown. When omitted this message should be shown in any state of the Charging Station.",
-        //       "javaType": "MessageStateEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Charging",
-        //         "Faulted",
-        //         "Idle",
-        //         "Unavailable"
-        //       ]
-        //     },
-        //     "ComponentType": {
-        //       "description": "A physical or logical component",
-        //       "javaType": "Component",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "evse": {
-        //           "$ref": "#/definitions/EVSEType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
-        //     },
-        //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
-        //       "javaType": "EVSE",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
-        //           "type": "integer"
-        //         },
-        //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "id"
-        //       ]
-        //     },
-        //     "MessageContentType": {
-        //       "description": "Message_ Content\r\nurn:x-enexis:ecdm:uid:2:234490\r\nContains message details, for a message to be displayed on a Charging Station.",
-        //       "javaType": "MessageContent",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "format": {
-        //           "$ref": "#/definitions/MessageFormatEnumType"
-        //         },
-        //         "language": {
-        //           "description": "Message_ Content. Language. Language_ Code\r\nurn:x-enexis:ecdm:uid:1:570849\r\nMessage language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //           "type": "string",
-        //           "maxLength": 8
-        //         },
-        //         "content": {
-        //           "description": "Message_ Content. Content. Message\r\nurn:x-enexis:ecdm:uid:1:570852\r\nMessage contents.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "format",
-        //         "content"
-        //       ]
-        //     },
-        //     "MessageInfoType": {
-        //       "description": "Message_ Info\r\nurn:x-enexis:ecdm:uid:2:233264\r\nContains message details, for a message to be displayed on a Charging Station.",
-        //       "javaType": "MessageInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "display": {
-        //           "$ref": "#/definitions/ComponentType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nMaster resource identifier, unique within an exchange context. It is defined within the OCPP context as a positive Integer value (greater or equal to zero).",
-        //           "type": "integer"
-        //         },
-        //         "priority": {
-        //           "$ref": "#/definitions/MessagePriorityEnumType"
-        //         },
-        //         "state": {
-        //           "$ref": "#/definitions/MessageStateEnumType"
-        //         },
-        //         "startDateTime": {
-        //           "description": "Message_ Info. Start. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569256\r\nFrom what date-time should this message be shown. If omitted: directly.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "endDateTime": {
-        //           "description": "Message_ Info. End. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569257\r\nUntil what date-time should this message be shown, after this date/time this message SHALL be removed.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "transactionId": {
-        //           "description": "During which transaction shall this message be shown.\r\nMessage SHALL be removed by the Charging Station after transaction has\r\nended.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
         //         "message": {
-        //           "$ref": "#/definitions/MessageContentType"
+        //             "$ref": "#/definitions/MessageInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "id",
-        //         "priority",
-        //         "message"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "message": {
-        //       "$ref": "#/definitions/MessageInfoType"
-        //     }
-        //   },
-        //   "required": [
-        //     "message"
-        //   ]
+        //     "required": [
+        //         "message"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSetDisplayMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SetDisplayMessage request.
@@ -343,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom SetDisplayMessage requests.</param>
         public static SetDisplayMessageRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     SourceRouting                                       Destination,
+                                                     SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               RequestTimestamp                       = null,
                                                      TimeSpan?                                               RequestTimeout                         = null,
@@ -372,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetDisplayMessageRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SetDisplayMessageRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetDisplayMessage request.
@@ -389,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom SetDisplayMessage requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       SourceRouting                                       Destination,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out SetDisplayMessageRequest?      SetDisplayMessageRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -410,8 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              "display message",
                                              MessageInfo.TryParse,
                                              out MessageInfo? Message,
-                                             out ErrorResponse) ||
-                     Message is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }

@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this trigger reason is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                     IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this trigger reason is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                     IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the trigger reason.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                      Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered trigger reasons.
+        /// </summary>
+        public static    IEnumerable<TriggerReason>  All
+            => lookup.Values;
 
         #endregion
 
@@ -195,79 +201,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An abnormal error or fault condition has occurred.
         /// </summary>
-        public static TriggerReason AbnormalCondition       { get; }
+        public static TriggerReason  AbnormalCondition       { get; }
             = Register("AbnormalCondition");
 
         /// <summary>
         /// Charging is authorized, by any means. Might be an RFID, or other authorization means
         /// </summary>
-        public static TriggerReason Authorized              { get; }
+        public static TriggerReason  Authorized              { get; }
             = Register("Authorized");
 
         /// <summary>
         /// Cable is plugged in and an EV is detected.
         /// </summary>
-        public static TriggerReason CablePluggedIn          { get; }
+        public static TriggerReason  CablePluggedIn          { get; }
             = Register("CablePluggedIn");
 
         /// <summary>
         /// Rate of charging changed by more than LimitChangeSignificance.
         /// </summary>
-        public static TriggerReason ChargingRateChanged     { get; }
+        public static TriggerReason  ChargingRateChanged     { get; }
             = Register("ChargingRateChanged");
 
         /// <summary>
         /// Charging State changed.
         /// </summary>
-        public static TriggerReason ChargingStateChanged    { get; }
+        public static TriggerReason  ChargingStateChanged    { get; }
             = Register("ChargingStateChanged");
 
         /// <summary>
         /// The transaction was stopped because of the authorization status in the response to a transactionEventRequest.
         /// </summary>
-        public static TriggerReason Deauthorized            { get; }
+        public static TriggerReason  Deauthorized            { get; }
             = Register("Deauthorized");
 
         /// <summary>
         /// Maximum energy of charging reached. For example: in a pre-paid charging solution.
         /// </summary>
-        public static TriggerReason EnergyLimitReached      { get; }
+        public static TriggerReason  EnergyLimitReached      { get; }
             = Register("EnergyLimitReached");
 
         /// <summary>
         /// Communication with EV lost, for example: cable disconnected.
         /// </summary>
-        public static TriggerReason EVCommunicationLost     { get; }
+        public static TriggerReason  EVCommunicationLost     { get; }
             = Register("EVCommunicationLost");
 
         /// <summary>
         /// EV not connected before the connection is timed out.
         /// </summary>
-        public static TriggerReason EVConnectTimeout        { get; }
+        public static TriggerReason  EVConnectTimeout        { get; }
             = Register("EVConnectTimeout");
 
         /// <summary>
         /// EV departed. For example: When a departing EV triggers a parking bay detector.
         /// </summary>
-        public static TriggerReason EVDeparted              { get; }
+        public static TriggerReason  EVDeparted              { get; }
             = Register("EVDeparted");
 
         /// <summary>
         /// EV detected. For example: When an arriving EV triggers a parking bay detector.
         /// </summary>
-        public static TriggerReason EVDetected              { get; }
+        public static TriggerReason  EVDetected              { get; }
             = Register("EVDetected");
 
         /// <summary>
         /// Needed to send a clock aligned meter value.
         /// </summary>
-        public static TriggerReason MeterValueClock         { get; }
+        public static TriggerReason  MeterValueClock         { get; }
             = Register("MeterValueClock");
 
         /// <summary>
         /// Needed to send a periodic meter value.
         /// </summary>
-        public static TriggerReason MeterValuePeriodic      { get; }
+        public static TriggerReason  MeterValuePeriodic      { get; }
             = Register("MeterValuePeriodic");
 
         /// <summary>
@@ -279,61 +285,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// A RequestStartTransactionRequest has been sent.
         /// </summary>
-        public static TriggerReason RemoteStart             { get; }
+        public static TriggerReason  RemoteStart             { get; }
             = Register("RemoteStart");
 
         /// <summary>
         /// CSMS sent a Reset Charging Station command.
         /// </summary>
-        public static TriggerReason ResetCommand            { get; }
+        public static TriggerReason  ResetCommand            { get; }
             = Register("ResetCommand");
 
         /// <summary>
         /// Signed data is received from the energy meter.
         /// </summary>
-        public static TriggerReason SignedDataReceived      { get; }
+        public static TriggerReason  SignedDataReceived      { get; }
             = Register("SignedDataReceived");
 
         /// <summary>
         /// An EV Driver has been authorized to stop charging. For example: By swiping an RFID card.
         /// </summary>
-        public static TriggerReason StopAuthorized          { get; }
+        public static TriggerReason  StopAuthorized          { get; }
             = Register("StopAuthorized");
 
         /// <summary>
         /// Maximum time of charging reached. For example: in a pre-paid charging solution.
         /// </summary>
-        public static TriggerReason TimeLimitReached        { get; }
+        public static TriggerReason  TimeLimitReached        { get; }
             = Register("TimeLimitReached");
 
         /// <summary>
         /// Requested by the CSMS via a TriggerMessageRequest.
         /// </summary>
-        public static TriggerReason Trigger                 { get; }
+        public static TriggerReason  Trigger                 { get; }
             = Register("Trigger");
 
         /// <summary>
         /// CSMS sent an Unlock Connector command.
         /// </summary>
-        public static TriggerReason UnlockCommand           { get; }
+        public static TriggerReason  UnlockCommand           { get; }
             = Register("UnlockCommand");
 
         /// <summary>
         /// The (V2X) operation mode in charging schedule period has changed.
         /// </summary>
-        public static TriggerReason OperationModeChanged    { get; }
+        public static TriggerReason  OperationModeChanged    { get; }
             = Register("OperationModeChanged");
 
         /// <summary>
         /// The charging tariff for the transaction changed.
         /// </summary>
-        public static TriggerReason TariffChanged           { get; }
+        public static TriggerReason  TariffChanged           { get; }
             = Register("TariffChanged");
 
         /// <summary>
         /// Trigger used when TranactionEvent is sent (only) to report a running cost update.
         /// </summary>
-        public static TriggerReason RunningCost             { get; }
+        public static TriggerReason  RunningCost             { get; }
             = Register("RunningCost");
 
         #endregion

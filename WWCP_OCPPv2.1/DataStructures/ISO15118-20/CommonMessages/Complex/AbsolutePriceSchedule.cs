@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Description                    [optional]
 
-                var Description = JSON["priceScheduleDescription"]?.Value<String>();
+                var Description = JSON.GetString("priceScheduleDescription");
 
                 #endregion
 

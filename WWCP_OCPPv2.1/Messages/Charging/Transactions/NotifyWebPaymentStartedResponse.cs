@@ -117,14 +117,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:NotifyWebPaymentStartedResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     }
+        // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomNotifyWebPaymentStartedResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a NotifyWebPaymentStarted response.
@@ -136,11 +162,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                             JObject                                                        JSON,
                                                             SourceRouting                                                  Destination,
                                                             NetworkPath                                                    NetworkPath,
-                                                            DateTime?                                                      ResponseTimestamp                   = null,
+                                                            DateTime?                                                      ResponseTimestamp                             = null,
                                                             CustomJObjectParserDelegate<NotifyWebPaymentStartedResponse>?  CustomNotifyWebPaymentStartedResponseParser   = null,
-                                                            CustomJObjectParserDelegate<ResetResponse>?                    CustomResetResponseParser           = null,
-                                                            CustomJObjectParserDelegate<Signature>?                        CustomSignatureParser               = null,
-                                                            CustomJObjectParserDelegate<CustomData>?                       CustomCustomDataParser              = null)
+                                                            CustomJObjectParserDelegate<ResetResponse>?                    CustomResetResponseParser                     = null,
+                                                            CustomJObjectParserDelegate<Signature>?                        CustomSignatureParser                         = null,
+                                                            CustomJObjectParserDelegate<CustomData>?                       CustomCustomDataParser                        = null)
         {
 
             if (TryParse(Request,
@@ -164,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out NotifyWebPaymentStartedResponse, out ErrorResponse, CustomNotifyWebPaymentStartedResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out NotifyWebPaymentStartedResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a NotifyWebPaymentStarted response.
@@ -180,10 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                    NetworkPath,
                                        [NotNullWhen(true)]  out NotifyWebPaymentStartedResponse?      NotifyWebPaymentStartedResponse,
                                        [NotNullWhen(false)] out String?                               ErrorResponse,
-                                       DateTime?                                                      ResponseTimestamp                   = null,
+                                       DateTime?                                                      ResponseTimestamp                             = null,
                                        CustomJObjectParserDelegate<NotifyWebPaymentStartedResponse>?  CustomNotifyWebPaymentStartedResponseParser   = null,
-                                       CustomJObjectParserDelegate<Signature>?                        CustomSignatureParser               = null,
-                                       CustomJObjectParserDelegate<CustomData>?                       CustomCustomDataParser              = null)
+                                       CustomJObjectParserDelegate<Signature>?                        CustomSignatureParser                         = null,
+                                       CustomJObjectParserDelegate<CustomData>?                       CustomCustomDataParser                        = null)
         {
 
             try
@@ -302,26 +328,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The NotifyWebPaymentStarted failed because of a request error.
         /// </summary>
         /// <param name="Request">The NotifyWebPaymentStarted request.</param>
-        public static NotifyWebPaymentStartedResponse RequestError(NotifyWebPaymentStartedRequest     Request,
-                                                         EventTracking_Id         EventTrackingId,
-                                                         ResultCode               ErrorCode,
-                                                         String?                  ErrorDescription    = null,
-                                                         JObject?                 ErrorDetails        = null,
-                                                         DateTime?                ResponseTimestamp   = null,
+        public static NotifyWebPaymentStartedResponse RequestError(NotifyWebPaymentStartedRequest  Request,
+                                                                   EventTracking_Id                EventTrackingId,
+                                                                   ResultCode                      ErrorCode,
+                                                                   String?                         ErrorDescription    = null,
+                                                                   JObject?                        ErrorDetails        = null,
+                                                                   DateTime?                       ResponseTimestamp   = null,
 
-                                                         SourceRouting?           Destination         = null,
-                                                         NetworkPath?             NetworkPath         = null,
+                                                                   SourceRouting?                  Destination         = null,
+                                                                   NetworkPath?                    NetworkPath         = null,
 
-                                                         IEnumerable<KeyPair>?    SignKeys            = null,
-                                                         IEnumerable<SignInfo>?   SignInfos           = null,
-                                                         IEnumerable<Signature>?  Signatures          = null,
+                                                                   IEnumerable<KeyPair>?           SignKeys            = null,
+                                                                   IEnumerable<SignInfo>?          SignInfos           = null,
+                                                                   IEnumerable<Signature>?         Signatures          = null,
 
-                                                         CustomData?              CustomData          = null)
+                                                                   CustomData?                     CustomData          = null)
 
             => new (
 
                    Request,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -346,10 +372,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The NotifyWebPaymentStarted request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static NotifyWebPaymentStartedResponse FormationViolation(NotifyWebPaymentStartedRequest  Request,
-                                                               String                ErrorDescription)
+                                                                         String                          ErrorDescription)
 
             => new (Request,
-                   OCPPv2_1.Result.FormationViolation(
+                    Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
 
@@ -360,10 +386,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The NotifyWebPaymentStarted request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static NotifyWebPaymentStartedResponse SignatureError(NotifyWebPaymentStartedRequest  Request,
-                                                           String                ErrorDescription)
+                                                                     String                          ErrorDescription)
 
             => new (Request,
-                   OCPPv2_1.Result.SignatureError(
+                    Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
 
@@ -374,10 +400,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The NotifyWebPaymentStarted request.</param>
         /// <param name="Description">An optional error description.</param>
         public static NotifyWebPaymentStartedResponse Failed(NotifyWebPaymentStartedRequest  Request,
-                                                   String?               Description   = null)
+                                                             String?                         Description   = null)
 
             => new (Request,
-                    OCPPv2_1.Result.Server(Description));
+                    Result.Server(Description));
 
 
         /// <summary>
@@ -386,10 +412,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The NotifyWebPaymentStarted request.</param>
         /// <param name="Exception">The exception.</param>
         public static NotifyWebPaymentStartedResponse ExceptionOccured(NotifyWebPaymentStartedRequest  Request,
-                                                             Exception             Exception)
+                                                                       Exception                       Exception)
 
             => new (Request,
-                    OCPPv2_1.Result.FromException(Exception));
+                    Result.FromException(Exception));
 
         #endregion
 

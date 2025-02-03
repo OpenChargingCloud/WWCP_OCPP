@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new UsePriorityChargingResponse(
                                      Request,
-                                     GenericStatus.Rejected,
+                                     PriorityChargingStatus.Rejected,
                                      Result: Result.FromSendRequestState(sendRequestState)
                                  );
 

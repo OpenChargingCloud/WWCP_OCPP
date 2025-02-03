@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -90,35 +92,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "MonitoringDataType": {
-        //   "description": "Class to hold parameters of SetVariableMonitoring request.",
-        //   "javaType": "MonitoringData",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Class to hold parameters of SetVariableMonitoring request.",
+        //     "javaType": "MonitoringData",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "component": {
+        //             "$ref": "#/definitions/ComponentType"
+        //         },
+        //         "variable": {
+        //             "$ref": "#/definitions/VariableType"
+        //         },
+        //         "variableMonitoring": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/VariableMonitoringType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "component": {
-        //       "$ref": "#/definitions/ComponentType"
-        //     },
-        //     "variable": {
-        //       "$ref": "#/definitions/VariableType"
-        //     },
-        //     "variableMonitoring": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/VariableMonitoringType"
-        //       },
-        //       "minItems": 1
-        //     }
-        //   },
-        //   "required": [
-        //     "component",
-        //     "variable",
-        //     "variableMonitoring"
-        //   ]
+        //     "required": [
+        //         "component",
+        //         "variable",
+        //         "variableMonitoring"
+        //     ]
         // }
 
         #endregion
@@ -160,9 +162,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="MonitoringData">The parsed component variable.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       out MonitoringData?  MonitoringData,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       [NotNullWhen(true)]  out MonitoringData?  MonitoringData,
+                                       [NotNullWhen(false)] out String?          ErrorResponse)
 
             => TryParse(JSON,
                         out MonitoringData,
@@ -178,8 +180,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomMonitoringDataParser">A delegate to parse custom component variable JSON objects.</param>
         public static Boolean TryParse(JObject                                       JSON,
-                                       out MonitoringData?                           MonitoringData,
-                                       out String?                                   ErrorResponse,
+                                       [NotNullWhen(true)]  out MonitoringData?      MonitoringData,
+                                       [NotNullWhen(false)] out String?              ErrorResponse,
                                        CustomJObjectParserDelegate<MonitoringData>?  CustomMonitoringDataParser)
         {
 
@@ -244,10 +246,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                MonitoringData = new MonitoringData(Component,
-                                                    Variable,
-                                                    VariableMonitorings,
-                                                    CustomData);
+                MonitoringData = new MonitoringData(
+                                     Component,
+                                     Variable,
+                                     VariableMonitorings,
+                                     CustomData
+                                 );
 
                 if (CustomMonitoringDataParser is not null)
                     MonitoringData = CustomMonitoringDataParser(JSON,

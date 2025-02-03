@@ -67,20 +67,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this stop transaction reason is null or empty.
         /// </summary>
-        public readonly Boolean IsNullOrEmpty
+        public readonly  Boolean                             IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this stop transaction reason is NOT null or empty.
         /// </summary>
-        public readonly Boolean IsNotNullOrEmpty
+        public readonly  Boolean                             IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the stop transaction reason.
         /// </summary>
-        public readonly UInt64 Length
+        public readonly  UInt64                              Length
             => (UInt64) (InternalId?.Length ?? 0);
+
+        /// <summary>
+        /// All registered transaction reasons.
+        /// </summary>
+        public static    IEnumerable<StopTransactionReason>  All
+            => lookup.Values;
 
         #endregion
 
@@ -195,44 +201,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// CSMS cannot accept the requested energy transfer type or other part of the EV charging needs.
         /// </summary>
-        public static StopTransactionReason ChargingNeedsNotAccepted    { get; }
+        public static StopTransactionReason  ChargingNeedsNotAccepted    { get; }
             = Register("ChargingNeedsNotAccepted");
 
         /// <summary>
         /// The transaction was stopped because of the authorization
         /// status in a StartTransaction response.
         /// </summary>
-        public static StopTransactionReason DeAuthorized                { get; }
+        public static StopTransactionReason  DeAuthorized                { get; }
             = Register("DeAuthorized");
 
         /// <summary>
         /// The emergency stop button was used.
         /// </summary>
-        public static StopTransactionReason EmergencyStop               { get; }
+        public static StopTransactionReason  EmergencyStop               { get; }
             = Register("EmergencyStop");
 
         /// <summary>
         /// EV charging session reached a locally enforced maximum energy transfer limit.
         /// </summary>
-        public static StopTransactionReason EnergyLimitReached          { get; }
+        public static StopTransactionReason  EnergyLimitReached          { get; }
             = Register("EnergyLimitReached");
 
         /// <summary>
         /// Disconnection of the cable or vehicle moved away from inductive charge unit.
         /// </summary>
-        public static StopTransactionReason EVDisconnected              { get; }
+        public static StopTransactionReason  EVDisconnected              { get; }
             = Register("EVDisconnected");
 
         /// <summary>
         /// A GroundFault has occurred.
         /// </summary>
-        public static StopTransactionReason GroundFault                 { get; }
+        public static StopTransactionReason  GroundFault                 { get; }
             = Register("GroundFault");
 
         /// <summary>
         /// A Reset(Immediate) command was received.
         /// </summary>
-        public static StopTransactionReason ImmediateReset              { get; }
+        public static StopTransactionReason  ImmediateReset              { get; }
             = Register("ImmediateReset");
 
         /// <summary>
@@ -240,80 +246,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// This is a regular termination of a transaction.
         /// Examples: presenting an IdToken tag, pressing a button to stop.
         /// </summary>
-        public static StopTransactionReason Local                       { get; }
+        public static StopTransactionReason  Local                       { get; }
             = Register("Local");
 
         /// <summary>
         /// A local credit limit enforced through the charging station has been exceeded.
         /// </summary>
-        public static StopTransactionReason LocalOutOfCredit            { get; }
+        public static StopTransactionReason  LocalOutOfCredit            { get; }
             = Register("LocalOutOfCredit");
 
         /// <summary>
         /// The transaction was stopped using a token with a MasterPassGroupId.
         /// </summary>
-        public static StopTransactionReason MasterPass                  { get; }
+        public static StopTransactionReason  MasterPass                  { get; }
             = Register("MasterPass");
 
         /// <summary>
         /// Any other reason.
         /// </summary>
-        public static StopTransactionReason Other                       { get; }
+        public static StopTransactionReason  Other                       { get; }
             = Register("Other");
 
         /// <summary>
         /// A larger than intended electric current has occurred.
         /// </summary>
-        public static StopTransactionReason OvercurrentFault            { get; }
+        public static StopTransactionReason  OvercurrentFault            { get; }
             = Register("OvercurrentFault");
 
         /// <summary>
         /// Complete loss of power.
         /// </summary>
-        public static StopTransactionReason PowerLoss                   { get; }
+        public static StopTransactionReason  PowerLoss                   { get; }
             = Register("PowerLoss");
 
         /// <summary>
         /// Quality of power too low, e.g. voltage too low/high, phase imbalance, etc
         /// </summary>
-        public static StopTransactionReason PowerQuality                { get; }
+        public static StopTransactionReason  PowerQuality                { get; }
             = Register("PowerQuality");
 
         /// <summary>
         /// A locally initiated reset/reboot occurred, e.g. the watchdog kicked in.
         /// </summary>
-        public static StopTransactionReason Reboot                      { get; }
+        public static StopTransactionReason  Reboot                      { get; }
             = Register("Reboot");
 
         /// <summary>
         /// Stopped remotely on request of the CSMS. This is a regular termination of a transaction.
         /// Examples: termination using a smartphone app, exceeding a(non local) prepaid credit.
         /// </summary>
-        public static StopTransactionReason Remote                      { get; }
+        public static StopTransactionReason  Remote                      { get; }
             = Register("Remote");
 
         /// <summary>
         /// Electric vehicle has reported reaching a locally enforced maximum battery state-of-charge.
         /// </summary>
-        public static StopTransactionReason SOCLimitReached             { get; }
+        public static StopTransactionReason  SOCLimitReached             { get; }
             = Register("SOCLimitReached");
 
         /// <summary>
         /// The transaction was stopped by the EV.
         /// </summary>
-        public static StopTransactionReason StoppedByEV                 { get; }
+        public static StopTransactionReason  StoppedByEV                 { get; }
             = Register("StoppedByEV");
 
         /// <summary>
         /// EV charging session reached a locally enforced time limit.
         /// </summary>
-        public static StopTransactionReason TimeLimitReached            { get; }
+        public static StopTransactionReason  TimeLimitReached            { get; }
             = Register("TimeLimitReached");
 
         /// <summary>
         /// EV not connected within timeout.
         /// </summary>
-        public static StopTransactionReason Timeout                     { get; }
+        public static StopTransactionReason  Timeout                     { get; }
             = Register("Timeout");
 
         #endregion

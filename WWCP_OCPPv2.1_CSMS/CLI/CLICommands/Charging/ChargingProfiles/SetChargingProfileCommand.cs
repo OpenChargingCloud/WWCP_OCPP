@@ -144,17 +144,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                   ChargingSchedulePeriods:  [
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(0),  // == 00:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(16, ChargingRateUnits.Amperes),
+                                                                                    Limit:           ChargingRateValue.ParseAmperes(16),
                                                                                     NumberOfPhases:  3
                                                                                 ),
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(8),  // == 08:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(6,  ChargingRateUnits.Amperes),
+                                                                                    Limit:           ChargingRateValue.ParseAmperes(6),
                                                                                     NumberOfPhases:  3
                                                                                 ),
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(20), // == 20:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(14, ChargingRateUnits.Amperes),
+                                                                                    Limit:           ChargingRateValue.ParseAmperes(14),
                                                                                     NumberOfPhases:  3
                                                                                 )
                                                                             ],
@@ -182,17 +182,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                   ChargingSchedulePeriods:  [
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(0),  // == 00:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(16000, ChargingRateUnits.Watts),
+                                                                                    Limit:           ChargingRateValue.ParseWatts(16000),
                                                                                     NumberOfPhases:  3
                                                                                 ),
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(8),  // == 08:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse( 6000, ChargingRateUnits.Watts),
+                                                                                    Limit:           ChargingRateValue.ParseWatts( 6000),
                                                                                     NumberOfPhases:  3
                                                                                 ),
                                                                                 new ChargingSchedulePeriod(
                                                                                     StartPeriod:     TimeSpan.FromHours(20), // == 20:00 Uhr
-                                                                                    Limit:           ChargingRateValue.Parse(10000, ChargingRateUnits.Watts),
+                                                                                    Limit:           ChargingRateValue.ParseWatts(10000),
                                                                                     NumberOfPhases:  3
                                                                                 )
                                                                             ],

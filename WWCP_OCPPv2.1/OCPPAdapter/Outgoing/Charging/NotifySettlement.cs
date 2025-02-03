@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         Request.ToJSON(
                             true,
                             parentNetworkingNode.OCPP.CustomNotifySettlementRequestSerializer,
+                            parentNetworkingNode.OCPP.CustomContactSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
@@ -185,6 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                          Request.ToJSON(
                                                              false,
                                                              parentNetworkingNode.OCPP.CustomNotifySettlementRequestSerializer,
+                                                             parentNetworkingNode.OCPP.CustomContactSerializer,
                                                              parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                              parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                          )

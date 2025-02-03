@@ -181,6 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
                                                         false,
                                                         parentNetworkingNode.OCPP.CustomNotifySettlementRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomContactSerializer,
                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                     );

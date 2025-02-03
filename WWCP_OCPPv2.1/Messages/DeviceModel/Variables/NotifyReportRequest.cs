@@ -186,288 +186,296 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:NotifyReportRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:NotifyReportRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "AttributeEnumType": {
+        //             "description": "Attribute: Actual, MinSet, MaxSet, etc.\r\nDefaults to Actual if absent.",
+        //             "javaType": "AttributeEnum",
+        //             "type": "string",
+        //             "default": "Actual",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Actual",
+        //                 "Target",
+        //                 "MinSet",
+        //                 "MaxSet"
+        //             ]
+        //         },
+        //         "DataEnumType": {
+        //             "description": "Data type of this variable.",
+        //             "javaType": "DataEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "string",
+        //                 "decimal",
+        //                 "integer",
+        //                 "dateTime",
+        //                 "boolean",
+        //                 "OptionList",
+        //                 "SequenceList",
+        //                 "MemberList"
+        //             ]
+        //         },
+        //         "MutabilityEnumType": {
+        //             "description": "Defines the mutability of this attribute. Default is ReadWrite when omitted.",
+        //             "javaType": "MutabilityEnum",
+        //             "type": "string",
+        //             "default": "ReadWrite",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ReadOnly",
+        //                 "WriteOnly",
+        //                 "ReadWrite"
+        //             ]
+        //         },
+        //         "ComponentType": {
+        //             "description": "A physical or logical component",
+        //             "javaType": "Component",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "evse": {
+        //                     "$ref": "#/definitions/EVSEType"
+        //                 },
+        //                 "name": {
+        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "EVSEType": {
+        //             "description": "Electric Vehicle Supply Equipment",
+        //             "javaType": "EVSE",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "connectorId": {
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id"
+        //             ]
+        //         },
+        //         "ReportDataType": {
+        //             "description": "Class to report components, variables and variable attributes and characteristics.",
+        //             "javaType": "ReportData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "component": {
+        //                     "$ref": "#/definitions/ComponentType"
+        //                 },
+        //                 "variable": {
+        //                     "$ref": "#/definitions/VariableType"
+        //                 },
+        //                 "variableAttribute": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/VariableAttributeType"
+        //                     },
+        //                     "minItems": 1,
+        //                     "maxItems": 4
+        //                 },
+        //                 "variableCharacteristics": {
+        //                     "$ref": "#/definitions/VariableCharacteristicsType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "component",
+        //                 "variable",
+        //                 "variableAttribute"
+        //             ]
+        //         },
+        //         "VariableAttributeType": {
+        //             "description": "Attribute data of a variable.",
+        //             "javaType": "VariableAttribute",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "type": {
+        //                     "$ref": "#/definitions/AttributeEnumType"
+        //                 },
+        //                 "value": {
+        //                     "description": "Value of the attribute. May only be omitted when mutability is set to 'WriteOnly'.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
+        //                     "type": "string",
+        //                     "maxLength": 2500
+        //                 },
+        //                 "mutability": {
+        //                     "$ref": "#/definitions/MutabilityEnumType"
+        //                 },
+        //                 "persistent": {
+        //                     "description": "If true, value will be persistent across system reboots or power down. Default when omitted is false.",
+        //                     "type": "boolean",
+        //                     "default": false
+        //                 },
+        //                 "constant": {
+        //                     "description": "If true, value that will never be changed by the Charging Station at runtime. Default when omitted is false.",
+        //                     "type": "boolean",
+        //                     "default": false
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "VariableCharacteristicsType": {
+        //             "description": "Fixed read-only parameters of a variable.",
+        //             "javaType": "VariableCharacteristics",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "unit": {
+        //                     "description": "Unit of the variable. When the transmitted value has a unit, this field SHALL be included.",
+        //                     "type": "string",
+        //                     "maxLength": 16
+        //                 },
+        //                 "dataType": {
+        //                     "$ref": "#/definitions/DataEnumType"
+        //                 },
+        //                 "minLimit": {
+        //                     "description": "Minimum possible value of this variable.",
+        //                     "type": "number"
+        //                 },
+        //                 "maxLimit": {
+        //                     "description": "Maximum possible value of this variable. When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.",
+        //                     "type": "number"
+        //                 },
+        //                 "maxElements": {
+        //                     "description": "*(2.1)* Maximum number of elements from _valuesList_ that are supported as _attributeValue_.",
+        //                     "type": "integer",
+        //                     "minimum": 1.0
+        //                 },
+        //                 "valuesList": {
+        //                     "description": "Mandatory when _dataType_ = OptionList, MemberList or SequenceList. In that case _valuesList_ specifies the allowed values for the type.\r\n\r\nThe length of this field can be limited by DeviceDataCtrlr.ConfigurationValueSize.\r\n\r\n* OptionList: The (Actual) Variable value must be a single value from the reported (CSV) enumeration list.\r\n\r\n* MemberList: The (Actual) Variable value  may be an (unordered) (sub-)set of the reported (CSV) valid values list.\r\n\r\n* SequenceList: The (Actual) Variable value  may be an ordered (priority, etc)  (sub-)set of the reported (CSV) valid values.\r\n\r\nThis is a comma separated list.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valuesList. The max size of these values will always remain equal. ",
+        //                     "type": "string",
+        //                     "maxLength": 1000
+        //                 },
+        //                 "supportsMonitoring": {
+        //                     "description": "Flag indicating if this variable supports monitoring. ",
+        //                     "type": "boolean"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "dataType",
+        //                 "supportsMonitoring"
+        //             ]
+        //         },
+        //         "VariableType": {
+        //             "description": "Reference key to a component-variable.",
+        //             "javaType": "Variable",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "name": {
+        //                     "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "AttributeEnumType": {
-        //       "description": "Attribute: Actual, MinSet, MaxSet, etc.\r\nDefaults to Actual if absent.",
-        //       "javaType": "AttributeEnum",
-        //       "type": "string",
-        //       "default": "Actual",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Actual",
-        //         "Target",
-        //         "MinSet",
-        //         "MaxSet"
-        //       ]
-        //     },
-        //     "DataEnumType": {
-        //       "description": "Data type of this variable.",
-        //       "javaType": "DataEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "string",
-        //         "decimal",
-        //         "integer",
-        //         "dateTime",
-        //         "boolean",
-        //         "OptionList",
-        //         "SequenceList",
-        //         "MemberList"
-        //       ]
-        //     },
-        //     "MutabilityEnumType": {
-        //       "description": "Defines the mutability of this attribute. Default is ReadWrite when omitted.",
-        //       "javaType": "MutabilityEnum",
-        //       "type": "string",
-        //       "default": "ReadWrite",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ReadOnly",
-        //         "WriteOnly",
-        //         "ReadWrite"
-        //       ]
-        //     },
-        //     "ComponentType": {
-        //       "description": "A physical or logical component",
-        //       "javaType": "Component",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "requestId": {
+        //             "description": "The id of the GetReportRequest  or GetBaseReportRequest that requested this report",
+        //             "type": "integer"
+        //         },
+        //         "generatedAt": {
+        //             "description": "Timestamp of the moment this message was generated at the Charging Station.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "reportData": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/ReportDataType"
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "tbc": {
+        //             "description": "\u201cto be continued\u201d indicator. Indicates whether another part of the report follows in an upcoming notifyReportRequest message. Default value when omitted is false.",
+        //             "type": "boolean",
+        //             "default": false
+        //         },
+        //         "seqNo": {
+        //             "description": "Sequence number of this message. First message starts at 0.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "evse": {
-        //           "$ref": "#/definitions/EVSEType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
         //     },
-        //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
-        //       "javaType": "EVSE",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
-        //           "type": "integer"
-        //         },
-        //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "id"
-        //       ]
-        //     },
-        //     "ReportDataType": {
-        //       "description": "Class to report components, variables and variable attributes and characteristics.",
-        //       "javaType": "ReportData",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "component": {
-        //           "$ref": "#/definitions/ComponentType"
-        //         },
-        //         "variable": {
-        //           "$ref": "#/definitions/VariableType"
-        //         },
-        //         "variableAttribute": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/VariableAttributeType"
-        //           },
-        //           "minItems": 1,
-        //           "maxItems": 4
-        //         },
-        //         "variableCharacteristics": {
-        //           "$ref": "#/definitions/VariableCharacteristicsType"
-        //         }
-        //       },
-        //       "required": [
-        //         "component",
-        //         "variable",
-        //         "variableAttribute"
-        //       ]
-        //     },
-        //     "VariableAttributeType": {
-        //       "description": "Attribute data of a variable.",
-        //       "javaType": "VariableAttribute",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "type": {
-        //           "$ref": "#/definitions/AttributeEnumType"
-        //         },
-        //         "value": {
-        //           "description": "Value of the attribute. May only be omitted when mutability is set to 'WriteOnly'.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
-        //           "type": "string",
-        //           "maxLength": 2500
-        //         },
-        //         "mutability": {
-        //           "$ref": "#/definitions/MutabilityEnumType"
-        //         },
-        //         "persistent": {
-        //           "description": "If true, value will be persistent across system reboots or power down. Default when omitted is false.",
-        //           "type": "boolean",
-        //           "default": false
-        //         },
-        //         "constant": {
-        //           "description": "If true, value that will never be changed by the Charging Station at runtime. Default when omitted is false.",
-        //           "type": "boolean",
-        //           "default": false
-        //         }
-        //       }
-        //     },
-        //     "VariableCharacteristicsType": {
-        //       "description": "Fixed read-only parameters of a variable.",
-        //       "javaType": "VariableCharacteristics",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "unit": {
-        //           "description": "Unit of the variable. When the transmitted value has a unit, this field SHALL be included.",
-        //           "type": "string",
-        //           "maxLength": 16
-        //         },
-        //         "dataType": {
-        //           "$ref": "#/definitions/DataEnumType"
-        //         },
-        //         "minLimit": {
-        //           "description": "Minimum possible value of this variable.",
-        //           "type": "number"
-        //         },
-        //         "maxLimit": {
-        //           "description": "Maximum possible value of this variable. When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.",
-        //           "type": "number"
-        //         },
-        //         "valuesList": {
-        //           "description": "Allowed values when variable is Option/Member/SequenceList. \r\n\r\n* OptionList: The (Actual) Variable value must be a single value from the reported (CSV) enumeration list.\r\n\r\n* MemberList: The (Actual) Variable value  may be an (unordered) (sub-)set of the reported (CSV) valid values list.\r\n\r\n* SequenceList: The (Actual) Variable value  may be an ordered (priority, etc)  (sub-)set of the reported (CSV) valid values.\r\n\r\nThis is a comma separated list.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList. The max size of these values will always remain equal. ",
-        //           "type": "string",
-        //           "maxLength": 1000
-        //         },
-        //         "supportsMonitoring": {
-        //           "description": "Flag indicating if this variable supports monitoring. ",
-        //           "type": "boolean"
-        //         }
-        //       },
-        //       "required": [
-        //         "dataType",
-        //         "supportsMonitoring"
-        //       ]
-        //     },
-        //     "VariableType": {
-        //       "description": "Reference key to a component-variable.",
-        //       "javaType": "Variable",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "requestId": {
-        //       "description": "The id of the GetReportRequest  or GetBaseReportRequest that requested this report",
-        //       "type": "integer"
-        //     },
-        //     "generatedAt": {
-        //       "description": "Timestamp of the moment this message was generated at the Charging Station.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "reportData": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/ReportDataType"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "tbc": {
-        //       "description": "“to be continued” indicator. Indicates whether another part of the report follows in an upcoming notifyReportRequest message. Default value when omitted is false.",
-        //       "type": "boolean",
-        //       "default": false
-        //     },
-        //     "seqNo": {
-        //       "description": "Sequence number of this message. First message starts at 0.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "requestId",
-        //     "generatedAt",
-        //     "seqNo"
-        //   ]
+        //     "required": [
+        //         "requestId",
+        //         "generatedAt",
+        //         "seqNo"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a notify report request.
@@ -482,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyReportRequestParser">A delegate to parse custom notify report requests.</param>
         public static NotifyReportRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                SourceRouting                                  Destination,
+                                                SourceRouting                                      Destination,
                                                 NetworkPath                                        NetworkPath,
                                                 DateTime?                                          RequestTimestamp                  = null,
                                                 TimeSpan?                                          RequestTimeout                    = null,
@@ -511,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyReportRequest, out ErrorResponse, CustomNotifyReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyReportRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify report request.
@@ -528,7 +536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyReportRequestParser">A delegate to parse custom notify report requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       SourceRouting                                  Destination,
+                                       SourceRouting                                      Destination,
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out NotifyReportRequest?      NotifyReportRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,

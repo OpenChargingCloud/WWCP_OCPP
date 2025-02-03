@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "maxLength": 50
         //         },
         //         "data": {
-        //             "description": "Data without specified length or format. This needs to be decided by both parties (Open to implementation).\r\n"
+        //             "description": "Data without specified length or format. This needs to be decided by both parties (Open to implementation)."
         //         },
         //         "vendorId": {
         //             "description": "This identifies the Vendor specific implementation",

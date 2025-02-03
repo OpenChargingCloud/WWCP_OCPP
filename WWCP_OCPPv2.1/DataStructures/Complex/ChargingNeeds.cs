@@ -167,9 +167,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = this.RequestedEnergyTransferMode. GetHashCode()       * 31 ^
-                           this.AvailableEnergyTransferModes.CalcHashCode()      * 29 ^
-                          (this.ControlMode?.                GetHashCode() ?? 0) * 27 ^
+                hashCode = this.RequestedEnergyTransferMode. GetHashCode()       * 37 ^
+                           this.AvailableEnergyTransferModes.CalcHashCode()      * 31 ^
+                          (this.ControlMode?.                GetHashCode() ?? 0) * 29 ^
                           (this.MobilityNeedsMode?.          GetHashCode() ?? 0) * 23 ^
                           (this.Pricing?.                    GetHashCode() ?? 0) * 19 ^
                           (this.DepartureTime?.              GetHashCode() ?? 0) * 17 ^

@@ -159,75 +159,103 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:PublishFirmwareStatusNotificationRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:PublishFirmwareStatusNotificationRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "PublishFirmwareStatusEnumType": {
+        //             "description": "This contains the progress status of the publishfirmware\r\ninstallation.",
+        //             "javaType": "PublishFirmwareStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Idle",
+        //                 "DownloadScheduled",
+        //                 "Downloading",
+        //                 "Downloaded",
+        //                 "Published",
+        //                 "DownloadFailed",
+        //                 "DownloadPaused",
+        //                 "InvalidChecksum",
+        //                 "ChecksumVerified",
+        //                 "PublishFailed"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "PublishFirmwareStatusEnumType": {
-        //       "description": "This contains the progress status of the publishfirmware\r\ninstallation.",
-        //       "javaType": "PublishFirmwareStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Idle",
-        //         "DownloadScheduled",
-        //         "Downloading",
-        //         "Downloaded",
-        //         "Published",
-        //         "DownloadFailed",
-        //         "DownloadPaused",
-        //         "InvalidChecksum",
-        //         "ChecksumVerified",
-        //         "PublishFailed"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/PublishFirmwareStatusEnumType"
+        //         },
+        //         "location": {
+        //             "description": "Required if status is Published. Can be multiple URI\u2019s, if the Local Controller supports e.g. HTTP, HTTPS, and FTP.",
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "type": "string",
+        //                 "maxLength": 2000
+        //             },
+        //             "minItems": 1
+        //         },
+        //         "requestId": {
+        //             "description": "The request id that was\r\nprovided in the\r\nPublishFirmwareRequest which\r\ntriggered this action.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "status": {
-        //       "$ref": "#/definitions/PublishFirmwareStatusEnumType"
-        //     },
-        //     "location": {
-        //       "description": "Required if status is Published. Can be multiple URI’s, if the Local Controller supports e.g. HTTP, HTTPS, and FTP.",
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "type": "string",
-        //         "maxLength": 512
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "requestId": {
-        //       "description": "The request id that was\r\nprovided in the\r\nPublishFirmwareRequest which\r\ntriggered this action.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
+        //     "required": [
+        //         "status"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomPublishFirmwareStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a publish firmware status notification request.
@@ -242,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">A delegate to parse custom publish firmware status notification requests.</param>
         public static PublishFirmwareStatusNotificationRequest Parse(JObject                                                                 JSON,
                                                                      Request_Id                                                              RequestId,
-                                                                     SourceRouting                                                       Destination,
+                                                                     SourceRouting                                                           Destination,
                                                                      NetworkPath                                                             NetworkPath,
                                                                      DateTime?                                                               RequestTimestamp                                       = null,
                                                                      TimeSpan?                                                               RequestTimeout                                         = null,
@@ -271,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out PublishFirmwareStatusNotificationRequest, out ErrorResponse, CustomPublishFirmwareStatusNotificationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out PublishFirmwareStatusNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a publish firmware status notification request.
@@ -288,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomPublishFirmwareStatusNotificationRequestParser">A delegate to parse custom publish firmware status notification requests.</param>
         public static Boolean TryParse(JObject                                                                 JSON,
                                        Request_Id                                                              RequestId,
-                                       SourceRouting                                                       Destination,
+                                       SourceRouting                                                           Destination,
                                        NetworkPath                                                             NetworkPath,
                                        [NotNullWhen(true)]  out PublishFirmwareStatusNotificationRequest?      PublishFirmwareStatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                                        ErrorResponse,

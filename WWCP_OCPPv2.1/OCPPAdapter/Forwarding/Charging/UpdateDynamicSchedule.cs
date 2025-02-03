@@ -183,6 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
                                                         false,
                                                         parentNetworkingNode.OCPP.CustomUpdateDynamicScheduleRequestSerializer,
+                                                        parentNetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                     );

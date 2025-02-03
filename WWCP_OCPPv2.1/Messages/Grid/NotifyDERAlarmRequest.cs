@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region ControlId             [optional]
 
-                var ExtraInfo = JSON["extraInfo"]?.Value<String>();
+                var ExtraInfo = JSON.GetString("extraInfo");
 
                 #endregion
 

@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The MD5 checksum over the entire firmware image as a hexadecimal string of length 32.
         /// </summary>
         [Mandatory]
-        public String         MD5Checksum    { get; }
+        public String         Checksum    { get; }
 
         #endregion
 
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new UnpublishFirmware request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="MD5Checksum">The MD5 checksum over the entire firmware image as a hexadecimal string of length 32.</param>
+        /// <param name="Checksum">The MD5 checksum over the entire firmware image as a hexadecimal string of length 32.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public UnpublishFirmwareRequest(SourceRouting            Destination,
-                                        String                   MD5Checksum,
+                                        String                   Checksum,
 
                                         IEnumerable<KeyPair>?    SignKeys              = null,
                                         IEnumerable<SignInfo>?   SignInfos             = null,
@@ -118,12 +118,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.MD5Checksum = MD5Checksum;
+            this.Checksum = Checksum;
 
             unchecked
             {
-                hashCode = this.MD5Checksum.GetHashCode() * 3 ^
-                           base.            GetHashCode();
+                hashCode = this.Checksum.GetHashCode() * 3 ^
+                           base.         GetHashCode();
             }
 
         }
@@ -134,45 +134,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:UnpublishFirmwareRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:UnpublishFirmwareRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "checksum": {
-        //       "description": "The MD5 checksum over the entire firmware file as a hexadecimal string of length 32. ",
-        //       "type": "string",
-        //       "maxLength": 32
-        //     }
-        //   },
-        //   "required": [
-        //     "checksum"
-        //   ]
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "checksum": {
+        //             "description": "The MD5 checksum over the entire firmware file as a hexadecimal string of length 32. ",
+        //             "type": "string",
+        //             "maxLength": 32
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "checksum"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUnpublishFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an UnpublishFirmware request.
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUnpublishFirmwareRequestParser">A delegate to parse custom UnpublishFirmware requests.</param>
         public static UnpublishFirmwareRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     SourceRouting                                       Destination,
+                                                     SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
                                                      DateTime?                                               RequestTimestamp                       = null,
                                                      TimeSpan?                                               RequestTimeout                         = null,
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UnpublishFirmwareRequest, out ErrorResponse, CustomUnpublishFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UnpublishFirmwareRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UnpublishFirmware request.
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUnpublishFirmwareRequestParser">A delegate to parse custom UnpublishFirmware requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       SourceRouting                                       Destination,
+                                       SourceRouting                                           Destination,
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out UnpublishFirmwareRequest?      UnpublishFirmwareRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
@@ -247,11 +247,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 UnpublishFirmwareRequest = null;
 
-                #region MD5Checksum          [mandatory]
+                #region Checksum      [mandatory]
 
                 if (!JSON.ParseMandatoryText("checksum",
-                                             "MD5 checksum",
-                                             out String MD5Checksum,
+                                             "checksum",
+                                             out String? Checksum,
                                              out ErrorResponse))
                 {
                     return false;
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region Signatures    [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 UnpublishFirmwareRequest = new UnpublishFirmwareRequest(
 
                                                Destination,
-                                               MD5Checksum,
+                                               Checksum,
 
                                                null,
                                                null,
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("@context",     DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("checksum",     MD5Checksum),
+                                 new JProperty("checksum",     Checksum),
 
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -437,7 +437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => UnpublishFirmwareRequest is not null &&
 
-               MD5Checksum.Equals(UnpublishFirmwareRequest.MD5Checksum) &&
+               Checksum.Equals(UnpublishFirmwareRequest.Checksum) &&
 
                base.GenericEquals(UnpublishFirmwareRequest);
 
@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => MD5Checksum;
+            => Checksum;
 
         #endregion
 

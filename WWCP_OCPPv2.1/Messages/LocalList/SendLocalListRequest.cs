@@ -162,267 +162,255 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SendLocalListRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:SendLocalListRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "AuthorizationStatusEnumType": {
+        //             "description": "Current status of the ID Token.",
+        //             "javaType": "AuthorizationStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Blocked",
+        //                 "ConcurrentTx",
+        //                 "Expired",
+        //                 "Invalid",
+        //                 "NoCredit",
+        //                 "NotAllowedTypeEVSE",
+        //                 "NotAtThisLocation",
+        //                 "NotAtThisTime",
+        //                 "Unknown"
+        //             ]
+        //         },
+        //         "MessageFormatEnumType": {
+        //             "description": "Format of the message.",
+        //             "javaType": "MessageFormatEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ASCII",
+        //                 "HTML",
+        //                 "URI",
+        //                 "UTF8",
+        //                 "QRCODE"
+        //             ]
+        //         },
+        //         "UpdateEnumType": {
+        //             "description": "This contains the type of update (full or differential) of this request.",
+        //             "javaType": "UpdateEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Differential",
+        //                 "Full"
+        //             ]
+        //         },
+        //         "AdditionalInfoType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "AdditionalInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalIdToken": {
+        //                     "description": "*(2.1)* This field specifies the additional IdToken.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "additionalIdToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "AuthorizationData": {
+        //             "description": "Contains the identifier to use for authorization.",
+        //             "javaType": "AuthorizationData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "idToken": {
+        //                     "$ref": "#/definitions/IdTokenType"
+        //                 },
+        //                 "idTokenInfo": {
+        //                     "$ref": "#/definitions/IdTokenInfoType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "idToken"
+        //             ]
+        //         },
+        //         "IdTokenInfoType": {
+        //             "description": "Contains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.",
+        //             "javaType": "IdTokenInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "status": {
+        //                     "$ref": "#/definitions/AuthorizationStatusEnumType"
+        //                 },
+        //                 "cacheExpiryDateTime": {
+        //                     "description": "Date and Time after which the token must be considered invalid.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "chargingPriority": {
+        //                     "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. ",
+        //                     "type": "integer"
+        //                 },
+        //                 "groupIdToken": {
+        //                     "$ref": "#/definitions/IdTokenType"
+        //                 },
+        //                 "language1": {
+        //                     "description": "Preferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //                     "type": "string",
+        //                     "maxLength": 8
+        //                 },
+        //                 "language2": {
+        //                     "description": "Second preferred user interface language of identifier user. Don\u2019t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //                     "type": "string",
+        //                     "maxLength": 8
+        //                 },
+        //                 "evseId": {
+        //                     "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.",
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "type": "integer",
+        //                         "minimum": 0.0
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "personalMessage": {
+        //                     "$ref": "#/definitions/MessageContentType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "status"
+        //             ]
+        //         },
+        //         "IdTokenType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "IdToken",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalInfo": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/AdditionalInfoType"
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "idToken": {
+        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "idToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "MessageContentType": {
+        //             "description": "Contains message details, for a message to be displayed on a Charging Station.",
+        //             "javaType": "MessageContent",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "format": {
+        //                     "$ref": "#/definitions/MessageFormatEnumType"
+        //                 },
+        //                 "language": {
+        //                     "description": "Message language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
+        //                     "type": "string",
+        //                     "maxLength": 8
+        //                 },
+        //                 "content": {
+        //                     "description": "*(2.1)* Required. Message contents. +\r\nMaximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].\r\n    Maximum length defaults to 1024.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "format",
+        //                 "content"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "AuthorizationStatusEnumType": {
-        //       "description": "ID_ Token. Status. Authorization_ Status\r\nurn:x-oca:ocpp:uid:1:569372\r\nCurrent status of the ID Token.",
-        //       "javaType": "AuthorizationStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Blocked",
-        //         "ConcurrentTx",
-        //         "Expired",
-        //         "Invalid",
-        //         "NoCredit",
-        //         "NotAllowedTypeEVSE",
-        //         "NotAtThisLocation",
-        //         "NotAtThisTime",
-        //         "Unknown"
-        //       ]
-        //     },
-        //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.",
-        //       "javaType": "IdTokenEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Central",
-        //         "eMAID",
-        //         "ISO14443",
-        //         "ISO15693",
-        //         "KeyCode",
-        //         "Local",
-        //         "MacAddress",
-        //         "NoAuthorization"
-        //       ]
-        //     },
-        //     "MessageFormatEnumType": {
-        //       "description": "Message_ Content. Format. Message_ Format_ Code\r\nurn:x-enexis:ecdm:uid:1:570848\r\nFormat of the message.",
-        //       "javaType": "MessageFormatEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ASCII",
-        //         "HTML",
-        //         "URI",
-        //         "UTF8"
-        //       ]
-        //     },
-        //     "UpdateEnumType": {
-        //       "description": "This contains the type of update (full or differential) of this request.",
-        //       "javaType": "UpdateEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Differential",
-        //         "Full"
-        //       ]
-        //     },
-        //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "AdditionalInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "localAuthorizationList": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/AuthorizationData"
+        //             },
+        //             "minItems": 1
         //         },
-        //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
-        //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "additionalIdToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "AuthorizationData": {
-        //       "description": "Contains the identifier to use for authorization.",
-        //       "javaType": "AuthorizationData",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "idToken": {
-        //           "$ref": "#/definitions/IdTokenType"
-        //         },
-        //         "idTokenInfo": {
-        //           "$ref": "#/definitions/IdTokenInfoType"
-        //         }
-        //       },
-        //       "required": [
-        //         "idToken"
-        //       ]
-        //     },
-        //     "IdTokenInfoType": {
-        //       "description": "ID_ Token\r\nurn:x-oca:ocpp:uid:2:233247\r\nContains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.",
-        //       "javaType": "IdTokenInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "status": {
-        //           "$ref": "#/definitions/AuthorizationStatusEnumType"
-        //         },
-        //         "cacheExpiryDateTime": {
-        //           "description": "ID_ Token. Expiry. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569373\r\nDate and Time after which the token must be considered invalid.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "chargingPriority": {
-        //           "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. ",
-        //           "type": "integer"
-        //         },
-        //         "language1": {
-        //           "description": "ID_ Token. Language1. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569374\r\nPreferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //           "type": "string",
-        //           "maxLength": 8
-        //         },
-        //         "evseId": {
-        //           "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.",
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
+        //         "versionNumber": {
+        //             "description": "In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.",
         //             "type": "integer"
-        //           },
-        //           "minItems": 1
         //         },
-        //         "groupIdToken": {
-        //           "$ref": "#/definitions/IdTokenType"
+        //         "updateType": {
+        //             "$ref": "#/definitions/UpdateEnumType"
         //         },
-        //         "language2": {
-        //           "description": "ID_ Token. Language2. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569375\r\nSecond preferred user interface language of identifier user. Don’t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //           "type": "string",
-        //           "maxLength": 8
-        //         },
-        //         "personalMessage": {
-        //           "$ref": "#/definitions/MessageContentType"
-        //         }
-        //       },
-        //       "required": [
-        //         "status"
-        //       ]
-        //     },
-        //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "IdToken",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalInfo": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/AdditionalInfoType"
-        //           },
-        //           "minItems": 1
-        //         },
-        //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
-        //         "type": {
-        //           "$ref": "#/definitions/IdTokenEnumType"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "idToken",
-        //         "type"
-        //       ]
         //     },
-        //     "MessageContentType": {
-        //       "description": "Message_ Content\r\nurn:x-enexis:ecdm:uid:2:234490\r\nContains message details, for a message to be displayed on a Charging Station.",
-        //       "javaType": "MessageContent",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "format": {
-        //           "$ref": "#/definitions/MessageFormatEnumType"
-        //         },
-        //         "language": {
-        //           "description": "Message_ Content. Language. Language_ Code\r\nurn:x-enexis:ecdm:uid:1:570849\r\nMessage language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //           "type": "string",
-        //           "maxLength": 8
-        //         },
-        //         "content": {
-        //           "description": "Message_ Content. Content. Message\r\nurn:x-enexis:ecdm:uid:1:570852\r\nMessage contents.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "format",
-        //         "content"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "localAuthorizationList": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/AuthorizationData"
-        //       },
-        //       "minItems": 1
-        //     },
-        //     "versionNumber": {
-        //       "description": "In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.",
-        //       "type": "integer"
-        //     },
-        //     "updateType": {
-        //       "$ref": "#/definitions/UpdateEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "versionNumber",
-        //     "updateType"
-        //   ]
+        //     "required": [
+        //         "versionNumber",
+        //         "updateType"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSendLocalListRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SendLocalList request.
@@ -437,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
         public static SendLocalListRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
-                                                 SourceRouting                                   Destination,
+                                                 SourceRouting                                       Destination,
                                                  NetworkPath                                         NetworkPath,
                                                  DateTime?                                           RequestTimestamp                   = null,
                                                  TimeSpan?                                           RequestTimeout                     = null,
@@ -466,7 +454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SendLocalListRequest, out ErrorResponse, CustomSendLocalListRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SendLocalListRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SendLocalList request.
@@ -483,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSendLocalListRequestParser">A delegate to parse custom SendLocalList requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
-                                       SourceRouting                                   Destination,
+                                       SourceRouting                                       Destination,
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out SendLocalListRequest?      SendLocalListRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,

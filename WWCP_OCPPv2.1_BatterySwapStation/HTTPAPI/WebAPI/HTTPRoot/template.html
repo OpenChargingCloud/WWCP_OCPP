@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <title>OCPP WebAPI</title>
+
+    <meta name="description" content="OCPP WebAPI">
+    <meta name="author" content="Achim Friedland, Open Charging Cloud by GraphDefined GmbH">
+
+    <link rel="stylesheet" href="{{BasePath}}/css/template.min.css" type="text/css" />
+    <link rel="stylesheet" href="{{BasePath}}/css/fontawesome-all.min.css" type="text/css" />
+    <link rel="icon" href="{{BasePath}}/favicon.png" type="image/png" />
+
+    <script type="text/javascript" src="/shared/UsersAPI/defaults/defaults.js"></script>
+    <script type="text/javascript" src="{{BasePath}}/defaults/defaults.js"></script>
+    <!--<script type="text/javascript" src="/shared/UsersAPI/login/SignInOut.js"></script>-->
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://* https://* blob: data: ;
+                                                        script-src  'self' http://* https://* 'unsafe-eval' 'unsafe-inline' ;
+                                                        style-src   'self' http://* https://* 'unsafe-inline' ;
+                                                        child-src          blob: ;
+                                                        connect-src 'self' http://* https://* https://*.tiles.mapbox.com https://api.mapbox.com https://events.mapbox.com ;
+                                                        worker-src  'self' http://* https://* blob: ;
+                                                        img-src     'self' http://* https://* data: blob: ">
+
+    <script>
+
+        //function ShowElement(DivName) {
+        //    return ShowElement2(DivName, "inline-block");
+        //}
+
+    </script>
+
+</head>
+
+<body>
+    <!-- onload="checkSignedIn(true)"> -->
+
+    <div id="page">
+
+        <div id="top">
+
+            <div id="topLeft">
+                OCPP WebAPI
+            </div>
+
+            <div id="topRight">
+
+                <div id="internal">
+
+                    <a id="userFrame" href="/profile/profile.shtml" title="show your user profile">
+                        <div id="username"></div>
+                        <div id="userIcon"><i class="fas fa-user  fa-2x topicons"></i></div>
+                    </a>
+
+                    <a id="astronautFrame" href="javascript:Depersonate()" title="end impersonation">
+                        <div id="astronaut"></div>
+                        <div id="astronautIcon"><i class="fas fa-user-astronaut  fa-2x topicons"></i></div>
+                    </a>
+
+                    <a id="notificationsButton" href="/notifications" title="Notifications">
+                        <i class="fas fa-bell  fa-2x topicons"></i>
+                        <!--<div id="mt">19</div>-->
+                    </a>
+
+                    <a href="/admin/" id="admin" title="Admin area">
+                        <i class="fas fa-wrench  fa-2x topicons"></i>
+                    </a>
+
+                    <a href="javascript:SignOut()" id="signout" title="sign out">
+                        <i class="fas fa-sign-out-alt  fa-2x topicons"></i>
+                    </a>
+
+                </div>
+
+                <a href="javascript:SignIn()" id="signin" title="sign in">
+                    <i class="fas fa-sign-in-alt  fa-2x topicons"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+        <div id="bottom">
+
+            <div id="navigation">
+
+                <a id="logo" href="/dashboard"></a>
+
+                <div id="mainmenu">
+                    <a id="menuDashboards" class="menulink" href="/dashboard"><i class="fas fa-chart-bar         fa-2x menuicons"></i><div class="iconText">Dashboard</div></a>
+                    <!--<a id="menuOrganizations"         class="menulink" href="/organization/tiles.shtml"><i class="fas fa-house-user        fa-2x menuicons"></i><div class="iconText">Organizations</div></a>
+                    <a id="menuDevices"               class="menulink" href="/device/tiles.shtml"      ><i class="fas fa-hdd               fa-2x menuicons"></i><div class="iconText">Devices</div></a>
+                    <a id="menuServiceTickets"        class="menulink" href="/serviceTickets"          ><i class="fas fa-ticket-alt        fa-2x menuicons"></i>Service Tickets<span class="beta">beta</span><div class="arrow"></div></a>
+                    <a id="menuSelfTests"             class="menulink" href="/selfTests"               ><i class="far fa-calendar-check    fa-2x menuicons"></i>Self Tests<div class="arrow"></div></a>
+                    <a id="menuDefibrillatorMessages" class="menulink" href="/defibrillatorMessages"   ><i class="fas fa-envelope          fa-2x menuicons"></i>Messages<div class="arrow"></div></a>
+                    <a id="menuNetworkingMessages"    class="menulink" href="/networkingMessages"      ><i class="fas fa-cloud-upload-alt  fa-2x menuicons"></i><div class="iconText">HTTP Messages</div></a>-->
+                </div>
+
+                <!--<div id="accesstokens">
+                    <a id="menuAccesstokens"          class="menulink" href="accesstokens"             ><i class="fas fa-chart-bar         fa-2x menuicons"></i><div class="iconText">AccessTokens</div></a>
+                </div>
+
+                <div id="clients">
+                    <a id="menuClients"               class="menulink" href="clients"                  ><i class="fas fa-chart-bar         fa-2x menuicons"></i><div class="iconText">OCPP Clients</div></a>
+                </div>
+
+                <div id="bottomMenu">
+                    <a id="menuSupport" class="menulink" href="/support/support"                       ><i class="far fa-comments         fa-2x menuicons"></i><div class="iconText">Support</div></a>
+                </div>-->
+
+            </div>
+
+            <div id="right">
+
+                <div id="subnav1" class="subnavigation"><br /><br /><br /><br />lala!</div>
+
+                <div id="text"><%= content %></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

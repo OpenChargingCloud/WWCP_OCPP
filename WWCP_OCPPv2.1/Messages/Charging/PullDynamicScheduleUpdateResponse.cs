@@ -28,6 +28,7 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -56,83 +57,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext       Context
+        public JSONLDContext            Context
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// Optional charging rate limit in chargingRateUnit.
+        /// The status of the PullDynamicScheduleUpdate request.
         /// </summary>
-        [Optional]
-        public ChargingRateValue?  Limit                  { get; }
+        [Mandatory]
+        public ChargingProfileStatus    Status                    { get; }
 
         /// <summary>
-        /// Optional charging rate limit in chargingRateUnit on phase L2.
+        /// The optional charging schedule update.
         /// </summary>
         [Optional]
-        public ChargingRateValue?  Limit_L2               { get; }
-
-        /// <summary>
-        /// Optional charging rate limit in chargingRateUnit on phase L3.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  Limit_L3               { get; }
-
-
-        /// <summary>
-        /// Optional discharging limit in chargingRateUnit.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  DischargeLimit         { get; }
-
-        /// <summary>
-        /// Optional discharging limit in chargingRateUnit on phase L2.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  DischargeLimit_L2      { get; }
-
-        /// <summary>
-        /// Optional discharging limit in chargingRateUnit on phase L3.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  DischargeLimit_L3      { get; }
-
-
-        /// <summary>
-        /// Optional setpoint in chargingRateUnit.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  Setpoint               { get; }
-
-        /// <summary>
-        /// Optional setpoint in chargingRateUnit on phase L2.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  Setpoint_L2            { get; }
-
-        /// <summary>
-        /// Optional setpoint in chargingRateUnit on phase L3.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  Setpoint_L3            { get; }
-
-
-        /// <summary>
-        /// Optional setpoint for reactive power (or current) in chargingRateUnit.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  SetpointReactive       { get; }
-
-        /// <summary>
-        /// Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  SetpointReactive_L2    { get; }
-
-        /// <summary>
-        /// Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.
-        /// </summary>
-        [Optional]
-        public ChargingRateValue?  SetpointReactive_L3    { get; }
+        public ChargingScheduleUpdate?  ChargingScheduleUpdate    { get; }
 
         #endregion
 
@@ -143,21 +81,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The request leading to this response.</param>
         /// 
-        /// <param name="Limit">Optional charging rate limit in chargingRateUnit (&gt;= 0).</param>
-        /// <param name="Limit_L2">Optional charging rate limit in chargingRateUnit on phase L2 (&gt;= 0).</param>
-        /// <param name="Limit_L3">Optional charging rate limit in chargingRateUnit on phase L3 (&gt;= 0).</param>
-        /// 
-        /// <param name="DischargeLimit">Optional discharging limit in chargingRateUnit (&lt;= 0).</param>
-        /// <param name="DischargeLimit_L2">Optional discharging limit in chargingRateUnit on phase L2 (&lt;= 0).</param>
-        /// <param name="DischargeLimit_L3">Optional discharging limit in chargingRateUnit on phase L3 (&lt;= 0).</param>
-        /// 
-        /// <param name="Setpoint">Optional setpoint in chargingRateUnit.</param>
-        /// <param name="Setpoint_L2">Optional setpoint in chargingRateUnit on phase L2.</param>
-        /// <param name="Setpoint_L3">Optional setpoint in chargingRateUnit on phase L3.</param>
-        /// 
-        /// <param name="SetpointReactive">Optional setpoint for reactive power (or current) in chargingRateUnit.</param>
-        /// <param name="SetpointReactive_L2">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.</param>
-        /// <param name="SetpointReactive_L3">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.</param>
+        /// <param name="Status">The status of the PullDynamicScheduleUpdate request.</param>
+        /// <param name="ChargingScheduleUpdate">An optional charging schedule update.</param>
         /// 
         /// <param name="Result">The machine-readable result code.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
@@ -172,36 +97,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public PullDynamicScheduleUpdateResponse(PullDynamicScheduleUpdateRequest  Request,
 
-                                                 ChargingRateValue?                Limit                 = null,
-                                                 ChargingRateValue?                Limit_L2              = null,
-                                                 ChargingRateValue?                Limit_L3              = null,
+                                                 ChargingProfileStatus             Status,
+                                                 ChargingScheduleUpdate?           ChargingScheduleUpdate   = null,
 
-                                                 ChargingRateValue?                DischargeLimit        = null,
-                                                 ChargingRateValue?                DischargeLimit_L2     = null,
-                                                 ChargingRateValue?                DischargeLimit_L3     = null,
+                                                 Result?                           Result                   = null,
+                                                 DateTime?                         ResponseTimestamp        = null,
 
-                                                 ChargingRateValue?                Setpoint              = null,
-                                                 ChargingRateValue?                Setpoint_L2           = null,
-                                                 ChargingRateValue?                Setpoint_L3           = null,
+                                                 SourceRouting?                    Destination              = null,
+                                                 NetworkPath?                      NetworkPath              = null,
 
-                                                 ChargingRateValue?                SetpointReactive      = null,
-                                                 ChargingRateValue?                SetpointReactive_L2   = null,
-                                                 ChargingRateValue?                SetpointReactive_L3   = null,
+                                                 IEnumerable<KeyPair>?             SignKeys                 = null,
+                                                 IEnumerable<SignInfo>?            SignInfos                = null,
+                                                 IEnumerable<Signature>?           Signatures               = null,
 
-                                                 Result?                           Result                = null,
-                                                 DateTime?                         ResponseTimestamp     = null,
+                                                 CustomData?                       CustomData               = null,
 
-                                                 SourceRouting?                    Destination           = null,
-                                                 NetworkPath?                      NetworkPath           = null,
-
-                                                 IEnumerable<KeyPair>?             SignKeys              = null,
-                                                 IEnumerable<SignInfo>?            SignInfos             = null,
-                                                 IEnumerable<Signature>?           Signatures            = null,
-
-                                                 CustomData?                       CustomData            = null,
-
-                                                 SerializationFormats?             SerializationFormat   = null,
-                                                 CancellationToken                 CancellationToken     = default)
+                                                 SerializationFormats?             SerializationFormat      = null,
+                                                 CancellationToken                 CancellationToken        = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -221,71 +133,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            #region (Discharge)Limit checks
-
-            if (Limit.HasValue && Limit.Value.Value < 0)
-                throw new ArgumentException($"The given charging rate limit (for phase L1) {Limit.Value.Value} must not be negative!",
-                                            nameof(Limit));
-
-            if (Limit_L2.HasValue && Limit_L2.Value.Value < 0)
-                throw new ArgumentException($"The given charging rate limit for phase L2 {Limit_L2.Value.Value} must not be negative!",
-                                            nameof(Limit_L2));
-
-            if (Limit_L3.HasValue && Limit_L3.Value.Value < 0)
-                throw new ArgumentException($"The given charging rate limit for phase L3 {Limit_L3.Value.Value} must not be negative!",
-                                            nameof(Limit_L3));
-
-
-            if (DischargeLimit.HasValue && DischargeLimit.Value.Value > 0)
-                throw new ArgumentException($"The given discharging rate limit (for phase L1) {DischargeLimit.Value.Value} must not be positive!",
-                                            nameof(DischargeLimit));
-
-            if (DischargeLimit_L2.HasValue && DischargeLimit_L2.Value.Value > 0)
-                throw new ArgumentException($"The given discharging rate limit for phase L2 {DischargeLimit_L2.Value.Value} must not be positive!",
-                                            nameof(DischargeLimit_L2));
-
-            if (DischargeLimit_L3.HasValue && DischargeLimit_L3.Value.Value > 0)
-                throw new ArgumentException($"The given discharging rate limit for phase L3 {DischargeLimit_L3.Value.Value} must not be positive!",
-                                            nameof(DischargeLimit_L3));
-
-            #endregion
-
-            this.Limit                = Limit;
-            this.Limit_L2             = Limit_L2;
-            this.Limit_L3             = Limit_L3;
-
-            this.DischargeLimit       = DischargeLimit;
-            this.DischargeLimit_L2    = DischargeLimit_L2;
-            this.DischargeLimit_L3    = DischargeLimit_L3;
-
-            this.Setpoint             = Setpoint;
-            this.Setpoint_L2          = Setpoint_L2;
-            this.Setpoint_L3          = Setpoint_L3;
-
-            this.SetpointReactive     = SetpointReactive;
-            this.SetpointReactive_L2  = SetpointReactive_L2;
-            this.SetpointReactive_L3  = SetpointReactive_L3;
+            this.Status                  = Status;
+            this.ChargingScheduleUpdate  = ChargingScheduleUpdate;
 
             unchecked
             {
 
-                hashCode = (Limit?.              GetHashCode() ?? 0) * 43 ^
-                           (Limit_L2?.           GetHashCode() ?? 0) * 41 ^
-                           (Limit_L3?.           GetHashCode() ?? 0) * 37 ^
-
-                           (DischargeLimit?.     GetHashCode() ?? 0) * 31 ^
-                           (DischargeLimit_L2?.  GetHashCode() ?? 0) * 29 ^
-                           (DischargeLimit_L3?.  GetHashCode() ?? 0) * 23 ^
-
-                           (Setpoint?.           GetHashCode() ?? 0) * 17 ^
-                           (Setpoint_L2?.        GetHashCode() ?? 0) * 13 ^
-                           (Setpoint_L3?.        GetHashCode() ?? 0) * 11 ^
-
-                           (SetpointReactive?.   GetHashCode() ?? 0) *  7 ^
-                           (SetpointReactive_L2?.GetHashCode() ?? 0) *  5 ^
-                           (SetpointReactive_L3?.GetHashCode() ?? 0) *  3 ^
-
-                            base.                GetHashCode();
+                hashCode =  this.Status.                 GetHashCode()       * 5 ^
+                           (this.ChargingScheduleUpdate?.GetHashCode() ?? 0) * 3 ^
+                            base.                        GetHashCode();
 
             }
 
@@ -294,14 +150,148 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:PullDynamicScheduleUpdateResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ChargingProfileStatusEnumType": {
+        //             "description": "Result of request.",
+        //             "javaType": "ChargingProfileStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected"
+        //             ]
+        //         },
+        //         "ChargingScheduleUpdateType": {
+        //             "description": "Updates to a ChargingSchedulePeriodType for dynamic charging profiles.",
+        //             "javaType": "ChargingScheduleUpdate",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "limit": {
+        //                     "description": "Optional only when not required by the _operationMode_, as in CentralSetpoint, ExternalSetpoint, ExternalLimits, LocalFrequency,  LocalLoadBalancing. +\r\nCharging rate limit during the schedule period, in the applicable _chargingRateUnit_. \r\nThis SHOULD be a non-negative value; a negative value is only supported for backwards compatibility with older systems that use a negative value to specify a discharging limit.\r\nFor AC this field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //                     "type": "number"
+        //                 },
+        //                 "limit_L2": {
+        //                     "description": "*(2.1)* Charging rate limit on phase L2  in the applicable _chargingRateUnit_. ",
+        //                     "type": "number"
+        //                 },
+        //                 "limit_L3": {
+        //                     "description": "*(2.1)* Charging rate limit on phase L3  in the applicable _chargingRateUnit_. ",
+        //                     "type": "number"
+        //                 },
+        //                 "dischargeLimit": {
+        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ that the EV is allowed to discharge with. Note, these are negative values in order to be consistent with _setpoint_, which can be positive and negative.  +\r\nFor AC this field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //                     "type": "number",
+        //                     "maximum": 0.0
+        //                 },
+        //                 "dischargeLimit_L2": {
+        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L2 that the EV is allowed to discharge with. ",
+        //                     "type": "number",
+        //                     "maximum": 0.0
+        //                 },
+        //                 "dischargeLimit_L3": {
+        //                     "description": "*(2.1)* Limit in _chargingRateUnit_ on phase L3 that the EV is allowed to discharge with. ",
+        //                     "type": "number",
+        //                     "maximum": 0.0
+        //                 },
+        //                 "setpoint": {
+        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow as close as possible. Use negative values for discharging. +\r\nWhen a limit and/or _dischargeLimit_ are given the overshoot when following _setpoint_ must remain within these values.\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //                     "type": "number"
+        //                 },
+        //                 "setpoint_L2": {
+        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L2 as close as possible.",
+        //                     "type": "number"
+        //                 },
+        //                 "setpoint_L3": {
+        //                     "description": "*(2.1)* Setpoint in _chargingRateUnit_ that the EV should follow on phase L3 as close as possible. ",
+        //                     "type": "number"
+        //                 },
+        //                 "setpointReactive": {
+        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow as closely as possible. Positive values for inductive, negative for capacitive reactive power or current.  +\r\nThis field represents the sum of all phases, unless values are provided for L2 and L3, in which case this field represents phase L1.",
+        //                     "type": "number"
+        //                 },
+        //                 "setpointReactive_L2": {
+        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L2 as closely as possible. ",
+        //                     "type": "number"
+        //                 },
+        //                 "setpointReactive_L3": {
+        //                     "description": "*(2.1)* Setpoint for reactive power (or current) in _chargingRateUnit_ that the EV should follow on phase L3 as closely as possible. ",
+        //                     "type": "number"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             }
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "scheduleUpdate": {
+        //             "$ref": "#/definitions/ChargingScheduleUpdateType"
+        //         },
+        //         "status": {
+        //             "$ref": "#/definitions/ChargingProfileStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomPullDynamicScheduleUpdateRequestParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a PullDynamicScheduleUpdate response.
@@ -311,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPullDynamicScheduleUpdateResponseParser">A delegate to parse custom PullDynamicScheduleUpdate responses.</param>
         public static PullDynamicScheduleUpdateResponse Parse(PullDynamicScheduleUpdateRequest                                 Request,
                                                               JObject                                                          JSON,
-                                                              SourceRouting                                                Destination,
+                                                              SourceRouting                                                    Destination,
                                                               NetworkPath                                                      NetworkPath,
                                                               DateTime?                                                        ResponseTimestamp                               = null,
                                                               CustomJObjectParserDelegate<PullDynamicScheduleUpdateResponse>?  CustomPullDynamicScheduleUpdateResponseParser   = null,
@@ -341,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out PullDynamicScheduleUpdateResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out PullDynamicScheduleUpdateResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a PullDynamicScheduleUpdate response.
@@ -352,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPullDynamicScheduleUpdateResponseParser">A delegate to parse custom PullDynamicScheduleUpdate responses.</param>
         public static Boolean TryParse(PullDynamicScheduleUpdateRequest                                 Request,
                                        JObject                                                          JSON,
-                                       SourceRouting                                                Destination,
+                                       SourceRouting                                                    Destination,
                                        NetworkPath                                                      NetworkPath,
                                        [NotNullWhen(true)]  out PullDynamicScheduleUpdateResponse?      PullDynamicScheduleUpdateResponse,
                                        [NotNullWhen(false)] out String?                                 ErrorResponse,
@@ -367,38 +357,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 PullDynamicScheduleUpdateResponse = null;
 
-                #region Limit                  [optional]
+                #region Limit                     [mandatory]
 
-                if (JSON.ParseOptional("limit",
-                                       "charging rate limit",
-                                       out ChargingRateValue? Limit,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "charging profile status",
+                                         ChargingProfileStatusExtensions.TryParse,
+                                         out ChargingProfileStatus Status,
+                                         out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region Limit_L2               [optional]
+                #region ChargingScheduleUpdate    [optional]
 
-                if (JSON.ParseOptional("limit_L2",
-                                       "charging rate limit on phase L2",
-                                       out ChargingRateValue? Limit_L2,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Limit_L3               [optional]
-
-                if (JSON.ParseOptional("limit_L3",
-                                       "charging rate limit on phase L3",
-                                       out ChargingRateValue? Limit_L3,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalJSON("scheduleUpdate",
+                                           "charging schedule update",
+                                           OCPPv2_1.ChargingScheduleUpdate.TryParse,
+                                           out ChargingScheduleUpdate? ChargingScheduleUpdate,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -407,127 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                #region DischargeLimit         [optional]
-
-                if (JSON.ParseOptional("dischargeLimit",
-                                       "discharging rate limit",
-                                       out ChargingRateValue? DischargeLimit,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region DischargeLimit_L2      [optional]
-
-                if (JSON.ParseOptional("dischargeLimit_L2",
-                                       "discharging rate limit on phase L2",
-                                       out ChargingRateValue? DischargeLimit_L2,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region DischargeLimit_L3      [optional]
-
-                if (JSON.ParseOptional("dischargeLimit_L3",
-                                       "discharging rate limit on phase L3",
-                                       out ChargingRateValue? DischargeLimit_L3,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-
-                #region Setpoint               [optional]
-
-                if (JSON.ParseOptional("setpoint",
-                                       "charging rate setpoint",
-                                       out ChargingRateValue? Setpoint,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Setpoint_L2            [optional]
-
-                if (JSON.ParseOptional("setpoint_L2",
-                                       "charging rate setpoint on phase L2",
-                                       out ChargingRateValue? Setpoint_L2,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Setpoint_L3            [optional]
-
-                if (JSON.ParseOptional("setpoint_L3",
-                                       "charging rate setpoint on phase L3",
-                                       out ChargingRateValue? Setpoint_L3,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-
-                #region SetpointReactive       [optional]
-
-                if (JSON.ParseOptional("setpointReactive",
-                                       "charging rate setpoint reactive",
-                                       out ChargingRateValue? SetpointReactive,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region SetpointReactive_L2    [optional]
-
-                if (JSON.ParseOptional("setpointReactive_L2",
-                                       "charging rate setpoint reactive on phase L2",
-                                       out ChargingRateValue? SetpointReactive_L2,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region SetpointReactive_L3    [optional]
-
-                if (JSON.ParseOptional("setpointReactive_L3",
-                                       "charging rate setpoint reactive on phase L3",
-                                       out ChargingRateValue? SetpointReactive_L3,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-
-                #region Signatures             [optional, OCPP_CSE]
+                #region Signatures                [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -541,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData             [optional]
+                #region CustomData                [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -560,21 +418,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                                         Request,
 
-                                                        Limit,
-                                                        Limit_L2,
-                                                        Limit_L3,
-
-                                                        DischargeLimit,
-                                                        DischargeLimit_L2,
-                                                        DischargeLimit_L3,
-
-                                                        Setpoint,
-                                                        Setpoint_L2,
-                                                        Setpoint_L3,
-
-                                                        SetpointReactive,
-                                                        SetpointReactive_L2,
-                                                        SetpointReactive_L3,
+                                                        Status,
+                                                        ChargingScheduleUpdate,
 
                                                         null,
                                                         ResponseTimestamp,
@@ -618,6 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(Boolean                                                              IncludeJSONLDContext                                = false,
                               CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateResponse>?  CustomPullDynamicScheduleUpdateResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingScheduleUpdate>?             CustomChargingScheduleUpdateSerializer              = null,
                               CustomJObjectSerializerDelegate<Signature>?                          CustomSignatureSerializer                           = null,
                               CustomJObjectSerializerDelegate<CustomData>?                         CustomCustomDataSerializer                          = null)
         {
@@ -625,68 +471,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var json = JSONObject.Create(
 
                            IncludeJSONLDContext
-                               ? new JProperty("@context",              DefaultJSONLDContext.ToString())
+                               ? new JProperty("@context",         DefaultJSONLDContext.  ToString())
                                : null,
 
-                           Limit.              HasValue
-                               ? new JProperty("limit",                 Limit.              Value.Value)
-                               : null,
+                                 new JProperty("status",           Status.                ToString()),
 
-                           Limit_L2.           HasValue
-                               ? new JProperty("limit_L2",              Limit_L2.           Value.Value)
-                               : null,
-
-                           Limit_L3.           HasValue
-                               ? new JProperty("limit_L3",              Limit_L3.           Value.Value)
-                               : null,
-
-
-                           DischargeLimit.     HasValue
-                               ? new JProperty("dischargeLimit",        DischargeLimit.     Value.Value)
-                               : null,
-
-                           DischargeLimit_L2.  HasValue
-                               ? new JProperty("dischargeLimit_L2",     DischargeLimit_L2.  Value.Value)
-                               : null,
-
-                           DischargeLimit_L3.  HasValue
-                               ? new JProperty("dischargeLimit_L3",     DischargeLimit_L3.  Value.Value)
-                               : null,
-
-
-                           Setpoint.           HasValue
-                               ? new JProperty("setpoint",              Setpoint.           Value.Value)
-                               : null,
-
-                           Setpoint_L2.        HasValue
-                               ? new JProperty("setpoint_L2",           Setpoint_L2.        Value.Value)
-                               : null,
-
-                           Setpoint_L3.        HasValue
-                               ? new JProperty("setpoint_L3",           Setpoint_L3.        Value.Value)
-                               : null,
-
-
-                           SetpointReactive.   HasValue
-                               ? new JProperty("setpointReactive",      SetpointReactive.   Value.Value)
-                               : null,
-
-                           SetpointReactive_L2.HasValue
-                               ? new JProperty("setpointReactive_L2",   SetpointReactive_L2.Value.Value)
-                               : null,
-
-                           SetpointReactive_L3.HasValue
-                               ? new JProperty("setpointReactive_L3",   SetpointReactive_L3.Value.Value)
+                           ChargingScheduleUpdate is not null
+                               ? new JProperty("scheduleUpdate",   ChargingScheduleUpdate.ToJSON(CustomChargingScheduleUpdateSerializer,
+                                                                                                 CustomCustomDataSerializer))
                                : null,
 
 
                            Signatures.Any()
-                               ? new JProperty("signatures",            new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                                   CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",       new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                              CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",            CustomData.          ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.            ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -726,23 +528,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    Request,
 
+                   ChargingProfileStatus.Rejected,
                    null,
-                   null,
-                   null,
-
-                   null,
-                   null,
-                   null,
-
-                   null,
-                   null,
-                   null,
-
-                   null,
-                   null,
-                   null,
-
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -770,7 +558,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                            String                            ErrorDescription)
 
             => new (Request,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    ChargingProfileStatus.Rejected,
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -784,9 +573,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        String                            ErrorDescription)
 
             => new (Request,
-                    Result:OCPPv2_1.Result.SignatureError(
-                                $"Invalid signature(s): {ErrorDescription}"
-                            ));
+                    ChargingProfileStatus.Rejected,
+                    Result:  Result.SignatureError(
+                                 $"Invalid signature(s): {ErrorDescription}"
+                             ));
 
 
         /// <summary>
@@ -798,7 +588,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                String?                           Description   = null)
 
             => new (Request,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    ChargingProfileStatus.Rejected,
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -810,7 +601,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                          Exception                         Exception)
 
             => new (Request,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    ChargingProfileStatus.Rejected,
+                    Result:  Result.FromException(Exception));
 
         #endregion
 
@@ -885,56 +677,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => PullDynamicScheduleUpdateResponse is not null &&
 
-             ((!Limit.              HasValue && !PullDynamicScheduleUpdateResponse.Limit.              HasValue) ||
-                Limit.              HasValue &&  PullDynamicScheduleUpdateResponse.Limit.              HasValue &&
-                Limit.              Value.Equals(PullDynamicScheduleUpdateResponse.Limit.              Value))  &&
+               Status.Equals(PullDynamicScheduleUpdateResponse.Status) &&
 
-             ((!Limit_L2.           HasValue && !PullDynamicScheduleUpdateResponse.Limit_L2.           HasValue) ||
-                Limit_L2.           HasValue &&  PullDynamicScheduleUpdateResponse.Limit_L2.           HasValue &&
-                Limit_L2.           Value.Equals(PullDynamicScheduleUpdateResponse.Limit_L2.           Value))  &&
-
-             ((!Limit_L3.           HasValue && !PullDynamicScheduleUpdateResponse.Limit_L3.           HasValue) ||
-                Limit_L3.           HasValue &&  PullDynamicScheduleUpdateResponse.Limit_L3.           HasValue &&
-                Limit_L3.           Value.Equals(PullDynamicScheduleUpdateResponse.Limit_L3.           Value))  &&
-
-
-             ((!DischargeLimit.     HasValue && !PullDynamicScheduleUpdateResponse.DischargeLimit.     HasValue) ||
-                DischargeLimit.     HasValue &&  PullDynamicScheduleUpdateResponse.DischargeLimit.     HasValue &&
-                DischargeLimit.     Value.Equals(PullDynamicScheduleUpdateResponse.DischargeLimit.     Value))  &&
-
-             ((!DischargeLimit_L2.  HasValue && !PullDynamicScheduleUpdateResponse.DischargeLimit_L2.  HasValue) ||
-                DischargeLimit_L2.  HasValue &&  PullDynamicScheduleUpdateResponse.DischargeLimit_L2.  HasValue &&
-                DischargeLimit_L2.  Value.Equals(PullDynamicScheduleUpdateResponse.DischargeLimit_L2.  Value))  &&
-
-             ((!DischargeLimit_L3.  HasValue && !PullDynamicScheduleUpdateResponse.DischargeLimit_L3.  HasValue) ||
-                DischargeLimit_L3.  HasValue &&  PullDynamicScheduleUpdateResponse.DischargeLimit_L3.  HasValue &&
-                DischargeLimit_L3.  Value.Equals(PullDynamicScheduleUpdateResponse.DischargeLimit_L3.  Value))  &&
-
-
-             ((!Setpoint.           HasValue && !PullDynamicScheduleUpdateResponse.Setpoint.           HasValue) ||
-                Setpoint.           HasValue &&  PullDynamicScheduleUpdateResponse.Setpoint.           HasValue &&
-                Setpoint.           Value.Equals(PullDynamicScheduleUpdateResponse.Setpoint.           Value))  &&
-
-             ((!Setpoint_L2.        HasValue && !PullDynamicScheduleUpdateResponse.Setpoint_L2.        HasValue) ||
-                Setpoint_L2.        HasValue &&  PullDynamicScheduleUpdateResponse.Setpoint_L2.        HasValue &&
-                Setpoint_L2.        Value.Equals(PullDynamicScheduleUpdateResponse.Setpoint_L2.        Value))  &&
-
-             ((!Setpoint_L3.        HasValue && !PullDynamicScheduleUpdateResponse.Setpoint_L3.        HasValue) ||
-                Setpoint_L3.        HasValue &&  PullDynamicScheduleUpdateResponse.Setpoint_L3.        HasValue &&
-                Setpoint_L3.        Value.Equals(PullDynamicScheduleUpdateResponse.Setpoint_L3.        Value))  &&
-
-
-             ((!SetpointReactive.   HasValue && !PullDynamicScheduleUpdateResponse.SetpointReactive.   HasValue) ||
-                SetpointReactive.   HasValue &&  PullDynamicScheduleUpdateResponse.SetpointReactive.   HasValue &&
-                SetpointReactive.   Value.Equals(PullDynamicScheduleUpdateResponse.SetpointReactive.   Value))  &&
-
-             ((!SetpointReactive_L2.HasValue && !PullDynamicScheduleUpdateResponse.SetpointReactive_L2.HasValue) ||
-                SetpointReactive_L2.HasValue &&  PullDynamicScheduleUpdateResponse.SetpointReactive_L2.HasValue &&
-                SetpointReactive_L2.Value.Equals(PullDynamicScheduleUpdateResponse.SetpointReactive_L2.Value))  &&
-
-             ((!SetpointReactive_L3.HasValue && !PullDynamicScheduleUpdateResponse.SetpointReactive_L3.HasValue) ||
-                SetpointReactive_L3.HasValue &&  PullDynamicScheduleUpdateResponse.SetpointReactive_L3.HasValue &&
-                SetpointReactive_L3.Value.Equals(PullDynamicScheduleUpdateResponse.SetpointReactive_L3.Value))  &&
+             ((ChargingScheduleUpdate is     null && PullDynamicScheduleUpdateResponse.ChargingScheduleUpdate is     null) ||
+              (ChargingScheduleUpdate is not null && PullDynamicScheduleUpdateResponse.ChargingScheduleUpdate is not null && ChargingScheduleUpdate.Equals(PullDynamicScheduleUpdateResponse.ChargingScheduleUpdate))) &&
 
                base.GenericEquals(PullDynamicScheduleUpdateResponse);
 
@@ -961,61 +707,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => new[] {
+            => String.Concat(
 
-                   Limit.HasValue
-                       ? "limit: "                + Limit.              Value.ToString()
-                       : null,
+                   Status.ToString(),
 
-                   Limit_L2.HasValue
-                       ? "limit L2: "             + Limit_L2.           Value.ToString()
-                       : null,
-
-                   Limit_L3.HasValue
-                       ? "limit L3: "             + Limit_L3.           Value.ToString()
-                       : null,
-
-
-                   DischargeLimit.HasValue
-                       ? "discharge limit: "      + DischargeLimit.     Value.ToString()
-                       : null,
-
-                   DischargeLimit_L2.HasValue
-                       ? "discharge limit L2: "   + DischargeLimit_L2.  Value.ToString()
-                       : null,
-
-                   DischargeLimit_L3.HasValue
-                       ? "discharge limit L3: "   + DischargeLimit_L3.  Value.ToString()
-                       : null,
-
-
-                   Setpoint.HasValue
-                       ? "setpoint: "             + Setpoint.           Value.ToString()
-                       : null,
-
-                   Setpoint_L2.HasValue
-                       ? "setpoint L2: "          + Setpoint_L2.        Value.ToString()
-                       : null,
-
-                   Setpoint_L3.HasValue
-                       ? "setpoint L3: "          + Setpoint_L3.        Value.ToString()
-                       : null,
-
-
-                   SetpointReactive.HasValue
-                       ? "setpoint reactive: "    + SetpointReactive.   Value.ToString()
-                       : null,
-
-                   SetpointReactive_L2.HasValue
-                       ? "setpoint reactive L2: " + SetpointReactive_L2.Value.ToString()
-                       : null,
-
-                   SetpointReactive_L3.HasValue
-                       ? "setpoint reactive L3: " + SetpointReactive_L3.Value.ToString()
+                   ChargingScheduleUpdate is not null
+                       ? $", schedule update: {ChargingScheduleUpdate}"
                        : null
 
-               }.Where(value => value is not null).
-                 AggregateWith(", ");
+               );
 
         #endregion
 

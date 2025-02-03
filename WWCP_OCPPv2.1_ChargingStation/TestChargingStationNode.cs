@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   TriggerReason:        TriggerReason.RemoteStart,
                                   SequenceNumber:       1,
                                   TransactionInfo:      new Transaction(
-                                                            TransactionId:       evse.TransactionId.Value,
+                                                            Id:       evse.TransactionId.Value,
                                                             ChargingState:       ChargingStates.Charging,
                                                             TimeSpentCharging:   TimeSpan.Zero,
                                                             StoppedReason:       null,
@@ -813,7 +813,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   TriggerReason:        TriggerReason.RemoteStop,
                                   SequenceNumber:       2,
                                   TransactionInfo:      new Transaction(
-                                                            TransactionId:       evse.TransactionId!.Value,
+                                                            Id:       evse.TransactionId!.Value,
                                                             ChargingState:       ChargingStates.Idle,
                                                             TimeSpentCharging:   evse.StopTimestamp - evse.StartTimestamp,
                                                             StoppedReason:       StopTransactionReason.Remote,
@@ -1072,7 +1072,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return Task.FromResult(
                            new UsePriorityChargingResponse(
                                Request:      request,
-                               Status:       GenericStatus.Accepted,
+                               Status:       PriorityChargingStatus.Accepted,
                                StatusInfo:   null,
                                CustomData:   null
                            )
@@ -2738,9 +2738,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 CancellationToken.None);
 
 
-                if (request.RequestedMessage == MessageTrigger.BootNotification ||
-                    request.RequestedMessage == MessageTrigger.LogStatusNotification ||
-                    request.RequestedMessage == MessageTrigger.DiagnosticsStatusNotification ||
+                if (request.RequestedMessage == MessageTrigger.BootNotification           ||
+                    request.RequestedMessage == MessageTrigger.LogStatusNotification      ||
                     request.RequestedMessage == MessageTrigger.FirmwareStatusNotification ||
                   //MessageTriggers.Heartbeat
                     request.RequestedMessage == MessageTrigger.SignChargingStationCertificate)
@@ -2885,7 +2884,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             request,
                                             ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming UnpublishFirmware request for '" + request.MD5Checksum + "'.");
+                DebugX.Log($"Charging station '{Id}': Incoming UnpublishFirmware request for '" + request.Checksum + "'.");
 
                 // MD5Checksum
 

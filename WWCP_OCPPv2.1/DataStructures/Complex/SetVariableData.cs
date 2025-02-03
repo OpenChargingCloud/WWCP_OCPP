@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region OldAttributeValue    [optional, OCPP_CSE]
 
-                var OldAttributeValue = JSON["oldAttributeValue"]?.Value<String>();
+                var OldAttributeValue = JSON.GetString("oldAttributeValue");
 
                 #endregion
 

@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region TaxRuleName                    [optional]
 
-                var TaxRuleName = JSON["taxRuleName"]?.Value<String>();
+                var TaxRuleName = JSON.GetString("taxRuleName");
 
                 #endregion
 

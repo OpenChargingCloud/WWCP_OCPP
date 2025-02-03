@@ -355,7 +355,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-
                 #region Signatures       [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",

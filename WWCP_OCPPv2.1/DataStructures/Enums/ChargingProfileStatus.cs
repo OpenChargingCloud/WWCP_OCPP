@@ -80,10 +80,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ChargingProfileStatus = ChargingProfileStatus.Rejected;
                     return true;
 
-                case "NotSupported":
-                    ChargingProfileStatus = ChargingProfileStatus.NotSupported;
-                    return true;
-
                 default:
                     ChargingProfileStatus = ChargingProfileStatus.Unknown;
                     return false;
@@ -98,10 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this ChargingProfileStatus ChargingProfileStatus)
 
             => ChargingProfileStatus switch {
-                   ChargingProfileStatus.Accepted      => "Accepted",
-                   ChargingProfileStatus.Rejected      => "Rejected",
-                   ChargingProfileStatus.NotSupported  => "NotSupported",
-                   _                                   => "Unknown"
+                   ChargingProfileStatus.Accepted  => "Accepted",
+                   ChargingProfileStatus.Rejected  => "Rejected",
+                   _                               => "Unknown"
                };
 
         #endregion
@@ -128,12 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Request has not been accepted and will not be executed.
         /// </summary>
-        Rejected,
-
-        /// <summary>
-        /// Charge Point indicates that the request is not supported.
-        /// </summary>
-        NotSupported
+        Rejected
 
     }
 

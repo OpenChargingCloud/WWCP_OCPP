@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unique identification of the transaction.
         /// </summary>
         [Mandatory]
-        public Transaction_Id          TransactionId            { get; }
+        public Transaction_Id          Id                       { get; }
 
         /// <summary>
         /// The optional current charging state.
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional unique charging tariff identification used for the transaction.
         /// </summary>
         [Optional]
-        public Tariff_Id?              ChargingTariffId         { get; }
+        public Tariff_Id?              TariffId                 { get; }
 
         #endregion
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new additional case insensitive authorization identifier.
         /// </summary>
-        /// <param name="TransactionId">The unique identification of the transaction.</param>
+        /// <param name="Id">The unique identification of the transaction.</param>
         /// <param name="ChargingState">The optional current charging state.</param>
         /// <param name="TimeSpentCharging">The optional total time that energy flowed from the EVSE to the EV during this transaction.</param>
         /// <param name="StoppedReason">The optional reason why the transaction was stopped. MAY only be omitted when reason is "Local".</param>
@@ -116,9 +116,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TransactionLimits">Optional maximum cost/energy/time limits for this transaction.</param>
         /// <param name="PreconditioningStatus">The current preconditioning status of the BMS in the EV. Default value is Unknown.</param>
         /// <param name="EVSESleep">True when EVSE electronics are in sleep mode for this transaction. Default value(when absent) is false.</param>
-        /// <param name="ChargingTariffId">An optional unique charging tariff identification used for the transaction.</param>
+        /// <param name="TariffId">An optional unique charging tariff identification used for the transaction.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public Transaction(Transaction_Id          TransactionId,
+        public Transaction(Transaction_Id          Id,
                            ChargingStates?         ChargingState           = null,
                            TimeSpan?               TimeSpentCharging       = null,
                            StopTransactionReason?  StoppedReason           = null,
@@ -127,14 +127,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            TransactionLimits?      TransactionLimits       = null,
                            PreconditioningStatus?  PreconditioningStatus   = null,
                            Boolean?                EVSESleep               = null,
-                           Tariff_Id?              ChargingTariffId        = null,
+                           Tariff_Id?              TariffId                = null,
                            CustomData?             CustomData              = null)
 
             : base(CustomData)
 
         {
 
-            this.TransactionId          = TransactionId;
+            this.Id                     = Id;
             this.ChargingState          = ChargingState;
             this.TimeSpentCharging      = TimeSpentCharging;
             this.StoppedReason          = StoppedReason;
@@ -143,19 +143,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.TransactionLimits      = TransactionLimits;
             this.PreconditioningStatus  = PreconditioningStatus;
             this.EVSESleep              = EVSESleep;
-            this.ChargingTariffId       = ChargingTariffId;
+            this.TariffId               = TariffId;
 
             unchecked
             {
 
-                hashCode = this.TransactionId.         GetHashCode()       * 31 ^
+                hashCode = this.Id.                    GetHashCode()       * 31 ^
                           (this.ChargingState?.        GetHashCode() ?? 0) * 29 ^
                           (this.TimeSpentCharging?.    GetHashCode() ?? 0) * 23 ^
                           (this.StoppedReason?.        GetHashCode() ?? 0) * 19 ^
                           (this.RemoteStartId?.        GetHashCode() ?? 0) * 17 ^
                           (this.OperationMode?.        GetHashCode() ?? 0) * 13 ^
                           (this.TransactionLimits?.    GetHashCode() ?? 0) * 11 ^
-                          (this.ChargingTariffId?.     GetHashCode() ?? 0) *  7 ^
+                          (this.TariffId?.             GetHashCode() ?? 0) *  7 ^
                           (this.PreconditioningStatus?.GetHashCode() ?? 0) *  5 ^
                           (this.EVSESleep?.            GetHashCode() ?? 0) *  3 ^
                            base.                       GetHashCode();
@@ -167,10 +167,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "javaType": "Transaction",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "transactionId": {
+        //             "description": "This contains the Id of the transaction.",
+        //             "type": "string",
+        //             "maxLength": 36
+        //         },
+        //         "chargingState": {
+        //             "$ref": "#/definitions/ChargingStateEnumType"
+        //         },
+        //         "timeSpentCharging": {
+        //             "description": "Contains the total time that energy flowed from EVSE to EV during the transaction (in seconds). Note that timeSpentCharging is smaller or equal to the duration of the transaction.",
+        //             "type": "integer"
+        //         },
+        //         "stoppedReason": {
+        //             "$ref": "#/definitions/ReasonEnumType"
+        //         },
+        //         "remoteStartId": {
+        //             "description": "The ID given to remote start request (&lt;&lt;requeststarttransactionrequest, RequestStartTransactionRequest&gt;&gt;. This enables to CSMS to match the started transaction to the given start request.",
+        //             "type": "integer"
+        //         },
+        //         "operationMode": {
+        //             "$ref": "#/definitions/OperationModeEnumType"
+        //         },
+        //         "tariffId": {
+        //             "description": "*(2.1)* Id of tariff in use for transaction",
+        //             "type": "string",
+        //             "maxLength": 60
+        //         },
+        //         "transactionLimit": {
+        //             "$ref": "#/definitions/TransactionLimitType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "transactionId"
+        //     ]
+        // }
 
         #endregion
 
@@ -362,12 +403,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region ChargingTariffId         [optional]
+                #region TariffId                 [optional]
 
                 if (JSON.ParseOptional("tariffId",
-                                       "charging tariff identification",
+                                       "tariff identification",
                                        Tariff_Id.TryParse,
-                                       out Tariff_Id? ChargingTariffId,
+                                       out Tariff_Id? TariffId,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -402,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   TransactionLimits,
                                   PreconditioningStatus,
                                   EVSESleep,
-                                  ChargingTariffId,
+                                  TariffId,
 
                                   CustomData
 
@@ -439,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("transactionId",           TransactionId.   Value),
+                                 new JProperty("transactionId",           Id.   Value),
 
                            ChargingState.HasValue
                                ? new JProperty("chargingState",           ChargingState.   Value.AsText())
@@ -470,11 +511,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            EVSESleep is not null
-                               ? new JProperty("evseSleep",               EVSESleep.Value)
+                               ? new JProperty("evseSleep",               EVSESleep.       Value)
                                : null,
 
-                           ChargingTariffId.HasValue
-                               ? new JProperty("tariffId",                ChargingTariffId.Value.ToString())
+                           TariffId.HasValue
+                               ? new JProperty("tariffId",                TariffId.        Value.ToString())
                                : null,
 
 
@@ -563,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => Transaction is not null &&
 
-               TransactionId.Equals(Transaction.TransactionId) &&
+               Id.Equals(Transaction.Id) &&
 
             ((!ChargingState.        HasValue    && !Transaction.ChargingState.        HasValue) ||
                ChargingState.        HasValue    &&  Transaction.ChargingState.        HasValue    && ChargingState.        Value.Equals(Transaction.ChargingState.        Value)) &&
@@ -589,8 +630,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             ((!EVSESleep.            HasValue    && !Transaction.EVSESleep.            HasValue)    ||
                EVSESleep.            HasValue    &&  Transaction.EVSESleep.            HasValue    && EVSESleep.            Value.Equals(Transaction.EVSESleep.            Value)) &&
 
-            ((!ChargingTariffId.     HasValue    && !Transaction.ChargingTariffId.     HasValue) ||
-               ChargingTariffId.     HasValue    &&  Transaction.ChargingTariffId.     HasValue    && ChargingTariffId.     Value.Equals(Transaction.ChargingTariffId.     Value)) &&
+            ((!TariffId.     HasValue    && !Transaction.TariffId.     HasValue) ||
+               TariffId.     HasValue    &&  Transaction.TariffId.     HasValue    && TariffId.     Value.Equals(Transaction.TariffId.     Value)) &&
 
                base.Equals(Transaction);
 
@@ -619,7 +660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   TransactionId,
+                   Id,
 
                    ChargingState.HasValue
                        ? ", charging state:"       + ChargingState.Value.AsText()

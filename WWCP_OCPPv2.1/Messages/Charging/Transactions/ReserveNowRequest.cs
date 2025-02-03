@@ -190,166 +190,126 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ReserveNowRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ReserveNowRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "AdditionalInfoType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "AdditionalInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalIdToken": {
+        //                     "description": "*(2.1)* This field specifies the additional IdToken.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "_additionalInfo_ can be used to send extra information to CSMS in addition to the regular authorization with _IdToken_. _AdditionalInfo_ contains one or more custom _types_, which need to be agreed upon by all parties involved. When the _type_ is not supported, the CSMS/Charging Station MAY ignore the _additionalInfo_.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "additionalIdToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "IdTokenType": {
+        //             "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
+        //             "javaType": "IdToken",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "additionalInfo": {
+        //                     "type": "array",
+        //                     "additionalItems": false,
+        //                     "items": {
+        //                         "$ref": "#/definitions/AdditionalInfoType"
+        //                     },
+        //                     "minItems": 1
+        //                 },
+        //                 "idToken": {
+        //                     "description": "*(2.1)* IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 },
+        //                 "type": {
+        //                     "description": "*(2.1)* Enumeration of possible idToken types. Values defined in Appendix as IdTokenEnumStringType.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "idToken",
+        //                 "type"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ConnectorEnumType": {
-        //       "description": "This field specifies the connector type.",
-        //       "javaType": "ConnectorEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "cCCS1",
-        //         "cCCS2",
-        //         "cG105",
-        //         "cTesla",
-        //         "cType1",
-        //         "cType2",
-        //         "s309-1P-16A",
-        //         "s309-1P-32A",
-        //         "s309-3P-16A",
-        //         "s309-3P-32A",
-        //         "sBS1361",
-        //         "sCEE-7-7",
-        //         "sType2",
-        //         "sType3",
-        //         "Other1PhMax16A",
-        //         "Other1PhOver16A",
-        //         "Other3Ph",
-        //         "Pan",
-        //         "wInductive",
-        //         "wResonant",
-        //         "Undetermined",
-        //         "Unknown"
-        //       ]
-        //     },
-        //     "IdTokenEnumType": {
-        //       "description": "Enumeration of possible idToken types.",
-        //       "javaType": "IdTokenEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Central",
-        //         "eMAID",
-        //         "ISO14443",
-        //         "ISO15693",
-        //         "KeyCode",
-        //         "Local",
-        //         "MacAddress",
-        //         "NoAuthorization"
-        //       ]
-        //     },
-        //     "AdditionalInfoType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "AdditionalInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "description": "Id of reservation.",
+        //             "type": "integer",
+        //             "minimum": 0.0
         //         },
-        //         "additionalIdToken": {
-        //           "description": "This field specifies the additional IdToken.",
-        //           "type": "string",
-        //           "maxLength": 36
+        //         "expiryDateTime": {
+        //             "description": "Date and time at which the reservation expires.",
+        //             "type": "string",
+        //             "format": "date-time"
         //         },
-        //         "type": {
-        //           "description": "This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "additionalIdToken",
-        //         "type"
-        //       ]
-        //     },
-        //     "IdTokenType": {
-        //       "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.",
-        //       "javaType": "IdToken",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "additionalInfo": {
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "$ref": "#/definitions/AdditionalInfoType"
-        //           },
-        //           "minItems": 1
+        //         "connectorType": {
+        //             "description": "This field specifies the connector type. Values defined in Appendix as ConnectorEnumStringType.",
+        //             "type": "string",
+        //             "maxLength": 20
         //         },
         //         "idToken": {
-        //           "description": "IdToken is case insensitive. Might hold the hidden id of an RFID tag, but can for example also contain a UUID.",
-        //           "type": "string",
-        //           "maxLength": 36
+        //             "$ref": "#/definitions/IdTokenType"
         //         },
-        //         "type": {
-        //           "$ref": "#/definitions/IdTokenEnumType"
+        //         "evseId": {
+        //             "description": "This contains ID of the evse to be reserved.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "groupIdToken": {
+        //             "$ref": "#/definitions/IdTokenType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "idToken",
-        //         "type"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "id": {
-        //       "description": "Id of reservation.",
-        //       "type": "integer"
-        //     },
-        //     "expiryDateTime": {
-        //       "description": "Date and time at which the reservation expires.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "connectorType": {
-        //       "$ref": "#/definitions/ConnectorEnumType"
-        //     },
-        //     "idToken": {
-        //       "$ref": "#/definitions/IdTokenType"
-        //     },
-        //     "evseId": {
-        //       "description": "This contains ID of the evse to be reserved.",
-        //       "type": "integer"
-        //     },
-        //     "groupIdToken": {
-        //       "$ref": "#/definitions/IdTokenType"
-        //     }
-        //   },
-        //   "required": [
-        //     "id",
-        //     "expiryDateTime",
-        //     "idToken"
-        //   ]
+        //     "required": [
+        //         "id",
+        //         "expiryDateTime",
+        //         "idToken"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomReserveNowRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ReserveNow request.
@@ -364,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNow requests.</param>
         public static ReserveNowRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              SourceRouting                                Destination,
+                                              SourceRouting                                    Destination,
                                               NetworkPath                                      NetworkPath,
                                               DateTime?                                        RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
@@ -393,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ReserveNowRequest, out ErrorResponse, CustomReserveNowRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ReserveNowRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ReserveNow request.
@@ -410,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNowRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       SourceRouting                                Destination,
+                                       SourceRouting                                    Destination,
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out ReserveNowRequest?      ReserveNowRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,

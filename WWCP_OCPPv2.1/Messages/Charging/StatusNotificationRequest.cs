@@ -166,72 +166,74 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:StatusNotificationRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:StatusNotificationRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ConnectorStatusEnumType": {
+        //             "description": "This contains the current status of the Connector.",
+        //             "javaType": "ConnectorStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Available",
+        //                 "Occupied",
+        //                 "Reserved",
+        //                 "Unavailable",
+        //                 "Faulted"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ConnectorStatusEnumType": {
-        //       "description": "This contains the current status of the Connector.",
-        //       "javaType": "ConnectorStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Available",
-        //         "Occupied",
-        //         "Reserved",
-        //         "Unavailable",
-        //         "Faulted"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "timestamp": {
+        //             "description": "The time for which the status is reported.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "connectorStatus": {
+        //             "$ref": "#/definitions/ConnectorStatusEnumType"
+        //         },
+        //         "evseId": {
+        //             "description": "The id of the EVSE to which the connector belongs for which the the status is reported.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "connectorId": {
+        //             "description": "The id of the connector within the EVSE for which the status is reported.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "timestamp": {
-        //       "description": "The time for which the status is reported. If absent time of receipt of the message will be assumed.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "connectorStatus": {
-        //       "$ref": "#/definitions/ConnectorStatusEnumType"
-        //     },
-        //     "evseId": {
-        //       "description": "The id of the EVSE to which the connector belongs for which the the status is reported.",
-        //       "type": "integer"
-        //     },
-        //     "connectorId": {
-        //       "description": "The id of the connector within the EVSE for which the status is reported.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "timestamp",
-        //     "connectorStatus",
-        //     "evseId",
-        //     "connectorId"
-        //   ]
+        //     "required": [
+        //         "timestamp",
+        //         "connectorStatus",
+        //         "evseId",
+        //         "connectorId"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a StatusNotification request.
@@ -246,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom StatusNotification requests.</param>
         public static StatusNotificationRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      SourceRouting                                        Destination,
+                                                      SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
                                                       DateTime?                                                RequestTimestamp                        = null,
                                                       TimeSpan?                                                RequestTimeout                          = null,
@@ -275,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out StatusNotificationRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a StatusNotification request.
@@ -292,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom StatusNotification requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       SourceRouting                                        Destination,
+                                       SourceRouting                                            Destination,
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out StatusNotificationRequest?      StatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,

@@ -94,24 +94,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public SignCertificateResponse(CS.SignCertificateRequest  Request,
-                                       GenericStatus              Status,
-                                       StatusInfo?                StatusInfo            = null,
+        public SignCertificateResponse(SignCertificateRequest   Request,
+                                       GenericStatus            Status,
+                                       StatusInfo?              StatusInfo            = null,
 
-                                       Result?                    Result                = null,
-                                       DateTime?                  ResponseTimestamp     = null,
+                                       Result?                  Result                = null,
+                                       DateTime?                ResponseTimestamp     = null,
 
-                                       SourceRouting?             Destination           = null,
-                                       NetworkPath?               NetworkPath           = null,
+                                       SourceRouting?           Destination           = null,
+                                       NetworkPath?             NetworkPath           = null,
 
-                                       IEnumerable<KeyPair>?      SignKeys              = null,
-                                       IEnumerable<SignInfo>?     SignInfos             = null,
-                                       IEnumerable<Signature>?    Signatures            = null,
+                                       IEnumerable<KeyPair>?    SignKeys              = null,
+                                       IEnumerable<SignInfo>?   SignInfos             = null,
+                                       IEnumerable<Signature>?  Signatures            = null,
 
-                                       CustomData?                CustomData            = null,
+                                       CustomData?              CustomData            = null,
 
-                                       SerializationFormats?      SerializationFormat   = null,
-                                       CancellationToken          CancellationToken     = default)
+                                       SerializationFormats?    SerializationFormat   = null,
+                                       CancellationToken        CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -151,80 +151,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SignCertificateResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:SignCertificateResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "GenericStatusEnumType": {
+        //             "description": "Specifies whether the CSMS can process the request.",
+        //             "javaType": "GenericStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "GenericStatusEnumType": {
-        //       "description": "Specifies whether the CSMS can process the request.",
-        //       "javaType": "GenericStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Rejected"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/GenericStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "status": {
-        //       "$ref": "#/definitions/GenericStatusEnumType"
-        //     },
-        //     "statusInfo": {
-        //       "$ref": "#/definitions/StatusInfoType"
-        //     }
-        //   },
-        //   "required": [
-        //     "status"
-        //   ]
+        //     "required": [
+        //         "status"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomSignCertificateRequestParser = null)
+        #region (static) Parse   (Request, JSON, RequestId, Destination, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SignCertificate response.
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom SignCertificate responses.</param>
         public static SignCertificateResponse Parse(CS.SignCertificateRequest                              Request,
                                                     JObject                                                JSON,
-                                                    SourceRouting                                      Destination,
+                                                    SourceRouting                                          Destination,
                                                     NetworkPath                                            NetworkPath,
                                                     DateTime?                                              ResponseTimestamp                     = null,
                                                     CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null,
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out SignCertificateResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, RequestId, Destination, out SignCertificateResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SignCertificate response.
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom SignCertificate responses.</param>
         public static Boolean TryParse(CS.SignCertificateRequest                              Request,
                                        JObject                                                JSON,
-                                       SourceRouting                                      Destination,
+                                       SourceRouting                                          Destination,
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out SignCertificateResponse?      SignCertificateResponse,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Request,
                    GenericStatus.Rejected,
                    null,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -492,7 +492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => new (Request,
                     GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FormationViolation(
+                    Result:  Result.FormationViolation(
                                  $"Invalid data format: {ErrorDescription}"
                              ));
 
@@ -507,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => new (Request,
                     GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.SignatureError(
+                    Result:  Result.SignatureError(
                                  $"Invalid signature(s): {ErrorDescription}"
                              ));
 
@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => new (Request,
                     GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.Server(Description));
+                    Result:  Result.Server(Description));
 
 
         /// <summary>
@@ -535,7 +535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => new (Request,
                     GenericStatus.Rejected,
-                    Result:  OCPPv2_1.Result.FromException(Exception));
+                    Result:  Result.FromException(Exception));
 
         #endregion
 

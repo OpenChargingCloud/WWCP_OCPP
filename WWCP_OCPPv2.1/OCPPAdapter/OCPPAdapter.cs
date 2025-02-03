@@ -145,6 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Custom JSON serializer delegates
 
         #region Charging Station Request  Messages
+
         public CustomJObjectSerializerDelegate<CS.BootNotificationRequest>?                             CustomBootNotificationRequestSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<CS.FirmwareStatusNotificationRequest>?                   CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
         public CustomJObjectSerializerDelegate<CS.PublishFirmwareStatusNotificationRequest>?            CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
@@ -159,8 +160,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<CS.GetCertificateStatusRequest>?                         CustomGetCertificateStatusRequestSerializer                  { get; set; }
-        //public CustomJObjectSerializerDelegate<CS.GetCRLRequest>?                                       CustomGetCRLRequestSerializer                                { get; set; }
-
         public CustomJObjectSerializerDelegate<CS.ReservationStatusUpdateRequest>?                      CustomReservationStatusUpdateRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<CS.AuthorizeRequest>?                                    CustomAuthorizeRequestSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<CS.NotifyEVChargingNeedsRequest>?                        CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
@@ -432,6 +431,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                  CustomRelativeTimeIntervalSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<ConsumptionCost>?                                       CustomConsumptionCostSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<Cost>?                                                  CustomCostSerializer                                         { get; set; }
+        public CustomJObjectSerializerDelegate<Contact>?                                               CustomContactSerializer                                      { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingScheduleUpdate>?                                CustomChargingScheduleUpdateSerializer                       { get; set; }
 
         public CustomJObjectSerializerDelegate<Tariff>?                                                CustomTariffSerializer                                       { get; set; }
         public CustomJObjectSerializerDelegate<TariffEnergy>?                                          CustomTariffEnergySerializer                                 { get; set; }

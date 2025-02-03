@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
@@ -64,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) Parse           (Text)
 
         /// <summary>
         /// Parse the given string as a charging rate value.
@@ -83,18 +89,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (Number, Unit)
+        #region (static) Parse           (Number)
 
         /// <summary>
-        /// Parse the given number as a charging rate value.
+        /// Parse the given number as a charging rate value
         /// </summary>
         /// <param name="Number">A numeric representation of a charging rate value.</param>
-        /// <param name="Unit">The unit of the charging rate value (Watt or Ampere).</param>
-        public static ChargingRateValue Parse(Decimal            Number,
-                                              ChargingRateUnits  Unit)
+        public static ChargingRateValue Parse(Decimal Number)
         {
 
-            if (TryParse(Number, Unit, out var chargingRateValue))
+            if (TryParse(Number, out var chargingRateValue))
                 return chargingRateValue;
 
             throw new ArgumentException($"Invalid numeric representation of a charging rate value: '{Number}'!",
@@ -104,7 +108,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) ParseAmperes    (Number)
+
+        /// <summary>
+        /// Parse the given number as Amperes.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging rate value.</param>
+        public static ChargingRateValue ParseAmperes(Decimal Number)
+        {
+
+            if (TryParseAmperes(Number, out var chargingRateValue))
+                return chargingRateValue;
+
+            throw new ArgumentException($"Invalid numeric representation of a charging rate value: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as Amperes.
+        /// </summary>
+        /// <param name="Amperes">A numeric representation of a charging rate value.</param>
+        public static ChargingRateValue ParseAmperes(Ampere Amperes)
+        {
+
+            if (TryParseAmperes(Amperes, out var chargingRateValue))
+                return chargingRateValue;
+
+            throw new ArgumentException($"Invalid numeric representation of a charging rate value: '{Amperes}'!",
+                                        nameof(Amperes));
+
+        }
+
+        #endregion
+
+        #region (static) ParseWatts      (Number)
+
+        /// <summary>
+        /// Parse the given number as Watts.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging rate value.</param>
+        public static ChargingRateValue ParseWatts(Decimal Number)
+        {
+
+            if (TryParseWatts(Number, out var chargingRateValue))
+                return chargingRateValue;
+
+            throw new ArgumentException($"Invalid numeric representation of a charging rate value: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as Watts.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging rate value.</param>
+        public static ChargingRateValue ParseWatts(Watt Number)
+        {
+
+            if (TryParseWatts(Number, out var chargingRateValue))
+                return chargingRateValue;
+
+            throw new ArgumentException($"Invalid numeric representation of a charging rate value: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParse        (Text)
 
         /// <summary>
         /// Try to parse the given text as a charging rate value.
@@ -122,18 +197,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Number, Unit)
+        #region (static) TryParse        (Number)
 
         /// <summary>
-        /// Try to parse the given number as a charging rate value.
+        /// Try to parse the given number as a charging rate value
         /// </summary>
         /// <param name="Number">A numeric representation of a charging rate value.</param>
-        /// <param name="Unit">The unit of the charging rate value (Watt or Ampere).</param>
-        public static ChargingRateValue? TryParse(Decimal            Number,
-                                                  ChargingRateUnits  Unit)
+        public static ChargingRateValue? TryParse(Decimal Number)
         {
 
-            if (TryParse(Number, Unit, out var chargingRateValue))
+            if (TryParse(Number, out var chargingRateValue))
                 return chargingRateValue;
 
             return null;
@@ -142,7 +215,74 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Text,         out ChargingRateValue)
+        #region (static) TryParseAmperes (Number)
+
+        /// <summary>
+        /// Try to parse the given number as Amperes.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging rate value.</param>
+        public static ChargingRateValue? TryParseAmperes(Decimal Number)
+        {
+
+            if (TryParseAmperes(Number, out var chargingRateValue))
+                return chargingRateValue;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as Amperes.
+        /// </summary>
+        /// <param name="Amperes">A numeric representation of a charging rate value.</param>
+        public static ChargingRateValue? TryParseAmperes(Ampere Amperes)
+        {
+
+            if (TryParseAmperes(Amperes, out var chargingRateValue))
+                return chargingRateValue;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseWatts   (Number)
+
+        /// <summary>
+        /// Try to parse the given number as Watts.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging rate value.</param>
+        public static ChargingRateValue? TryParseWatts(Decimal Number)
+        {
+
+            if (TryParseWatts(Number, out var chargingRateValue))
+                return chargingRateValue;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as Watts.
+        /// </summary>
+        /// <param name="Watts">A numeric representation of a charging rate value.</param>
+        public static ChargingRateValue? TryParseWatts(Watt Watts)
+        {
+
+            if (TryParseWatts(Watts, out var chargingRateValue))
+                return chargingRateValue;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParse        (Text,   out ChargingRateValue)
 
         /// <summary>
         /// Parse the given string as a charging rate value.
@@ -202,26 +342,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Number, Unit, out ChargingRateValue)
+        #region (static) TryParse        (Number, out ChargingRateValue)
 
         /// <summary>
-        /// Parse the given number as a charging rate value.
+        /// Parse the given number as a charging rate value
         /// </summary>
         /// <param name="Number">A numeric representation of a charging rate value.</param>
-        /// <param name="Unit">The unit of the charging rate value (Watt or Ampere).</param>
         /// <param name="ChargingRateValue">The parsed charging rate value.</param>
         public static Boolean TryParse(Decimal                Number,
-                                       ChargingRateUnits      Unit,
                                        out ChargingRateValue  ChargingRateValue)
         {
 
-            ChargingRateValue = new ChargingRateValue(Number, Unit);
+            ChargingRateValue = new ChargingRateValue(
+                                    Number,
+                                    ChargingRateUnits.Unknown
+                                );
 
             return true;
 
         }
 
         #endregion
+
+        #region (static) TryParseAmperes (Number, out ChargingRateValue)
+
+        /// <summary>
+        /// Parse the given number as Amperes.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging rate value.</param>
+        /// <param name="ChargingRateValue">The parsed charging rate value.</param>
+        public static Boolean TryParseAmperes(Decimal                Number,
+                                              out ChargingRateValue  ChargingRateValue)
+        {
+
+            ChargingRateValue = new ChargingRateValue(
+                                    Number,
+                                    ChargingRateUnits.Amperes
+                                );
+
+            return true;
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as Amperes.
+        /// </summary>
+        /// <param name="Amperes">A numeric representation of a charging rate value.</param>
+        /// <param name="ChargingRateValue">The parsed charging rate value.</param>
+        public static Boolean TryParseAmperes(Ampere                 Amperes,
+                                              out ChargingRateValue  ChargingRateValue)
+        {
+
+            ChargingRateValue = new ChargingRateValue(
+                                    Amperes.Value,
+                                    ChargingRateUnits.Amperes
+                                );
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseWatts   (Number, out ChargingRateValue)
+
+        /// <summary>
+        /// Parse the given number as Watts.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging rate value.</param>
+        /// <param name="ChargingRateValue">The parsed charging rate value.</param>
+        public static Boolean TryParseWatts(Decimal                Number,
+                                            out ChargingRateValue  ChargingRateValue)
+        {
+
+            ChargingRateValue = new ChargingRateValue(
+                                    Number,
+                                    ChargingRateUnits.Watts
+                                );
+
+            return true;
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as Watts.
+        /// </summary>
+        /// <param name="Watts">A numeric representation of a charging rate value.</param>
+        /// <param name="ChargingRateValue">The parsed charging rate value.</param>
+        public static Boolean TryParseWatts(Watt                   Watts,
+                                            out ChargingRateValue  ChargingRateValue)
+        {
+
+            ChargingRateValue = new ChargingRateValue(
+                                    Watts.Value,
+                                    ChargingRateUnits.Watts
+                                );
+
+            return true;
+
+        }
+
+        #endregion
+
 
         #region Clone()
 
@@ -342,8 +566,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (ChargingRateValue1.Unit == ChargingRateValue2.Unit)
-                return ChargingRateValue.Parse(ChargingRateValue1.Value + ChargingRateValue2.Value,
-                                               ChargingRateValue1.Unit);
+                return ChargingRateValue1.Unit == ChargingRateUnits.Amperes
+                           ? ChargingRateValue.ParseAmperes(ChargingRateValue1.Value + ChargingRateValue2.Value)
+                           : ChargingRateValue.ParseWatts  (ChargingRateValue1.Value + ChargingRateValue2.Value);
 
             throw new ArgumentException($"The charging rate units are not equal: {ChargingRateValue1.Unit.AsText()} vs. {ChargingRateValue2.Unit.AsText()}!");
 
@@ -363,8 +588,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (ChargingRateValue1.Unit == ChargingRateValue2.Unit)
-                return ChargingRateValue.Parse(ChargingRateValue1.Value - ChargingRateValue2.Value,
-                                               ChargingRateValue1.Unit);
+                return ChargingRateValue1.Unit == ChargingRateUnits.Amperes
+                           ? ChargingRateValue.ParseAmperes(ChargingRateValue1.Value - ChargingRateValue2.Value)
+                           : ChargingRateValue.ParseWatts  (ChargingRateValue1.Value - ChargingRateValue2.Value);
 
             throw new ArgumentException($"The charging rate units are not equal: {ChargingRateValue1.Unit.AsText()} vs. {ChargingRateValue2.Unit.AsText()}!");
 

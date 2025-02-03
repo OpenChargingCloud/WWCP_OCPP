@@ -111,39 +111,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "ReportDataType": {
-        //   "description": "Class to report components, variables and variable attributes and characteristics.",
-        //   "javaType": "ReportData",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Class to report components, variables and variable attributes and characteristics.",
+        //     "javaType": "ReportData",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "component": {
+        //             "$ref": "#/definitions/ComponentType"
+        //         },
+        //         "variable": {
+        //             "$ref": "#/definitions/VariableType"
+        //         },
+        //         "variableAttribute": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/VariableAttributeType"
+        //             },
+        //             "minItems": 1,
+        //             "maxItems": 4
+        //         },
+        //         "variableCharacteristics": {
+        //             "$ref": "#/definitions/VariableCharacteristicsType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "component": {
-        //       "$ref": "#/definitions/ComponentType"
-        //     },
-        //     "variable": {
-        //       "$ref": "#/definitions/VariableType"
-        //     },
-        //     "variableAttribute": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/VariableAttributeType"
-        //       },
-        //       "minItems": 1,
-        //       "maxItems": 4
-        //     },
-        //     "variableCharacteristics": {
-        //       "$ref": "#/definitions/VariableCharacteristicsType"
-        //     }
-        //   },
-        //   "required": [
-        //     "component",
-        //     "variable",
-        //     "variableAttribute"
-        //   ]
+        //     "required": [
+        //         "component",
+        //         "variable",
+        //         "variableAttribute"
+        //     ]
         // }
 
         #endregion

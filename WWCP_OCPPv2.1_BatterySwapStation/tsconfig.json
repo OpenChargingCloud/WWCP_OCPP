@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "allowJs": false,
+    "target": "ES6", // Set target to ES6 or newer
+    "lib": [ "ES6", "DOM" ] // Include standard library features from ES6 and DOM definitions
+  },
+  "files": [
+    "HTTPAPI/WebAPI/HTTPRoot/events/events.ts"
+  ]
+}

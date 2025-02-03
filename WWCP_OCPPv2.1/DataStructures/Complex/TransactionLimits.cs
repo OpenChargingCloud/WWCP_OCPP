@@ -106,11 +106,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
-        // tba.
+        // {
+        //     "description": "Cost, energy, time or SoC limit for a transaction.",
+        //     "javaType": "TransactionLimit",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "maxCost": {
+        //             "description": "Maximum allowed cost of transaction in currency of tariff.",
+        //             "type": "number"
+        //         },
+        //         "maxEnergy": {
+        //             "description": "Maximum allowed energy in Wh to charge in transaction.",
+        //             "type": "number"
+        //         },
+        //         "maxTime": {
+        //             "description": "Maximum duration of transaction in seconds from start to end.",
+        //             "type": "integer"
+        //         },
+        //         "maxSoC": {
+        //             "description": "Maximum State of Charge of EV in percentage.",
+        //             "type": "integer",
+        //             "minimum": 0.0,
+        //             "maximum": 100.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     }
+        // }
 
         #endregion
 

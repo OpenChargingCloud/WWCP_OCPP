@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
@@ -36,7 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A charging schedule.
     /// </summary>
     public class ChargingSchedule : ACustomData,
-                                    IEquatable<ChargingSchedule>
+                                    IEquatable<ChargingSchedule>,
+                                    IEnumerable<ChargingSchedulePeriod>
     {
 
         #region Properties
@@ -236,12 +238,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // {
         //     "description": "Charging schedule structure defines a list of charging periods, as used in: NotifyEVChargingScheduleRequest and ChargingProfileType.
-        //                     When used in a NotifyEVChargingScheduleRequest only _duration_ and _chargingSchedulePeriod_ are relevant and _chargingRateUnit_
-        //                     must be 'W'.
+        //                     When used in a NotifyEVChargingScheduleRequest only _duration_ and _chargingSchedulePeriod_ are relevant and _chargingRateUnit_ must be 'W'.
         //                     An ISO 15118-20 session may provide either an _absolutePriceSchedule_ or a _priceLevelSchedule_.
-        //                     An ISO 15118-2 session can only provide a_salesTariff_ element.
-        //                     The field _digestValue_ is used when price schedule or sales tariff are signed.
-        //
+        //                     An ISO 15118-2  session can only provide a_salesTariff_ element. The field _digestValue_ is used when price schedule or sales tariff are signed.
         //                     image::images/ChargingSchedule-Simple.png[]",
         //
         //     "javaType": "ChargingSchedule",
@@ -271,21 +270,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "type": "number"
         //         },
         //         "powerTolerance": {
-        //             "description": "Power tolerance when following EVPowerProfile.",
+        //             "description": "*(2.1)* Power tolerance when following EVPowerProfile.",
         //             "type": "number"
         //         },
         //         "signatureId": {
-        //             "description": "Id of this element for referencing in a signature.",
+        //             "description": "*(2.1)* Id of this element for referencing in a signature.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
         //         "digestValue": {
-        //             "description": "Base64 encoded hash (SHA256 for ISO 15118-2, SHA512 for ISO 15118-20) of the EXI price schedule element. Used in signature.",
+        //             "description": "*(2.1)* Base64 encoded hash (SHA256 for ISO 15118-2, SHA512 for ISO 15118-20) of the EXI price schedule element. Used in signature.",
         //             "type": "string",
         //             "maxLength": 88
         //         },
         //         "useLocalTime": {
-        //             "description": "Defaults to false. When true, disregard time zone offset in dateTime fields of  _ChargingScheduleType_ and use unqualified local time at Charging Station instead.\r\n This allows the same `Absolute` or `Recurring` charging profile to be used in both summer and winter time.",
+        //             "description": "*(2.1)* Defaults to false. When true, disregard time zone offset in dateTime fields of  _ChargingScheduleType_ and use unqualified local time at Charging Station instead.\r\n This allows the same `Absolute` or `Recurring` charging profile to be used in both summer and winter time.",
         //             "type": "boolean"
         //         },
         //         "chargingSchedulePeriod": {
@@ -298,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //             "maxItems": 1024
         //         },
         //         "randomizedDelay": {
-        //             "description": "Defaults to 0. When _randomizedDelay_ not equals zero, then the start of each &lt;&lt;cmn_chargingscheduleperiodtype,ChargingSchedulePeriodType&gt;&gt; is delayed by a randomly chosen number of seconds between 0 and _randomizedDelay_.  Only allowed for TxProfile and TxDefaultProfile.",
+        //             "description": "*(2.1)* Defaults to 0. When _randomizedDelay_ not equals zero, then the start of each &lt;&lt;cmn_chargingscheduleperiodtype,ChargingSchedulePeriodType&gt;&gt; is delayed by a randomly chosen number of seconds between 0 and _randomizedDelay_.  Only allowed for TxProfile and TxDefaultProfile.",
         //             "type": "integer",
         //             "minimum": 0.0
         //         },
@@ -338,8 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingSchedule,
                          out var errorResponse,
-                         CustomChargingScheduleParser) &&
-                chargingSchedule is not null)
+                         CustomChargingScheduleParser))
             {
                 return chargingSchedule;
             }
@@ -782,6 +780,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+
+        #region IEnumerable<ChargingSchedulePeriod> Members
+
+        public IEnumerator<ChargingSchedulePeriod> GetEnumerator()
+            => ChargingSchedulePeriods.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => ChargingSchedulePeriods.GetEnumerator();
 
         #endregion
 

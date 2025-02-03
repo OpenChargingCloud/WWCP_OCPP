@@ -184,64 +184,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:PublishFirmwareRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:PublishFirmwareRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "location": {
-        //       "description": "This contains a string containing a URI pointing to a\r\nlocation from which to retrieve the firmware.",
-        //       "type": "string",
-        //       "maxLength": 512
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "location": {
+        //             "description": "This contains a string containing a URI pointing to a\r\nlocation from which to retrieve the firmware.",
+        //             "type": "string",
+        //             "maxLength": 2000
+        //         },
+        //         "retries": {
+        //             "description": "This specifies how many times Charging Station must retry\r\nto download the firmware before giving up. If this field is not\r\npresent, it is left to Charging Station to decide how many times it wants to retry.\r\nIf the value is 0, it means: no retries.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "checksum": {
+        //             "description": "The MD5 checksum over the entire firmware file as a hexadecimal string of length 32. ",
+        //             "type": "string",
+        //             "maxLength": 32
+        //         },
+        //         "requestId": {
+        //             "description": "The Id of the request.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "retryInterval": {
+        //             "description": "The interval in seconds\r\nafter which a retry may be\r\nattempted. If this field is not\r\npresent, it is left to Charging\r\nStation to decide how long to wait\r\nbetween attempts.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "retries": {
-        //       "description": "This specifies how many times Charging Station must try\r\nto download the firmware before giving up. If this field is not\r\npresent, it is left to Charging Station to decide how many times it wants to retry.",
-        //       "type": "integer"
-        //     },
-        //     "checksum": {
-        //       "description": "The MD5 checksum over the entire firmware file as a hexadecimal string of length 32. ",
-        //       "type": "string",
-        //       "maxLength": 32
-        //     },
-        //     "requestId": {
-        //       "description": "The Id of the request.",
-        //       "type": "integer"
-        //     },
-        //     "retryInterval": {
-        //       "description": "The interval in seconds\r\nafter which a retry may be\r\nattempted. If this field is not\r\npresent, it is left to Charging\r\nStation to decide how long to wait\r\nbetween attempts.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "location",
-        //     "checksum",
-        //     "requestId"
-        //   ]
+        //     "required": [
+        //         "location",
+        //         "checksum",
+        //         "requestId"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomPublishFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a PublishFirmware request.
@@ -256,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom PublishFirmware requests.</param>
         public static PublishFirmwareRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   SourceRouting                                     Destination,
+                                                   SourceRouting                                         Destination,
                                                    NetworkPath                                           NetworkPath,
                                                    DateTime?                                             RequestTimestamp                     = null,
                                                    TimeSpan?                                             RequestTimeout                       = null,
@@ -285,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out PublishFirmwareRequest, out ErrorResponse, CustomPublishFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out PublishFirmwareRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a PublishFirmware request.
@@ -302,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom PublishFirmware requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       SourceRouting                                     Destination,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out PublishFirmwareRequest?      PublishFirmwareRequest,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
@@ -611,16 +614,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    PublishFirmwareRequestId,
 
-                   ", ", DownloadLocation.ToString(),
+                   $", {DownloadLocation}",
 
-                   ", md5: ", MD5Checksum,
+                   $", md5: {MD5Checksum}",
 
                    Retries.HasValue
-                       ? ", " + Retries.Value + " retries"
+                       ? $", {Retries.Value} retries"
                        : "",
 
                    RetryInterval.HasValue
-                       ? ", retry interval " + RetryInterval.Value.TotalSeconds + " sec(s)"
+                       ? $", retry interval {RetryInterval.Value.TotalSeconds} sec(s)"
                        : ""
 
                );

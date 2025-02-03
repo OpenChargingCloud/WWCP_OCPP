@@ -201,13 +201,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Triggers an event notice when the actual value of the variable rises above the "monitorValue".
         /// </summary>
-        public static MonitorType UpperThreshold          { get; }
+        public static MonitorType  UpperThreshold          { get; }
             = Register("UpperThreshold");
 
         /// <summary>
         /// Triggers an event notice when the actual value of the variable drops below "monitorValue".
         /// </summary>
-        public static MonitorType LowerThreshold          { get; }
+        public static MonitorType  LowerThreshold          { get; }
             = Register("LowerThreshold");
 
         /// <summary>
@@ -216,13 +216,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// For variables that are not numeric, like boolean, string or enumerations, a monitor of type Delta will
         /// trigger an event notice whenever the variable changes, regardless of the value of monitorValue.
         /// </summary>
-        public static MonitorType Delta                   { get; }
+        public static MonitorType  Delta                   { get; }
             = Register("Delta");
 
         /// <summary>
         /// Triggers an event notice every "monitorValue" seconds interval, starting from the time that this monitor was set.
         /// </summary>
-        public static MonitorType Periodic                { get; }
+        public static MonitorType  Periodic                { get; }
             = Register("Periodic");
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// after this monitor was set.
         /// </summary>
         /// <example>A monitorValue of 900 will trigger event notices at 0, 15, 30 and 45 minutes after the hour, every hour.</example>
-        public static MonitorType PeriodicClockAligned    { get; }
+        public static MonitorType  PeriodicClockAligned    { get; }
             = Register("PeriodicClockAligned");
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// is not numeric, is not defined.
         /// </summary>
         /// <example>When target = 100, monitorValue = 10, then an event is triggered when actual &lt; 90 or actual &gt; 110.</example>
-        public static MonitorType TargetDelta             { get; }
+        public static MonitorType  TargetDelta             { get; }
             = Register("TargetDelta");
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// variable that is not numeric, is not defined.
         /// </summary>
         /// <example>When target = 100, monitorValue = 0.1, then an event is triggered when actual &lt; 90 or actual &gt; 110.</example>
-        public static MonitorType TargetDeltaRelative     { get; }
+        public static MonitorType  TargetDeltaRelative     { get; }
             = Register("TargetDeltaRelative");
 
         #endregion

@@ -201,85 +201,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// To trigger a BootNotification request
         /// </summary>
-        public static MessageTrigger BootNotification                     { get; }
+        public static MessageTrigger  BootNotification                     { get; }
             = Register("BootNotification");
 
         /// <summary>
         /// To trigger LogStatusNotification request
         /// </summary>
-        public static MessageTrigger LogStatusNotification                { get; }
+        public static MessageTrigger  LogStatusNotification                { get; }
             = Register("LogStatusNotification");
-
-        /// <summary>
-        /// To trigger a DiagnosticsStatusNotification request
-        /// </summary>
-        public static MessageTrigger DiagnosticsStatusNotification        { get; }
-            = Register("DiagnosticsStatusNotification");
 
         /// <summary>
         /// To trigger a FirmwareStatusNotification request
         /// </summary>
-        public static MessageTrigger FirmwareStatusNotification           { get; }
+        public static MessageTrigger  FirmwareStatusNotification           { get; }
             = Register("FirmwareStatusNotification");
 
         /// <summary>
         /// To trigger a Heartbeat request
         /// </summary>
-        public static MessageTrigger Heartbeat                            { get; }
+        public static MessageTrigger  Heartbeat                            { get; }
             = Register("Heartbeat");
 
         /// <summary>
         /// To trigger a MeterValues request
         /// </summary>
-        public static MessageTrigger MeterValues                          { get; }
+        public static MessageTrigger  MeterValues                          { get; }
             = Register("MeterValues");
-
-        /// <summary>
-        /// To trigger an OCPP v1.x SignCertificate request with certificateType: SignChargePointCertificate
-        /// </summary>
-        public static MessageTrigger SignChargePointCertificate           { get; }
-            = Register("SignChargePointCertificate");
 
         /// <summary>
         /// To trigger an OCPP v2.x SignCertificate request with certificateType: ChargingStationCertificate
         /// </summary>
-        public static MessageTrigger SignChargingStationCertificate       { get; }
+        public static MessageTrigger  SignChargingStationCertificate       { get; }
             = Register("SignChargingStationCertificate");
 
         /// <summary>
         /// To trigger a SignCertificate with typeOfCertificate: V2GCertificate
         /// </summary>
-        public static MessageTrigger SignV2GCertificate                   { get; }
+        public static MessageTrigger  SignV2GCertificate                   { get; }
             = Register("SignV2GCertificate");
+
+        /// <summary>
+        /// To trigger a SignCertificate with typeOfCertificate: V2G20Certificate
+        /// </summary>
+        public static MessageTrigger  SignV2G20Certificate                 { get; }
+            = Register("SignV2G20Certificate");
 
         /// <summary>
         /// To trigger a StatusNotification request
         /// </summary>
-        public static MessageTrigger StatusNotification                   { get; }
+        public static MessageTrigger  StatusNotification                   { get; }
             = Register("StatusNotification");
 
         /// <summary>
         /// To trigger TransactionEvents
         /// </summary>
-        public static MessageTrigger TransactionEvent                     { get; }
+        public static MessageTrigger  TransactionEvent                     { get; }
             = Register("TransactionEvent");
 
         /// <summary>
         /// To trigger a SignCertificate with typeOfCertificate: ChargingStationCertificate AND V2GCertificate
         /// </summary>
-        public static MessageTrigger SignCombinedCertificate              { get; }
+        public static MessageTrigger  SignCombinedCertificate              { get; }
             = Register("SignCombinedCertificate");
 
         /// <summary>
         /// To trigger PublishFirmwareStatusNotifications
         /// </summary>
-        public static MessageTrigger PublishFirmwareStatusNotification    { get; }
+        public static MessageTrigger  PublishFirmwareStatusNotification    { get; }
             = Register("PublishFirmwareStatusNotification");
 
         /// <summary>
         /// Custom trigger
         /// </summary>
-        public static MessageTrigger CustomTrigger                        { get; }
+        public static MessageTrigger  CustomTrigger                        { get; }
             = Register("CustomTrigger");
 
         #endregion

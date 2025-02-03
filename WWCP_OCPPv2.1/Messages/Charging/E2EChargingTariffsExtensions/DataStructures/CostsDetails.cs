@@ -137,9 +137,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = this.Currency.            GetHashCode()  * 31 ^
-                           this.TotalCost.           GetHashCode()  * 29 ^
-                           this.ChargingPeriods.     CalcHashCode() * 27 ^
+                hashCode = this.Currency.            GetHashCode()  * 37 ^
+                           this.TotalCost.           GetHashCode()  * 31 ^
+                           this.ChargingPeriods.     CalcHashCode() * 29 ^
                            this.TotalFixedCost.      GetHashCode()  * 23 ^
                            this.TotalEnergy.         GetHashCode()  * 19 ^
                            this.TotalEnergyCost.     GetHashCode()  * 17 ^

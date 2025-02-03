@@ -120,37 +120,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:StatusNotificationResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:StatusNotificationResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended
+        //                             with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     }
-        //   }
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomStatusNotificationResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a StatusNotification response.
@@ -160,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom StatusNotification responses.</param>
         public static StatusNotificationResponse Parse(StatusNotificationRequest                                 Request,
                                                        JObject                                                   JSON,
-                                                       SourceRouting                                         Destination,
+                                                       SourceRouting                                             Destination,
                                                        NetworkPath                                               NetworkPath,
                                                        DateTime?                                                 ResponseTimestamp                        = null,
                                                        CustomJObjectParserDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseParser   = null,
@@ -189,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out StatusNotificationResponse, out ErrorResponse, CustomStatusNotificationResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out StatusNotificationResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a StatusNotification response.
@@ -201,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomStatusNotificationResponseParser">A delegate to parse custom StatusNotification responses.</param>
         public static Boolean TryParse(StatusNotificationRequest                                 Request,
                                        JObject                                                   JSON,
-                                       SourceRouting                                         Destination,
+                                       SourceRouting                                             Destination,
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out StatusNotificationResponse?      StatusNotificationResponse,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
@@ -345,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => new (
 
                    Request,
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -373,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     String                     ErrorDescription)
 
             => new (Request,
-                   OCPPv2_1.Result.FormationViolation(
+                    Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
 
@@ -387,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                 String                     ErrorDescription)
 
             => new (Request,
-                   OCPPv2_1.Result.SignatureError(
+                    Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
 
@@ -401,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         String?                    Description   = null)
 
             => new (Request,
-                    OCPPv2_1.Result.Server(Description));
+                    Result.Server(Description));
 
 
         /// <summary>
@@ -413,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   Exception                  Exception)
 
             => new (Request,
-                    OCPPv2_1.Result.FromException(Exception));
+                    Result.FromException(Exception));
 
         #endregion
 

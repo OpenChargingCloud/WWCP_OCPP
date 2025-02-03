@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region VendorInfo        [optional]
 
-                var VendorInfo = JSON["vendorInfo"]?.Value<String>();
+                var VendorInfo = JSON.GetString("vendorInfo");
 
                 #endregion
 

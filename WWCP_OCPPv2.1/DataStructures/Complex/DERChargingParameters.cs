@@ -1465,7 +1465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            EVOverExcitedMaxDischargePower.        HasValue
-                               ? new JProperty("evOverExcitedMaxDischargePower",           EVOverExcitedMaxDischargePower.        Value)
+                               ? new JProperty("evOverExcitedMaxDischargePower",           EVOverExcitedMaxDischargePower.        Value.Value)
                                : null,
 
                            EVOverExcitedPowerFactor.              HasValue
@@ -1473,7 +1473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            EVUnderExcitedMaxDischargePower.       HasValue
-                               ? new JProperty("evUnderExcitedMaxDischargePower",          EVUnderExcitedMaxDischargePower.       Value)
+                               ? new JProperty("evUnderExcitedMaxDischargePower",          EVUnderExcitedMaxDischargePower.       Value.Value)
                                : null,
 
                            EVUnderExcitedPowerFactor.             HasValue
@@ -1482,98 +1482,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                            MaxApparentPower.                      HasValue
-                               ? new JProperty("maxApparentPower",                         MaxApparentPower.                      Value)
+                               ? new JProperty("maxApparentPower",                         MaxApparentPower.                      Value.Value)
                                : null,
 
                            MaxChargeApparentPower.                HasValue
-                               ? new JProperty("maxChargeApparentPower",                   MaxChargeApparentPower.                Value)
+                               ? new JProperty("maxChargeApparentPower",                   MaxChargeApparentPower.                Value.Value)
                                : null,
 
                            MaxChargeApparentPower_L2.             HasValue
-                               ? new JProperty("maxChargeApparentPower_L2",                MaxChargeApparentPower_L2.             Value)
+                               ? new JProperty("maxChargeApparentPower_L2",                MaxChargeApparentPower_L2.             Value.Value)
                                : null,
 
                            MaxChargeApparentPower_L3.             HasValue
-                               ? new JProperty("maxChargeApparentPower_L3",                MaxChargeApparentPower_L3.             Value)
+                               ? new JProperty("maxChargeApparentPower_L3",                MaxChargeApparentPower_L3.             Value.Value)
                                : null,
 
                            MaxDischargeApparentPower.             HasValue
-                               ? new JProperty("maxDischargeApparentPower",                MaxDischargeApparentPower.             Value)
+                               ? new JProperty("maxDischargeApparentPower",                MaxDischargeApparentPower.             Value.Value)
                                : null,
 
                            MaxDischargeApparentPower_L2.          HasValue
-                               ? new JProperty("maxDischargeApparentPower_L2",             MaxDischargeApparentPower_L2.          Value)
+                               ? new JProperty("maxDischargeApparentPower_L2",             MaxDischargeApparentPower_L2.          Value.Value)
                                : null,
 
                            MaxDischargeApparentPower_L3.          HasValue
-                               ? new JProperty("maxDischargeApparentPower_L3",             MaxDischargeApparentPower_L3.          Value)
+                               ? new JProperty("maxDischargeApparentPower_L3",             MaxDischargeApparentPower_L3.          Value.Value)
                                : null,
 
 
                            MaxChargeReactivePower.                HasValue
-                               ? new JProperty("maxChargeReactivePower",                   MaxChargeReactivePower.                Value)
+                               ? new JProperty("maxChargeReactivePower",                   MaxChargeReactivePower.                Value.Value)
                                : null,
 
                            MaxChargeReactivePower_L2.             HasValue
-                               ? new JProperty("maxChargeReactivePower_L2",                MaxChargeReactivePower_L2.             Value)
+                               ? new JProperty("maxChargeReactivePower_L2",                MaxChargeReactivePower_L2.             Value.Value)
                                : null,
 
                            MaxChargeReactivePower_L3.             HasValue
-                               ? new JProperty("maxChargeReactivePower_L3",                MaxChargeReactivePower_L3.             Value)
+                               ? new JProperty("maxChargeReactivePower_L3",                MaxChargeReactivePower_L3.             Value.Value)
                                : null,
 
                            MinChargeReactivePower.                HasValue
-                               ? new JProperty("minChargeReactivePower",                   MinChargeReactivePower.                Value)
+                               ? new JProperty("minChargeReactivePower",                   MinChargeReactivePower.                Value.Value)
                                : null,
 
                            MinChargeReactivePower_L2.             HasValue
-                               ? new JProperty("minChargeReactivePower_L2",                MinChargeReactivePower_L2.             Value)
+                               ? new JProperty("minChargeReactivePower_L2",                MinChargeReactivePower_L2.             Value.Value)
                                : null,
 
                            MinChargeReactivePower_L3.             HasValue
-                               ? new JProperty("minChargeReactivePower_L3",                MinChargeReactivePower_L3.             Value)
+                               ? new JProperty("minChargeReactivePower_L3",                MinChargeReactivePower_L3.             Value.Value)
                                : null,
 
 
                            MaxDischargeReactivePower.             HasValue
-                               ? new JProperty("maxDischargeReactivePower",                MaxDischargeReactivePower.             Value)
+                               ? new JProperty("maxDischargeReactivePower",                MaxDischargeReactivePower.             Value.Value)
                                : null,
 
                            MaxDischargeReactivePower_L2.          HasValue
-                               ? new JProperty("maxDischargeReactivePower_L2",             MaxDischargeReactivePower_L2.          Value)
+                               ? new JProperty("maxDischargeReactivePower_L2",             MaxDischargeReactivePower_L2.          Value.Value)
                                : null,
 
                            MaxDischargeReactivePower_L3.          HasValue
-                               ? new JProperty("maxDischargeReactivePower_L3",             MaxDischargeReactivePower_L3.          Value)
+                               ? new JProperty("maxDischargeReactivePower_L3",             MaxDischargeReactivePower_L3.          Value.Value)
                                : null,
 
                            MinDischargeReactivePower.             HasValue
-                               ? new JProperty("minDischargeReactivePower",                MinDischargeReactivePower.             Value)
+                               ? new JProperty("minDischargeReactivePower",                MinDischargeReactivePower.             Value.Value)
                                : null,
 
                            MinDischargeReactivePower_L2.          HasValue
-                               ? new JProperty("minDischargeReactivePower_L2",             MinDischargeReactivePower_L2.          Value)
+                               ? new JProperty("minDischargeReactivePower_L2",             MinDischargeReactivePower_L2.          Value.Value)
                                : null,
 
                            MinDischargeReactivePower_L3.          HasValue
-                               ? new JProperty("minDischargeReactivePower_L3",             MinDischargeReactivePower_L3.          Value)
+                               ? new JProperty("minDischargeReactivePower_L3",             MinDischargeReactivePower_L3.          Value.Value)
                                : null,
 
 
                            NominalVoltage.                        HasValue
-                               ? new JProperty("nominalVoltage",                           NominalVoltage.                        Value)
+                               ? new JProperty("nominalVoltage",                           NominalVoltage.                        Value.Value)
                                : null,
 
                            NominalVoltageOffset.                  HasValue
-                               ? new JProperty("nominalVoltageOffset",                     NominalVoltageOffset.                  Value)
+                               ? new JProperty("nominalVoltageOffset",                     NominalVoltageOffset.                  Value.Value)
                                : null,
 
                            MaxNominalVoltage.                     HasValue
-                               ? new JProperty("maxNominalVoltage",                        MaxNominalVoltage.                     Value)
+                               ? new JProperty("maxNominalVoltage",                        MaxNominalVoltage.                     Value.Value)
                                : null,
 
                            MinNominalVoltage.                     HasValue
-                               ? new JProperty("minNominalVoltage",                        MinNominalVoltage.                     Value)
+                               ? new JProperty("minNominalVoltage",                        MinNominalVoltage.                     Value.Value)
                                : null,
 
 
@@ -1603,31 +1603,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            EVIslandingTripTime.                   HasValue
-                               ? new JProperty("evIslandingTripTime",                      EVIslandingTripTime.                   Value)
+                               ? new JProperty("evIslandingTripTime",                      EVIslandingTripTime.                   Value.TotalSeconds)
                                : null,
 
                            EVMaximumLevel1DCInjection.            HasValue
-                               ? new JProperty("evMaximumLevel1DCInjection",               EVMaximumLevel1DCInjection.            Value)
+                               ? new JProperty("evMaximumLevel1DCInjection",               EVMaximumLevel1DCInjection.            Value.Value)
                                : null,
 
                            EVDurationLevel1DCInjection.           HasValue
-                               ? new JProperty("evDurationLevel1DCInjection",              EVDurationLevel1DCInjection.           Value)
+                               ? new JProperty("evDurationLevel1DCInjection",              EVDurationLevel1DCInjection.           Value.TotalSeconds)
                                : null,
 
                            EVMaximumLevel2DCInjection.            HasValue
-                               ? new JProperty("evMaximumLevel2DCInjection",               EVMaximumLevel2DCInjection.            Value)
+                               ? new JProperty("evMaximumLevel2DCInjection",               EVMaximumLevel2DCInjection.            Value.Value)
                                : null,
 
                            EVDurationLevel2DCInjection.           HasValue
-                               ? new JProperty("evDurationLevel2DCInjection",              EVDurationLevel2DCInjection.           Value)
+                               ? new JProperty("evDurationLevel2DCInjection",              EVDurationLevel2DCInjection.           Value.TotalSeconds)
                                : null,
 
                            EVReactiveSusceptance.                 HasValue
-                               ? new JProperty("evReactiveSusceptance",                    EVReactiveSusceptance.                 Value)
+                               ? new JProperty("evReactiveSusceptance",                    EVReactiveSusceptance.                 Value.Value)
                                : null,
 
                            EVSessionTotalDischargeEnergyAvailable.HasValue
-                               ? new JProperty("evSessionTotalDischargeEnergyAvailable",   EVSessionTotalDischargeEnergyAvailable.Value)
+                               ? new JProperty("evSessionTotalDischargeEnergyAvailable",   EVSessionTotalDischargeEnergyAvailable.Value.Value)
                                : null,
 
                            CustomData is not null

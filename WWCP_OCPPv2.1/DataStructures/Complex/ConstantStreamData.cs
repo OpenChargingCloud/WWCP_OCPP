@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -50,10 +52,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public PeriodicEventStreamParameters  Parameters              { get; }
 
         /// <summary>
-        /// The optional variable monitoring identification.
+        /// The variable monitoring identification.
         /// </summary>
-        [Optional]
-        public VariableMonitoring_Id?         VariableMonitoringId    { get; }
+        [Mandatory]
+        public VariableMonitoring_Id          VariableMonitoringId    { get; }
 
         #endregion
 
@@ -67,22 +69,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="VariableMonitoringId">An optional variable monitoring identification.</param>
         public ConstantStreamData(PeriodicEventStream_Id         Id,
                                   PeriodicEventStreamParameters  Parameters,
-                                  VariableMonitoring_Id?         VariableMonitoringId)
+                                  VariableMonitoring_Id          VariableMonitoringId)
         {
 
             this.Id                    = Id;
             this.Parameters            = Parameters;
             this.VariableMonitoringId  = VariableMonitoringId;
 
+            unchecked
+            {
+
+                hashCode = this.Id.                  GetHashCode() * 7 ^
+                           this.Parameters.          GetHashCode() * 5 ^
+                           this.VariableMonitoringId.GetHashCode() * 3 ^
+                           base.                     GetHashCode();
+
+            }
+
         }
 
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
+        // {
+        //     "javaType": "ConstantStreamData",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "id": {
+        //             "description": "Uniquely identifies the stream",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "params": {
+        //             "$ref": "#/definitions/PeriodicEventStreamParamsType"
+        //         },
+        //         "variableMonitoringId": {
+        //             "description": "Id of monitor used to report his event. It can be a preconfigured or hardwired monitor.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "id",
+        //         "variableMonitoringId",
+        //         "params"
+        //     ]
+        // }
 
         #endregion
 
@@ -100,8 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var constantStreamData,
                          out var errorResponse,
-                         CustomConstantStreamDataParser) &&
-                constantStreamData is not null)
+                         CustomConstantStreamDataParser))
             {
                 return constantStreamData;
             }
@@ -122,9 +159,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ConstantStreamData">The parsed constant stream data.</param>
-        public static Boolean TryParse(JObject                  JSON,
-                                       out ConstantStreamData?  ConstantStreamData,
-                                       out String?              ErrorResponse)
+        public static Boolean TryParse(JObject                                       JSON,
+                                       [NotNullWhen(true)]  out ConstantStreamData?  ConstantStreamData,
+                                       [NotNullWhen(false)] out String?              ErrorResponse)
 
             => TryParse(JSON,
                         out ConstantStreamData,
@@ -139,8 +176,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ConstantStreamData">The parsed constant stream data.</param>
         /// <param name="CustomConstantStreamDataParser">A delegate to parse custom constant stream datas.</param>
         public static Boolean TryParse(JObject                                           JSON,
-                                       out ConstantStreamData?                           ConstantStreamData,
-                                       out String?                                       ErrorResponse,
+                                       [NotNullWhen(true)]  out ConstantStreamData?      ConstantStreamData,
+                                       [NotNullWhen(false)] out String?                  ErrorResponse,
                                        CustomJObjectParserDelegate<ConstantStreamData>?  CustomConstantStreamDataParser   = null)
         {
 
@@ -168,21 +205,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              "periodic event stream parameters",
                                              PeriodicEventStreamParameters.TryParse,
                                              out PeriodicEventStreamParameters? Parameters,
-                                             out ErrorResponse) ||
-                     Parameters is null)
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region VariableMonitoringId    [optional]
+                #region VariableMonitoringId    [mandatory]
 
-                if (JSON.ParseOptional("maxTime",
-                                       "max time",
-                                       VariableMonitoring_Id.TryParse,
-                                       out VariableMonitoring_Id? VariableMonitoringId,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("variableMonitoringId",
+                                         "variable monitoring identification",
+                                         VariableMonitoring_Id.TryParse,
+                                         out VariableMonitoring_Id VariableMonitoringId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -244,12 +280,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("id",                     Id.                        ToString()),
+                                 new JProperty("variableMonitoringId",   VariableMonitoringId.Value.ToString()),
                                  new JProperty("params",                 Parameters.                ToJSON(CustomPeriodicEventStreamParametersSerializer,
                                                                                                            CustomCustomDataSerializer)),
-
-                           VariableMonitoringId.HasValue
-                               ? new JProperty("variableMonitoringId",   VariableMonitoringId.Value.ToString())
-                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",             CustomData.                ToJSON(CustomCustomDataSerializer))
@@ -413,10 +446,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 throw new ArgumentNullException(nameof(ConstantStreamData),
                                                 "The given constant stream data must not be null!");
 
-            var c = Id.                        CompareTo(ConstantStreamData.Id);
+            var c = Id.                  CompareTo(ConstantStreamData.Id);
 
-            if (c == 0 && VariableMonitoringId.HasValue && ConstantStreamData.VariableMonitoringId.HasValue)
-                c = VariableMonitoringId.Value.CompareTo(ConstantStreamData.VariableMonitoringId.Value);
+            if (c == 0)
+                c = VariableMonitoringId.CompareTo(ConstantStreamData.VariableMonitoringId);
 
             return c;
 
@@ -451,13 +484,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => ConstantStreamData is not null &&
 
-               Id.        Equals(ConstantStreamData.Id)         &&
-               Parameters.Equals(ConstantStreamData.Parameters) &&
+               Id.                  Equals(ConstantStreamData.Id)                   &&
+               Parameters.          Equals(ConstantStreamData.Parameters)           &&
+               VariableMonitoringId.Equals(ConstantStreamData.VariableMonitoringId) &&
 
-            ((!VariableMonitoringId.HasValue && !ConstantStreamData.VariableMonitoringId.HasValue) ||
-               VariableMonitoringId.HasValue &&  ConstantStreamData.VariableMonitoringId.HasValue && VariableMonitoringId.Value.Equals(ConstantStreamData.VariableMonitoringId.Value)) &&
-
-               base.      Equals(ConstantStreamData);
+               base.                Equals(ConstantStreamData);
 
         #endregion
 
@@ -465,22 +496,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.                   GetHashCode()       * 7 ^
-                       Parameters.           GetHashCode()       * 5 ^
-                      (VariableMonitoringId?.GetHashCode() ?? 0) * 3 ^
-                       base.                 GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -491,15 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   $"{Id}: {Parameters}",
-
-                   VariableMonitoringId.HasValue
-                       ? $", {VariableMonitoringId.Value}"
-                       : ""
-
-               );
+            => $"{Id} ({VariableMonitoringId}): {Parameters}";
 
         #endregion
 

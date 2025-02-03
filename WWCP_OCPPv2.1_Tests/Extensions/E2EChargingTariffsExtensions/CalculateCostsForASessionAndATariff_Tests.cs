@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.EVConnected,
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReason.Local,
@@ -485,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.EVConnected,
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
@@ -548,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReason.Local,
@@ -777,7 +777,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.EVConnected,
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
@@ -840,7 +840,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReason.Local,
@@ -1115,7 +1115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.EVConnected,
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
@@ -1178,7 +1178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReason.Local,
@@ -1429,7 +1429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.EVConnected,
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
@@ -1492,7 +1492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReason.Local,
@@ -1742,7 +1742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.EVConnected,
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
@@ -1805,7 +1805,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
-                                                                            TransactionId:             transactionId,
+                                                                            Id:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReason.Local,

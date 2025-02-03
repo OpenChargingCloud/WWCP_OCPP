@@ -84,8 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Create a new SignCertificate request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
         /// <param name="SignCertificateRequestId">A SignCertificate request identification.</param>
+        /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
         /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -98,8 +98,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SignCertificateRequest(SourceRouting            Destination,
-                                      String                   CSR,
                                       Int32                    SignCertificateRequestId,
+                                      String                   CSR,
                                       CertificateSigningUse?   CertificateType       = null,
 
                                       IEnumerable<KeyPair>?    SignKeys              = null,
@@ -155,63 +155,115 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
         //ToDo: This request has a breaking change in OCPP v2.1!
-        //      Update schema documentation after the official release of OCPP v2.1!
 
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SignCertificateRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:SignCertificateRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CertificateSigningUseEnumType": {
+        //             "description": "Indicates the type of certificate that is to be signed. When omitted the certificate is to be used for both the 15118 connection (if implemented) and the Charging Station to CSMS connection.",
+        //             "javaType": "CertificateSigningUseEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "ChargingStationCertificate",
+        //                 "V2GCertificate",
+        //                 "V2G20Certificate"
+        //             ]
+        //         },
+        //         "HashAlgorithmEnumType": {
+        //             "description": "Used algorithms for the hashes provided.",
+        //             "javaType": "HashAlgorithmEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "SHA256",
+        //                 "SHA384",
+        //                 "SHA512"
+        //             ]
+        //         },
+        //         "CertificateHashDataType": {
+        //             "javaType": "CertificateHashData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "hashAlgorithm": {
+        //                     "$ref": "#/definitions/HashAlgorithmEnumType"
+        //                 },
+        //                 "issuerNameHash": {
+        //                     "description": "The hash of the issuer\u2019s distinguished\r\nname (DN), that must be calculated over the DER\r\nencoding of the issuer\u2019s name field in the certificate\r\nbeing checked.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "issuerKeyHash": {
+        //                     "description": "The hash of the DER encoded public key:\r\nthe value (excluding tag and length) of the subject\r\npublic key field in the issuer\u2019s certificate.",
+        //                     "type": "string",
+        //                     "maxLength": 128
+        //                 },
+        //                 "serialNumber": {
+        //                     "description": "The string representation of the\r\nhexadecimal value of the serial number without the\r\nprefix \"0x\" and without leading zeroes.",
+        //                     "type": "string",
+        //                     "maxLength": 40
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "hashAlgorithm",
+        //                 "issuerNameHash",
+        //                 "issuerKeyHash",
+        //                 "serialNumber"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "CertificateSigningUseEnumType": {
-        //       "description": "Indicates the type of certificate that is to be signed. When omitted the certificate is to be used for both the 15118 connection (if implemented) and the Charging Station to CSMS connection.",
-        //       "javaType": "CertificateSigningUseEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ChargingStationCertificate",
-        //         "V2GCertificate"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "csr": {
+        //             "description": "The Charging Station SHALL send the public key in form of a Certificate Signing Request (CSR) as described in RFC 2986 [22] and then PEM encoded, using the &lt;&lt;signcertificaterequest,SignCertificateRequest&gt;&gt; message.",
+        //             "type": "string",
+        //             "maxLength": 5500
+        //         },
+        //         "certificateType": {
+        //             "$ref": "#/definitions/CertificateSigningUseEnumType"
+        //         },
+        //         "hashRootCertificate": {
+        //             "$ref": "#/definitions/CertificateHashDataType"
+        //         },
+        //         "requestId": {
+        //             "description": "*(2.1)* RequestId to match this message with the CertificateSignedRequest.",
+        //             "type": "integer"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "csr": {
-        //       "description": "The Charging Station SHALL send the public key in form of a Certificate Signing Request (CSR) as described in RFC 2986 [22] and then PEM encoded, using the &lt;&lt;signcertificaterequest,SignCertificateRequest&gt;&gt; message.",
-        //       "type": "string",
-        //       "maxLength": 5500
-        //     },
-        //     "certificateType": {
-        //       "$ref": "#/definitions/CertificateSigningUseEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "csr"
-        //   ]
+        //     "required": [
+        //         "csr"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSignCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SignCertificate request.
@@ -226,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
         public static SignCertificateRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   SourceRouting                                     Destination,
+                                                   SourceRouting                                         Destination,
                                                    NetworkPath                                           NetworkPath,
                                                    DateTime?                                             RequestTimestamp                     = null,
                                                    TimeSpan?                                             RequestTimeout                       = null,
@@ -255,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SignCertificateRequest, out ErrorResponse, CustomSignCertificateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out SignCertificateRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SignCertificate request.
@@ -272,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       SourceRouting                                     Destination,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out SignCertificateRequest?      SignCertificateRequest,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
@@ -287,18 +339,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SignCertificateRequest = null;
 
-                #region CSR                         [mandatory]
-
-                if (!JSON.ParseMandatoryText("csr",
-                                             "certificate signing request",
-                                             out String? CSR,
-                                             out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
                 #region SignCertificateRequestId    [mandatory]  // FixMe!!!
 
                 //ToDo: In OCPP v2.0.1 is does not exist!
@@ -310,6 +350,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 //    {
                 //        return false;
                 //    }
+
+                #endregion
+
+                #region CSR                         [mandatory]
+
+                if (!JSON.ParseMandatoryText("csr",
+                                             "certificate signing request",
+                                             out String? CSR,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
 
                 #endregion
 
@@ -359,8 +411,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 SignCertificateRequest = new SignCertificateRequest(
 
                                              Destination,
-                                             CSR,
                                              1, //SignCertificateRequestId,
+                                             CSR,
                                              CertificateType,
 
                                              null,

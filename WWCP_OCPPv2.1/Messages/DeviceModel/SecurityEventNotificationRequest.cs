@@ -156,56 +156,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SecurityEventNotificationRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:SecurityEventNotificationRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "type": {
-        //       "description": "Type of the security event. This value should be taken from the Security events list.",
-        //       "type": "string",
-        //       "maxLength": 50
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "type": {
+        //             "description": "Type of the security event. This value should be taken from the Security events list.",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
+        //         "timestamp": {
+        //             "description": "Date and time at which the event occurred.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "techInfo": {
+        //             "description": "Additional information about the occurred security event.",
+        //             "type": "string",
+        //             "maxLength": 255
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "timestamp": {
-        //       "description": "Date and time at which the event occurred.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "techInfo": {
-        //       "description": "Additional information about the occurred security event.",
-        //       "type": "string",
-        //       "maxLength": 255
-        //     }
-        //   },
-        //   "required": [
-        //     "type",
-        //     "timestamp"
-        //   ]
+        //     "required": [
+        //         "type",
+        //         "timestamp"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomSecurityEventNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a security event notification request.
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
         public static SecurityEventNotificationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             SourceRouting                                               Destination,
+                                                             SourceRouting                                                   Destination,
                                                              NetworkPath                                                     NetworkPath,
                                                              DateTime?                                                       RequestTimestamp                               = null,
                                                              TimeSpan?                                                       RequestTimeout                                 = null,
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       SourceRouting                                               Destination,
+                                       SourceRouting                                                   Destination,
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out SecurityEventNotificationRequest?      SecurityEventNotificationRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,

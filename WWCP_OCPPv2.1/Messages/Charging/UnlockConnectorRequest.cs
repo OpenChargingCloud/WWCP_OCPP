@@ -143,49 +143,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:UnlockConnectorRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:UnlockConnectorRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be
+        //                             extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "evseId": {
-        //       "description": "This contains the identifier of the EVSE for which a connector needs to be unlocked.",
-        //       "type": "integer"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evseId": {
+        //             "description": "This contains the identifier of the EVSE for which a connector needs to be unlocked.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "connectorId": {
+        //             "description": "This contains the identifier of the connector that needs to be unlocked.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "connectorId": {
-        //       "description": "This contains the identifier of the connector that needs to be unlocked.",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "evseId",
-        //     "connectorId"
-        //   ]
+        //     "required": [
+        //         "evseId",
+        //         "connectorId"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomUnlockConnectorRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of an UnlockConnector request.
@@ -197,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom UnlockConnector requests.</param>
         public static UnlockConnectorRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   SourceRouting                                     Destination,
+                                                   SourceRouting                                         Destination,
                                                    NetworkPath                                           NetworkPath,
                                                    DateTime?                                             RequestTimestamp                     = null,
                                                    TimeSpan?                                             RequestTimeout                       = null,
@@ -226,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON,  RequestId, SourceRouting, NetworkPath, out UnlockConnectorRequest, out ErrorResponse, CustomUnlockConnectorRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out UnlockConnectorRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of an UnlockConnector request.
@@ -240,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom UnlockConnector requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       SourceRouting                                     Destination,
+                                       SourceRouting                                         Destination,
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out UnlockConnectorRequest?      UnlockConnectorRequest,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
@@ -255,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 UnlockConnectorRequest = null;
 
-                #region EVSEId               [mandatory]
+                #region EVSEId         [mandatory]
 
                 if (!JSON.ParseMandatory("evseId",
                                          "EVSE identification",
@@ -268,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ConnectorId          [mandatory]
+                #region ConnectorId    [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
@@ -281,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region Signatures     [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -295,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",

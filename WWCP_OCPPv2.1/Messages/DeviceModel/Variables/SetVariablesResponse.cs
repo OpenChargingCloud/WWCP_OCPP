@@ -140,202 +140,204 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SetVariablesResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:SetVariablesResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "AttributeEnumType": {
+        //             "description": "Type of attribute: Actual, Target, MinSet, MaxSet. Default is Actual when omitted.",
+        //             "javaType": "AttributeEnum",
+        //             "type": "string",
+        //             "default": "Actual",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Actual",
+        //                 "Target",
+        //                 "MinSet",
+        //                 "MaxSet"
+        //             ]
+        //         },
+        //         "SetVariableStatusEnumType": {
+        //             "description": "Result status of setting the variable.",
+        //             "javaType": "SetVariableStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected",
+        //                 "UnknownComponent",
+        //                 "UnknownVariable",
+        //                 "NotSupportedAttributeType",
+        //                 "RebootRequired"
+        //             ]
+        //         },
+        //         "ComponentType": {
+        //             "description": "A physical or logical component",
+        //             "javaType": "Component",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "evse": {
+        //                     "$ref": "#/definitions/EVSEType"
+        //                 },
+        //                 "name": {
+        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "EVSEType": {
+        //             "description": "Electric Vehicle Supply Equipment",
+        //             "javaType": "EVSE",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "connectorId": {
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id"
+        //             ]
+        //         },
+        //         "SetVariableResultType": {
+        //             "javaType": "SetVariableResult",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "attributeType": {
+        //                     "$ref": "#/definitions/AttributeEnumType"
+        //                 },
+        //                 "attributeStatus": {
+        //                     "$ref": "#/definitions/SetVariableStatusEnumType"
+        //                 },
+        //                 "attributeStatusInfo": {
+        //                     "$ref": "#/definitions/StatusInfoType"
+        //                 },
+        //                 "component": {
+        //                     "$ref": "#/definitions/ComponentType"
+        //                 },
+        //                 "variable": {
+        //                     "$ref": "#/definitions/VariableType"
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "attributeStatus",
+        //                 "component",
+        //                 "variable"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "VariableType": {
+        //             "description": "Reference key to a component-variable.",
+        //             "javaType": "Variable",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "name": {
+        //                     "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "AttributeEnumType": {
-        //       "description": "Type of attribute: Actual, Target, MinSet, MaxSet. Default is Actual when omitted.",
-        //       "javaType": "AttributeEnum",
-        //       "type": "string",
-        //       "default": "Actual",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Actual",
-        //         "Target",
-        //         "MinSet",
-        //         "MaxSet"
-        //       ]
-        //     },
-        //     "SetVariableStatusEnumType": {
-        //       "description": "Result status of setting the variable.",
-        //       "javaType": "SetVariableStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "Rejected",
-        //         "UnknownComponent",
-        //         "UnknownVariable",
-        //         "NotSupportedAttributeType",
-        //         "RebootRequired"
-        //       ]
-        //     },
-        //     "ComponentType": {
-        //       "description": "A physical or logical component",
-        //       "javaType": "Component",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "setVariableResult": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/SetVariableResultType"
+        //             },
+        //             "minItems": 1
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "evse": {
-        //           "$ref": "#/definitions/EVSEType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
         //     },
-        //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
-        //       "javaType": "EVSE",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
-        //           "type": "integer"
-        //         },
-        //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "id"
-        //       ]
-        //     },
-        //     "SetVariableResultType": {
-        //       "javaType": "SetVariableResult",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "attributeType": {
-        //           "$ref": "#/definitions/AttributeEnumType"
-        //         },
-        //         "attributeStatus": {
-        //           "$ref": "#/definitions/SetVariableStatusEnumType"
-        //         },
-        //         "attributeStatusInfo": {
-        //           "$ref": "#/definitions/StatusInfoType"
-        //         },
-        //         "component": {
-        //           "$ref": "#/definitions/ComponentType"
-        //         },
-        //         "variable": {
-        //           "$ref": "#/definitions/VariableType"
-        //         }
-        //       },
-        //       "required": [
-        //         "attributeStatus",
-        //         "component",
-        //         "variable"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     },
-        //     "VariableType": {
-        //       "description": "Reference key to a component-variable.",
-        //       "javaType": "Variable",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "setVariableResult": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/SetVariableResultType"
-        //       },
-        //       "minItems": 1
-        //     }
-        //   },
-        //   "required": [
-        //     "setVariableResult"
-        //   ]
+        //     "required": [
+        //         "setVariableResult"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, ..., CustomSetVariablesResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SetVariables response.
@@ -346,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom SetVariables responses.</param>
         public static SetVariablesResponse Parse(SetVariablesRequest                                  Request,
                                                  JObject                                              JSON,
-                                                 SourceRouting                                    Destination,
+                                                 SourceRouting                                        Destination,
                                                  NetworkPath                                          NetworkPath,
                                                  DateTime?                                            ResponseTimestamp                   = null,
                                                  CustomJObjectParserDelegate<SetVariablesResponse>?   CustomSetVariablesResponseParser    = null,
@@ -385,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out SetVariablesResponse, out ErrorResponse, ..., CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out SetVariablesResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetVariables response.
@@ -398,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom SetVariables responses.</param>
         public static Boolean TryParse(SetVariablesRequest                                  Request,
                                        JObject                                              JSON,
-                                       SourceRouting                                    Destination,
+                                       SourceRouting                                        Destination,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out SetVariablesResponse?       SetVariablesResponse,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
@@ -580,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    Request,
                    [],
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -609,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     [],
-                   OCPPv2_1.Result.FormationViolation(
+                    Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
 
@@ -624,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     [],
-                   OCPPv2_1.Result.SignatureError(
+                    Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
 
@@ -639,7 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     [],
-                    OCPPv2_1.Result.Server(Description));
+                    Result.Server(Description));
 
 
         /// <summary>
@@ -652,7 +654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => new (Request,
                     [],
-                    OCPPv2_1.Result.FromException(Exception));
+                    Result.FromException(Exception));
 
         #endregion
 

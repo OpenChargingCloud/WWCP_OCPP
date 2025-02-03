@@ -145,58 +145,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ReservationStatusUpdateRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:ReservationStatusUpdateRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "ReservationUpdateStatusEnumType": {
+        //             "description": "The updated reservation status.",
+        //             "javaType": "ReservationUpdateStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Expired",
+        //                 "Removed",
+        //                 "NoTransaction"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "ReservationUpdateStatusEnumType": {
-        //       "description": "The updated reservation status.",
-        //       "javaType": "ReservationUpdateStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Expired",
-        //         "Removed"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "reservationId": {
+        //             "description": "The ID of the reservation.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "reservationUpdateStatus": {
+        //             "$ref": "#/definitions/ReservationUpdateStatusEnumType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "reservationId": {
-        //       "description": "The ID of the reservation.",
-        //       "type": "integer"
-        //     },
-        //     "reservationUpdateStatus": {
-        //       "$ref": "#/definitions/ReservationUpdateStatusEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "reservationId",
-        //     "reservationUpdateStatus"
-        //   ]
+        //     "required": [
+        //         "reservationId",
+        //         "reservationUpdateStatus"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomReservationStatusUpdateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a ReservationStatusUpdate request.
@@ -211,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom ReservationStatusUpdate requests.</param>
         public static ReservationStatusUpdateRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
-                                                           SourceRouting                                             Destination,
+                                                           SourceRouting                                                 Destination,
                                                            NetworkPath                                                   NetworkPath,
                                                            DateTime?                                                     RequestTimestamp                             = null,
                                                            TimeSpan?                                                     RequestTimeout                               = null,
@@ -240,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ReservationStatusUpdateRequest, out ErrorResponse, CustomReservationStatusUpdateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out ReservationStatusUpdateRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a ReservationStatusUpdate request.
@@ -257,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomReservationStatusUpdateRequestParser">A delegate to parse custom ReservationStatusUpdate requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       SourceRouting                                             Destination,
+                                       SourceRouting                                                 Destination,
                                        NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out ReservationStatusUpdateRequest?      ReservationStatusUpdateRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse,

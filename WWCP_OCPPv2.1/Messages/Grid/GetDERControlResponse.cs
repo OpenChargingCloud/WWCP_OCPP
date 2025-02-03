@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext     Context
             => DefaultJSONLDContext;
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 hashCode = this.Status.     GetHashCode()       * 5 ^
                           (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
-                           base.GetHashCode();
+                           base.            GetHashCode();
 
             }
 

@@ -86,23 +86,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public SetVariableMonitoringResponse(SetVariableMonitoringRequest       Request,
-                                             IEnumerable<SetMonitoringResult>   SetMonitoringResults,
+        public SetVariableMonitoringResponse(SetVariableMonitoringRequest      Request,
+                                             IEnumerable<SetMonitoringResult>  SetMonitoringResults,
 
-                                             Result?                            Result                = null,
-                                             DateTime?                          ResponseTimestamp     = null,
+                                             Result?                           Result                = null,
+                                             DateTime?                         ResponseTimestamp     = null,
 
-                                             SourceRouting?                     Destination           = null,
-                                             NetworkPath?                       NetworkPath           = null,
+                                             SourceRouting?                    Destination           = null,
+                                             NetworkPath?                      NetworkPath           = null,
 
-                                             IEnumerable<KeyPair>?              SignKeys              = null,
-                                             IEnumerable<SignInfo>?             SignInfos             = null,
-                                             IEnumerable<Signature>?            Signatures            = null,
+                                             IEnumerable<KeyPair>?             SignKeys              = null,
+                                             IEnumerable<SignInfo>?            SignInfos             = null,
+                                             IEnumerable<Signature>?           Signatures            = null,
 
-                                             CustomData?                        CustomData            = null,
+                                             CustomData?                       CustomData            = null,
 
-                                             SerializationFormats?              SerializationFormat   = null,
-                                             CancellationToken                  CancellationToken     = default)
+                                             SerializationFormats?             SerializationFormat   = null,
+                                             CancellationToken                 CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -140,213 +140,219 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SetVariableMonitoringResponse",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:SetVariableMonitoringResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "MonitorEnumType": {
+        //             "description": "The type of this monitor, e.g. a threshold, delta or periodic monitor. ",
+        //             "javaType": "MonitorEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "UpperThreshold",
+        //                 "LowerThreshold",
+        //                 "Delta",
+        //                 "Periodic",
+        //                 "PeriodicClockAligned",
+        //                 "TargetDelta",
+        //                 "TargetDeltaRelative"
+        //             ]
+        //         },
+        //         "SetMonitoringStatusEnumType": {
+        //             "description": "Status is OK if a value could be returned. Otherwise this will indicate the reason why a value could not be returned.",
+        //             "javaType": "SetMonitoringStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "UnknownComponent",
+        //                 "UnknownVariable",
+        //                 "UnsupportedMonitorType",
+        //                 "Rejected",
+        //                 "Duplicate"
+        //             ]
+        //         },
+        //         "ComponentType": {
+        //             "description": "A physical or logical component",
+        //             "javaType": "Component",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "evse": {
+        //                     "$ref": "#/definitions/EVSEType"
+        //                 },
+        //                 "name": {
+        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "EVSEType": {
+        //             "description": "Electric Vehicle Supply Equipment",
+        //             "javaType": "EVSE",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "connectorId": {
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id"
+        //             ]
+        //         },
+        //         "SetMonitoringResultType": {
+        //             "description": "Class to hold result of SetVariableMonitoring request.",
+        //             "javaType": "SetMonitoringResult",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "Id given to the VariableMonitor by the Charging Station. The Id is only returned when status is accepted. Installed VariableMonitors should have unique id's but the id's of removed Installed monitors should have unique id's but the id's of removed monitors MAY be reused.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "statusInfo": {
+        //                     "$ref": "#/definitions/StatusInfoType"
+        //                 },
+        //                 "status": {
+        //                     "$ref": "#/definitions/SetMonitoringStatusEnumType"
+        //                 },
+        //                 "type": {
+        //                     "$ref": "#/definitions/MonitorEnumType"
+        //                 },
+        //                 "component": {
+        //                     "$ref": "#/definitions/ComponentType"
+        //                 },
+        //                 "variable": {
+        //                     "$ref": "#/definitions/VariableType"
+        //                 },
+        //                 "severity": {
+        //                     "description": "The severity that will be assigned to an event that is triggered by this monitor. The severity range is 0-9, with 0 as the highest and 9 as the lowest severity level.\r\n\r\nThe severity levels have the following meaning: +\r\n*0-Danger* +\r\nIndicates lives are potentially in danger. Urgent attention is needed and action should be taken immediately. +\r\n*1-Hardware Failure* +\r\nIndicates that the Charging Station is unable to continue regular operations due to Hardware issues. Action is required. +\r\n*2-System Failure* +\r\nIndicates that the Charging Station is unable to continue regular operations due to software or minor hardware issues. Action is required. +\r\n*3-Critical* +\r\nIndicates a critical error. Action is required. +\r\n*4-Error* +\r\nIndicates a non-urgent error. Action is required. +\r\n*5-Alert* +\r\nIndicates an alert event. Default severity for any type of monitoring event.  +\r\n*6-Warning* +\r\nIndicates a warning event. Action may be required. +\r\n*7-Notice* +\r\nIndicates an unusual event. No immediate action is required. +\r\n*8-Informational* +\r\nIndicates a regular operational event. May be used for reporting, measuring throughput, etc. No action is required. +\r\n*9-Debug* +\r\nIndicates information useful to developers for debugging, not useful during operations.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "status",
+        //                 "type",
+        //                 "severity",
+        //                 "component",
+        //                 "variable"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "VariableType": {
+        //             "description": "Reference key to a component-variable.",
+        //             "javaType": "Variable",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "name": {
+        //                     "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "MonitorEnumType": {
-        //       "description": "The type of this monitor, e.g. a threshold, delta or periodic monitor. ",
-        //       "javaType": "MonitorEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "UpperThreshold",
-        //         "LowerThreshold",
-        //         "Delta",
-        //         "Periodic",
-        //         "PeriodicClockAligned"
-        //       ]
-        //     },
-        //     "SetMonitoringStatusEnumType": {
-        //       "description": "Status is OK if a value could be returned. Otherwise this will indicate the reason why a value could not be returned.",
-        //       "javaType": "SetMonitoringStatusEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Accepted",
-        //         "UnknownComponent",
-        //         "UnknownVariable",
-        //         "UnsupportedMonitorType",
-        //         "Rejected",
-        //         "Duplicate"
-        //       ]
-        //     },
-        //     "ComponentType": {
-        //       "description": "A physical or logical component",
-        //       "javaType": "Component",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "setMonitoringResult": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/SetMonitoringResultType"
+        //             },
+        //             "minItems": 1
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "evse": {
-        //           "$ref": "#/definitions/EVSEType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
         //     },
-        //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
-        //       "javaType": "EVSE",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
-        //           "type": "integer"
-        //         },
-        //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "id"
-        //       ]
-        //     },
-        //     "SetMonitoringResultType": {
-        //       "description": "Class to hold result of SetVariableMonitoring request.",
-        //       "javaType": "SetMonitoringResult",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Id given to the VariableMonitor by the Charging Station. The Id is only returned when status is accepted. Installed VariableMonitors should have unique id's but the id's of removed Installed monitors should have unique id's but the id's of removed monitors MAY be reused.",
-        //           "type": "integer"
-        //         },
-        //         "statusInfo": {
-        //           "$ref": "#/definitions/StatusInfoType"
-        //         },
-        //         "status": {
-        //           "$ref": "#/definitions/SetMonitoringStatusEnumType"
-        //         },
-        //         "type": {
-        //           "$ref": "#/definitions/MonitorEnumType"
-        //         },
-        //         "component": {
-        //           "$ref": "#/definitions/ComponentType"
-        //         },
-        //         "variable": {
-        //           "$ref": "#/definitions/VariableType"
-        //         },
-        //         "severity": {
-        //           "description": "The severity that will be assigned to an event that is triggered by this monitor. The severity range is 0-9, with 0 as the highest and 9 as the lowest severity level.\r\n\r\nThe severity levels have the following meaning: +\r\n*0-Danger* +\r\nIndicates lives are potentially in danger. Urgent attention is needed and action should be taken immediately. +\r\n*1-Hardware Failure* +\r\nIndicates that the Charging Station is unable to continue regular operations due to Hardware issues. Action is required. +\r\n*2-System Failure* +\r\nIndicates that the Charging Station is unable to continue regular operations due to software or minor hardware issues. Action is required. +\r\n*3-Critical* +\r\nIndicates a critical error. Action is required. +\r\n*4-Error* +\r\nIndicates a non-urgent error. Action is required. +\r\n*5-Alert* +\r\nIndicates an alert event. Default severity for any type of monitoring event.  +\r\n*6-Warning* +\r\nIndicates a warning event. Action may be required. +\r\n*7-Notice* +\r\nIndicates an unusual event. No immediate action is required. +\r\n*8-Informational* +\r\nIndicates a regular operational event. May be used for reporting, measuring throughput, etc. No action is required. +\r\n*9-Debug* +\r\nIndicates information useful to developers for debugging, not useful during operations.",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "status",
-        //         "type",
-        //         "severity",
-        //         "component",
-        //         "variable"
-        //       ]
-        //     },
-        //     "StatusInfoType": {
-        //       "description": "Element providing more information about the status.",
-        //       "javaType": "StatusInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "reasonCode": {
-        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "additionalInfo": {
-        //           "description": "Additional text to provide detailed information.",
-        //           "type": "string",
-        //           "maxLength": 512
-        //         }
-        //       },
-        //       "required": [
-        //         "reasonCode"
-        //       ]
-        //     },
-        //     "VariableType": {
-        //       "description": "Reference key to a component-variable.",
-        //       "javaType": "Variable",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "setMonitoringResult": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/SetMonitoringResultType"
-        //       },
-        //       "minItems": 1
-        //     }
-        //   },
-        //   "required": [
-        //     "setMonitoringResult"
-        //   ]
+        //     "required": [
+        //         "setMonitoringResult"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomSetVariableMonitoringResponseParser = null)
+        #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a SetVariableMonitoring response.
@@ -356,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom SetVariableMonitoring responses.</param>
         public static SetVariableMonitoringResponse Parse(SetVariableMonitoringRequest                                 Request,
                                                           JObject                                                      JSON,
-                                                          SourceRouting                                            Destination,
+                                                          SourceRouting                                                Destination,
                                                           NetworkPath                                                  NetworkPath,
                                                           DateTime?                                                    ResponseTimestamp                           = null,
                                                           CustomJObjectParserDelegate<SetVariableMonitoringResponse>?  CustomSetVariableMonitoringResponseParser   = null,
@@ -395,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out SetVariableMonitoringResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(Request, JSON, Destination, NetworkPath, out SetVariableMonitoringResponse, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a SetVariableMonitoring response.
@@ -407,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom SetVariableMonitoring responses.</param>
         public static Boolean TryParse(SetVariableMonitoringRequest                                 Request,
                                        JObject                                                      JSON,
-                                       SourceRouting                                            Destination,
+                                       SourceRouting                                                Destination,
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out SetVariableMonitoringResponse?      SetVariableMonitoringResponse,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
@@ -589,7 +595,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    Request,
                    [],
-                  OCPPv2_1.Result.FromErrorResponse(
+                   Result.FromErrorResponse(
                        ErrorCode,
                        ErrorDescription,
                        ErrorDetails
@@ -614,11 +620,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SetVariableMonitoring request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static SetVariableMonitoringResponse FormationViolation(SetVariableMonitoringRequest  Request,
-                                                                       String                             ErrorDescription)
+                                                                       String                        ErrorDescription)
 
             => new (Request,
                     [],
-                   OCPPv2_1.Result.FormationViolation(
+                    Result.FormationViolation(
                         $"Invalid data format: {ErrorDescription}"
                     ));
 
@@ -629,11 +635,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SetVariableMonitoring request.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         public static SetVariableMonitoringResponse SignatureError(SetVariableMonitoringRequest  Request,
-                                                                   String                             ErrorDescription)
+                                                                   String                        ErrorDescription)
 
             => new (Request,
                     [],
-                   OCPPv2_1.Result.SignatureError(
+                    Result.SignatureError(
                         $"Invalid signature(s): {ErrorDescription}"
                     ));
 
@@ -644,11 +650,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SetVariableMonitoring request.</param>
         /// <param name="Description">An optional error description.</param>
         public static SetVariableMonitoringResponse Failed(SetVariableMonitoringRequest  Request,
-                                                           String?                            Description   = null)
+                                                           String?                       Description   = null)
 
             => new (Request,
                     [],
-                    OCPPv2_1.Result.Server(Description));
+                    Result.Server(Description));
 
 
         /// <summary>
@@ -657,11 +663,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The SetVariableMonitoring request.</param>
         /// <param name="Exception">The exception.</param>
         public static SetVariableMonitoringResponse ExceptionOccured(SetVariableMonitoringRequest  Request,
-                                                                     Exception                          Exception)
+                                                                     Exception                     Exception)
 
             => new (Request,
                     [],
-                    OCPPv2_1.Result.FromException(Exception));
+                    Result.FromException(Exception));
 
         #endregion
 

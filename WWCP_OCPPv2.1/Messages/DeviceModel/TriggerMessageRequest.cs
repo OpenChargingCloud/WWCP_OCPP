@@ -153,92 +153,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:TriggerMessageRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:TriggerMessageRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "MessageTriggerEnumType": {
+        //             "description": "Type of message to be triggered.",
+        //             "javaType": "MessageTriggerEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "BootNotification",
+        //                 "LogStatusNotification",
+        //                 "FirmwareStatusNotification",
+        //                 "Heartbeat",
+        //                 "MeterValues",
+        //                 "SignChargingStationCertificate",
+        //                 "SignV2GCertificate",
+        //                 "SignV2G20Certificate",
+        //                 "StatusNotification",
+        //                 "TransactionEvent",
+        //                 "SignCombinedCertificate",
+        //                 "PublishFirmwareStatusNotification",
+        //                 "CustomTrigger"
+        //             ]
+        //         },
+        //         "EVSEType": {
+        //             "description": "Electric Vehicle Supply Equipment",
+        //             "javaType": "EVSE",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "connectorId": {
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "MessageTriggerEnumType": {
-        //       "description": "Type of message to be triggered.",
-        //       "javaType": "MessageTriggerEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "BootNotification",
-        //         "LogStatusNotification",
-        //         "FirmwareStatusNotification",
-        //         "Heartbeat",
-        //         "MeterValues",
-        //         "SignChargingStationCertificate",
-        //         "SignV2GCertificate",
-        //         "StatusNotification",
-        //         "TransactionEvent",
-        //         "SignCombinedCertificate",
-        //         "PublishFirmwareStatusNotification"
-        //       ]
-        //     },
-        //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
-        //       "javaType": "EVSE",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "evse": {
+        //             "$ref": "#/definitions/EVSEType"
+        //         },
+        //         "requestedMessage": {
+        //             "$ref": "#/definitions/MessageTriggerEnumType"
+        //         },
+        //         "customTrigger": {
+        //             "description": "*(2.1)* When _requestedMessage_ = `CustomTrigger` this will trigger sending the corresponding message in field _customTrigger_, if supported by Charging Station.",
+        //             "type": "string",
+        //             "maxLength": 50
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
-        //           "type": "integer"
-        //         },
-        //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
-        //           "type": "integer"
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "id"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "evse": {
-        //       "$ref": "#/definitions/EVSEType"
-        //     },
-        //     "requestedMessage": {
-        //       "$ref": "#/definitions/MessageTriggerEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "requestedMessage"
-        //   ]
+        //     "required": [
+        //         "requestedMessage"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomTriggerMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a TriggerMessage request.
@@ -253,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom TriggerMessage requests.</param>
         public static TriggerMessageRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  SourceRouting                                    Destination,
+                                                  SourceRouting                                        Destination,
                                                   NetworkPath                                          NetworkPath,
                                                   DateTime?                                            RequestTimestamp                    = null,
                                                   TimeSpan?                                            RequestTimeout                      = null,
@@ -282,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out TriggerMessageRequest, out ErrorResponse, ...
 
         /// <summary>
         /// Try to parse the given JSON representation of a TriggerMessage request.
@@ -299,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom TriggerMessage requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       SourceRouting                                    Destination,
+                                       SourceRouting                                        Destination,
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out TriggerMessageRequest?      TriggerMessageRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
@@ -343,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region CustomTrigger        [optional]
 
-                var CustomTrigger = JSON["customTrigger"]?.Value<String>();
+                var CustomTrigger = JSON.GetString("customTrigger");
 
                 #endregion
 

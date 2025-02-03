@@ -654,13 +654,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         #endregion
 
 
-        #region SendCertificateSigningRequest         (CSR, SignCertificateRequestId, CertificateType = null, ...)
+        #region SendCertificateSigningRequest         (SignCertificateRequestId, CSR, CertificateType = null, ...)
 
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
-        /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
         /// <param name="SignCertificateRequestId">A sign certificate request identification.</param>
+        /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
         /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
@@ -673,8 +673,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             SendCertificateSigningRequest(this ILocalControllerNode     LocalController,
 
-                                          String                        CSR,
                                           Int32                         SignCertificateRequestId,
+                                          String                        CSR,
                                           CertificateSigningUse?        CertificateType       = null,
 
                                           CustomData?                   CustomData            = null,
@@ -699,8 +699,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                            Destination ?? SourceRouting.CSMS,
 
-                           CSR,
                            SignCertificateRequestId,
+                           CSR,
                            CertificateType,
 
                            SignKeys,
@@ -4124,29 +4124,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
         #endregion
 
-        #region UpdateDynamicSchedule       (Destination, ChargingProfileId, Limit = null, ...)
+        #region UpdateDynamicSchedule       (Destination, ChargingProfileId, ScheduleUpdate, ...)
 
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
         /// <param name="Destination">The local controller identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
-        /// 
-        /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
-        /// <param name="Limit_L2">Optional charging rate limit in chargingRateUnit on phase L2.</param>
-        /// <param name="Limit_L3">Optional charging rate limit in chargingRateUnit on phase L3.</param>
-        /// 
-        /// <param name="DischargeLimit">Optional discharging limit in chargingRateUnit.</param>
-        /// <param name="DischargeLimit_L2">Optional discharging limit in chargingRateUnit on phase L2.</param>
-        /// <param name="DischargeLimit_L3">Optional discharging limit in chargingRateUnit on phase L3.</param>
-        /// 
-        /// <param name="Setpoint">Optional setpoint in chargingRateUnit.</param>
-        /// <param name="Setpoint_L2">Optional setpoint in chargingRateUnit on phase L2.</param>
-        /// <param name="Setpoint_L3">Optional setpoint in chargingRateUnit on phase L3.</param>
-        /// 
-        /// <param name="SetpointReactive">Optional setpoint for reactive power (or current) in chargingRateUnit.</param>
-        /// <param name="SetpointReactive_L2">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.</param>
-        /// <param name="SetpointReactive_L3">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.</param>
+        /// <param name="ScheduleUpdate">The charging schedule to update.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
@@ -4158,40 +4143,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<UpdateDynamicScheduleResponse>
 
-            UpdateDynamicSchedule(this ILocalControllerNode     LocalController,
-                                  SourceRouting                 Destination,
-                                  ChargingProfile_Id            ChargingProfileId,
+            UpdateDynamicSchedule(this ILocalControllerNode  LocalController,
+                                  SourceRouting              Destination,
+                                  ChargingProfile_Id         ChargingProfileId,
+                                  ChargingScheduleUpdate     ScheduleUpdate,
 
-                                  ChargingRateValue?            Limit                 = null,
-                                  ChargingRateValue?            Limit_L2              = null,
-                                  ChargingRateValue?            Limit_L3              = null,
+                                  CustomData?                CustomData            = null,
 
-                                  ChargingRateValue?            DischargeLimit        = null,
-                                  ChargingRateValue?            DischargeLimit_L2     = null,
-                                  ChargingRateValue?            DischargeLimit_L3     = null,
+                                  NetworkPath?               NetworkPath           = null,
 
-                                  ChargingRateValue?            Setpoint              = null,
-                                  ChargingRateValue?            Setpoint_L2           = null,
-                                  ChargingRateValue?            Setpoint_L3           = null,
+                                  IEnumerable<KeyPair>?      SignKeys              = null,
+                                  IEnumerable<SignInfo>?     SignInfos             = null,
+                                  IEnumerable<Signature>?    Signatures            = null,
 
-                                  ChargingRateValue?            SetpointReactive      = null,
-                                  ChargingRateValue?            SetpointReactive_L2   = null,
-                                  ChargingRateValue?            SetpointReactive_L3   = null,
-
-                                  CustomData?                   CustomData            = null,
-
-                                  NetworkPath?                  NetworkPath           = null,
-
-                                  IEnumerable<KeyPair>?         SignKeys              = null,
-                                  IEnumerable<SignInfo>?        SignInfos             = null,
-                                  IEnumerable<Signature>?       Signatures            = null,
-
-                                  Request_Id?                   RequestId             = null,
-                                  DateTime?                     RequestTimestamp      = null,
-                                  TimeSpan?                     RequestTimeout        = null,
-                                  EventTracking_Id?             EventTrackingId       = null,
-                                  SerializationFormats?         SerializationFormat   = null,
-                                  CancellationToken             CancellationToken     = default)
+                                  Request_Id?                RequestId             = null,
+                                  DateTime?                  RequestTimestamp      = null,
+                                  TimeSpan?                  RequestTimeout        = null,
+                                  EventTracking_Id?          EventTrackingId       = null,
+                                  SerializationFormats?      SerializationFormat   = null,
+                                  CancellationToken          CancellationToken     = default)
 
 
                 => LocalController.OCPP.OUT.UpdateDynamicSchedule(
@@ -4199,22 +4169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                            Destination,
                            ChargingProfileId,
-
-                           Limit,
-                           Limit_L2,
-                           Limit_L3,
-
-                           DischargeLimit,
-                           DischargeLimit_L2,
-                           DischargeLimit_L3,
-
-                           Setpoint,
-                           Setpoint_L2,
-                           Setpoint_L3,
-
-                           SetpointReactive,
-                           SetpointReactive_L2,
-                           SetpointReactive_L3,
+                           ScheduleUpdate,
 
                            SignKeys,
                            SignInfos,

@@ -667,25 +667,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return Task.FromResult(
                            new PullDynamicScheduleUpdateResponse(
 
-                               Request:               request,
+                               Request:                  request,
 
-                               Limit:                 ChargingRateValue.Parse( 1, ChargingRateUnits.Watts),
-                               Limit_L2:              ChargingRateValue.Parse( 2, ChargingRateUnits.Watts),
-                               Limit_L3:              ChargingRateValue.Parse( 3, ChargingRateUnits.Watts),
+                               Status:                   ChargingProfileStatus.Accepted,
+                               ChargingScheduleUpdate:   new ChargingScheduleUpdate(
 
-                               DischargeLimit:        ChargingRateValue.Parse(-4, ChargingRateUnits.Watts),
-                               DischargeLimit_L2:     ChargingRateValue.Parse(-5, ChargingRateUnits.Watts),
-                               DischargeLimit_L3:     ChargingRateValue.Parse(-6, ChargingRateUnits.Watts),
+                                                             Limit:                 ChargingRateValue.ParseWatts( 1),
+                                                             Limit_L2:              ChargingRateValue.ParseWatts( 2),
+                                                             Limit_L3:              ChargingRateValue.ParseWatts( 3),
 
-                               Setpoint:              ChargingRateValue.Parse( 7, ChargingRateUnits.Watts),
-                               Setpoint_L2:           ChargingRateValue.Parse( 8, ChargingRateUnits.Watts),
-                               Setpoint_L3:           ChargingRateValue.Parse( 9, ChargingRateUnits.Watts),
+                                                             DischargeLimit:        ChargingRateValue.ParseWatts(-4),
+                                                             DischargeLimit_L2:     ChargingRateValue.ParseWatts(-5),
+                                                             DischargeLimit_L3:     ChargingRateValue.ParseWatts(-6),
 
-                               SetpointReactive:      ChargingRateValue.Parse(10, ChargingRateUnits.Watts),
-                               SetpointReactive_L2:   ChargingRateValue.Parse(11, ChargingRateUnits.Watts),
-                               SetpointReactive_L3:   ChargingRateValue.Parse(12, ChargingRateUnits.Watts),
+                                                             Setpoint:              ChargingRateValue.ParseWatts( 7),
+                                                             Setpoint_L2:           ChargingRateValue.ParseWatts( 8),
+                                                             Setpoint_L3:           ChargingRateValue.ParseWatts( 9),
 
-                               CustomData:            null
+                                                             SetpointReactive:      ChargingRateValue.ParseWatts(10),
+                                                             SetpointReactive_L2:   ChargingRateValue.ParseWatts(11),
+                                                             SetpointReactive_L3:   ChargingRateValue.ParseWatts(12),
+
+                                                             CustomData:            null
+
+                                                         ),
+
+                               CustomData:               null
 
                            )
                        );

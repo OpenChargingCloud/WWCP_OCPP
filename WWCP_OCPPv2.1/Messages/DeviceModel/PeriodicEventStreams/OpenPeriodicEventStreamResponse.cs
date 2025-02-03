@@ -86,16 +86,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public OpenPeriodicEventStreamResponse(CS.OpenPeriodicEventStreamRequest  Request,
-                                               GenericStatus                      Status,
-                                               StatusInfo?                        StatusInfo          = null,
-                                               DateTime?                          ResponseTimestamp   = null,
+        public OpenPeriodicEventStreamResponse(OpenPeriodicEventStreamRequest  Request,
+                                               GenericStatus                   Status,
+                                               StatusInfo?                     StatusInfo          = null,
+                                               DateTime?                       ResponseTimestamp   = null,
 
-                                               IEnumerable<KeyPair>?              SignKeys            = null,
-                                               IEnumerable<SignInfo>?             SignInfos           = null,
-                                               IEnumerable<Signature>?            Signatures          = null,
+                                               IEnumerable<KeyPair>?           SignKeys            = null,
+                                               IEnumerable<SignInfo>?          SignInfos           = null,
+                                               IEnumerable<Signature>?         Signatures          = null,
 
-                                               CustomData?                        CustomData          = null)
+                                               CustomData?                     CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -115,6 +115,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.Status      = Status;
             this.StatusInfo  = StatusInfo;
 
+            unchecked
+            {
+
+                hashCode = this.Status.     GetHashCode()       * 5 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.            GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -126,8 +135,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The authorize request.</param>
         /// <param name="Result">A result.</param>
-        public OpenPeriodicEventStreamResponse(CS.OpenPeriodicEventStreamRequest  Request,
-                                               Result                             Result)
+        public OpenPeriodicEventStreamResponse(OpenPeriodicEventStreamRequest  Request,
+                                               Result                          Result)
 
             : base(Request,
                    Result)
@@ -143,11 +152,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        //ToDo: Update schema documentation after the official release of OCPP v2.1!
-
         #region Documentation
 
-        // tba.
+        // {
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:OpenPeriodicEventStreamResponse",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "GenericStatusEnumType": {
+        //             "description": "Result of request.",
+        //             "javaType": "GenericStatusEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Accepted",
+        //                 "Rejected"
+        //             ]
+        //         },
+        //         "StatusInfoType": {
+        //             "description": "Element providing more information about the status.",
+        //             "javaType": "StatusInfo",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "reasonCode": {
+        //                     "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.",
+        //                     "type": "string",
+        //                     "maxLength": 20
+        //                 },
+        //                 "additionalInfo": {
+        //                     "description": "Additional text to provide detailed information.",
+        //                     "type": "string",
+        //                     "maxLength": 1024
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "reasonCode"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
+        //         }
+        //     },
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "status": {
+        //             "$ref": "#/definitions/GenericStatusEnumType"
+        //         },
+        //         "statusInfo": {
+        //             "$ref": "#/definitions/StatusInfoType"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
+        //     },
+        //     "required": [
+        //         "status"
+        //     ]
+        // }
 
         #endregion
 
@@ -192,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="OpenPeriodicEventStreamResponse">The parsed open periodic event stream response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomOpenPeriodicEventStreamResponseParser">A delegate to parse custom open periodic event stream responses.</param>
-        public static Boolean TryParse(CS.OpenPeriodicEventStreamRequest                              Request,
+        public static Boolean TryParse(OpenPeriodicEventStreamRequest                                 Request,
                                        JObject                                                        JSON,
                                        out OpenPeriodicEventStreamResponse?                           OpenPeriodicEventStreamResponse,
                                        out String?                                                    ErrorResponse,
@@ -217,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (Status == GenericStatus.Unknown)
                 {
-                    ErrorResponse = "Unknown response status '" + (JSON["status"]?.Value<String>() ?? "") + "' received!";
+                    ErrorResponse = "Unknown response status '" + (JSON.GetString("status") ?? "") + "' received!";
                     return false;
                 }
 
@@ -349,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The open periodic event stream failed.
         /// </summary>
-        public static OpenPeriodicEventStreamResponse Failed(CS.OpenPeriodicEventStreamRequest Request)
+        public static OpenPeriodicEventStreamResponse Failed(OpenPeriodicEventStreamRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -440,21 +517,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.     GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

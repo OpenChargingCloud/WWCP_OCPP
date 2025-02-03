@@ -2102,6 +2102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomNotifySettlementRequestSerializer,
+                        NetworkingNode.OCPP.CustomContactSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -2124,6 +2125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomNotifySettlementRequestSerializer,
+                        NetworkingNode.OCPP.CustomContactSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -2149,6 +2151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request?.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomNotifySettlementRequestSerializer,
+                        NetworkingNode.OCPP.CustomContactSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -2181,6 +2184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request?.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomNotifySettlementRequestSerializer,
+                        NetworkingNode.OCPP.CustomContactSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -2269,6 +2273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     response.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomPullDynamicScheduleUpdateResponseSerializer,
+                        NetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -2301,6 +2306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     response.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomPullDynamicScheduleUpdateResponseSerializer,
+                        NetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -2841,6 +2847,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         NetworkingNode.OCPP.CustomIdTokenSerializer,
                         NetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                         NetworkingNode.OCPP.CustomMessageContentSerializer,
+                        NetworkingNode.OCPP.CustomTransactionLimitsSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -2885,6 +2892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         NetworkingNode.OCPP.CustomIdTokenSerializer,
                         NetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                         NetworkingNode.OCPP.CustomMessageContentSerializer,
+                        NetworkingNode.OCPP.CustomTransactionLimitsSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -6325,6 +6333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomUpdateDynamicScheduleRequestSerializer,
+                        NetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -6347,6 +6356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomUpdateDynamicScheduleRequestSerializer,
+                        NetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -6372,6 +6382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request?.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomUpdateDynamicScheduleRequestSerializer,
+                        NetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),
@@ -6405,6 +6416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     request?.ToJSON(
                         true,
                         NetworkingNode.OCPP.CustomUpdateDynamicScheduleRequestSerializer,
+                        NetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                         NetworkingNode.OCPP.CustomSignatureSerializer,
                         NetworkingNode.OCPP.CustomCustomDataSerializer
                     ),

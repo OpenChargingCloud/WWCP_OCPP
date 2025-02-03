@@ -132,6 +132,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         UnlockFailed,
 
         /// <summary>
+        /// OngoingAuthorizedTransaction
+        /// </summary>
+        OngoingAuthorizedTransaction,
+
+        /// <summary>
         /// Charge point has no connector lock.
         /// </summary>
         NotSupported

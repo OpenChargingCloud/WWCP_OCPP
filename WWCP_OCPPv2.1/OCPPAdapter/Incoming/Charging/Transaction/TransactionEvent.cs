@@ -251,6 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomIdTokenSerializer,
                             parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                             parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                            parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
@@ -271,6 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomIdTokenSerializer,
                                            parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                                            parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                                           parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
@@ -371,6 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 parentNetworkingNode.OCPP.CustomIdTokenSerializer,
                                 parentNetworkingNode.OCPP.CustomAdditionalInfoSerializer,
                                 parentNetworkingNode.OCPP.CustomMessageContentSerializer,
+                                parentNetworkingNode.OCPP.CustomTransactionLimitsSerializer,
                                 parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                 parentNetworkingNode.OCPP.CustomCustomDataSerializer
                             ),

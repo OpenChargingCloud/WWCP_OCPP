@@ -74,6 +74,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Decimal?             MaxLimit              { get; }
 
         /// <summary>
+        /// Maximum number of elements from _valuesList_ that are supported as _attributeValue_.
+        /// </summary>
+        [Optional]
+        public UInt32?              MaxElements           { get; }
+
+        /// <summary>
         /// The optional enumeration of allowed values when variable is Option/Member/SequenceList.
         /// * OptionList:   The (actual) variable value must be a single value from the reported(CSV) enumeration list.
         /// * MemberList:   The (actual) variable value may be an (unordered) (sub-)set of the reported(CSV) valid values list.
@@ -97,6 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Unit">The optional unit of the variable. When the transmitted value has a unit, this field SHALL be included.</param>
         /// <param name="MinLimit">The optional minimal value of this variable.</param>
         /// <param name="MaxLimit">The optional maximal value of this variable. When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.</param>
+        /// <param name="MaxElements">The optional maximum number of elements from _valuesList_ that are supported as _attributeValue_.</param>
         /// <param name="ValuesList">The optional CSV list of allowed values when variable is Option/Member/SequenceList.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VariableCharacteristics(DataTypes             DataType,
@@ -104,6 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        UnitsOfMeasure?       Unit                 = null,
                                        Decimal?              MinLimit             = null,
                                        Decimal?              MaxLimit             = null,
+                                       UInt32?               MaxElements          = null,
                                        IEnumerable<String>?  ValuesList           = null,
                                        CustomData?           CustomData           = null)
 
@@ -116,16 +124,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Unit                = Unit;
             this.MinLimit            = MinLimit;
             this.MaxLimit            = MaxLimit;
+            this.MaxElements         = MaxElements;
             this.ValuesList          = ValuesList?.Distinct() ?? [];
 
             unchecked
             {
 
-                hashCode = this.DataType.          GetHashCode()       * 17 ^
-                           this.SupportsMonitoring.GetHashCode()       * 13 ^
-                          (this.Unit?.             GetHashCode() ?? 0) * 11 ^
-                          (this.MinLimit?.         GetHashCode() ?? 0) *  7 ^
-                          (this.MaxLimit?.         GetHashCode() ?? 0) *  5 ^
+                hashCode = this.DataType.          GetHashCode()       * 19 ^
+                           this.SupportsMonitoring.GetHashCode()       * 17 ^
+                          (this.Unit?.             GetHashCode() ?? 0) * 13 ^
+                          (this.MinLimit?.         GetHashCode() ?? 0) * 11 ^
+                          (this.MaxLimit?.         GetHashCode() ?? 0) *  7 ^
+                          (this.MaxElements?.      GetHashCode() ?? 0) *  5 ^
                            this.ValuesList.        CalcHashCode()      *  3 ^
                            base.                   GetHashCode();
 
@@ -138,53 +148,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "VariableCharacteristicsType": {
-        //   "description": "Fixed read-only parameters of a variable.",
-        //   "javaType": "VariableCharacteristics",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
+        // {
+        //     "description": "Fixed read-only parameters of a variable.",
+        //     "javaType": "VariableCharacteristics",
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "unit": {
+        //             "description": "Unit of the variable. When the transmitted value has a unit, this field SHALL be included.",
+        //             "type": "string",
+        //             "maxLength": 16
+        //         },
+        //         "dataType": {
+        //             "$ref": "#/definitions/DataEnumType"
+        //         },
+        //         "minLimit": {
+        //             "description": "Minimum possible value of this variable.",
+        //             "type": "number"
+        //         },
+        //         "maxLimit": {
+        //             "description": "Maximum possible value of this variable. When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.",
+        //             "type": "number"
+        //         },
+        //         "maxElements": {
+        //             "description": "*(2.1)* Maximum number of elements from _valuesList_ that are supported as _attributeValue_.",
+        //             "type": "integer",
+        //             "minimum": 1.0
+        //         },
+        //         "valuesList": {
+        //             "description": "Mandatory when _dataType_ = OptionList, MemberList or SequenceList. In that case _valuesList_ specifies the allowed values for the type.\r\n\r\nThe length of this field can be limited by DeviceDataCtrlr.ConfigurationValueSize.\r\n\r\n* OptionList: The (Actual) Variable value must be a single value from the reported (CSV) enumeration list.\r\n\r\n* MemberList: The (Actual) Variable value  may be an (unordered) (sub-)set of the reported (CSV) valid values list.\r\n\r\n* SequenceList: The (Actual) Variable value  may be an ordered (priority, etc)  (sub-)set of the reported (CSV) valid values.\r\n\r\nThis is a comma separated list.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valuesList. The max size of these values will always remain equal. ",
+        //             "type": "string",
+        //             "maxLength": 1000
+        //         },
+        //         "supportsMonitoring": {
+        //             "description": "Flag indicating if this variable supports monitoring. ",
+        //             "type": "boolean"
+        //         },
+        //         "customData": {
+        //             "$ref": "#/definitions/CustomDataType"
+        //         }
         //     },
-        //     "unit": {
-        //       "description": "Unit of the variable. When the transmitted value has a unit, this field SHALL be included.",
-        //       "type": "string",
-        //       "maxLength": 16
-        //     },
-        //     "dataType": {
-        //       "$ref": "#/definitions/DataEnumType"
-        //     },
-        //     "minLimit": {
-        //       "description": "Minimum possible value of this variable.",
-        //       "type": "number"
-        //     },
-        //     "maxLimit": {
-        //       "description": "Maximum possible value of this variable.
-        //                       When the datatype of this Variable is String, OptionList, SequenceList or MemberList, this field defines the maximum length of the (CSV) string.",
-        //       "type": "number"
-        //     },
-        //     "valuesList": {
-        //       "description": "Allowed values when variable is Option/Member/SequenceList.
-        //                       * OptionList:   The (Actual) Variable value must be a single value from the reported (CSV) enumeration list.
-        //                       * MemberList:   The (Actual) Variable value  may be an (unordered) (sub-)set of the reported (CSV) valid values list.
-        //                       * SequenceList: The (Actual) Variable value  may be an ordered (priority, etc)  (sub-)set of the reported (CSV) valid values.
-        //                       This is a comma separated list.
-        //                       The Configuration Variable <<configkey-configuration-value-size,ConfigurationValueSize>> can be used to limit SetVariableData.attributeValue
-        //                       and VariableCharacteristics.valueList.
-        //                       The max size of these values will always remain equal.",
-        //       "type": "string",
-        //       "maxLength": 1000
-        //     },
-        //     "supportsMonitoring": {
-        //       "description": "Flag indicating if this variable supports monitoring.",
-        //       "type": "boolean"
-        //     }
-        //   },
-        //   "required": [
-        //     "dataType",
-        //     "supportsMonitoring"
-        //   ]
+        //     "required": [
+        //         "dataType",
+        //         "supportsMonitoring"
+        //     ]
         // }
 
         #endregion
@@ -322,6 +329,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region MaxElements           [optional]
+
+                if (JSON.ParseOptional("maxElements",
+                                       "max elements",
+                                       out UInt32? MaxElements,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region ValuesList            [optional]
 
                 var ValuesList           = new HashSet<String>();
@@ -336,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         case JTokenType.String:
                         {
 
-                            var valueListString = JSON["valuesList"]?.Value<String>()?.Trim();
+                            var valueListString = JSON.GetString("valuesList");
 
                         }
                         break;
@@ -382,6 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               Unit,
                                               MinLimit,
                                               MaxLimit,
+                                              MaxElements,
                                               ValuesList,
                                               CustomData
                                           );
@@ -425,11 +446,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            MinLimit.HasValue
-                               ? new JProperty("minLimit",             MinLimit.Value)
+                               ? new JProperty("minLimit",             MinLimit.   Value)
                                : null,
 
                            MaxLimit.HasValue
-                               ? new JProperty("maxLimit",             MaxLimit.Value)
+                               ? new JProperty("maxLimit",             MaxLimit.   Value)
+                               : null,
+
+                           MaxElements.HasValue
+                               ? new JProperty("maxElements",          MaxElements.Value)
                                : null,
 
                            ValuesList.Any()
@@ -453,17 +478,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone these variable characteristics.
         /// </summary>
         public VariableCharacteristics Clone()
 
-            => new (
+            => new(
 
                    DataType,
                    SupportsMonitoring,
                    Unit?.Clone(),
                    MinLimit,
                    MaxLimit,
+                   MaxElements,
                    ValuesList.Any() ? ValuesList.Select(value => new String(value.ToCharArray())) : [],
 
                    CustomData
@@ -549,11 +575,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
              ((Unit is null      &&  VariableCharacteristics.Unit is null) ||
                Unit is not null  &&  VariableCharacteristics.Unit is not null  && Unit.          Equals(VariableCharacteristics.Unit))           &&
 
-            ((!MinLimit.HasValue && !VariableCharacteristics.MinLimit.HasValue) ||
-               MinLimit.HasValue &&  VariableCharacteristics.MinLimit.HasValue && MinLimit.Value.Equals(VariableCharacteristics.MinLimit.Value)) &&
+            ((!MinLimit.   HasValue && !VariableCharacteristics.MinLimit.   HasValue) ||
+               MinLimit.   HasValue &&  VariableCharacteristics.MinLimit.   HasValue && MinLimit.   Value.Equals(VariableCharacteristics.MinLimit.   Value)) &&
 
-            ((!MaxLimit.HasValue && !VariableCharacteristics.MaxLimit.HasValue) ||
-               MaxLimit.HasValue &&  VariableCharacteristics.MaxLimit.HasValue && MaxLimit.Value.Equals(VariableCharacteristics.MaxLimit.Value)) &&
+            ((!MaxLimit.   HasValue && !VariableCharacteristics.MaxLimit.   HasValue) ||
+               MaxLimit.   HasValue &&  VariableCharacteristics.MaxLimit.   HasValue && MaxLimit.   Value.Equals(VariableCharacteristics.MaxLimit.   Value)) &&
+
+            ((!MaxElements.HasValue && !VariableCharacteristics.MaxElements.HasValue) ||
+               MaxElements.HasValue &&  VariableCharacteristics.MaxElements.HasValue && MaxElements.Value.Equals(VariableCharacteristics.MaxElements.Value)) &&
 
                ValuesList.Count().Equals(VariableCharacteristics.ValuesList.Count()) &&
                ValuesList.All(data => VariableCharacteristics.ValuesList.Contains(data)) &&
@@ -596,15 +625,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : null,
 
                    MinLimit.HasValue
-                       ? "MinLimit: " + MinLimit.Value
+                       ? "MinLimit: "    + MinLimit.Value
                        : null,
 
                    MaxLimit.HasValue
-                       ? "MaxLimit: " + MaxLimit.Value
+                       ? "MaxLimit: "    + MaxLimit.Value
+                       : null,
+
+                   MaxElements.HasValue
+                       ? "MaxElements: " + MaxElements.Value
                        : null,
 
                    ValuesList.Any()
-                       ? "ValuesList: " + ValuesList.AggregateWith('|')
+                       ? "ValuesList: "  + ValuesList.AggregateWith('|')
                        : null
 
                }.Where(text => text is not null).

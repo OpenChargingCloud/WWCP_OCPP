@@ -239,6 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         response.ToJSON(
                             true,
                             parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateResponseSerializer,
+                            parentNetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
@@ -255,6 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        response.ToJSON(
                                            false,
                                            parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateResponseSerializer,
+                                           parentNetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                                            parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
@@ -331,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 if (PullDynamicScheduleUpdateResponse.TryParse(Request,
                                                                ResponseJSON,
-                                                           Destination,
+                                                               Destination,
                                                                NetworkPath,
                                                                out response,
                                                                out var errorResponse,
@@ -347,6 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             response.ToJSON(
                                 true,
                                 parentNetworkingNode.OCPP.CustomPullDynamicScheduleUpdateResponseSerializer,
+                                parentNetworkingNode.OCPP.CustomChargingScheduleUpdateSerializer,
                                 parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                 parentNetworkingNode.OCPP.CustomCustomDataSerializer
                             ),

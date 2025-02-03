@@ -176,233 +176,244 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Documentation
 
         // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:NotifyEventRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
+        //     "$schema": "http://json-schema.org/draft-06/schema#",
+        //     "$id": "urn:OCPP:Cp:2:2025:1:NotifyEventRequest",
+        //     "comment": "OCPP 2.1 Edition 1 (c) OCA, Creative Commons Attribution-NoDerivatives 4.0 International Public License",
+        //     "definitions": {
+        //         "EventNotificationEnumType": {
+        //             "description": "Specifies the event notification type of the message.",
+        //             "javaType": "EventNotificationEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "HardWiredNotification",
+        //                 "HardWiredMonitor",
+        //                 "PreconfiguredMonitor",
+        //                 "CustomMonitor"
+        //             ]
+        //         },
+        //         "EventTriggerEnumType": {
+        //             "description": "Type of trigger for this event, e.g. exceeding a threshold value.",
+        //             "javaType": "EventTriggerEnum",
+        //             "type": "string",
+        //             "additionalProperties": false,
+        //             "enum": [
+        //                 "Alerting",
+        //                 "Delta",
+        //                 "Periodic"
+        //             ]
+        //         },
+        //         "ComponentType": {
+        //             "description": "A physical or logical component",
+        //             "javaType": "Component",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "evse": {
+        //                     "$ref": "#/definitions/EVSEType"
+        //                 },
+        //                 "name": {
+        //                     "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "EventDataType": {
+        //             "description": "Class to report an event notification for a component-variable.",
+        //             "javaType": "EventData",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "eventId": {
+        //                     "description": "Identifies the event. This field can be referred to as a cause by other events.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "timestamp": {
+        //                     "description": "Timestamp of the moment the report was generated.",
+        //                     "type": "string",
+        //                     "format": "date-time"
+        //                 },
+        //                 "trigger": {
+        //                     "$ref": "#/definitions/EventTriggerEnumType"
+        //                 },
+        //                 "cause": {
+        //                     "description": "Refers to the Id of an event that is considered to be the cause for this event.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "actualValue": {
+        //                     "description": "Actual value (_attributeType_ Actual) of the variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
+        //                     "type": "string",
+        //                     "maxLength": 2500
+        //                 },
+        //                 "techCode": {
+        //                     "description": "Technical (error) code as reported by component.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "techInfo": {
+        //                     "description": "Technical detail information as reported by component.",
+        //                     "type": "string",
+        //                     "maxLength": 500
+        //                 },
+        //                 "cleared": {
+        //                     "description": "_Cleared_ is set to true to report the clearing of a monitored situation, i.e. a 'return to normal'. ",
+        //                     "type": "boolean"
+        //                 },
+        //                 "transactionId": {
+        //                     "description": "If an event notification is linked to a specific transaction, this field can be used to specify its transactionId.",
+        //                     "type": "string",
+        //                     "maxLength": 36
+        //                 },
+        //                 "component": {
+        //                     "$ref": "#/definitions/ComponentType"
+        //                 },
+        //                 "variableMonitoringId": {
+        //                     "description": "Identifies the VariableMonitoring which triggered the event.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "eventNotificationType": {
+        //                     "$ref": "#/definitions/EventNotificationEnumType"
+        //                 },
+        //                 "variable": {
+        //                     "$ref": "#/definitions/VariableType"
+        //                 },
+        //                 "severity": {
+        //                     "description": "*(2.1)* Severity associated with the monitor in _variableMonitoringId_ or with the hardwired notification.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "eventId",
+        //                 "timestamp",
+        //                 "trigger",
+        //                 "actualValue",
+        //                 "eventNotificationType",
+        //                 "component",
+        //                 "variable"
+        //             ]
+        //         },
+        //         "EVSEType": {
+        //             "description": "Electric Vehicle Supply Equipment",
+        //             "javaType": "EVSE",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "id": {
+        //                     "description": "EVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "connectorId": {
+        //                     "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
+        //                     "type": "integer",
+        //                     "minimum": 0.0
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "id"
+        //             ]
+        //         },
+        //         "VariableType": {
+        //             "description": "Reference key to a component-variable.",
+        //             "javaType": "Variable",
+        //             "type": "object",
+        //             "additionalProperties": false,
+        //             "properties": {
+        //                 "name": {
+        //                     "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "instance": {
+        //                     "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
+        //                     "type": "string",
+        //                     "maxLength": 50
+        //                 },
+        //                 "customData": {
+        //                     "$ref": "#/definitions/CustomDataType"
+        //                 }
+        //             },
+        //             "required": [
+        //                 "name"
+        //             ]
+        //         },
+        //         "CustomDataType": {
+        //             "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //             "javaType": "CustomData",
+        //             "type": "object",
+        //             "properties": {
+        //                 "vendorId": {
+        //                     "type": "string",
+        //                     "maxLength": 255
+        //                 }
+        //             },
+        //             "required": [
+        //                 "vendorId"
+        //             ]
         //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
         //     },
-        //     "EventNotificationEnumType": {
-        //       "description": "Specifies the event notification type of the message.",
-        //       "javaType": "EventNotificationEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "HardWiredNotification",
-        //         "HardWiredMonitor",
-        //         "PreconfiguredMonitor",
-        //         "CustomMonitor"
-        //       ]
-        //     },
-        //     "EventTriggerEnumType": {
-        //       "description": "Type of monitor that triggered this event, e.g. exceeding a threshold value.",
-        //       "javaType": "EventTriggerEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "Alerting",
-        //         "Delta",
-        //         "Periodic"
-        //       ]
-        //     },
-        //     "ComponentType": {
-        //       "description": "A physical or logical component",
-        //       "javaType": "Component",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
+        //     "type": "object",
+        //     "additionalProperties": false,
+        //     "properties": {
+        //         "generatedAt": {
+        //             "description": "Timestamp of the moment this message was generated at the Charging Station.",
+        //             "type": "string",
+        //             "format": "date-time"
+        //         },
+        //         "tbc": {
+        //             "description": "\u201cto be continued\u201d indicator. Indicates whether another part of the report follows in an upcoming notifyEventRequest message. Default value when omitted is false. ",
+        //             "type": "boolean",
+        //             "default": false
+        //         },
+        //         "seqNo": {
+        //             "description": "Sequence number of this message. First message starts at 0.",
+        //             "type": "integer",
+        //             "minimum": 0.0
+        //         },
+        //         "eventData": {
+        //             "type": "array",
+        //             "additionalItems": false,
+        //             "items": {
+        //                 "$ref": "#/definitions/EventDataType"
+        //             },
+        //             "minItems": 1
+        //         },
         //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "evse": {
-        //           "$ref": "#/definitions/EVSEType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the component. Name should be taken from the list of standardized component names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the component exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
+        //             "$ref": "#/definitions/CustomDataType"
         //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
         //     },
-        //     "EventDataType": {
-        //       "description": "Class to report an event notification for a component-variable.",
-        //       "javaType": "EventData",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "eventId": {
-        //           "description": "Identifies the event. This field can be referred to as a cause by other events.",
-        //           "type": "integer"
-        //         },
-        //         "timestamp": {
-        //           "description": "Timestamp of the moment the report was generated.",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "trigger": {
-        //           "$ref": "#/definitions/EventTriggerEnumType"
-        //         },
-        //         "cause": {
-        //           "description": "Refers to the Id of an event that is considered to be the cause for this event.",
-        //           "type": "integer"
-        //         },
-        //         "actualValue": {
-        //           "description": "Actual value (_attributeType_ Actual) of the variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. ",
-        //           "type": "string",
-        //           "maxLength": 2500
-        //         },
-        //         "techCode": {
-        //           "description": "Technical (error) code as reported by component.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "techInfo": {
-        //           "description": "Technical detail information as reported by component.",
-        //           "type": "string",
-        //           "maxLength": 500
-        //         },
-        //         "cleared": {
-        //           "description": "_Cleared_ is set to true to report the clearing of a monitored situation, i.e. a 'return to normal'. ",
-        //           "type": "boolean"
-        //         },
-        //         "transactionId": {
-        //           "description": "If an event notification is linked to a specific transaction, this field can be used to specify its transactionId.",
-        //           "type": "string",
-        //           "maxLength": 36
-        //         },
-        //         "component": {
-        //           "$ref": "#/definitions/ComponentType"
-        //         },
-        //         "variableMonitoringId": {
-        //           "description": "Identifies the VariableMonitoring which triggered the event.",
-        //           "type": "integer"
-        //         },
-        //         "eventNotificationType": {
-        //           "$ref": "#/definitions/EventNotificationEnumType"
-        //         },
-        //         "variable": {
-        //           "$ref": "#/definitions/VariableType"
-        //         }
-        //       },
-        //       "required": [
-        //         "eventId",
-        //         "timestamp",
-        //         "trigger",
-        //         "actualValue",
-        //         "eventNotificationType",
-        //         "component",
-        //         "variable"
-        //       ]
-        //     },
-        //     "EVSEType": {
-        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment",
-        //       "javaType": "EVSE",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "id": {
-        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.",
-        //           "type": "integer"
-        //         },
-        //         "connectorId": {
-        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.",
-        //           "type": "integer"
-        //         }
-        //       },
-        //       "required": [
-        //         "id"
-        //       ]
-        //     },
-        //     "VariableType": {
-        //       "description": "Reference key to a component-variable.",
-        //       "javaType": "Variable",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "name": {
-        //           "description": "Name of the variable. Name should be taken from the list of standardized variable names whenever possible. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "instance": {
-        //           "description": "Name of instance in case the variable exists as multiple instances. Case Insensitive. strongly advised to use Camel Case.",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "name"
-        //       ]
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "generatedAt": {
-        //       "description": "Timestamp of the moment this message was generated at the Charging Station.",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "tbc": {
-        //       "description": "“to be continued” indicator. Indicates whether another part of the report follows in an upcoming notifyEventRequest message. Default value when omitted is false. ",
-        //       "type": "boolean",
-        //       "default": false
-        //     },
-        //     "seqNo": {
-        //       "description": "Sequence number of this message. First message starts at 0.",
-        //       "type": "integer"
-        //     },
-        //     "eventData": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/EventDataType"
-        //       },
-        //       "minItems": 1
-        //     }
-        //   },
-        //   "required": [
-        //     "generatedAt",
-        //     "seqNo",
-        //     "eventData"
-        //   ]
+        //     "required": [
+        //         "generatedAt",
+        //         "seqNo",
+        //         "eventData"
+        //     ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, CustomNotifyEventRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
         /// Parse the given JSON representation of a notify event request.
@@ -417,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyEventRequestParser">A delegate to parse custom notify event requests.</param>
         public static NotifyEventRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               SourceRouting                                 Destination,
+                                               SourceRouting                                     Destination,
                                                NetworkPath                                       NetworkPath,
                                                DateTime?                                         RequestTimestamp                 = null,
                                                TimeSpan?                                         RequestTimeout                   = null,
@@ -446,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyEventRequest, out ErrorResponse, CustomNotifyEventRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, Destination, NetworkPath, out NotifyEventRequest, out ErrorResponse, ...)
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify event request.
@@ -463,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyEventRequestParser">A delegate to parse custom notify event requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       SourceRouting                                 Destination,
+                                       SourceRouting                                     Destination,
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out NotifyEventRequest?      NotifyEventRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
@@ -478,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyEventRequest = null;
 
-                #region GeneratedAt          [mandatory]
+                #region GeneratedAt       [mandatory]
 
                 if (!JSON.ParseMandatory("generatedAt",
                                          "generated at",
@@ -490,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region SequenceNumber       [mandatory]
+                #region SequenceNumber    [mandatory]
 
                 if (!JSON.ParseMandatory("seqNo",
                                          "sequence number",
@@ -502,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingNeeds        [mandatory]
+                #region EventData         [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("eventData",
                                                 "event data",
@@ -515,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ToBeContinued        [optional]
+                #region ToBeContinued     [optional]
 
                 if (JSON.ParseOptional("tbc",
                                        "to be continued",
@@ -528,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region Signatures        [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -542,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData        [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
