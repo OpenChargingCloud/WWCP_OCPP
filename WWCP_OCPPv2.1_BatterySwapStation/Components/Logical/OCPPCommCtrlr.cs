@@ -23,7 +23,7 @@ using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1
+namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 {
 
     /// <summary>

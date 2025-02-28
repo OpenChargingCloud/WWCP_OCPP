@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1
+namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 {
 
     /// <summary>
