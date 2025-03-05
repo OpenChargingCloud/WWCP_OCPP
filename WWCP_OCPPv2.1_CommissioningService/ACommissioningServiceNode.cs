@@ -41,7 +41,7 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1.CMS
 {
 
     #region (class) ChargingStationConnector
@@ -181,9 +181,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
     /// <summary>
-    /// An abstract Charging Station Management System node.
+    /// An abstract Commissioning Service node.
     /// </summary>
-    public abstract class ACSMSNode : AOCPPNetworkingNode
+    public abstract class ACommissioningServiceNode : AOCPPNetworkingNode
     {
 
         #region Data
@@ -199,25 +199,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Properties
 
         /// <summary>
-        /// The Charging Station Management System vendor identification.
+        /// The Commissioning Service vendor identification.
         /// </summary>
         [Mandatory]
         public String                       VendorName                               { get; }      = "";
 
         /// <summary>
-        ///  The Charging Station Management System model identification.
+        ///  The Commissioning Service model identification.
         /// </summary>
         [Mandatory]
         public String                       Model                                    { get; }      = "";
 
         /// <summary>
-        /// The optional serial number of the Charging Station Management System.
+        /// The optional serial number of the Commissioning Service.
         /// </summary>
         [Optional]
         public String?                      SerialNumber                             { get; }
 
         /// <summary>
-        /// The optional firmware version of the Charging Station Management System.
+        /// The optional firmware version of the Commissioning Service.
         /// </summary>
         [Optional]
         public String?                      SoftwareVersion                          { get; }
@@ -244,9 +244,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public HTTPPath?                    HTTPUploadAPI_Path                       { get; }
         public String?                      HTTPUploadAPI_FileSystemPath             { get; }
 
-        public WebPaymentsAPI?              WebPaymentsAPI                           { get; }
-        public HTTPPath?                    WebPaymentsAPI_Path                      { get; }
-
         public WebAPI?                      WebAPI                                   { get; }
         public HTTPPath?                    WebAPI_Path                              { get; }
 
@@ -270,72 +267,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new abstract Charging Station Management System (CSMS).
+        /// Create a new abstract Commissioning Service (CSMS).
         /// </summary>
-        /// <param name="Id">The unique identification of this Charging Station Management System (CSMS).</param>
-        /// <param name="Description">An optional multi-language description of the Charging Station Management System (CSMS).</param>
-        public ACSMSNode(NetworkingNode_Id                 Id,
-                         String                            VendorName,
-                         String                            Model,
-                         String?                           SerialNumber                            = null,
-                         String?                           SoftwareVersion                         = null,
-                         I18NString?                       Description                             = null,
-                         CustomData?                       CustomData                              = null,
+        /// <param name="Id">The unique identification of this Commissioning Service (CSMS).</param>
+        /// <param name="Description">An optional multi-language description of the Commissioning Service (CSMS).</param>
+        public ACommissioningServiceNode(NetworkingNode_Id                                 Id,
+                                         String                                            VendorName,
+                                         String                                            Model,
+                                         String?                                           SerialNumber                            = null,
+                                         String?                                           SoftwareVersion                         = null,
+                                         I18NString?                                       Description                             = null,
+                                         CustomData?                                       CustomData                              = null,
 
-                         AsymmetricCipherKeyPair?          ClientCAKeyPair                         = null,
-                         BCx509.X509Certificate?           ClientCACertificate                     = null,
+                                         AsymmetricCipherKeyPair?                          ClientCAKeyPair                         = null,
+                                         BCx509.X509Certificate?                           ClientCACertificate                     = null,
 
-                         SignaturePolicy?                  SignaturePolicy                         = null,
-                         SignaturePolicy?                  ForwardingSignaturePolicy               = null,
+                                         SignaturePolicy?                                  SignaturePolicy                         = null,
+                                         SignaturePolicy?                                  ForwardingSignaturePolicy               = null,
 
-                         Func<ACSMSNode, HTTPAPI>?         HTTPAPI                                 = null,
-                         Boolean                           HTTPAPI_Disabled                        = false,
-                         IPPort?                           HTTPAPI_Port                            = null,
-                         String?                           HTTPAPI_ServerName                      = null,
-                         String?                           HTTPAPI_ServiceName                     = null,
-                         EMailAddress?                     HTTPAPI_RobotEMailAddress               = null,
-                         String?                           HTTPAPI_RobotGPGPassphrase              = null,
-                         Boolean                           HTTPAPI_EventLoggingDisabled            = false,
+                                         Func<ACommissioningServiceNode, HTTPAPI>?         HTTPAPI                                 = null,
+                                         Boolean                                           HTTPAPI_Disabled                        = false,
+                                         IPPort?                                           HTTPAPI_Port                            = null,
+                                         String?                                           HTTPAPI_ServerName                      = null,
+                                         String?                                           HTTPAPI_ServiceName                     = null,
+                                         EMailAddress?                                     HTTPAPI_RobotEMailAddress               = null,
+                                         String?                                           HTTPAPI_RobotGPGPassphrase              = null,
+                                         Boolean                                           HTTPAPI_EventLoggingDisabled            = false,
 
-                         Func<ACSMSNode, DownloadAPI>?     HTTPDownloadAPI                         = null,
-                         Boolean                           HTTPDownloadAPI_Disabled                = false,
-                         HTTPPath?                         HTTPDownloadAPI_Path                    = null,
-                         String?                           HTTPDownloadAPI_FileSystemPath          = null,
+                                         Func<ACommissioningServiceNode, DownloadAPI>?     HTTPDownloadAPI                         = null,
+                                         Boolean                                           HTTPDownloadAPI_Disabled                = false,
+                                         HTTPPath?                                         HTTPDownloadAPI_Path                    = null,
+                                         String?                                           HTTPDownloadAPI_FileSystemPath          = null,
 
-                         Func<ACSMSNode, UploadAPI>?       HTTPUploadAPI                           = null,
-                         Boolean                           HTTPUploadAPI_Disabled                  = false,
-                         HTTPPath?                         HTTPUploadAPI_Path                      = null,
-                         String?                           HTTPUploadAPI_FileSystemPath            = null,
+                                         Func<ACommissioningServiceNode, UploadAPI>?       HTTPUploadAPI                           = null,
+                                         Boolean                                           HTTPUploadAPI_Disabled                  = false,
+                                         HTTPPath?                                         HTTPUploadAPI_Path                      = null,
+                                         String?                                           HTTPUploadAPI_FileSystemPath            = null,
 
-                         //HTTPPath?                         FirmwareDownloadAPIPath                 = null,
-                         //HTTPPath?                         LogfilesUploadAPIPath                   = null,
-                         //HTTPPath?                         DiagnosticsUploadAPIPath                = null,
+                                         //HTTPPath?                                         FirmwareDownloadAPIPath                 = null,
+                                         //HTTPPath?                                         LogfilesUploadAPIPath                   = null,
+                                         //HTTPPath?                                         DiagnosticsUploadAPIPath                = null,
 
-                         Func<ACSMSNode, WebPaymentsAPI>?  WebPaymentsAPI                          = null,
-                         Boolean                           WebPaymentsAPI_Disabled                 = false,
-                         HTTPPath?                         WebPaymentsAPI_Path                     = null,
+                                         Func<ACommissioningServiceNode, WebAPI>?          WebAPI                                  = null,
+                                         Boolean                                           WebAPI_Disabled                         = false,
+                                         HTTPPath?                                         WebAPI_Path                             = null,
 
-                         Func<ACSMSNode, WebAPI>?          WebAPI                                  = null,
-                         Boolean                           WebAPI_Disabled                         = false,
-                         HTTPPath?                         WebAPI_Path                             = null,
+                                         Func<ACommissioningServiceNode, NTSServer>?       NTSServer                               = null,
+                                         Boolean                                           NTSServer_Disabled                      = true,
 
-                         Func<ACSMSNode, NTSServer>?       NTSServer                               = null,
-                         Boolean                           NTSServer_Disabled                      = true,
+                                         WebSocketServer?                                  ControlWebSocketServer                  = null,
 
-                         WebSocketServer?                  ControlWebSocketServer                  = null,
+                                         ChargingStationAccessTypes?                       AutoCreatedChargingStationsAccessType   = null,
 
-                         ChargingStationAccessTypes?       AutoCreatedChargingStationsAccessType   = null,
+                                         TimeSpan?                                         DefaultRequestTimeout                   = null,
 
-                         TimeSpan?                         DefaultRequestTimeout                   = null,
+                                         Boolean                                           DisableSendHeartbeats                   = false,
+                                         TimeSpan?                                         SendHeartbeatsEvery                     = null,
 
-                         Boolean                           DisableSendHeartbeats                   = false,
-                         TimeSpan?                         SendHeartbeatsEvery                     = null,
+                                         Boolean                                           DisableMaintenanceTasks                 = false,
+                                         TimeSpan?                                         MaintenanceEvery                        = null,
 
-                         Boolean                           DisableMaintenanceTasks                 = false,
-                         TimeSpan?                         MaintenanceEvery                        = null,
-
-                         ISMTPClient?                      SMTPClient                              = null,
-                         DNSClient?                        DNSClient                               = null)
+                                         ISMTPClient?                                      SMTPClient                              = null,
+                                         DNSClient?                                        DNSClient                               = null)
 
             : base(Id,
                    Description,
@@ -392,7 +385,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.HTTPUploadAPI_Path                     = HTTPUploadAPI_Path             ?? HTTPPath.Parse("uploads");
             this.HTTPDownloadAPI_Path                   = HTTPDownloadAPI_Path           ?? HTTPPath.Parse("downloads");
-            this.WebPaymentsAPI_Path                    = WebPaymentsAPI_Path            ?? HTTPPath.Parse("webPayments");
             this.WebAPI_Path                            = WebAPI_Path                    ?? HTTPPath.Parse("webapi");
 
             this.HTTPUploadAPI_FileSystemPath           = HTTPUploadAPI_FileSystemPath   ?? Path.Combine(AppContext.BaseDirectory, "UploadAPI");
@@ -451,17 +443,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                            this.HTTPAPI.HTTPBaseAPI.HTTPServer,
                                                                                            URLPathPrefix:   this.HTTPDownloadAPI_Path,
                                                                                            FileSystemPath:  this.HTTPDownloadAPI_FileSystemPath
-                                                                                       );
-
-                }
-
-                if (!WebPaymentsAPI_Disabled)
-                {
-
-                    this.WebPaymentsAPI             = WebPaymentsAPI?.Invoke(this)  ?? new WebPaymentsAPI(
-                                                                                           this,
-                                                                                           this.HTTPAPI.HTTPBaseAPI.HTTPServer,
-                                                                                           URLPathPrefix:   this.WebPaymentsAPI_Path
                                                                                        );
 
                 }

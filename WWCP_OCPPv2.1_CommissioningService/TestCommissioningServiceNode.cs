@@ -41,30 +41,31 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1.CMS
 {
 
     /// <summary>
-    /// A Charging Station Management System for testing
+    /// A Commissioning Service for testing
     /// </summary>
-    public partial class TestCSMSNode : ACSMSNode,
-                                        ICSMSNode
+    public partial class TestCommissioningServiceNode : ACommissioningServiceNode,
+                                                        ICommissioningServiceNode
     {
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging station management system for testing.
+        /// Create a new Commissioning Service for testing.
         /// </summary>
-        /// <param name="Id">The unique identification of this charging station management system.</param>
-        public TestCSMSNode(NetworkingNode_Id                 Id,
+        /// <param name="Id">The unique identification of this Commissioning Service.</param>
+        public TestCommissioningServiceNode(NetworkingNode_Id                 Id,
                             String                            VendorName,
                             String                            Model,
                             String?                           SerialNumber                            = null,
@@ -78,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             SignaturePolicy?                  SignaturePolicy                         = null,
                             SignaturePolicy?                  ForwardingSignaturePolicy               = null,
 
-                            Func<ACSMSNode, HTTPAPI>?         HTTPAPI                                 = null,
+                            Func<ACommissioningServiceNode, HTTPAPI>?         HTTPAPI                                 = null,
                             Boolean                           HTTPAPI_Disabled                        = false,
                             IPPort?                           HTTPAPI_Port                            = null,
                             String?                           HTTPAPI_ServerName                      = null,
@@ -87,25 +88,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             String?                           HTTPAPI_RobotGPGPassphrase              = null,
                             Boolean                           HTTPAPI_EventLoggingDisabled            = false,
 
-                            Func<ACSMSNode, DownloadAPI>?     HTTPDownloadAPI                         = null,
+                            Func<ACommissioningServiceNode, DownloadAPI>?     HTTPDownloadAPI                         = null,
                             Boolean                           HTTPDownloadAPI_Disabled                = false,
                             HTTPPath?                         HTTPDownloadAPI_Path                    = null,
                             String?                           HTTPDownloadAPI_FileSystemPath          = null,
 
-                            Func<ACSMSNode, UploadAPI>?       HTTPUploadAPI                           = null,
+                            Func<ACommissioningServiceNode, UploadAPI>?       HTTPUploadAPI                           = null,
                             Boolean                           HTTPUploadAPI_Disabled                  = false,
                             HTTPPath?                         HTTPUploadAPI_Path                      = null,
                             String?                           HTTPUploadAPI_FileSystemPath            = null,
 
-                            Func<ACSMSNode, WebPaymentsAPI>?  WebPaymentsAPI                          = null,
-                            Boolean                           WebPaymentsAPI_Disabled                 = false,
-                            HTTPPath?                         WebPaymentsAPI_Path                     = null,
-
-                            Func<ACSMSNode, WebAPI>?          WebAPI                                  = null,
+                            Func<ACommissioningServiceNode, WebAPI>?          WebAPI                                  = null,
                             Boolean                           WebAPI_Disabled                         = false,
                             HTTPPath?                         WebAPI_Path                             = null,
 
-                            Func<ACSMSNode, NTSServer>?       NTSServer                               = null,
+                            Func<ACommissioningServiceNode, NTSServer>?       NTSServer                               = null,
                             Boolean                           NTSServer_Disabled                      = true,
 
                             WebSocketServer?                  ControlWebSocketServer                  = null,
@@ -155,10 +152,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    HTTPUploadAPI_Disabled,
                    HTTPUploadAPI_Path,
                    HTTPUploadAPI_FileSystemPath,
-
-                   WebPaymentsAPI,
-                   WebPaymentsAPI_Disabled,
-                   WebPaymentsAPI_Path,
 
                    WebAPI,
                    WebAPI_Disabled,
@@ -424,456 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #endregion
 
-            #region Charging
-
-            #region OnAuthorize
-
-            OCPP.IN.OnAuthorize += (timestamp,
-                                    sender,
-                                    connection,
-                                    request,
-                                    cancellationToken) => {
-
-                // IdToken
-                // Certificate
-                // ISO15118CertificateHashData
-
-                if (request.IdToken.Value.ToString() == "3bac1b20")
-                     return Task.FromResult(
-                                new AuthorizeResponse(
-                                    Request:            request,
-                                    IdTokenInfo:        new IdTokenInfo(
-                                                            Status:   AuthorizationStatus.Accepted
-                                                        ),
-                                    CertificateStatus:  null,
-                                    CustomData:         null
-                                )
-                            );
-
-                if (request.IdToken.Value.ToString() == "04E77E7318DE")
-                     return Task.FromResult(
-                                new AuthorizeResponse(
-                                    Request:            request,
-                                    IdTokenInfo:        new IdTokenInfo(
-                                                            Status:   AuthorizationStatus.Accepted
-                                                        ),
-                                    CertificateStatus:  null,
-                                    CustomData:         null
-                                )
-                            );
-
-
-                if (request.IdToken.Value.ToString() == "aabbccdd")
-                     return Task.FromResult(
-                                new AuthorizeResponse(
-                                    Request:            request,
-                                    IdTokenInfo:        new IdTokenInfo(
-                                                            Status:   AuthorizationStatus.Accepted
-                                                        ),
-                                    CertificateStatus:  null,
-                                    CustomData:         null
-                                )
-                            );
-
-
-                return Task.FromResult(
-                           idTokens.TryGetValue(request.IdToken, out var idTokenInfo)
-
-                               ? new AuthorizeResponse(
-                                     Request:             request,
-                                     IdTokenInfo:         idTokenInfo,
-                                     CertificateStatus:   null,
-                                     CustomData:          null
-                                 )
-
-                               : new AuthorizeResponse(
-                                     Request:             request,
-                                     IdTokenInfo:         new IdTokenInfo(
-                                                              Status:               AuthorizationStatus.Invalid,
-                                                              CacheExpiryDateTime:  Timestamp.Now.AddMinutes(15)
-                                                          ),
-                                     CustomData:          null
-                                 )
-
-                       );
-
-            };
-
-            #endregion
-
-            #region OnClearedChargingLimit
-
-            OCPP.IN.OnClearedChargingLimit += (timestamp,
-                                               sender,
-                                               connection,
-                                               request,
-                                               cancellationToken) => {
-
-                DebugX.Log("OnClearedChargingLimit: " + request.DestinationId);
-
-                // ChargingLimitSource
-                // EVSEId
-
-                return Task.FromResult(
-                           new ClearedChargingLimitResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnMeterValues
-
-            OCPP.IN.OnMeterValues += (timestamp,
-                                      sender,
-                                      connection,
-                                      request,
-                                      cancellationToken) => {
-
-                DebugX.Log("OnMeterValues: " + request.EVSEId);
-
-                DebugX.Log(request.MeterValues.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
-                                                                        meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
-
-                // EVSEId
-                // MeterValues
-
-                return Task.FromResult(
-                           new MeterValuesResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnNotifyChargingLimit
-
-            OCPP.IN.OnNotifyChargingLimit += (timestamp,
-                                              sender,
-                                              connection,
-                                              request,
-                                              cancellationToken) => {
-
-                DebugX.Log("OnNotifyChargingLimit: " + request.DestinationId);
-
-                // ChargingLimit
-                // ChargingSchedules
-                // EVSEId
-
-                return Task.FromResult(
-                           new NotifyChargingLimitResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnNotifyEVChargingNeeds
-
-            OCPP.IN.OnNotifyEVChargingNeeds += (timestamp,
-                                                sender,
-                                                connection,
-                                                request,
-                                                cancellationToken) => {
-
-                DebugX.Log("OnNotifyEVChargingNeeds: " + request.DestinationId);
-
-                // EVSEId
-                // ChargingNeeds
-                // MaxScheduleTuples
-
-                return Task.FromResult(
-                           new NotifyEVChargingNeedsResponse(
-                               Request:      request,
-                               Status:       NotifyEVChargingNeedsStatus.Accepted,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnNotifyEVChargingSchedule
-
-            OCPP.IN.OnNotifyEVChargingSchedule += (timestamp,
-                                                   sender,
-                                                   connection,
-                                                   request,
-                                                   cancellationToken) => {
-
-                DebugX.Log("OnNotifyEVChargingSchedule: " + request.DestinationId);
-
-                // TimeBase
-                // EVSEId
-                // ChargingSchedule
-                // SelectedScheduleTupleId
-                // PowerToleranceAcceptance
-
-                return Task.FromResult(
-                           new NotifyEVChargingScheduleResponse(
-                               Request:      request,
-                               Status:       GenericStatus.Accepted,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnNotifyPriorityCharging
-
-            OCPP.IN.OnNotifyPriorityCharging += (timestamp,
-                                                 sender,
-                                                 connection,
-                                                 request,
-                                                 cancellationToken) => {
-
-                DebugX.Log("OnNotifyPriorityCharging: " + request.DestinationId);
-
-                // TransactionId
-                // Activated
-
-                return Task.FromResult(
-                           new NotifyPriorityChargingResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            // NotifySettlement
-
-            #region OnPullDynamicScheduleUpdate
-
-            OCPP.IN.OnPullDynamicScheduleUpdate += (timestamp,
-                                                    sender,
-                                                    connection,
-                                                    request,
-                                                    cancellationToken) => {
-
-                DebugX.Log("OnPullDynamicScheduleUpdate: " + request.DestinationId);
-
-                // ChargingProfileId
-
-                return Task.FromResult(
-                           new PullDynamicScheduleUpdateResponse(
-
-                               Request:                  request,
-
-                               Status:                   ChargingProfileStatus.Accepted,
-                               ChargingScheduleUpdate:   new ChargingScheduleUpdate(
-
-                                                             Limit:                 ChargingRateValue.ParseWatts( 1),
-                                                             Limit_L2:              ChargingRateValue.ParseWatts( 2),
-                                                             Limit_L3:              ChargingRateValue.ParseWatts( 3),
-
-                                                             DischargeLimit:        ChargingRateValue.ParseWatts(-4),
-                                                             DischargeLimit_L2:     ChargingRateValue.ParseWatts(-5),
-                                                             DischargeLimit_L3:     ChargingRateValue.ParseWatts(-6),
-
-                                                             Setpoint:              ChargingRateValue.ParseWatts( 7),
-                                                             Setpoint_L2:           ChargingRateValue.ParseWatts( 8),
-                                                             Setpoint_L3:           ChargingRateValue.ParseWatts( 9),
-
-                                                             SetpointReactive:      ChargingRateValue.ParseWatts(10),
-                                                             SetpointReactive_L2:   ChargingRateValue.ParseWatts(11),
-                                                             SetpointReactive_L3:   ChargingRateValue.ParseWatts(12),
-
-                                                             CustomData:            null
-
-                                                         ),
-
-                               CustomData:               null
-
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnReportChargingProfiles
-
-            OCPP.IN.OnReportChargingProfiles += (timestamp,
-                                                 sender,
-                                                 connection,
-                                                 request,
-                                                 cancellationToken) => {
-
-                DebugX.Log("OnReportChargingProfiles: " + request.DestinationId);
-
-                // ReportChargingProfilesRequestId
-                // ChargingLimitSource
-                // EVSEId
-                // ChargingProfiles
-                // ToBeContinued
-
-                return Task.FromResult(
-                           new ReportChargingProfilesResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnReservationStatusUpdate
-
-            OCPP.IN.OnReservationStatusUpdate += (timestamp,
-                                                  sender,
-                                                  connection,
-                                                  request,
-                                                  cancellationToken) => {
-
-                DebugX.Log("OnReservationStatusUpdate: " + request.DestinationId);
-
-                // ReservationId
-                // ReservationUpdateStatus
-
-                return Task.FromResult(
-                           new ReservationStatusUpdateResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnStatusNotification
-
-            OCPP.IN.OnStatusNotification += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             cancellationToken) => {
-
-                DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
-
-                // Timestamp
-                // ConnectorStatus
-                // EVSEId
-                // ConnectorId
-
-                return Task.FromResult(
-                           new StatusNotificationResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnTransactionEvent
-
-            OCPP.IN.OnTransactionEvent += (timestamp,
-                                           sender,
-                                           connection,
-                                           request,
-                                           cancellationToken) => {
-
-                DebugX.Log("OnTransactionEvent: " + request.DestinationId + ", " +
-                                                    request.IdToken);
-
-                // ChargingStationId
-                // EventType
-                // Timestamp
-                // TriggerReason
-                // SequenceNumber
-                // TransactionInfo
-                // 
-                // Offline
-                // NumberOfPhasesUsed
-                // CableMaxCurrent
-                // ReservationId
-                // IdToken
-                // EVSE
-                // MeterValues
-                // PreconditioningStatus
-
-                return Task.FromResult(
-                           // Plugfest 2024-04 fixes...
-                           request.TriggerReason == TriggerReason.Authorized ||
-                           request.TriggerReason == TriggerReason.RemoteStart
-
-                               ? new TransactionEventResponse(
-                                     Request:                  request,
-                                     TotalCost:                null,
-                                     ChargingPriority:         null,
-                                     IdTokenInfo:              new IdTokenInfo(
-                                                                   Status:                AuthorizationStatus.Accepted,
-                                                                   CacheExpiryDateTime:   Timestamp.Now + TimeSpan.FromDays(1)
-                                                               ),
-                                     UpdatedPersonalMessage:   null,
-                                     CustomData:               null
-                                 )
-
-                               : new TransactionEventResponse(
-                                     Request:                  request,
-                                     TotalCost:                null,
-                                     ChargingPriority:         null,
-                                     IdTokenInfo:              null,
-                                     UpdatedPersonalMessage:   null,
-                                     CustomData:               null
-                                 )
-
-                       );
-
-            };
-
-            #endregion
-
-            #endregion
-
             #region Customer
-
-            #region OnNotifyCustomerInformation
-
-            OCPP.IN.OnNotifyCustomerInformation += (timestamp,
-                                                    sender,
-                                                    connection,
-                                                    request,
-                                                    cancellationToken) => {
-
-                DebugX.Log("OnNotifyCustomerInformation: " + request.DestinationId);
-
-                // NotifyCustomerInformationRequestId
-                // Data
-                // SequenceNumber
-                // GeneratedAt
-                // ToBeContinued
-
-                return Task.FromResult(
-                           new NotifyCustomerInformationResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
 
             #region OnNotifyDisplayMessages
 
@@ -982,31 +526,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                Request:       request,
                                CurrentTime:   Timestamp.Now,
                                CustomData:    null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnPublishFirmwareStatusNotification
-
-            OCPP.IN.OnPublishFirmwareStatusNotification += (timestamp,
-                                                            sender,
-                                                            connection,
-                                                            request,
-                                                            cancellationToken) => {
-
-                DebugX.Log("OnPublishFirmwareStatusNotification: " + request.DestinationId);
-
-                // Status
-                // PublishFirmwareStatusNotificationRequestId
-                // DownloadLocations
-
-                return Task.FromResult(
-                           new PublishFirmwareStatusNotificationResponse(
-                               Request:      request,
-                               CustomData:   null
                            )
                        );
 
@@ -1563,21 +1082,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region OnAuthorizeResponseSent
 
-            this.OCPP.OUT.OnAuthorizeResponseSent += static (timestamp,
-                                                             sender,
-                                                             connection,
-                                                             request,
-                                                             response,
-                                                             runtime,
-                                                             sentMessageResult,
-                                                             cancellationToken) => {
+            //this.OCPP.OUT.OnAuthorizeResponseSent += static (timestamp,
+            //                                                 sender,
+            //                                                 connection,
+            //                                                 request,
+            //                                                 response,
+            //                                                 runtime,
+            //                                                 sentMessageResult,
+            //                                                 cancellationToken) => {
 
-                                                                 if (request is not null)
-                                                                     DebugX.Log($"OnAuthorize: {request.DestinationId}, {request.IdToken} => {response.IdTokenInfo.Status}");
+            //                                                     if (request is not null)
+            //                                                         DebugX.Log($"OnAuthorize: {request.DestinationId}, {request.IdToken} => {response.IdTokenInfo.Status}");
 
-                                                                 return Task.CompletedTask;
+            //                                                     return Task.CompletedTask;
 
-                                                             };
+            //                                                 };
 
             #endregion
 

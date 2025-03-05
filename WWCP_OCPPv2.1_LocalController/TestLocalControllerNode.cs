@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.NTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
@@ -59,50 +60,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// Create a new local controller for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this local controller.</param>
-        public TestLocalControllerNode(NetworkingNode_Id  Id,
-                                       String             VendorName,
-                                       String             Model,
-                                       String?            SerialNumber                     = null,
-                                       String?            SoftwareVersion                  = null,
-                                       Modem?             Modem                            = null,
-                                       I18NString?        Description                      = null,
-                                       CustomData?        CustomData                       = null,
+        public TestLocalControllerNode(NetworkingNode_Id                         Id,
+                                       String                                    VendorName,
+                                       String                                    Model,
+                                       String?                                   SerialNumber                     = null,
+                                       String?                                   SoftwareVersion                  = null,
+                                       Modem?                                    Modem                            = null,
+                                       I18NString?                               Description                      = null,
+                                       CustomData?                               CustomData                       = null,
 
-                                       SignaturePolicy?   SignaturePolicy                  = null,
-                                       SignaturePolicy?   ForwardingSignaturePolicy        = null,
+                                       SignaturePolicy?                          SignaturePolicy                  = null,
+                                       SignaturePolicy?                          ForwardingSignaturePolicy        = null,
 
-                                       Boolean            HTTPAPI_Disabled                 = false,
-                                       IPPort?            HTTPAPI_Port                     = null,
-                                       String?            HTTPAPI_ServerName               = null,
-                                       String?            HTTPAPI_ServiceName              = null,
-                                       EMailAddress?      HTTPAPI_RobotEMailAddress        = null,
-                                       String?            HTTPAPI_RobotGPGPassphrase       = null,
-                                       Boolean            HTTPAPI_EventLoggingDisabled     = false,
+                                       Func<ALocalControllerNode, HTTPAPI>?      HTTPAPI                          = null,
+                                       Boolean                                   HTTPAPI_Disabled                 = false,
+                                       IPPort?                                   HTTPAPI_Port                     = null,
+                                       String?                                   HTTPAPI_ServerName               = null,
+                                       String?                                   HTTPAPI_ServiceName              = null,
+                                       EMailAddress?                             HTTPAPI_RobotEMailAddress        = null,
+                                       String?                                   HTTPAPI_RobotGPGPassphrase       = null,
+                                       Boolean                                   HTTPAPI_EventLoggingDisabled     = false,
 
-                                       DownloadAPI?       HTTPDownloadAPI                  = null,
-                                       Boolean            HTTPDownloadAPI_Disabled         = false,
-                                       HTTPPath?          HTTPDownloadAPI_Path             = null,
-                                       String?            HTTPDownloadAPI_FileSystemPath   = null,
+                                       Func<ALocalControllerNode, DownloadAPI>?  HTTPDownloadAPI                  = null,
+                                       Boolean                                   HTTPDownloadAPI_Disabled         = false,
+                                       HTTPPath?                                 HTTPDownloadAPI_Path             = null,
+                                       String?                                   HTTPDownloadAPI_FileSystemPath   = null,
 
-                                       UploadAPI?         HTTPUploadAPI                    = null,
-                                       Boolean            HTTPUploadAPI_Disabled           = false,
-                                       HTTPPath?          HTTPUploadAPI_Path               = null,
-                                       String?            HTTPUploadAPI_FileSystemPath     = null,
+                                       Func<ALocalControllerNode, UploadAPI>?    HTTPUploadAPI                    = null,
+                                       Boolean                                   HTTPUploadAPI_Disabled           = false,
+                                       HTTPPath?                                 HTTPUploadAPI_Path               = null,
+                                       String?                                   HTTPUploadAPI_FileSystemPath     = null,
 
-                                       WebAPI?            WebAPI                           = null,
-                                       Boolean            WebAPI_Disabled                  = false,
-                                       HTTPPath?          WebAPI_Path                      = null,
+                                       Func<ALocalControllerNode, WebAPI>?       WebAPI                           = null,
+                                       Boolean                                   WebAPI_Disabled                  = false,
+                                       HTTPPath?                                 WebAPI_Path                      = null,
 
-                                       WebSocketServer?   ControlWebSocketServer           = null,
+                                       Func<ALocalControllerNode, NTSServer>?    NTSServer                        = null,
+                                       Boolean                                   NTSServer_Disabled               = true,
 
-                                       TimeSpan?          DefaultRequestTimeout            = null,
+                                       WebSocketServer?                          ControlWebSocketServer           = null,
 
-                                       Boolean            DisableSendHeartbeats            = false,
-                                       TimeSpan?          SendHeartbeatsEvery              = null,
+                                       TimeSpan?                                 DefaultRequestTimeout            = null,
 
-                                       Boolean            DisableMaintenanceTasks          = false,
-                                       TimeSpan?          MaintenanceEvery                 = null,
-                                       DNSClient?         DNSClient                        = null)
+                                       Boolean                                   DisableSendHeartbeats            = false,
+                                       TimeSpan?                                 SendHeartbeatsEvery              = null,
+
+                                       Boolean                                   DisableMaintenanceTasks          = false,
+                                       TimeSpan?                                 MaintenanceEvery                 = null,
+                                       DNSClient?                                DNSClient                        = null)
 
             : base(Id,
                    VendorName,
@@ -116,6 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
+                   HTTPAPI,
                    HTTPAPI_Disabled,
                    HTTPAPI_Port,
                    HTTPAPI_ServerName,
@@ -137,6 +143,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                    WebAPI,
                    WebAPI_Disabled,
                    WebAPI_Path,
+
+                   NTSServer,
+                   NTSServer_Disabled,
 
                    ControlWebSocketServer,
 

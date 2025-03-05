@@ -26,11 +26,11 @@ using HermodHTTP = org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1.CMS
 {
 
     /// <summary>
-    /// OCPP Charging Station Management System WebAPI extensions.
+    /// OCPP Commissioning Service WebAPI extensions.
     /// </summary>
     public static class WebAPIExtensions
     {
@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
     /// <summary>
-    /// The OCPP Charging Station Management System WebAPI.
+    /// The OCPP Commissioning Service WebAPI.
     /// </summary>
     public class WebAPI : AHTTPAPIExtension<HTTPExtAPI>,
                           IHTTPAPIExtension<HTTPExtAPI>
@@ -65,21 +65,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The HTTP root for embedded resources.
         /// </summary>
-        public const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.CSMS.HTTPAPI.WebAPI.HTTPRoot.";
+        public const    String    HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.CMS.HTTPAPI.WebAPI.HTTPRoot.";
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Attach the given OCPP Charging Station Management System WebAPI to the given HTTP API.
+        /// Attach the given OCPP Commissioning Service WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="CSMS">An OCPP Charging Station Management System.</param>
+        /// <param name="CommissioningServiceNode">An OCPP Commissioning Service.</param>
         /// <param name="HTTPAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public WebAPI(ACSMSNode                                   CSMS,
+        public WebAPI(ACommissioningServiceNode                   CommissioningServiceNode,
                       HTTPExtAPI                                  HTTPAPI,
                       String?                                     HTTPServerName   = null,
                       HTTPPath?                                   URLPathPrefix    = null,
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             RegisterURITemplates();
 
-            DebugX.Log($"OCPP {Version.String} Charging Station Management System WebAPI started on {HTTPAPI.HTTPServer.IPSockets.AggregateWith(", ")}{URLPathPrefix}");
+            DebugX.Log($"OCPP {Version.String} Commissioning Service WebAPI started on {HTTPAPI.HTTPServer.IPSockets.AggregateWith(", ")}{URLPathPrefix}");
 
         }
 
