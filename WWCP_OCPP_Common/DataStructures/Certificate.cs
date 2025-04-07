@@ -592,7 +592,6 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
 
             => InternalText?.GetHashCode() ?? 0;

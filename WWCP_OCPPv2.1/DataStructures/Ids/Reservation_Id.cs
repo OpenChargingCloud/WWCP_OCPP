@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data
 
         /// <summary>
-        /// The nummeric value of the reservation identification.
+        /// The numeric value of the reservation identification.
         /// </summary>
         public readonly UInt64 Value;
 
@@ -395,7 +395,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return the HashCode of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
             => Value.GetHashCode();

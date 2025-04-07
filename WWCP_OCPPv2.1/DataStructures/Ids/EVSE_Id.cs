@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data
 
         /// <summary>
-        /// The nummeric value of the EVSE identification.
+        /// The numeric value of the EVSE identification.
         /// </summary>
         public readonly UInt16 Value;
 
@@ -384,7 +384,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return the HashCode of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
             => Value.GetHashCode();

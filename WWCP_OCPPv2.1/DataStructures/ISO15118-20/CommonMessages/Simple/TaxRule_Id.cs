@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes
         #region Data
 
         /// <summary>
-        /// The nummeric value of the tax rule identification.
+        /// The numeric value of the tax rule identification.
         /// </summary>
         public readonly UInt32 Value;
 
@@ -397,7 +397,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes
         /// <summary>
         /// Return the HashCode of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
             => Value.GetHashCode();

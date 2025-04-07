@@ -343,7 +343,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
 
             => InternalId?.ToLower().GetHashCode() ?? 0;

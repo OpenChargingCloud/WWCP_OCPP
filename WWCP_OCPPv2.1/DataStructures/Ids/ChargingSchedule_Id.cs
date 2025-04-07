@@ -51,14 +51,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A charging schedule identification.
     /// </summary>
     public readonly struct ChargingSchedule_Id : IId,
-                                          IEquatable<ChargingSchedule_Id>,
-                                          IComparable<ChargingSchedule_Id>
+                                                 IEquatable<ChargingSchedule_Id>,
+                                                 IComparable<ChargingSchedule_Id>
     {
 
         #region Data
 
         /// <summary>
-        /// The nummeric value of the charging schedule identification.
+        /// The numeric value of the charging schedule identification.
         /// </summary>
         public readonly UInt64 Value;
 
@@ -393,7 +393,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return the HashCode of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
             => Value.GetHashCode();
