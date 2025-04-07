@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Norn\Norn\Norn.csproj" />
     <ProjectReference Include="..\..\WWCP_Core\WWCP_CoreData\WWCP_CoreData.csproj" />
     <ProjectReference Include="..\..\WWCP_Core\WWCP_Core\WWCP_Core.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />

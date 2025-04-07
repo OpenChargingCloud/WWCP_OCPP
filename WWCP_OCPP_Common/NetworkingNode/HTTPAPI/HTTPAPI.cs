@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                            EventIdentification:      EventLogId,
                                            URLTemplate:              this.URLPathPrefix + "/events",
                                            MaxNumberOfCachedEvents:  10000,
-                                           RetryIntervall:           TimeSpan.FromSeconds(5),
+                                           RetryInterval:            TimeSpan.FromSeconds(5),
                                            EnableLogging:            !EventLoggingDisabled,
                                            LogfilePrefix:            LogfilePrefix
                                        );
