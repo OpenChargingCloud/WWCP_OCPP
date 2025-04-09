@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for binary data transfer statuss.
+    /// Extension methods for binary data transfer status.
     /// </summary>
     public static class BinaryDataTransferStatusExtensions
     {
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two binary data transfer statuss.
+        /// Compares two binary data transfer status.
         /// </summary>
         /// <param name="Object">A binary data transfer status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(BinaryDataTransferStatus)
 
         /// <summary>
-        /// Compares two binary data transfer statuss.
+        /// Compares two binary data transfer status.
         /// </summary>
         /// <param name="BinaryDataTransferStatus">A binary data transfer status to compare with.</param>
         public Int32 CompareTo(BinaryDataTransferStatus BinaryDataTransferStatus)
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two binary data transfer statuss for equality.
+        /// Compares two binary data transfer status for equality.
         /// </summary>
         /// <param name="Object">A binary data transfer status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(BinaryDataTransferStatus)
 
         /// <summary>
-        /// Compares two binary data transfer statuss for equality.
+        /// Compares two binary data transfer status for equality.
         /// </summary>
         /// <param name="BinaryDataTransferStatus">A binary data transfer status to compare with.</param>
         public Boolean Equals(BinaryDataTransferStatus BinaryDataTransferStatus)

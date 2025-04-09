@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for send file statuss.
+    /// Extension methods for send file status.
     /// </summary>
     public static class SendFileStatusExtensions
     {
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two send file statuss.
+        /// Compares two send file status.
         /// </summary>
         /// <param name="Object">A send file status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(SendFileStatus)
 
         /// <summary>
-        /// Compares two send file statuss.
+        /// Compares two send file status.
         /// </summary>
         /// <param name="SendFileStatus">A send file status to compare with.</param>
         public Int32 CompareTo(SendFileStatus SendFileStatus)
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two send file statuss for equality.
+        /// Compares two send file status for equality.
         /// </summary>
         /// <param name="Object">A send file status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(SendFileStatus)
 
         /// <summary>
-        /// Compares two send file statuss for equality.
+        /// Compares two send file status for equality.
         /// </summary>
         /// <param name="SendFileStatus">A send file status to compare with.</param>
         public Boolean Equals(SendFileStatus SendFileStatus)

@@ -407,7 +407,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return (EVSEId?.                GetHashCode() ?? 0) * 5 ^
                        (ChargingProfilePurpose?.GetHashCode() ?? 0) * 3 ^
                        (StackLevel?.            GetHashCode() ?? 0) ^
-
                         base.                   GetHashCode();
 
             }

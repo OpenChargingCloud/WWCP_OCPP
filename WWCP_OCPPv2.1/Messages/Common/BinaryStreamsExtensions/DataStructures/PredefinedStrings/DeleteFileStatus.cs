@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for delete file statuss.
+    /// Extension methods for delete file status.
     /// </summary>
     public static class DeleteFileStatusExtensions
     {
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two delete file statuss.
+        /// Compares two delete file status.
         /// </summary>
         /// <param name="Object">A delete file status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(DeleteFileStatus)
 
         /// <summary>
-        /// Compares two delete file statuss.
+        /// Compares two delete file status.
         /// </summary>
         /// <param name="DeleteFileStatus">A delete file status to compare with.</param>
         public Int32 CompareTo(DeleteFileStatus DeleteFileStatus)
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two delete file statuss for equality.
+        /// Compares two delete file status for equality.
         /// </summary>
         /// <param name="Object">A delete file status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(DeleteFileStatus)
 
         /// <summary>
-        /// Compares two delete file statuss for equality.
+        /// Compares two delete file status for equality.
         /// </summary>
         /// <param name="DeleteFileStatus">A delete file status to compare with.</param>
         public Boolean Equals(DeleteFileStatus DeleteFileStatus)

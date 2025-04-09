@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for registration statuss.
+    /// Extension methods for registration status.
     /// </summary>
     public static class RegistrationStatusExtensions
     {
@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two registration statuss.
+        /// Compares two registration status.
         /// </summary>
         /// <param name="Object">A registration status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(RegistrationStatus)
 
         /// <summary>
-        /// Compares two registration statuss.
+        /// Compares two registration status.
         /// </summary>
         /// <param name="RegistrationStatus">A registration status to compare with.</param>
         public Int32 CompareTo(RegistrationStatus RegistrationStatus)
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two registration statuss for equality.
+        /// Compares two registration status for equality.
         /// </summary>
         /// <param name="Object">A registration status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(RegistrationStatus)
 
         /// <summary>
-        /// Compares two registration statuss for equality.
+        /// Compares two registration status for equality.
         /// </summary>
         /// <param name="RegistrationStatus">A registration status to compare with.</param>
         public Boolean Equals(RegistrationStatus RegistrationStatus)

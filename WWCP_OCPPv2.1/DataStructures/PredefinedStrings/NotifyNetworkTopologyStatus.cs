@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for network topology statuss.
+    /// Extension methods for network topology status.
     /// </summary>
     public static class NetworkTopologyStatusExtensions
     {
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two network topology statuss.
+        /// Compares two network topology status.
         /// </summary>
         /// <param name="Object">A network topology status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(networkTopologyStatus)
 
         /// <summary>
-        /// Compares two network topology statuss.
+        /// Compares two network topology status.
         /// </summary>
         /// <param name="networkTopologyStatus">A network topology status to compare with.</param>
         public Int32 CompareTo(NetworkTopologyStatus networkTopologyStatus)
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two network topology statuss for equality.
+        /// Compares two network topology status for equality.
         /// </summary>
         /// <param name="Object">A network topology status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(networkTopologyStatus)
 
         /// <summary>
-        /// Compares two network topology statuss for equality.
+        /// Compares two network topology status for equality.
         /// </summary>
         /// <param name="networkTopologyStatus">A network topology status to compare with.</param>
         public Boolean Equals(NetworkTopologyStatus networkTopologyStatus)

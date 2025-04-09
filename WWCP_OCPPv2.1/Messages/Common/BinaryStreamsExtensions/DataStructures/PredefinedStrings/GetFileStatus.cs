@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for get file statuss.
+    /// Extension methods for get file status.
     /// </summary>
     public static class GetFileStatusExtensions
     {
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two get file statuss.
+        /// Compares two get file status.
         /// </summary>
         /// <param name="Object">A get file status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(GetFileStatus)
 
         /// <summary>
-        /// Compares two get file statuss.
+        /// Compares two get file status.
         /// </summary>
         /// <param name="GetFileStatus">A get file status to compare with.</param>
         public Int32 CompareTo(GetFileStatus GetFileStatus)
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get file statuss for equality.
+        /// Compares two get file status for equality.
         /// </summary>
         /// <param name="Object">A get file status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -364,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(GetFileStatus)
 
         /// <summary>
-        /// Compares two get file statuss for equality.
+        /// Compares two get file status for equality.
         /// </summary>
         /// <param name="GetFileStatus">A get file status to compare with.</param>
         public Boolean Equals(GetFileStatus GetFileStatus)

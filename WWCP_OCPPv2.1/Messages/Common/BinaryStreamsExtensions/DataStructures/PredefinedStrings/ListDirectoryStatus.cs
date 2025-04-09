@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for list directory statuss.
+    /// Extension methods for list directory status.
     /// </summary>
     public static class ListDirectoryStatusExtensions
     {
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two list directory statuss.
+        /// Compares two list directory status.
         /// </summary>
         /// <param name="Object">A list directory status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(ListDirectoryStatus)
 
         /// <summary>
-        /// Compares two list directory statuss.
+        /// Compares two list directory status.
         /// </summary>
         /// <param name="ListDirectoryStatus">A list directory status to compare with.</param>
         public Int32 CompareTo(ListDirectoryStatus ListDirectoryStatus)
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two list directory statuss for equality.
+        /// Compares two list directory status for equality.
         /// </summary>
         /// <param name="Object">A list directory status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -364,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(ListDirectoryStatus)
 
         /// <summary>
-        /// Compares two list directory statuss for equality.
+        /// Compares two list directory status for equality.
         /// </summary>
         /// <param name="ListDirectoryStatus">A list directory status to compare with.</param>
         public Boolean Equals(ListDirectoryStatus ListDirectoryStatus)

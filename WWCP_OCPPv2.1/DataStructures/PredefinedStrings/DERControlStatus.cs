@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data
 
         private readonly static Dictionary<String, DERControlStatus>  lookup = new (StringComparer.OrdinalIgnoreCase);
-        private readonly        String                                  InternalId;
+        private readonly        String                                InternalId;
 
         #endregion
 
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two DER control statuss.
+        /// Compares two DER control status.
         /// </summary>
         /// <param name="Object">A DER control status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(DERControlStatus)
 
         /// <summary>
-        /// Compares two DER control statuss.
+        /// Compares two DER control status.
         /// </summary>
         /// <param name="DERControlStatus">A DER control status to compare with.</param>
         public Int32 CompareTo(DERControlStatus DERControlStatus)
@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two DER control statuss for equality.
+        /// Compares two DER control status for equality.
         /// </summary>
         /// <param name="Object">A DER control status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(DERControlStatus)
 
         /// <summary>
-        /// Compares two DER control statuss for equality.
+        /// Compares two DER control status for equality.
         /// </summary>
         /// <param name="DERControlStatus">A DER control status to compare with.</param>
         public Boolean Equals(DERControlStatus DERControlStatus)

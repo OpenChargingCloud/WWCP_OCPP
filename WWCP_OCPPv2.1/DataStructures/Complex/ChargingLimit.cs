@@ -398,7 +398,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return ChargingLimitSource.GetHashCode()       * 7 ^
                       (IsGridCritical?.    GetHashCode() ?? 0) * 5 ^
                       (IsLocalGeneration?. GetHashCode() ?? 0) * 3 ^
-
                        base.               GetHashCode();
 
             }

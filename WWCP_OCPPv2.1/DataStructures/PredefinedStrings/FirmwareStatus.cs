@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two firmware statuss.
+        /// Compares two firmware status.
         /// </summary>
         /// <param name="Object">A firmware status to compare with.</param>
         public Int32 CompareTo(Object? Object)
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(FirmwareStatus)
 
         /// <summary>
-        /// Compares two firmware statuss.
+        /// Compares two firmware status.
         /// </summary>
         /// <param name="FirmwareStatus">A firmware status to compare with.</param>
         public Int32 CompareTo(FirmwareStatus FirmwareStatus)
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two firmware statuss for equality.
+        /// Compares two firmware status for equality.
         /// </summary>
         /// <param name="Object">A firmware status to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -466,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(FirmwareStatus)
 
         /// <summary>
-        /// Compares two firmware statuss for equality.
+        /// Compares two firmware status for equality.
         /// </summary>
         /// <param name="FirmwareStatus">A firmware status to compare with.</param>
         public Boolean Equals(FirmwareStatus FirmwareStatus)
