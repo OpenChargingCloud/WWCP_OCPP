@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetNetworkProfile request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetNetworkProfileResponse ExceptionOccured(SetNetworkProfileRequest  Request,
+        public static SetNetworkProfileResponse ExceptionOccurred(SetNetworkProfileRequest  Request,
                                                                  Exception                 Exception)
 
             => new (Request,

@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetMonitoringLevel request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetMonitoringLevelResponse ExceptionOccured(SetMonitoringLevelRequest  Request,
+        public static SetMonitoringLevelResponse ExceptionOccurred(SetMonitoringLevelRequest  Request,
                                                                   Exception                  Exception)
 
             => new (Request,

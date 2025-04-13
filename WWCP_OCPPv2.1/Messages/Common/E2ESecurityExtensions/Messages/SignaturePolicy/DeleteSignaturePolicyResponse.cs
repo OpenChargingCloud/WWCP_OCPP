@@ -484,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The DeleteSignaturePolicy request.</param>
         /// <param name="Exception">The exception.</param>
-        public static DeleteSignaturePolicyResponse ExceptionOccured(DeleteSignaturePolicyRequest  Request,
+        public static DeleteSignaturePolicyResponse ExceptionOccurred(DeleteSignaturePolicyRequest  Request,
                                                                      Exception                     Exception)
 
             => new (Request,

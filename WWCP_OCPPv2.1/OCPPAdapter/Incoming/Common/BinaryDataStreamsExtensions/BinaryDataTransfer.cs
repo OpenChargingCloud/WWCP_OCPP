@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = BinaryDataTransferResponse.ExceptionOccured(
+                response = BinaryDataTransferResponse.ExceptionOccurred(
                                Request,
                                e
                            );

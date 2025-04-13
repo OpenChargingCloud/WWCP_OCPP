@@ -488,7 +488,7 @@
 //        /// </summary>
 //        /// <param name="Request">The GetCRL request.</param>
 //        /// <param name="Exception">The exception.</param>
-//        public static GetCRLResponse ExceptionOccured(CS.GetCRLRequest  Request,
+//        public static GetCRLResponse ExceptionOccurred(CS.GetCRLRequest  Request,
 //                                                      Exception         Exception)
 
 //            => new (Request,

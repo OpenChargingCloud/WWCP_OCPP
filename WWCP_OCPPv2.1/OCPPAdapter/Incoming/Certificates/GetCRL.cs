@@ -380,7 +380,7 @@
 //            catch (Exception e)
 //            {
 
-//                response = GetCRLResponse.ExceptionOccured(
+//                response = GetCRLResponse.ExceptionOccurred(
 //                               Request,
 //                               e
 //                           );

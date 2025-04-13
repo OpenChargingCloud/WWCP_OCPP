@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = SendLocalListResponse.ExceptionOccured(
+                response = SendLocalListResponse.ExceptionOccurred(
                                Request,
                                e
                            );

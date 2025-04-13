@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = NotifyChargingLimitResponse.ExceptionOccured(
+                response = NotifyChargingLimitResponse.ExceptionOccurred(
                                Request,
                                e
                            );

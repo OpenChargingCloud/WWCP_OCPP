@@ -529,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetChargingProfile request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetChargingProfileResponse ExceptionOccured(SetChargingProfileRequest  Request,
+        public static SetChargingProfileResponse ExceptionOccurred(SetChargingProfileRequest  Request,
                                                                   Exception                  Exception)
 
             => new (Request,

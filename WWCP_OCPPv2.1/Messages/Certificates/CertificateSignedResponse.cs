@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The CertificateSigned request.</param>
         /// <param name="Exception">The exception.</param>
-        public static CertificateSignedResponse ExceptionOccured(CSMS.CertificateSignedRequest  Request,
+        public static CertificateSignedResponse ExceptionOccurred(CSMS.CertificateSignedRequest  Request,
                                                                  Exception                      Exception)
 
             => new (Request,

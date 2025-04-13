@@ -543,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The Heartbeat request.</param>
         /// <param name="Exception">The exception.</param>
-        public static HeartbeatResponse ExceptionOccured(HeartbeatRequest  Request,
+        public static HeartbeatResponse ExceptionOccurred(HeartbeatRequest  Request,
                                                          Exception         Exception)
 
             => new (Request,

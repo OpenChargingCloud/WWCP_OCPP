@@ -1055,19 +1055,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
         #endregion
 
-        #region (override) HandleErrors(Module, Caller, ExceptionOccured)
+        #region (override) HandleErrors(Module, Caller, ExceptionOccurred)
 
         public override Task HandleErrors(String     Module,
                                           String     Caller,
-                                          Exception  ExceptionOccured)
+                                          Exception  ExceptionOccurred)
         {
 
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+            DebugX.LogException(ExceptionOccurred, $"{Module}.{Caller}");
 
             return base.HandleErrors(
                        Module,
                        Caller,
-                       ExceptionOccured
+                       ExceptionOccurred
                    );
 
         }

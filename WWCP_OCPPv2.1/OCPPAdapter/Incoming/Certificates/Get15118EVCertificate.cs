@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = Get15118EVCertificateResponse.ExceptionOccured(
+                response = Get15118EVCertificateResponse.ExceptionOccurred(
                                Request,
                                e
                            );

@@ -756,7 +756,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The GetCompositeSchedule request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetCompositeScheduleResponse ExceptionOccured(GetCompositeScheduleRequest  Request,
+        public static GetCompositeScheduleResponse ExceptionOccurred(GetCompositeScheduleRequest  Request,
                                                                     Exception                    Exception)
 
             => new (Request,

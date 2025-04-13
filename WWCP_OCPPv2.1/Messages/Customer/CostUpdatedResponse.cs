@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The CostUpdated request.</param>
         /// <param name="Exception">The exception.</param>
-        public static CostUpdatedResponse ExceptionOccured(CostUpdatedRequest  Request,
+        public static CostUpdatedResponse ExceptionOccurred(CostUpdatedRequest  Request,
                                                            Exception           Exception)
 
             => new (Request,

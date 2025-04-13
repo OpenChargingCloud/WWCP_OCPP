@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = AFRRSignalResponse.ExceptionOccured(
+                response = AFRRSignalResponse.ExceptionOccurred(
                                Request,
                                e
                            );

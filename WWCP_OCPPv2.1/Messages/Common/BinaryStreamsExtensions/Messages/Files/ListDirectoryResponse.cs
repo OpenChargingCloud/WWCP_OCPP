@@ -497,7 +497,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The ListDirectory request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ListDirectoryResponse ExceptionOccured(ListDirectoryRequest  Request,
+        public static ListDirectoryResponse ExceptionOccurred(ListDirectoryRequest  Request,
                                                              Exception             Exception)
 
             => new (Request,

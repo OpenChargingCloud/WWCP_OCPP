@@ -1267,15 +1267,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (private) HandleErrors  (Caller, ExceptionOccured)
+        #region (private) HandleErrors  (Caller, ExceptionOccurred)
 
         private Task HandleErrors(String     Caller,
-                                  Exception  ExceptionOccured)
+                                  Exception  ExceptionOccurred)
 
             => parentNetworkingNode.HandleErrors(
                    nameof(OCPPWebSocketAdapterIN),
                    Caller,
-                   ExceptionOccured
+                   ExceptionOccurred
                );
 
         #endregion

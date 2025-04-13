@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The SecurityEventNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SecurityEventNotificationResponse ExceptionOccured(SecurityEventNotificationRequest  Request,
+        public static SecurityEventNotificationResponse ExceptionOccurred(SecurityEventNotificationRequest  Request,
                                                                          Exception                         Exception)
 
             => new (Request,

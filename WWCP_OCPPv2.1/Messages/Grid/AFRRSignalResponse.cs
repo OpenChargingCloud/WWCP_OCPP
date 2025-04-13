@@ -527,7 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The AFRRSignal request.</param>
         /// <param name="Exception">The exception.</param>
-        public static AFRRSignalResponse ExceptionOccured(AFRRSignalRequest  Request,
+        public static AFRRSignalResponse ExceptionOccurred(AFRRSignalRequest  Request,
                                                           Exception          Exception)
 
             => new (Request,

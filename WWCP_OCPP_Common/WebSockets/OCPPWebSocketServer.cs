@@ -650,14 +650,14 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region (private) HandleErrors(Module, Caller, ExceptionOccured)
+        #region (private) HandleErrors(Module, Caller, ExceptionOccurred)
 
         private Task HandleErrors(String     Module,
                                   String     Caller,
-                                  Exception  ExceptionOccured)
+                                  Exception  ExceptionOccurred)
         {
 
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+            DebugX.LogException(ExceptionOccurred, $"{Module}.{Caller}");
 
             return Task.CompletedTask;
 

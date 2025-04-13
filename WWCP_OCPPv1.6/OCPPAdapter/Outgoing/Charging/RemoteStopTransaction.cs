@@ -457,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             catch (Exception e)
             {
 
-                response = RemoteStopTransactionResponse.ExceptionOccured(
+                response = RemoteStopTransactionResponse.ExceptionOccurred(
                                Request,
                                e
                            );

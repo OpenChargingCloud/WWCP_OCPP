@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ClearDisplayMessage request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ClearDisplayMessageResponse ExceptionOccured(ClearDisplayMessageRequest  Request,
+        public static ClearDisplayMessageResponse ExceptionOccurred(ClearDisplayMessageRequest  Request,
                                                                    Exception                        Exception)
 
             => new (Request,

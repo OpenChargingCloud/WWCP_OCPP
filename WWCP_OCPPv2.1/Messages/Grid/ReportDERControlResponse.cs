@@ -416,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ReportDERControl request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ReportDERControlResponse ExceptionOccured(ReportDERControlRequest  Request,
+        public static ReportDERControlResponse ExceptionOccurred(ReportDERControlRequest  Request,
                                                                 Exception                Exception)
 
             => new (Request,

@@ -513,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The RemoveDefaultChargingTariff request.</param>
         /// <param name="Exception">The exception.</param>
-        public static RemoveDefaultChargingTariffResponse ExceptionOccured(RemoveDefaultChargingTariffRequest  Request,
+        public static RemoveDefaultChargingTariffResponse ExceptionOccurred(RemoveDefaultChargingTariffRequest  Request,
                                                                            Exception                           Exception)
 
             => new (Request,

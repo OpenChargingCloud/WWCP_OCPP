@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = DeleteUserRoleResponse.ExceptionOccured(
+                response = DeleteUserRoleResponse.ExceptionOccurred(
                                Request,
                                e
                            );

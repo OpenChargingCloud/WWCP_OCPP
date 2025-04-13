@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyPriorityCharging request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyPriorityChargingResponse ExceptionOccured(NotifyPriorityChargingRequest  Request,
+        public static NotifyPriorityChargingResponse ExceptionOccurred(NotifyPriorityChargingRequest  Request,
                                                                       Exception                      Exception)
 
             => new (Request,

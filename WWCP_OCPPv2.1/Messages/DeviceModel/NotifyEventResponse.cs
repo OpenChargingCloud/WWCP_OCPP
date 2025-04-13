@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyEvent request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyEventResponse ExceptionOccured(NotifyEventRequest  Request,
+        public static NotifyEventResponse ExceptionOccurred(NotifyEventRequest  Request,
                                                            Exception           Exception)
 
             => new (Request,

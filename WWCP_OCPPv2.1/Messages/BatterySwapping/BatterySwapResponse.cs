@@ -416,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The BatterySwap request.</param>
         /// <param name="Exception">The exception.</param>
-        public static BatterySwapResponse ExceptionOccured(BatterySwapRequest  Request,
+        public static BatterySwapResponse ExceptionOccurred(BatterySwapRequest  Request,
                                                            Exception           Exception)
 
             => new (Request,

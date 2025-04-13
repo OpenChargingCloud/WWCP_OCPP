@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The UpdateUserRole request.</param>
         /// <param name="Exception">The exception.</param>
-        public static UpdateUserRoleResponse ExceptionOccured(UpdateUserRoleRequest  Request,
+        public static UpdateUserRoleResponse ExceptionOccurred(UpdateUserRoleRequest  Request,
                                                               Exception              Exception)
 
             => new (Request,

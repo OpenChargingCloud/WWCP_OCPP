@@ -375,15 +375,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
         #endregion
 
-        #region (private) HandleErrors (Caller, ExceptionOccured)
+        #region (private) HandleErrors (Caller, ExceptionOccurred)
 
         private Task HandleErrors(String     Caller,
-                                  Exception  ExceptionOccured)
+                                  Exception  ExceptionOccurred)
 
             => parentChargingStation.HandleErrors(
                    nameof(BatterySwapStationEVSE),
                    Caller,
-                   ExceptionOccured
+                   ExceptionOccurred
                );
 
         #endregion

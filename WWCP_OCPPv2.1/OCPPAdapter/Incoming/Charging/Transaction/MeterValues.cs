@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = MeterValuesResponse.ExceptionOccured(
+                response = MeterValuesResponse.ExceptionOccurred(
                                Request,
                                e
                            );

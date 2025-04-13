@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = GetDefaultChargingTariffResponse.ExceptionOccured(
+                response = GetDefaultChargingTariffResponse.ExceptionOccurred(
                                Request,
                                e
                            );

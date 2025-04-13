@@ -568,7 +568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The GetCertificateChainStatus request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetCertificateChainStatusResponse ExceptionOccured(GetCertificateChainStatusRequest  Request,
+        public static GetCertificateChainStatusResponse ExceptionOccurred(GetCertificateChainStatusRequest  Request,
                                                                          Exception                         Exception)
 
             => new (Request,

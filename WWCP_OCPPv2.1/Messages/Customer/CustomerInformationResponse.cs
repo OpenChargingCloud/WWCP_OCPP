@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The CustomerInformation request.</param>
         /// <param name="Exception">The exception.</param>
-        public static CustomerInformationResponse ExceptionOccured(CustomerInformationRequest  Request,
+        public static CustomerInformationResponse ExceptionOccurred(CustomerInformationRequest  Request,
                                                                    Exception                   Exception)
 
             => new (Request,

@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = UpdateDynamicScheduleResponse.ExceptionOccured(
+                response = UpdateDynamicScheduleResponse.ExceptionOccurred(
                                Request,
                                e
                            );

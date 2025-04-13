@@ -529,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UpdateDynamicSchedule request.</param>
         /// <param name="Exception">The exception.</param>
-        public static UpdateDynamicScheduleResponse ExceptionOccured(UpdateDynamicScheduleRequest  Request,
+        public static UpdateDynamicScheduleResponse ExceptionOccurred(UpdateDynamicScheduleRequest  Request,
                                                                      Exception                     Exception)
 
             => new (Request,

@@ -625,7 +625,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The GetConfiguration request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetConfigurationResponse ExceptionOccured(GetConfigurationRequest  Request,
+        public static GetConfigurationResponse ExceptionOccurred(GetConfigurationRequest  Request,
                                                                 Exception                Exception)
 
             => new (Request,

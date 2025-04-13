@@ -502,11 +502,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #endregion
 
-        #region HandleErrors(Module, Caller, ExceptionOccured, ...)
+        #region HandleErrors(Module, Caller, ExceptionOccurred, ...)
 
         public async Task HandleErrors(String             Module,
                                        String             Caller,
-                                       Exception          ExceptionOccured,
+                                       Exception          ExceptionOccurred,
                                        CancellationToken  CancellationToken = default)
         {
 
@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                                          Timestamp.Now,
                                                                          Module,
                                                                          Caller,
-                                                                         ExceptionOccured,
+                                                                         ExceptionOccurred,
                                                                          CancellationToken
                                                                      )).
                                            ToArray());

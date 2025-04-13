@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The ExtendedTriggerMessage request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ExtendedTriggerMessageResponse ExceptionOccured(ExtendedTriggerMessageRequest  Request,
+        public static ExtendedTriggerMessageResponse ExceptionOccurred(ExtendedTriggerMessageRequest  Request,
                                                                       Exception                      Exception)
 
             => new (Request,

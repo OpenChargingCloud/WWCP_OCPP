@@ -209,21 +209,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = Id.                           GetHashCode()       * 41 ^
-                           StackLevel.                   GetHashCode()       * 37 ^
-                           ChargingProfilePurpose.       GetHashCode()       * 31 ^
-                           ChargingProfileKind.          GetHashCode()       * 29 ^
-                           ChargingSchedules.            CalcHashCode()      * 29 ^
-                           (TransactionId?.              GetHashCode() ?? 0) * 29 ^
-                           (RecurrencyKind?.             GetHashCode() ?? 0) * 23 ^
-                           (ValidFrom?.                  GetHashCode() ?? 0) * 19 ^
-                           (ValidTo?.                    GetHashCode() ?? 0) * 17 ^
-                           (MaxOfflineDuration?.         GetHashCode() ?? 0) * 13 ^
-                           (InvalidAfterOfflineDuration?.GetHashCode() ?? 0) * 11 ^
-                           (DynUpdateInterval?.          GetHashCode() ?? 0) *  7 ^
-                           (DynUpdateTime?.              GetHashCode() ?? 0) *  5 ^
-                           (PriceScheduleSignature?.     GetHashCode() ?? 0) *  3 ^
-                            base.                        GetHashCode();
+                hashCode = this.Id.                          GetHashCode()       * 41 ^
+                           this.StackLevel.                  GetHashCode()       * 37 ^
+                           this.ChargingProfilePurpose.      GetHashCode()       * 31 ^
+                           this.ChargingProfileKind.         GetHashCode()       * 29 ^
+                           this.ChargingSchedules.           CalcHashCode()      * 29 ^
+                          (this.TransactionId?.              GetHashCode() ?? 0) * 29 ^
+                          (this.RecurrencyKind?.             GetHashCode() ?? 0) * 23 ^
+                          (this.ValidFrom?.                  GetHashCode() ?? 0) * 19 ^
+                          (this.ValidTo?.                    GetHashCode() ?? 0) * 17 ^
+                          (this.MaxOfflineDuration?.         GetHashCode() ?? 0) * 13 ^
+                          (this.InvalidAfterOfflineDuration?.GetHashCode() ?? 0) * 11 ^
+                          (this.DynUpdateInterval?.          GetHashCode() ?? 0) *  7 ^
+                          (this.DynUpdateTime?.              GetHashCode() ?? 0) *  5 ^
+                          (this.PriceScheduleSignature?.     GetHashCode() ?? 0) *  3 ^
+                           base.                             GetHashCode();
 
             }
 

@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The ClearedChargingLimit request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ClearedChargingLimitResponse ExceptionOccured(ClearedChargingLimitRequest  Request,
+        public static ClearedChargingLimitResponse ExceptionOccurred(ClearedChargingLimitRequest  Request,
                                                                     Exception                    Exception)
 
             => new (Request,

@@ -1267,7 +1267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Authorize request.</param>
         /// <param name="Exception">The exception.</param>
-        public static AuthorizeResponse ExceptionOccured(AuthorizeRequest  Request,
+        public static AuthorizeResponse ExceptionOccurred(AuthorizeRequest  Request,
                                                          Exception         Exception)
 
             => new (Request,

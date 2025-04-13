@@ -548,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The GetDiagnostics request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetDiagnosticsResponse ExceptionOccured(GetDiagnosticsRequest  Request,
+        public static GetDiagnosticsResponse ExceptionOccurred(GetDiagnosticsRequest  Request,
                                                               Exception              Exception)
 
             => new (Request,

@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UpdateFirmware request.</param>
         /// <param name="Exception">The exception.</param>
-        public static UpdateFirmwareResponse ExceptionOccured(UpdateFirmwareRequest  Request,
+        public static UpdateFirmwareResponse ExceptionOccurred(UpdateFirmwareRequest  Request,
                                                               Exception              Exception)
 
             => new (Request,

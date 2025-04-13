@@ -885,7 +885,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The BootNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static BootNotificationResponse ExceptionOccured(BootNotificationRequest  Request,
+        public static BootNotificationResponse ExceptionOccurred(BootNotificationRequest  Request,
                                                                 Exception                Exception)
 
             => new (Request,

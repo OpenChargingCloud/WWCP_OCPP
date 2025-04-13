@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             catch (Exception e)
             {
 
-                response = SignedFirmwareStatusNotificationResponse.ExceptionOccured(
+                response = SignedFirmwareStatusNotificationResponse.ExceptionOccurred(
                                Request,
                                e
                            );

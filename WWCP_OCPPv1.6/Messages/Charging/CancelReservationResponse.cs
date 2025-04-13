@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The CancelReservation request.</param>
         /// <param name="Exception">The exception.</param>
-        public static CancelReservationResponse ExceptionOccured(CancelReservationRequest  Request,
+        public static CancelReservationResponse ExceptionOccurred(CancelReservationRequest  Request,
                                                                  Exception                 Exception)
 
             => new (Request,

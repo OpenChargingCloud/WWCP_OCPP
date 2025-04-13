@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetReport request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetReportResponse ExceptionOccured(GetReportRequest  Request,
+        public static GetReportResponse ExceptionOccurred(GetReportRequest  Request,
                                                          Exception         Exception)
 
             => new (Request,

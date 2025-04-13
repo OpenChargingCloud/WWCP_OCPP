@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The UnpublishFirmware request.</param>
         /// <param name="Exception">The exception.</param>
-        public static UnpublishFirmwareResponse ExceptionOccured(UnpublishFirmwareRequest  Request,
+        public static UnpublishFirmwareResponse ExceptionOccurred(UnpublishFirmwareRequest  Request,
                                                                  Exception                 Exception)
 
             => new (Request,

@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ClearTariffs request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ClearTariffsResponse ExceptionOccured(ClearTariffsRequest  Request,
+        public static ClearTariffsResponse ExceptionOccurred(ClearTariffsRequest  Request,
                                                             Exception            Exception)
 
             => new (Request,

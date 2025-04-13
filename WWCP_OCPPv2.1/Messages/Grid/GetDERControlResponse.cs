@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetDERControl request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetDERControlResponse ExceptionOccured(GetDERControlRequest  Request,
+        public static GetDERControlResponse ExceptionOccurred(GetDERControlRequest  Request,
                                                              Exception             Exception)
 
             => new (Request,

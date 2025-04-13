@@ -548,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The GetLocalListVersion request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetLocalListVersionResponse ExceptionOccured(GetLocalListVersionRequest  Request,
+        public static GetLocalListVersionResponse ExceptionOccurred(GetLocalListVersionRequest  Request,
                                                                    Exception                   Exception)
 
             => new (Request,

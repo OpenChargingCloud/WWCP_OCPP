@@ -559,7 +559,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The ChangeConfiguration request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ChangeConfigurationResponse ExceptionOccured(ChangeConfigurationRequest  Request,
+        public static ChangeConfigurationResponse ExceptionOccurred(ChangeConfigurationRequest  Request,
                                                                    Exception                   Exception)
 
             => new (Request,

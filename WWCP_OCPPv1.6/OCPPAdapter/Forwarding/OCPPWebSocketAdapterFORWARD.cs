@@ -1627,27 +1627,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #endregion
 
-        #region (private) HandleErrors (Caller, ErrorOccured)
+        #region (private) HandleErrors (Caller, ErrorOccurred)
 
         private Task HandleErrors(String  Caller,
-                                  String  ErrorOccured)
+                                  String  ErrorOccurred)
 
             => parentNetworkingNode.HandleErrors(
                    nameof(OCPPWebSocketAdapterFORWARD),
                    Caller,
-                   ErrorOccured
+                   ErrorOccurred
                );
 
         #endregion
 
-        #region (private) HandleErrors (Caller, ExceptionOccured)
+        #region (private) HandleErrors (Caller, ExceptionOccurred)
         private Task HandleErrors(String     Caller,
-                                  Exception  ExceptionOccured)
+                                  Exception  ExceptionOccurred)
 
             => parentNetworkingNode.HandleErrors(
                    nameof(OCPPWebSocketAdapterFORWARD),
                    Caller,
-                   ExceptionOccured
+                   ExceptionOccurred
                );
 
         #endregion

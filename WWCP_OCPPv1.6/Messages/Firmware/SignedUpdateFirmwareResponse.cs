@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The SignedUpdateFirmware request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SignedUpdateFirmwareResponse ExceptionOccured(SignedUpdateFirmwareRequest  Request,
+        public static SignedUpdateFirmwareResponse ExceptionOccurred(SignedUpdateFirmwareRequest  Request,
                                                                     Exception                    Exception)
 
             => new (Request,

@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The AddSignaturePolicy request.</param>
         /// <param name="Exception">The exception.</param>
-        public static AddSignaturePolicyResponse ExceptionOccured(AddSignaturePolicyRequest  Request,
+        public static AddSignaturePolicyResponse ExceptionOccurred(AddSignaturePolicyRequest  Request,
                                                                   Exception                  Exception)
 
             => new (Request,

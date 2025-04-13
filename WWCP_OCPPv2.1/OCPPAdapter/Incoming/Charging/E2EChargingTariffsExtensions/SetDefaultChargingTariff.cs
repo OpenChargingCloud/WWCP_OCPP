@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = SetDefaultE2EChargingTariffResponse.ExceptionOccured(
+                response = SetDefaultE2EChargingTariffResponse.ExceptionOccurred(
                                Request,
                                e
                            );

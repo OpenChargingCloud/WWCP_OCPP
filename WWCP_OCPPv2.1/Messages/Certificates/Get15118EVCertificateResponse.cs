@@ -598,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The Get15118EVCertificate request.</param>
         /// <param name="Exception">The exception.</param>
-        public static Get15118EVCertificateResponse ExceptionOccured(Get15118EVCertificateRequest  Request,
+        public static Get15118EVCertificateResponse ExceptionOccurred(Get15118EVCertificateRequest  Request,
                                                                      Exception                     Exception)
 
             => new (Request,

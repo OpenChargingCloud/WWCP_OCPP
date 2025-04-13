@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The ClearChargingProfile request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ClearChargingProfileResponse ExceptionOccured(ClearChargingProfileRequest  Request,
+        public static ClearChargingProfileResponse ExceptionOccurred(ClearChargingProfileRequest  Request,
                                                                     Exception                    Exception)
 
             => new (Request,

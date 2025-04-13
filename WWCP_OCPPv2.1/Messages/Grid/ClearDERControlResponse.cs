@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ClearDERControl request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ClearDERControlResponse ExceptionOccured(ClearDERControlRequest  Request,
+        public static ClearDERControlResponse ExceptionOccurred(ClearDERControlRequest  Request,
                                                                Exception               Exception)
 
             => new (Request,

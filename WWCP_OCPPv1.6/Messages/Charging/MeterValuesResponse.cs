@@ -475,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The MeterValues request.</param>
         /// <param name="Exception">The exception.</param>
-        public static MeterValuesResponse ExceptionOccured(MeterValuesRequest  Request,
+        public static MeterValuesResponse ExceptionOccurred(MeterValuesRequest  Request,
                                                            Exception           Exception)
 
             => new (Request,

@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The NotifyDERAlarm request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyDERAlarmResponse ExceptionOccured(NotifyDERAlarmRequest  Request,
+        public static NotifyDERAlarmResponse ExceptionOccurred(NotifyDERAlarmRequest  Request,
                                                               Exception              Exception)
 
             => new (Request,

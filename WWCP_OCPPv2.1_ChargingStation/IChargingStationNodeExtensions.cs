@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using nts = org.GraphDefined.Vanaheimr.Norn.NTS;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -2080,6 +2081,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            SequenceNumber,
                            GeneratedAt,
                            ToBeContinued,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargingStation.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           SerializationFormat,
+                           CancellationToken
+
+                       )
+                   );
+
+        #endregion
+
+
+        #region NTSKE                                 (AEADAlgorithm = null, ...)
+
+        /// <summary>
+        /// Request NTS-KE server information.
+        /// </summary>
+        /// <param name="AEADAlgorithm">The optional AEAD algorithm to be used for the Network Time Secure Key Exchange (default: AES_SIV_CMAC_256).</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CSMS.NTSKEResponse>
+
+            NTSKE(this IChargingStationNode  ChargingStation,
+
+                  nts.AEADAlgorithms?        AEADAlgorithm         = null,
+                  CustomData?                CustomData            = null,
+
+                  SourceRouting?             Destination           = null,
+
+                  IEnumerable<KeyPair>?      SignKeys              = null,
+                  IEnumerable<SignInfo>?     SignInfos             = null,
+                  IEnumerable<Signature>?    Signatures            = null,
+
+                  Request_Id?                RequestId             = null,
+                  DateTime?                  RequestTimestamp      = null,
+                  TimeSpan?                  RequestTimeout        = null,
+                  EventTracking_Id?          EventTrackingId       = null,
+                  SerializationFormats?      SerializationFormat   = null,
+                  CancellationToken          CancellationToken     = default)
+
+
+                => ChargingStation.OCPP.OUT.NTSKE(
+                       new NTSKERequest(
+
+                           Destination ?? SourceRouting.CSMS,
+
+                           AEADAlgorithm,
 
                            SignKeys,
                            SignInfos,

@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = DeleteFileResponse.ExceptionOccured(
+                response = DeleteFileResponse.ExceptionOccurred(
                                Request,
                                e
                            );

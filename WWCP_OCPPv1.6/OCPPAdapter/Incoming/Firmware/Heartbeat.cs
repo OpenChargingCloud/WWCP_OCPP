@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             catch (Exception e)
             {
 
-                response = HeartbeatResponse.ExceptionOccured(
+                response = HeartbeatResponse.ExceptionOccurred(
                                Request,
                                e
                            );
@@ -636,7 +636,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //catch (Exception e)
             //{
 
-            //    response = HeartbeatResponse.ExceptionOccured(
+            //    response = HeartbeatResponse.ExceptionOccurred(
             //                   Request,
             //                   e
             //               );

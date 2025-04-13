@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The NotifyDERStartStop request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyDERStartStopResponse ExceptionOccured(NotifyDERStartStopRequest  Request,
+        public static NotifyDERStartStopResponse ExceptionOccurred(NotifyDERStartStopRequest  Request,
                                                                   Exception                  Exception)
 
             => new (Request,

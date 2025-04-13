@@ -831,7 +831,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The TransactionEvent request.</param>
         /// <param name="Exception">The exception.</param>
-        public static TransactionEventResponse ExceptionOccured(TransactionEventRequest  Request,
+        public static TransactionEventResponse ExceptionOccurred(TransactionEventRequest  Request,
                                                                 Exception                Exception)
 
             => new (Request,

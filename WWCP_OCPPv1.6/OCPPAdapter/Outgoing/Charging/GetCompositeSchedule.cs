@@ -457,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             catch (Exception e)
             {
 
-                response = GetCompositeScheduleResponse.ExceptionOccured(
+                response = GetCompositeScheduleResponse.ExceptionOccurred(
                                Request,
                                e
                            );

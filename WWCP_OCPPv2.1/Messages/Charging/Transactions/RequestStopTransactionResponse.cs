@@ -529,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The RequestStopTransaction request.</param>
         /// <param name="Exception">The exception.</param>
-        public static RequestStopTransactionResponse ExceptionOccured(RequestStopTransactionRequest  Request,
+        public static RequestStopTransactionResponse ExceptionOccurred(RequestStopTransactionRequest  Request,
                                                                       Exception                           Exception)
 
             => new (Request,

@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The NotifyCRL request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyCRLResponse ExceptionOccured(CSMS.NotifyCRLRequest  Request,
+        public static NotifyCRLResponse ExceptionOccurred(CSMS.NotifyCRLRequest  Request,
                                                          Exception              Exception)
 
             => new (Request,

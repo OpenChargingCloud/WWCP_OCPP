@@ -558,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetLog request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetLogResponse ExceptionOccured(GetLogRequest  Request,
+        public static GetLogResponse ExceptionOccurred(GetLogRequest  Request,
                                                       Exception      Exception)
 
             => new (Request,

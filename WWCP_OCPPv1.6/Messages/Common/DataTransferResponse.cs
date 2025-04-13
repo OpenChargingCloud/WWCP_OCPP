@@ -565,7 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Request">The DataTransfer request.</param>
         /// <param name="Exception">The exception.</param>
-        public static DataTransferResponse ExceptionOccured(DataTransferRequest  Request,
+        public static DataTransferResponse ExceptionOccurred(DataTransferRequest  Request,
                                                             Exception            Exception)
 
             => new (Request,

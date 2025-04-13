@@ -543,7 +543,7 @@
 //        /// </summary>
 //        /// <param name="Request">The SecureDataTransfer request.</param>
 //        /// <param name="Exception">The exception.</param>
-//        public static SecureDataTransferResponse ExceptionOccured(Exception  Exception)
+//        public static SecureDataTransferResponse ExceptionOccurred(Exception  Exception)
 
 //            => new (null,
 //                    Result.FromException(Exception));
@@ -554,7 +554,7 @@
 //        /// </summary>
 //        /// <param name="Request">The SecureDataTransfer request.</param>
 //        /// <param name="Exception">The exception.</param>
-//        public static SecureDataTransferResponse ExceptionOccured(SecureDataTransferRequest  Request,
+//        public static SecureDataTransferResponse ExceptionOccurred(SecureDataTransferRequest  Request,
 //                                                                  Exception                  Exception)
 
 //            => new (Request,

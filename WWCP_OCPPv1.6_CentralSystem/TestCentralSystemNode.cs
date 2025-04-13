@@ -6652,14 +6652,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region HandleErrors(Module, Caller, ExceptionOccured)
+        #region HandleErrors(Module, Caller, ExceptionOccurred)
 
         private Task HandleErrors(String     Module,
                                   String     Caller,
-                                  Exception  ExceptionOccured)
+                                  Exception  ExceptionOccurred)
         {
 
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+            DebugX.LogException(ExceptionOccurred, $"{Module}.{Caller}");
 
             return Task.CompletedTask;
 

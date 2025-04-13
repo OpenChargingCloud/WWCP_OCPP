@@ -535,7 +535,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ChangeTransactionTariff request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ChangeTransactionTariffResponse ExceptionOccured(ChangeTransactionTariffRequest  Request,
+        public static ChangeTransactionTariffResponse ExceptionOccurred(ChangeTransactionTariffRequest  Request,
                                                                        Exception                       Exception)
 
             => new (Request,

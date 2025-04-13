@@ -1686,32 +1686,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (private) HandleErrors                    (Caller, ErrorOccured)
+        #region (private) HandleErrors                    (Caller, ErrorOccurred)
 
         private Task HandleErrors(String  Caller,
-                                  String  ErrorOccured)
+                                  String  ErrorOccurred)
 
             => parentNetworkingNode.HandleErrors(
                    nameof(OCPPWebSocketAdapterFORWARD),
                    Caller,
-                   ErrorOccured
+                   ErrorOccurred
                );
 
         #endregion
 
-        #region (private) HandleErrorsAndSendRequestError (Caller, JSONRequestMessage, ResultCode, ErrorOccured, ErrorDetails = null)
+        #region (private) HandleErrorsAndSendRequestError (Caller, JSONRequestMessage, ResultCode, ErrorOccurred, ErrorDetails = null)
 
         private async Task HandleErrorsAndSendRequestError(String                   Caller,
                                                            OCPP_JSONRequestMessage  JSONRequestMessage,
                                                            ResultCode               ResultCode,
-                                                           String                   ErrorOccured,
+                                                           String                   ErrorOccurred,
                                                            JObject?                 ErrorDetails   = null)
         {
 
             await parentNetworkingNode.HandleErrors(
                       nameof(OCPPWebSocketAdapterFORWARD),
                       Caller,
-                      ErrorOccured
+                      ErrorOccurred
                   );
 
             await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
@@ -1723,7 +1723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                           NetworkPath.From(parentNetworkingNode.Id),
                           JSONRequestMessage.RequestId,
                           ResultCode,
-                          ErrorOccured,
+                          ErrorOccurred,
                           ErrorDetails ?? new JObject(
                                               new JProperty("request",  JSONRequestMessage.ToJSON())
                                           )
@@ -1734,14 +1734,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
-        #region (private) HandleErrors                    (Caller, ExceptionOccured)
+        #region (private) HandleErrors                    (Caller, ExceptionOccurred)
         private Task HandleErrors(String     Caller,
-                                  Exception  ExceptionOccured)
+                                  Exception  ExceptionOccurred)
 
             => parentNetworkingNode.HandleErrors(
                    nameof(OCPPWebSocketAdapterFORWARD),
                    Caller,
-                   ExceptionOccured
+                   ExceptionOccurred
                );
 
         #endregion

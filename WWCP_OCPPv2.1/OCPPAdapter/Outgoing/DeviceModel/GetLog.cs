@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = GetLogResponse.ExceptionOccured(
+                response = GetLogResponse.ExceptionOccurred(
                                Request,
                                e
                            );

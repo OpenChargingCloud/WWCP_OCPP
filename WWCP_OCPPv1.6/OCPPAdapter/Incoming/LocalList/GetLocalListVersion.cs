@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             catch (Exception e)
             {
 
-                response = GetLocalListVersionResponse.ExceptionOccured(
+                response = GetLocalListVersionResponse.ExceptionOccurred(
                                Request,
                                e
                            );
@@ -635,7 +635,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //catch (Exception e)
             //{
 
-            //    response = GetLocalListVersionResponse.ExceptionOccured(
+            //    response = GetLocalListVersionResponse.ExceptionOccurred(
             //                   Request,
             //                   e
             //               );

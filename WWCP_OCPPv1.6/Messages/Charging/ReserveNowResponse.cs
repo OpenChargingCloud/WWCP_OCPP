@@ -556,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The ReserveNow request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ReserveNowResponse ExceptionOccured(ReserveNowRequest  Request,
+        public static ReserveNowResponse ExceptionOccurred(ReserveNowRequest  Request,
                                                           Exception          Exception)
 
             => new (Request,

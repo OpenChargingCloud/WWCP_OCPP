@@ -488,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The DiagnosticsStatusNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static DiagnosticsStatusNotificationResponse ExceptionOccured(DiagnosticsStatusNotificationRequest  Request,
+        public static DiagnosticsStatusNotificationResponse ExceptionOccurred(DiagnosticsStatusNotificationRequest  Request,
                                                                              Exception                             Exception)
 
             => new (Request,

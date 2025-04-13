@@ -33,6 +33,8 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -385,9 +387,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // Overlay Network Extensions
-        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyMessage>?                          CustomNotifyNetworkTopologyMessageSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyNetworkTopologyMessage>?                          CustomNotifyNetworkTopologyMessageSerializer                 { get; set; }
         //public CustomJObjectSerializerDelegate<NotifyNetworkTopologyRequest>?                          CustomNotifyNetworkTopologyRequestSerializer                 { get; set; }
         //public CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?                         CustomNotifyNetworkTopologyResponseSerializer                { get; set; }
+
+
+        // NTS Extensions
+        public CustomJObjectSerializerDelegate<NTSKERequest>?                                          CustomNTSKERequestSerializer                                 { get; set; }
+        public CustomJObjectSerializerDelegate<NTSKEResponse>?                                         CustomNTSKEResponseSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<NTSKEServerInfo>?                                       CustomNTSKEServerInfoSerializer                              { get; set; }
 
 
         #region Data Structures
@@ -822,6 +830,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectParserDelegate<NotifyNetworkTopologyMessage>?                              CustomNotifyNetworkTopologyMessageParser                 { get; set; }
         //public CustomJObjectParserDelegate<NotifyNetworkTopologyRequest>?                              CustomNotifyNetworkTopologyRequestParser                 { get; set; }
         //public CustomJObjectParserDelegate<NotifyNetworkTopologyResponse>?                             CustomNotifyNetworkTopologyResponseParser                { get; set; }
+
+
+        // NTS Extensions
+        public CustomJObjectParserDelegate<NTSKERequest>?                                              CustomNTSKERequestParser                                 { get; set; }
+        public CustomJObjectParserDelegate<NTSKEResponse>?                                             CustomNTSKEResponseParser                                { get; set; }
+        public CustomJObjectParserDelegate<NTSKEServerInfo>?                                           CustomNTSKEServerInfoParser                              { get; set; }
 
         #endregion
 

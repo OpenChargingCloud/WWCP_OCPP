@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The LogStatusNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static LogStatusNotificationResponse ExceptionOccured(LogStatusNotificationRequest  Request,
+        public static LogStatusNotificationResponse ExceptionOccurred(LogStatusNotificationRequest  Request,
                                                                      Exception                     Exception)
 
             => new (Request,

@@ -489,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetTransactionStatus request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetTransactionStatusResponse ExceptionOccured(GetTransactionStatusRequest  Request,
+        public static GetTransactionStatusResponse ExceptionOccurred(GetTransactionStatusRequest  Request,
                                                                     Exception                    Exception)
 
             => new (Request,

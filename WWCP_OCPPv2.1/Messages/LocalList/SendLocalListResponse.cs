@@ -525,7 +525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SendLocalList request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SendLocalListResponse ExceptionOccured(SendLocalListRequest  Request,
+        public static SendLocalListResponse ExceptionOccurred(SendLocalListRequest  Request,
                                                              Exception             Exception)
 
             => new (Request,

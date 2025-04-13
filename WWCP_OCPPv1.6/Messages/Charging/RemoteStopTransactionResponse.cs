@@ -552,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The RemoteStopTransaction request.</param>
         /// <param name="Exception">The exception.</param>
-        public static RemoteStopTransactionResponse ExceptionOccured(RemoteStopTransactionRequest  Request,
+        public static RemoteStopTransactionResponse ExceptionOccurred(RemoteStopTransactionRequest  Request,
                                                                      Exception                     Exception)
 
             => new (Request,

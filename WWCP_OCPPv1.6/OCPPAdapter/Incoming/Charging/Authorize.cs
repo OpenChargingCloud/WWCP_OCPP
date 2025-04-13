@@ -541,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             catch (Exception e)
             {
 
-                response = AuthorizeResponse.ExceptionOccured(
+                response = AuthorizeResponse.ExceptionOccurred(
                                Request,
                                e
                            );
@@ -644,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //catch (Exception e)
             //{
 
-            //    response = AuthorizeResponse.ExceptionOccured(
+            //    response = AuthorizeResponse.ExceptionOccurred(
             //                   Request,
             //                   e
             //               );

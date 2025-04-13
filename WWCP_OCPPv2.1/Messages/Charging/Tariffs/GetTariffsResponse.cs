@@ -644,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetTariffs request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetTariffsResponse ExceptionOccured(GetTariffsRequest  Request,
+        public static GetTariffsResponse ExceptionOccurred(GetTariffsRequest  Request,
                                                           Exception          Exception)
 
             => new (Request,

@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The CertificateSigned request.</param>
         /// <param name="Exception">The exception.</param>
-        public static CertificateSignedResponse ExceptionOccured(CertificateSignedRequest  Request,
+        public static CertificateSignedResponse ExceptionOccurred(CertificateSignedRequest  Request,
                                                                  Exception                 Exception)
 
             => new (Request,

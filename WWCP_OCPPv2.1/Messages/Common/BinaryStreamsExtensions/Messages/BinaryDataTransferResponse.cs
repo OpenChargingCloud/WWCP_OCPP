@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The BinaryDataTransfer request.</param>
         /// <param name="Exception">The exception.</param>
-        public static BinaryDataTransferResponse ExceptionOccured(BinaryDataTransferRequest  Request,
+        public static BinaryDataTransferResponse ExceptionOccurred(BinaryDataTransferRequest  Request,
                                                                   Exception                  Exception)
 
             => new (Request,

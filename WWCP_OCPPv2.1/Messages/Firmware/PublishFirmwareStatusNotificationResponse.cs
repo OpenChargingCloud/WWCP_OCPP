@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The PublishFirmwareStatusNotification request.</param>
         /// <param name="Exception">The exception.</param>
-        public static PublishFirmwareStatusNotificationResponse ExceptionOccured(PublishFirmwareStatusNotificationRequest  Request,
+        public static PublishFirmwareStatusNotificationResponse ExceptionOccurred(PublishFirmwareStatusNotificationRequest  Request,
                                                                                  Exception                                 Exception)
 
             => new (Request,

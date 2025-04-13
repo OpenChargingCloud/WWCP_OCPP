@@ -484,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The DeleteUserRole request.</param>
         /// <param name="Exception">The exception.</param>
-        public static DeleteUserRoleResponse ExceptionOccured(DeleteUserRoleRequest  Request,
+        public static DeleteUserRoleResponse ExceptionOccurred(DeleteUserRoleRequest  Request,
                                                                      Exception                     Exception)
 
             => new (Request,

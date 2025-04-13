@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetBaseReport request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetBaseReportResponse ExceptionOccured(GetBaseReportRequest  Request,
+        public static GetBaseReportResponse ExceptionOccurred(GetBaseReportRequest  Request,
                                                              Exception             Exception)
 
             => new (Request,

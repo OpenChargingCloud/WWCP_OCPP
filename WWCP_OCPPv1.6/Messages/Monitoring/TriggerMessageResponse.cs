@@ -560,7 +560,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The TriggerMessage request.</param>
         /// <param name="Exception">The exception.</param>
-        public static TriggerMessageResponse ExceptionOccured(TriggerMessageRequest  Request,
+        public static TriggerMessageResponse ExceptionOccurred(TriggerMessageRequest  Request,
                                                               Exception              Exception)
 
             => new (Request,

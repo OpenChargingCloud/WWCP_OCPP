@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The ReportChargingProfiles request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ReportChargingProfilesResponse ExceptionOccured(ReportChargingProfilesRequest  Request,
+        public static ReportChargingProfilesResponse ExceptionOccurred(ReportChargingProfilesRequest  Request,
                                                                       Exception                      Exception)
 
             => new (Request,

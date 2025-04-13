@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyChargingLimit request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyChargingLimitResponse ExceptionOccured(NotifyChargingLimitRequest  Request,
+        public static NotifyChargingLimitResponse ExceptionOccurred(NotifyChargingLimitRequest  Request,
                                                                    Exception                   Exception)
 
             => new (Request,

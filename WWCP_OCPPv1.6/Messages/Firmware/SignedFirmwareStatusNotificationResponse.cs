@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The SignedFirmwareStatusNotification request request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SignedFirmwareStatusNotificationResponse ExceptionOccured(SignedFirmwareStatusNotificationRequest  Request,
+        public static SignedFirmwareStatusNotificationResponse ExceptionOccurred(SignedFirmwareStatusNotificationRequest  Request,
                                                                                 Exception                                Exception)
 
             => new (Request,

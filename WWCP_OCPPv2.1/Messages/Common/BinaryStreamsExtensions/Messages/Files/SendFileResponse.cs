@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The SendFile request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SendFileResponse ExceptionOccured(SendFileRequest  Request,
+        public static SendFileResponse ExceptionOccurred(SendFileRequest  Request,
                                                         Exception        Exception)
 
             => new (Request,

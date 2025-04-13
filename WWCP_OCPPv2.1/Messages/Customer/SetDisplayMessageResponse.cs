@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetDisplayMessage request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetDisplayMessageResponse ExceptionOccured(SetDisplayMessageRequest  Request,
+        public static SetDisplayMessageResponse ExceptionOccurred(SetDisplayMessageRequest  Request,
                                                                  Exception                 Exception)
 
             => new (Request,

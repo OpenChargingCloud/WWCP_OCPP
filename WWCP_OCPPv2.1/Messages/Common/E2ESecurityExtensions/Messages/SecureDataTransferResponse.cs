@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">The SecureDataTransfer request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SecureDataTransferResponse ExceptionOccured(SecureDataTransferRequest  Request,
+        public static SecureDataTransferResponse ExceptionOccurred(SecureDataTransferRequest  Request,
                                                                   Exception                  Exception)
 
             => new (Request,

@@ -553,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The UnlockConnector request.</param>
         /// <param name="Exception">The exception.</param>
-        public static UnlockConnectorResponse ExceptionOccured(UnlockConnectorRequest  Request,
+        public static UnlockConnectorResponse ExceptionOccurred(UnlockConnectorRequest  Request,
                                                                Exception               Exception)
 
             => new (Request,

@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The DeleteCertificate request.</param>
         /// <param name="Exception">The exception.</param>
-        public static DeleteCertificateResponse ExceptionOccured(DeleteCertificateRequest  Request,
+        public static DeleteCertificateResponse ExceptionOccurred(DeleteCertificateRequest  Request,
                                                                  Exception                 Exception)
 
             => new (Request,

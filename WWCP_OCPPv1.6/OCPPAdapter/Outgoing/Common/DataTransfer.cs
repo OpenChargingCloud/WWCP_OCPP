@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             catch (Exception e)
             {
 
-                response = DataTransferResponse.ExceptionOccured(
+                response = DataTransferResponse.ExceptionOccurred(
                                Request,
                                e
                            );

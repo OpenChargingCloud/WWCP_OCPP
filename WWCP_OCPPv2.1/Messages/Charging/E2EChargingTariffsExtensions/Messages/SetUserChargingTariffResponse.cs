@@ -452,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetDefaultChargingTariff request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetUserChargingTariffResponse ExceptionOccured(CSMS.SetUserChargingTariffRequest  Request,
+        public static SetUserChargingTariffResponse ExceptionOccurred(CSMS.SetUserChargingTariffRequest  Request,
                                                                      Exception                          Exception)
 
             => new (Request,

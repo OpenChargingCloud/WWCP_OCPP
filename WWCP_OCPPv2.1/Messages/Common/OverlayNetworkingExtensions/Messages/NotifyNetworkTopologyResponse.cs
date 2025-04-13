@@ -443,7 +443,7 @@
 //        /// </summary>
 //        /// <param name="Request">The NotifyNetworkTopology request.</param>
 //        /// <param name="Exception">The exception.</param>
-//        public static NotifyNetworkTopologyResponse ExceptionOccured(NotifyNetworkTopologyRequest  Request,
+//        public static NotifyNetworkTopologyResponse ExceptionOccurred(NotifyNetworkTopologyRequest  Request,
 //                                                                     Exception                     Exception)
 
 //            => new (Request,

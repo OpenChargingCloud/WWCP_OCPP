@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The Reset request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ResetResponse ExceptionOccured(ResetRequest  Request,
+        public static ResetResponse ExceptionOccurred(ResetRequest  Request,
                                                      Exception     Exception)
 
             => new (Request,

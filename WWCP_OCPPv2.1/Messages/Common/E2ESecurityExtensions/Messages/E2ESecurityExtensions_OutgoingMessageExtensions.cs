@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 return Task.FromResult(
-                           SecureDataTransferResponse.ExceptionOccured(null, e)
+                           SecureDataTransferResponse.ExceptionOccurred(null, e)
                        );
             }
 
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 return Task.FromResult(
-                           SecureDataTransferResponse.ExceptionOccured(null, e)
+                           SecureDataTransferResponse.ExceptionOccurred(null, e)
                        );
             }
 

@@ -592,7 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The StopTransaction request.</param>
         /// <param name="Exception">The exception.</param>
-        public static StopTransactionResponse ExceptionOccured(StopTransactionRequest  Request,
+        public static StopTransactionResponse ExceptionOccurred(StopTransactionRequest  Request,
                                                                Exception               Exception)
 
             => new (Request,

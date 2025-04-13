@@ -484,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The DeleteFile request.</param>
         /// <param name="Exception">The exception.</param>
-        public static DeleteFileResponse ExceptionOccured(DeleteFileRequest  Request,
+        public static DeleteFileResponse ExceptionOccurred(DeleteFileRequest  Request,
                                                           Exception          Exception)
 
             => new (Request,

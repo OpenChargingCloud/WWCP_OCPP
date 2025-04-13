@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The NotifyWebPaymentStarted request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyWebPaymentStartedResponse ExceptionOccured(NotifyWebPaymentStartedRequest  Request,
+        public static NotifyWebPaymentStartedResponse ExceptionOccurred(NotifyWebPaymentStartedRequest  Request,
                                                                        Exception                       Exception)
 
             => new (Request,

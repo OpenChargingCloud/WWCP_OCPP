@@ -528,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The NotifyAllowedEnergyTransfer request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyAllowedEnergyTransferResponse ExceptionOccured(NotifyAllowedEnergyTransferRequest  Request,
+        public static NotifyAllowedEnergyTransferResponse ExceptionOccurred(NotifyAllowedEnergyTransferRequest  Request,
                                                                            Exception                                Exception)
 
             => new (Request,

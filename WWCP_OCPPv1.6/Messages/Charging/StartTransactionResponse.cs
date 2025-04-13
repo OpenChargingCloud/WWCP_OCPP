@@ -639,7 +639,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The StartTransaction request.</param>
         /// <param name="Exception">The exception.</param>
-        public static StartTransactionResponse ExceptionOccured(StartTransactionRequest  Request,
+        public static StartTransactionResponse ExceptionOccurred(StartTransactionRequest  Request,
                                                                 Exception                Exception)
 
             => new (Request,

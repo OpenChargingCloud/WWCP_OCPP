@@ -568,7 +568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The RequestStartTransaction request.</param>
         /// <param name="Exception">The exception.</param>
-        public static RequestStartTransactionResponse ExceptionOccured(RequestStartTransactionRequest  Request,
+        public static RequestStartTransactionResponse ExceptionOccurred(RequestStartTransactionRequest  Request,
                                                                        Exception                            Exception)
 
             => new (Request,

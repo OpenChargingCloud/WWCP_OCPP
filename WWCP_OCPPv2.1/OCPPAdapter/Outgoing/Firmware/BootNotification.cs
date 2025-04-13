@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = BootNotificationResponse.ExceptionOccured(
+                response = BootNotificationResponse.ExceptionOccurred(
                                Request,
                                e
                            );

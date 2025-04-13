@@ -597,7 +597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The PullDynamicScheduleUpdate request.</param>
         /// <param name="Exception">The exception.</param>
-        public static PullDynamicScheduleUpdateResponse ExceptionOccured(PullDynamicScheduleUpdateRequest  Request,
+        public static PullDynamicScheduleUpdateResponse ExceptionOccurred(PullDynamicScheduleUpdateRequest  Request,
                                                                          Exception                         Exception)
 
             => new (Request,

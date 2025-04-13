@@ -658,7 +658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The GetInstalledCertificateIds request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetInstalledCertificateIdsResponse ExceptionOccured(GetInstalledCertificateIdsRequest  Request,
+        public static GetInstalledCertificateIdsResponse ExceptionOccurred(GetInstalledCertificateIdsRequest  Request,
                                                                           Exception                          Exception)
 
             => new (Request,

@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyEVChargingNeeds request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyEVChargingNeedsResponse ExceptionOccured(NotifyEVChargingNeedsRequest  Request,
+        public static NotifyEVChargingNeedsResponse ExceptionOccurred(NotifyEVChargingNeedsRequest  Request,
                                                                      Exception                     Exception)
 
             => new (Request,

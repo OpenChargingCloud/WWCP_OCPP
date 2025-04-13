@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception e)
             {
 
-                response = NotifyAllowedEnergyTransferResponse.ExceptionOccured(
+                response = NotifyAllowedEnergyTransferResponse.ExceptionOccurred(
                                Request,
                                e
                            );

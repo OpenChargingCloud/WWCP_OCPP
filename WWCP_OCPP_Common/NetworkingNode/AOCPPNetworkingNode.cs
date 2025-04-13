@@ -401,14 +401,14 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
         #endregion
 
-        #region (virtual) HandleErrors(Module, Caller, ExceptionOccured)
+        #region (virtual) HandleErrors(Module, Caller, ExceptionOccurred)
 
         //public virtual Task HandleErrors(String     Module,
         //                                 String     Caller,
-        //                                 Exception  ExceptionOccured)
+        //                                 Exception  ExceptionOccurred)
         //{
 
-        //    DebugX.LogException(ExceptionOccured, Caller);
+        //    DebugX.LogException(ExceptionOccurred, Caller);
 
         //    return Task.CompletedTask;
 

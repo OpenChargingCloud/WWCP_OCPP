@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     //public delegate Task UploadExceptionDelegate     (DateTime           Timestamp,
     //                                                  String             Module,
     //                                                  String             Caller,
-    //                                                  Exception          ExceptionOccured,
+    //                                                  Exception          ExceptionOccurred,
     //                                                  CancellationToken  CancellationToken);
 
 

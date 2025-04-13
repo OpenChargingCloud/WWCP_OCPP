@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The ClearVariableMonitoring request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ClearVariableMonitoringResponse ExceptionOccured(ClearVariableMonitoringRequest  Request,
+        public static ClearVariableMonitoringResponse ExceptionOccurred(ClearVariableMonitoringRequest  Request,
                                                                        Exception                       Exception)
 
             => new (Request,

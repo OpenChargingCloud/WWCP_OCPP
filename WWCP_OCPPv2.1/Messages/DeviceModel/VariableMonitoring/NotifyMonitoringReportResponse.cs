@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The NotifyMonitoringReport request.</param>
         /// <param name="Exception">The exception.</param>
-        public static NotifyMonitoringReportResponse ExceptionOccured(NotifyMonitoringReportRequest  Request,
+        public static NotifyMonitoringReportResponse ExceptionOccurred(NotifyMonitoringReportRequest  Request,
                                                                       Exception                      Exception)
 
             => new (Request,

@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The ReservationStatusUpdate request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ReservationStatusUpdateResponse ExceptionOccured(ReservationStatusUpdateRequest  Request,
+        public static ReservationStatusUpdateResponse ExceptionOccurred(ReservationStatusUpdateRequest  Request,
                                                                        Exception                       Exception)
 
             => new (Request,

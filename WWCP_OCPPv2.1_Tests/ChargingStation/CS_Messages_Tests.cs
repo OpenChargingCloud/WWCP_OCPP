@@ -3091,6 +3091,94 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         #endregion
 
 
+        #region NTSKE_Test()
+
+        /// <summary>
+        /// A test for requesting NTS-KE server information.
+        /// </summary>
+        [Test]
+        public async Task NTSKE_Test()
+        {
+
+            if (testCSMS1                                            is not null &&
+                chargingStation1                                     is not null &&
+
+                csms1WebSocketJSONRequestsSent                       is not null &&
+                csms1WebSocketJSONRequestErrorsReceived              is not null &&
+                csms1WebSocketJSONResponsesReceived                  is not null &&
+                csms1WebSocketJSONRequestsReceived                   is not null &&
+                csms1WebSocketJSONResponsesSent                      is not null &&
+                csms1WebSocketJSONResponseErrorsReceived             is not null &&
+
+                chargingStation1                                     is not null &&
+                chargingStation1WebSocketJSONRequestsSent            is not null &&
+                chargingStation1WebSocketJSONRequestErrorsReceived   is not null &&
+                chargingStation1WebSocketJSONResponsesReceived       is not null &&
+                chargingStation1WebSocketJSONRequestsReceived        is not null &&
+                chargingStation1WebSocketJSONResponsesSent           is not null &&
+                chargingStation1WebSocketJSONResponseErrorsReceived  is not null)
+            {
+
+                var ntsKERequests = new ConcurrentList<NTSKERequest>();
+
+                testCSMS1.OCPP.IN.OnNTSKERequestReceived += (timestamp, sender, connection, ntsKERequest, ct) => {
+                    ntsKERequests.TryAdd(ntsKERequest);
+                    return Task.CompletedTask;
+                };
+
+                var response = await chargingStation1.NTSKE(
+                                         AEADAlgorithm:   org.GraphDefined.Vanaheimr.Norn.NTS.AEADAlgorithms.AES_SIV_CMAC_256,
+                                         CustomData:      null
+                                     );
+
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                         Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(response.ServerInfos.Count() > 0,                                   Is.True);
+                    var ntsKEServerInfo = response.ServerInfos.First();
+
+                    Assert.That(ntsKEServerInfo.C2SKey.    Length         > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.S2CKey.    Length         > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.Cookies.   Count()        > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.Cookies.   First().Length > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.URLs.      Count()        > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.URLs.First().ToString() == "udp://localhost:123",   Is.True);
+                    Assert.That(ntsKEServerInfo.PublicKeys.Count()        > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.AEADAlgorithm.HasValue,                             Is.False);
+                    Assert.That(ntsKEServerInfo.Warnings.  Count()        > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.Errors.    Count()        > 0,                      Is.True);
+
+
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,          Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,          Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,          Is.EqualTo(0));
+
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,          Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,          Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,          Is.EqualTo(0));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,          Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,          Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,          Is.EqualTo(1));
+
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,          Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,          Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,          Is.EqualTo(0));
+
+                });
+
+            }
+
+            else
+                Assert.Fail($"{nameof(NotifySettlement_Test)} preconditions failed!");
+
+        }
+
+        #endregion
+
+
     }
 
 }

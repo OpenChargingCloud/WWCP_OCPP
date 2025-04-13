@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">The SignCertificate request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SignCertificateResponse ExceptionOccured(CS.SignCertificateRequest  Request,
+        public static SignCertificateResponse ExceptionOccurred(CS.SignCertificateRequest  Request,
                                                                Exception                  Exception)
 
             => new (Request,

@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The InstallCertificate request.</param>
         /// <param name="Exception">The exception.</param>
-        public static InstallCertificateResponse ExceptionOccured(CSMS.InstallCertificateRequest  Request,
+        public static InstallCertificateResponse ExceptionOccurred(CSMS.InstallCertificateRequest  Request,
                                                                   Exception                       Exception)
 
             => new (Request,

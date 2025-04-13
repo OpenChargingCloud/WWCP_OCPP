@@ -632,7 +632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Request">The GetFile request.</param>
         /// <param name="Exception">The exception.</param>
-        public static GetFileResponse ExceptionOccured(GetFileRequest  Request,
+        public static GetFileResponse ExceptionOccurred(GetFileRequest  Request,
                                                        Exception       Exception)
 
             => new (Request,

@@ -45,6 +45,8 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
+using org.GraphDefined.Vanaheimr.Norn.NTP;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -1149,7 +1151,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-
             #region BinaryDataStreams Extensions
 
             #region Files
@@ -1302,7 +1303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              request,
                                              cancellationToken) => {
 
-                DebugX.Log($"Local Controller '{Id}': Incoming SecureDataTransfer request!");
+                DebugX.Log($"CSMS '{Id}': Incoming SecureDataTransfer request!");
 
                 // VendorId
                 // MessageId
@@ -1343,6 +1344,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      AdditionalStatusInfo:   null,
                                      Ciphertext:             responseSecureData?.ToUTF8Bytes()
                                  )
+                       );
+
+            };
+
+            #endregion
+
+            #endregion
+
+            #region NTSExtensions
+
+            #region OnNTSKE
+
+            OCPP.IN.OnNTSKE += (timestamp,
+                                sender,
+                                connection,
+                                request,
+                                cancellationToken) => {
+
+                DebugX.Log($"CSMS '{Id}': Incoming NTS-KE request!");
+
+                // VendorId
+                // MessageId
+                // Data
+
+                return Task.FromResult(
+                           request.AEADAlgorithm == AEADAlgorithms.AES_SIV_CMAC_256
+
+                               ? new NTSKEResponse(
+                                     Request:                request,
+                                     Status:                 GenericStatus.Accepted,
+                                     Destination:            SourceRouting.To(request.NetworkPath.Source),
+                                     NTSKEServerInfos:       [
+                                                                 new NTSKEServerInfo(
+                                                                     C2SKey:           "0011223344".FromHEX(),
+                                                                     S2CKey:           "4433221100".FromHEX(),
+                                                                     Cookies:          [ "aabbccddee".FromHEX() ],
+                                                                     URLs:             [ URL.Parse("udp://localhost:123") ],
+                                                                     PublicKeys:       [ "cafebabe".FromHEX() ],
+                                                                     AEADAlgorithm:    AEADAlgorithms.AES_SIV_CMAC_256,
+                                                                     Warnings:         [ Warning.Create("Just a test!") ],
+                                                                     Errors:           [ "No errors!" ]
+                                                                 )
+                                                             ],
+
+                                     SignKeys:               null,
+                                     SignInfos:              null,
+                                     Signatures:             null,
+
+                                     NetworkPath:            NetworkPath.From(Id)
+                                 )
+
+                               : new NTSKEResponse(
+                                     Request:                request,
+                                     NetworkPath:            NetworkPath.From(Id),
+                                     NTSKEServerInfos:       [],
+                                     Status:                 GenericStatus.Rejected
+                                 )
+
                        );
 
             };

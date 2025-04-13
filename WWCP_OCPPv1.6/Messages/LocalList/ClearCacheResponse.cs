@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The ClearCache request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ClearCacheResponse ExceptionOccured(ClearCacheRequest  Request,
+        public static ClearCacheResponse ExceptionOccurred(ClearCacheRequest  Request,
                                                           Exception          Exception)
 
             => new (Request,

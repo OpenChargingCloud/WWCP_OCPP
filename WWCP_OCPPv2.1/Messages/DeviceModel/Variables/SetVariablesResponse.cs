@@ -649,7 +649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The SetVariables request.</param>
         /// <param name="Exception">The exception.</param>
-        public static SetVariablesResponse ExceptionOccured(SetVariablesRequest  Request,
+        public static SetVariablesResponse ExceptionOccurred(SetVariablesRequest  Request,
                                                             Exception            Exception)
 
             => new (Request,

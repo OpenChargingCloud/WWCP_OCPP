@@ -543,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The ChangeAvailability request.</param>
         /// <param name="Exception">The exception.</param>
-        public static ChangeAvailabilityResponse ExceptionOccured(ChangeAvailabilityRequest  Request,
+        public static ChangeAvailabilityResponse ExceptionOccurred(ChangeAvailabilityRequest  Request,
                                                                   Exception                  Exception)
 
             => new (Request,
