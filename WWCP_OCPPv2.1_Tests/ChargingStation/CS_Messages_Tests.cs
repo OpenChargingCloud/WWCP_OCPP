@@ -3136,19 +3136,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                     Assert.That(response.Result.ResultCode,                                         Is.EqualTo(ResultCode.OK));
 
-                    Assert.That(response.ServerInfos.Count() > 0,                                   Is.True);
+                    Assert.That(response.ServerInfos.Any(),                                         Is.True);
                     var ntsKEServerInfo = response.ServerInfos.First();
 
                     Assert.That(ntsKEServerInfo.C2SKey.    Length         > 0,                      Is.True);
                     Assert.That(ntsKEServerInfo.S2CKey.    Length         > 0,                      Is.True);
-                    Assert.That(ntsKEServerInfo.Cookies.   Count()        > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.Cookies.   Any(),                                   Is.True);
                     Assert.That(ntsKEServerInfo.Cookies.   First().Length > 0,                      Is.True);
-                    Assert.That(ntsKEServerInfo.URLs.      Count()        > 0,                      Is.True);
-                    Assert.That(ntsKEServerInfo.URLs.First().ToString() == "udp://localhost:123",   Is.True);
-                    Assert.That(ntsKEServerInfo.PublicKeys.Count()        > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.URLs.      Any(),                                   Is.True);
+                    Assert.That(ntsKEServerInfo.URLs.First().ToString(),                            Is.EqualTo($"udp://localhost:{testCSMS1.NTSServer?.UDPPort}"));
+                    Assert.That(ntsKEServerInfo.PublicKeys.Any(),                                   Is.True);
                     Assert.That(ntsKEServerInfo.AEADAlgorithm.HasValue,                             Is.False);
-                    Assert.That(ntsKEServerInfo.Warnings.  Count()        > 0,                      Is.True);
-                    Assert.That(ntsKEServerInfo.Errors.    Count()        > 0,                      Is.True);
+                    Assert.That(ntsKEServerInfo.Warnings.  Any(),                                   Is.False);
+                    Assert.That(ntsKEServerInfo.Errors.    Any(),                                   Is.False);
 
 
                     Assert.That(csms1WebSocketJSONRequestsSent.                     Count,          Is.EqualTo(0));

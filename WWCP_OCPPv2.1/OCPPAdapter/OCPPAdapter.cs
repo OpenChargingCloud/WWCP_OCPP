@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using nts = org.GraphDefined.Vanaheimr.Norn.NTS;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -395,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         // NTS Extensions
         public CustomJObjectSerializerDelegate<NTSKERequest>?                                          CustomNTSKERequestSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<NTSKEResponse>?                                         CustomNTSKEResponseSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<NTSKEServerInfo>?                                       CustomNTSKEServerInfoSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<nts.NTSKE_ServerInfo>?                                  CustomNTSKEServerInfoSerializer                              { get; set; }
 
 
         #region Data Structures
@@ -835,7 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         // NTS Extensions
         public CustomJObjectParserDelegate<NTSKERequest>?                                              CustomNTSKERequestParser                                 { get; set; }
         public CustomJObjectParserDelegate<NTSKEResponse>?                                             CustomNTSKEResponseParser                                { get; set; }
-        public CustomJObjectParserDelegate<NTSKEServerInfo>?                                           CustomNTSKEServerInfoParser                              { get; set; }
+        public CustomJObjectParserDelegate<nts.NTSKE_ServerInfo>?                                      CustomNTSKEServerInfoParser                              { get; set; }
 
         #endregion
 

@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          Boolean                           WebAPI_Disabled                         = false,
                          HTTPPath?                         WebAPI_Path                             = null,
 
-                         Func<ACSMSNode, NTSServer>?       NTSServer                               = null,
+                         Func<ACSMSNode, NTSServer>?       NTSServerBuilder                        = null,
                          Boolean                           NTSServer_Disabled                      = true,
 
                          WebSocketServer?                  ControlWebSocketServer                  = null,
@@ -483,10 +483,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region Setup NTS Server
 
-            if (!NTSServer_Disabled)
+            if (!NTSServer_Disabled && NTSServerBuilder is not null)
             {
 
-                this.NTSServer                         = NTSServer?.Invoke(this) ?? new NTSServer();
+                this.NTSServer                         = NTSServerBuilder.Invoke(this);
 
             }
 

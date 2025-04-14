@@ -1368,25 +1368,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 // MessageId
                 // Data
 
+                if (this.NTSServer is not null)
+                {
+
+                    var aa = this.NTSServer.GetServerInfos();
+
+
+                }
+
                 return Task.FromResult(
-                           request.AEADAlgorithm == AEADAlgorithms.AES_SIV_CMAC_256
+                           this.NTSServer is not null//request.AEADAlgorithm == AEADAlgorithms.AES_SIV_CMAC_256
 
                                ? new NTSKEResponse(
                                      Request:                request,
                                      Status:                 GenericStatus.Accepted,
                                      Destination:            SourceRouting.To(request.NetworkPath.Source),
-                                     NTSKEServerInfos:       [
-                                                                 new NTSKEServerInfo(
-                                                                     C2SKey:           "0011223344".FromHEX(),
-                                                                     S2CKey:           "4433221100".FromHEX(),
-                                                                     Cookies:          [ "aabbccddee".FromHEX() ],
-                                                                     URLs:             [ URL.Parse("udp://localhost:123") ],
-                                                                     PublicKeys:       [ "cafebabe".FromHEX() ],
-                                                                     AEADAlgorithm:    AEADAlgorithms.AES_SIV_CMAC_256,
-                                                                     Warnings:         [ Warning.Create("Just a test!") ],
-                                                                     Errors:           [ "No errors!" ]
-                                                                 )
-                                                             ],
+                                     NTSKEServerInfos:       this.NTSServer.GetServerInfos(),
 
                                      SignKeys:               null,
                                      SignInfos:              null,

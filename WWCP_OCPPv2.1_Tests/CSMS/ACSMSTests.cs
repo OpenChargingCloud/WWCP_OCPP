@@ -23,12 +23,13 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using nts = org.GraphDefined.Vanaheimr.Norn.NTS;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
@@ -218,6 +219,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 WebAPI:                                  null,
                                                                 WebAPI_Disabled:                         false,
                                                                 WebAPI_Path:                             null,
+
+                                                                NTSServer:                               (csmsNode) => new nts.NTSServer(
+                                                                                                                           Description:   I18NString.Create("Secure Time Server"),
+                                                                                                                           TCPPort:       IPPort.Parse(7777),
+                                                                                                                           UDPPort:       IPPort.Parse(1234),
+                                                                                                                           KeyPair:       nts.KeyPair.GenerateECKeys(1)
+                                                                                                                       ),
+                                                                NTSServer_Disabled:                      false,
 
                                                                 AutoCreatedChargingStationsAccessType:   null,
 

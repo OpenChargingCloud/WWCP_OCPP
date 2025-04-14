@@ -22,6 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using nts = org.GraphDefined.Vanaheimr.Norn.NTS;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -62,18 +63,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The enumeration of NTS-KE server infos.
         /// </summary>
-        public IEnumerable<NTSKEServerInfo>  ServerInfos    { get; }
+        public IEnumerable<nts.NTSKE_ServerInfo>  ServerInfos    { get; }
 
         /// <summary>
         /// The success or failure of the NTSKE request.
         /// </summary>
-        public GenericStatus                 Status         { get; }
+        public GenericStatus                      Status         { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?                   StatusInfo     { get; }
+        public StatusInfo?                        StatusInfo     { get; }
 
         #endregion
 
@@ -98,25 +99,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures of this message.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public NTSKEResponse(NTSKERequest                  Request,
-                             IEnumerable<NTSKEServerInfo>  NTSKEServerInfos,
-                             GenericStatus                 Status,
-                             StatusInfo?                   StatusInfo            = null,
+        public NTSKEResponse(NTSKERequest                       Request,
+                             IEnumerable<nts.NTSKE_ServerInfo>  NTSKEServerInfos,
+                             GenericStatus                      Status,
+                             StatusInfo?                        StatusInfo            = null,
 
-                             Result?                       Result                = null,
-                             DateTime?                     ResponseTimestamp     = null,
+                             Result?                            Result                = null,
+                             DateTime?                          ResponseTimestamp     = null,
 
-                             SourceRouting?                Destination           = null,
-                             NetworkPath?                  NetworkPath           = null,
+                             SourceRouting?                     Destination           = null,
+                             NetworkPath?                       NetworkPath           = null,
 
-                             IEnumerable<KeyPair>?         SignKeys              = null,
-                             IEnumerable<SignInfo>?        SignInfos             = null,
-                             IEnumerable<Signature>?       Signatures            = null,
+                             IEnumerable<KeyPair>?              SignKeys              = null,
+                             IEnumerable<SignInfo>?             SignInfos             = null,
+                             IEnumerable<Signature>?            Signatures            = null,
 
-                             CustomData?                   CustomData            = null,
+                             CustomData?                        CustomData            = null,
 
-                             SerializationFormats?         SerializationFormat   = null,
-                             CancellationToken             CancellationToken     = default)
+                             SerializationFormats?              SerializationFormat   = null,
+                             CancellationToken                  CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -234,8 +235,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatoryHashSet("serverInfos",
                                                 "generic status",
-                                                NTSKEServerInfo.TryParse,
-                                                out HashSet<NTSKEServerInfo> serverInfos,
+                                                nts.NTSKE_ServerInfo.TryParse,
+                                                out HashSet<nts.NTSKE_ServerInfo> serverInfos,
                                                 out ErrorResponse))
                 {
                     return false;
@@ -347,12 +348,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(Boolean                                            IncludeJSONLDContext              = false,
-                              CustomJObjectSerializerDelegate<NTSKEResponse>?    CustomNTSKEResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<NTSKEServerInfo>?  CustomNTSKEServerInfoSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?       CustomStatusInfoSerializer        = null,
-                              CustomJObjectSerializerDelegate<Signature>?        CustomSignatureSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
+        public JObject ToJSON(Boolean                                                 IncludeJSONLDContext              = false,
+                              CustomJObjectSerializerDelegate<NTSKEResponse>?         CustomNTSKEResponseSerializer     = null,
+                              CustomJObjectSerializerDelegate<nts.NTSKE_ServerInfo>?  CustomNTSKEServerInfoSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?            CustomStatusInfoSerializer        = null,
+                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer         = null,
+                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer        = null)
         {
 
             var json = JSONObject.Create(
@@ -362,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                                  new JProperty("serverInfos",   new JArray(ServerInfos.Select(serverInfo => serverInfo.ToJSON(false,
-                                                                                                                              CustomNTSKEServerInfoSerializer,
-                                                                                                                              CustomCustomDataSerializer)))),
+                                                                                                                              CustomNTSKEServerInfoSerializer)))),
+
                                  new JProperty("status",        Status.              AsText()),
 
                            StatusInfo is not null
