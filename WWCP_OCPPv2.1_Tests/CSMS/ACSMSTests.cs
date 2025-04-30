@@ -222,8 +222,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                 NTSServer:                               (csmsNode) => new nts.NTSServer(
                                                                                                                            Description:   I18NString.Create("Secure Time Server"),
-                                                                                                                           TCPPort:       IPPort.Parse(7777),
-                                                                                                                           UDPPort:       IPPort.Parse(1234),
+                                                                                                                           NTSKEPort:     IPPort.Parse(7777),
+                                                                                                                           NTSPort:       IPPort.Parse(1234),
                                                                                                                            KeyPair:       nts.KeyPair.GenerateECKeys(1)
                                                                                                                        ),
                                                                 NTSServer_Disabled:                      false,
