@@ -369,15 +369,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                                                                    Priority:        23,
                                                                    Uplink:          new VirtualNetworkLinkInformation(
                                                                                         Distance:     2,
-                                                                                        Capacity:     BitsPerSecond.     ParseBPS        ( 5000M,  10M),
-                                                                                        Latency:      TimeSpanExtensions.FromMilliseconds(    40,    3),
-                                                                                        PacketLoss:   PercentageDouble.  Parse           (  0.05, 0.05)
+                                                                                        Capacity:     BitsPerSecond.           ParseBPS        ( 5000M,  10M),
+                                                                                        Latency:      StdDevTimeSpanExtensions.FromMilliseconds(    40,    3),
+                                                                                        PacketLoss:   PercentageDouble.        Parse           (  0.05, 0.05)
                                                                                     ),
                                                                    Downlink:        new VirtualNetworkLinkInformation(
                                                                                         Distance:     3,
-                                                                                        Capacity:     BitsPerSecond.     ParseBPS        (15000M,  30M),
-                                                                                        Latency:      TimeSpanExtensions.FromMilliseconds(    20,   23),
-                                                                                        PacketLoss:   PercentageDouble.  Parse           (  0.52, 0.12)
+                                                                                        Capacity:     BitsPerSecond.           ParseBPS        (15000M,  30M),
+                                                                                        Latency:      StdDevTimeSpanExtensions.FromMilliseconds(    20,   23),
+                                                                                        PacketLoss:   PercentageDouble.        Parse           (  0.52, 0.12)
                                                                                     )
                                                                )
                                                            ],
@@ -491,15 +491,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.NN
                                                                                              Priority:        23,
                                                                                              Uplink:          new VirtualNetworkLinkInformation(
                                                                                                                   Distance:     2,
-                                                                                                                  Capacity:     BitsPerSecond.     ParseBPS        ( 5000M,  10M),
-                                                                                                                  Latency:      TimeSpanExtensions.FromMilliseconds(    40,    3),
-                                                                                                                  PacketLoss:   PercentageDouble.  Parse           (  0.05, 0.05)
+                                                                                                                  Capacity:     BitsPerSecond.           ParseBPS        ( 5000M,  10M),
+                                                                                                                  Latency:      StdDevTimeSpanExtensions.FromMilliseconds(    40,    3),
+                                                                                                                  PacketLoss:   PercentageDouble.        Parse           (  0.05, 0.05)
                                                                                                               ),
                                                                                              Downlink:        new VirtualNetworkLinkInformation(
                                                                                                                   Distance:     3,
-                                                                                                                  Capacity:     BitsPerSecond.     ParseBPS        (15000M,  30M),
-                                                                                                                  Latency:      TimeSpanExtensions.FromMilliseconds(    20,   23),
-                                                                                                                  PacketLoss:   PercentageDouble.  Parse           (  0.52, 0.12)
+                                                                                                                  Capacity:     BitsPerSecond.           ParseBPS        (15000M,  30M),
+                                                                                                                  Latency:      StdDevTimeSpanExtensions.FromMilliseconds(    20,   23),
+                                                                                                                  PacketLoss:   PercentageDouble.        Parse           (  0.52, 0.12)
                                                                                                               )
                                                                                          )
                                                                                      ],
