@@ -558,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            DepartureTime.    HasValue
-                               ? new JProperty("departureTime",             DepartureTime.        Value.ToIso8601())
+                               ? new JProperty("departureTime",             DepartureTime.        Value.ToISO8601())
                                : null,
 
                            ACChargingParameters  is not null
@@ -746,7 +746,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                       : "",
 
                    DepartureTime.HasValue
-                      ? $", departure time: {DepartureTime.Value.ToIso8601()}"
+                      ? $", departure time: {DepartureTime.Value.ToISO8601()}"
                       : "",
 
                    ACChargingParameters is not null

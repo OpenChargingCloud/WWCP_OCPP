@@ -717,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  new JProperty("requestId",     NotifyReportRequestId),
                                  new JProperty("seqNo",         SequenceNumber),
-                                 new JProperty("generatedAt",   GeneratedAt.          ToIso8601()),
+                                 new JProperty("generatedAt",   GeneratedAt.          ToISO8601()),
 
                                  new JProperty("reportData",    new JArray(ReportData.Select(reportData => reportData.ToJSON(CustomReportDataSerializer,
                                                                                                                              CustomComponentSerializer,

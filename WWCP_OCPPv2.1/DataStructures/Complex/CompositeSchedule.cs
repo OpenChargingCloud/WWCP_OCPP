@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("evseId",                    EVSEId.Value),
                                  new JProperty("duration",                  (UInt32) Math.Round(Duration.TotalSeconds, 0)),
-                                 new JProperty("scheduleStart",             ScheduleStart.   ToIso8601()),
+                                 new JProperty("scheduleStart",             ScheduleStart.   ToISO8601()),
                                  new JProperty("chargingRateUnit",          ChargingRateUnit.AsText()),
                                  new JProperty("compositeSchedulePeriod",   new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer)))),
 
@@ -471,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => String.Concat(
                    "EVSE ", EVSEId,
                    ", for ", Duration.TotalSeconds, " seconds ",
-                   "starting at " , ScheduleStart.ToIso8601(),
+                   "starting at " , ScheduleStart.ToISO8601(),
                    ", with limit '", ChargingRateUnit,
                    "' and having ", ChargingSchedulePeriods.Count(), " charging schedule period(s)"
                );

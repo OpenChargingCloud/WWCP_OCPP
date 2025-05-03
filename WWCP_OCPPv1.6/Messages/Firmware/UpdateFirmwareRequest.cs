@@ -519,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => new(OCPPNS.OCPPv1_6_CP + "getDiagnosticsRequest",
 
-                   new XElement(OCPPNS.OCPPv1_6_CP + "retrieveDate", RetrieveTimestamp.ToIso8601()),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "retrieveDate", RetrieveTimestamp.ToISO8601()),
                    new XElement(OCPPNS.OCPPv1_6_CP + "location",     FirmwareURL.      ToString()),
 
                    Retries.HasValue
@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("retrieveDate",    RetrieveTimestamp.ToIso8601()),
+                                 new JProperty("retrieveDate",    RetrieveTimestamp.ToISO8601()),
                                  new JProperty("location",        FirmwareURL.      ToString()),
 
                            Retries.HasValue

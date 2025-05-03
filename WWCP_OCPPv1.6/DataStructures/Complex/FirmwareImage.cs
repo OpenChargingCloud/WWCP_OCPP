@@ -274,12 +274,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var json = JSONObject.Create(
 
                                  new JProperty("location",             RemoteLocation.        ToString()),
-                                 new JProperty("retrieveTimestamp",    RetrieveTimestamp.     ToIso8601()),
+                                 new JProperty("retrieveTimestamp",    RetrieveTimestamp.     ToISO8601()),
                                  new JProperty("signingCertificate",   SigningCertificate),
                                  new JProperty("signature",            Signature),
 
                            InstallTimestamp.HasValue
-                               ? new JProperty("installTimestamp",     InstallTimestamp.Value.ToIso8601())
+                               ? new JProperty("installTimestamp",     InstallTimestamp.Value.ToISO8601())
                                : null
 
                        );
@@ -396,10 +396,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             => String.Concat(
 
-                   $"{RemoteLocation}, {RetrieveTimestamp.ToIso8601()}",
+                   $"{RemoteLocation}, {RetrieveTimestamp.ToISO8601()}",
 
                    InstallTimestamp.HasValue
-                       ? $", {InstallTimestamp.Value.ToIso8601()}"
+                       ? $", {InstallTimestamp.Value.ToISO8601()}"
                        : ""
 
                );

@@ -771,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "idTag",     IdTag.Value)
                        : null,
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",       StopTimestamp.ToIso8601()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",       StopTimestamp.ToISO8601()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "meterStop",       MeterStop),
 
                    Reason.HasValue
@@ -806,7 +806,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             var json = JSONObject.Create(
 
                                  new JProperty("transactionId",     TransactionId.Value),
-                                 new JProperty("timestamp",         StopTimestamp.ToIso8601()),
+                                 new JProperty("timestamp",         StopTimestamp.ToISO8601()),
                                  new JProperty("meterStop",         MeterStop),
 
                            IdTag.HasValue

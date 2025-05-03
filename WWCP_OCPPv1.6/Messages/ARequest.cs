@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var json = JSONObject.Create(
                            new JProperty("id",               RequestId.       ToString()),
-                           new JProperty("timestamp",        RequestTimestamp.ToIso8601()),
+                           new JProperty("timestamp",        RequestTimestamp.ToISO8601()),
                            new JProperty("eventTrackingId",  EventTrackingId. ToString()),
                          //  new JProperty("connection",       Connection?.     ToJSON()),
                            new JProperty("destinationId",    DestinationId.   ToString()),

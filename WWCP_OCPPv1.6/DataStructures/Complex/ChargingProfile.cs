@@ -616,11 +616,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    new XElement(OCPPNS.OCPPv1_6_CP + "chargingProfileKind",      ChargingProfileKind.   AsText()),
 
                    ValidFrom.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "validFrom",          ValidFrom.Value.ToIso8601())
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "validFrom",          ValidFrom.Value.ToISO8601())
                        : null,
 
                    ValidTo.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "validTo",            ValidTo.Value.ToIso8601())
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "validTo",            ValidTo.Value.ToISO8601())
                        : null,
 
                    RecurrencyKind.HasValue
@@ -659,11 +659,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            new JProperty("chargingProfileKind",     ChargingProfileKind.    AsText()),
 
                            ValidFrom.HasValue
-                               ? new JProperty("validFrom",         ValidFrom.        Value.ToIso8601())
+                               ? new JProperty("validFrom",         ValidFrom.        Value.ToISO8601())
                                : null,
 
                            ValidTo.HasValue
-                               ? new JProperty("validTo",           ValidTo.          Value.ToIso8601())
+                               ? new JProperty("validTo",           ValidTo.          Value.ToISO8601())
                                : null,
 
                            RecurrencyKind.HasValue

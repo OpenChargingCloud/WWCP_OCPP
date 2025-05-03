@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 new VariableConfig(
 
                     Name:             "ExternalConfigChangeDate",
-                    ValueGetter:      () => this.ExternalConfigChangeDate?.ToIso8601(),
+                    ValueGetter:      () => this.ExternalConfigChangeDate?.ToISO8601(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly

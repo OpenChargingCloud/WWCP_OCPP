@@ -1164,7 +1164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                                                      CustomCustomDataSerializer)),
 
                            ReceivedTimestamp.HasValue
-                               ? new JProperty("timestamp",           ReceivedTimestamp.Value.ToIso8601())
+                               ? new JProperty("timestamp",           ReceivedTimestamp.Value.ToISO8601())
                                : null,
 
                            MaxScheduleTuples.HasValue

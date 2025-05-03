@@ -192,14 +192,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                            new JProperty("request",           JSONObject.Create(
                                new JProperty("id",                Request.RequestId.       ToString()),
-                               new JProperty("timestamp",         Request.RequestTimestamp.ToIso8601()),
+                               new JProperty("timestamp",         Request.RequestTimestamp.ToISO8601()),
                                new JProperty("timeout",           Request.RequestTimeout.  TotalSeconds),
                                new JProperty("action",            Request.Action),
                                new JProperty("data",              RequestData)
                            )),
 
                            new JProperty("response",          JSONObject.Create(
-                               new JProperty("timestamp",         ResponseTimestamp.       ToIso8601()),
+                               new JProperty("timestamp",         ResponseTimestamp.       ToISO8601()),
                                new JProperty("runtime",           Runtime.TotalMilliseconds),
                                new JProperty("data",              ResponseData)
                            ))

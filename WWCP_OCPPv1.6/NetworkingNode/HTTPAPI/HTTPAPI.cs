@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     var systemInfo = JSONObject.Create(
                                          new JProperty("id",     networkingNode.Id.ToString()),
-                                         new JProperty("time",   Timestamp.Now.    ToIso8601())
+                                         new JProperty("time",   Timestamp.Now.    ToISO8601())
                                      );
 
                     return Task.FromResult(

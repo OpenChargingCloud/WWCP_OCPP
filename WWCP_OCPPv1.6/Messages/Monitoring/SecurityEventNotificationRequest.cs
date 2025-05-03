@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                  new JProperty("type",         Type.      ToString()),
 
-                                 new JProperty("timestamp",    Timestamp. ToIso8601()),
+                                 new JProperty("timestamp",    Timestamp. ToISO8601()),
 
                            TechInfo is not null
                                ? new JProperty("techInfo",     TechInfo)
@@ -515,7 +515,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => $"{Type} @ {Timestamp.ToIso8601()}";
+            => $"{Type} @ {Timestamp.ToISO8601()}";
 
         #endregion
 

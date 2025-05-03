@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public XElement ToXML()
 
             => new (OCPPNS.OCPPv1_6_CS + "HeartbeatResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CS + "currentTime",   CurrentTime.ToIso8601())
+                   new XElement(OCPPNS.OCPPv1_6_CS + "currentTime",   CurrentTime.ToISO8601())
                );
 
         #endregion
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("currentTime",   CurrentTime.ToIso8601()),
+                                 new JProperty("currentTime",   CurrentTime.ToISO8601()),
 
                            Signatures.Any()
                                ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -647,7 +647,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => CurrentTime.ToIso8601();
+            => CurrentTime.ToISO8601();
 
         #endregion
 

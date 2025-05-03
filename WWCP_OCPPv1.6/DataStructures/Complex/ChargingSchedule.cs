@@ -437,7 +437,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        : null,
 
                    StartSchedule.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "startSchedule",    StartSchedule.Value.ToIso8601())
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "startSchedule",    StartSchedule.Value.ToISO8601())
                        : null,
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",       ChargingRateUnit.AsText()),
@@ -470,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                : null,
 
                            StartSchedule.HasValue
-                               ? new JProperty("startSchedule",            StartSchedule.Value.ToIso8601())
+                               ? new JProperty("startSchedule",            StartSchedule.Value.ToISO8601())
                                : null,
 
                                  new JProperty("chargingRateUnit",         ChargingRateUnit.AsText()),

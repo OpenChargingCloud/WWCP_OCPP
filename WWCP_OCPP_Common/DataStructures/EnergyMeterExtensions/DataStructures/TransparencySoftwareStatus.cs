@@ -297,11 +297,11 @@ namespace cloud.charging.open.protocols.OCPP
                                : null,
 
                            NotBefore.HasValue
-                               ? new JProperty("notBefore",              NotBefore.Value.ToIso8601())
+                               ? new JProperty("notBefore",              NotBefore.Value.ToISO8601())
                                : null,
 
                            NotAfter.HasValue
-                               ? new JProperty("notAfter",               NotAfter. Value.ToIso8601())
+                               ? new JProperty("notAfter",               NotAfter. Value.ToISO8601())
                                : null
 
                        );
@@ -520,10 +520,10 @@ namespace cloud.charging.open.protocols.OCPP
               (CertificateIssuer is not null &&  TransparencySoftwareStatus.CertificateIssuer is not null && CertificateIssuer.            Equals(TransparencySoftwareStatus.CertificateIssuer)))           &&
 
             ((!NotBefore.        HasValue    && !TransparencySoftwareStatus.NotBefore.        HasValue)    ||
-              (NotBefore.        HasValue    &&  TransparencySoftwareStatus.NotBefore.        HasValue    && NotBefore.  Value.ToIso8601().Equals(TransparencySoftwareStatus.NotBefore.Value.ToIso8601()))) &&
+              (NotBefore.        HasValue    &&  TransparencySoftwareStatus.NotBefore.        HasValue    && NotBefore.  Value.ToISO8601().Equals(TransparencySoftwareStatus.NotBefore.Value.ToISO8601()))) &&
 
             ((!NotAfter.         HasValue    && !TransparencySoftwareStatus.NotAfter.         HasValue)    ||
-              (NotAfter.         HasValue    &&  TransparencySoftwareStatus.NotAfter.         HasValue    && NotAfter.   Value.ToIso8601().Equals(TransparencySoftwareStatus.NotAfter. Value.ToIso8601())));
+              (NotAfter.         HasValue    &&  TransparencySoftwareStatus.NotAfter.         HasValue    && NotAfter.   Value.ToISO8601().Equals(TransparencySoftwareStatus.NotAfter. Value.ToISO8601())));
 
         #endregion
 
@@ -573,11 +573,11 @@ namespace cloud.charging.open.protocols.OCPP
                        : "",
 
                    NotBefore.HasValue
-                       ? ", not before: " + NotBefore.Value.ToIso8601()
+                       ? ", not before: " + NotBefore.Value.ToISO8601()
                        : "",
 
                    NotAfter.HasValue
-                       ? ", not after: "  + NotAfter. Value.ToIso8601()
+                       ? ", not after: "  + NotAfter. Value.ToISO8601()
                        : ""
 
                );

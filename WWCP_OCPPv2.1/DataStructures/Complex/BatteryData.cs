@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("soH",              SoH.Value),
 
                            ProductionDate.HasValue
-                               ? new JProperty("productionDate",   ProductionDate.Value.ToIso8601())
+                               ? new JProperty("productionDate",   ProductionDate.Value.ToISO8601())
                                : null,
 
                            VendorInfo.IsNotNullOrEmpty()
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                SoH.         Equals(BatteryData.SoH)          &&
 
             ((!ProductionDate.HasValue    && !BatteryData.ProductionDate.HasValue)    ||
-              (ProductionDate.HasValue    &&  BatteryData.ProductionDate.HasValue && ProductionDate.Value.ToIso8601().Equals(BatteryData.ProductionDate.Value.ToIso8601()))) &&
+              (ProductionDate.HasValue    &&  BatteryData.ProductionDate.HasValue && ProductionDate.Value.ToISO8601().Equals(BatteryData.ProductionDate.Value.ToISO8601()))) &&
 
              ((VendorInfo     is     null &&  BatteryData.VendorInfo is     null) ||
               (VendorInfo     is not null &&  BatteryData.VendorInfo is not null  && VendorInfo.                      Equals(BatteryData.VendorInfo))) &&

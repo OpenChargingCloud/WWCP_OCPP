@@ -663,7 +663,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        : null,
 
                    StatusTimestamp.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",        StatusTimestamp.Value.ToIso8601())
+                       ? new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",        StatusTimestamp.Value.ToISO8601())
                        : null,
 
                    VendorId.IsNotNullOrEmpty()
@@ -702,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                : null,
 
                            StatusTimestamp.HasValue
-                               ? new JProperty("timestamp",         StatusTimestamp.Value.ToIso8601())
+                               ? new JProperty("timestamp",         StatusTimestamp.Value.ToISO8601())
                                : null,
 
                            VendorId.IsNotNullOrEmpty()

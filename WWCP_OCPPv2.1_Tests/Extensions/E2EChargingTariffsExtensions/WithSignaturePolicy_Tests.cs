@@ -214,13 +214,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
                 ClassicAssert.AreEqual("emp1",                                    setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a signed charging tariff!",          setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(timeReference.ToIso8601(),                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(timeReference.ToISO8601(),                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToISO8601());
 
                 ClassicAssert.AreEqual(1,                                         setDefaultChargingTariffRequests.First().Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,         setDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                 setDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a backend test request!",            setDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToIso8601(),                          setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now1.ToISO8601(),                          setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,   getDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                           getDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a backend test request!",      getDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToIso8601(),                    getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now1.ToISO8601(),                    getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response1.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs001",                                                           response1.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station SetDefaultE2EChargingTariff response!",      response1.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now2.ToIso8601(),                                                  response1.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now2.ToISO8601(),                                                  response1.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -546,14 +546,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
                 ClassicAssert.AreEqual("emp1",                                            setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a signed charging tariff!",                  setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(timeReference.ToIso8601(),                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(timeReference.ToISO8601(),                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToISO8601());
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.First().Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                         setDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS SetDefaultE2EChargingTariff request!",   setDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToIso8601(),                                  setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now1.ToISO8601(),                                  setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -574,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response2.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs001",                                                           response2.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station GetDefaultChargingTariff response!",      response2.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToIso8601(),                      response2.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToISO8601(),                      response2.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -588,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 getDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         getDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS GetDefaultChargingTariff request!",                   getDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToIso8601(),                      getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToISO8601(),                      getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -606,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs001",                                                           response3.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station RemoveDefaultChargingTariff response!",   response3.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(8)).ToIso8601(),                      response3.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(8)).ToISO8601(),                      response3.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -620,7 +620,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 removeDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         removeDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS RemoveDefaultChargingTariff request!",                removeDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(8)).ToIso8601(),                      removeDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(8)).ToISO8601(),                      removeDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -640,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response4.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs001",                                                           response4.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station GetDefaultChargingTariff response!",      response4.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToIso8601(),                      response4.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToISO8601(),                      response4.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -654,7 +654,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS GetDefaultChargingTariff request!",                   getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToIso8601(),                      getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToISO8601(),                      getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -867,7 +867,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response1.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response1.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station SetDefaultE2EChargingTariff response!",      response1.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now2.ToIso8601(),                                                  response1.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now2.ToISO8601(),                                                  response1.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -883,14 +883,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
                 ClassicAssert.AreEqual("emp1",                                            setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a signed charging tariff!",                  setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(timeReference.ToIso8601(),                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(timeReference.ToISO8601(),                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToISO8601());
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.First().Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                         setDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS SetDefaultE2EChargingTariff request!",   setDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToIso8601(),                                  setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now1.ToISO8601(),                                  setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -911,7 +911,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response2.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response2.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station GetDefaultChargingTariff response!",      response2.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToIso8601(),                      response2.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToISO8601(),                      response2.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -925,7 +925,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 getDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         getDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS GetDefaultChargingTariff request!",                   getDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToIso8601(),                      getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToISO8601(),                      getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -943,7 +943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response3.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station RemoveDefaultChargingTariff response!",   response3.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(8)).ToIso8601(),                      response3.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(8)).ToISO8601(),                      response3.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -957,7 +957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 removeDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         removeDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS RemoveDefaultChargingTariff request!",                removeDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(8)).ToIso8601(),                      removeDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(8)).ToISO8601(),                      removeDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -977,7 +977,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response4.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response4.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station GetDefaultChargingTariff response!",      response4.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToIso8601(),                      response4.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToISO8601(),                      response4.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -991,7 +991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS GetDefaultChargingTariff request!",                   getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToIso8601(),                      getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToISO8601(),                      getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1207,7 +1207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response1.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response1.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station SetDefaultE2EChargingTariff response!",      response1.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now2.ToIso8601(),                                                  response1.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now2.ToISO8601(),                                                  response1.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1223,14 +1223,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
                 ClassicAssert.AreEqual("emp1",                                            setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a signed charging tariff!",                  setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(timeReference.ToIso8601(),                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(timeReference.ToISO8601(),                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToISO8601());
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.First().Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                         setDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS SetDefaultE2EChargingTariff request!",   setDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToIso8601(),                                  setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now1.ToISO8601(),                                  setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1251,7 +1251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response2.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response2.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station GetDefaultChargingTariff response!",      response2.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToIso8601(),                      response2.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToISO8601(),                      response2.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1265,7 +1265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 getDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         getDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS GetDefaultChargingTariff request!",                   getDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToIso8601(),                      getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToISO8601(),                      getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1283,7 +1283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response3.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station RemoveDefaultChargingTariff response!",   response3.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(8)).ToIso8601(),                      response3.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(8)).ToISO8601(),                      response3.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1297,7 +1297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 removeDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         removeDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS RemoveDefaultChargingTariff request!",                removeDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(8)).ToIso8601(),                      removeDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(8)).ToISO8601(),                      removeDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1317,7 +1317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response4.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response4.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station GetDefaultChargingTariff response!",      response4.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToIso8601(),                      response4.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToISO8601(),                      response4.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1331,7 +1331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS GetDefaultChargingTariff request!",                   getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToIso8601(),                      getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToISO8601(),                      getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1627,7 +1627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response1a.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response1a.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station SetDefaultE2EChargingTariff response!",      response1a.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now2.ToIso8601(),                                                  response1a.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now2.ToISO8601(),                                                  response1a.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1643,14 +1643,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
                 ClassicAssert.AreEqual("emp1",                                            setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a signed charging tariff!",                  setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(timeReference.ToIso8601(),                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(timeReference.ToISO8601(),                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToISO8601());
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.First().Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                         setDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS SetDefaultE2EChargingTariff request!",   setDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToIso8601(),                                  setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now1.ToISO8601(),                                  setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1670,7 +1670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response1b.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response1b.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station SetDefaultE2EChargingTariff response!",      response1b.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now2.ToIso8601(),                                                  response1b.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now2.ToISO8601(),                                                  response1b.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1686,14 +1686,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Status);
                 ClassicAssert.AreEqual("emp1",                                            setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a signed charging tariff!",                  setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(timeReference.ToIso8601(),                         setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(timeReference.ToISO8601(),                         setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Timestamp?.  ToISO8601());
 
                 // Verify the signature of the request
                 ClassicAssert.AreEqual(1,                                                 setDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                 setDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                         setDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS SetDefaultE2EChargingTariff request!",   setDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToIso8601(),                                  setDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now1.ToISO8601(),                                  setDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1715,7 +1715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response2.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response2.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station GetDefaultChargingTariff response!",      response2.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToIso8601(),                      response2.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToISO8601(),                      response2.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1729,7 +1729,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 getDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         getDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS GetDefaultChargingTariff request!",                   getDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToIso8601(),                      getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToISO8601(),                      getDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1747,7 +1747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response3.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station RemoveDefaultChargingTariff response!",   response3.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(8)).ToIso8601(),                      response3.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(8)).ToISO8601(),                      response3.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1761,7 +1761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 removeDefaultChargingTariffRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         removeDefaultChargingTariffRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS RemoveDefaultChargingTariff request!",                removeDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(8)).ToIso8601(),                      removeDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(8)).ToISO8601(),                      removeDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1781,7 +1781,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 response4.Signatures.First().Status);
                 ClassicAssert.AreEqual("cs002",                                                           response4.Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a charging station GetDefaultChargingTariff response!",      response4.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToIso8601(),                      response4.Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now2 + TimeSpan.FromSeconds(4)).ToISO8601(),                      response4.Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 
@@ -1795,7 +1795,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Status);
                 ClassicAssert.AreEqual("csms001",                                                         getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a CSMS GetDefaultChargingTariff request!",                   getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToIso8601(),                      getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual((now1 + TimeSpan.FromSeconds(4)).ToISO8601(),                      getDefaultChargingTariffRequests.ElementAt(1).Signatures.First().Timestamp?.  ToISO8601());
 
                 #endregion
 

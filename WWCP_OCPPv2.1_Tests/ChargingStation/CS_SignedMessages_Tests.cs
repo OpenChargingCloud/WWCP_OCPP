@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,       bootNotificationRequests.First().Signatures.First().Status);
                 ClassicAssert.AreEqual("ahzf",                                  bootNotificationRequests.First().Signatures.First().Name);
                 ClassicAssert.AreEqual("Just a test!",                          bootNotificationRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now.ToIso8601(),                         bootNotificationRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                ClassicAssert.AreEqual(now.ToISO8601(),                         bootNotificationRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
 

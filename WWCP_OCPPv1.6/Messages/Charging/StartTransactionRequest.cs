@@ -559,7 +559,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",          ConnectorId),
                    new XElement(OCPPNS.OCPPv1_6_CS + "idTag",                IdTag.ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",            StartTimestamp.ToIso8601()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",            StartTimestamp.ToISO8601()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "meterStart",           MeterStart),
 
                    ReservationId.HasValue
@@ -587,7 +587,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                  new JProperty("connectorId",     ConnectorId.        Value),
                                  new JProperty("idTag",           IdTag.              ToString()),
-                                 new JProperty("timestamp",       StartTimestamp.     ToIso8601()),
+                                 new JProperty("timestamp",       StartTimestamp.     ToISO8601()),
                                  new JProperty("meterStart",      MeterStart),
 
                            ReservationId.HasValue

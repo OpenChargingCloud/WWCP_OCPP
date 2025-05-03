@@ -663,7 +663,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  new JProperty("requestId",     NotifyMonitoringReportRequestId.ToString()),
                                  new JProperty("seqNo",         SequenceNumber),
-                                 new JProperty("generatedAt",   GeneratedAt.                    ToIso8601()),
+                                 new JProperty("generatedAt",   GeneratedAt.                    ToISO8601()),
 
                                  new JProperty("monitor",       new JArray(MonitoringData.Select(monitoringData => monitoringData.ToJSON(CustomMonitoringDataSerializer,
                                                                                                                                          CustomComponentSerializer,

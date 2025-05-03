@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("timeAnchor",             TimeAnchor.ToIso8601()),
+                                 new JProperty("timeAnchor",             TimeAnchor.ToISO8601()),
                                  new JProperty("powerScheduleEntries",   new JArray(EVPowerScheduleEntries.Select(evPowerScheduleEntry => evPowerScheduleEntry.ToJSON(CustomEVPowerScheduleEntrySerializer,
                                                                                                                                                                       CustomCustomDataSerializer)))),
  
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{TimeAnchor.ToIso8601()}, {EVPowerScheduleEntries.Count()} power schedule entry/entries";
+            => $"{TimeAnchor.ToISO8601()}, {EVPowerScheduleEntries.Count()} power schedule entry/entries";
 
         #endregion
 

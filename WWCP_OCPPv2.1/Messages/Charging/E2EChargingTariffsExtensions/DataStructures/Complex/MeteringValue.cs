@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("timestamp",          Timestamp.                ToIso8601()),
+                                 new JProperty("timestamp",          Timestamp.                ToISO8601()),
                                  new JProperty("value",              Value),
 
                            Context.HasValue
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => MeteringValue is not null &&
 
                Value.                Equals(MeteringValue.Value)                 &&
-               Timestamp.ToIso8601().Equals(MeteringValue.Timestamp.ToIso8601()) &&
+               Timestamp.ToISO8601().Equals(MeteringValue.Timestamp.ToISO8601()) &&
 
             ((!Context.HasValue   && !MeteringValue.Context.HasValue)   ||
               (Context.HasValue   &&  MeteringValue.Context.HasValue   && Context.  Value.Equals(MeteringValue.Context.  Value))) &&

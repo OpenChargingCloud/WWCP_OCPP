@@ -291,11 +291,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("remoteLocation", RemoteLocation.ToString()),
 
                            OldestTimestamp.HasValue
-                               ? new JProperty("oldestTimestamp", OldestTimestamp.Value.ToIso8601())
+                               ? new JProperty("oldestTimestamp", OldestTimestamp.Value.ToISO8601())
                                : null,
 
                            LatestTimestamp.HasValue
-                               ? new JProperty("latestTimestamp", LatestTimestamp.Value.ToIso8601())
+                               ? new JProperty("latestTimestamp", LatestTimestamp.Value.ToISO8601())
                                : null,
 
                            CustomData is not null
@@ -421,11 +421,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    RemoteLocation,
 
                    OldestTimestamp.HasValue
-                       ? $", > {OldestTimestamp.Value.ToIso8601()}"
+                       ? $", > {OldestTimestamp.Value.ToISO8601()}"
                        : "",
 
                    LatestTimestamp.HasValue
-                       ? $", < {LatestTimestamp.Value.ToIso8601()}"
+                       ? $", < {LatestTimestamp.Value.ToISO8601()}"
                        : ""
 
                );

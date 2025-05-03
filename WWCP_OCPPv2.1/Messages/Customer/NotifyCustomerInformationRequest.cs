@@ -471,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("requestId",     NotifyCustomerInformationRequestId),
                                  new JProperty("data",          Data),
                                  new JProperty("seqNo",         SequenceNumber),
-                                 new JProperty("generatedAt",   GeneratedAt.         ToIso8601()),
+                                 new JProperty("generatedAt",   GeneratedAt.         ToISO8601()),
 
                            ToBeContinued.HasValue
                                ? new JProperty("tbc",           ToBeContinued)
@@ -606,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    ToBeContinued.HasValue == true
                        ? ", to be continued, "
                        : ", ",
-                   GeneratedAt.ToIso8601()
+                   GeneratedAt.ToISO8601()
 
                );
 

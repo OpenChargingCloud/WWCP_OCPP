@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("@context",     DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("timestamp",    ActivationTimestamp. ToIso8601()),
+                                 new JProperty("timestamp",    ActivationTimestamp. ToISO8601()),
 
                                  new JProperty("signal",       Signal.              Value),
 

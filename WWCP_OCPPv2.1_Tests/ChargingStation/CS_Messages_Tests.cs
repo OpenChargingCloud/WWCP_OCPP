@@ -1929,7 +1929,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     Assert.That(statusNotificationRequests.First().EVSEId,                   Is.EqualTo(evseId));
                     Assert.That(statusNotificationRequests.First().ConnectorId,              Is.EqualTo(connectorId));
                     Assert.That(statusNotificationRequests.First().ConnectorStatus,          Is.EqualTo(connectorStatus));
-                    Assert.That(statusNotificationRequests.First().Timestamp.ToIso8601(),    Is.EqualTo(statusTimestamp.ToIso8601()));
+                    Assert.That(statusNotificationRequests.First().Timestamp.ToISO8601(),    Is.EqualTo(statusTimestamp.ToISO8601()));
 
                     Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));

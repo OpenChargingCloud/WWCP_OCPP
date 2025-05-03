@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("source",                Source.             ToString()),
                                  new JProperty("status",                Status.             ToString()),
-                                 new JProperty("nextUpdate",            NextUpdate.         ToIso8601()),
+                                 new JProperty("nextUpdate",            NextUpdate.         ToISO8601()),
 
                            CustomData is not null
                                ? new JProperty("customData",            CustomData.         ToJSON(CustomCustomDataSerializer))

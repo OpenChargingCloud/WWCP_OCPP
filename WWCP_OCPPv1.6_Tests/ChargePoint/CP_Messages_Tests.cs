@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(startTransactionRequest.IdTag,                        Is.EqualTo(idToken));
                     Assert.That(startTransactionRequest.ConnectorId,                  Is.EqualTo(connectorId));
                     Assert.That(startTransactionRequest.IdTag,                        Is.EqualTo(idToken));
-                    Assert.That(startTransactionRequest.StartTimestamp.ToIso8601(),   Is.EqualTo(startTimestamp.ToIso8601()));
+                    Assert.That(startTransactionRequest.StartTimestamp.ToISO8601(),   Is.EqualTo(startTimestamp.ToISO8601()));
                     Assert.That(startTransactionRequest.MeterStart,                   Is.EqualTo(meterStart));
                     Assert.That(startTransactionRequest.ReservationId,                Is.EqualTo(reservationId));
 
@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(statusNotificationRequest.Status,                         Is.EqualTo(status));
                     Assert.That(statusNotificationRequest.ErrorCode,                      Is.EqualTo(errorCode));
                     Assert.That(statusNotificationRequest.Info,                           Is.EqualTo(info));
-                    Assert.That(statusNotificationRequest.StatusTimestamp?.ToIso8601(),   Is.EqualTo(statusTimestamp.ToIso8601()));
+                    Assert.That(statusNotificationRequest.StatusTimestamp?.ToISO8601(),   Is.EqualTo(statusTimestamp.ToISO8601()));
                     Assert.That(statusNotificationRequest.VendorId,                       Is.EqualTo(vendorId));
                     Assert.That(statusNotificationRequest.VendorErrorCode,                Is.EqualTo(vendorErrorCode));
 
@@ -790,7 +790,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(stopTransactionRequests.First().DestinationId,                                                       Is.EqualTo(chargePoint1.Id));
 
                     Assert.That(stopTransactionRequests.First().TransactionId,                                                       Is.EqualTo(transactionId));
-                    Assert.That(stopTransactionRequests.First().StopTimestamp.ToIso8601(),                                           Is.EqualTo(stopTimestamp.ToIso8601()));
+                    Assert.That(stopTransactionRequests.First().StopTimestamp.ToISO8601(),                                           Is.EqualTo(stopTimestamp.ToISO8601()));
                     Assert.That(stopTransactionRequests.First().MeterStop,                                                           Is.EqualTo(meterStop));
                     Assert.That(stopTransactionRequests.First().IdTag,                                                               Is.EqualTo(idToken));
                     Assert.That(stopTransactionRequests.First().Reason,                                                              Is.EqualTo(reason));

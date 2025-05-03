@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             => new (OCPPNS.OCPPv1_6_CP + "reserveNowRequest",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",        ConnectorId.      ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "expiryDate",         ExpiryDate.       ToIso8601()),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "expiryDate",         ExpiryDate.       ToISO8601()),
                    new XElement(OCPPNS.OCPPv1_6_CP + "idTag",              IdTag.            ToString()),
 
                    ParentIdTag.HasValue
@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var json = JSONObject.Create(
 
                                  new JProperty("connectorId",     ConnectorId.Value),
-                                 new JProperty("expiryDate",      ExpiryDate.       ToIso8601()),
+                                 new JProperty("expiryDate",      ExpiryDate.       ToISO8601()),
                                  new JProperty("idTag",           IdTag.            ToString()),
                                  new JProperty("reservationId",   ReservationId.Value),
 
@@ -728,7 +728,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => String.Concat(
 
-                   $"{ConnectorId} / {ExpiryDate.ToIso8601()} / {IdTag}",
+                   $"{ConnectorId} / {ExpiryDate.ToISO8601()} / {IdTag}",
 
                    ParentIdTag.HasValue
                        ? $"/{ParentIdTag.Value}"

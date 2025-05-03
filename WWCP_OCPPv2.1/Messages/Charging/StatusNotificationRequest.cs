@@ -451,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",          DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("timestamp",         Timestamp.           ToIso8601()),
+                                 new JProperty("timestamp",         Timestamp.           ToISO8601()),
                                  new JProperty("connectorStatus",   ConnectorStatus.     ToString()),
                                  new JProperty("evseId",            EVSEId.              Value),
                                  new JProperty("connectorId",       ConnectorId.         Value),

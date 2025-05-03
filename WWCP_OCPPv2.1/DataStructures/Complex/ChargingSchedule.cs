@@ -702,7 +702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("id",                       Id.Value),
 
                            StartSchedule.HasValue
-                               ? new JProperty("startSchedule",            StartSchedule.Value.ToIso8601())
+                               ? new JProperty("startSchedule",            StartSchedule.Value.ToISO8601())
                                : null,
 
                            Duration.HasValue

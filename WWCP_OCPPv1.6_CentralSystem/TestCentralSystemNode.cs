@@ -2771,7 +2771,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           sentMessageResult,
                                                           cancellationToken) => {
                                                               var meterValue = request.MeterValues.FirstOrDefault();
-                                                              DebugX.Log($"OnMeterValues: {request.NetworkPath.Source} {request.ConnectorId}{(request.TransactionId.HasValue ? request.TransactionId : "")} {request.MeterValues.Count()} meter value(s), {(meterValue is not null ? $"{meterValue.SampledValues.FirstOrDefault()?.Value ?? ""} kWh @{meterValue.Timestamp.ToIso8601()}" : "-")} => {response.Result}");
+                                                              DebugX.Log($"OnMeterValues: {request.NetworkPath.Source} {request.ConnectorId}{(request.TransactionId.HasValue ? request.TransactionId : "")} {request.MeterValues.Count()} meter value(s), {(meterValue is not null ? $"{meterValue.SampledValues.FirstOrDefault()?.Value ?? ""} kWh @{meterValue.Timestamp.ToISO8601()}" : "-")} => {response.Result}");
 
                                                               //DebugX.Log(request.MeterValues.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
                                                               //                                                        meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));

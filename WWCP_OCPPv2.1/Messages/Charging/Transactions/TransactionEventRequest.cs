@@ -1509,7 +1509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                                  new JProperty("eventType",               EventType.                  AsText()),
-                                 new JProperty("timestamp",               Timestamp.                  ToIso8601()),
+                                 new JProperty("timestamp",               Timestamp.                  ToISO8601()),
                                  new JProperty("triggerReason",           TriggerReason.              ToString()),
                                  new JProperty("seqNo",                   SequenceNumber),
                                  new JProperty("transactionInfo",         TransactionInfo.            ToJSON(CustomTransactionSerializer,

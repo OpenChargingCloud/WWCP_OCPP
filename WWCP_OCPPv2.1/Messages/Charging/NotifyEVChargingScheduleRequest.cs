@@ -1323,7 +1323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",                     DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("timeBase",                     TimeBase.            ToIso8601()),
+                                 new JProperty("timeBase",                     TimeBase.            ToISO8601()),
                                  new JProperty("evseId",                       EVSEId.Value),
 
                                  new JProperty("chargingSchedule",             ChargingSchedule.    ToJSON(CustomChargingScheduleSerializer,

@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("timestamp",      Timestamp.ToIso8601()),
+                                 new JProperty("timestamp",      Timestamp.ToISO8601()),
 
                                  new JProperty("sampledValue",   new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer,
                                                                                                                                          CustomSignedMeterValueSerializer,

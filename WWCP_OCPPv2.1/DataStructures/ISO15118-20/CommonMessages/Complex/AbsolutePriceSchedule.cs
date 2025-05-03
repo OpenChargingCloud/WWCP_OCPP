@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             var json = JSONObject.Create(
 
                                  new JProperty("priceScheduleID",             Id.               ToString()),
-                                 new JProperty("timeAnchor",                  TimeAnchor.       ToIso8601()),
+                                 new JProperty("timeAnchor",                  TimeAnchor.       ToISO8601()),
                                  new JProperty("currency",                    Currency.ISOCode),
                                  new JProperty("language",                    Language.         ToString()),
                                  new JProperty("priceAlgorithm",              PriceAlgorithmId. ToString()),

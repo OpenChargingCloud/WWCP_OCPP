@@ -506,7 +506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                                  new JProperty("controlType",      ControlType.             ToString()),
-                                 new JProperty("timestamp",        Timestamp.               ToIso8601()),
+                                 new JProperty("timestamp",        Timestamp.               ToISO8601()),
 
                            GridEventFaultType.HasValue
                                ? new JProperty("gridEventFault",   GridEventFaultType.Value.ToString())

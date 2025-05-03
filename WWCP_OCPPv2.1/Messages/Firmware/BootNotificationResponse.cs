@@ -711,7 +711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                                  new JProperty("status",        Status.              ToString()),
-                                 new JProperty("currentTime",   CurrentTime.         ToIso8601()),
+                                 new JProperty("currentTime",   CurrentTime.         ToISO8601()),
                                  new JProperty("interval",      (UInt32) Interval.TotalSeconds),
 
                            StatusInfo is not null

@@ -451,11 +451,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            StartTimestamp.HasValue
-                               ? new JProperty("startDateTime",   StartTimestamp.Value.ToIso8601())
+                               ? new JProperty("startDateTime",   StartTimestamp.Value.ToISO8601())
                                : null,
 
                            EndTimestamp.HasValue
-                               ? new JProperty("endDateTime",     EndTimestamp.  Value.ToIso8601())
+                               ? new JProperty("endDateTime",     EndTimestamp.  Value.ToISO8601())
                                : null,
 
                            TransactionId.HasValue

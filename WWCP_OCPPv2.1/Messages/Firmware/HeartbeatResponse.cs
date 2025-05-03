@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("@context",      DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("currentTime",   CurrentTime.         ToIso8601()),
+                                 new JProperty("currentTime",   CurrentTime.         ToISO8601()),
 
                            Signatures.Any()
                                ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => CurrentTime.ToIso8601();
+            => CurrentTime.ToISO8601();
 
         #endregion
 

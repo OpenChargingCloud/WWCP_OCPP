@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             => new XElement(XName ?? OCPPNS.OCPPv1_6_CS + "meterValue",
 
-                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp", Timestamp.ToIso8601()),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "timestamp", Timestamp.ToISO8601()),
 
                    SampledValues.Select(value => value.ToXML())
 
@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             var json = JSONObject.Create(
-                           new JProperty("timestamp",      Timestamp.ToIso8601()),
+                           new JProperty("timestamp",      Timestamp.ToISO8601()),
                            new JProperty("sampledValue",   new JArray(SampledValues.Select(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer))))
                        );
 
@@ -571,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Timestamp.ToIso8601(),
+            => String.Concat(Timestamp.ToISO8601(),
                              " / ",
                              SampledValues.Count(),
                              " sampled values");

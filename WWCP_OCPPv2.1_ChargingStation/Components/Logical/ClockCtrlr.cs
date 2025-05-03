@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 new VariableConfig(
 
                     Name:             "DateTime",
-                    ValueGetter:      () => this.DateTime.ToIso8601(),
+                    ValueGetter:      () => this.DateTime.ToISO8601(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadWrite
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "NextTimeOffsetTransitionDateTime",
                     ValueGetter:      () => this.NextTimeOffsetTransitionDateTime.HasValue
-                                                ? this.NextTimeOffsetTransitionDateTime.Value.ToIso8601()
+                                                ? this.NextTimeOffsetTransitionDateTime.Value.ToISO8601()
                                                 : null,
 
                     Attributes:       new VariableAttribute(
