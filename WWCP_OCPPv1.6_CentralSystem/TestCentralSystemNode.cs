@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                             errorResponse = "No ClientCA key pair available!";
 
                         else if (ClientCACertificate is null)
-                            errorResponse = "No ClientCA certificcate available!";
+                            errorResponse = "No ClientCA certificate available!";
 
                         else
                         {

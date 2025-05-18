@@ -975,13 +975,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         public IEnumerable<ComponentConfig> GetComponentConfigs(String Name, EVSE? EVSE = null)
         {
 
-            List<ComponentConfig>? componentConfigList = null;
+            IEnumerable<ComponentConfig>? componentConfigList = null;
 
             if (EVSE is null)
                 OCPP.TryGetComponentConfig(Name, out componentConfigList);
 
             else if (evses.TryGetValue(EVSE.Id, out var evse))
-                evse.ComponentConfigs.TryGetValue(Name, out componentConfigList);
+            {
+                if (evse.ComponentConfigs.TryGetValue(Name, out var _componentConfigList))
+                    componentConfigList = _componentConfigList;
+            }
 
             return componentConfigList ?? [];
 

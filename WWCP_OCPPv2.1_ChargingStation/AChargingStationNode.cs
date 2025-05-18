@@ -180,8 +180,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         }
 
+        public IEnumerable<T> GetComponentConfigs<T>(String  Name,
+                                                     String  Instance)
+            where T : ComponentConfig
 
-        public IEnumerable<T> GetComponentConfigs<T>(String Name, EVSE_Id EVSEId)
+            => OCPP.GetComponentConfigs<T>(
+                   Name,
+                   Instance
+               );
+
+
+
+
+        public IEnumerable<T> GetComponentConfigs<T>(String   Name,
+                                                     EVSE_Id  EVSEId)
             where T : ComponentConfig
 
             => evses.TryGetValue(EVSEId, out var evse)
@@ -189,7 +201,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    : [] ;
 
 
-        public IEnumerable<T> GetComponentConfigs<T>(String Name, EVSE_Id EVSEId, Connector_Id ConnectorId)
+        public IEnumerable<T> GetComponentConfigs<T>(String        Name,
+                                                     EVSE_Id       EVSEId,
+                                                     Connector_Id  ConnectorId)
             where T : ComponentConfig
 
             => OCPP.TryGetComponentConfig(Name, out var controllerList)
@@ -201,12 +215,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region WebPaymentsController
+        #region WebPaymentsController(s)
 
         /// <summary>
         /// All Web Payments Controllers
         /// </summary>
-        public IEnumerable<WebPaymentsCtrlr>  WebPaymentsController()
+        public IEnumerable<WebPaymentsCtrlr>  WebPaymentsControllers()
             => GetComponentConfigs<WebPaymentsCtrlr>(nameof(WebPaymentsCtrlr));
 
         /// <summary>
@@ -588,44 +602,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Create a new charging station for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this charging station.</param>
-        public AChargingStationNode(NetworkingNode_Id                  Id,
-                                    String                             VendorName,
-                                    String                             Model,
-                                    I18NString?                        Description                    = null,
-                                    String?                            SerialNumber                   = null,
-                                    String?                            FirmwareVersion                = null,
-                                    Modem?                             Modem                          = null,
+        public AChargingStationNode(NetworkingNode_Id       Id,
+                                    String                  VendorName,
+                                    String                  Model,
+                                    I18NString?             Description                    = null,
+                                    String?                 SerialNumber                   = null,
+                                    String?                 FirmwareVersion                = null,
+                                    Modem?                  Modem                          = null,
 
-                                    IEnumerable<EVSESpec>?             EVSEs                          = null,
-                                    OCPP.IEnergyMeter?                 UplinkEnergyMeter              = null,
+                                    IEnumerable<EVSESpec>?  EVSEs                          = null,
+                                    OCPP.IEnergyMeter?      UplinkEnergyMeter              = null,
 
-                                    TimeSpan?                          DefaultRequestTimeout          = null,
+                                    TimeSpan?               DefaultRequestTimeout          = null,
 
-                                    SignaturePolicy?                   SignaturePolicy                = null,
-                                    SignaturePolicy?                   ForwardingSignaturePolicy      = null,
+                                    SignaturePolicy?        SignaturePolicy                = null,
+                                    SignaturePolicy?        ForwardingSignaturePolicy      = null,
 
-                                    Boolean                            HTTPAPI_Disabled               = false,
-                                    IPPort?                            HTTPAPI_Port                   = null,
-                                    String?                            HTTPAPI_ServerName             = null,
-                                    String?                            HTTPAPI_ServiceName            = null,
-                                    EMailAddress?                      HTTPAPI_RobotEMailAddress      = null,
-                                    String?                            HTTPAPI_RobotGPGPassphrase     = null,
-                                    Boolean                            HTTPAPI_EventLoggingDisabled   = false,
+                                    Boolean                 HTTPAPI_Disabled               = false,
+                                    IPPort?                 HTTPAPI_Port                   = null,
+                                    String?                 HTTPAPI_ServerName             = null,
+                                    String?                 HTTPAPI_ServiceName            = null,
+                                    EMailAddress?           HTTPAPI_RobotEMailAddress      = null,
+                                    String?                 HTTPAPI_RobotGPGPassphrase     = null,
+                                    Boolean                 HTTPAPI_EventLoggingDisabled   = false,
 
-                                    WebAPI?                            WebAPI                         = null,
-                                    Boolean                            WebAPI_Disabled                = false,
-                                    HTTPPath?                          WebAPI_Path                    = null,
+                                    WebAPI?                 WebAPI                         = null,
+                                    Boolean                 WebAPI_Disabled                = false,
+                                    HTTPPath?               WebAPI_Path                    = null,
 
-                                    WebSocketServer?                   ControlWebSocketServer         = null,
+                                    WebSocketServer?        ControlWebSocketServer         = null,
 
-                                    Boolean                            DisableSendHeartbeats          = false,
-                                    TimeSpan?                          SendHeartbeatsEvery            = null,
+                                    Boolean                 DisableSendHeartbeats          = false,
+                                    TimeSpan?               SendHeartbeatsEvery            = null,
 
-                                    Boolean                            DisableMaintenanceTasks        = false,
-                                    TimeSpan?                          MaintenanceEvery               = null,
+                                    Boolean                 DisableMaintenanceTasks        = false,
+                                    TimeSpan?               MaintenanceEvery               = null,
 
-                                    CustomData?                        CustomData                     = null,
-                                    DNSClient?                         DNSClient                      = null)
+                                    CustomData?             CustomData                     = null,
+                                    DNSClient?              DNSClient                      = null)
 
             : base(Id,
                    Description,
@@ -970,17 +984,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    (name, list) => list.AddAndReturnList(Component)
                );
 
+        public T AddComponentX<T>(T Component)
+            where T : ComponentConfig
+        {
+
+            var x = OCPP.AddOrUpdateComponentConfig(
+                        Component.Name,
+                        name         => [ Component ],
+                        (name, list) => list.AddAndReturnList(Component)
+                    );
+
+            return Component;
+
+        }
+
 
         public IEnumerable<ComponentConfig> GetComponentConfigs(String Name, EVSE? EVSE = null)
         {
 
-            List<ComponentConfig>? componentConfigList = null;
+            IEnumerable<ComponentConfig>? componentConfigList = null;
 
             if (EVSE is null)
                 OCPP.TryGetComponentConfig(Name, out componentConfigList);
 
             else if (evses.TryGetValue(EVSE.Id, out var evse))
-                evse.ComponentConfigs.TryGetValue(Name, out componentConfigList);
+            {
+                if (evse.ComponentConfigs.TryGetValue(Name, out var _componentConfigList))
+                    componentConfigList = _componentConfigList;
+            }
 
             return componentConfigList ?? [];
 

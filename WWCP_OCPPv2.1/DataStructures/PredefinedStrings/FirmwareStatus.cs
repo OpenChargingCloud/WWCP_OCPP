@@ -127,8 +127,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static FirmwareStatus Parse(String Text)
         {
 
-            if (TryParse(Text, out var derControlStatus))
-                return derControlStatus;
+            if (TryParse(Text, out var firmwareStatus))
+                return firmwareStatus;
 
             throw new ArgumentException($"Invalid text representation of a firmware status: '{Text}'!",
                                         nameof(Text));
@@ -146,8 +146,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static FirmwareStatus? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var derControlStatus))
-                return derControlStatus;
+            if (TryParse(Text, out var firmwareStatus))
+                return firmwareStatus;
 
             return null;
 
@@ -425,8 +425,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A firmware status to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is FirmwareStatus derControlStatus
-                   ? CompareTo(derControlStatus)
+            => Object is FirmwareStatus firmwareStatus
+                   ? CompareTo(firmwareStatus)
                    : throw new ArgumentException("The given object is not a firmware status!",
                                                  nameof(Object));
 
@@ -458,8 +458,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A firmware status to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is FirmwareStatus derControlStatus &&
-                   Equals(derControlStatus);
+            => Object is FirmwareStatus firmwareStatus &&
+                   Equals(firmwareStatus);
 
         #endregion
 

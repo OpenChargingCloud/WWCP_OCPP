@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -74,24 +73,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                        "-----END CERTIFICATE-----\n\n"
                                    );
 
-            var parsed           = Certificate.TryParse(certificateText,
-                                                        out var certificate,
-                                                        out var errorResponse);
+            var parsed           = OCPP.Certificate.TryParse(certificateText,
+                                                             out var certificate,
+                                                             out var errorResponse);
 
-            ClassicAssert.IsTrue   (parsed);
-            ClassicAssert.IsNotNull(certificate);
-            ClassicAssert.IsNull   (errorResponse);
+            Assert.That(parsed,         Is.True);
+            Assert.That(certificate,    Is.Not.Null);
+            Assert.That(errorResponse,  Is.Null);
 
             if (certificate is not null)
             {
 
-                ClassicAssert.AreEqual(certificateText, certificate.ToString());
-
+                Assert.That(certificate.ToString(),  Is.EqualTo(certificateText));
 
                 if (certificate.Parsed is not null)
                 {
 
-                    ClassicAssert.AreEqual("api1.ocpp.charging.cloud", certificate.Parsed.SubjectDN.GetValueList()[0]);
+                    //ClassicAssert.AreEqual("api1.ocpp.charging.cloud", certificate.Parsed.SubjectDN.GetValueList()[0]);
+                    Assert.That(certificate.Parsed.Subject,  Is.EqualTo("CN=api1.ocpp.charging.cloud"));
 
                 }
 
@@ -178,14 +177,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                        out var certificateChain,
                                                                        out var errorResponse);
 
-            ClassicAssert.IsTrue   (parsed);
-            ClassicAssert.IsNotNull(certificateChain);
-            ClassicAssert.IsNull   (errorResponse);
+            Assert.That(parsed,            Is.True);
+            Assert.That(certificateChain,  Is.Not.Null);
+            Assert.That(errorResponse,     Is.Null);
 
             if (certificateChain is not null)
             {
 
-                ClassicAssert.AreEqual(certificateChainText, certificateChain.ToString());
+                Assert.That(certificateChain.ToString(),  Is.EqualTo(certificateChainText));
 
                 var certificate1 = certificateChain.Certificates.ElementAt(0).Parsed;
                 var certificate2 = certificateChain.Certificates.ElementAt(1).Parsed;

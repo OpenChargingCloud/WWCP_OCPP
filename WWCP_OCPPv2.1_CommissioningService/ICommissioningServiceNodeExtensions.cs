@@ -1232,7 +1232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
 
         #endregion
 
-        #region InstallCertificate          (Destination, CertificateType, Certificate, ...)
+        #region InstallCertificate          (Destination, CertificateType, Certificate, CertificateGroup = null, ...)
 
         /// <summary>
         /// Install the given certificate within the charging station.
@@ -1240,6 +1240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
         /// <param name="Destination">The networking node identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
+        /// <param name="CertificateGroup">An optional X.509 certificate group.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
@@ -1251,23 +1252,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.InstallCertificateResponse>
 
-            InstallCertificate(this ICommissioningServiceNode           CSMS,
-                               SourceRouting            Destination,
-                               InstallCertificateUse    CertificateType,
-                               OCPP.Certificate         Certificate,
+            InstallCertificate(this ICommissioningServiceNode  CSMS,
+                               SourceRouting                   Destination,
+                               InstallCertificateUse           CertificateType,
+                               OCPP.Certificate                Certificate,
+                               CertificateGroup?               CertificateGroup      = null,
 
-                               IEnumerable<KeyPair>?    SignKeys              = null,
-                               IEnumerable<SignInfo>?   SignInfos             = null,
-                               IEnumerable<Signature>?  Signatures            = null,
+                               IEnumerable<KeyPair>?           SignKeys              = null,
+                               IEnumerable<SignInfo>?          SignInfos             = null,
+                               IEnumerable<Signature>?         Signatures            = null,
 
-                               CustomData?              CustomData            = null,
+                               CustomData?                     CustomData            = null,
 
-                               Request_Id?              RequestId             = null,
-                               DateTime?                RequestTimestamp      = null,
-                               TimeSpan?                RequestTimeout        = null,
-                               EventTracking_Id?        EventTrackingId       = null,
-                               SerializationFormats?    SerializationFormat   = null,
-                               CancellationToken        CancellationToken     = default)
+                               Request_Id?                     RequestId             = null,
+                               DateTime?                       RequestTimestamp      = null,
+                               TimeSpan?                       RequestTimeout        = null,
+                               EventTracking_Id?               EventTrackingId       = null,
+                               SerializationFormats?           SerializationFormat   = null,
+                               CancellationToken               CancellationToken     = default)
 
 
                 => CSMS.OCPP.OUT.InstallCertificate(
@@ -1275,6 +1277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                            Destination,
                            CertificateType,
                            Certificate,
+                           CertificateGroup,
 
                            SignKeys,
                            SignInfos,

@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             errorResponse = "No ClientCA key pair available!";
 
                         else if (ClientCACertificate is null)
-                            errorResponse = "No ClientCA certificcate available!";
+                            errorResponse = "No ClientCA certificate available!";
 
                         else
                         {

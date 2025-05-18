@@ -43,12 +43,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnInstallCertificateRequestSentDelegate(DateTime                  Timestamp,
-                                                               IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
-                                                               InstallCertificateRequest   Request,
-                                                               SentMessageResults        SentMessageResult,
-                                                               CancellationToken         CancellationToken);
+    public delegate Task OnInstallCertificateRequestSentDelegate(DateTime                    Timestamp,
+                                                                 IEventSender                Sender,
+                                                                 IWebSocketConnection?       Connection,
+                                                                 InstallCertificateRequest   Request,
+                                                                 SentMessageResults          SentMessageResult,
+                                                                 CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -64,14 +64,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnInstallCertificateResponseSentDelegate(DateTime                   Timestamp,
-                                               IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
-                                               InstallCertificateRequest    Request,
-                                               InstallCertificateResponse   Response,
-                                               TimeSpan                   Runtime,
-                                               SentMessageResults         SentMessageResult,
-                                               CancellationToken          CancellationToken);
+        OnInstallCertificateResponseSentDelegate(DateTime                     Timestamp,
+                                                 IEventSender                 Sender,
+                                                 IWebSocketConnection?        Connection,
+                                                 InstallCertificateRequest    Request,
+                                                 InstallCertificateResponse   Response,
+                                                 TimeSpan                     Runtime,
+                                                 SentMessageResults           SentMessageResult,
+                                                 CancellationToken            CancellationToken);
 
 
     /// <summary>
@@ -88,13 +88,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnInstallCertificateRequestErrorSentDelegate(DateTime                       Timestamp,
-                                                   IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
-                                                   InstallCertificateRequest?       Request,
-                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                   TimeSpan?                      Runtime,
-                                                   SentMessageResults             SentMessageResult,
-                                                   CancellationToken              CancellationToken);
+                                                     IEventSender                   Sender,
+                                                     IWebSocketConnection?          Connection,
+                                                     InstallCertificateRequest?     Request,
+                                                     OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                     TimeSpan?                      Runtime,
+                                                     SentMessageResults             SentMessageResult,
+                                                     CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -112,14 +112,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnInstallCertificateResponseErrorSentDelegate(DateTime                        Timestamp,
-                                                    IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
-                                                    InstallCertificateRequest?        Request,
-                                                    InstallCertificateResponse?       Response,
-                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                    TimeSpan?                       Runtime,
-                                                    SentMessageResults              SentMessageResult,
-                                                    CancellationToken               CancellationToken);
+                                                      IEventSender                    Sender,
+                                                      IWebSocketConnection?           Connection,
+                                                      InstallCertificateRequest?      Request,
+                                                      InstallCertificateResponse?     Response,
+                                                      OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                      TimeSpan?                       Runtime,
+                                                      SentMessageResults              SentMessageResult,
+                                                      CancellationToken               CancellationToken);
 
     #endregion
 
@@ -160,6 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             if (!parentNetworkingNode.OCPP.SignaturePolicy.SignRequestMessage(
                                     Request,
                                     Request.ToJSON(
+                                        false,
                                         parentNetworkingNode.OCPP.CustomInstallCertificateRequestSerializer,
                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -187,6 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                                  OCPP_JSONRequestMessage.FromRequest(
                                                                      Request,
                                                                      Request.ToJSON(
+                                                                         false,
                                                                          parentNetworkingNode.OCPP.CustomInstallCertificateRequestSerializer,
                                                                          parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                                          parentNetworkingNode.OCPP.CustomCustomDataSerializer
@@ -478,14 +480,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnInstallCertificateResponseSentDelegate?  OnInstallCertificateResponseSent;
 
-        public Task SendOnInstallCertificateResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       InstallCertificateRequest    Request,
-                                                       InstallCertificateResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnInstallCertificateResponseSent(DateTime                    Timestamp,
+                                                         IEventSender                Sender,
+                                                         IWebSocketConnection?       Connection,
+                                                         InstallCertificateRequest   Request,
+                                                         InstallCertificateResponse  Response,
+                                                         TimeSpan                    Runtime,
+                                                         SentMessageResults          SentMessageResult,
+                                                         CancellationToken           CancellationToken = default)
 
             => LogEvent(
                    OnInstallCertificateResponseSent,
@@ -512,13 +514,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnInstallCertificateRequestErrorSent(DateTime                      Timestamp,
-                                                           IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
-                                                           InstallCertificateRequest?      Request,
-                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                           TimeSpan                      Runtime,
-                                                           SentMessageResults            SentMessageResult,
-                                                           CancellationToken             CancellationToken = default)
+                                                             IEventSender                  Sender,
+                                                             IWebSocketConnection?         Connection,
+                                                             InstallCertificateRequest?    Request,
+                                                             OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                             TimeSpan                      Runtime,
+                                                             SentMessageResults            SentMessageResult,
+                                                             CancellationToken             CancellationToken = default)
 
             => LogEvent(
                    OnInstallCertificateRequestErrorSent,
@@ -545,14 +547,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnInstallCertificateResponseErrorSent(DateTime                       Timestamp,
-                                                            IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
-                                                            InstallCertificateRequest?       Request,
-                                                            InstallCertificateResponse?      Response,
-                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                            TimeSpan                       Runtime,
-                                                            SentMessageResults             SentMessageResult,
-                                                            CancellationToken              CancellationToken = default)
+                                                              IEventSender                   Sender,
+                                                              IWebSocketConnection?          Connection,
+                                                              InstallCertificateRequest?     Request,
+                                                              InstallCertificateResponse?    Response,
+                                                              OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                              TimeSpan                       Runtime,
+                                                              SentMessageResults             SentMessageResult,
+                                                              CancellationToken              CancellationToken = default)
 
             => LogEvent(
                    OnInstallCertificateResponseErrorSent,

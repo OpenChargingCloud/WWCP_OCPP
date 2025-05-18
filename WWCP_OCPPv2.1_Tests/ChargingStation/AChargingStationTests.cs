@@ -224,6 +224,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             Assert.That(chargingStation1,  Is.Not.Null);
 
+            #region Add "legal" Network Time Client Controllers
+
+            var ptb1 = chargingStation1.AddComponentX(
+                           new NTPClientController(
+                               "ptb1",
+                               URL.Parse("udp://ptbtime1.ptb.de"),
+                               Description:   I18NString.Create("ptb 1")
+                           )
+                       );
+
+            var ptb2 = chargingStation1.AddComponentX(
+                           new NTPClientController(
+                               "ptb2",
+                               URL.Parse("udp://ptbtime2.ptb.de"),
+                               Description:   I18NString.Create("ptb 2")
+                           )
+                       );
+
+            var ptb3 = chargingStation1.AddComponentX(
+                           new NTPClientController(
+                               "ptb3",
+                               URL.Parse("udp://ptbtime3.ptb.de"),
+                               Description:   I18NString.Create("ptb 3")
+                           )
+                       );
+
+            chargingStation1.AddComponent(
+                new NTPClientGroupController(
+                    "legal",
+                    [ ptb1, ptb2, ptb3 ]
+                )
+            );
+
+            #endregion
+
+            #region Add "local" Network Time Client Controllers
+
+            var lc1 = chargingStation1.AddComponentX(
+                           new NTPClientController(
+                               "lc1",
+                               URL.Parse("udp://lc1.local"),
+                               Description:   I18NString.Create("local 1")
+                           )
+                       );
+
+            var lc2 = chargingStation1.AddComponentX(
+                           new NTPClientController(
+                               "lc2",
+                               URL.Parse("udp://lc2.local"),
+                               Description:   I18NString.Create("local 2")
+                           )
+                       );
+
+            chargingStation1.AddComponent(
+                new NTPClientGroupController(
+                    "local",
+                    [ lc1, lc2 ]
+                )
+            );
+
+            #endregion
+
+
             if (testBackendWebSockets1 is not null ||
                 lcOCPPWebSocketServer1 is not null)
             {

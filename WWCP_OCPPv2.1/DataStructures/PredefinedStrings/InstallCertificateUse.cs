@@ -201,33 +201,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Use for certificate of the V2G Root.
         /// </summary>
-        public static InstallCertificateUse V2GRootCertificate             { get; }
+        public static InstallCertificateUse  V2GRootCertificate             { get; }
             = Register("V2GRootCertificate");
 
         /// <summary>
         /// Use for certificate from an e-mobility service provider.
         /// To support PnC charging with contracts from service providers that not derived their certificates from the V2G root.
         /// </summary>
-        public static InstallCertificateUse MORootCertificate              { get; }
+        public static InstallCertificateUse  MORootCertificate              { get; }
             = Register("MORootCertificate");
 
         /// <summary>
         /// Root certificate for verification of the CSMS certificate.
         /// </summary>
-        public static InstallCertificateUse CSMSRootCertificate            { get; }
+        public static InstallCertificateUse  CSMSRootCertificate            { get; }
             = Register("CSMSRootCertificate");
 
         /// <summary>
         /// Root certificate for verification of the Manufacturer certificate.
         /// </summary>
-        public static InstallCertificateUse ManufacturerRootCertificate    { get; }
+        public static InstallCertificateUse  ManufacturerRootCertificate    { get; }
             = Register("ManufacturerRootCertificate");
 
         /// <summary>
         /// OEM root certificate for 2-way TLS with the electric vehicle.
         /// </summary>
-        public static InstallCertificateUse OEMRootCertificate             { get; }
+        public static InstallCertificateUse  OEMRootCertificate             { get; }
             = Register("OEMRootCertificate");
+
+        /// <summary>
+        /// Root certificate for verification of the NetworkTime certificates.
+        /// </summary>
+        public static InstallCertificateUse  NetworkTimeRootCertificate     { get; }
+            = Register("NetworkTimeRootCertificate");
 
         #endregion
 

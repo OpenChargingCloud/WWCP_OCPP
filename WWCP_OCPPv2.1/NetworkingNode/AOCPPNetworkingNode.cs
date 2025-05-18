@@ -63,6 +63,94 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region Controllers
+
+        #region Generics
+
+        public IEnumerable<T> GetComponentConfigs<T>(String Name)
+            where T : ComponentConfig
+
+            => OCPP.TryGetComponentConfig(Name, out var controllerList)
+                   ? controllerList.Cast<T>().ToList()
+                   : [];
+
+        public IEnumerable<T> GetComponentConfigs<T>(String  Name,
+                                                     String  Instance)
+            where T : ComponentConfig
+
+            => OCPP.GetComponentConfigs<T>(
+                   Name,
+                   Instance
+               );
+
+        #endregion
+
+
+        #region ClockController(s)
+
+        /// <summary>
+        /// All Clock Controllers
+        /// </summary>
+        public IEnumerable<ClockController>  ClockControllers()
+            => GetComponentConfigs<ClockController>(nameof(OCPPv2_1.ClockController));
+
+        /// <summary>
+        /// The Clock Controller for the given instance.
+        /// </summary>
+        /// <param name="Instance">The name of the instance.</param>
+        public ClockController?              ClockController(String Instance)
+            => GetComponentConfigs<ClockController>(nameof(ClockController), Instance).FirstOrDefault();
+
+        #endregion
+
+        #region TimeClientController(s)
+
+        /// <summary>
+        /// All Time Controllers
+        /// </summary>
+        public IEnumerable<NTPClientGroupController>  TimeClientControllers()
+            => GetComponentConfigs<NTPClientGroupController>(nameof(OCPPv2_1.NTPClientGroupController));
+
+        /// <summary>
+        /// The Time Controller for the given instance.
+        /// </summary>
+        /// <param name="Instance">The name of the instance.</param>
+        public NTPClientGroupController?              TimeClientController(String Instance)
+            => GetComponentConfigs<NTPClientGroupController>(nameof(TimeClientController), Instance).FirstOrDefault();
+
+        /// <summary>
+        /// The legal Time Controller.
+        /// </summary>
+        public NTPClientGroupController?              LegalTimeClientController
+            => TimeClientController("legal");
+
+        /// <summary>
+        /// The "csms" Time Controller.
+        /// </summary>
+        public NTPClientGroupController?              CSMSTimeClientController
+            => TimeClientController("csms");
+
+        #endregion
+
+        #region NetworkTimeClientController(s)
+
+        /// <summary>
+        /// All Network Time Controllers
+        /// </summary>
+        public IEnumerable<NTPClientController>  NetworkTimeClientControllers()
+            => GetComponentConfigs<NTPClientController>(nameof(OCPPv2_1.NTPClientController));
+
+        /// <summary>
+        /// The Network Time Controller for the given instance.
+        /// </summary>
+        /// <param name="Instance">The name of the instance.</param>
+        public NTPClientController?              NetworkTimeClientController(String Instance)
+            => GetComponentConfigs<NTPClientController>(nameof(NetworkTimeClientController), Instance).FirstOrDefault();
+
+        #endregion
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>

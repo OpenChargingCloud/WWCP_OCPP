@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region InstallCertificate         (Destination, CertificateType, Certificate, ...)
+        #region InstallCertificate         (Destination, CertificateType, Certificate, CertificateGroup = null, ...)
 
         /// <summary>
         /// Install the given certificate at the given charge point/networking node.
@@ -176,6 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Destination">The charge point/networking node identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
+        /// <param name="CertificateGroup">An optional X.509 certificate group.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
         /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
@@ -195,6 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                SourceRouting            Destination,
                                CertificateUse           CertificateType,
                                Certificate              Certificate,
+                               CertificateGroup?        CertificateGroup      = null,
 
                                IEnumerable<KeyPair>?    SignKeys              = null,
                                IEnumerable<SignInfo>?   SignInfos             = null,
@@ -214,6 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            Destination,
                            CertificateType,
                            Certificate,
+                           CertificateGroup,
 
                            SignKeys,
                            SignInfos,

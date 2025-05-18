@@ -25,7 +25,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using nts = org.GraphDefined.Vanaheimr.Norn.NTS;
+using NTS = org.GraphDefined.Vanaheimr.Norn.NTS;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -34,8 +34,8 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         // NTS Extensions
         public CustomJObjectSerializerDelegate<NTSKERequest>?                                          CustomNTSKERequestSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<NTSKEResponse>?                                         CustomNTSKEResponseSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<nts.NTSKE_ServerInfo>?                                  CustomNTSKEServerInfoSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<NTS.NTSKE_ServerInfo>?                                  CustomNTSKEServerInfoSerializer                              { get; set; }
 
 
         #region Data Structures
@@ -836,7 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         // NTS Extensions
         public CustomJObjectParserDelegate<NTSKERequest>?                                              CustomNTSKERequestParser                                 { get; set; }
         public CustomJObjectParserDelegate<NTSKEResponse>?                                             CustomNTSKEResponseParser                                { get; set; }
-        public CustomJObjectParserDelegate<nts.NTSKE_ServerInfo>?                                      CustomNTSKEServerInfoParser                              { get; set; }
+        public CustomJObjectParserDelegate<NTS.NTSKE_ServerInfo>?                                      CustomNTSKEServerInfoParser                              { get; set; }
 
         #endregion
 
@@ -897,16 +897,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        public Boolean TryGetComponentConfig(String Name, [NotNullWhen(true)] out List<ComponentConfig>? Components)
+        #region TryGetComponentConfig (Name,           out Components)
+
+        /// <summary>
+        /// Try to get the component configuration for the given name.
+        /// </summary>
+        /// <param name="Name">The name of the component.</param>
+        /// <param name="Components">The component configuration.</param>
+        public Boolean TryGetComponentConfig(String                                                Name,
+                                             [NotNullWhen(true)] out IEnumerable<ComponentConfig>  Components)
         {
 
-            if (componentConfigs.TryGetValue(Name, out Components))
+            if (componentConfigs.TryGetValue(Name, out var components))
+            {
+                Components = components ?? [];
                 return true;
+            }
 
+            Components = [];
             return false;
 
         }
 
+        #endregion
+
+        #region TryGetComponentConfig (Name, Instance, out Components)
+
+        /// <summary>
+        /// Try to get the component configuration for the given name and instance.
+        /// </summary>
+        /// <param name="Name">The name of the component.</param>
+        /// <param name="Instance">The instance of the component.</param>
+        /// <param name="Components">The component configuration.</param>
+        public Boolean TryGetComponentConfig(String                                                Name,
+                                             String                                                Instance,
+                                             [NotNullWhen(true)] out IEnumerable<ComponentConfig>  Components)
+        {
+
+            if (componentConfigs.TryGetValue(Name, out var components))
+            {
+                Components = components.Where(component => component.Instance == Instance);
+                return true;
+            }
+
+            Components = [];
+            return false;
+
+        }
+
+        #endregion
+
+        #region GetComponentConfig    (Name)
+
+        /// <summary>
+        /// Get the component configurations for the given name.
+        /// </summary>
+        /// <param name="Name">The name of the component.</param>
+        public IEnumerable<T> GetComponentConfigs<T>(String Name)
+            where T : ComponentConfig
+
+            => TryGetComponentConfig(Name, out var controllerList)
+                   ? controllerList.Cast<T>()
+                   : [];
+
+        #endregion
+
+        #region GetComponentConfig    (Name, Instance)
+
+        /// <summary>
+        /// Get the component configurations for the given name and instance.
+        /// </summary>
+        /// <param name="Name">The name of the component.</param>
+        /// <param name="Instance">The instance of the component.</param>
+        public IEnumerable<T> GetComponentConfigs<T>(String  Name,
+                                                     String  Instance)
+            where T : ComponentConfig
+
+            => TryGetComponentConfig(Name, out var controllerList)
+                   ? controllerList.Where(componentConfig => componentConfig.Instance == Instance).
+                                    Cast<T>()
+                   : [];
+
+        #endregion
+
+
+        #region AddOrUpdateComponentConfig(Name, AddValueFactory, UpdateValueFactory)
+
+        /// <summary>
+        /// Add or update a component configuration.
+        /// </summary>
+        /// <param name="Name">The name of the component.</param>
+        /// <param name="AddValueFactory">The method to call when adding a new component configuration.</param>
+        /// <param name="UpdateValueFactory">The method to call when updating an existing component configuration.</param>
         public List<ComponentConfig> AddOrUpdateComponentConfig(String                                                      Name,
                                                                 Func<String, List<ComponentConfig>>                         AddValueFactory,
                                                                 Func<String, List<ComponentConfig>, List<ComponentConfig>>  UpdateValueFactory)
@@ -917,6 +999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    UpdateValueFactory
                );
 
+        #endregion
 
 
         #region Send    JSON   messages
@@ -1630,6 +1713,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        #region ToJSON()
+
+        /// <summary>
+        /// Returns a JSON representation of this object.
+        /// </summary>
         public JObject ToJSON()
         {
 
@@ -1656,6 +1744,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return json;
 
         }
+
+        #endregion
+
 
     }
 

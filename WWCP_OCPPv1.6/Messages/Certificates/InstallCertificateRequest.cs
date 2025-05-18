@@ -54,18 +54,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext   Context
+        public JSONLDContext      Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The type of the certificate.
         /// </summary>
-        public CertificateUse  CertificateType    { get; }
+        [Mandatory]
+        public CertificateUse     CertificateType     { get; }
+
+        /// <summary>
+        /// The optional X.509 certificate group.
+        /// </summary>
+        [Optional, VendorExtension("OCPP_CSE")]
+        public CertificateGroup?  CertificateGroup    { get; }
 
         /// <summary>
         /// The PEM encoded X.509 certificate.
         /// </summary>
-        public Certificate     Certificate        { get; }
+        [Mandatory]
+        public Certificate        Certificate         { get; }
 
         #endregion
 
@@ -77,6 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
+        /// <param name="CertificateGroup">An optional X.509 certificate group.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
         /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
@@ -94,6 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public InstallCertificateRequest(SourceRouting            Destination,
                                          CertificateUse           CertificateType,
                                          Certificate              Certificate,
+                                         CertificateGroup?        CertificateGroup      = null,
 
                                          IEnumerable<KeyPair>?    SignKeys              = null,
                                          IEnumerable<SignInfo>?   SignInfos             = null,
@@ -128,15 +138,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.CertificateType  = CertificateType;
-            this.Certificate      = Certificate;
+            this.CertificateType   = CertificateType;
+            this.CertificateGroup  = CertificateGroup;
+            this.Certificate       = Certificate;
 
             unchecked
             {
 
-                hashCode = this.CertificateType.GetHashCode() * 5 ^
-                           this.Certificate.    GetHashCode() * 3 ^
-                           base.                GetHashCode();
+                hashCode = this.CertificateType.  GetHashCode()       * 7 ^
+                          (this.CertificateGroup?.GetHashCode() ?? 0) * 5 ^
+                           this.Certificate.      GetHashCode()       * 3 ^
+                           base.                  GetHashCode();
 
             }
 
@@ -171,6 +183,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //       "maxLength": 5500
         //     }
         // },
+        //   "required": [
+        //     "certificateType",
+        //     "certificate"
+        //   ]
+        // }
+
+
+        // {
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:1.6:2020:3:InstallCertificate.req",
+        //   "definitions": {
+        //     "CertificateUseEnumType": {
+        //       "description": "Indicates the certificate type that is sent.",
+        //       "type": "string",
+        //       "additionalProperties": false,
+        //       "enum": [
+        //         "CentralSystemRootCertificate",
+        //         "ManufacturerRootCertificate",
+        //         "NetworkTimeRootCertificate"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "certificateType": {
+        //       "$ref": "#/definitions/CertificateUseEnumType"
+        //     },
+        //     "certificateGroup": {
+        //       "description": "A X.509 certificate group.",
+        //       "type": "string",
+        //       "maxLength": 50
+        //     },
+        //     "certificate": {
+        //       "description": "A PEM encoded X.509 certificate.",
+        //       "type": "string",
+        //       "maxLength": 11000
+        //     }
+        //   },
         //   "required": [
         //     "certificateType",
         //     "certificate"
@@ -265,39 +316,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 InstallCertificateRequest = null;
 
-                #region CertificateType    [mandatory]
+                #region CertificateType     [mandatory]
 
-                if (!JSON.MapMandatory("certificateType",
-                                       "certificate type",
-                                       CertificateUseExtensions.Parse,
-                                       out CertificateUse CertificateType,
+                if (!JSON.ParseMandatory("certificateType",
+                                         "certificate type",
+                                         CertificateUse.TryParse,
+                                         out CertificateUse certificateType,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Certificate         [mandatory]
+
+                if (!JSON.ParseMandatory("certificate",
+                                         "certificate",
+                                         Certificate.TryParse,
+                                         out Certificate? certificate,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region CertificateGroup    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("certificateGroup",
+                                       "certificate group",
+                                       OCPPv1_6.CertificateGroup.TryParse,
+                                       out CertificateGroup? certificateGroup,
                                        out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region Certificate        [mandatory]
 
-                if (!JSON.ParseMandatoryText("certificate",
-                                             "certificate",
-                                             out String? certificateText,
-                                             out ErrorResponse))
-                {
-                    return false;
-                }
-
-                if (!OCPPv1_6.Certificate.TryParse(certificateText,
-                                                   out var Certificate,
-                                                   out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Signatures         [optional, OCPP_CSE]
+                #region Signatures          [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -311,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region CustomData         [optional]
+                #region CustomData          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -329,8 +389,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 InstallCertificateRequest = new InstallCertificateRequest(
 
                                                 Destination,
-                                                CertificateType,
-                                                Certificate,
+                                                certificateType,
+                                                certificate,
+                                                certificateGroup,
 
                                                 null,
                                                 null,
@@ -372,23 +433,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomInstallCertificateRequestSerializer">A delegate to serialize custom InstallCertificate requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestSerializer   = null,
+        public JObject ToJSON(Boolean                                                      IncludeJSONLDContext                        = false,
+                              CustomJObjectSerializerDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("certificateType",   CertificateType.AsText()),
-                                 new JProperty("certificate",       Certificate.    ToString()),
+                           IncludeJSONLDContext
+                               ? new JProperty("@context",           DefaultJSONLDContext.  ToString())
+                               : null,
+
+                                 new JProperty("certificateType",    CertificateType.       ToString()),
+
+                           CertificateGroup.HasValue
+                               ? new JProperty("certificateGroup",   CertificateGroup.Value.ToString())
+                               : null,
+
+                                 new JProperty("certificate",        Certificate.           ToString()),
 
                            Signatures.Any()
-                               ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                               CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",         new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.            ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -475,6 +546,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                CertificateType.Equals(InstallCertificateRequest.CertificateType) &&
                Certificate.    Equals(InstallCertificateRequest.Certificate)     &&
 
+            ((!CertificateGroup.HasValue && !InstallCertificateRequest.CertificateGroup.HasValue) ||
+               CertificateGroup.HasValue &&  InstallCertificateRequest.CertificateGroup.HasValue && CertificateGroup.Value.Equals(InstallCertificateRequest.CertificateGroup.Value)) &&
+
                base.    GenericEquals(InstallCertificateRequest);
 
         #endregion
@@ -500,7 +574,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => $"'{CertificateType}': {Certificate.ToString().SubstringMax(40)}";
+            => String.Concat(
+
+                   CertificateGroup.HasValue
+                       ? $"'{CertificateGroup}' of "
+                       : "",
+
+                   $"'{CertificateType}': {Certificate.ToString().SubstringMax(40)}"
+
+               );
 
         #endregion
 

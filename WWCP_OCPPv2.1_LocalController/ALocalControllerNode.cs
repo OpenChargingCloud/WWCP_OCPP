@@ -236,6 +236,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #endregion
 
+        #region Controllers
+
+        #region Generics
+
+        public IEnumerable<T> GetComponentConfigs<T>(String Name)
+            where T : ComponentConfig
+
+            => OCPP.TryGetComponentConfig(Name, out var controllerList)
+                   ? controllerList.Cast<T>().ToList()
+                   : [];
+
+        public IEnumerable<T> GetComponentConfigs<T>(String  Name,
+                                                     String  Instance)
+            where T : ComponentConfig
+
+            => OCPP.GetComponentConfigs<T>(
+                   Name,
+                   Instance
+               );
+
+        #endregion
+
+
+        #region NetworkTimeServerController
+
+        
+
+        #endregion
+
+        #endregion
+
+
         #region Constructor(s)
 
         /// <summary>

@@ -253,11 +253,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region CertificateType    [mandatory]
 
-                if (!JSON.MapMandatory("certificateType",
-                                       "certificate type",
-                                       CertificateUseExtensions.Parse,
-                                       out CertificateUse CertificateType,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("certificateType",
+                                         "certificate type",
+                                         CertificateUse.TryParse,
+                                         out CertificateUse CertificateType,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("certificateType",   CertificateType.AsText()),
+                                 new JProperty("certificateType",   CertificateType.ToString()),
 
                            Signatures.Any()
                                ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => CertificateType.AsText();
+            => CertificateType.ToString();
 
         #endregion
 
