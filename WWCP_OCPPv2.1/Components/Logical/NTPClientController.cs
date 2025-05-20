@@ -120,12 +120,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public URL?                     NTSKEServerURL                      { get; }
 
         /// <summary>
-        /// The optional NTP/NTS server port.
+        /// The optional NTS-KE server port.
         /// </summary>
         public IPPort?                  NTSKEServerPort                     { get; }
 
-        public String?                  RootCAs                             { get; }
+        /// <summary>
+        /// Which rootCA group can be used for NTS-KE and NTP-over-TLS server certificate validation.
+        /// When this configuration is not set, the system default list of NetworkTimeRootCertificate rootCAs
+        /// is used and when this list is empty the system default list of rootCAs is used (not recommended)!
+        /// </summary>
+        public CertificateGroup?        RootCAs                             { get; }
 
+        /// <summary>
+        /// Whether the notBefore and notAfter timestamp checks of NTS and NTP-over-TLS TLS certificates
+        /// can be skipped on the first time sync request per server immediately after a reboot, as the
+        /// device might have started with a wrong internal time, e.g. due to not having an RTC or
+        /// backup battery.
+        /// </summary>
         public Boolean?                 NoCertTimeCheckAfterReboot          { get; }
 
         /// <summary>
@@ -140,8 +151,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public TimeSpan?                MaxRefresh                          { get; }
 
+        /// <summary>
+        /// The optional Authenticated Encryption with Associated Data (AEAD) algorithm used for NTS authentication of NTP messages.
+        /// </summary>
         public AEADAlgorithms?          AEADAlgorithm                       { get; }
 
+        /// <summary>
+        /// Whether NTS responses shall be digital signed.
+        /// </summary>
         public Boolean?                 SignedResponses                     { get; }
 
 
@@ -175,36 +192,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DateTime">Contains the current date and time.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public NTPClientController(String           Id,
-                                   URL              ServerURL,
+        public NTPClientController(String             Id,
+                                   URL                ServerURL,
 
-                                   Boolean?         Enabled                      = null,
-                                   I18NString?      Description                  = null,
-                                   IPPort?          ServerPort                   = null,
-                                   NTPMode?         Mode                         = null,
+                                   Boolean?           Enabled                      = null,
+                                   I18NString?        Description                  = null,
+                                   IPPort?            ServerPort                   = null,
+                                   NTPMode?           Mode                         = null,
 
-                                   TimeSpan?        DelayAsymmetry               = null,
-                                   Double?          DelayVarAsymmetry            = null,
-                                   Byte?            Priority                     = null,
-                                   TimeSpan?        MinInterval                  = null,
-                                   TimeSpan?        MaxInterval                  = null,
-                                   TimeSpan?        Preflight                    = null,
+                                   TimeSpan?          DelayAsymmetry               = null,
+                                   Double?            DelayVarAsymmetry            = null,
+                                   Byte?              Priority                     = null,
+                                   TimeSpan?          MinInterval                  = null,
+                                   TimeSpan?          MaxInterval                  = null,
+                                   TimeSpan?          Preflight                    = null,
 
-                                   URL?             NTSKEServerURL               = null,
-                                   IPPort?          NTSKEServerPort              = null,
-                                   String?          RootCAs                      = null,
-                                   Boolean?         NoCertTimeCheckAfterReboot   = null,
-                                   TimeSpan?        MinRefresh                   = null,
-                                   TimeSpan?        MaxRefresh                   = null,
-                                   AEADAlgorithms?  AEADAlgorithm                = null,
-                                   Boolean?         SignedResponses              = null,
+                                   URL?               NTSKEServerURL               = null,
+                                   IPPort?            NTSKEServerPort              = null,
+                                   CertificateGroup?  RootCAs                      = null,
+                                   Boolean?           NoCertTimeCheckAfterReboot   = null,
+                                   TimeSpan?          MinRefresh                   = null,
+                                   TimeSpan?          MaxRefresh                   = null,
+                                   AEADAlgorithms?    AEADAlgorithm                = null,
+                                   Boolean?           SignedResponses              = null,
 
 
-                                   String?          TimeOffset                         = null,
+                                   String?            TimeOffset                         = null,
 
-                                   DateTime?        DateTime                           = null,
+                                   DateTime?          DateTime                           = null,
 
-                                   CustomData?      CustomData                         = null)
+                                   CustomData?        CustomData                         = null)
 
             : base(nameof(NTPClientController),
                    Id,

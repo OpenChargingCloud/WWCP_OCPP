@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
 
-        public IEnumerable<NTPClientController>  NetworkTimeClients       { get; }
+        public IEnumerable<NTPClientController>  Clients       { get; }
 
         public Boolean?                          AllowJumpsAfterReboot    { get; }
 
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public NTPClientGroupController(String                            Instance,
-                                        IEnumerable<NTPClientController>  NetworkTimeClients,
+                                        IEnumerable<NTPClientController>  Clients,
 
                                         I18NString?                       Description                        = null,
 
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.NetworkTimeClients                = NetworkTimeClients.Distinct();
+            this.Clients                           = Clients.Distinct();
 
             this.TimeOffset                        = TimeOffset;
             this.NextTimeOffsetTransitionDateTime  = NextTimeOffsetTransitionDateTime;

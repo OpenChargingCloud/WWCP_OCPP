@@ -250,6 +250,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                            )
                        );
 
+            var ptb4 = chargingStation1.AddComponentX(
+                           new NTPClientController(
+                               "ptb4",
+                               URL.Parse("udp://ptbtime4.ptb.de"),
+                               Description:   I18NString.Create("ptb 4")
+                           )
+                       );
+
             chargingStation1.AddComponent(
                 new NTPClientGroupController(
                     "legal",
