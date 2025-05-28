@@ -444,7 +444,7 @@
 //            var json = JSONObject.Create(
 
 //                                 new JProperty("status",        Status.           AsText()),
-//                                 new JProperty("currentTime",   CurrentTime.      ToIso8601()),
+//                                 new JProperty("currentTime",   CurrentTime.      ToISO8601()),
 //                                 new JProperty("interval",      (UInt32) Interval.TotalSeconds),
 
 //                           StatusInfo is not null
@@ -598,7 +598,7 @@
 //        public override String ToString()
 
 //            => String.Concat(Status,
-//                             " (", CurrentTime.ToIso8601(), ", ",
+//                             " (", CurrentTime.ToISO8601(), ", ",
 //                                   Interval.TotalSeconds, " sec(s))");
 
 //        #endregion

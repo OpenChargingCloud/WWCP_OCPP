@@ -1672,7 +1672,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
         //                                                     new JProperty("chargeBoxCreated",
         //                                                         ChargeBox.ToJSON()
         //                                                     ),
-        //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
+        //                                                     new JProperty("timestamp", Timestamp.Now.ToISO8601())
         //                                                 ));
 
         //                if (messageTypes.Contains(updateChargeBox_MessageType))
@@ -1681,7 +1681,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
         //                                                     new JProperty("chargeBoxUpdated",
         //                                                         ChargeBox.ToJSON()
         //                                                     ),
-        //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
+        //                                                     new JProperty("timestamp", Timestamp.Now.ToISO8601())
         //                                                 ));
 
         //            }
@@ -1912,7 +1912,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
         //                                                     new JProperty("chargeBoxDeleted",
         //                                                         ChargeBox.ToJSON()
         //                                                     ),
-        //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
+        //                                                     new JProperty("timestamp", Timestamp.Now.ToISO8601())
         //                                                 ));
 
         //            }

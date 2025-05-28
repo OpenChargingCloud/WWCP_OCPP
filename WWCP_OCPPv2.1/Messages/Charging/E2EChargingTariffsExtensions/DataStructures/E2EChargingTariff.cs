@@ -946,7 +946,7 @@
 //                               : null,
 
 //                                 new JProperty("currency",       Currency.        ISOCode),
-//                                 new JProperty("created",        Created.         ToIso8601()),
+//                                 new JProperty("created",        Created.         ToISO8601()),
 
 //                           Replaces.          Any()
 //                               ? new JProperty("replaces",       new JArray(Replaces.      Select(chargingTariffId => chargingTariffId.ToString())))
@@ -991,11 +991,11 @@
 //                               : null,
 
 //                           NotBefore.HasValue
-//                               ? new JProperty("notBefore",      NotBefore. Value.ToIso8601())
+//                               ? new JProperty("notBefore",      NotBefore. Value.ToISO8601())
 //                               : null,
 
 //                           NotAfter.HasValue
-//                               ? new JProperty("notAftere",      NotAfter.  Value.ToIso8601())
+//                               ? new JProperty("notAftere",      NotAfter.  Value.ToISO8601())
 //                               : null,
 
 
@@ -1424,7 +1424,7 @@
 //                   //    ? "energy mix: " + EnergyMix + ", "
 //                   //    : ""
 
-//                 //  "last updated: " + LastUpdated.ToIso8601()
+//                 //  "last updated: " + LastUpdated.ToISO8601()
 
 //               );
 

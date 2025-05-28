@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 //ClassicAssert.AreEqual(VerificationStatus.ValidSignature,       response.Signatures.First().Status);
                 //ClassicAssert.AreEqual("csms001",                               response.Signatures.First().Name);
                 //ClassicAssert.AreEqual("Just a backend test!",                  response.Signatures.First().Description?.FirstText());
-                //ClassicAssert.AreEqual(now2.ToIso8601(),                        response.Signatures.First().Timestamp?.  ToIso8601());
+                //ClassicAssert.AreEqual(now2.ToISO8601(),                        response.Signatures.First().Timestamp?.  ToISO8601());
 
                 //ClassicAssert.AreEqual(1,                                       setSignaturePolicyRequests.Count);
                 //ClassicAssert.AreEqual(chargingStation1.Id,                     setSignaturePolicyRequests.First().NetworkingNodeId);
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 //ClassicAssert.AreEqual(VerificationStatus.ValidSignature,             bootNotificationRequests.First().Signatures.First().Status);
                 //ClassicAssert.AreEqual("cs001",                                 bootNotificationRequests.First().Signatures.First().Name);
                 //ClassicAssert.AreEqual("Just a charging station test!",         bootNotificationRequests.First().Signatures.First().Description?.FirstText());
-                //ClassicAssert.AreEqual(now1.ToIso8601(),                        bootNotificationRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                //ClassicAssert.AreEqual(now1.ToISO8601(),                        bootNotificationRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
             }
 
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,   resetRequests.First().Signatures.First().Status);
                 //ClassicAssert.AreEqual("ahzf",                        resetRequests.First().Signatures.First().Name);
                 //ClassicAssert.AreEqual("Just a test!",                resetRequests.First().Signatures.First().Description?.FirstText());
-                //ClassicAssert.AreEqual(now.ToIso8601(),               resetRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                //ClassicAssert.AreEqual(now.ToISO8601(),               resetRequests.First().Signatures.First().Timestamp?.  ToISO8601());
 
             }
 
