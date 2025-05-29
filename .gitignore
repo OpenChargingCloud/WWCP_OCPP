@@ -113,12 +113,36 @@ UpgradeLog*.XML
 
 *.userprefs
 
-#*.js
-#*.js.map
-
 # ------------------------------------------------------------------------
 
-#WWCP_OCPI_Common_WebAPI/HTTPRoot/css/*.css
-#WWCP_OCPI_Common_WebAPI/HTTPRoot/css/*.min.css
+*.js
+*.js.map
 
+WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
 

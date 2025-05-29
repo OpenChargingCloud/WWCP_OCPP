@@ -12,8 +12,6 @@
     <None Remove="HTTPAPI\QRCodeAPI\HTTPRoot\LICENSE.txt" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
@@ -31,8 +29,6 @@
     <EmbeddedResource Include="HTTPAPI\QRCodeAPI\HTTPRoot\LICENSE.txt" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
