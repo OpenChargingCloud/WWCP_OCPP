@@ -112,3 +112,13 @@ Backup*/
 UpgradeLog*.XML
 
 *.userprefs
+
+#*.js
+#*.js.map
+
+# ------------------------------------------------------------------------
+
+#WWCP_OCPI_Common_WebAPI/HTTPRoot/css/*.css
+#WWCP_OCPI_Common_WebAPI/HTTPRoot/css/*.min.css
+
+
