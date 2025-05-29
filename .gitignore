@@ -121,56 +121,67 @@ UpgradeLog*.XML
 WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 
 WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
 WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/css/events
-!WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/js/
+!WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/js/*.js
+!WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 

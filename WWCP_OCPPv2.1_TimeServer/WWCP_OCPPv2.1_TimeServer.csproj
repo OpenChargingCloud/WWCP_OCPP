@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>WWCP_OCPPv2._1_TimeServer</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\template.html" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HTTPAPI\WebAPI\HTTPRoot\css\" />
+  </ItemGroup>
+
+</Project>
