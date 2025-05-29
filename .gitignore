@@ -118,31 +118,31 @@ UpgradeLog*.XML
 *.js
 *.js.map
 
+WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_CommissioningService/HTTPAPI/WebAPI/HTTPRoot/css/events
+
 WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_CSMS/HTTPAPI/WebAPI/HTTPRoot/css/events
 
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_EnergyMeter/HTTPAPI/WebAPI/HTTPRoot/css/events
 
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_Gateway/HTTPAPI/WebAPI/HTTPRoot/css/events
 
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
-
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
-
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
-
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
-WWCP_OCPPv2.1_ChargingStation/HTTPAPI/WebAPI/HTTPRoot/css/events
+WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/events
 
