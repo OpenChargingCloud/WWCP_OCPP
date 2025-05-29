@@ -169,3 +169,8 @@ WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/events
 !WWCP_OCPPv2.1_LocalController/HTTPAPI/WebAPI/HTTPRoot/js/
 
+WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/css/events
+!WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/js/
+
