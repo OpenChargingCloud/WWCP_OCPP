@@ -13,7 +13,6 @@
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.html" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
   </ItemGroup>
