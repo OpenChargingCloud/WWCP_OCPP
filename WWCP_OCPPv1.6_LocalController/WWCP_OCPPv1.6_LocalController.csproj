@@ -9,14 +9,8 @@
 
   <ItemGroup>
     <None Remove="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
-    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.js.map" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
     <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
@@ -27,14 +21,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="HTTPAPI\DownloadAPI\HTTPRoot\LICENSE.txt" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.css" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\events\events.min.css" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.css" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\css\template.min.css" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.js" />
-    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.js.map" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
     <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
@@ -48,6 +36,10 @@
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv1.6\WWCP_OCPPv1.6.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HTTPAPI\WebAPI\HTTPRoot\css\" />
   </ItemGroup>
 
 </Project>

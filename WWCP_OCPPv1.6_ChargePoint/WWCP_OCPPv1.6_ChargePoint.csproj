@@ -8,39 +8,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="HTTPRoot\css\events\events.css" />
-    <None Remove="HTTPRoot\css\events\events.min.css" />
-    <None Remove="HTTPRoot\css\template.css" />
-    <None Remove="HTTPRoot\css\template.min.css" />
-    <None Remove="HTTPRoot\defaults\defaults.scss" />
-    <None Remove="HTTPRoot\defaults\defaults.ts" />
-    <None Remove="HTTPRoot\defaults\_defaults.scss" />
-    <None Remove="HTTPRoot\events\events.js" />
-    <None Remove="HTTPRoot\events\events.js.map" />
-    <None Remove="HTTPRoot\events\events.scss" />
-    <None Remove="HTTPRoot\events\events.ts" />
-    <None Remove="HTTPRoot\events\index.shtml" />
-    <None Remove="HTTPRoot\js\date.format.js" />
-    <None Remove="HTTPRoot\template.html" />
-    <None Remove="HTTPRoot\template.scss" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.html" />
+    <None Remove="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="HTTPRoot\css\events\events.css" />
-    <EmbeddedResource Include="HTTPRoot\css\events\events.min.css" />
-    <EmbeddedResource Include="HTTPRoot\css\template.css" />
-    <EmbeddedResource Include="HTTPRoot\css\template.min.css" />
-    <EmbeddedResource Include="HTTPRoot\defaults\defaults.scss" />
-    <EmbeddedResource Include="HTTPRoot\defaults\defaults.ts" />
-    <EmbeddedResource Include="HTTPRoot\defaults\_defaults.scss" />
-    <EmbeddedResource Include="HTTPRoot\events\events.js" />
-    <EmbeddedResource Include="HTTPRoot\events\events.js.map" />
-    <EmbeddedResource Include="HTTPRoot\events\events.scss" />
-    <EmbeddedResource Include="HTTPRoot\events\events.ts" />
-    <EmbeddedResource Include="HTTPRoot\events\index.shtml" />
-    <EmbeddedResource Include="HTTPRoot\js\date.format.js" />
-    <EmbeddedResource Include="HTTPRoot\template.html" />
-    <EmbeddedResource Include="HTTPRoot\template.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\defaults\_defaults.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\events.ts" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\events\index.shtml" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\js\date.format.js" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\template.html" />
+    <EmbeddedResource Include="HTTPAPI\WebAPI\HTTPRoot\template.scss" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +34,10 @@
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv1.6\WWCP_OCPPv1.6.csproj" />
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HTTPAPI\WebAPI\HTTPRoot\css\" />
   </ItemGroup>
 
 </Project>

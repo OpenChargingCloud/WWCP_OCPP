@@ -118,9 +118,9 @@ UpgradeLog*.XML
 *.js
 *.js.map
 
-WWCP_OCPPv1.6_CentralService/HTTPAPI/WebAPI/HTTPRoot/css/*.css
-WWCP_OCPPv1.6_CentralService/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
-WWCP_OCPPv1.6_CentralService/HTTPAPI/WebAPI/HTTPRoot/css/events
+WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv1.6_CentralSystem/HTTPAPI/WebAPI/HTTPRoot/css/events
 
 WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
