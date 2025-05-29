@@ -118,6 +118,19 @@ UpgradeLog*.XML
 *.js
 *.js.map
 
+WWCP_OCPPv1.6_CentralService/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv1.6_CentralService/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv1.6_CentralService/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv1.6_ChargePoint/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.css
+WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
+WWCP_OCPPv1.6_LocalController/HTTPAPI/WebAPI/HTTPRoot/css/events
+
+
 WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/*.css
 WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/*.min.css
 WWCP_OCPPv2.1_BatterySwapStation/HTTPAPI/WebAPI/HTTPRoot/css/events
