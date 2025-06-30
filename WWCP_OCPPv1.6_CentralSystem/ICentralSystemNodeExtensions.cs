@@ -1804,6 +1804,199 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+
+        // DiagnosticControlExtensions
+
+        #region SwipeRFIDCard        (Destination, ConnectorId, Timeout, ...)
+
+        /// <summary>
+        /// Swipe an RFID card on the given connector to start an authorization and maybe a charging session.
+        /// </summary>
+        /// <param name="CentralSystem">The central system.</param>
+        /// <param name="Destination">The networking node identification.</param>
+        /// <param name="ConnectorId">A connector identification.</param>
+        /// <param name="Timeout">A timeout for the web payment process.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<SwipeRFIDCardResponse>
+
+            SwipeRFIDCard(this ICentralSystemNode  CentralSystem,
+                          SourceRouting            Destination,
+                          IdToken                  IdTag,
+                          Connector_Id?            ReaderId              = null,
+                          IdTagSimulationMode?     SimulationMode        = null,
+                          TimeSpan?                ProcessingDelay       = null,
+
+                          IEnumerable<KeyPair>?    SignKeys              = null,
+                          IEnumerable<SignInfo>?   SignInfos             = null,
+                          IEnumerable<Signature>?  Signatures            = null,
+
+                          Request_Id?              RequestId             = null,
+                          DateTime?                RequestTimestamp      = null,
+                          TimeSpan?                RequestTimeout        = null,
+                          EventTracking_Id?        EventTrackingId       = null,
+                          SerializationFormats?    SerializationFormat   = null,
+                          CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.SwipeRFIDCard(
+                       new SwipeRFIDCardRequest(
+                           Destination,
+                           IdTag,
+                           ReaderId,
+                           SimulationMode,
+                           ProcessingDelay,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+
+
+        // VendorExtensions
+
+        #region NotifyWebPaymentStarted        (Destination, ConnectorId, Timeout, ...)
+
+        /// <summary>
+        /// Notify the charge point that a web payment has started on the given connector.
+        /// </summary>
+        /// <param name="CentralSystem">The central system.</param>
+        /// <param name="Destination">The networking node identification.</param>
+        /// <param name="ConnectorId">A connector identification.</param>
+        /// <param name="Timeout">A timeout for the web payment process.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<DataTransferResponse>
+
+            NotifyWebPaymentStarted(this ICentralSystemNode  CentralSystem,
+                                    SourceRouting            Destination,
+                                    Connector_Id             ConnectorId,
+                                    TimeSpan                 Timeout,
+
+                                    IEnumerable<KeyPair>?    SignKeys              = null,
+                                    IEnumerable<SignInfo>?   SignInfos             = null,
+                                    IEnumerable<Signature>?  Signatures            = null,
+
+                                    Request_Id?              RequestId             = null,
+                                    DateTime?                RequestTimestamp      = null,
+                                    TimeSpan?                RequestTimeout        = null,
+                                    EventTracking_Id?        EventTrackingId       = null,
+                                    SerializationFormats?    SerializationFormat   = null,
+                                    CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.DataTransfer(
+                       new NotifyWebPaymentStartedRequest(
+                           Destination,
+                           ConnectorId,
+                           Timeout,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region NotifyWebPaymentFailed        (Destination, ConnectorId, ErrorMessage, ...)
+
+        /// <summary>
+        /// Notify the charge point that a web payment was cancelled or failed on the given connector.
+        /// </summary>
+        /// <param name="CentralSystem">The central system.</param>
+        /// <param name="Destination">The networking node identification.</param>
+        /// <param name="ConnectorId">A connector identification.</param>
+        /// <param name="ErrorMessage">An optional error message.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<DataTransferResponse>
+
+            NotifyWebPaymentFailed(this ICentralSystemNode  CentralSystem,
+                                   SourceRouting            Destination,
+                                   Connector_Id             ConnectorId,
+                                   I18NString               ErrorMessage,
+
+                                   IEnumerable<KeyPair>?    SignKeys              = null,
+                                   IEnumerable<SignInfo>?   SignInfos             = null,
+                                   IEnumerable<Signature>?  Signatures            = null,
+
+                                   Request_Id?              RequestId             = null,
+                                   DateTime?                RequestTimestamp      = null,
+                                   TimeSpan?                RequestTimeout        = null,
+                                   EventTracking_Id?        EventTrackingId       = null,
+                                   SerializationFormats?    SerializationFormat   = null,
+                                   CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.DataTransfer(
+                       new NotifyWebPaymentFailedRequest(
+                           Destination,
+                           ConnectorId,
+                           ErrorMessage,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+
+
     }
 
 }

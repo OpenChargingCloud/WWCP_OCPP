@@ -86,6 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
             ClassicAssert.IsNotNull(testBackendWebSockets01);
 
             testCentralSystem01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
+            testCentralSystem01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("GD001"),  "1234abcd");
 
         }
 

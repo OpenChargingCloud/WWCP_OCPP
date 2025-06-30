@@ -230,7 +230,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
             if (testBackendWebSockets01 is not null)
             {
 
-                var response1 = chargePoint1.ConnectOCPPWebSocketClient(URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargePoint1.Id)).Result;
+                var response1 = chargePoint1.ConnectOCPPWebSocketClient(
+                                    URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargePoint1.Id),
+                                    HTTPAuthentication:  HTTPBasicAuthentication.Create(chargePoint1.Id.ToString(), "1234abcd")
+                                ).Result;
 
                 ClassicAssert.IsNotNull(response1);
 
@@ -247,9 +250,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     // Sec-WebSocket-Version:   13
 
                     ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,  response1.HTTPStatusCode);
-                    ClassicAssert.AreEqual("Upgrade",                          response1.Connection);
+                    ClassicAssert.AreEqual("upgrade",                          response1.Connection?.ToString().ToLower());
                     ClassicAssert.AreEqual("websocket",                        response1.Upgrade);
-                    ClassicAssert.AreEqual("ocpp1.6",                          response1.SecWebSocketProtocol.First());
+                    ClassicAssert.AreEqual("ocpp1.6",                          response1.SecWebSocketProtocol);
 
                 }
 

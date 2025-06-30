@@ -15,4 +15,8 @@
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="OCPPAdapter\Forwarding\VendorExtensions\DiagnosticControlExtensions\" />
+  </ItemGroup>
+
 </Project>

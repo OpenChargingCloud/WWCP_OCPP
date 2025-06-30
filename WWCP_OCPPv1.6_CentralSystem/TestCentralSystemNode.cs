@@ -621,6 +621,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 // IdTag
 
+                return new BootNotificationResponse(
+                    Request:             request,
+                    Status:              RegistrationStatus.Accepted,
+                    CurrentTime:         Timestamp.Now,
+                    HeartbeatInterval:   TimeSpan.FromSeconds(30),
+                    CustomData:          null
+                );
+
                 if (request.ChargeBoxSerialNumber.IsNullOrEmpty() ||
                     !ChargeBox_Id.TryParse(request.ChargeBoxSerialNumber, out var chargeBoxSerialNumber))
                 {

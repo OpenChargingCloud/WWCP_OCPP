@@ -1181,7 +1181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
             => Id.GetHashCode();
@@ -2052,7 +2052,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #region (override) GetHashCode()
 
             /// <summary>
-            /// Get the hashcode of this object.
+            /// Get the hash code of this object.
             /// </summary>
             public override Int32 GetHashCode()
                 => Id.GetHashCode();

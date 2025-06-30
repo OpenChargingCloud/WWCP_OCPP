@@ -509,6 +509,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         //public CustomJObjectSerializerDelegate<NotifyNetworkTopologyResponse>?                       CustomNotifyNetworkTopologyResponseSerializer                { get; set; }
 
 
+        // DiagnosticControlExtensions
+        public CustomJObjectSerializerDelegate<SwipeRFIDCardRequest>?                                CustomSwipeRFIDCardRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<SwipeRFIDCardResponse>?                               CustomSwipeRFIDCardResponseSerializer                        { get; set; }
+
+
+
         #region Data Structures
 
         //public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
@@ -901,6 +907,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         //public CustomJObjectParserDelegate<UpdateSignaturePolicyResponse>?                             CustomUpdateSignaturePolicyResponseParser                { get; set; }
         //public CustomJObjectParserDelegate<UpdateUserRoleRequest>?                                     CustomUpdateUserRoleRequestParser                        { get; set; }
         //public CustomJObjectParserDelegate<UpdateUserRoleResponse>?                                    CustomUpdateUserRoleResponseParser                       { get; set; }
+
+
+        // DiagnosticControlExtensions
+        public CustomJObjectParserDelegate<SwipeRFIDCardRequest>?                                      CustomSwipeRFIDCardRequestParser                         { get; set; }
+        public CustomJObjectParserDelegate<SwipeRFIDCardResponse>?                                     CustomSwipeRFIDCardResponseParser                        { get; set; }
 
 
         //public CustomJObjectParserDelegate<ChargingStation>?                                           CustomChargingStationParser                              { get; set; }

@@ -45,11 +45,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnTriggerMessageRequestReceivedDelegate(DateTime                  Timestamp,
-                                                                   IEventSender              Sender,
-                                                                   IWebSocketConnection      Connection,
-                                                                   TriggerMessageRequest   Request,
-                                                                   CancellationToken         CancellationToken);
+    public delegate Task OnTriggerMessageRequestReceivedDelegate(DateTime                Timestamp,
+                                                                 IEventSender            Sender,
+                                                                 IWebSocketConnection    Connection,
+                                                                 TriggerMessageRequest   Request,
+                                                                 CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -62,13 +62,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnTriggerMessageResponseReceivedDelegate(DateTime                   Timestamp,
-                                                                    IEventSender               Sender,
-                                                                    IWebSocketConnection?      Connection,
-                                                                    TriggerMessageRequest?   Request,
-                                                                    TriggerMessageResponse   Response,
-                                                                    TimeSpan?                  Runtime,
-                                                                    CancellationToken          CancellationToken);
+    public delegate Task OnTriggerMessageResponseReceivedDelegate(DateTime                 Timestamp,
+                                                                  IEventSender             Sender,
+                                                                  IWebSocketConnection?    Connection,
+                                                                  TriggerMessageRequest?   Request,
+                                                                  TriggerMessageResponse   Response,
+                                                                  TimeSpan?                Runtime,
+                                                                  CancellationToken        CancellationToken);
 
 
     /// <summary>
@@ -82,12 +82,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnTriggerMessageRequestErrorReceivedDelegate(DateTime                       Timestamp,
-                                                                        IEventSender                   Sender,
-                                                                        IWebSocketConnection           Connection,
-                                                                        TriggerMessageRequest?       Request,
-                                                                        OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                                        TimeSpan?                      Runtime,
-                                                                        CancellationToken              CancellationToken);
+                                                                      IEventSender                   Sender,
+                                                                      IWebSocketConnection           Connection,
+                                                                      TriggerMessageRequest?         Request,
+                                                                      OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                                      TimeSpan?                      Runtime,
+                                                                      CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -102,13 +102,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnTriggerMessageResponseErrorReceivedDelegate(DateTime                        Timestamp,
-                                                                         IEventSender                    Sender,
-                                                                         IWebSocketConnection            Connection,
-                                                                         TriggerMessageRequest?        Request,
-                                                                         TriggerMessageResponse?       Response,
-                                                                         OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                                         TimeSpan?                       Runtime,
-                                                                         CancellationToken               CancellationToken);
+                                                                       IEventSender                    Sender,
+                                                                       IWebSocketConnection            Connection,
+                                                                       TriggerMessageRequest?          Request,
+                                                                       TriggerMessageResponse?         Response,
+                                                                       OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                                       TimeSpan?                       Runtime,
+                                                                       CancellationToken               CancellationToken);
 
     #endregion
 
@@ -124,11 +124,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<TriggerMessageResponse>
 
-        OnTriggerMessageDelegate(DateTime                  Timestamp,
-                                   IEventSender              Sender,
-                                   IWebSocketConnection      Connection,
-                                   TriggerMessageRequest   Request,
-                                   CancellationToken         CancellationToken);
+        OnTriggerMessageDelegate(DateTime                Timestamp,
+                                 IEventSender            Sender,
+                                 IWebSocketConnection    Connection,
+                                 TriggerMessageRequest   Request,
+                                 CancellationToken       CancellationToken);
 
 
     public partial class OCPPWebSocketAdapterIN
@@ -152,13 +152,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_TriggerMessage(DateTime              RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting     Destination,
-                                     NetworkPath           NetworkPath,
-                                     EventTracking_Id      EventTrackingId,
-                                     Request_Id            RequestId,
-                                     JObject               JSONRequest,
-                                     CancellationToken     CancellationToken)
+                                   IWebSocketConnection  WebSocketConnection,
+                                   SourceRouting         Destination,
+                                   NetworkPath           NetworkPath,
+                                   EventTracking_Id      EventTrackingId,
+                                   Request_Id            RequestId,
+                                   JObject               JSONRequest,
+                                   CancellationToken     CancellationToken)
 
         {
 
@@ -168,15 +168,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (TriggerMessageRequest.TryParse(JSONRequest,
-                                                     RequestId,
-                                                 Destination,
-                                                     NetworkPath,
-                                                     out var request,
-                                                     out var errorResponse,
-                                                     RequestTimestamp,
-                                                     parentNetworkingNode.OCPP.DefaultRequestTimeout,
-                                                     EventTrackingId,
-                                                     parentNetworkingNode.OCPP.CustomTriggerMessageRequestParser)) {
+                                                   RequestId,
+                                                   Destination,
+                                                   NetworkPath,
+                                                   out var request,
+                                                   out var errorResponse,
+                                                   RequestTimestamp,
+                                                   parentNetworkingNode.OCPP.DefaultRequestTimeout,
+                                                   EventTrackingId,
+                                                   parentNetworkingNode.OCPP.CustomTriggerMessageRequestParser)) {
 
                     TriggerMessageResponse? response = null;
 
@@ -304,13 +304,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_TriggerMessage(DateTime              RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
-                                     SourceRouting         Destination,
-                                     NetworkPath           NetworkPath,
-                                     EventTracking_Id      EventTrackingId,
-                                     Request_Id            RequestId,
-                                     Byte[]                BinaryRequest,
-                                     CancellationToken     CancellationToken)
+                                   IWebSocketConnection  WebSocketConnection,
+                                   SourceRouting         Destination,
+                                   NetworkPath           NetworkPath,
+                                   EventTracking_Id      EventTrackingId,
+                                   Request_Id            RequestId,
+                                   Byte[]                BinaryRequest,
+                                   CancellationToken     CancellationToken)
 
         {
 
@@ -471,14 +471,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<TriggerMessageResponse>
 
             Receive_TriggerMessageResponse(TriggerMessageRequest  Request,
-                                             JObject                  ResponseJSON,
-                                             IWebSocketConnection     WebSocketConnection,
-                                             SourceRouting            Destination,
-                                             NetworkPath              NetworkPath,
-                                             EventTracking_Id         EventTrackingId,
-                                             Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
-                                             CancellationToken        CancellationToken   = default)
+                                           JObject                ResponseJSON,
+                                           IWebSocketConnection   WebSocketConnection,
+                                           SourceRouting          Destination,
+                                           NetworkPath            NetworkPath,
+                                           EventTracking_Id       EventTrackingId,
+                                           Request_Id             RequestId,
+                                           DateTime?              ResponseTimestamp   = null,
+                                           CancellationToken      CancellationToken   = default)
 
         {
 
@@ -488,15 +488,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (TriggerMessageResponse.TryParse(Request,
-                                                      ResponseJSON,
-                                                      Destination,
-                                                      NetworkPath,
-                                                      out response,
-                                                      out var errorResponse,
-                                                      ResponseTimestamp,
-                                                      parentNetworkingNode.OCPP.CustomTriggerMessageResponseParser,
-                                                      parentNetworkingNode.OCPP.CustomSignatureParser,
-                                                      parentNetworkingNode.OCPP.CustomCustomDataParser)) {
+                                                    ResponseJSON,
+                                                    Destination,
+                                                    NetworkPath,
+                                                    out response,
+                                                    out var errorResponse,
+                                                    ResponseTimestamp,
+                                                    parentNetworkingNode.OCPP.CustomTriggerMessageResponseParser,
+                                                    parentNetworkingNode.OCPP.CustomSignatureParser,
+                                                    parentNetworkingNode.OCPP.CustomCustomDataParser)) {
 
                     #region Verify response signature(s)
 
@@ -568,14 +568,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<TriggerMessageResponse>
 
             Receive_TriggerMessageResponse(TriggerMessageRequest  Request,
-                                             Byte[]                   ResponseBinary,
-                                             IWebSocketConnection     WebSocketConnection,
-                                             SourceRouting            Destination,
-                                             NetworkPath              NetworkPath,
-                                             EventTracking_Id         EventTrackingId,
-                                             Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
-                                             CancellationToken        CancellationToken   = default)
+                                           Byte[]                 ResponseBinary,
+                                           IWebSocketConnection   WebSocketConnection,
+                                           SourceRouting          Destination,
+                                           NetworkPath            NetworkPath,
+                                           EventTracking_Id       EventTrackingId,
+                                           Request_Id             RequestId,
+                                           DateTime?              ResponseTimestamp   = null,
+                                           CancellationToken      CancellationToken   = default)
 
         {
 
@@ -677,15 +677,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<TriggerMessageResponse>
 
-            Receive_TriggerMessageRequestError(TriggerMessageRequest       Request,
-                                                 OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection          Connection,
-                                                 SourceRouting             Destination,
-                                                 NetworkPath                   NetworkPath,
-                                                 EventTracking_Id              EventTrackingId,
-                                                 Request_Id                    RequestId,
-                                                 DateTime?                     ResponseTimestamp   = null,
-                                                 CancellationToken             CancellationToken   = default)
+            Receive_TriggerMessageRequestError(TriggerMessageRequest         Request,
+                                               OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                               IWebSocketConnection          Connection,
+                                               SourceRouting                 Destination,
+                                               NetworkPath                   NetworkPath,
+                                               EventTracking_Id              EventTrackingId,
+                                               Request_Id                    RequestId,
+                                               DateTime?                     ResponseTimestamp   = null,
+                                               CancellationToken             CancellationToken   = default)
         {
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
@@ -756,15 +756,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<TriggerMessageResponse>
 
-            Receive_TriggerMessageRequestError(TriggerMessageRequest         Request,
-                                                 OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection            Connection,
-                                                 SourceRouting                   Destination,
-                                                 NetworkPath                     NetworkPath,
-                                                 EventTracking_Id                EventTrackingId,
-                                                 Request_Id                      RequestId,
-                                                 DateTime?                       ResponseTimestamp   = null,
-                                                 CancellationToken               CancellationToken   = default)
+            Receive_TriggerMessageRequestError(TriggerMessageRequest           Request,
+                                               OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
+                                               IWebSocketConnection            Connection,
+                                               SourceRouting                   Destination,
+                                               NetworkPath                     NetworkPath,
+                                               EventTracking_Id                EventTrackingId,
+                                               Request_Id                      RequestId,
+                                               DateTime?                       ResponseTimestamp   = null,
+                                               CancellationToken               CancellationToken   = default)
         {
 
             //parentNetworkingNode.OCPP.SignaturePolicy.VerifyResponseMessage(
@@ -844,16 +844,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task
 
-            Receive_TriggerMessageResponseError(TriggerMessageRequest?       Request,
-                                                  TriggerMessageResponse?      Response,
-                                                  OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                  IWebSocketConnection           Connection,
-                                                  SourceRouting                  Destination,
-                                                  NetworkPath                    NetworkPath,
-                                                  EventTracking_Id               EventTrackingId,
-                                                  Request_Id                     RequestId,
-                                                  DateTime?                      ResponseTimestamp   = null,
-                                                  CancellationToken              CancellationToken   = default)
+            Receive_TriggerMessageResponseError(TriggerMessageRequest?         Request,
+                                                TriggerMessageResponse?        Response,
+                                                OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                IWebSocketConnection           Connection,
+                                                SourceRouting                  Destination,
+                                                NetworkPath                    NetworkPath,
+                                                EventTracking_Id               EventTrackingId,
+                                                Request_Id                     RequestId,
+                                                DateTime?                      ResponseTimestamp   = null,
+                                                CancellationToken              CancellationToken   = default)
 
         {
 

@@ -545,7 +545,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.ParseMandatoryText("chargePointVendor",
                                              "charge point vendor",
-                                             out String ChargePointVendor,
+                                             out String? ChargePointVendor,
                                              out ErrorResponse))
                 {
                     return false;
@@ -557,7 +557,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.ParseMandatoryText("chargePointModel",
                                              "charge point model",
-                                             out String ChargePointModel,
+                                             out String? ChargePointModel,
                                              out ErrorResponse))
                 {
                     return false;

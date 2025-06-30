@@ -73,6 +73,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (ReasonCode.IsNullOrEmpty())
                  throw new ArgumentNullException(nameof(ReasonCode), "The given reason code must not be null or empty!");
 
+            unchecked
+            {
+
+                hashCode =  this.ReasonCode.     GetHashCode()       * 5 ^
+                           (this.AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
+                            base.                GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -371,20 +380,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return (ReasonCode?.    GetHashCode() ?? 0) * 5 ^
-                       (AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
-                        base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -439,6 +441,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             this.Status = Status;
+
+            unchecked
+            {
+
+                hashCode =  this.Status.         GetHashCode()       * 7 ^
+                           (this.ReasonCode?.    GetHashCode() ?? 0) * 5 ^
+                           (this.AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
+                            base.                GetHashCode();
+
+            }
 
         }
 
@@ -740,21 +752,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.         GetHashCode()       * 7 ^
-                      (ReasonCode?.    GetHashCode() ?? 0) * 5 ^
-                      (AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

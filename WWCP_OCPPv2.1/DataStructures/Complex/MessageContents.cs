@@ -668,7 +668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GenerateHashCode()
 
         /// <summary>
-        /// Generate the hashcode of this object.
+        /// Generate the hash code of this object.
         /// </summary>
         public void GenerateHashCode()
         {

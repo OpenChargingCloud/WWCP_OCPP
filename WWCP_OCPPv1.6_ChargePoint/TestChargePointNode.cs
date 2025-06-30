@@ -34,6 +34,7 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.OCPP;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -720,6 +721,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.Configuration.TryAdd("doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false));
             this.Configuration.TryAdd("password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false));
 
+            WireEvents();
+
         }
 
         #endregion
@@ -826,8 +829,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region WireEvents(CPServer)
 
-        //public void WireEvents(ICPIncomingMessages CPServer)
-        //{
+        public void WireEvents()//ICPIncomingMessages CPServer)
+        {
 
         //    #region OnReset
 
@@ -1172,211 +1175,213 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //    #endregion
 
-        //    #region OnIncomingDataTransfer
+            #region OnIncomingDataTransfer
 
-        //    CPServer.OnIncomingDataTransfer += async (LogTimestamp,
-        //                                              Sender,
-        //                                              connection,
-        //                                              request,
-        //                                              cancellationToken) => {
+            OCPP.IN.OnDataTransfer += async (LogTimestamp,
+                                             Sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
 
-        //        #region Send OnDataTransferRequest event
+                #region Send OnDataTransferRequest event
 
-        //        var startTime = Timestamp.Now;
+                //var startTime = Timestamp.Now;
 
-        //        var onIncomingDataTransferRequest = OnIncomingDataTransferRequest;
-        //        if (onIncomingDataTransferRequest is not null)
-        //        {
-        //            try
-        //            {
+                //var onIncomingDataTransferRequest = OnIncomingDataTransferRequest;
+                //if (onIncomingDataTransferRequest is not null)
+                //{
+                //    try
+                //    {
 
-        //                await Task.WhenAll(onIncomingDataTransferRequest.GetInvocationList().
-        //                                       OfType <OnIncomingDataTransferRequestDelegate>().
-        //                                       Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-        //                                                                                         this,
-        //                                                                                         connection,
-        //                                                                                         request)).
-        //                                       ToArray());
+                //        await Task.WhenAll(onIncomingDataTransferRequest.GetInvocationList().
+                //                               OfType <OnIncomingDataTransferRequestDelegate>().
+                //                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                //                                                                                 this,
+                //                                                                                 connection,
+                //                                                                                 request)).
+                //                               ToArray());
 
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                await HandleErrors(
-        //                          nameof(TestChargePoint),
-        //                          nameof(OnIncomingDataTransferRequest),
-        //                          e
-        //                      );
-        //            }
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        await HandleErrors(
+                //                  nameof(TestChargePoint),
+                //                  nameof(OnIncomingDataTransferRequest),
+                //                  e
+                //              );
+                //    }
 
-        //        }
+                //}
 
-        //        #endregion
-
-
-        //        #region Check charging station identification
-
-        //        DataTransferResponse? response = null;
-
-        //        if (request.DestinationId != Id)
-        //        {
-        //            response = new DataTransferResponse(
-        //                           Request:  request,
-        //                           Result:   Result.GenericError(
-        //                                         $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.DestinationId}'!"
-        //                                     )
-        //                       );
-        //        }
-
-        //        #endregion
-
-        //        #region Check request signature(s)
-
-        //        else
-        //        {
-
-        //            if (!SignaturePolicy.VerifyRequestMessage(
-        //                     request,
-        //                     request.ToJSON(
-        //                         CustomIncomingDataTransferRequestSerializer,
-        //                         CustomSignatureSerializer,
-        //                         CustomCustomDataSerializer
-        //                     ),
-        //                     out var errorResponse
-        //                 ))
-        //            {
-
-        //                response = new DataTransferResponse(
-        //                               Request:  request,
-        //                               Result:   Result.SignatureError(
-        //                                             $"Invalid signature: {errorResponse}"
-        //                                         )
-        //                           );
-
-        //            }
-
-        //        #endregion
-
-        //            else
-        //            {
-
-        //                DebugX.Log($"Charging Station '{Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
-
-        //                // VendorId
-        //                // MessageId
-        //                // Data
-
-        //                var responseData = request.Data;
-
-        //                if (request.Data is not null)
-        //                {
-
-        //                    if      (request.Data.Type == JTokenType.String)
-        //                        responseData = request.Data.ToString().Reverse();
-
-        //                    else if (request.Data.Type == JTokenType.Object) {
-
-        //                        var responseObject = new JObject();
-
-        //                        foreach (var property in (request.Data as JObject)!)
-        //                        {
-        //                            if (property.Value?.Type == JTokenType.String)
-        //                                responseObject.Add(property.Key,
-        //                                                   property.Value.ToString().Reverse());
-        //                        }
-
-        //                        responseData = responseObject;
-
-        //                    }
-
-        //                    else if (request.Data.Type == JTokenType.Array) {
-
-        //                        var responseArray = new JArray();
-
-        //                        foreach (var element in (request.Data as JArray)!)
-        //                        {
-        //                            if (element?.Type == JTokenType.String)
-        //                                responseArray.Add(element.ToString().Reverse());
-        //                        }
-
-        //                        responseData = responseArray;
-
-        //                    }
-
-        //                }
-
-        //                if (request.VendorId == Vendor_Id.GraphDefined)
-        //                {
-        //                    response = new DataTransferResponse(
-        //                                   request,
-        //                                   DataTransferStatus.Accepted,
-        //                                   responseData
-        //                               );
-        //                }
-        //                else
-        //                    response = new DataTransferResponse(
-        //                                   request,
-        //                                   DataTransferStatus.Rejected
-        //                               );
-
-        //            }
-
-        //        }
-
-        //        #region Sign response message
-
-        //        SignaturePolicy.SignResponseMessage(
-        //            response,
-        //            response.ToJSON(
-        //                CustomIncomingDataTransferResponseSerializer,
-        //                null, //CustomStatusInfoSerializer,
-        //                CustomSignatureSerializer,
-        //                CustomCustomDataSerializer
-        //            ),
-        //            out var errorResponse2);
-
-        //        #endregion
+                #endregion
 
 
-        //        #region Send OnDataTransferResponse event
+                #region Check charging station identification
 
-        //        var responseLogger = OnIncomingDataTransferResponse;
-        //        if (responseLogger is not null)
-        //        {
+                DataTransferResponse? response = null;
 
-        //            var responseTime         = Timestamp.Now;
+                if (request.DestinationId != Id)
+                {
+                    response = new DataTransferResponse(
+                                   Request:  request,
+                                   Status:   DataTransferStatus.Rejected,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.DestinationId}'!"
+                                             )
+                               );
+                }
 
-        //            var responseLoggerTasks  = responseLogger.GetInvocationList().
-        //                                                      OfType <OnIncomingDataTransferResponseDelegate>().
-        //                                                      Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
-        //                                                                                                        this,
-        //                                                                                                        connection,
-        //                                                                                                        request,
-        //                                                                                                        response,
-        //                                                                                                        responseTime - startTime)).
-        //                                                      ToArray();
+                #endregion
 
-        //            try
-        //            {
-        //                await Task.WhenAll(responseLoggerTasks);
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                await HandleErrors(
-        //                          nameof(TestChargePoint),
-        //                          nameof(OnIncomingDataTransferResponse),
-        //                          e
-        //                      );
-        //            }
+                #region Check request signature(s)
 
-        //        }
+                else
+                {
 
-        //        #endregion
+                    if (!OCPP.SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                              //   CustomIncomingDataTransferRequestSerializer,
+                              //   CustomSignatureSerializer,
+                              //   CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
 
-        //        return response;
+                        response = new DataTransferResponse(
+                                       Request:  request,
+                                       Status:   DataTransferStatus.Rejected,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-        //    };
+                    }
 
-        //    #endregion
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging Station '{Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
+
+                        // VendorId
+                        // MessageId
+                        // Data
+
+                        var responseData = request.Data;
+
+                        if (request.Data is not null)
+                        {
+
+                            if      (request.Data.Type == JTokenType.String)
+                                responseData = request.Data.ToString().Reverse();
+
+                            else if (request.Data.Type == JTokenType.Object) {
+
+                                var responseObject = new JObject();
+
+                                foreach (var property in (request.Data as JObject)!)
+                                {
+                                    if (property.Value?.Type == JTokenType.String)
+                                        responseObject.Add(property.Key,
+                                                           property.Value.ToString().Reverse());
+                                }
+
+                                responseData = responseObject;
+
+                            }
+
+                            else if (request.Data.Type == JTokenType.Array) {
+
+                                var responseArray = new JArray();
+
+                                foreach (var element in (request.Data as JArray)!)
+                                {
+                                    if (element?.Type == JTokenType.String)
+                                        responseArray.Add(element.ToString().Reverse());
+                                }
+
+                                responseData = responseArray;
+
+                            }
+
+                        }
+
+                        if (request.VendorId == Vendor_Id.GraphDefined)
+                        {
+                            response = new DataTransferResponse(
+                                           request,
+                                           DataTransferStatus.Accepted,
+                                           responseData
+                                       );
+                        }
+                        else
+                            response = new DataTransferResponse(
+                                           request,
+                                           DataTransferStatus.Rejected
+                                       );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                OCPP.SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                     //   CustomIncomingDataTransferResponseSerializer,
+                     //   null, //CustomStatusInfoSerializer,
+                     //   CustomSignatureSerializer,
+                     //   CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnDataTransferResponse event
+
+                //var responseLogger = OnIncomingDataTransferResponse;
+                //if (responseLogger is not null)
+                //{
+
+                //    var responseTime         = Timestamp.Now;
+
+                //    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                //                                              OfType <OnIncomingDataTransferResponseDelegate>().
+                //                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                //                                                                                                this,
+                //                                                                                                connection,
+                //                                                                                                request,
+                //                                                                                                response,
+                //                                                                                                responseTime - startTime)).
+                //                                              ToArray();
+
+                //    try
+                //    {
+                //        await Task.WhenAll(responseLoggerTasks);
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        await HandleErrors(
+                //                  nameof(TestChargePoint),
+                //                  nameof(OnIncomingDataTransferResponse),
+                //                  e
+                //              );
+                //    }
+
+                //}
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
         //    #region OnGetDiagnostics
 
@@ -2500,7 +2505,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //    //ToDo: Add Binary Data Streams Extensions
 
-        //}
+        }
 
         #endregion
 

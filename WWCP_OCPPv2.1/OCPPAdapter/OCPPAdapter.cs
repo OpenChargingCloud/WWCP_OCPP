@@ -399,6 +399,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<NTS.NTSKE_ServerInfo>?                                  CustomNTSKEServerInfoSerializer                              { get; set; }
 
 
+        // DiagnosticControlExtensions
+
+        public CustomJObjectSerializerDelegate<SwipeRFIDCardRequest>? CustomSwipeRFIDCardRequestSerializer { get; set; }
+        public CustomJObjectSerializerDelegate<SwipeRFIDCardResponse>? CustomSwipeRFIDCardResponseSerializer { get; set; }
+
+
         #region Data Structures
 
         public CustomJObjectSerializerDelegate<StatusInfo>?                                            CustomStatusInfoSerializer                                   { get; set; }
@@ -837,6 +843,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectParserDelegate<NTSKERequest>?                                              CustomNTSKERequestParser                                 { get; set; }
         public CustomJObjectParserDelegate<NTSKEResponse>?                                             CustomNTSKEResponseParser                                { get; set; }
         public CustomJObjectParserDelegate<NTS.NTSKE_ServerInfo>?                                      CustomNTSKEServerInfoParser                              { get; set; }
+
+
+        // DiagnosticControlExtensions
+        public CustomJObjectParserDelegate<SwipeRFIDCardRequest>?                                      CustomSwipeRFIDCardRequestParser                         { get; set; }
+        public CustomJObjectParserDelegate<SwipeRFIDCardResponse>?                                     CustomSwipeRFIDCardResponseParser                        { get; set; }
 
         #endregion
 

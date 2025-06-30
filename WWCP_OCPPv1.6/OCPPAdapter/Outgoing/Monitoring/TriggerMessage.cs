@@ -43,12 +43,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnTriggerMessageRequestSentDelegate(DateTime                  Timestamp,
-                                                               IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
-                                                               TriggerMessageRequest   Request,
-                                                               SentMessageResults        SentMessageResult,
-                                                               CancellationToken         CancellationToken);
+    public delegate Task OnTriggerMessageRequestSentDelegate(DateTime                Timestamp,
+                                                             IEventSender            Sender,
+                                                             IWebSocketConnection?   Connection,
+                                                             TriggerMessageRequest   Request,
+                                                             SentMessageResults      SentMessageResult,
+                                                             CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -64,14 +64,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnTriggerMessageResponseSentDelegate(DateTime                   Timestamp,
-                                               IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
-                                               TriggerMessageRequest    Request,
-                                               TriggerMessageResponse   Response,
-                                               TimeSpan                   Runtime,
-                                               SentMessageResults         SentMessageResult,
-                                               CancellationToken          CancellationToken);
+        OnTriggerMessageResponseSentDelegate(DateTime                 Timestamp,
+                                             IEventSender             Sender,
+                                             IWebSocketConnection?    Connection,
+                                             TriggerMessageRequest    Request,
+                                             TriggerMessageResponse   Response,
+                                             TimeSpan                 Runtime,
+                                             SentMessageResults       SentMessageResult,
+                                             CancellationToken        CancellationToken);
 
 
     /// <summary>
@@ -88,13 +88,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnTriggerMessageRequestErrorSentDelegate(DateTime                       Timestamp,
-                                                   IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
-                                                   TriggerMessageRequest?       Request,
-                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                   TimeSpan?                      Runtime,
-                                                   SentMessageResults             SentMessageResult,
-                                                   CancellationToken              CancellationToken);
+                                                 IEventSender                   Sender,
+                                                 IWebSocketConnection?          Connection,
+                                                 TriggerMessageRequest?         Request,
+                                                 OCPP_JSONRequestErrorMessage   RequestErrorMessage,
+                                                 TimeSpan?                      Runtime,
+                                                 SentMessageResults             SentMessageResult,
+                                                 CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -112,14 +112,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public delegate Task
 
         OnTriggerMessageResponseErrorSentDelegate(DateTime                        Timestamp,
-                                                    IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
-                                                    TriggerMessageRequest?        Request,
-                                                    TriggerMessageResponse?       Response,
-                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                    TimeSpan?                       Runtime,
-                                                    SentMessageResults              SentMessageResult,
-                                                    CancellationToken               CancellationToken);
+                                                  IEventSender                    Sender,
+                                                  IWebSocketConnection?           Connection,
+                                                  TriggerMessageRequest?          Request,
+                                                  TriggerMessageResponse?         Response,
+                                                  OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
+                                                  TimeSpan?                       Runtime,
+                                                  SentMessageResults              SentMessageResult,
+                                                  CancellationToken               CancellationToken);
 
     #endregion
 
@@ -478,14 +478,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnTriggerMessageResponseSentDelegate?  OnTriggerMessageResponseSent;
 
-        public Task SendOnTriggerMessageResponseSent(DateTime                   Timestamp,
-                                                       IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
-                                                       TriggerMessageRequest    Request,
-                                                       TriggerMessageResponse   Response,
-                                                       TimeSpan                   Runtime,
-                                                       SentMessageResults         SentMessageResult,
-                                                       CancellationToken          CancellationToken = default)
+        public Task SendOnTriggerMessageResponseSent(DateTime                 Timestamp,
+                                                     IEventSender             Sender,
+                                                     IWebSocketConnection?    Connection,
+                                                     TriggerMessageRequest    Request,
+                                                     TriggerMessageResponse   Response,
+                                                     TimeSpan                 Runtime,
+                                                     SentMessageResults       SentMessageResult,
+                                                     CancellationToken        CancellationToken = default)
 
             => LogEvent(
                    OnTriggerMessageResponseSent,
@@ -512,13 +512,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnTriggerMessageRequestErrorSent(DateTime                      Timestamp,
-                                                           IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
-                                                           TriggerMessageRequest?      Request,
-                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                           TimeSpan                      Runtime,
-                                                           SentMessageResults            SentMessageResult,
-                                                           CancellationToken             CancellationToken = default)
+                                                         IEventSender                  Sender,
+                                                         IWebSocketConnection?         Connection,
+                                                         TriggerMessageRequest?        Request,
+                                                         OCPP_JSONRequestErrorMessage  RequestErrorMessage,
+                                                         TimeSpan                      Runtime,
+                                                         SentMessageResults            SentMessageResult,
+                                                         CancellationToken             CancellationToken = default)
 
             => LogEvent(
                    OnTriggerMessageRequestErrorSent,
@@ -545,14 +545,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
 
         public Task SendOnTriggerMessageResponseErrorSent(DateTime                       Timestamp,
-                                                            IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
-                                                            TriggerMessageRequest?       Request,
-                                                            TriggerMessageResponse?      Response,
-                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                            TimeSpan                       Runtime,
-                                                            SentMessageResults             SentMessageResult,
-                                                            CancellationToken              CancellationToken = default)
+                                                          IEventSender                   Sender,
+                                                          IWebSocketConnection?          Connection,
+                                                          TriggerMessageRequest?         Request,
+                                                          TriggerMessageResponse?        Response,
+                                                          OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
+                                                          TimeSpan                       Runtime,
+                                                          SentMessageResults             SentMessageResult,
+                                                          CancellationToken              CancellationToken = default)
 
             => LogEvent(
                    OnTriggerMessageResponseErrorSent,

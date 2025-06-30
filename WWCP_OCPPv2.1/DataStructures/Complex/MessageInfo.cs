@@ -121,6 +121,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.TransactionId   = TransactionId;
             this.Display         = Display;
 
+            unchecked
+            {
+
+                hashCode = this.Id.             GetHashCode()       * 23 ^
+                           this.Priority.       GetHashCode()       * 19 ^
+                           this.Messages.       GetHashCode()       * 17 ^
+                          (this.State?.         GetHashCode() ?? 0) * 13 ^
+                          (this.StartTimestamp?.GetHashCode() ?? 0) * 11 ^
+                          (this.EndTimestamp?.  GetHashCode() ?? 0) *  7 ^
+                          (this.TransactionId?. GetHashCode() ?? 0) *  5 ^
+                          (this.Display?.       GetHashCode() ?? 0) *  3 ^
+                           base.                GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -580,27 +595,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.             GetHashCode()       * 23 ^
-                       Priority.       GetHashCode()       * 19 ^
-                       Messages.       GetHashCode()       * 17 ^
-                      (State?.         GetHashCode() ?? 0) * 13 ^
-                      (StartTimestamp?.GetHashCode() ?? 0) * 11 ^
-                      (EndTimestamp?.  GetHashCode() ?? 0) *  7 ^
-                      (TransactionId?. GetHashCode() ?? 0) *  5 ^
-                      (Display?.       GetHashCode() ?? 0) *  3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

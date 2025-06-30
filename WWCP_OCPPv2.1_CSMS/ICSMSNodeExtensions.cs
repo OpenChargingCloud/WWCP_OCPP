@@ -3310,7 +3310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             RemoveDefaultChargingTariff(this ICSMSNode           CSMS,
                                         SourceRouting            Destination,
-                                        Tariff_Id?       ChargingTariffId      = null,
+                                        Tariff_Id?               ChargingTariffId      = null,
                                         IEnumerable<EVSE_Id>?    EVSEIds               = null,
 
                                         IEnumerable<KeyPair>?    SignKeys              = null,
@@ -3350,6 +3350,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    );
 
         #endregion
+
+
+        // DiagnosticControlExtensions
+
+        #region SwipeRFIDCard        (Destination, IdToken, ReaderId = null, SimulationMode = null, ProcessingDelay = null, ...)
+
+        /// <summary>
+        /// Swipe an RFID card on the given connector to start an authorization and maybe a charging session.
+        /// </summary>
+        /// <param name="IdToken">The identification token, e.g. of the RFID card to be swiped.</param>
+        /// <param name="ReaderId">An optional RFID reader identification, when the charging station has more than one connector and therefore more than one RFID reader or an additional user interface process to select a specific connector before or after swiping the RFID card (0 > ReaderId ≤ MaxConnectorId).
+        /// <param name="SimulationMode">An optional simulation mode: Software | Hardware | ...</param>
+        /// <param name="ProcessingDelay">An optional processing delay before the request is processed by the charging station.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.SwipeRFIDCardResponse>
+
+            SwipeRFIDCard(this ICSMSNode           CSMS,
+                          SourceRouting            Destination,
+                          IdToken                  IdToken,
+                          EVSE_Id?                 ReaderId              = null,
+                          IdTokenSimulationMode?   SimulationMode        = null,
+                          TimeSpan?                ProcessingDelay       = null,
+
+                          IEnumerable<KeyPair>?    SignKeys              = null,
+                          IEnumerable<SignInfo>?   SignInfos             = null,
+                          IEnumerable<Signature>?  Signatures            = null,
+
+                          Request_Id?              RequestId             = null,
+                          DateTime?                RequestTimestamp      = null,
+                          TimeSpan?                RequestTimeout        = null,
+                          EventTracking_Id?        EventTrackingId       = null,
+                          SerializationFormats?    SerializationFormat   = null,
+                          CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.SwipeRFIDCard(
+                       new SwipeRFIDCardRequest(
+                           Destination,
+                           IdToken,
+                           ReaderId,
+                           SimulationMode,
+                           ProcessingDelay,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+
 
 
     }

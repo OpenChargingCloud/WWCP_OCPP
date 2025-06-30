@@ -104,28 +104,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // {
-        //     "description": "Contains message details, for a message to be displayed on a Charging Station.",
-        //     "javaType": "MessageContent",
-        //     "type": "object",
-        //     "additionalProperties": false,
+        //     "description":          "Contains message details, for a message to be displayed on a Charging Station.",
+        //     "javaType":             "MessageContent",
+        //     "type":                 "object",
+        //     "additionalProperties":  false,
         //     "properties": {
         //         "format": {
-        //             "$ref": "#/definitions/MessageFormatEnumType"
+        //             "$ref":        "#/definitions/MessageFormatEnumType"
         //         },
         //         "language": {
-        //             "description": "Message language identifier. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.",
-        //             "type": "string",
-        //             "maxLength": 8
+        //             "description": "Message language identifier. Contains a language code as defined in <<ref-RFC5646,[RFC5646]>>.",
+        //             "type":        "string",
+        //             "maxLength":    8
         //         },
         //         "content": {
         //             "description": "Required. Message contents.
         //                             Maximum length supported by Charging Station is given in OCPPCommCtrlr.FieldLength[\"MessageContentType.content\"].
         //                             Maximum length defaults to 1024.",
-        //             "type": "string",
-        //             "maxLength": 1024
+        //             "type":        "string",
+        //             "maxLength":    1024
         //         },
         //         "customData": {
-        //             "$ref": "#/definitions/CustomDataType"
+        //             "$ref":        "#/definitions/CustomDataType"
         //         }
         //     },
         //     "required": [

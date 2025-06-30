@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (forwardingDecision.NewRequest is not null)
                 forwardingDecision.NewJSONRequest = forwardingDecision.NewRequest.ToJSON(
                                                         false,
-                                                        parentNetworkingNode.OCPP.CustomDataTransferRequestSerializer,
+                                                        null,//parentNetworkingNode.OCPP.CustomDataTransferRequestSerializer,
                                                         parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                                         parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                                     );

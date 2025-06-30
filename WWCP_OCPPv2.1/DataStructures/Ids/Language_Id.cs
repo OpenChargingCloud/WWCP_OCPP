@@ -190,13 +190,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// EN
         /// </summary>
-        public static readonly Language_Id EN
+        public static readonly Language_Id  EN
             = new ("en");
 
         /// <summary>
         /// DE
         /// </summary>
-        public static readonly Language_Id DE
+        public static readonly Language_Id  DE
             = new ("de");
 
         #endregion
