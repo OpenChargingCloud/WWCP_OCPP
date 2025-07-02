@@ -28,11 +28,11 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1;
-using cloud.charging.open.protocols.OCPPv2_0_1.CS;
+using cloud.charging.open.protocols.OCPPv2_0_1.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_0_1.CP
+namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 {
 
     /// <summary>

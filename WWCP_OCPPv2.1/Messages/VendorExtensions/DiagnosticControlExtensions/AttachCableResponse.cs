@@ -49,11 +49,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/swipeRFIDCardResponse");
 
-        /// <summary>
-        /// The default heartbeat interval in seconds.
-        /// </summary>
-        public static TimeSpan DefaultInterval = TimeSpan.FromMinutes(5);
-
         #endregion
 
         #region Properties
@@ -84,6 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The AttachCable request leading to this response.</param>
         /// <param name="Status">The response status.</param>
+        /// <param name="StatusInfo">An optional detailed status information.</param>
         /// 
         /// <param name="Result">The machine-readable result code.</param>
         /// <param name="ResponseTimestamp">The timestamp of the response message.</param>
@@ -98,24 +94,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// <param name="SerializationFormat">The optional serialization format for this response.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AttachCableResponse(AttachCableRequest     Request,
-                                     GenericStatus            Status,
-                                     StatusInfo?              StatusInfo            = null,
+        public AttachCableResponse(AttachCableRequest       Request,
+                                   GenericStatus            Status,
+                                   StatusInfo?              StatusInfo            = null,
 
-                                     Result?                  Result                = null,
-                                     DateTime?                ResponseTimestamp     = null,
+                                   Result?                  Result                = null,
+                                   DateTime?                ResponseTimestamp     = null,
 
-                                     SourceRouting?           Destination           = null,
-                                     NetworkPath?             NetworkPath           = null,
+                                   SourceRouting?           Destination           = null,
+                                   NetworkPath?             NetworkPath           = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys              = null,
-                                     IEnumerable<SignInfo>?   SignInfos             = null,
-                                     IEnumerable<Signature>?  Signatures            = null,
+                                   IEnumerable<KeyPair>?    SignKeys              = null,
+                                   IEnumerable<SignInfo>?   SignInfos             = null,
+                                   IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData?              CustomData            = null,
+                                   CustomData?              CustomData            = null,
 
-                                     SerializationFormats?    SerializationFormat   = null,
-                                     CancellationToken        CancellationToken     = default)
+                                   SerializationFormats?    SerializationFormat   = null,
+                                   CancellationToken        CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -345,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",       Status.ToString()),
+                                 new JProperty("status",       Status.    ToString()),
 
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
@@ -580,7 +576,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => Status.AsText();
+            => String.Concat(
+
+                   Status,
+
+                   StatusInfo is not null
+                       ? $", statusInfo: '{StatusInfo}'"
+                       : ""
+
+               );
 
         #endregion
 

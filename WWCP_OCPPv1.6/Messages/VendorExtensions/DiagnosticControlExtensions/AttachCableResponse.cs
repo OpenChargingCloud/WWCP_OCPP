@@ -27,11 +27,11 @@ using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv1_6.CP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
@@ -48,11 +48,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// The JSON-LD context of this object.
         /// </summary>
         public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/attachCableResponse");
-
-        /// <summary>
-        /// The default heartbeat interval in seconds.
-        /// </summary>
-        public static TimeSpan DefaultInterval = TimeSpan.FromMinutes(5);
 
         #endregion
 
@@ -92,23 +87,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// <param name="SerializationFormat">The optional serialization format for this response.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AttachCableResponse(AttachCableRequest     Request,
-                                     GenericStatus            Status,
+        public AttachCableResponse(AttachCableRequest       Request,
+                                   GenericStatus            Status,
 
-                                     Result?                  Result                = null,
-                                     DateTime?                ResponseTimestamp     = null,
+                                   Result?                  Result                = null,
+                                   DateTime?                ResponseTimestamp     = null,
 
-                                     SourceRouting?           Destination           = null,
-                                     NetworkPath?             NetworkPath           = null,
+                                   SourceRouting?           Destination           = null,
+                                   NetworkPath?             NetworkPath           = null,
 
-                                     IEnumerable<KeyPair>?    SignKeys              = null,
-                                     IEnumerable<SignInfo>?   SignInfos             = null,
-                                     IEnumerable<Signature>?  Signatures            = null,
+                                   IEnumerable<KeyPair>?    SignKeys              = null,
+                                   IEnumerable<SignInfo>?   SignInfos             = null,
+                                   IEnumerable<Signature>?  Signatures            = null,
 
-                                     CustomData?              CustomData            = null,
+                                   CustomData?              CustomData            = null,
 
-                                     SerializationFormats?    SerializationFormat   = null,
-                                     CancellationToken        CancellationToken     = default)
+                                   SerializationFormats?    SerializationFormat   = null,
+                                   CancellationToken        CancellationToken     = default)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -313,8 +308,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AttachCableResponse>?  CustomAttachCableResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?              CustomSignatureSerializer               = null,
-                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
             var json = JSONObject.Create(

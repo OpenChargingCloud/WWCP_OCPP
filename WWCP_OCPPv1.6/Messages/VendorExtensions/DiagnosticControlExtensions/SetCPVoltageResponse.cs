@@ -27,11 +27,11 @@ using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv1_6.CP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
@@ -48,11 +48,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// The JSON-LD context of this object.
         /// </summary>
         public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/setCPVoltageResponse");
-
-        /// <summary>
-        /// The default heartbeat interval in seconds.
-        /// </summary>
-        public static TimeSpan DefaultInterval = TimeSpan.FromMinutes(5);
 
         #endregion
 

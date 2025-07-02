@@ -29,7 +29,7 @@ using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
@@ -69,6 +69,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public Percentage?    VoltageError      { get; }
 
         /// <summary>
+        /// The optional processing delay before the request is processed by the charging station.
+        /// </summary>
+        [Optional]
+        public TimeSpan?      ProcessingDelay    { get; }
+
+        /// <summary>
         /// The optional gradual voltage change over the given time span avoiding instantaneous jumps
         /// to simulate real-world analog behavior.
         /// </summary>
@@ -85,6 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="Voltage">The voltage on the Charge Pilot.</param>
         /// <param name="VoltageError">An optional random variation within ±n% to simulate real-world analog behavior.</param>
+        /// <param name="ProcessingDelay">An optional processing delay before the request is processed by the charging station.</param>
         /// <param name="TransitionTime">An optional gradual voltage change over the given time span avoiding instantaneous jumps to simulate real-world analog behavior.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -107,6 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public SetCPVoltageRequest(SourceRouting            Destination,
                                    Volt                     Voltage,
                                    Percentage?              VoltageError          = null,
+                                   TimeSpan?                ProcessingDelay       = null,
                                    TimeSpan?                TransitionTime        = null,
 
                                    IEnumerable<KeyPair>?    SignKeys              = null,
@@ -142,17 +150,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         {
 
-            this.Voltage         = Voltage;
-            this.VoltageError    = VoltageError;
-            this.TransitionTime  = TransitionTime;
+            this.Voltage          = Voltage;
+            this.VoltageError     = VoltageError;
+            this.ProcessingDelay  = ProcessingDelay;
+            this.TransitionTime   = TransitionTime;
 
             unchecked
             {
 
-                hashCode = this.Voltage.        GetHashCode()       * 7 ^
-                          (this.VoltageError?.  GetHashCode() ?? 0) * 5 ^
-                          (this.TransitionTime?.GetHashCode() ?? 0) * 3 ^
-                           base.                GetHashCode();
+                hashCode = this.Voltage.         GetHashCode()       * 11 ^
+                          (this.VoltageError?.   GetHashCode() ?? 0) *  7 ^
+                          (this.ProcessingDelay?.GetHashCode() ?? 0) *  5 ^
+                          (this.TransitionTime?. GetHashCode() ?? 0) *  3 ^
+                           base.                 GetHashCode();
 
             }
 
@@ -249,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 SetCPVoltageRequest = null;
 
-                #region Voltage           [mandatory]
+                #region Voltage            [mandatory]
 
                 if (!JSON.ParseMandatory("voltage",
                                          "CP voltage",
@@ -262,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region VoltageError      [optional]
+                #region VoltageError       [optional]
 
                 if (JSON.ParseOptional("voltageError",
                                        "voltage error",
@@ -276,7 +286,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region TransitionTime    [optional]
+                #region ProcessingDelay    [optional]
+
+                if (JSON.ParseOptionalMS("processingDelay",
+                                         "processing delay",
+                                         out TimeSpan? processingDelay,
+                                         out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region TransitionTime     [optional]
 
                 if (JSON.ParseOptionalMS("transitionTime",
                                          "transition time",
@@ -289,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region Signatures        [optional, OCPP_CSE]
+                #region Signatures         [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -303,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region CustomData        [optional]
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -323,6 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                           Destination,
                                           voltage,
                                           voltageError,
+                                          processingDelay,
                                           transitionTime,
 
                                           null,
@@ -366,20 +390,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetCPVoltageRequest>?  CustomSetCPVoltageRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer              = null,
-                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("voltage",           Voltage.             Value),
+                                 new JProperty("voltage",           Voltage.        Value),
 
                            VoltageError.  HasValue
-                               ? new JProperty("voltageError",      VoltageError.  Value.Value)
+                               ? new JProperty("voltageError",      VoltageError.   Value.Value)
+                               : null,
+
+                           ProcessingDelay.HasValue
+                               ? new JProperty("processingDelay",   ProcessingDelay.Value.Milliseconds)
                                : null,
 
                            TransitionTime.HasValue
-                               ? new JProperty("transitionTime",    TransitionTime.Value.Milliseconds)
+                               ? new JProperty("transitionTime",    TransitionTime. Value.Milliseconds)
                                : null,
 
                            Signatures.Any()
@@ -474,11 +502,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                Voltage.Equals(SetCPVoltageRequest.Voltage) &&
 
-            ((!VoltageError.  HasValue && !SetCPVoltageRequest.VoltageError.  HasValue) ||
-              (VoltageError.  HasValue &&  SetCPVoltageRequest.VoltageError.  HasValue && VoltageError.  Value.Equals(SetCPVoltageRequest.VoltageError.  Value))) &&
+            ((!VoltageError.   HasValue && !SetCPVoltageRequest.VoltageError.   HasValue) ||
+              (VoltageError.   HasValue &&  SetCPVoltageRequest.VoltageError.   HasValue && VoltageError.   Value.Equals(SetCPVoltageRequest.VoltageError.   Value))) &&
 
-            ((!TransitionTime.HasValue && !SetCPVoltageRequest.TransitionTime.HasValue) ||
-              (TransitionTime.HasValue &&  SetCPVoltageRequest.TransitionTime.HasValue && TransitionTime.Value.Equals(SetCPVoltageRequest.TransitionTime.Value))) &&
+            ((!ProcessingDelay.HasValue && !SetCPVoltageRequest.ProcessingDelay.HasValue) ||
+              (ProcessingDelay.HasValue &&  SetCPVoltageRequest.ProcessingDelay.HasValue && ProcessingDelay.Value.Equals(SetCPVoltageRequest.ProcessingDelay.Value))) &&
+
+            ((!TransitionTime. HasValue && !SetCPVoltageRequest.TransitionTime. HasValue) ||
+              (TransitionTime. HasValue &&  SetCPVoltageRequest.TransitionTime. HasValue && TransitionTime. Value.Equals(SetCPVoltageRequest.TransitionTime. Value))) &&
 
                base.GenericEquals(SetCPVoltageRequest);
 
@@ -511,6 +542,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                    VoltageError.HasValue
                        ? $" ±{VoltageError.Value.Value}%"
+                       : "",
+
+                   ProcessingDelay.HasValue
+                       ? $" delay: {ProcessingDelay.Value.TotalMilliseconds} ms'"
                        : "",
 
                    TransitionTime.HasValue

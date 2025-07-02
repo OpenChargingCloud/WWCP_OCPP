@@ -30,7 +30,7 @@ using cloud.charging.open.protocols.OCPPv2_1;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
+namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 {
 
     /// <summary>

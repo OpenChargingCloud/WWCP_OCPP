@@ -49,11 +49,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/setCPVoltageResponse");
 
-        /// <summary>
-        /// The default heartbeat interval in seconds.
-        /// </summary>
-        public static TimeSpan DefaultInterval = TimeSpan.FromMinutes(5);
-
         #endregion
 
         #region Properties
@@ -580,7 +575,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => Status.AsText();
+            => String.Concat(
+
+                   Status,
+
+                   StatusInfo is not null
+                       ? $", statusInfo: '{StatusInfo}'"
+                       : ""
+
+               );
 
         #endregion
 

@@ -1807,15 +1807,367 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         // DiagnosticControlExtensions
 
-        #region SwipeRFIDCard        (Destination, ConnectorId, Timeout, ...)
+        #region AdjustTimeScale             (Destination, Scale, ...)
+
+        /// <summary>
+        /// Adjust the time scale of the charging station.
+        /// </summary>
+        /// <param name="Scale">A time scale.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<AdjustTimeScaleResponse>
+
+            AdjustTimeScale(this ICentralSystemNode  CentralSystem,
+                            SourceRouting            Destination,
+                            Double                   Scale,
+
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
+
+                            Request_Id?              RequestId             = null,
+                            DateTime?                RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.AdjustTimeScale(
+                       new AdjustTimeScaleRequest(
+                           Destination,
+                           Scale,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region AttachCable                 (Destination, ConnectorId, ResistorValue, ...)
+
+        /// <summary>
+        /// Attach a cable to the given EVSE and optionally connector.
+        /// </summary>
+        /// <param name="ConnectorId">The connector identification, when the charging station has more than one connector (0 > ConnectorId ≤ MaxConnectorId).</param>
+        /// <param name="ResistorValue">The resistor value to indicate the cable's maximum permissible current.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<AttachCableResponse>
+
+            AttachCable(this ICentralSystemNode  CentralSystem,
+                        SourceRouting            Destination,
+                        Connector_Id             ConnectorId,
+                        Ohm                      ResistorValue,
+
+                        IEnumerable<KeyPair>?    SignKeys              = null,
+                        IEnumerable<SignInfo>?   SignInfos             = null,
+                        IEnumerable<Signature>?  Signatures            = null,
+
+                        Request_Id?              RequestId             = null,
+                        DateTime?                RequestTimestamp      = null,
+                        TimeSpan?                RequestTimeout        = null,
+                        EventTracking_Id?        EventTrackingId       = null,
+                        SerializationFormats?    SerializationFormat   = null,
+                        CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.AttachCable(
+                       new AttachCableRequest(
+                           Destination,
+                           ConnectorId,
+                           ResistorValue,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region GetExecutingEnvironment     (Destination, ...)
+
+        /// <summary>
+        /// Get the executing environment of the charging station.
+        /// </summary>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<GetExecutingEnvironmentResponse>
+
+            GetExecutingEnvironment(this ICentralSystemNode  CentralSystem,
+                                    SourceRouting            Destination,
+
+                                    IEnumerable<KeyPair>?    SignKeys              = null,
+                                    IEnumerable<SignInfo>?   SignInfos             = null,
+                                    IEnumerable<Signature>?  Signatures            = null,
+
+                                    Request_Id?              RequestId             = null,
+                                    DateTime?                RequestTimestamp      = null,
+                                    TimeSpan?                RequestTimeout        = null,
+                                    EventTracking_Id?        EventTrackingId       = null,
+                                    SerializationFormats?    SerializationFormat   = null,
+                                    CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.GetExecutingEnvironment(
+                       new GetExecutingEnvironmentRequest(
+                           Destination,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region GetPWMValue                 (Destination, ConnectorId, ...)
+
+        /// <summary>
+        /// Get the executing environment of the charging station.
+        /// </summary>
+        /// <param name="ConnectorId">The connector identification, when the charging station has more than one connector (0 > ConnectorId ≤ MaxConnectorId).</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<GetPWMValueResponse>
+
+            GetPWMValue(this ICentralSystemNode  CentralSystem,
+                        SourceRouting            Destination,
+                        Connector_Id             ConnectorId,
+
+                        IEnumerable<KeyPair>?    SignKeys              = null,
+                        IEnumerable<SignInfo>?   SignInfos             = null,
+                        IEnumerable<Signature>?  Signatures            = null,
+
+                        Request_Id?              RequestId             = null,
+                        DateTime?                RequestTimestamp      = null,
+                        TimeSpan?                RequestTimeout        = null,
+                        EventTracking_Id?        EventTrackingId       = null,
+                        SerializationFormats?    SerializationFormat   = null,
+                        CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.GetPWMValue(
+                       new GetPWMValueRequest(
+                           Destination,
+                           ConnectorId,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SetCPVoltage                (Destination, Voltage, VoltageError = null, ProcessingDelay = null, TransitionTime = null, ...)
+
+        /// <summary>
+        /// Set the voltage on the Charge Pilot of the given EVSE.
+        /// </summary>
+        /// <param name="Voltage">The voltage on the Charge Pilot.</param>
+        /// <param name="VoltageError">An optional random variation within ±n% to simulate real-world analog behavior.</param>
+        /// <param name="ProcessingDelay">An optional processing delay before the request is processed by the charging station.</param>
+        /// <param name="TransitionTime">An optional gradual voltage change over the given time span avoiding instantaneous jumps to simulate real-world analog behavior.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<SetCPVoltageResponse>
+
+            SetCPVoltage(this ICentralSystemNode  CentralSystem,
+                         SourceRouting            Destination,
+                         Volt                     Voltage,
+                         Percentage?              VoltageError          = null,
+                         TimeSpan?                ProcessingDelay       = null,
+                         TimeSpan?                TransitionTime        = null,
+
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
+
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.SetCPVoltage(
+                       new SetCPVoltageRequest(
+                           Destination,
+                           Voltage,
+                           VoltageError,
+                           ProcessingDelay,
+                           TransitionTime,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SetErrorState               (Destination, FaultType, ConnectorId = null, ProcessingDelay = null, Duration = null, ...)
+
+        /// <summary>
+        /// Set an error state on the given EVSE and optionally connector.
+        /// </summary>
+        /// <param name="FaultType">The fault type.</param>
+        /// <param name="ConnectorId">An optional connector identification, when the charging station has more than one connector (0 > ConnectorId ≤ MaxConnectorId).</param>
+        /// <param name="ProcessingDelay">An optional processing delay before the request is processed by the charging station.</param>
+        /// <param name="Duration">An optional duration of the error state for short transient errors.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<SetErrorStateResponse>
+
+            SetErrorState(this ICentralSystemNode  CentralSystem,
+                          SourceRouting            Destination,
+                          FaultType                FaultType,
+                          Connector_Id?            ConnectorId           = null,
+                          TimeSpan?                ProcessingDelay       = null,
+                          TimeSpan?                Duration              = null,
+
+                          IEnumerable<KeyPair>?    SignKeys              = null,
+                          IEnumerable<SignInfo>?   SignInfos             = null,
+                          IEnumerable<Signature>?  Signatures            = null,
+
+                          Request_Id?              RequestId             = null,
+                          DateTime?                RequestTimestamp      = null,
+                          TimeSpan?                RequestTimeout        = null,
+                          EventTracking_Id?        EventTrackingId       = null,
+                          SerializationFormats?    SerializationFormat   = null,
+                          CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.SetErrorState(
+                       new SetErrorStateRequest(
+                           Destination,
+                           FaultType,
+                           ConnectorId,
+                           ProcessingDelay,
+                           Duration,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SwipeRFIDCard               (Destination, IdTag, ReaderId = null, SimulationMode = null, ProcessingDelay = null, ...)
 
         /// <summary>
         /// Swipe an RFID card on the given connector to start an authorization and maybe a charging session.
         /// </summary>
         /// <param name="CentralSystem">The central system.</param>
         /// <param name="Destination">The networking node identification.</param>
-        /// <param name="ConnectorId">A connector identification.</param>
-        /// <param name="Timeout">A timeout for the web payment process.</param>
+        /// <param name="IdTag">The identification tag of the RFID card to be swiped.</param>
+        /// <param name="ReaderId">The optional RFID reader identification, when the charging station has more than one connector
+        /// and therefore more than one RFID reader or an additional user interface process to select a
+        /// specific connector before or after swiping the RFID card (0 > ReaderId ≤ MaxConnectorId).</param>
+        /// <param name="ProcessingDelay">An optional processing delay before the request is processed by the charging station.</param>
+        /// <param name="SimulationMode">An optional simulation mode: Software | Hardware | ...</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// 
@@ -1871,11 +2223,66 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region TimeTravel                  (Destination, Timestamp, ...)
+
+        /// <summary>
+        /// Travel to a specific point in time in the past or future.
+        /// </summary>
+        /// <param name="Timestamp">A time stamp to travel to.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<TimeTravelResponse>
+
+            TimeTravel(this ICentralSystemNode  CentralSystem,
+                       SourceRouting            Destination,
+                       DateTimeOffset           Timestamp,
+
+                       IEnumerable<KeyPair>?    SignKeys              = null,
+                       IEnumerable<SignInfo>?   SignInfos             = null,
+                       IEnumerable<Signature>?  Signatures            = null,
+
+                       Request_Id?              RequestId             = null,
+                       DateTime?                RequestTimestamp      = null,
+                       TimeSpan?                RequestTimeout        = null,
+                       EventTracking_Id?        EventTrackingId       = null,
+                       SerializationFormats?    SerializationFormat   = null,
+                       CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.TimeTravel(
+                       new TimeTravelRequest(
+                           Destination,
+                           Timestamp,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
 
 
         // VendorExtensions
 
-        #region NotifyWebPaymentStarted        (Destination, ConnectorId, Timeout, ...)
+        #region NotifyWebPaymentStarted     (Destination, ConnectorId, Timeout, ...)
 
         /// <summary>
         /// Notify the charge point that a web payment has started on the given connector.
@@ -1935,7 +2342,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region NotifyWebPaymentFailed        (Destination, ConnectorId, ErrorMessage, ...)
+        #region NotifyWebPaymentFailed      (Destination, ConnectorId, ErrorMessage, ...)
 
         /// <summary>
         /// Notify the charge point that a web payment was cancelled or failed on the given connector.
@@ -1994,7 +2401,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    );
 
         #endregion
-
 
 
     }

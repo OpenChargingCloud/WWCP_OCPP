@@ -29,7 +29,7 @@ using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
@@ -91,7 +91,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="IdTag">The identification tag of the RFID card to be swiped.</param>
+        /// <param name="ReaderId">The optional RFID reader identification, when the charging station has more than one connector
+        /// and therefore more than one RFID reader or an additional user interface process to select a
+        /// specific connector before or after swiping the RFID card (0 > ReaderId ≤ MaxConnectorId).</param>
         /// <param name="ProcessingDelay">An optional processing delay before the request is processed by the charging station.</param>
+        /// <param name="SimulationMode">An optional simulation mode: Software | Hardware | ...</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
