@@ -399,23 +399,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<NTS.NTSKE_ServerInfo>?                                  CustomNTSKEServerInfoSerializer                              { get; set; }
 
 
-        // DiagnosticControlExtensions
+        // Advanced Diagnostics Extensions
         public CustomJObjectSerializerDelegate<AdjustTimeScaleRequest>?                              CustomAdjustTimeScaleRequestSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<AdjustTimeScaleResponse>?                             CustomAdjustTimeScaleResponseSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<AttachCableRequest>?                                  CustomAttachCableRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<AttachCableResponse>?                                 CustomAttachCableResponseSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<GetExecutingEnvironmentRequest>?                      CustomGetExecutingEnvironmentRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<GetExecutingEnvironmentResponse>?                     CustomGetExecutingEnvironmentResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<TimeTravelRequest>?                                   CustomTimeTravelRequestSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<TimeTravelResponse>?                                  CustomTimeTravelResponseSerializer                           { get; set; }
+
+        //  CCS
+        public CustomJObjectSerializerDelegate<AttachCableRequest>?                                  CustomAttachCableRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<AttachCableResponse>?                                 CustomAttachCableResponseSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<GetPWMValueRequest>?                                  CustomGetPWMValueRequestSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<GetPWMValueResponse>?                                 CustomGetPWMValueResponseSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<SetCPVoltageRequest>?                                 CustomSetCPVoltageRequestSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<SetCPVoltageResponse>?                                CustomSetCPVoltageResponseSerializer                         { get; set; }
+
+        //  MCS
+        public CustomJObjectSerializerDelegate<SetCEVoltageRequest>?                                 CustomSetCEVoltageRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<SetCEVoltageResponse>?                                CustomSetCEVoltageResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<SetIDVoltageRequest>?                                 CustomSetIDVoltageRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<SetIDVoltageResponse>?                                CustomSetIDVoltageResponseSerializer                         { get; set; }
+
+        //  Charging Station
         public CustomJObjectSerializerDelegate<SetErrorStateRequest>?                                CustomSetErrorStateRequestSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<SetErrorStateResponse>?                               CustomSetErrorStateResponseSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<SwipeRFIDCardRequest>?                                CustomSwipeRFIDCardRequestSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<SwipeRFIDCardResponse>?                               CustomSwipeRFIDCardResponseSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<TimeTravelRequest>?                                   CustomTimeTravelRequestSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<TimeTravelResponse>?                                  CustomTimeTravelResponseSerializer                           { get; set; }
 
 
         #region Data Structures
@@ -858,23 +868,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectParserDelegate<NTS.NTSKE_ServerInfo>?                                      CustomNTSKEServerInfoParser                              { get; set; }
 
 
-        // DiagnosticControlExtensions
+        // Advanced Diagnostics Extensions
         public CustomJObjectParserDelegate<AdjustTimeScaleRequest>?                                    CustomAdjustTimeScaleRequestParser                       { get; set; }
         public CustomJObjectParserDelegate<AdjustTimeScaleResponse>?                                   CustomAdjustTimeScaleResponseParser                      { get; set; }
-        public CustomJObjectParserDelegate<AttachCableRequest>?                                        CustomAttachCableRequestParser                           { get; set; }
-        public CustomJObjectParserDelegate<AttachCableResponse>?                                       CustomAttachCableResponseParser                          { get; set; }
         public CustomJObjectParserDelegate<GetExecutingEnvironmentRequest>?                            CustomGetExecutingEnvironmentRequestParser               { get; set; }
         public CustomJObjectParserDelegate<GetExecutingEnvironmentResponse>?                           CustomGetExecutingEnvironmentResponseParser              { get; set; }
+        public CustomJObjectParserDelegate<TimeTravelRequest>?                                         CustomTimeTravelRequestParser                            { get; set; }
+        public CustomJObjectParserDelegate<TimeTravelResponse>?                                        CustomTimeTravelResponseParser                           { get; set; }
+
+        //  CCS
+        public CustomJObjectParserDelegate<AttachCableRequest>?                                        CustomAttachCableRequestParser                           { get; set; }
+        public CustomJObjectParserDelegate<AttachCableResponse>?                                       CustomAttachCableResponseParser                          { get; set; }
         public CustomJObjectParserDelegate<GetPWMValueRequest>?                                        CustomGetPWMValueRequestParser                           { get; set; }
         public CustomJObjectParserDelegate<GetPWMValueResponse>?                                       CustomGetPWMValueResponseParser                          { get; set; }
         public CustomJObjectParserDelegate<SetCPVoltageRequest>?                                       CustomSetCPVoltageRequestParser                          { get; set; }
         public CustomJObjectParserDelegate<SetCPVoltageResponse>?                                      CustomSetCPVoltageResponseParser                         { get; set; }
+
+        //  MCS
+        public CustomJObjectParserDelegate<SetCEVoltageRequest>?                                       CustomSetCEVoltageRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<SetCEVoltageResponse>?                                      CustomSetCEVoltageResponseParser                         { get; set; }
+        public CustomJObjectParserDelegate<SetIDVoltageRequest>?                                       CustomSetIDVoltageRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<SetIDVoltageResponse>?                                      CustomSetIDVoltageResponseParser                         { get; set; }
+
+        //  Charging Station
         public CustomJObjectParserDelegate<SetErrorStateRequest>?                                      CustomSetErrorStateRequestParser                         { get; set; }
         public CustomJObjectParserDelegate<SetErrorStateResponse>?                                     CustomSetErrorStateResponseParser                        { get; set; }
         public CustomJObjectParserDelegate<SwipeRFIDCardRequest>?                                      CustomSwipeRFIDCardRequestParser                         { get; set; }
         public CustomJObjectParserDelegate<SwipeRFIDCardResponse>?                                     CustomSwipeRFIDCardResponseParser                        { get; set; }
-        public CustomJObjectParserDelegate<TimeTravelRequest>?                                         CustomTimeTravelRequestParser                            { get; set; }
-        public CustomJObjectParserDelegate<TimeTravelResponse>?                                        CustomTimeTravelResponseParser                           { get; set; }
 
         #endregion
 

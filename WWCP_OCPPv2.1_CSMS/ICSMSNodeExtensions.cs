@@ -3409,6 +3409,115 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region GetExecutingEnvironment     (Destination, ...)
+
+        /// <summary>
+        /// Get the executing environment of the charging station.
+        /// </summary>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.GetExecutingEnvironmentResponse>
+
+            GetExecutingEnvironment(this ICSMSNode           CSMS,
+                                    SourceRouting            Destination,
+
+                                    IEnumerable<KeyPair>?    SignKeys              = null,
+                                    IEnumerable<SignInfo>?   SignInfos             = null,
+                                    IEnumerable<Signature>?  Signatures            = null,
+
+                                    Request_Id?              RequestId             = null,
+                                    DateTime?                RequestTimestamp      = null,
+                                    TimeSpan?                RequestTimeout        = null,
+                                    EventTracking_Id?        EventTrackingId       = null,
+                                    SerializationFormats?    SerializationFormat   = null,
+                                    CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.GetExecutingEnvironment(
+                       new GetExecutingEnvironmentRequest(
+                           Destination,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region TimeTravel                  (Destination, Timestamp, ...)
+
+        /// <summary>
+        /// Travel to a specific point in time in the past or future.
+        /// </summary>
+        /// <param name="Timestamp">A time stamp to travel to.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.TimeTravelResponse>
+
+            TimeTravel(this ICSMSNode           CSMS,
+                       SourceRouting            Destination,
+                       DateTimeOffset           Timestamp,
+
+                       IEnumerable<KeyPair>?    SignKeys              = null,
+                       IEnumerable<SignInfo>?   SignInfos             = null,
+                       IEnumerable<Signature>?  Signatures            = null,
+
+                       Request_Id?              RequestId             = null,
+                       DateTime?                RequestTimestamp      = null,
+                       TimeSpan?                RequestTimeout        = null,
+                       EventTracking_Id?        EventTrackingId       = null,
+                       SerializationFormats?    SerializationFormat   = null,
+                       CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.TimeTravel(
+                       new TimeTravelRequest(
+                           Destination,
+                           Timestamp,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        //  CCS
+
         #region AttachCable                 (Destination, EVSEId, ResistorValue, ConnectorId = null, ...)
 
         /// <summary>
@@ -3451,58 +3560,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            EVSEId,
                            ResistorValue,
                            ConnectorId,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           null,
-
-                           RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(CSMS.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-        #region GetExecutingEnvironment     (Destination, ...)
-
-        /// <summary>
-        /// Get the executing environment of the charging station.
-        /// </summary>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetExecutingEnvironmentResponse>
-
-            GetExecutingEnvironment(this ICSMSNode           CSMS,
-                                    SourceRouting            Destination,
-
-                                    IEnumerable<KeyPair>?    SignKeys              = null,
-                                    IEnumerable<SignInfo>?   SignInfos             = null,
-                                    IEnumerable<Signature>?  Signatures            = null,
-
-                                    Request_Id?              RequestId             = null,
-                                    DateTime?                RequestTimestamp      = null,
-                                    TimeSpan?                RequestTimeout        = null,
-                                    EventTracking_Id?        EventTrackingId       = null,
-                                    SerializationFormats?    SerializationFormat   = null,
-                                    CancellationToken        CancellationToken     = default)
-
-
-                => CSMS.OCPP.OUT.GetExecutingEnvironment(
-                       new GetExecutingEnvironmentRequest(
-                           Destination,
 
                            SignKeys,
                            SignInfos,
@@ -3641,6 +3698,138 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        //  MCS
+
+        #region SetCEVoltage                (Destination, Voltage, VoltageError = null, ProcessingDelay = null, TransitionTime = null, ...)
+
+        /// <summary>
+        /// Set the voltage on the Charge Enable of the given EVSE.
+        /// </summary>
+        /// <param name="Voltage">The voltage on the Charge Enable.</param>
+        /// <param name="VoltageError">An optional random variation within ±n% to simulate real-world analog behavior.</param>
+        /// <param name="ProcessingDelay">An optional processing delay before the request is processed by the charging station.</param>
+        /// <param name="TransitionTime">An optional gradual voltage change over the given time span avoiding instantaneous jumps to simulate real-world analog behavior.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.SetCEVoltageResponse>
+
+            SetCEVoltage(this ICSMSNode           CSMS,
+                         SourceRouting            Destination,
+                         Volt                     Voltage,
+                         Percentage?              VoltageError          = null,
+                         TimeSpan?                ProcessingDelay       = null,
+                         TimeSpan?                TransitionTime        = null,
+
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
+
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.SetCEVoltage(
+                       new SetCEVoltageRequest(
+                           Destination,
+                           Voltage,
+                           VoltageError,
+                           ProcessingDelay,
+                           TransitionTime,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region SetIDVoltage                (Destination, Voltage, VoltageError = null, ProcessingDelay = null, TransitionTime = null, ...)
+
+        /// <summary>
+        /// Set the voltage on the Insertion Detection of the given EVSE.
+        /// </summary>
+        /// <param name="Voltage">The voltage on the Insertion Detection.</param>
+        /// <param name="VoltageError">An optional random variation within ±n% to simulate real-world analog behavior.</param>
+        /// <param name="ProcessingDelay">An optional processing delay before the request is processed by the charging station.</param>
+        /// <param name="TransitionTime">An optional gradual voltage change over the given time span avoiding instantaneous jumps to simulate real-world analog behavior.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.SetIDVoltageResponse>
+
+            SetIDVoltage(this ICSMSNode           CSMS,
+                         SourceRouting            Destination,
+                         Volt                     Voltage,
+                         Percentage?              VoltageError          = null,
+                         TimeSpan?                ProcessingDelay       = null,
+                         TimeSpan?                TransitionTime        = null,
+
+                         IEnumerable<KeyPair>?    SignKeys              = null,
+                         IEnumerable<SignInfo>?   SignInfos             = null,
+                         IEnumerable<Signature>?  Signatures            = null,
+
+                         Request_Id?              RequestId             = null,
+                         DateTime?                RequestTimestamp      = null,
+                         TimeSpan?                RequestTimeout        = null,
+                         EventTracking_Id?        EventTrackingId       = null,
+                         SerializationFormats?    SerializationFormat   = null,
+                         CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.SetIDVoltage(
+                       new SetIDVoltageRequest(
+                           Destination,
+                           Voltage,
+                           VoltageError,
+                           ProcessingDelay,
+                           TransitionTime,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        //  Charging Station
+
         #region SetErrorState               (Destination, EVSEId, ...)
 
         /// <summary>
@@ -3759,61 +3948,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            RequestId        ?? CSMS.NextRequestId,
                            RequestTimestamp ?? Timestamp.Now,
-                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
-                           EventTrackingId  ?? EventTracking_Id.New,
-                           NetworkPath.From(CSMS.Id),
-                           SerializationFormat,
-                           CancellationToken
-                       )
-                   );
-
-        #endregion
-
-        #region TimeTravel                  (Destination, Timestamp, ...)
-
-        /// <summary>
-        /// Travel to a specific point in time in the past or future.
-        /// </summary>
-        /// <param name="Timestamp">A time stamp to travel to.</param>
-        /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.TimeTravelResponse>
-
-            TimeTravel(this ICSMSNode           CSMS,
-                       SourceRouting            Destination,
-                       DateTimeOffset           Timestamp,
-
-                       IEnumerable<KeyPair>?    SignKeys              = null,
-                       IEnumerable<SignInfo>?   SignInfos             = null,
-                       IEnumerable<Signature>?  Signatures            = null,
-
-                       Request_Id?              RequestId             = null,
-                       DateTime?                RequestTimestamp      = null,
-                       TimeSpan?                RequestTimeout        = null,
-                       EventTracking_Id?        EventTrackingId       = null,
-                       SerializationFormats?    SerializationFormat   = null,
-                       CancellationToken        CancellationToken     = default)
-
-
-                => CSMS.OCPP.OUT.TimeTravel(
-                       new TimeTravelRequest(
-                           Destination,
-                           Timestamp,
-
-                           SignKeys,
-                           SignInfos,
-                           Signatures,
-
-                           null,
-
-                           RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
