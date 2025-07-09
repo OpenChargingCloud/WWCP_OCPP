@@ -19,4 +19,16 @@
     <Folder Include="OCPPAdapter\Forwarding\VendorExtensions\DiagnosticControlExtensions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="NetworkingNode\HTTPAPI\HTTPRoot\libs\date.format.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NetworkingNode\HTTPAPI\HTTPRoot\libs\date.format.js.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NetworkingNode\HTTPAPI\HTTPRoot\libs\date.format.ts">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
