@@ -21,4 +21,20 @@
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NetworkingNode\HTTPAPI\HTTPRoot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NetworkingNode\HTTPAPI\HTTPRoot\libs\date.format.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NetworkingNode\HTTPAPI\HTTPRoot\libs\date.format.js.map">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NetworkingNode\HTTPAPI\HTTPRoot\libs\date.format.ts">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
