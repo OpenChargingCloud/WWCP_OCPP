@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAddSignaturePolicyRequestSentDelegate(DateTime                    Timestamp,
+    public delegate Task OnAddSignaturePolicyRequestSentDelegate(DateTimeOffset              Timestamp,
                                                                  IEventSender                Sender,
                                                                  IWebSocketConnection?       Connection,
                                                                  AddSignaturePolicyRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAddSignaturePolicyResponseSentDelegate(DateTime                     Timestamp,
+        OnAddSignaturePolicyResponseSentDelegate(DateTimeOffset               Timestamp,
                                                  IEventSender                 Sender,
                                                  IWebSocketConnection?        Connection,
                                                  AddSignaturePolicyRequest    Request,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAddSignaturePolicyRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnAddSignaturePolicyRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection?          Connection,
                                                      AddSignaturePolicyRequest?     Request,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAddSignaturePolicyResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnAddSignaturePolicyResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
                                                       IWebSocketConnection?           Connection,
                                                       AddSignaturePolicyRequest?      Request,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnAddSignaturePolicyResponseSentDelegate?  OnAddSignaturePolicyResponseSent;
 
-        public Task SendOnAddSignaturePolicyResponseSent(DateTime                    Timestamp,
+        public Task SendOnAddSignaturePolicyResponseSent(DateTimeOffset              Timestamp,
                                                          IEventSender                Sender,
                                                          IWebSocketConnection?       Connection,
                                                          AddSignaturePolicyRequest   Request,
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnAddSignaturePolicyRequestErrorSentDelegate? OnAddSignaturePolicyRequestErrorSent;
 
 
-        public Task SendOnAddSignaturePolicyRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnAddSignaturePolicyRequestErrorSent(DateTimeOffset                Timestamp,
                                                              IEventSender                  Sender,
                                                              IWebSocketConnection?         Connection,
                                                              AddSignaturePolicyRequest?    Request,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnAddSignaturePolicyResponseErrorSentDelegate? OnAddSignaturePolicyResponseErrorSent;
 
 
-        public Task SendOnAddSignaturePolicyResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnAddSignaturePolicyResponseErrorSent(DateTimeOffset                 Timestamp,
                                                               IEventSender                   Sender,
                                                               IWebSocketConnection?          Connection,
                                                               AddSignaturePolicyRequest?     Request,

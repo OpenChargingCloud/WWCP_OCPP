@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  String                          Command,
                                  IRequest                        Request,
                                  JObject                         RequestJSON,
-                                 DateTime                        EnqueTimestamp,
+                                 DateTimeOffset                  EnqueTimestamp,
                                  EnqueuedRequest.EnqueuedStatus  Status,
                                  Action<Object>                  ResponseAction)
     {
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public JObject            RequestJSON      { get; }       = RequestJSON;
 
-        public DateTime           EnqueTimestamp   { get; }       = EnqueTimestamp;
+        public DateTimeOffset     EnqueTimestamp   { get; }       = EnqueTimestamp;
 
         public EnqueuedStatus     Status           { get; set; }  = Status;
 

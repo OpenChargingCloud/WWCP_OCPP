@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               CustomData?              CustomData            = null,
 
                                               Request_Id?              RequestId             = null,
-                                              DateTime?                RequestTimestamp      = null,
+                                              DateTimeOffset?          RequestTimestamp      = null,
                                               TimeSpan?                RequestTimeout        = null,
                                               EventTracking_Id?        EventTrackingId       = null,
                                               NetworkPath?             NetworkPath           = null,

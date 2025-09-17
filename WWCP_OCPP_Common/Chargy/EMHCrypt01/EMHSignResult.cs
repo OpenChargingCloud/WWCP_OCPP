@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
 
         public IMeter?              Meter                          { get; set; }
 
-        public DateTime?            Timestamp                      { get; }
+        public DateTimeOffset?      Timestamp                      { get; }
 
         public String?              InfoStatus                     { get; }
 
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
 
         public String?              AuthorizationStop              { get; }
 
-        public DateTime?            AuthorizationStartTimestamp    { get; }
+        public DateTimeOffset?      AuthorizationStartTimestamp    { get; }
 
         public String?              PublicKey                      { get; }
 
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
 
         public EMHSignResult(Meter_Id?       MeterId                       = null,
                              IMeter?         Meter                         = null,
-                             DateTime?       Timestamp                     = null,
+                             DateTimeOffset? Timestamp                     = null,
                              String?         InfoStatus                    = null,
                              UInt32?         SecondsIndex                  = null,
                              String?         PaginationId                  = null,
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
                              String?         LogBookIndex                  = null,
                              String?         AuthorizationStart            = null,
                              String?         AuthorizationStop             = null,
-                             DateTime?       AuthorizationStartTimestamp   = null,
+                             DateTimeOffset? AuthorizationStartTimestamp   = null,
                              String?         PublicKey                     = null,
                              String?         PublicKeyFormat               = null,
                              String?         PublicKeySignatures           = null,

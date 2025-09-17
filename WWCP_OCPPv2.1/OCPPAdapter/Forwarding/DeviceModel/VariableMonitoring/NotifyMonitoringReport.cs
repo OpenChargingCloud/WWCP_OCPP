@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<NotifyMonitoringReportRequest, NotifyMonitoringReportResponse>>
 
-        OnNotifyMonitoringReportRequestFilterDelegate(DateTime                        Timestamp,
+        OnNotifyMonitoringReportRequestFilterDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
                                                       IWebSocketConnection            Connection,
                                                       NotifyMonitoringReportRequest   Request,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ForwardingDecision">The forwarding decision.</param>
     public delegate Task
 
-        OnNotifyMonitoringReportRequestFilteredDelegate(DateTime                                                                            Timestamp,
+        OnNotifyMonitoringReportRequestFilteredDelegate(DateTimeOffset                                                                      Timestamp,
                                                         IEventSender                                                                        Sender,
                                                         IWebSocketConnection                                                                Connection,
                                                         NotifyMonitoringReportRequest                                                       Request,

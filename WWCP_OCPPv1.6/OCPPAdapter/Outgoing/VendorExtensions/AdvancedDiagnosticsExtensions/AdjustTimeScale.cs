@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAdjustTimeScaleRequestSentDelegate(DateTime                 Timestamp,
+    public delegate Task OnAdjustTimeScaleRequestSentDelegate(DateTimeOffset           Timestamp,
                                                               IEventSender             Sender,
                                                               IWebSocketConnection?    Connection,
                                                               AdjustTimeScaleRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAdjustTimeScaleResponseSentDelegate(DateTime                  Timestamp,
+        OnAdjustTimeScaleResponseSentDelegate(DateTimeOffset            Timestamp,
                                               IEventSender              Sender,
                                               IWebSocketConnection?     Connection,
                                               AdjustTimeScaleRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAdjustTimeScaleRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnAdjustTimeScaleRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                   IEventSender                   Sender,
                                                   IWebSocketConnection?          Connection,
                                                   AdjustTimeScaleRequest?        Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAdjustTimeScaleResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnAdjustTimeScaleResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                    IEventSender                    Sender,
                                                    IWebSocketConnection?           Connection,
                                                    AdjustTimeScaleRequest?         Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnAdjustTimeScaleResponseSentDelegate?  OnAdjustTimeScaleResponseSent;
 
-        public Task SendOnAdjustTimeScaleResponseSent(DateTime                  Timestamp,
+        public Task SendOnAdjustTimeScaleResponseSent(DateTimeOffset            Timestamp,
                                                       IEventSender              Sender,
                                                       IWebSocketConnection?     Connection,
                                                       AdjustTimeScaleRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnAdjustTimeScaleRequestErrorSentDelegate? OnAdjustTimeScaleRequestErrorSent;
 
 
-        public Task SendOnAdjustTimeScaleRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnAdjustTimeScaleRequestErrorSent(DateTimeOffset                Timestamp,
                                                           IEventSender                  Sender,
                                                           IWebSocketConnection?         Connection,
                                                           AdjustTimeScaleRequest?       Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnAdjustTimeScaleResponseErrorSentDelegate? OnAdjustTimeScaleResponseErrorSent;
 
 
-        public Task SendOnAdjustTimeScaleResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnAdjustTimeScaleResponseErrorSent(DateTimeOffset                 Timestamp,
                                                            IEventSender                   Sender,
                                                            IWebSocketConnection?          Connection,
                                                            AdjustTimeScaleRequest?        Request,

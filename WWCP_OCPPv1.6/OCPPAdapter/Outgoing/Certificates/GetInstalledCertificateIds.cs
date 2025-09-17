@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetInstalledCertificateIdsRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnGetInstalledCertificateIdsRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                GetInstalledCertificateIdsRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetInstalledCertificateIdsResponseSentDelegate(DateTime                   Timestamp,
+        OnGetInstalledCertificateIdsResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                GetInstalledCertificateIdsRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetInstalledCertificateIdsRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetInstalledCertificateIdsRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    GetInstalledCertificateIdsRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetInstalledCertificateIdsResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetInstalledCertificateIdsResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     GetInstalledCertificateIdsRequest?        Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnGetInstalledCertificateIdsResponseSentDelegate?  OnGetInstalledCertificateIdsResponseSent;
 
-        public Task SendOnGetInstalledCertificateIdsResponseSent(DateTime                   Timestamp,
+        public Task SendOnGetInstalledCertificateIdsResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        GetInstalledCertificateIdsRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetInstalledCertificateIdsRequestErrorSentDelegate? OnGetInstalledCertificateIdsRequestErrorSent;
 
 
-        public Task SendOnGetInstalledCertificateIdsRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetInstalledCertificateIdsRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            GetInstalledCertificateIdsRequest?      Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetInstalledCertificateIdsResponseErrorSentDelegate? OnGetInstalledCertificateIdsResponseErrorSent;
 
 
-        public Task SendOnGetInstalledCertificateIdsResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetInstalledCertificateIdsResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             GetInstalledCertificateIdsRequest?       Request,

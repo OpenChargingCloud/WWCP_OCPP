@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnBootNotificationRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnBootNotificationRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                BootNotificationRequest   Request,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnBootNotificationResponseSentDelegate(DateTime                   Timestamp,
+        OnBootNotificationResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                BootNotificationRequest    Request,
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnBootNotificationRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnBootNotificationRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    BootNotificationRequest?       Request,
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnBootNotificationResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnBootNotificationResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     BootNotificationRequest?        Request,
@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnBootNotificationResponseSentDelegate?  OnBootNotificationResponseSent;
 
-        public Task SendOnBootNotificationResponseSent(DateTime                   Timestamp,
+        public Task SendOnBootNotificationResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        BootNotificationRequest    Request,
@@ -516,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnBootNotificationRequestErrorSentDelegate? OnBootNotificationRequestErrorSent;
 
 
-        public Task SendOnBootNotificationRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnBootNotificationRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            BootNotificationRequest?      Request,
@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnBootNotificationResponseErrorSentDelegate? OnBootNotificationResponseErrorSent;
 
 
-        public Task SendOnBootNotificationResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnBootNotificationResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             BootNotificationRequest?       Request,

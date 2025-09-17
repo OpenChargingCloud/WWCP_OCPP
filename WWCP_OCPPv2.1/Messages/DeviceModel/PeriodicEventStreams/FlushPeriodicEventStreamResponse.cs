@@ -89,7 +89,7 @@
 //        public FlushPeriodicEventStreamResponse(CSMS.FlushPeriodicEventStreamRequest  Request,
 //                                                GenericStatus                         Status,
 //                                                StatusInfo?                           StatusInfo          = null,
-//                                                DateTime?                             ResponseTimestamp   = null,
+//                                                DateTimeOffset?                       ResponseTimestamp   = null,
 
 //                                                IEnumerable<KeyPair>?                 SignKeys            = null,
 //                                                IEnumerable<SignInfo>?                SignInfos           = null,

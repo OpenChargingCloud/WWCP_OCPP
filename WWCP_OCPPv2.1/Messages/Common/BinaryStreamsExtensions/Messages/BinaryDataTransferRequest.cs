@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          IEnumerable<Signature>?  Signatures            = null,
 
                                          Request_Id?              RequestId             = null,
-                                         DateTime?                RequestTimestamp      = null,
+                                         DateTimeOffset?          RequestTimestamp      = null,
                                          TimeSpan?                RequestTimeout        = null,
                                          EventTracking_Id?        EventTrackingId       = null,
                                          NetworkPath?             NetworkPath           = null,
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       Request_Id                                              RequestId,
                                                       SourceRouting                                       Destination,
                                                       NetworkPath                                             NetworkPath,
-                                                      DateTime?                                               RequestTimestamp                  = null,
+                                                      DateTimeOffset?                                         RequestTimestamp                  = null,
                                                       TimeSpan?                                               RequestTimeout                    = null,
                                                       EventTracking_Id?                                       EventTrackingId                   = null,
                                                       CustomBinaryParserDelegate<BinaryDataTransferRequest>?  CustomDataTransferRequestParser   = null)
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out BinaryDataTransferRequest?     BinaryDataTransferRequest,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       DateTime?                                               RequestTimestamp                        = null,
+                                       DateTimeOffset?                                         RequestTimestamp                        = null,
                                        TimeSpan?                                               RequestTimeout                          = null,
                                        EventTracking_Id?                                       EventTrackingId                         = null,
                                        CustomBinaryParserDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser   = null)

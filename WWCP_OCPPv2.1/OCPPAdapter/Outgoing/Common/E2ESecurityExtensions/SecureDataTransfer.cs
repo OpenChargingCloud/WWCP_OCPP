@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecureDataTransferRequestSentDelegate(DateTime                    Timestamp,
+    public delegate Task OnSecureDataTransferRequestSentDelegate(DateTimeOffset              Timestamp,
                                                                  IEventSender                Sender,
                                                                  IWebSocketConnection?       Connection,
                                                                  SecureDataTransferRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSecureDataTransferResponseSentDelegate(DateTime                     Timestamp,
+        OnSecureDataTransferResponseSentDelegate(DateTimeOffset               Timestamp,
                                                  IEventSender                 Sender,
                                                  IWebSocketConnection?        Connection,
                                                  SecureDataTransferRequest    Request,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSecureDataTransferRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnSecureDataTransferRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection?          Connection,
                                                      SecureDataTransferRequest?     Request,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSecureDataTransferResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnSecureDataTransferResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
                                                       IWebSocketConnection?           Connection,
                                                       SecureDataTransferRequest?      Request,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnSecureDataTransferResponseSentDelegate?  OnSecureDataTransferResponseSent;
 
-        public Task SendOnSecureDataTransferResponseSent(DateTime                    Timestamp,
+        public Task SendOnSecureDataTransferResponseSent(DateTimeOffset              Timestamp,
                                                          IEventSender                Sender,
                                                          IWebSocketConnection?       Connection,
                                                          SecureDataTransferRequest   Request,
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSecureDataTransferRequestErrorSentDelegate? OnSecureDataTransferRequestErrorSent;
 
 
-        public Task SendOnSecureDataTransferRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnSecureDataTransferRequestErrorSent(DateTimeOffset                Timestamp,
                                                              IEventSender                  Sender,
                                                              IWebSocketConnection?         Connection,
                                                              SecureDataTransferRequest?    Request,
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSecureDataTransferResponseErrorSentDelegate? OnSecureDataTransferResponseErrorSent;
 
 
-        public Task SendOnSecureDataTransferResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnSecureDataTransferResponseErrorSent(DateTimeOffset                 Timestamp,
                                                               IEventSender                   Sender,
                                                               IWebSocketConnection?          Connection,
                                                               SecureDataTransferRequest?     Request,

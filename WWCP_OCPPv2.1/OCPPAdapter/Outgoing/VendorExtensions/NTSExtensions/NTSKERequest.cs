@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNTSKERequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnNTSKERequestSentDelegate(DateTimeOffset          Timestamp,
                                                     IEventSender            Sender,
                                                     IWebSocketConnection?   Connection,
                                                     NTSKERequest            Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNTSKEResponseSentDelegate(DateTime               Timestamp,
+        OnNTSKEResponseSentDelegate(DateTimeOffset         Timestamp,
                                     IEventSender           Sender,
                                     IWebSocketConnection?  Connection,
                                     NTSKERequest           Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNTSKERequestErrorSentDelegate(DateTime                       Timestamp,
+        OnNTSKERequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                         IEventSender                   Sender,
                                         IWebSocketConnection?          Connection,
                                         NTSKERequest?                  Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNTSKEResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnNTSKEResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                          IEventSender                    Sender,
                                          IWebSocketConnection?           Connection,
                                          NTSKERequest?                   Request,
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnNTSKEResponseSentDelegate?  OnNTSKEResponseSent;
 
-        public Task SendOnNTSKEResponseSent(DateTime              Timestamp,
+        public Task SendOnNTSKEResponseSent(DateTimeOffset        Timestamp,
                                             IEventSender          Sender,
                                             IWebSocketConnection? Connection,
                                             NTSKERequest          Request,
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNTSKERequestErrorSentDelegate? OnNTSKERequestErrorSent;
 
 
-        public Task SendOnNTSKERequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnNTSKERequestErrorSent(DateTimeOffset                Timestamp,
                                                 IEventSender                  Sender,
                                                 IWebSocketConnection?         Connection,
                                                 NTSKERequest?                 Request,
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNTSKEResponseErrorSentDelegate? OnNTSKEResponseErrorSent;
 
 
-        public Task SendOnNTSKEResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnNTSKEResponseErrorSent(DateTimeOffset                 Timestamp,
                                                  IEventSender                   Sender,
                                                  IWebSocketConnection?          Connection,
                                                  NTSKERequest?                  Request,

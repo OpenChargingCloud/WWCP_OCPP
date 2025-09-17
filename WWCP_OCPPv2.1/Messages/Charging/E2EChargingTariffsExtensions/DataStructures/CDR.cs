@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The timestamp when this tariff was created.
         /// </summary>
         [Mandatory] //, NonStandard("Pagination")]
-        public DateTime                          Created                   { get; }
+        public DateTimeOffset                    Created                   { get; }
 
         /// <summary>
         /// Optional references to other tariffs, which will be replaced by this charge detail record.
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Price                             TotalCost,
                    Currency                          Currency,
 
-                   DateTime?                         Created              = null,
+                   DateTimeOffset?                   Created              = null,
                    IEnumerable<CDR_Id>?              Replaces             = null,
                    IEnumerable<CDR_Id>?              References           = null,
                    Tariff?                           ChargingTariff       = null,

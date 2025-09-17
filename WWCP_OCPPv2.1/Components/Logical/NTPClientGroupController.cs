@@ -42,11 +42,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Contains the current date and time.
         /// </summary>
         [Mandatory]
-        public DateTime                          DateTime                 { get; }
+        public DateTimeOffset                    DateTime           { get; }
 
 
 
-        public IEnumerable<NTPClientController>  Clients       { get; }
+        public IEnumerable<NTPClientController>  Clients                  { get; }
 
         public Boolean?                          AllowJumpsAfterReboot    { get; }
 
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Date time of the next time offset transition.
         /// </summary>
-        public DateTime?                NextTimeOffsetTransitionDateTime    { get; set; }
+        public DateTimeOffset?          NextTimeOffsetTransitionDateTime    { get; set; }
 
         /// <summary>
         /// Next local time offset in the format: "+01:00", "-02:00" etc.
@@ -108,12 +108,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         I18NString?                       Description                        = null,
 
                                         String?                           TimeOffset                         = null,
-                                        DateTime?                         NextTimeOffsetTransitionDateTime   = null,
+                                        DateTimeOffset?                   NextTimeOffsetTransitionDateTime   = null,
                                         String?                           NextTimeOffsetTransition           = null,
                                         String?                           TimeZone                           = null,
                                         Int32?                            TimeAdjustmentReportingThreshold   = null,
 
-                                        DateTime?                         DateTime                           = null,
+                                        DateTimeOffset?                   DateTime                           = null,
 
                                         CustomData?                       CustomData                         = null)
 

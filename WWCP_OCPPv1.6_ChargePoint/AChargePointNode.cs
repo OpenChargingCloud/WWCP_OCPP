@@ -121,14 +121,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
 
 
-        public IEnumerable<ChargePointConnector> Connectors
+        public IEnumerable<ChargePointConnector>  Connectors
             => connectors.Values;
 
 
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                CSMSTime                    { get; private set; } = Timestamp.Now;
+        public DateTimeOffset?                    CSMSTime                    { get; private set; } = Timestamp.Now;
 
 
         //public HTTPAPI?                 HTTPAPI                     { get; }

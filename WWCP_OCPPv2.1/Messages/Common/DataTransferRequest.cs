@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    IEnumerable<Signature>?  Signatures            = null,
 
                                    Request_Id?              RequestId             = null,
-                                   DateTime?                RequestTimestamp      = null,
+                                   DateTimeOffset?          RequestTimestamp      = null,
                                    TimeSpan?                RequestTimeout        = null,
                                    EventTracking_Id?        EventTrackingId       = null,
                                    NetworkPath?             NetworkPath           = null,
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 Request_Id                                         RequestId,
                                                 SourceRouting                                      Destination,
                                                 NetworkPath                                        NetworkPath,
-                                                DateTime?                                          RequestTimestamp                  = null,
+                                                DateTimeOffset?                                    RequestTimestamp                  = null,
                                                 TimeSpan?                                          RequestTimeout                    = null,
                                                 EventTracking_Id?                                  EventTrackingId                   = null,
                                                 CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out DataTransferRequest?      DataTransferRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       DateTime?                                          RequestTimestamp                  = null,
+                                       DateTimeOffset?                                    RequestTimestamp                  = null,
                                        TimeSpan?                                          RequestTimeout                    = null,
                                        EventTracking_Id?                                  EventTrackingId                   = null,
                                        CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)
@@ -603,7 +603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    IEnumerable<Signature>?  Signatures            = null,
 
                                    Request_Id?              RequestId             = null,
-                                   DateTime?                RequestTimestamp      = null,
+                                   DateTimeOffset?          RequestTimestamp      = null,
                                    TimeSpan?                RequestTimeout        = null,
                                    EventTracking_Id?        EventTrackingId       = null,
                                    NetworkPath?             NetworkPath           = null,
@@ -714,7 +714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 Request_Id                                         RequestId,
                                                 SourceRouting                                      Destination,
                                                 NetworkPath                                        NetworkPath,
-                                                DateTime?                                          RequestTimestamp                  = null,
+                                                DateTimeOffset?                                    RequestTimestamp                  = null,
                                                 TimeSpan?                                          RequestTimeout                    = null,
                                                 EventTracking_Id?                                  EventTrackingId                   = null,
                                                 CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)
@@ -762,7 +762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        NetworkPath                                        NetworkPath,
                                        [NotNullWhen(true)]  out DataTransferRequest?      DataTransferRequest,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       DateTime?                                          RequestTimestamp                  = null,
+                                       DateTimeOffset?                                    RequestTimestamp                  = null,
                                        TimeSpan?                                          RequestTimeout                    = null,
                                        EventTracking_Id?                                  EventTrackingId                   = null,
                                        CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)

@@ -41,31 +41,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     #region Delegates
 
 
-    public delegate Task OnJSONRequestMessageReceivedDelegate         (DateTime                         Timestamp,
+    public delegate Task OnJSONRequestMessageReceivedDelegate         (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONRequestMessage          JSONRequestMessage,
                                                                        CancellationToken                CancellationToken);
 
-    public delegate Task OnJSONResponseMessageReceivedDelegate        (DateTime                         Timestamp,
+    public delegate Task OnJSONResponseMessageReceivedDelegate        (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONResponseMessage         JSONResponseMessage,
                                                                        CancellationToken                CancellationToken);
 
-    public delegate Task OnJSONRequestErrorMessageReceivedDelegate    (DateTime                         Timestamp,
+    public delegate Task OnJSONRequestErrorMessageReceivedDelegate    (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage,
                                                                        CancellationToken                CancellationToken);
 
-    public delegate Task OnJSONResponseErrorMessageReceivedDelegate   (DateTime                         Timestamp,
+    public delegate Task OnJSONResponseErrorMessageReceivedDelegate   (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage,
                                                                        CancellationToken                CancellationToken);
 
-    public delegate Task OnJSONSendMessageReceivedDelegate            (DateTime                         Timestamp,
+    public delegate Task OnJSONSendMessageReceivedDelegate            (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_JSONSendMessage             JSONSendMessage,
@@ -73,31 +73,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
 
-    public delegate Task OnBinaryRequestMessageReceivedDelegate       (DateTime                         Timestamp,
+    public delegate Task OnBinaryRequestMessageReceivedDelegate       (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinaryRequestMessage        BinaryRequestMessage,
                                                                        CancellationToken                CancellationToken);
 
-    public delegate Task OnBinaryResponseMessageReceivedDelegate      (DateTime                         Timestamp,
+    public delegate Task OnBinaryResponseMessageReceivedDelegate      (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinaryResponseMessage       BinaryResponseMessage,
                                                                        CancellationToken                CancellationToken);
 
-    public delegate Task OnBinaryRequestErrorMessageReceivedDelegate  (DateTime                         Timestamp,
+    public delegate Task OnBinaryRequestErrorMessageReceivedDelegate  (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage,
                                                                        CancellationToken                CancellationToken);
 
-    public delegate Task OnBinaryResponseErrorMessageReceivedDelegate (DateTime                         Timestamp,
+    public delegate Task OnBinaryResponseErrorMessageReceivedDelegate (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
                                                                        CancellationToken                CancellationToken);
 
-    public delegate Task OnBinarySendMessageReceivedDelegate          (DateTime                         Timestamp,
+    public delegate Task OnBinarySendMessageReceivedDelegate          (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
                                                                        IWebSocketConnection?            WebSocketConnection,
                                                                        OCPP_BinarySendMessage           BinarySendMessage,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="JSONMessage">The received JSON message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
-        public async Task ProcessJSONMessage(DateTime              MessageTimestamp,
+        public async Task ProcessJSONMessage(DateTimeOffset        MessageTimestamp,
                                              IWebSocketConnection  WebSocketConnection,
                                              NetworkingNode_Id?    sourceNodeId,
                                              JArray                JSONMessage,
@@ -562,7 +562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONRequestErrorMessageReceived));
+                            DebugX.LogException(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONRequestErrorMessageReceived));
                         }
                     }
 
@@ -599,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONResponseErrorMessageReceived));
+                            DebugX.LogException(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(OnJSONResponseErrorMessageReceived));
                         }
                     }
 
@@ -770,7 +770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region ProcessBinaryMessage (MessageTimestamp, WebSocketConnection, BinaryMessage, EventTrackingId, CancellationToken)
 
-        public async Task ProcessBinaryMessage(DateTime              MessageTimestamp,
+        public async Task ProcessBinaryMessage(DateTimeOffset        MessageTimestamp,
                                                IWebSocketConnection  WebSocketConnection,
                                                NetworkingNode_Id?    sourceNodeId,
                                                Byte[]                BinaryMessage,

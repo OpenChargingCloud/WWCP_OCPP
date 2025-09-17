@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSignedFirmwareStatusNotificationRequestReceivedDelegate(DateTime                                 Timestamp,
+    public delegate Task OnSignedFirmwareStatusNotificationRequestReceivedDelegate(DateTimeOffset                           Timestamp,
                                                                                    IEventSender                             Sender,
                                                                                    IWebSocketConnection                     Connection,
                                                                                    SignedFirmwareStatusNotificationRequest  Request,
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSignedFirmwareStatusNotificationResponseReceivedDelegate(DateTime                                  Timestamp,
+    public delegate Task OnSignedFirmwareStatusNotificationResponseReceivedDelegate(DateTimeOffset                            Timestamp,
                                                                                     IEventSender                              Sender,
                                                                                     IWebSocketConnection?                     Connection,
                                                                                     SignedFirmwareStatusNotificationRequest?  Request,
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSignedFirmwareStatusNotificationRequestErrorReceivedDelegate(DateTime                                  Timestamp,
+    public delegate Task OnSignedFirmwareStatusNotificationRequestErrorReceivedDelegate(DateTimeOffset                            Timestamp,
                                                                                         IEventSender                              Sender,
                                                                                         IWebSocketConnection                      Connection,
                                                                                         SignedFirmwareStatusNotificationRequest?  Request,
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSignedFirmwareStatusNotificationResponseErrorReceivedDelegate(DateTime                                   Timestamp,
+    public delegate Task OnSignedFirmwareStatusNotificationResponseErrorReceivedDelegate(DateTimeOffset                             Timestamp,
                                                                                          IEventSender                               Sender,
                                                                                          IWebSocketConnection                       Connection,
                                                                                          SignedFirmwareStatusNotificationRequest?   Request,
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SignedFirmwareStatusNotificationResponse>
 
-        OnSignedFirmwareStatusNotificationDelegate(DateTime                                 Timestamp,
+        OnSignedFirmwareStatusNotificationDelegate(DateTimeOffset                           Timestamp,
                                                    IEventSender                             Sender,
                                                    IWebSocketConnection                     Connection,
                                                    SignedFirmwareStatusNotificationRequest  Request,
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_SignedFirmwareStatusNotification(DateTime              RequestTimestamp,
+            Receive_SignedFirmwareStatusNotification(DateTimeOffset        RequestTimestamp,
                                                      IWebSocketConnection  WebSocketConnection,
                                                      SourceRouting         Destination,
                                                      NetworkPath           NetworkPath,
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_SignedFirmwareStatusNotification(DateTime              RequestTimestamp,
+            Receive_SignedFirmwareStatusNotification(DateTimeOffset        RequestTimestamp,
                                                      IWebSocketConnection  WebSocketConnection,
                                                      SourceRouting         Destination,
                                                      NetworkPath           NetworkPath,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                              NetworkPath                              NetworkPath,
                                                              EventTracking_Id                         EventTrackingId,
                                                              Request_Id                               RequestId,
-                                                             DateTime?                                ResponseTimestamp   = null,
+                                                             DateTimeOffset?                          ResponseTimestamp   = null,
                                                              CancellationToken                        CancellationToken   = default)
 
         {
@@ -575,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                              NetworkPath                              NetworkPath,
                                                              EventTracking_Id                         EventTrackingId,
                                                              Request_Id                               RequestId,
-                                                             DateTime?                                ResponseTimestamp   = null,
+                                                             DateTimeOffset?                          ResponseTimestamp   = null,
                                                              CancellationToken                        CancellationToken   = default)
 
         {
@@ -685,7 +685,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                                  NetworkPath                              NetworkPath,
                                                                  EventTracking_Id                         EventTrackingId,
                                                                  Request_Id                               RequestId,
-                                                                 DateTime?                                ResponseTimestamp   = null,
+                                                                 DateTimeOffset?                          ResponseTimestamp   = null,
                                                                  CancellationToken                        CancellationToken   = default)
         {
 
@@ -764,7 +764,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                                  NetworkPath                              NetworkPath,
                                                                  EventTracking_Id                         EventTrackingId,
                                                                  Request_Id                               RequestId,
-                                                                 DateTime?                                ResponseTimestamp   = null,
+                                                                 DateTimeOffset?                          ResponseTimestamp   = null,
                                                                  CancellationToken                        CancellationToken   = default)
         {
 
@@ -853,7 +853,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                                   NetworkPath                                NetworkPath,
                                                                   EventTracking_Id                           EventTrackingId,
                                                                   Request_Id                                 RequestId,
-                                                                  DateTime?                                  ResponseTimestamp   = null,
+                                                                  DateTimeOffset?                            ResponseTimestamp   = null,
                                                                   CancellationToken                          CancellationToken   = default)
 
         {

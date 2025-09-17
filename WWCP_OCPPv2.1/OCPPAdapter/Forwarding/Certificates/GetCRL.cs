@@ -43,7 +43,7 @@
 //    /// <param name="CancellationToken">A token to cancel this request.</param>
 //    public delegate Task<RequestForwardingDecision<GetCRLRequest, GetCRLResponse>>
 
-//        OnGetCRLRequestFilterDelegate(DateTime               Timestamp,
+//        OnGetCRLRequestFilterDelegate(DateTimeOffset         Timestamp,
 //                                      IEventSender           Sender,
 //                                      IWebSocketConnection   Connection,
 //                                      GetCRLRequest          Request,
@@ -61,7 +61,7 @@
 //    /// <param name="CancellationToken">A token to cancel this request.</param>
 //    public delegate Task
 
-//        OnGetCRLRequestFilteredDelegate(DateTime                                            Timestamp,
+//        OnGetCRLRequestFilteredDelegate(DateTimeOffset                                      Timestamp,
 //                                        IEventSender                                        Sender,
 //                                        IWebSocketConnection                                Connection,
 //                                        GetCRLRequest                                       Request,

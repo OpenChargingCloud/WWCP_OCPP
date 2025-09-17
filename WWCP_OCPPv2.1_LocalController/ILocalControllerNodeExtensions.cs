@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  IEnumerable<Signature>?       Signatures            = null,
 
                                  Request_Id?                   RequestId             = null,
-                                 DateTime?                     RequestTimestamp      = null,
+                                 DateTimeOffset?               RequestTimestamp      = null,
                                  TimeSpan?                     RequestTimeout        = null,
                                  EventTracking_Id?             EventTrackingId       = null,
                                  SerializationFormats?         SerializationFormat   = null,
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                            IEnumerable<Signature>?       Signatures                = null,
 
                                            Request_Id?                   RequestId                 = null,
-                                           DateTime?                     RequestTimestamp          = null,
+                                           DateTimeOffset?               RequestTimestamp          = null,
                                            TimeSpan?                     RequestTimeout            = null,
                                            EventTracking_Id?             EventTrackingId           = null,
                                            SerializationFormats?         SerializationFormat       = null,
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                                   IEnumerable<Signature>?       Signatures            = null,
 
                                                   Request_Id?                   RequestId             = null,
-                                                  DateTime?                     RequestTimestamp      = null,
+                                                  DateTimeOffset?               RequestTimestamp      = null,
                                                   TimeSpan?                     RequestTimeout        = null,
                                                   EventTracking_Id?             EventTrackingId       = null,
                                                   SerializationFormats?         SerializationFormat   = null,
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                           IEnumerable<Signature>?       Signatures            = null,
 
                           Request_Id?                   RequestId             = null,
-                          DateTime?                     RequestTimestamp      = null,
+                          DateTimeOffset?               RequestTimestamp      = null,
                           TimeSpan?                     RequestTimeout        = null,
                           EventTracking_Id?             EventTrackingId       = null,
                           SerializationFormats?         SerializationFormat   = null,
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                         IEnumerable<Signature>?       Signatures            = null,
 
                         Request_Id?                   RequestId             = null,
-                        DateTime?                     RequestTimestamp      = null,
+                        DateTimeOffset?               RequestTimestamp      = null,
                         TimeSpan?                     RequestTimeout        = null,
                         EventTracking_Id?             EventTrackingId       = null,
                         SerializationFormats?         SerializationFormat   = null,
@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                           IEnumerable<Signature>?       Signatures            = null,
 
                                           Request_Id?                   RequestId             = null,
-                                          DateTime?                     RequestTimestamp      = null,
+                                          DateTimeOffset?               RequestTimestamp      = null,
                                           TimeSpan?                     RequestTimeout        = null,
                                           EventTracking_Id?             EventTrackingId       = null,
                                           SerializationFormats?         SerializationFormat   = null,
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                          IEnumerable<Signature>?       Signatures            = null,
 
                          Request_Id?                   RequestId             = null,
-                         DateTime?                     RequestTimestamp      = null,
+                         DateTimeOffset?               RequestTimestamp      = null,
                          TimeSpan?                     RequestTimeout        = null,
                          EventTracking_Id?             EventTrackingId       = null,
                          SerializationFormats?         SerializationFormat   = null,
@@ -551,7 +551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                    IEnumerable<Signature>?       Signatures            = null,
 
                                    Request_Id?                   RequestId             = null,
-                                   DateTime?                     RequestTimestamp      = null,
+                                   DateTimeOffset?               RequestTimestamp      = null,
                                    TimeSpan?                     RequestTimeout        = null,
                                    EventTracking_Id?             EventTrackingId       = null,
                                    SerializationFormats?         SerializationFormat   = null,
@@ -619,7 +619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                       IEnumerable<Signature>?       Signatures            = null,
 
                                       Request_Id?                   RequestId             = null,
-                                      DateTime?                     RequestTimestamp      = null,
+                                      DateTimeOffset?               RequestTimestamp      = null,
                                       TimeSpan?                     RequestTimeout        = null,
                                       EventTracking_Id?             EventTrackingId       = null,
                                       SerializationFormats?         SerializationFormat   = null,
@@ -687,7 +687,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                           IEnumerable<Signature>?       Signatures            = null,
 
                                           Request_Id?                   RequestId             = null,
-                                          DateTime?                     RequestTimestamp      = null,
+                                          DateTimeOffset?               RequestTimestamp      = null,
                                           TimeSpan?                     RequestTimeout        = null,
                                           EventTracking_Id?             EventTrackingId       = null,
                                           SerializationFormats?         SerializationFormat   = null,
@@ -759,7 +759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   IEnumerable<Signature>?       Signatures                         = null,
 
                                   Request_Id?                   RequestId                          = null,
-                                  DateTime?                     RequestTimestamp                   = null,
+                                  DateTimeOffset?               RequestTimestamp                   = null,
                                   TimeSpan?                     RequestTimeout                     = null,
                                   EventTracking_Id?             EventTrackingId                    = null,
                                   SerializationFormats?         SerializationFormat                = null,
@@ -825,7 +825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  IEnumerable<Signature>?       Signatures            = null,
 
                                  Request_Id?                   RequestId             = null,
-                                 DateTime?                     RequestTimestamp      = null,
+                                 DateTimeOffset?               RequestTimestamp      = null,
                                  TimeSpan?                     RequestTimeout        = null,
                                  EventTracking_Id?             EventTrackingId       = null,
                                  SerializationFormats?         SerializationFormat   = null,
@@ -890,7 +890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         //                  IEnumerable<Signature>?       Signatures            = null,
 
         //                  Request_Id?                   RequestId             = null,
-        //                  DateTime?                     RequestTimestamp      = null,
+        //                  DateTimeOffset?               RequestTimestamp      = null,
         //                  TimeSpan?                     RequestTimeout        = null,
         //                  EventTracking_Id?             EventTrackingId       = null,
         //                  SerializationFormats?         SerializationFormat   = null,
@@ -956,7 +956,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                         IEnumerable<Signature>?       Signatures            = null,
 
                                         Request_Id?                   RequestId             = null,
-                                        DateTime?                     RequestTimestamp      = null,
+                                        DateTimeOffset?               RequestTimestamp      = null,
                                         TimeSpan?                     RequestTimeout        = null,
                                         EventTracking_Id?             EventTrackingId       = null,
                                         SerializationFormats?         SerializationFormat   = null,
@@ -1023,7 +1023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                       IEnumerable<Signature>?        Signatures                    = null,
 
                       Request_Id?                    RequestId                     = null,
-                      DateTime?                      RequestTimestamp              = null,
+                      DateTimeOffset?                RequestTimestamp              = null,
                       TimeSpan?                      RequestTimeout                = null,
                       EventTracking_Id?              EventTrackingId               = null,
                       SerializationFormats?          SerializationFormat           = null,
@@ -1080,7 +1080,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
                                   EVSE_Id                       EVSEId,
                                   ChargingNeeds                 ChargingNeeds,
-                                  DateTime?                     ReceivedTimestamp     = null,
+                                  DateTimeOffset?               ReceivedTimestamp     = null,
                                   UInt16?                       MaxScheduleTuples     = null,
 
                                   CustomData?                   CustomData            = null,
@@ -1093,7 +1093,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   IEnumerable<Signature>?       Signatures            = null,
 
                                   Request_Id?                   RequestId             = null,
-                                  DateTime?                     RequestTimestamp      = null,
+                                  DateTimeOffset?               RequestTimestamp      = null,
                                   TimeSpan?                     RequestTimeout        = null,
                                   EventTracking_Id?             EventTrackingId       = null,
                                   SerializationFormats?         SerializationFormat   = null,
@@ -1184,7 +1184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  IEnumerable<Signature>?       Signatures              = null,
 
                                  Request_Id?                   RequestId               = null,
-                                 DateTime?                     RequestTimestamp        = null,
+                                 DateTimeOffset?               RequestTimestamp        = null,
                                  TimeSpan?                     RequestTimeout          = null,
                                  EventTracking_Id?             EventTrackingId         = null,
                                  SerializationFormats?         SerializationFormat     = null,
@@ -1265,7 +1265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                    IEnumerable<Signature>?       Signatures            = null,
 
                                    Request_Id?                   RequestId             = null,
-                                   DateTime?                     RequestTimestamp      = null,
+                                   DateTimeOffset?               RequestTimestamp      = null,
                                    TimeSpan?                     RequestTimeout        = null,
                                    EventTracking_Id?             EventTrackingId       = null,
                                    SerializationFormats?         SerializationFormat   = null,
@@ -1332,7 +1332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                             IEnumerable<Signature>?       Signatures            = null,
 
                             Request_Id?                   RequestId             = null,
-                            DateTime?                     RequestTimestamp      = null,
+                            DateTimeOffset?               RequestTimestamp      = null,
                             TimeSpan?                     RequestTimeout        = null,
                             EventTracking_Id?             EventTrackingId       = null,
                             SerializationFormats?         SerializationFormat   = null,
@@ -1399,7 +1399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 IEnumerable<Signature>?        Signatures            = null,
 
                                 Request_Id?                    RequestId             = null,
-                                DateTime?                      RequestTimestamp      = null,
+                                DateTimeOffset?                RequestTimestamp      = null,
                                 TimeSpan?                      RequestTimeout        = null,
                                 EventTracking_Id?              EventTrackingId       = null,
                                 SerializationFormats?          SerializationFormat   = null,
@@ -1465,7 +1465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                      IEnumerable<Signature>?       Signatures            = null,
 
                                      Request_Id?                   RequestId             = null,
-                                     DateTime?                     RequestTimestamp      = null,
+                                     DateTimeOffset?               RequestTimestamp      = null,
                                      TimeSpan?                     RequestTimeout        = null,
                                      EventTracking_Id?             EventTrackingId       = null,
                                      SerializationFormats?         SerializationFormat   = null,
@@ -1536,7 +1536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                    IEnumerable<Signature>?       Signatures            = null,
 
                                    Request_Id?                   RequestId             = null,
-                                   DateTime?                     RequestTimestamp      = null,
+                                   DateTimeOffset?               RequestTimestamp      = null,
                                    TimeSpan?                     RequestTimeout        = null,
                                    EventTracking_Id?             EventTrackingId       = null,
                                    SerializationFormats?         SerializationFormat   = null,
@@ -1610,7 +1610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                      IEnumerable<Signature>?       Signatures                 = null,
 
                                      Request_Id?                   RequestId                  = null,
-                                     DateTime?                     RequestTimestamp           = null,
+                                     DateTimeOffset?               RequestTimestamp           = null,
                                      TimeSpan?                     RequestTimeout             = null,
                                      EventTracking_Id?             EventTrackingId            = null,
                                      SerializationFormats?         SerializationFormat        = null,
@@ -1678,7 +1678,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                    IEnumerable<Signature>?       Signatures            = null,
 
                                    Request_Id?                   RequestId             = null,
-                                   DateTime?                     RequestTimestamp      = null,
+                                   DateTimeOffset?               RequestTimestamp      = null,
                                    TimeSpan?                     RequestTimeout        = null,
                                    EventTracking_Id?             EventTrackingId       = null,
                                    SerializationFormats?         SerializationFormat   = null,
@@ -1741,7 +1741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                       IEnumerable<Signature>?       Signatures            = null,
 
                                       Request_Id?                   RequestId             = null,
-                                      DateTime?                     RequestTimestamp      = null,
+                                      DateTimeOffset?               RequestTimestamp      = null,
                                       TimeSpan?                     RequestTimeout        = null,
                                       EventTracking_Id?             EventTrackingId       = null,
                                       SerializationFormats?         SerializationFormat   = null,
@@ -1808,7 +1808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   IEnumerable<Signature>?       Signatures            = null,
 
                                   Request_Id?                   RequestId             = null,
-                                  DateTime?                     RequestTimestamp      = null,
+                                  DateTimeOffset?               RequestTimestamp      = null,
                                   TimeSpan?                     RequestTimeout        = null,
                                   EventTracking_Id?             EventTrackingId       = null,
                                   SerializationFormats?         SerializationFormat   = null,
@@ -1880,7 +1880,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                       IEnumerable<Signature>?       Signatures            = null,
 
                                       Request_Id?                   RequestId             = null,
-                                      DateTime?                     RequestTimestamp      = null,
+                                      DateTimeOffset?               RequestTimestamp      = null,
                                       TimeSpan?                     RequestTimeout        = null,
                                       EventTracking_Id?             EventTrackingId       = null,
                                       SerializationFormats?         SerializationFormat   = null,
@@ -1954,7 +1954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                   IEnumerable<Signature>?       Signatures            = null,
 
                   Request_Id?                   RequestId             = null,
-                  DateTime?                     RequestTimestamp      = null,
+                  DateTimeOffset?               RequestTimestamp      = null,
                   TimeSpan?                     RequestTimeout        = null,
                   EventTracking_Id?             EventTrackingId       = null,
                   SerializationFormats?         SerializationFormat   = null,
@@ -2021,7 +2021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            IEnumerable<Signature>?       Signatures            = null,
 
                            Request_Id?                   RequestId             = null,
-                           DateTime?                     RequestTimestamp      = null,
+                           DateTimeOffset?               RequestTimestamp      = null,
                            TimeSpan?                     RequestTimeout        = null,
                            EventTracking_Id?             EventTrackingId       = null,
                            SerializationFormats?         SerializationFormat   = null,
@@ -2093,7 +2093,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                             IEnumerable<Signature>?       Signatures            = null,
 
                             Request_Id?                   RequestId             = null,
-                            DateTime?                     RequestTimestamp      = null,
+                            DateTimeOffset?               RequestTimestamp      = null,
                             TimeSpan?                     RequestTimeout        = null,
                             EventTracking_Id?             EventTrackingId       = null,
                             SerializationFormats?         SerializationFormat   = null,
@@ -2158,7 +2158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               IEnumerable<Signature>?       Signatures            = null,
 
                               Request_Id?                   RequestId             = null,
-                              DateTime?                     RequestTimestamp      = null,
+                              DateTimeOffset?               RequestTimestamp      = null,
                               TimeSpan?                     RequestTimeout        = null,
                               EventTracking_Id?             EventTrackingId       = null,
                               SerializationFormats?         SerializationFormat   = null,
@@ -2221,7 +2221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                           IEnumerable<Signature>?       Signatures            = null,
 
                           Request_Id?                   RequestId             = null,
-                          DateTime?                     RequestTimestamp      = null,
+                          DateTimeOffset?               RequestTimestamp      = null,
                           TimeSpan?                     RequestTimeout        = null,
                           EventTracking_Id?             EventTrackingId       = null,
                           SerializationFormats?         SerializationFormat   = null,
@@ -2287,7 +2287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                       IEnumerable<Signature>?         Signatures            = null,
 
                       Request_Id?                     RequestId             = null,
-                      DateTime?                       RequestTimestamp      = null,
+                      DateTimeOffset?                 RequestTimestamp      = null,
                       TimeSpan?                       RequestTimeout        = null,
                       EventTracking_Id?               EventTrackingId       = null,
                       SerializationFormats?           SerializationFormat   = null,
@@ -2358,7 +2358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                    IEnumerable<Signature>?       Signatures            = null,
 
                    Request_Id?                   RequestId             = null,
-                   DateTime?                     RequestTimestamp      = null,
+                   DateTimeOffset?               RequestTimestamp      = null,
                    TimeSpan?                     RequestTimeout        = null,
                    EventTracking_Id?             EventTrackingId       = null,
                    SerializationFormats?         SerializationFormat   = null,
@@ -2426,7 +2426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                          IEnumerable<Signature>?       Signatures             = null,
 
                          Request_Id?                   RequestId              = null,
-                         DateTime?                     RequestTimestamp       = null,
+                         DateTimeOffset?               RequestTimestamp       = null,
                          TimeSpan?                     RequestTimeout         = null,
                          EventTracking_Id?             EventTrackingId        = null,
                          SerializationFormats?         SerializationFormat    = null,
@@ -2488,7 +2488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                          IEnumerable<Signature>?       Signatures            = null,
 
                          Request_Id?                   RequestId             = null,
-                         DateTime?                     RequestTimestamp      = null,
+                         DateTimeOffset?               RequestTimestamp      = null,
                          TimeSpan?                     RequestTimeout        = null,
                          EventTracking_Id?             EventTrackingId       = null,
                          SerializationFormats?         SerializationFormat   = null,
@@ -2549,7 +2549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               IEnumerable<Signature>?       Signatures            = null,
 
                               Request_Id?                   RequestId             = null,
-                              DateTime?                     RequestTimestamp      = null,
+                              DateTimeOffset?               RequestTimestamp      = null,
                               TimeSpan?                     RequestTimeout        = null,
                               EventTracking_Id?             EventTrackingId       = null,
                               SerializationFormats?         SerializationFormat   = null,
@@ -2614,7 +2614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 IEnumerable<Signature>?           Signatures            = null,
 
                                 Request_Id?                       RequestId             = null,
-                                DateTime?                         RequestTimestamp      = null,
+                                DateTimeOffset?                   RequestTimestamp      = null,
                                 TimeSpan?                         RequestTimeout        = null,
                                 EventTracking_Id?                 EventTrackingId       = null,
                                 SerializationFormats?             SerializationFormat   = null,
@@ -2677,7 +2677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                IEnumerable<Signature>?       Signatures            = null,
 
                                Request_Id?                   RequestId             = null,
-                               DateTime?                     RequestTimestamp      = null,
+                               DateTimeOffset?               RequestTimestamp      = null,
                                TimeSpan?                     RequestTimeout        = null,
                                EventTracking_Id?             EventTrackingId       = null,
                                SerializationFormats?         SerializationFormat   = null,
@@ -2738,7 +2738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   IEnumerable<Signature>?         Signatures            = null,
 
                                   Request_Id?                     RequestId             = null,
-                                  DateTime?                       RequestTimestamp      = null,
+                                  DateTimeOffset?                 RequestTimestamp      = null,
                                   TimeSpan?                       RequestTimeout        = null,
                                   EventTracking_Id?               EventTrackingId       = null,
                                   SerializationFormats?           SerializationFormat   = null,
@@ -2799,7 +2799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                     IEnumerable<Signature>?             Signatures            = null,
 
                                     Request_Id?                         RequestId             = null,
-                                    DateTime?                           RequestTimestamp      = null,
+                                    DateTimeOffset?                     RequestTimestamp      = null,
                                     TimeSpan?                           RequestTimeout        = null,
                                     EventTracking_Id?                   EventTrackingId       = null,
                                     SerializationFormats?               SerializationFormat   = null,
@@ -2862,7 +2862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               IEnumerable<Signature>?       Signatures            = null,
 
                               Request_Id?                   RequestId             = null,
-                              DateTime?                     RequestTimestamp      = null,
+                              DateTimeOffset?               RequestTimestamp      = null,
                               TimeSpan?                     RequestTimeout        = null,
                               EventTracking_Id?             EventTrackingId       = null,
                               SerializationFormats?         SerializationFormat   = null,
@@ -2928,7 +2928,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                IEnumerable<Signature>?       Signatures            = null,
 
                                Request_Id?                   RequestId             = null,
-                               DateTime?                     RequestTimestamp      = null,
+                               DateTimeOffset?               RequestTimestamp      = null,
                                TimeSpan?                     RequestTimeout        = null,
                                EventTracking_Id?             EventTrackingId       = null,
                                SerializationFormats?         SerializationFormat   = null,
@@ -2994,7 +2994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            IEnumerable<Signature>?       Signatures            = null,
 
                            Request_Id?                   RequestId             = null,
-                           DateTime?                     RequestTimestamp      = null,
+                           DateTimeOffset?               RequestTimestamp      = null,
                            TimeSpan?                     RequestTimeout        = null,
                            EventTracking_Id?             EventTrackingId       = null,
                            SerializationFormats?         SerializationFormat   = null,
@@ -3059,7 +3059,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   IEnumerable<Signature>?       Signatures            = null,
 
                                   Request_Id?                   RequestId             = null,
-                                  DateTime?                     RequestTimestamp      = null,
+                                  DateTimeOffset?               RequestTimestamp      = null,
                                   TimeSpan?                     RequestTimeout        = null,
                                   EventTracking_Id?             EventTrackingId       = null,
                                   SerializationFormats?         SerializationFormat   = null,
@@ -3125,7 +3125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                IEnumerable<Signature>?    Signatures            = null,
 
                                Request_Id?                RequestId             = null,
-                               DateTime?                  RequestTimestamp      = null,
+                               DateTimeOffset?            RequestTimestamp      = null,
                                TimeSpan?                  RequestTimeout        = null,
                                EventTracking_Id?          EventTrackingId       = null,
                                SerializationFormats?      SerializationFormat   = null,
@@ -3188,7 +3188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                        IEnumerable<Signature>?            Signatures            = null,
 
                                        Request_Id?                        RequestId             = null,
-                                       DateTime?                          RequestTimestamp      = null,
+                                       DateTimeOffset?                    RequestTimestamp      = null,
                                        TimeSpan?                          RequestTimeout        = null,
                                        EventTracking_Id?                  EventTrackingId       = null,
                                        SerializationFormats?              SerializationFormat   = null,
@@ -3249,7 +3249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               IEnumerable<Signature>?       Signatures            = null,
 
                               Request_Id?                   RequestId             = null,
-                              DateTime?                     RequestTimestamp      = null,
+                              DateTimeOffset?               RequestTimestamp      = null,
                               TimeSpan?                     RequestTimeout        = null,
                               EventTracking_Id?             EventTrackingId       = null,
                               SerializationFormats?         SerializationFormat   = null,
@@ -3314,7 +3314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   IEnumerable<Signature>?       Signatures            = null,
 
                                   Request_Id?                   RequestId             = null,
-                                  DateTime?                     RequestTimestamp      = null,
+                                  DateTimeOffset?               RequestTimestamp      = null,
                                   TimeSpan?                     RequestTimeout        = null,
                                   EventTracking_Id?             EventTrackingId       = null,
                                   SerializationFormats?         SerializationFormat   = null,
@@ -3376,7 +3376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 IEnumerable<Signature>?       Signatures            = null,
 
                                 Request_Id?                   RequestId             = null,
-                                DateTime?                     RequestTimestamp      = null,
+                                DateTimeOffset?               RequestTimestamp      = null,
                                 TimeSpan?                     RequestTimeout        = null,
                                 EventTracking_Id?             EventTrackingId       = null,
                                 SerializationFormats?         SerializationFormat   = null,
@@ -3440,7 +3440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                           IEnumerable<Signature>?          Signatures               = null,
 
                           Request_Id?                      RequestId                = null,
-                          DateTime?                        RequestTimestamp         = null,
+                          DateTimeOffset?                  RequestTimestamp         = null,
                           TimeSpan?                        RequestTimeout           = null,
                           EventTracking_Id?                EventTrackingId          = null,
                           SerializationFormats?            SerializationFormat      = null,
@@ -3501,7 +3501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                        IEnumerable<Signature>?       Signatures            = null,
 
                        Request_Id?                   RequestId             = null,
-                       DateTime?                     RequestTimestamp      = null,
+                       DateTimeOffset?               RequestTimestamp      = null,
                        TimeSpan?                     RequestTimeout        = null,
                        EventTracking_Id?             EventTrackingId       = null,
                        SerializationFormats?         SerializationFormat   = null,
@@ -3572,7 +3572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                        IEnumerable<Signature>?       Signatures            = null,
 
                        Request_Id?                   RequestId             = null,
-                       DateTime?                     RequestTimestamp      = null,
+                       DateTimeOffset?               RequestTimestamp      = null,
                        TimeSpan?                     RequestTimeout        = null,
                        EventTracking_Id?             EventTrackingId       = null,
                        SerializationFormats?         SerializationFormat   = null,
@@ -3638,7 +3638,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               IEnumerable<Signature>?       Signatures            = null,
 
                               Request_Id?                   RequestId             = null,
-                              DateTime?                     RequestTimestamp      = null,
+                              DateTimeOffset?               RequestTimestamp      = null,
                               TimeSpan?                     RequestTimeout        = null,
                               EventTracking_Id?             EventTrackingId       = null,
                               SerializationFormats?         SerializationFormat   = null,
@@ -3709,7 +3709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                           IEnumerable<Signature>?       Signatures            = null,
 
                           Request_Id?                   RequestId             = null,
-                          DateTime?                     RequestTimestamp      = null,
+                          DateTimeOffset?               RequestTimestamp      = null,
                           TimeSpan?                     RequestTimeout        = null,
                           EventTracking_Id?             EventTrackingId       = null,
                           SerializationFormats?         SerializationFormat   = null,
@@ -3775,7 +3775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                          IEnumerable<Signature>?       Signatures            = null,
 
                          Request_Id?                   RequestId             = null,
-                         DateTime?                     RequestTimestamp      = null,
+                         DateTimeOffset?               RequestTimestamp      = null,
                          TimeSpan?                     RequestTimeout        = null,
                          EventTracking_Id?             EventTrackingId       = null,
                          SerializationFormats?         SerializationFormat   = null,
@@ -3836,7 +3836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  IEnumerable<Signature>?       Signatures            = null,
 
                                  Request_Id?                   RequestId             = null,
-                                 DateTime?                     RequestTimestamp      = null,
+                                 DateTimeOffset?               RequestTimestamp      = null,
                                  TimeSpan?                     RequestTimeout        = null,
                                  EventTracking_Id?             EventTrackingId       = null,
                                  SerializationFormats?         SerializationFormat   = null,
@@ -3899,7 +3899,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                IEnumerable<Signature>?       Signatures            = null,
 
                                Request_Id?                   RequestId             = null,
-                               DateTime?                     RequestTimestamp      = null,
+                               DateTimeOffset?               RequestTimestamp      = null,
                                TimeSpan?                     RequestTimeout        = null,
                                EventTracking_Id?             EventTrackingId       = null,
                                SerializationFormats?         SerializationFormat   = null,
@@ -3964,7 +3964,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 IEnumerable<Signature>?       Signatures            = null,
 
                                 Request_Id?                   RequestId             = null,
-                                DateTime?                     RequestTimestamp      = null,
+                                DateTimeOffset?               RequestTimestamp      = null,
                                 TimeSpan?                     RequestTimeout        = null,
                                 EventTracking_Id?             EventTrackingId       = null,
                                 SerializationFormats?         SerializationFormat   = null,
@@ -4029,7 +4029,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  IEnumerable<Signature>?       Signatures                = null,
 
                                  Request_Id?                   RequestId                 = null,
-                                 DateTime?                     RequestTimestamp          = null,
+                                 DateTimeOffset?               RequestTimestamp          = null,
                                  TimeSpan?                     RequestTimeout            = null,
                                  EventTracking_Id?             EventTrackingId           = null,
                                  SerializationFormats?         SerializationFormat       = null,
@@ -4095,7 +4095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                  IEnumerable<Signature>?       Signatures            = null,
 
                                  Request_Id?                   RequestId             = null,
-                                 DateTime?                     RequestTimestamp      = null,
+                                 DateTimeOffset?               RequestTimestamp      = null,
                                  TimeSpan?                     RequestTimeout        = null,
                                  EventTracking_Id?             EventTrackingId       = null,
                                  SerializationFormats?         SerializationFormat   = null,
@@ -4160,7 +4160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   IEnumerable<Signature>?    Signatures            = null,
 
                                   Request_Id?                RequestId             = null,
-                                  DateTime?                  RequestTimestamp      = null,
+                                  DateTimeOffset?            RequestTimestamp      = null,
                                   TimeSpan?                  RequestTimeout        = null,
                                   EventTracking_Id?          EventTrackingId       = null,
                                   SerializationFormats?      SerializationFormat   = null,
@@ -4224,7 +4224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                         IEnumerable<Signature>?          Signatures            = null,
 
                                         Request_Id?                      RequestId             = null,
-                                        DateTime?                        RequestTimestamp      = null,
+                                        DateTimeOffset?                  RequestTimestamp      = null,
                                         TimeSpan?                        RequestTimeout        = null,
                                         EventTracking_Id?                EventTrackingId       = null,
                                         SerializationFormats?            SerializationFormat   = null,
@@ -4287,7 +4287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 IEnumerable<Signature>?       Signatures            = null,
 
                                 Request_Id?                   RequestId             = null,
-                                DateTime?                     RequestTimestamp      = null,
+                                DateTimeOffset?               RequestTimestamp      = null,
                                 TimeSpan?                     RequestTimeout        = null,
                                 EventTracking_Id?             EventTrackingId       = null,
                                 SerializationFormats?         SerializationFormat   = null,
@@ -4350,7 +4350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                             IEnumerable<Signature>?       Signatures            = null,
 
                             Request_Id?                   RequestId             = null,
-                            DateTime?                     RequestTimestamp      = null,
+                            DateTimeOffset?               RequestTimestamp      = null,
                             TimeSpan?                     RequestTimeout        = null,
                             EventTracking_Id?             EventTrackingId       = null,
                             SerializationFormats?         SerializationFormat   = null,
@@ -4417,7 +4417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            IEnumerable<Signature>?       Signatures            = null,
 
                            Request_Id?                   RequestId             = null,
-                           DateTime?                     RequestTimestamp      = null,
+                           DateTimeOffset?               RequestTimestamp      = null,
                            TimeSpan?                     RequestTimeout        = null,
                            EventTracking_Id?             EventTrackingId       = null,
                            SerializationFormats?         SerializationFormat   = null,
@@ -4479,7 +4479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                               IEnumerable<Signature>?       Signatures            = null,
 
                               Request_Id?                   RequestId             = null,
-                              DateTime?                     RequestTimestamp      = null,
+                              DateTimeOffset?               RequestTimestamp      = null,
                               TimeSpan?                     RequestTimeout        = null,
                               EventTracking_Id?             EventTrackingId       = null,
                               SerializationFormats?         SerializationFormat   = null,
@@ -4545,7 +4545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                IEnumerable<Signature>?          Signatures            = null,
 
                                Request_Id?                      RequestId             = null,
-                               DateTime?                        RequestTimestamp      = null,
+                               DateTimeOffset?                  RequestTimestamp      = null,
                                TimeSpan?                        RequestTimeout        = null,
                                EventTracking_Id?                EventTrackingId       = null,
                                SerializationFormats?            SerializationFormat   = null,
@@ -4608,7 +4608,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                 IEnumerable<Signature>?       Signatures            = null,
 
                                 Request_Id?                   RequestId             = null,
-                                DateTime?                     RequestTimestamp      = null,
+                                DateTimeOffset?               RequestTimestamp      = null,
                                 TimeSpan?                     RequestTimeout        = null,
                                 EventTracking_Id?             EventTrackingId       = null,
                                 SerializationFormats?         SerializationFormat   = null,
@@ -4670,7 +4670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                             IEnumerable<Signature>?       Signatures            = null,
 
                             Request_Id?                   RequestId             = null,
-                            DateTime?                     RequestTimestamp      = null,
+                            DateTimeOffset?               RequestTimestamp      = null,
                             TimeSpan?                     RequestTimeout        = null,
                             EventTracking_Id?             EventTrackingId       = null,
                             SerializationFormats?         SerializationFormat   = null,
@@ -4741,7 +4741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                        IEnumerable<Signature>?       Signatures            = null,
 
                                        Request_Id?                   RequestId             = null,
-                                       DateTime?                     RequestTimestamp      = null,
+                                       DateTimeOffset?               RequestTimestamp      = null,
                                        TimeSpan?                     RequestTimeout        = null,
                                        EventTracking_Id?             EventTrackingId       = null,
                                        SerializationFormats?         SerializationFormat   = null,
@@ -4814,7 +4814,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                         IEnumerable<Signature>?       Signatures            = null,
 
                                         Request_Id?                   RequestId             = null,
-                                        DateTime?                     RequestTimestamp      = null,
+                                        DateTimeOffset?               RequestTimestamp      = null,
                                         TimeSpan?                     RequestTimeout        = null,
                                         EventTracking_Id?             EventTrackingId       = null,
                                         SerializationFormats?         SerializationFormat   = null,
@@ -4875,7 +4875,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                      IEnumerable<Signature>?       Signatures            = null,
 
                                      Request_Id?                   RequestId             = null,
-                                     DateTime?                     RequestTimestamp      = null,
+                                     DateTimeOffset?               RequestTimestamp      = null,
                                      TimeSpan?                     RequestTimeout        = null,
                                      EventTracking_Id?             EventTrackingId       = null,
                                      SerializationFormats?         SerializationFormat   = null,
@@ -4938,7 +4938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                         IEnumerable<Signature>?       Signatures            = null,
 
                                         Request_Id?                   RequestId             = null,
-                                        DateTime?                     RequestTimestamp      = null,
+                                        DateTimeOffset?               RequestTimestamp      = null,
                                         TimeSpan?                     RequestTimeout        = null,
                                         EventTracking_Id?             EventTrackingId       = null,
                                         SerializationFormats?         SerializationFormat   = null,

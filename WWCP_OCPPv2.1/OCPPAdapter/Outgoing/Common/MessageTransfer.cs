@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="MessageTransferMessage">The message.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
-    public delegate Task OnMessageTransferMessageSentDelegate(DateTime                 Timestamp,
+    public delegate Task OnMessageTransferMessageSentDelegate(DateTimeOffset           Timestamp,
                                                               IEventSender             Sender,
                                                               IWebSocketConnection?    Connection,
                                                               MessageTransferMessage   MessageTransferMessage,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SentMessageResult">The result of the send message process.</param>
     public delegate Task
 
-        OnMessageRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnMessageRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                           IEventSender                   Sender,
                                           IWebSocketConnection?          Connection,
                                           MessageTransferMessage?        MessageTransferMessage,
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnMessageRequestErrorSentDelegate? OnMessageRequestErrorSent;
 
 
-        public Task SendOnMessageRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnMessageRequestErrorSent(DateTimeOffset                Timestamp,
                                                   IEventSender                  Sender,
                                                   IWebSocketConnection?         Connection,
                                                   MessageTransferMessage?       MessageTransferMessage,

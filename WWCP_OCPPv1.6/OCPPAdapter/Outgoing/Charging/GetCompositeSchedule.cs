@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetCompositeScheduleRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnGetCompositeScheduleRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                GetCompositeScheduleRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCompositeScheduleResponseSentDelegate(DateTime                   Timestamp,
+        OnGetCompositeScheduleResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                GetCompositeScheduleRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCompositeScheduleRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetCompositeScheduleRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    GetCompositeScheduleRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCompositeScheduleResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetCompositeScheduleResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     GetCompositeScheduleRequest?        Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnGetCompositeScheduleResponseSentDelegate?  OnGetCompositeScheduleResponseSent;
 
-        public Task SendOnGetCompositeScheduleResponseSent(DateTime                   Timestamp,
+        public Task SendOnGetCompositeScheduleResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        GetCompositeScheduleRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetCompositeScheduleRequestErrorSentDelegate? OnGetCompositeScheduleRequestErrorSent;
 
 
-        public Task SendOnGetCompositeScheduleRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetCompositeScheduleRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            GetCompositeScheduleRequest?      Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetCompositeScheduleResponseErrorSentDelegate? OnGetCompositeScheduleResponseErrorSent;
 
 
-        public Task SendOnGetCompositeScheduleResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetCompositeScheduleResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             GetCompositeScheduleRequest?       Request,

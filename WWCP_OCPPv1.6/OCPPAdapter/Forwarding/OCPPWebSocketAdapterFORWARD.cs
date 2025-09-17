@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<RequestForwardingDecision>
 
-        OnAnyJSONRequestFilterDelegate(DateTime                  Timestamp,
+        OnAnyJSONRequestFilterDelegate(DateTimeOffset            Timestamp,
                                        IEventSender              Sender,
                                        IWebSocketConnection      Connection,
                                        OCPP_JSONRequestMessage   Request,
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAnyJSONRequestFilteredDelegate(DateTime                  Timestamp,
+        OnAnyJSONRequestFilteredDelegate(DateTimeOffset            Timestamp,
                                          IEventSender              Sender,
                                          IWebSocketConnection      Connection,
                                          OCPP_JSONRequestMessage   Request,
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<RequestForwardingDecision>
 
-        OnAnyBinaryRequestFilterDelegate(DateTime                    Timestamp,
+        OnAnyBinaryRequestFilterDelegate(DateTimeOffset              Timestamp,
                                          IEventSender                Sender,
                                          IWebSocketConnection        Connection,
                                          OCPP_BinaryRequestMessage   Request,
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAnyBinaryRequestFilteredDelegate(DateTime                    Timestamp,
+        OnAnyBinaryRequestFilteredDelegate(DateTimeOffset              Timestamp,
                                            IEventSender                Sender,
                                            IWebSocketConnection        Connection,
                                            OCPP_BinaryRequestMessage   Request,
@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<RequestForwardingDecision>
 
-        OnAnyJSONResponseFilterDelegate(DateTime                   Timestamp,
+        OnAnyJSONResponseFilterDelegate(DateTimeOffset             Timestamp,
                                         IEventSender               Sender,
                                         IWebSocketConnection       Connection,
                                         OCPP_JSONResponseMessage   Response,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAnyJSONResponseFilteredDelegate(DateTime                  Timestamp,
+        OnAnyJSONResponseFilteredDelegate(DateTimeOffset            Timestamp,
                                          IEventSender              Sender,
                                          IWebSocketConnection      Connection,
                                          OCPP_JSONResponseMessage   Response,
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<RequestForwardingDecision>
 
-        OnAnyBinaryResponseFilterDelegate(DateTime                    Timestamp,
+        OnAnyBinaryResponseFilterDelegate(DateTimeOffset              Timestamp,
                                          IEventSender                Sender,
                                          IWebSocketConnection        Connection,
                                          OCPP_BinaryResponseMessage   Response,
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAnyBinaryResponseFilteredDelegate(DateTime                    Timestamp,
+        OnAnyBinaryResponseFilteredDelegate(DateTimeOffset              Timestamp,
                                            IEventSender                Sender,
                                            IWebSocketConnection        Connection,
                                            OCPP_BinaryResponseMessage   Response,
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<MessageForwardingDecision>
 
-        OnAnyJSONSendMessageFilterDelegate(DateTime               Timestamp,
+        OnAnyJSONSendMessageFilterDelegate(DateTimeOffset         Timestamp,
                                            IEventSender           Sender,
                                            IWebSocketConnection   Connection,
                                            OCPP_JSONSendMessage   SendMessage,
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAnyJSONSendMessageFilteredDelegate(DateTime                    Timestamp,
+        OnAnyJSONSendMessageFilteredDelegate(DateTimeOffset              Timestamp,
                                              IEventSender                Sender,
                                              IWebSocketConnection        Connection,
                                              OCPP_JSONSendMessage        SendMessage,
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<MessageForwardingDecision>
 
-        OnAnyBinarySendMessageFilterDelegate(DateTime                 Timestamp,
+        OnAnyBinarySendMessageFilterDelegate(DateTimeOffset           Timestamp,
                                              IEventSender             Sender,
                                              IWebSocketConnection     Connection,
                                              OCPP_BinarySendMessage   SendMessage,
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAnyBinarySendMessageFilteredDelegate(DateTime                    Timestamp,
+        OnAnyBinarySendMessageFilteredDelegate(DateTimeOffset              Timestamp,
                                                IEventSender                Sender,
                                                IWebSocketConnection        Connection,
                                                OCPP_BinarySendMessage      SendMessage,

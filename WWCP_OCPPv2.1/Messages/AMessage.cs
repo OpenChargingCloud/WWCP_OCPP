@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime              MessageTimestamp       { get; }
+        public DateTimeOffset        MessageTimestamp       { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomData?              CustomData            = null,
 
                         Request_Id?              MessageId             = null,
-                        DateTime?                MessageTimestamp      = null,
+                        DateTimeOffset?          MessageTimestamp      = null,
                         EventTracking_Id?        EventTrackingId       = null,
                         NetworkPath?             NetworkPath           = null,
                         SerializationFormats?    SerializationFormat   = null,

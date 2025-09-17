@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnPublishFirmwareRequestSentDelegate(DateTime                 Timestamp,
+    public delegate Task OnPublishFirmwareRequestSentDelegate(DateTimeOffset           Timestamp,
                                                               IEventSender             Sender,
                                                               IWebSocketConnection?    Connection,
                                                               PublishFirmwareRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnPublishFirmwareResponseSentDelegate(DateTime                  Timestamp,
+        OnPublishFirmwareResponseSentDelegate(DateTimeOffset            Timestamp,
                                               IEventSender              Sender,
                                               IWebSocketConnection?     Connection,
                                               PublishFirmwareRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnPublishFirmwareRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnPublishFirmwareRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                   IEventSender                   Sender,
                                                   IWebSocketConnection?          Connection,
                                                   PublishFirmwareRequest?        Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnPublishFirmwareResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnPublishFirmwareResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                    IEventSender                    Sender,
                                                    IWebSocketConnection?           Connection,
                                                    PublishFirmwareRequest?         Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnPublishFirmwareResponseSentDelegate?  OnPublishFirmwareResponseSent;
 
-        public Task SendOnPublishFirmwareResponseSent(DateTime                 Timestamp,
+        public Task SendOnPublishFirmwareResponseSent(DateTimeOffset           Timestamp,
                                                       IEventSender             Sender,
                                                       IWebSocketConnection?    Connection,
                                                       PublishFirmwareRequest   Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnPublishFirmwareRequestErrorSentDelegate? OnPublishFirmwareRequestErrorSent;
 
 
-        public Task SendOnPublishFirmwareRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnPublishFirmwareRequestErrorSent(DateTimeOffset                Timestamp,
                                                           IEventSender                  Sender,
                                                           IWebSocketConnection?         Connection,
                                                           PublishFirmwareRequest?       Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnPublishFirmwareResponseErrorSentDelegate? OnPublishFirmwareResponseErrorSent;
 
 
-        public Task SendOnPublishFirmwareResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnPublishFirmwareResponseErrorSent(DateTimeOffset                 Timestamp,
                                                            IEventSender                   Sender,
                                                            IWebSocketConnection?          Connection,
                                                            PublishFirmwareRequest?        Request,

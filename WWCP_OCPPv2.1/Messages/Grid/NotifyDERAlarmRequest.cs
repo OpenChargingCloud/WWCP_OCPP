@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The timestamp of the alarm start or end.
         /// </summary>
         [Mandatory]
-        public DateTime             Timestamp             { get; }
+        public DateTimeOffset       Timestamp             { get; }
 
         /// <summary>
         /// The type of grid fault that caused this alarm.
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyDERAlarmRequest(SourceRouting            Destination,
                                      DERControlType           ControlType,
-                                     DateTime                 Timestamp,
+                                     DateTimeOffset           Timestamp,
                                      GridEventFaultType?      GridEventFaultType    = null,
                                      Boolean?                 AlarmEnded            = null,
                                      String?                  ExtraInfo             = null,
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      CustomData?              CustomData            = null,
 
                                      Request_Id?              RequestId             = null,
-                                     DateTime?                RequestTimestamp      = null,
+                                     DateTimeOffset?          RequestTimestamp      = null,
                                      TimeSpan?                RequestTimeout        = null,
                                      EventTracking_Id?        EventTrackingId       = null,
                                      NetworkPath?             NetworkPath           = null,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   Request_Id                                           RequestId,
                                                   SourceRouting                                        Destination,
                                                   NetworkPath                                          NetworkPath,
-                                                  DateTime?                                            RequestTimestamp                    = null,
+                                                  DateTimeOffset?                                      RequestTimestamp                    = null,
                                                   TimeSpan?                                            RequestTimeout                      = null,
                                                   EventTracking_Id?                                    EventTrackingId                     = null,
                                                   CustomJObjectParserDelegate<NotifyDERAlarmRequest>?  CustomNotifyDERAlarmRequestParser   = null)
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out NotifyDERAlarmRequest?      NotifyDERAlarmRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       DateTime?                                            RequestTimestamp                    = null,
+                                       DateTimeOffset?                                      RequestTimestamp                    = null,
                                        TimeSpan?                                            RequestTimeout                      = null,
                                        EventTracking_Id?                                    EventTrackingId                     = null,
                                        CustomJObjectParserDelegate<NotifyDERAlarmRequest>?  CustomNotifyDERAlarmRequestParser   = null)

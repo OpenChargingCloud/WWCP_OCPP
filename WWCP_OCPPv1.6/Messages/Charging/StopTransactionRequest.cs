@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The timestamp of the end of the charging transaction.
         /// </summary>
-        public DateTime                 StopTimestamp      { get; }
+        public DateTimeOffset           StopTimestamp      { get; }
 
         /// <summary>
         /// The energy meter value in Wh for the connector at end of the
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public StopTransactionRequest(SourceRouting             Destination,
                                       Transaction_Id            TransactionId,
-                                      DateTime                  StopTimestamp,
+                                      DateTimeOffset            StopTimestamp,
                                       UInt64                    MeterStop,
                                       IdToken?                  IdTag                 = null,
                                       Reasons?                  Reason                = null,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                       CustomData?               CustomData            = null,
 
                                       Request_Id?               RequestId             = null,
-                                      DateTime?                 RequestTimestamp      = null,
+                                      DateTimeOffset?           RequestTimestamp      = null,
                                       TimeSpan?                 RequestTimeout        = null,
                                       EventTracking_Id?         EventTrackingId       = null,
                                       NetworkPath?              NetworkPath           = null,
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    Request_Id                                            RequestId,
                                                    SourceRouting                                         Destination,
                                                    NetworkPath                                           NetworkPath,
-                                                   DateTime?                                             RequestTimestamp                     = null,
+                                                   DateTimeOffset?                                       RequestTimestamp                     = null,
                                                    TimeSpan?                                             RequestTimeout                       = null,
                                                    EventTracking_Id?                                     EventTrackingId                      = null,
                                                    CustomJObjectParserDelegate<StopTransactionRequest>?  CustomStopTransactionRequestParser   = null,
@@ -593,7 +593,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out StopTransactionRequest?      StopTransactionRequest,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
-                                       DateTime?                                             RequestTimestamp                     = null,
+                                       DateTimeOffset?                                       RequestTimestamp                     = null,
                                        TimeSpan?                                             RequestTimeout                       = null,
                                        EventTracking_Id?                                     EventTrackingId                      = null,
                                        CustomJObjectParserDelegate<StopTransactionRequest>?  CustomStopTransactionRequestParser   = null,

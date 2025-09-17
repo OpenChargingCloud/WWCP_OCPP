@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
         #region Data
 
-        private DateTime lastRoutesBroadcast = Timestamp.Now;
+        private DateTimeOffset lastRoutesBroadcast = Timestamp.Now;
 
         #endregion
 

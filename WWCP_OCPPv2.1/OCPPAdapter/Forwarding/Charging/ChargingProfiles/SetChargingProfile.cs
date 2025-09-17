@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<SetChargingProfileRequest, SetChargingProfileResponse>>
 
-        OnSetChargingProfileRequestFilterDelegate(DateTime                    Timestamp,
+        OnSetChargingProfileRequestFilterDelegate(DateTimeOffset              Timestamp,
                                                   IEventSender                Sender,
                                                   IWebSocketConnection        Connection,
                                                   SetChargingProfileRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnSetChargingProfileRequestFilteredDelegate(DateTime                                                                    Timestamp,
+        OnSetChargingProfileRequestFilteredDelegate(DateTimeOffset                                                              Timestamp,
                                                     IEventSender                                                                Sender,
                                                     IWebSocketConnection                                                        Connection,
                                                     SetChargingProfileRequest                                                   Request,

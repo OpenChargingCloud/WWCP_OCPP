@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="RequestTimeout">The request time out.</param>
     /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class OCPP_JSONRequestMessage(DateTime           RequestTimestamp,
+    public class OCPP_JSONRequestMessage(DateTimeOffset     RequestTimestamp,
                                          EventTracking_Id   EventTrackingId,
                                          NetworkingMode     NetworkingMode,
                                          SourceRouting      Destination,
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                          Request_Id         RequestId,
                                          String             Action,
                                          JObject            Payload,
-                                         DateTime?          RequestTimeout      = null,
+                                         DateTimeOffset?    RequestTimeout      = null,
                                          String?            ErrorMessage        = null,
                                          CancellationToken  CancellationToken   = default)
     {
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The request time stamp.
         /// </summary>
-        public DateTime           RequestTimestamp     { get; }      = RequestTimestamp;
+        public DateTimeOffset     RequestTimestamp     { get; }      = RequestTimestamp;
 
         /// <summary>
         /// The event tracking identification for correlating this request message with other events.
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The request time out.
         /// </summary>
-        public DateTime           RequestTimeout       { get; set; } = RequestTimeout ?? (RequestTimestamp + DefaultTimeout);
+        public DateTimeOffset     RequestTimeout       { get; set; } = RequestTimeout ?? (RequestTimestamp + DefaultTimeout);
 
         /// <summary>
         /// The optional error message, e.g. during sending of the message.
@@ -174,8 +174,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         public static Boolean TryParse(JArray                                             JSONArray,
                                        [NotNullWhen(true)]  out OCPP_JSONRequestMessage?  RequestMessage,
                                        [NotNullWhen(false)] out String?                   ErrorResponse,
-                                       DateTime?                                          RequestTimestamp       = null,
-                                       DateTime?                                          RequestTimeout         = null,
+                                       DateTimeOffset?                                    RequestTimestamp       = null,
+                                       DateTimeOffset?                                    RequestTimeout         = null,
                                        EventTracking_Id?                                  EventTrackingId        = null,
                                        NetworkingNode_Id?                                 ImplicitSourceNodeId   = null,
                                        CancellationToken                                  CancellationToken      = default)

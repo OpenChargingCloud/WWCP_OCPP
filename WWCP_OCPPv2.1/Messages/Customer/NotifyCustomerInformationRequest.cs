@@ -53,34 +53,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext   Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The unique identification of the NotifyCustomerInformation request.
         /// </summary>
         [Mandatory]
-        public Int64          NotifyCustomerInformationRequestId    { get; }
+        public Int64           NotifyCustomerInformationRequestId    { get; }
 
         /// <summary>
         /// The requested data or a part of the requested data.
         /// No format specified in which the data is returned.
         /// </summary>
         [Mandatory]
-        public String         Data                                  { get; }
+        public String          Data                                  { get; }
 
         /// <summary>
         /// The sequence number of this message.
         /// First message starts at 0.
         /// </summary>
         [Mandatory]
-        public UInt32         SequenceNumber                        { get; }
+        public UInt32          SequenceNumber                        { get; }
 
         /// <summary>
         /// The timestamp of the moment this message was generated at the charging station.
         /// </summary>
         [Mandatory]
-        public DateTime       GeneratedAt                           { get; }
+        public DateTimeOffset  GeneratedAt                           { get; }
 
         /// <summary>
         /// The optional "to be continued" indicator whether another part of the monitoring
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Default value when omitted is false.
         /// </summary>
         [Optional]
-        public Boolean?       ToBeContinued                         { get; }
+        public Boolean?        ToBeContinued                         { get; }
 
         #endregion
 
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 Int64                    NotifyCustomerInformationRequestId,
                                                 String                   Data,
                                                 UInt32                   SequenceNumber,
-                                                DateTime                 GeneratedAt,
+                                                DateTimeOffset           GeneratedAt,
                                                 Boolean?                 ToBeContinued         = null,
 
                                                 IEnumerable<KeyPair>?    SignKeys              = null,
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 CustomData?              CustomData            = null,
 
                                                 Request_Id?              RequestId             = null,
-                                                DateTime?                RequestTimestamp      = null,
+                                                DateTimeOffset?          RequestTimestamp      = null,
                                                 TimeSpan?                RequestTimeout        = null,
                                                 EventTracking_Id?        EventTrackingId       = null,
                                                 NetworkPath?             NetworkPath           = null,
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                              Request_Id                                                      RequestId,
                                                              SourceRouting                                                   Destination,
                                                              NetworkPath                                                     NetworkPath,
-                                                             DateTime?                                                       RequestTimestamp                               = null,
+                                                             DateTimeOffset?                                                 RequestTimestamp                               = null,
                                                              TimeSpan?                                                       RequestTimeout                                 = null,
                                                              EventTracking_Id?                                               EventTrackingId                                = null,
                                                              CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?  CustomNotifyCustomerInformationRequestParser   = null)
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out NotifyCustomerInformationRequest?      NotifyCustomerInformationRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,
-                                       DateTime?                                                       RequestTimestamp                               = null,
+                                       DateTimeOffset?                                                 RequestTimestamp                               = null,
                                        TimeSpan?                                                       RequestTimeout                                 = null,
                                        EventTracking_Id?                                               EventTrackingId                                = null,
                                        CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?  CustomNotifyCustomerInformationRequestParser   = null)

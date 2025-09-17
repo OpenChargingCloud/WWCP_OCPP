@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultTariffRequestReceivedDelegate(DateTime                  Timestamp,
+        OnSetDefaultTariffRequestReceivedDelegate(DateTimeOffset            Timestamp,
                                                   IEventSender              Sender,
                                                   IWebSocketConnection      Connection,
                                                   SetDefaultTariffRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDefaultTariffResponseReceivedDelegate(DateTime                   Timestamp,
+    public delegate Task OnSetDefaultTariffResponseReceivedDelegate(DateTimeOffset             Timestamp,
                                                                     IEventSender               Sender,
                                                                     IWebSocketConnection?      Connection,
                                                                     SetDefaultTariffRequest?   Request,
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDefaultTariffRequestErrorReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnSetDefaultTariffRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                         IEventSender                   Sender,
                                                                         IWebSocketConnection           Connection,
                                                                         SetDefaultTariffRequest?       Request,
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDefaultTariffResponseErrorReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnSetDefaultTariffResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
                                                                          IWebSocketConnection            Connection,
                                                                          SetDefaultTariffRequest?        Request,
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<SetDefaultTariffResponse>
 
-        OnSetDefaultTariffDelegate(DateTime                  Timestamp,
+        OnSetDefaultTariffDelegate(DateTimeOffset            Timestamp,
                                    IEventSender              Sender,
                                    IWebSocketConnection      Connection,
                                    SetDefaultTariffRequest   Request,
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_SetDefaultTariff(DateTime              RequestTimestamp,
+            Receive_SetDefaultTariff(DateTimeOffset        RequestTimestamp,
                                      IWebSocketConnection  WebSocketConnection,
                                      SourceRouting         Destination,
                                      NetworkPath           NetworkPath,
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
                                              Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
+                                             DateTimeOffset?          ResponseTimestamp   = null,
                                              CancellationToken        CancellationToken   = default)
 
         {
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  NetworkPath                   NetworkPath,
                                                  EventTracking_Id              EventTrackingId,
                                                  Request_Id                    RequestId,
-                                                 DateTime?                     ResponseTimestamp   = null,
+                                                 DateTimeOffset?               ResponseTimestamp   = null,
                                                  CancellationToken             CancellationToken   = default)
         {
 
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                   NetworkPath                    NetworkPath,
                                                   EventTracking_Id               EventTrackingId,
                                                   Request_Id                     RequestId,
-                                                  DateTime?                      ResponseTimestamp   = null,
+                                                  DateTimeOffset?                ResponseTimestamp   = null,
                                                   CancellationToken              CancellationToken   = default)
 
         {

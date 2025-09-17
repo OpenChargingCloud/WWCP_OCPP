@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The timestamp when this charging ticket was created.
         /// </summary>
         [Mandatory]
-        public DateTime                                Created                     { get; }
+        public DateTimeOffset                          Created                     { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider responsible for this charging ticket.
@@ -92,13 +92,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The timestamp when this charging ticket becomes active (UTC).
         /// </summary>
         [Mandatory]
-        public DateTime                                NotBefore                   { get; }
+        public DateTimeOffset                          NotBefore                   { get; }
 
         /// <summary>
         /// The timestamp after which this charging ticket is no longer valid (UTC).
         /// </summary>
         [Mandatory]
-        public DateTime                                NotAfter                    { get; }
+        public DateTimeOffset                          NotAfter                    { get; }
 
 
         /// <summary>
@@ -281,9 +281,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                               URL?                                     ProviderURL                = null,
                               DisplayTexts?                            Description                = null,
-                              DateTime?                                Created                    = null,
-                              DateTime?                                NotBefore                  = null,
-                              DateTime?                                NotAfter                   = null,
+                              DateTimeOffset?                          Created                    = null,
+                              DateTimeOffset?                          NotBefore                  = null,
+                              DateTimeOffset?                          NotAfter                   = null,
                               TimeSpan?                                Validity                   = null,
 
                               IEnumerable<CSOOperator_Id>?             ValidOperators             = null,

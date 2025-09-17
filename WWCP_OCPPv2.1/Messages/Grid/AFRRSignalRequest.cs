@@ -53,20 +53,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext   Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The time when the AFRRSignal becomes active.
         /// </summary>
         [Mandatory]
-        public DateTime       ActivationTimestamp    { get; }
+        public DateTimeOffset  ActivationTimestamp    { get; }
 
         /// <summary>
         /// The value of the AFRRSignal in v2xSignalWattCurve. Usually between -1 and 1.
         /// </summary>
         [Mandatory]
-        public AFRR_Signal    Signal                 { get; }
+        public AFRR_Signal     Signal                 { get; }
 
         #endregion
 
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public AFRRSignalRequest(SourceRouting            Destination,
-                                 DateTime                 ActivationTimestamp,
+                                 DateTimeOffset           ActivationTimestamp,
                                  AFRR_Signal              Signal,
 
                                  IEnumerable<KeyPair>?    SignKeys              = null,
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  CustomData?              CustomData            = null,
 
                                  Request_Id?              RequestId             = null,
-                                 DateTime?                RequestTimestamp      = null,
+                                 DateTimeOffset?          RequestTimestamp      = null,
                                  TimeSpan?                RequestTimeout        = null,
                                  EventTracking_Id?        EventTrackingId       = null,
                                  NetworkPath?             NetworkPath           = null,
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               Request_Id                                       RequestId,
                                               SourceRouting                                    Destination,
                                               NetworkPath                                      NetworkPath,
-                                              DateTime?                                        RequestTimestamp                = null,
+                                              DateTimeOffset?                                  RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
                                               EventTracking_Id?                                EventTrackingId                 = null,
                                               CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser   = null)
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out AFRRSignalRequest?      AFRRSignalRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       DateTime?                                        RequestTimestamp                = null,
+                                       DateTimeOffset?                                  RequestTimestamp                = null,
                                        TimeSpan?                                        RequestTimeout                  = null,
                                        EventTracking_Id?                                EventTrackingId                 = null,
                                        CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser   = null)

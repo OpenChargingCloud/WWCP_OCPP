@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyCRLRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnNotifyCRLRequestSentDelegate(DateTimeOffset          Timestamp,
                                                         IEventSender            Sender,
                                                         IWebSocketConnection?   Connection,
                                                         NotifyCRLRequest        Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyCRLResponseSentDelegate(DateTime               Timestamp,
+        OnNotifyCRLResponseSentDelegate(DateTimeOffset         Timestamp,
                                         IEventSender           Sender,
                                         IWebSocketConnection?  Connection,
                                         NotifyCRLRequest       Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyCRLRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnNotifyCRLRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                             IEventSender                   Sender,
                                             IWebSocketConnection?          Connection,
                                             NotifyCRLRequest?              Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyCRLResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnNotifyCRLResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                              IEventSender                    Sender,
                                              IWebSocketConnection?           Connection,
                                              NotifyCRLRequest?               Request,
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnNotifyCRLResponseSentDelegate?  OnNotifyCRLResponseSent;
 
-        public Task SendOnNotifyCRLResponseSent(DateTime              Timestamp,
+        public Task SendOnNotifyCRLResponseSent(DateTimeOffset        Timestamp,
                                                 IEventSender          Sender,
                                                 IWebSocketConnection? Connection,
                                                 NotifyCRLRequest      Request,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifyCRLRequestErrorSentDelegate? OnNotifyCRLRequestErrorSent;
 
 
-        public Task SendOnNotifyCRLRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnNotifyCRLRequestErrorSent(DateTimeOffset                Timestamp,
                                                     IEventSender                  Sender,
                                                     IWebSocketConnection?         Connection,
                                                     NotifyCRLRequest?             Request,
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifyCRLResponseErrorSentDelegate? OnNotifyCRLResponseErrorSent;
 
 
-        public Task SendOnNotifyCRLResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnNotifyCRLResponseErrorSent(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection?          Connection,
                                                      NotifyCRLRequest?              Request,

@@ -82,51 +82,51 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
         /// The local controller vendor identification.
         /// </summary>
         [Mandatory]
-        public String        VendorName                        { get; }      = "";
+        public String           VendorName                        { get; }      = "";
 
         /// <summary>
         ///  The local controller model identification.
         /// </summary>
         [Mandatory]
-        public String        Model                             { get; }      = "";
+        public String           Model                             { get; }      = "";
 
         /// <summary>
         /// The optional serial number of the local controller.
         /// </summary>
         [Optional]
-        public String?       SerialNumber                      { get; }
+        public String?          SerialNumber                      { get; }
 
         /// <summary>
         /// The optional firmware version of the local controller.
         /// </summary>
         [Optional]
-        public String?       SoftwareVersion                   { get; }
+        public String?          SoftwareVersion                   { get; }
 
         /// <summary>
         /// The modem of the local controller.
         /// </summary>
         [Optional]
-     //   public Modem?        Modem                             { get; }
+     //   public Modem?           Modem                             { get; }
 
 
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?     CSMSTime                          { get; set; } = Timestamp.Now;
+        public DateTimeOffset?  CSMSTime                          { get; set; } = Timestamp.Now;
 
 
-        public HTTPAPI?      HTTPAPI                           { get; }
+        public HTTPAPI?         HTTPAPI                           { get; }
 
-        public WebAPI?       WebAPI                            { get; }
-        public HTTPPath?     WebAPI_Path                       { get; }
+        public WebAPI?          WebAPI                            { get; }
+        public HTTPPath?        WebAPI_Path                       { get; }
 
-        public DownloadAPI?  HTTPDownloadAPI                   { get; }
-        public HTTPPath?     HTTPDownloadAPI_Path              { get; }
-        public String?       HTTPDownloadAPI_FileSystemPath    { get; }
+        public DownloadAPI?     HTTPDownloadAPI                   { get; }
+        public HTTPPath?        HTTPDownloadAPI_Path              { get; }
+        public String?          HTTPDownloadAPI_FileSystemPath    { get; }
 
-        public UploadAPI?    HTTPUploadAPI                     { get; }
-        public HTTPPath?     HTTPUploadAPI_Path                { get; }
-        public String?       HTTPUploadAPI_FileSystemPath      { get; }
+        public UploadAPI?       HTTPUploadAPI                     { get; }
+        public HTTPPath?        HTTPUploadAPI_Path                { get; }
+        public String?          HTTPUploadAPI_FileSystemPath      { get; }
 
         #endregion
 

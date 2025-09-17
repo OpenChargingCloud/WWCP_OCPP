@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAttachCableRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnAttachCableRequestSentDelegate(DateTimeOffset          Timestamp,
                                                           IEventSender            Sender,
                                                           IWebSocketConnection?   Connection,
                                                           AttachCableRequest      Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAttachCableResponseSentDelegate(DateTime                Timestamp,
+        OnAttachCableResponseSentDelegate(DateTimeOffset          Timestamp,
                                           IEventSender            Sender,
                                           IWebSocketConnection?   Connection,
                                           AttachCableRequest      Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAttachCableRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnAttachCableRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                               IEventSender                   Sender,
                                               IWebSocketConnection?          Connection,
                                               AttachCableRequest?            Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAttachCableResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnAttachCableResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                IEventSender                    Sender,
                                                IWebSocketConnection?           Connection,
                                                AttachCableRequest?             Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnAttachCableResponseSentDelegate?  OnAttachCableResponseSent;
 
-        public Task SendOnAttachCableResponseSent(DateTime               Timestamp,
+        public Task SendOnAttachCableResponseSent(DateTimeOffset         Timestamp,
                                                   IEventSender           Sender,
                                                   IWebSocketConnection?  Connection,
                                                   AttachCableRequest     Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnAttachCableRequestErrorSentDelegate? OnAttachCableRequestErrorSent;
 
 
-        public Task SendOnAttachCableRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnAttachCableRequestErrorSent(DateTimeOffset                Timestamp,
                                                       IEventSender                  Sender,
                                                       IWebSocketConnection?         Connection,
                                                       AttachCableRequest?           Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnAttachCableResponseErrorSentDelegate? OnAttachCableResponseErrorSent;
 
 
-        public Task SendOnAttachCableResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnAttachCableResponseErrorSent(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
                                                        IWebSocketConnection?          Connection,
                                                        AttachCableRequest?            Request,

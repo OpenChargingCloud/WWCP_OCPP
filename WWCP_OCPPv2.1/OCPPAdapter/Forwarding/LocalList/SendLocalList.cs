@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<SendLocalListRequest, SendLocalListResponse>>
 
-        OnSendLocalListRequestFilterDelegate(DateTime               Timestamp,
+        OnSendLocalListRequestFilterDelegate(DateTimeOffset         Timestamp,
                                              IEventSender           Sender,
                                              IWebSocketConnection   Connection,
                                              SendLocalListRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnSendLocalListRequestFilteredDelegate(DateTime                                                          Timestamp,
+        OnSendLocalListRequestFilteredDelegate(DateTimeOffset                                                    Timestamp,
                                                IEventSender                                                      Sender,
                                                IWebSocketConnection                                              Connection,
                                                SendLocalListRequest                                              Request,

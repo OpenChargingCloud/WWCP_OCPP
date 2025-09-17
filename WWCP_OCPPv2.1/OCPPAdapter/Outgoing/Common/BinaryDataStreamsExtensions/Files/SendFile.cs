@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSendFileRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnSendFileRequestSentDelegate(DateTimeOffset          Timestamp,
                                                        IEventSender            Sender,
                                                        IWebSocketConnection?   Connection,
                                                        SendFileRequest         Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSendFileResponseSentDelegate(DateTime               Timestamp,
+        OnSendFileResponseSentDelegate(DateTimeOffset         Timestamp,
                                        IEventSender           Sender,
                                        IWebSocketConnection?  Connection,
                                        SendFileRequest        Request,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSendFileRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnSendFileRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                            IEventSender                   Sender,
                                            IWebSocketConnection?          Connection,
                                            SendFileRequest?               Request,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSendFileResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnSendFileResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                             IEventSender                    Sender,
                                             IWebSocketConnection?           Connection,
                                             SendFileRequest?                Request,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnSendFileResponseSentDelegate?  OnSendFileResponseSent;
 
-        public Task SendOnSendFileResponseSent(DateTime              Timestamp,
+        public Task SendOnSendFileResponseSent(DateTimeOffset        Timestamp,
                                                IEventSender          Sender,
                                                IWebSocketConnection? Connection,
                                                SendFileRequest       Request,
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSendFileRequestErrorSentDelegate? OnSendFileRequestErrorSent;
 
 
-        public Task SendOnSendFileRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnSendFileRequestErrorSent(DateTimeOffset                Timestamp,
                                                    IEventSender                  Sender,
                                                    IWebSocketConnection?         Connection,
                                                    SendFileRequest?              Request,
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSendFileResponseErrorSentDelegate? OnSendFileResponseErrorSent;
 
 
-        public Task SendOnSendFileResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnSendFileResponseErrorSent(DateTimeOffset                 Timestamp,
                                                     IEventSender                   Sender,
                                                     IWebSocketConnection?          Connection,
                                                     SendFileRequest?               Request,

@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The current time at the CSMS as UTC.
         /// </summary>
         [Mandatory]
-        public DateTime            CurrentTime   { get; }
+        public DateTimeOffset      CurrentTime   { get; }
 
         /// <summary>
         /// When the registration status is 'accepted', the interval defines
@@ -118,12 +118,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public BootNotificationResponse(BootNotificationRequest  Request,
                                         RegistrationStatus       Status,
-                                        DateTime                 CurrentTime,
+                                        DateTimeOffset           CurrentTime,
                                         TimeSpan                 Interval,
                                         StatusInfo?              StatusInfo            = null,
 
                                         Result?                  Result                = null,
-                                        DateTime?                ResponseTimestamp     = null,
+                                        DateTimeOffset?          ResponseTimestamp     = null,
 
                                         SourceRouting?           Destination           = null,
                                         NetworkPath?             NetworkPath           = null,
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      JObject                                                 JSON,
                                                      SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
-                                                     DateTime?                                               ResponseTimestamp                      = null,
+                                                     DateTimeOffset?                                         ResponseTimestamp                      = null,
                                                      CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
                                                      CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
                                                      CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Byte[]                                                  Binary,
                                                      SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
-                                                     DateTime?                                               ResponseTimestamp                      = null,
+                                                     DateTimeOffset?                                         ResponseTimestamp                      = null,
                                                      CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
                                                      CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
                                                      CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationResponse?      BootNotificationResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       DateTime?                                               ResponseTimestamp                      = null,
+                                       DateTimeOffset?                                         ResponseTimestamp                      = null,
                                        CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
                                        CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
@@ -545,7 +545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out BootNotificationResponse?      BootNotificationResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       DateTime?                                               ResponseTimestamp                      = null,
+                                       DateTimeOffset?                                         ResponseTimestamp                      = null,
                                        CustomJObjectParserDelegate<BootNotificationResponse>?  CustomBootNotificationResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?                CustomStatusInfoParser                 = null,
                                        CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
@@ -791,7 +791,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                             ResultCode               ErrorCode,
                                                             String?                  ErrorDescription    = null,
                                                             JObject?                 ErrorDetails        = null,
-                                                            DateTime?                ResponseTimestamp   = null,
+                                                            DateTimeOffset?          ResponseTimestamp   = null,
 
                                                             SourceRouting?           Destination         = null,
                                                             NetworkPath?             NetworkPath         = null,

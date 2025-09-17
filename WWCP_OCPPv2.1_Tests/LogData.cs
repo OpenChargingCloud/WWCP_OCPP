@@ -26,11 +26,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
     public class LogJSONRequest
     {
 
-        public DateTime  Timestamp      { get; set; }
-        public JArray    JSONMessage    { get; set; }
+        public DateTimeOffset  Timestamp      { get; set; }
+        public JArray          JSONMessage    { get; set; }
 
-        public LogJSONRequest(DateTime  Timestamp,
-                              JArray    JSONMessage)
+        public LogJSONRequest(DateTimeOffset  Timestamp,
+                              JArray          JSONMessage)
         {
 
             this.Timestamp    = Timestamp;
@@ -43,8 +43,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
     public class LogBinaryRequest
     {
 
-        public DateTime  Timestamp     { get; set; }
-        public Byte[]    Message       { get; set; }
+        public DateTimeOffset  Timestamp     { get; set; }
+        public Byte[]          Message       { get; set; }
 
         public LogBinaryRequest(DateTime  Timestamp,
                                 Byte[]    Message)
@@ -61,17 +61,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
     public class LogDataJSONResponse
     {
 
-        public DateTime  RequestTimestamp        { get; set; }
-        public JArray?   JSONRequestMessage      { get; set; }
-        public Byte[]?   BinaryRequestMessage    { get; set; }
-        public DateTime  ResponseTimestamp       { get; set; }
-        public JArray    JSONResponseMessage     { get; set; }
+        public DateTimeOffset  RequestTimestamp        { get; set; }
+        public JArray?         JSONRequestMessage      { get; set; }
+        public Byte[]?         BinaryRequestMessage    { get; set; }
+        public DateTimeOffset  ResponseTimestamp       { get; set; }
+        public JArray          JSONResponseMessage     { get; set; }
 
-        public LogDataJSONResponse(DateTime  RequestTimestamp,
-                                   JArray?   JSONRequestMessage,
-                                   Byte[]?   BinaryRequestMessage,
-                                   DateTime  ResponseTimestamp,
-                                   JArray    ResponseMessage)
+        public LogDataJSONResponse(DateTimeOffset  RequestTimestamp,
+                                   JArray?         JSONRequestMessage,
+                                   Byte[]?         BinaryRequestMessage,
+                                   DateTimeOffset  ResponseTimestamp,
+                                   JArray          ResponseMessage)
         {
 
             this.RequestTimestamp      = RequestTimestamp;
@@ -87,17 +87,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
     public class LogDataBinaryResponse
     {
 
-        public DateTime  RequestTimestamp         { get; set; }
-        public JArray?   JSONRequestMessage       { get; set; }
-        public Byte[]?   BinaryRequestMessage     { get; set; }
-        public DateTime  ResponseTimestamp        { get; set; }
-        public Byte[]    BinaryResponseMessage    { get; set; }
+        public DateTimeOffset  RequestTimestamp         { get; set; }
+        public JArray?         JSONRequestMessage       { get; set; }
+        public Byte[]?         BinaryRequestMessage     { get; set; }
+        public DateTimeOffset  ResponseTimestamp        { get; set; }
+        public Byte[]          BinaryResponseMessage    { get; set; }
 
-        public LogDataBinaryResponse(DateTime  RequestTimestamp,
-                                     JArray?   JSONRequestMessage,
-                                     Byte[]?   BinaryRequestMessage,
-                                     DateTime  ResponseTimestamp,
-                                     Byte[]    BinaryResponseMessage)
+        public LogDataBinaryResponse(DateTimeOffset  RequestTimestamp,
+                                     JArray?         JSONRequestMessage,
+                                     Byte[]?         BinaryRequestMessage,
+                                     DateTimeOffset  ResponseTimestamp,
+                                     Byte[]          BinaryResponseMessage)
         {
 
             this.RequestTimestamp       = RequestTimestamp;

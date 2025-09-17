@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// An optional date at which the idTag should be removed
         /// from the authorization cache.
         /// </summary>
-        public DateTime?            ExpiryDate     { get; }
+        public DateTimeOffset?      ExpiryDate     { get; }
 
         /// <summary>
         /// An optional the parent-identifier.
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ExpiryDate">An optional date at which the idTag should be removed from the authorization cache.</param>
         /// <param name="ParentIdTag">An optional the parent-identifier.</param>
         public IdTagInfo(AuthorizationStatus  Status,
-                         DateTime?            ExpiryDate    = null,
+                         DateTimeOffset?      ExpiryDate    = null,
                          IdToken?             ParentIdTag   = null)
         {
 

@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="ErrorDescription">An optional error description.</param>
     /// <param name="ErrorDetails">Optional error details.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class OCPP_JSONResponseErrorMessage(DateTime           ResponseTimestamp,
+    public class OCPP_JSONResponseErrorMessage(DateTimeOffset     ResponseTimestamp,
                                                EventTracking_Id   EventTrackingId,
                                                NetworkingMode     NetworkingMode,
                                                SourceRouting      Destination,
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The response time stamp.
         /// </summary>
-        public DateTime           ResponseTimestamp    { get; }      = ResponseTimestamp;
+        public DateTimeOffset     ResponseTimestamp    { get; }      = ResponseTimestamp;
 
         /// <summary>
         /// The event tracking identification.

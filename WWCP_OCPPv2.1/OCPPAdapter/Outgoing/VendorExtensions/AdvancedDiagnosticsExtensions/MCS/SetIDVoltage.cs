@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetIDVoltageRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnSetIDVoltageRequestSentDelegate(DateTimeOffset          Timestamp,
                                                            IEventSender            Sender,
                                                            IWebSocketConnection?   Connection,
                                                            SetIDVoltageRequest     Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetIDVoltageResponseSentDelegate(DateTime                Timestamp,
+        OnSetIDVoltageResponseSentDelegate(DateTimeOffset          Timestamp,
                                            IEventSender            Sender,
                                            IWebSocketConnection?   Connection,
                                            SetIDVoltageRequest     Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetIDVoltageRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnSetIDVoltageRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                IEventSender                   Sender,
                                                IWebSocketConnection?          Connection,
                                                SetIDVoltageRequest?           Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetIDVoltageResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnSetIDVoltageResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                 IEventSender                    Sender,
                                                 IWebSocketConnection?           Connection,
                                                 SetIDVoltageRequest?            Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnSetIDVoltageResponseSentDelegate?  OnSetIDVoltageResponseSent;
 
-        public Task SendOnSetIDVoltageResponseSent(DateTime               Timestamp,
+        public Task SendOnSetIDVoltageResponseSent(DateTimeOffset         Timestamp,
                                                    IEventSender           Sender,
                                                    IWebSocketConnection?  Connection,
                                                    SetIDVoltageRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetIDVoltageRequestErrorSentDelegate? OnSetIDVoltageRequestErrorSent;
 
 
-        public Task SendOnSetIDVoltageRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnSetIDVoltageRequestErrorSent(DateTimeOffset                Timestamp,
                                                        IEventSender                  Sender,
                                                        IWebSocketConnection?         Connection,
                                                        SetIDVoltageRequest?          Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetIDVoltageResponseErrorSentDelegate? OnSetIDVoltageResponseErrorSent;
 
 
-        public Task SendOnSetIDVoltageResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnSetIDVoltageResponseErrorSent(DateTimeOffset                 Timestamp,
                                                         IEventSender                   Sender,
                                                         IWebSocketConnection?          Connection,
                                                         SetIDVoltageRequest?           Request,

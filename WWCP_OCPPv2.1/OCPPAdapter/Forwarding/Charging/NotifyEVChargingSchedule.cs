@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<NotifyEVChargingScheduleRequest, NotifyEVChargingScheduleResponse>>
 
-        OnNotifyEVChargingScheduleRequestFilterDelegate(DateTime                          Timestamp,
+        OnNotifyEVChargingScheduleRequestFilterDelegate(DateTimeOffset                    Timestamp,
                                                         IEventSender                      Sender,
                                                         IWebSocketConnection              Connection,
                                                         NotifyEVChargingScheduleRequest   Request,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ForwardingDecision">The forwarding decision.</param>
     public delegate Task
 
-        OnNotifyEVChargingScheduleRequestFilteredDelegate(DateTime                                                                                Timestamp,
+        OnNotifyEVChargingScheduleRequestFilteredDelegate(DateTimeOffset                                                                          Timestamp,
                                                           IEventSender                                                                            Sender,
                                                           IWebSocketConnection                                                                    Connection,
                                                           NotifyEVChargingScheduleRequest                                                         Request,

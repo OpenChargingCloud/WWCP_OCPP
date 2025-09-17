@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<RequestStopTransactionRequest, RequestStopTransactionResponse>>
 
-        OnRequestStopTransactionRequestFilterDelegate(DateTime                        Timestamp,
+        OnRequestStopTransactionRequestFilterDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
                                                       IWebSocketConnection            Connection,
                                                       RequestStopTransactionRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnRequestStopTransactionRequestFilteredDelegate(DateTime                                                                            Timestamp,
+        OnRequestStopTransactionRequestFilteredDelegate(DateTimeOffset                                                                      Timestamp,
                                                         IEventSender                                                                        Sender,
                                                         IWebSocketConnection                                                                Connection,
                                                         RequestStopTransactionRequest                                                       Request,

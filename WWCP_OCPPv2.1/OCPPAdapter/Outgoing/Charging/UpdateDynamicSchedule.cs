@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnUpdateDynamicScheduleRequestSentDelegate(DateTime                       Timestamp,
+    public delegate Task OnUpdateDynamicScheduleRequestSentDelegate(DateTimeOffset                 Timestamp,
                                                                     IEventSender                   Sender,
                                                                     IWebSocketConnection?          Connection,
                                                                     UpdateDynamicScheduleRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUpdateDynamicScheduleResponseSentDelegate(DateTime                        Timestamp,
+        OnUpdateDynamicScheduleResponseSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     UpdateDynamicScheduleRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUpdateDynamicScheduleRequestErrorSentDelegate(DateTime                        Timestamp,
+        OnUpdateDynamicScheduleRequestErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                         IEventSender                    Sender,
                                                         IWebSocketConnection?           Connection,
                                                         UpdateDynamicScheduleRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUpdateDynamicScheduleResponseErrorSentDelegate(DateTime                         Timestamp,
+        OnUpdateDynamicScheduleResponseErrorSentDelegate(DateTimeOffset                   Timestamp,
                                                          IEventSender                     Sender,
                                                          IWebSocketConnection?            Connection,
                                                          UpdateDynamicScheduleRequest?    Request,
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnUpdateDynamicScheduleResponseSentDelegate?  OnUpdateDynamicScheduleResponseSent;
 
-        public Task SendOnUpdateDynamicScheduleResponseSent(DateTime                       Timestamp,
+        public Task SendOnUpdateDynamicScheduleResponseSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             UpdateDynamicScheduleRequest   Request,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnUpdateDynamicScheduleRequestErrorSentDelegate? OnUpdateDynamicScheduleRequestErrorSent;
 
 
-        public Task SendOnUpdateDynamicScheduleRequestErrorSent(DateTime                       Timestamp,
+        public Task SendOnUpdateDynamicScheduleRequestErrorSent(DateTimeOffset                 Timestamp,
                                                                 IEventSender                   Sender,
                                                                 IWebSocketConnection?          Connection,
                                                                 UpdateDynamicScheduleRequest?  Request,
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnUpdateDynamicScheduleResponseErrorSentDelegate? OnUpdateDynamicScheduleResponseErrorSent;
 
 
-        public Task SendOnUpdateDynamicScheduleResponseErrorSent(DateTime                        Timestamp,
+        public Task SendOnUpdateDynamicScheduleResponseErrorSent(DateTimeOffset                  Timestamp,
                                                                  IEventSender                    Sender,
                                                                  IWebSocketConnection?           Connection,
                                                                  UpdateDynamicScheduleRequest?   Request,

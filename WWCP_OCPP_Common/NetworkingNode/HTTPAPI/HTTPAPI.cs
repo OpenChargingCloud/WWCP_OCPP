@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         #region (protected) NotifyRequestReceived  (OCPPAction, Timestamp, Sender, Connection, Request, RequestJSON, ...)
 
         protected async Task NotifyRequestReceived(String                OCPPAction,
-                                                   DateTime              Timestamp,
+                                                   DateTimeOffset      Timestamp,
                                                    IEventSender          Sender,
                                                    IWebSocketConnection  Connection,
                                                    IRequest              Request,
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         #region (protected) NotifyRequestSent      (OCPPAction, Timestamp, Sender, Connection, Request, RequestJSON, SentMessageResult, ...)
 
         protected async Task NotifyRequestSent(String                 OCPPAction,
-                                               DateTime               Timestamp,
+                                               DateTimeOffset       Timestamp,
                                                IEventSender           Sender,
                                                IWebSocketConnection?  Connection,
                                                IRequest               Request,
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         #region (protected) NotifyResponseReceived (OCPPAction, Timestamp, Sender, Connection, Request, RequestJSON, Response, ResponseJSON, Runtime, ...)
 
         protected async Task NotifyResponseReceived(String                 OCPPAction,
-                                                    DateTime               Timestamp,
+                                                    DateTimeOffset       Timestamp,
                                                     IEventSender           Sender,
                                                     IWebSocketConnection?  Connection,
                                                     IRequest?              Request,
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         #region (protected) NotifyResponseSent     (OCPPAction, Timestamp, Sender, Connection, Request, RequestJSON, Response, ResponseJSON, Runtime, SentMessageResult, ...)
 
         protected async Task NotifyResponseSent(String                 OCPPAction,
-                                                DateTime               Timestamp,
+                                                DateTimeOffset       Timestamp,
                                                 IEventSender           Sender,
                                                 IWebSocketConnection?  Connection,
                                                 IRequest?              Request,
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         #region (protected) NotifyRequestReceived  (OCPPAction, Timestamp, Sender, Connection, Request, RequestBinary, ...)
 
         protected async Task NotifyRequestReceived(String                OCPPAction,
-                                                   DateTime              Timestamp,
+                                                   DateTimeOffset      Timestamp,
                                                    IEventSender          Sender,
                                                    IWebSocketConnection  Connection,
                                                    IRequest              Request,
@@ -445,7 +445,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         #region (protected) NotifyRequestSent      (OCPPAction, Timestamp, Sender, Connection, Request, RequestBinary, SentMessageResult, ...)
 
         protected async Task NotifyRequestSent(String                 OCPPAction,
-                                               DateTime               Timestamp,
+                                               DateTimeOffset       Timestamp,
                                                IEventSender           Sender,
                                                IWebSocketConnection?  Connection,
                                                IRequest               Request,
@@ -495,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         #region (protected) NotifyResponseReceived (OCPPAction, Timestamp, Sender, Connection, Request, RequestBinary, Response, ResponseBinary, Runtime, ...)
 
         protected async Task NotifyResponseReceived(String                 OCPPAction,
-                                                    DateTime               Timestamp,
+                                                    DateTimeOffset       Timestamp,
                                                     IEventSender           Sender,
                                                     IWebSocketConnection?  Connection,
                                                     IRequest?              Request,
@@ -553,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         #region (protected) NotifyResponseSent     (OCPPAction, Timestamp, Sender, Connection, Request, RequestBinary, Response, ResponseBinary, Runtime, SentMessageResult, ...)
 
         protected async Task NotifyResponseSent(String                 OCPPAction,
-                                                DateTime               Timestamp,
+                                                DateTimeOffset       Timestamp,
                                                 IEventSender           Sender,
                                                 IWebSocketConnection?  Connection,
                                                 IRequest?              Request,

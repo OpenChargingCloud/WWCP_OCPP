@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The timestamp when the event report was generated.
         /// </summary>
         [Mandatory]
-        public DateTime                Timestamp                { get; }
+        public DateTimeOffset          Timestamp                { get; }
 
         /// <summary>
         /// The type of monitor that triggered this event, e.g. exceeding a threshold value.
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="VariableMonitoringId">An optional variable monitoring identification which triggered this event.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public EventData(Event_Id                EventId,
-                         DateTime                Timestamp,
+                         DateTimeOffset          Timestamp,
                          EventTriggers           Trigger,
                          String                  ActualValue,
                          EventNotificationType   EventNotificationType,

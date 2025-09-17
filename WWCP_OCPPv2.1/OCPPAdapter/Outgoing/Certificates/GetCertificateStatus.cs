@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetCertificateStatusRequestSentDelegate(DateTime                      Timestamp,
+    public delegate Task OnGetCertificateStatusRequestSentDelegate(DateTimeOffset                Timestamp,
                                                                    IEventSender                  Sender,
                                                                    IWebSocketConnection?         Connection,
                                                                    GetCertificateStatusRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCertificateStatusResponseSentDelegate(DateTime                       Timestamp,
+        OnGetCertificateStatusResponseSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    GetCertificateStatusRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCertificateStatusRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetCertificateStatusRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
                                                        IWebSocketConnection?          Connection,
                                                        GetCertificateStatusRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetCertificateStatusResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetCertificateStatusResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                         IEventSender                    Sender,
                                                         IWebSocketConnection?           Connection,
                                                         GetCertificateStatusRequest?    Request,
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetCertificateStatusResponseSentDelegate?  OnGetCertificateStatusResponseSent;
 
-        public Task SendOnGetCertificateStatusResponseSent(DateTime                      Timestamp,
+        public Task SendOnGetCertificateStatusResponseSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            GetCertificateStatusRequest   Request,
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetCertificateStatusRequestErrorSentDelegate? OnGetCertificateStatusRequestErrorSent;
 
 
-        public Task SendOnGetCertificateStatusRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetCertificateStatusRequestErrorSent(DateTimeOffset                Timestamp,
                                                                IEventSender                  Sender,
                                                                IWebSocketConnection?         Connection,
                                                                GetCertificateStatusRequest?  Request,
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetCertificateStatusResponseErrorSentDelegate? OnGetCertificateStatusResponseErrorSent;
 
 
-        public Task SendOnGetCertificateStatusResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetCertificateStatusResponseErrorSent(DateTimeOffset                 Timestamp,
                                                                 IEventSender                   Sender,
                                                                 IWebSocketConnection?          Connection,
                                                                 GetCertificateStatusRequest?   Request,

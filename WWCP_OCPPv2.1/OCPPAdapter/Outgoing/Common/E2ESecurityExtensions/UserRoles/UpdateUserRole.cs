@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnUpdateUserRoleRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnUpdateUserRoleRequestSentDelegate(DateTimeOffset          Timestamp,
                                                              IEventSender            Sender,
                                                              IWebSocketConnection?   Connection,
                                                              UpdateUserRoleRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUpdateUserRoleResponseSentDelegate(DateTime                 Timestamp,
+        OnUpdateUserRoleResponseSentDelegate(DateTimeOffset           Timestamp,
                                              IEventSender             Sender,
                                              IWebSocketConnection?    Connection,
                                              UpdateUserRoleRequest    Request,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUpdateUserRoleRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnUpdateUserRoleRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                  IEventSender                   Sender,
                                                  IWebSocketConnection?          Connection,
                                                  UpdateUserRoleRequest?         Request,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUpdateUserRoleResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnUpdateUserRoleResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                   IEventSender                    Sender,
                                                   IWebSocketConnection?           Connection,
                                                   UpdateUserRoleRequest?          Request,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnUpdateUserRoleResponseSentDelegate?  OnUpdateUserRoleResponseSent;
 
-        public Task SendOnUpdateUserRoleResponseSent(DateTime                Timestamp,
+        public Task SendOnUpdateUserRoleResponseSent(DateTimeOffset          Timestamp,
                                                      IEventSender            Sender,
                                                      IWebSocketConnection?   Connection,
                                                      UpdateUserRoleRequest   Request,
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnUpdateUserRoleRequestErrorSentDelegate? OnUpdateUserRoleRequestErrorSent;
 
 
-        public Task SendOnUpdateUserRoleRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnUpdateUserRoleRequestErrorSent(DateTimeOffset                Timestamp,
                                                          IEventSender                  Sender,
                                                          IWebSocketConnection?         Connection,
                                                          UpdateUserRoleRequest?        Request,
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnUpdateUserRoleResponseErrorSentDelegate? OnUpdateUserRoleResponseErrorSent;
 
 
-        public Task SendOnUpdateUserRoleResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnUpdateUserRoleResponseErrorSent(DateTimeOffset                 Timestamp,
                                                           IEventSender                   Sender,
                                                           IWebSocketConnection?          Connection,
                                                           UpdateUserRoleRequest?         Request,

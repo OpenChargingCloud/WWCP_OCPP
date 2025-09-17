@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSwipeRFIDCardRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnSwipeRFIDCardRequestSentDelegate(DateTimeOffset          Timestamp,
                                                             IEventSender            Sender,
                                                             IWebSocketConnection?   Connection,
                                                             SwipeRFIDCardRequest    Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSwipeRFIDCardResponseSentDelegate(DateTime                Timestamp,
+        OnSwipeRFIDCardResponseSentDelegate(DateTimeOffset          Timestamp,
                                             IEventSender            Sender,
                                             IWebSocketConnection?   Connection,
                                             SwipeRFIDCardRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSwipeRFIDCardRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnSwipeRFIDCardRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                 IEventSender                   Sender,
                                                 IWebSocketConnection?          Connection,
                                                 SwipeRFIDCardRequest?          Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSwipeRFIDCardResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnSwipeRFIDCardResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                  IEventSender                    Sender,
                                                  IWebSocketConnection?           Connection,
                                                  SwipeRFIDCardRequest?           Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnSwipeRFIDCardResponseSentDelegate?  OnSwipeRFIDCardResponseSent;
 
-        public Task SendOnSwipeRFIDCardResponseSent(DateTime                 Timestamp,
+        public Task SendOnSwipeRFIDCardResponseSent(DateTimeOffset           Timestamp,
                                                      IEventSender             Sender,
                                                      IWebSocketConnection?    Connection,
                                                      SwipeRFIDCardRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnSwipeRFIDCardRequestErrorSentDelegate? OnSwipeRFIDCardRequestErrorSent;
 
 
-        public Task SendOnSwipeRFIDCardRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnSwipeRFIDCardRequestErrorSent(DateTimeOffset                Timestamp,
                                                          IEventSender                  Sender,
                                                          IWebSocketConnection?         Connection,
                                                          SwipeRFIDCardRequest?        Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnSwipeRFIDCardResponseErrorSentDelegate? OnSwipeRFIDCardResponseErrorSent;
 
 
-        public Task SendOnSwipeRFIDCardResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnSwipeRFIDCardResponseErrorSent(DateTimeOffset                 Timestamp,
                                                           IEventSender                   Sender,
                                                           IWebSocketConnection?          Connection,
                                                           SwipeRFIDCardRequest?         Request,

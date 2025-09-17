@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetTariffsRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnGetTariffsRequestSentDelegate(DateTimeOffset          Timestamp,
                                                          IEventSender            Sender,
                                                          IWebSocketConnection?   Connection,
                                                          GetTariffsRequest       Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetTariffsResponseSentDelegate(DateTime                Timestamp,
+        OnGetTariffsResponseSentDelegate(DateTimeOffset          Timestamp,
                                          IEventSender            Sender,
                                          IWebSocketConnection?   Connection,
                                          GetTariffsRequest?      Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetTariffsRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetTariffsRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                              IEventSender                   Sender,
                                              IWebSocketConnection?          Connection,
                                              GetTariffsRequest?             Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetTariffsResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetTariffsResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                               IEventSender                    Sender,
                                               IWebSocketConnection?           Connection,
                                               GetTariffsRequest?              Request,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetTariffsResponseSentDelegate?  OnGetTariffsResponseSent;
 
 
-        public Task SendOnGetTariffsResponseSent(DateTime               Timestamp,
+        public Task SendOnGetTariffsResponseSent(DateTimeOffset         Timestamp,
                                                  IEventSender           Sender,
                                                  IWebSocketConnection?  Connection,
                                                  GetTariffsRequest      Request,
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetTariffsRequestErrorSentDelegate? OnGetTariffsRequestErrorSent;
 
 
-        public Task SendOnGetTariffsRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetTariffsRequestErrorSent(DateTimeOffset                Timestamp,
                                                      IEventSender                  Sender,
                                                      IWebSocketConnection?         Connection,
                                                      GetTariffsRequest?            Request,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetTariffsResponseErrorSentDelegate? OnGetTariffsResponseErrorSent;
 
 
-        public Task SendOnGetTariffsResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetTariffsResponseErrorSent(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
                                                       IWebSocketConnection?          Connection,
                                                       GetTariffsRequest?             Request,

@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                    ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
                                                    ChargingStation                           ChargingStationB,
                                                    PrivacyLevel                              PrivacyLevel   = PrivacyLevel.Private,
-                                                   DateTime?                                 Created        = null)
+                                                   DateTimeOffset?                           Created        = null)
 
             : base(ChargingStationA ?? throw new ArgumentNullException(nameof(ChargingStationA), "The given charging station must not be null!"),
                    EdgeLabel,

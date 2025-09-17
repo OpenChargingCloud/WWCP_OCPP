@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       StatusInfo?              StatusInfo            = null,
 
                                       Result?                  Result                = null,
-                                      DateTime?                ResponseTimestamp     = null,
+                                      DateTimeOffset?          ResponseTimestamp     = null,
 
                                       SourceRouting?           Destination           = null,
                                       NetworkPath?             NetworkPath           = null,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    JObject                                               JSON,
                                                    SourceRouting                                         Destination,
                                                    NetworkPath                                           NetworkPath,
-                                                   DateTime?                                             ResponseTimestamp                    = null,
+                                                   DateTimeOffset?                                       ResponseTimestamp                    = null,
                                                    CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null,
                                                    CustomJObjectParserDelegate<StatusInfo>?              CustomStatusInfoParser               = null,
                                                    CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                           NetworkPath,
                                        [NotNullWhen(true)]  out UpdateFirmwareResponse?      UpdateFirmwareResponse,
                                        [NotNullWhen(false)] out String?                      ErrorResponse,
-                                       DateTime?                                             ResponseTimestamp                    = null,
+                                       DateTimeOffset?                                       ResponseTimestamp                    = null,
                                        CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?              CustomStatusInfoParser               = null,
                                        CustomJObjectParserDelegate<Signature>?               CustomSignatureParser                = null,
@@ -450,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                           ResultCode               ErrorCode,
                                                           String?                  ErrorDescription    = null,
                                                           JObject?                 ErrorDetails        = null,
-                                                          DateTime?                ResponseTimestamp   = null,
+                                                          DateTimeOffset?          ResponseTimestamp   = null,
 
                                                           SourceRouting?           Destination         = null,
                                                           NetworkPath?             NetworkPath         = null,

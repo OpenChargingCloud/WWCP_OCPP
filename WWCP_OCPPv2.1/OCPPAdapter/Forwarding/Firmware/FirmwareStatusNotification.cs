@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<FirmwareStatusNotificationRequest, FirmwareStatusNotificationResponse>>
 
-        OnFirmwareStatusNotificationRequestFilterDelegate(DateTime                            Timestamp,
+        OnFirmwareStatusNotificationRequestFilterDelegate(DateTimeOffset                      Timestamp,
                                                           IEventSender                        Sender,
                                                           IWebSocketConnection                Connection,
                                                           FirmwareStatusNotificationRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnFirmwareStatusNotificationRequestFilteredDelegate(DateTime                                                                                    Timestamp,
+        OnFirmwareStatusNotificationRequestFilteredDelegate(DateTimeOffset                                                                              Timestamp,
                                                             IEventSender                                                                                Sender,
                                                             IWebSocketConnection                                                                        Connection,
                                                             FirmwareStatusNotificationRequest                                                           Request,

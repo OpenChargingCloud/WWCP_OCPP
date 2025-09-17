@@ -50,16 +50,16 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="BinaryResponse">The binary response message.</param>
     /// <param name="BinaryRequestErrorMessage">An optional binary request error message.</param>
     /// <param name="BinaryResponseErrorMessage">An optional binary response error message.</param>
-    public class SendRequestState(DateTime                          RequestTimestamp,
+    public class SendRequestState(DateTimeOffset                  RequestTimestamp,
                                   SourceRouting                     Destination,
                                   NetworkPath                       NetworkPath,
-                                  DateTime                          Timeout,
+                                  DateTimeOffset                  Timeout,
 
                                   OCPP_JSONRequestMessage?          JSONRequest                  = null,
                                   OCPP_BinaryRequestMessage?        BinaryRequest                = null,
                                   SentMessageResult?                SentMessageResult            = null,
 
-                                  DateTime?                         ResponseTimestamp            = null,
+                                  DateTimeOffset?                   ResponseTimestamp            = null,
 
                                   OCPP_JSONResponseMessage?         JSONResponse                 = null,
                                   OCPP_JSONRequestErrorMessage?     JSONRequestErrorMessage      = null,
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The time stamp of the request.
         /// </summary>
-        public DateTime                          RequestTimestamp              { get; }      = RequestTimestamp;
+        public DateTimeOffset                  RequestTimestamp              { get; }      = RequestTimestamp;
 
         /// <summary>
         /// The destination network node identification of the request
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The timeout of the request.
         /// </summary>
-        public DateTime                          Timeout                       { get; }      = Timeout;
+        public DateTimeOffset                  Timeout                       { get; }      = Timeout;
 
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The time stamp of the response.
         /// </summary>
-        public DateTime?                         ResponseTimestamp             { get; set; } = ResponseTimestamp;
+        public DateTimeOffset?                   ResponseTimestamp             { get; set; } = ResponseTimestamp;
 
         public IWebSocketConnection              WebSocketConnectionReceived   { get; set; }
 
@@ -255,14 +255,14 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) FromJSONRequest  (...)
 
-        public static SendRequestState FromJSONRequest(DateTime                       RequestTimestamp,
+        public static SendRequestState FromJSONRequest(DateTimeOffset               RequestTimestamp,
                                                        SourceRouting                  Destination,
-                                                       DateTime                       Timeout,
+                                                       DateTimeOffset               Timeout,
 
                                                        OCPP_JSONRequestMessage        JSONRequest,
                                                        SentMessageResult?             SentMessageResult         = null,
 
-                                                       DateTime?                      ResponseTimestamp         = null,
+                                                       DateTimeOffset?                ResponseTimestamp         = null,
 
                                                        OCPP_JSONResponseMessage?      JSONResponse              = null,
                                                        OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage   = null,
@@ -290,14 +290,14 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #region (static) FromBinaryRequest(...)
 
-        public static SendRequestState FromBinaryRequest(DateTime                       RequestTimestamp,
+        public static SendRequestState FromBinaryRequest(DateTimeOffset               RequestTimestamp,
                                                          SourceRouting                  Destination,
-                                                         DateTime                       Timeout,
+                                                         DateTimeOffset               Timeout,
 
                                                          OCPP_BinaryRequestMessage      BinaryRequest,
                                                          SentMessageResult?             SentMessageResult         = null,
 
-                                                         DateTime?                      ResponseTimestamp         = null,
+                                                         DateTimeOffset?                ResponseTimestamp         = null,
 
                                                          OCPP_JSONResponseMessage?      JSONResponse              = null,
                                                          OCPP_JSONRequestErrorMessage?  JSONRequestErrorMessage   = null,

@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// The periods contained in the charging profile are relative
         /// to this timestamp.
         /// </summary>
-        public DateTime?                   ScheduleStart       { get; }
+        public DateTimeOffset?             ScheduleStart       { get; }
 
         /// <summary>
         /// The planned composite charging schedule, the energy consumption
@@ -109,11 +109,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public GetCompositeScheduleResponse(GetCompositeScheduleRequest  Request,
                                             GetCompositeScheduleStatus   Status,
                                             Connector_Id?                ConnectorId           = null,
-                                            DateTime?                    ScheduleStart         = null,
+                                            DateTimeOffset?              ScheduleStart         = null,
                                             ChargingSchedule?            ChargingSchedule      = null,
 
                                             Result?                      Result                = null,
-                                            DateTime?                    ResponseTimestamp     = null,
+                                            DateTimeOffset?              ResponseTimestamp     = null,
 
                                             SourceRouting?               Destination           = null,
                                             NetworkPath?                 NetworkPath           = null,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                          JObject                                                     JSON,
                                                          SourceRouting                                               Destination,
                                                          NetworkPath                                                 NetworkPath,
-                                                         DateTime?                                                   ResponseTimestamp                          = null,
+                                                         DateTimeOffset?                                             ResponseTimestamp                          = null,
                                                          CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null,
                                                          CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
                                                          CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out GetCompositeScheduleResponse?      GetCompositeScheduleResponse,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       DateTime?                                                   ResponseTimestamp                          = null,
+                                       DateTimeOffset?                                             ResponseTimestamp                          = null,
                                        CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null,
                                        CustomJObjectParserDelegate<Signature>?                     CustomSignatureParser                      = null,
                                        CustomJObjectParserDelegate<CustomData>?                    CustomCustomDataParser                     = null)
@@ -671,7 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                 ResultCode                   ErrorCode,
                                                                 String?                      ErrorDescription    = null,
                                                                 JObject?                     ErrorDetails        = null,
-                                                                DateTime?                    ResponseTimestamp   = null,
+                                                                DateTimeOffset?              ResponseTimestamp   = null,
 
                                                                 SourceRouting?               Destination         = null,
                                                                 NetworkPath?                 NetworkPath         = null,

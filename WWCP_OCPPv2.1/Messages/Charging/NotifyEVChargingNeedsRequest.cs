@@ -53,27 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext    Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The EVSE and connector to which the EV is connected to.
         /// </summary>
         [Mandatory]
-        public EVSE_Id        EVSEId               { get; }
+        public EVSE_Id          EVSEId               { get; }
 
         /// <summary>
         /// The characteristics of the energy delivery required.
         /// </summary>
         [Mandatory]
-        public ChargingNeeds  ChargingNeeds        { get; }
+        public ChargingNeeds    ChargingNeeds        { get; }
 
         /// <summary>
         /// An optional timestamp when the EV charging needs had been received,
         /// e.g. when the charging station was offline.
         /// </summary>
         [Optional]
-        public DateTime?      ReceivedTimestamp    { get; }
+        public DateTimeOffset?  ReceivedTimestamp    { get; }
 
         /// <summary>
         /// The optional maximum number of schedule tuples the EV supports for:
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         ///   - ISO 15118-20: PowerScheduleEntry, PriceRule and PriceLevelScheduleEntries
         /// </summary>
         [Optional]
-        public UInt16?        MaxScheduleTuples    { get; }
+        public UInt16?          MaxScheduleTuples    { get; }
 
         #endregion
 
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public NotifyEVChargingNeedsRequest(SourceRouting            Destination,
                                             EVSE_Id                  EVSEId,
                                             ChargingNeeds            ChargingNeeds,
-                                            DateTime?                ReceivedTimestamp     = null,
+                                            DateTimeOffset?          ReceivedTimestamp     = null,
                                             UInt16?                  MaxScheduleTuples     = null,
 
                                             IEnumerable<KeyPair>?    SignKeys              = null,
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             CustomData?              CustomData            = null,
 
                                             Request_Id?              RequestId             = null,
-                                            DateTime?                RequestTimestamp      = null,
+                                            DateTimeOffset?          RequestTimestamp      = null,
                                             TimeSpan?                RequestTimeout        = null,
                                             EventTracking_Id?        EventTrackingId       = null,
                                             NetworkPath?             NetworkPath           = null,
@@ -928,7 +928,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                          Request_Id                                                  RequestId,
                                                          SourceRouting                                               Destination,
                                                          NetworkPath                                                 NetworkPath,
-                                                         DateTime?                                                   RequestTimestamp                           = null,
+                                                         DateTimeOffset?                                             RequestTimestamp                           = null,
                                                          TimeSpan?                                                   RequestTimeout                             = null,
                                                          EventTracking_Id?                                           EventTrackingId                            = null,
                                                          CustomJObjectParserDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestParser   = null)
@@ -976,7 +976,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                 NetworkPath,
                                        [NotNullWhen(true)]  out NotifyEVChargingNeedsRequest?      NotifyEVChargingNeedsRequest,
                                        [NotNullWhen(false)] out String?                            ErrorResponse,
-                                       DateTime?                                                   RequestTimestamp                           = null,
+                                       DateTimeOffset?                                             RequestTimestamp                           = null,
                                        TimeSpan?                                                   RequestTimeout                             = null,
                                        EventTracking_Id?                                           EventTrackingId                            = null,
                                        CustomJObjectParserDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestParser   = null)

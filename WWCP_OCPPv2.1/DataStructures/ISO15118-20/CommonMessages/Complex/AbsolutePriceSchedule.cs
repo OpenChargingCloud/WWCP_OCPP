@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="OverstayRules">An optional overstay rules list.</param>
         /// <param name="AdditionalSelectedServices">An optional enumeration of additional selected services.</param>
         public AbsolutePriceSchedule(PriceSchedule_Id                         Id,
-                                     DateTime                                 TimeAnchor,
+                                     DateTimeOffset                           TimeAnchor,
                                      Currency                                 Currency,
                                      Language_Id                              Language,
                                      PriceAlgorithm_Id                        PriceAlgorithmId,

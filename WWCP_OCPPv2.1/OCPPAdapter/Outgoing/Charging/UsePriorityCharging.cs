@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnUsePriorityChargingRequestSentDelegate(DateTime                     Timestamp,
+    public delegate Task OnUsePriorityChargingRequestSentDelegate(DateTimeOffset               Timestamp,
                                                                   IEventSender                 Sender,
                                                                   IWebSocketConnection?        Connection,
                                                                   UsePriorityChargingRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUsePriorityChargingResponseSentDelegate(DateTime                      Timestamp,
+        OnUsePriorityChargingResponseSentDelegate(DateTimeOffset                Timestamp,
                                                   IEventSender                  Sender,
                                                   IWebSocketConnection?         Connection,
                                                   UsePriorityChargingRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUsePriorityChargingRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnUsePriorityChargingRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
                                                       IWebSocketConnection?          Connection,
                                                       UsePriorityChargingRequest?    Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUsePriorityChargingResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnUsePriorityChargingResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                        IEventSender                    Sender,
                                                        IWebSocketConnection?           Connection,
                                                        UsePriorityChargingRequest?     Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnUsePriorityChargingResponseSentDelegate?  OnUsePriorityChargingResponseSent;
 
-        public Task SendOnUsePriorityChargingResponseSent(DateTime                     Timestamp,
+        public Task SendOnUsePriorityChargingResponseSent(DateTimeOffset               Timestamp,
                                                           IEventSender                 Sender,
                                                           IWebSocketConnection?        Connection,
                                                           UsePriorityChargingRequest   Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnUsePriorityChargingRequestErrorSentDelegate? OnUsePriorityChargingRequestErrorSent;
 
 
-        public Task SendOnUsePriorityChargingRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnUsePriorityChargingRequestErrorSent(DateTimeOffset                Timestamp,
                                                               IEventSender                  Sender,
                                                               IWebSocketConnection?         Connection,
                                                               UsePriorityChargingRequest?   Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnUsePriorityChargingResponseErrorSentDelegate? OnUsePriorityChargingResponseErrorSent;
 
 
-        public Task SendOnUsePriorityChargingResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnUsePriorityChargingResponseErrorSent(DateTimeOffset                 Timestamp,
                                                                IEventSender                   Sender,
                                                                IWebSocketConnection?          Connection,
                                                                UsePriorityChargingRequest?    Request,

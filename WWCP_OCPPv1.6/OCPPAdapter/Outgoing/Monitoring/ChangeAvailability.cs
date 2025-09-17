@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnChangeAvailabilityRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnChangeAvailabilityRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                ChangeAvailabilityRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnChangeAvailabilityResponseSentDelegate(DateTime                   Timestamp,
+        OnChangeAvailabilityResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                ChangeAvailabilityRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnChangeAvailabilityRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnChangeAvailabilityRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    ChangeAvailabilityRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnChangeAvailabilityResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnChangeAvailabilityResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     ChangeAvailabilityRequest?        Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnChangeAvailabilityResponseSentDelegate?  OnChangeAvailabilityResponseSent;
 
-        public Task SendOnChangeAvailabilityResponseSent(DateTime                   Timestamp,
+        public Task SendOnChangeAvailabilityResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        ChangeAvailabilityRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnChangeAvailabilityRequestErrorSentDelegate? OnChangeAvailabilityRequestErrorSent;
 
 
-        public Task SendOnChangeAvailabilityRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnChangeAvailabilityRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            ChangeAvailabilityRequest?      Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnChangeAvailabilityResponseErrorSentDelegate? OnChangeAvailabilityResponseErrorSent;
 
 
-        public Task SendOnChangeAvailabilityResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnChangeAvailabilityResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             ChangeAvailabilityRequest?       Request,

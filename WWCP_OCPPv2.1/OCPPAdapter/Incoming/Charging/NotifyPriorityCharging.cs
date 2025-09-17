@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyPriorityChargingRequestReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnNotifyPriorityChargingRequestReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
                                                                          IWebSocketConnection            Connection,
                                                                          NotifyPriorityChargingRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyPriorityChargingResponseReceivedDelegate(DateTime                         Timestamp,
+    public delegate Task OnNotifyPriorityChargingResponseReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                           IEventSender                     Sender,
                                                                           IWebSocketConnection?            Connection,
                                                                           NotifyPriorityChargingRequest?   Request,
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyPriorityChargingRequestErrorReceivedDelegate(DateTime                         Timestamp,
+    public delegate Task OnNotifyPriorityChargingRequestErrorReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                               IEventSender                     Sender,
                                                                               IWebSocketConnection             Connection,
                                                                               NotifyPriorityChargingRequest?   Request,
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyPriorityChargingResponseErrorReceivedDelegate(DateTime                          Timestamp,
+    public delegate Task OnNotifyPriorityChargingResponseErrorReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                                IEventSender                      Sender,
                                                                                IWebSocketConnection              Connection,
                                                                                NotifyPriorityChargingRequest?    Request,
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<NotifyPriorityChargingResponse>
 
-        OnNotifyPriorityChargingDelegate(DateTime                        Timestamp,
+        OnNotifyPriorityChargingDelegate(DateTimeOffset                  Timestamp,
                                          IEventSender                    Sender,
                                          IWebSocketConnection            Connection,
                                          NotifyPriorityChargingRequest   Request,
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_NotifyPriorityCharging(DateTime              RequestTimestamp,
+            Receive_NotifyPriorityCharging(DateTimeOffset        RequestTimestamp,
                                            IWebSocketConnection  WebSocketConnection,
                                            SourceRouting         Destination,
                                            NetworkPath           NetworkPath,
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    NetworkPath                    NetworkPath,
                                                    EventTracking_Id               EventTrackingId,
                                                    Request_Id                     RequestId,
-                                                   DateTime?                      ResponseTimestamp   = null,
+                                                   DateTimeOffset?                ResponseTimestamp   = null,
                                                    CancellationToken              CancellationToken   = default)
 
         {
@@ -423,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        NetworkPath                    NetworkPath,
                                                        EventTracking_Id               EventTrackingId,
                                                        Request_Id                     RequestId,
-                                                       DateTime?                      ResponseTimestamp   = null,
+                                                       DateTimeOffset?                ResponseTimestamp   = null,
                                                        CancellationToken              CancellationToken   = default)
         {
 
@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                         NetworkPath                      NetworkPath,
                                                         EventTracking_Id                 EventTrackingId,
                                                         Request_Id                       RequestId,
-                                                        DateTime?                        ResponseTimestamp   = null,
+                                                        DateTimeOffset?                  ResponseTimestamp   = null,
                                                         CancellationToken                CancellationToken   = default)
 
         {

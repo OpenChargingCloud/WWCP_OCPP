@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The timestamp of the security event.
         /// </summary>
         [Mandatory]
-        public DateTime           Timestamp    { get; }
+        public DateTimeOffset     Timestamp    { get; }
 
         /// <summary>
         /// Optional additional information about the occurred security event.
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SecurityEventNotificationRequest(SourceRouting            Destination,
                                                 SecurityEventType        Type,
-                                                DateTime                 Timestamp,
+                                                DateTimeOffset           Timestamp,
                                                 String?                  TechInfo              = null,
 
                                                 IEnumerable<KeyPair>?    SignKeys              = null,
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 CustomData?              CustomData            = null,
 
                                                 Request_Id?              RequestId             = null,
-                                                DateTime?                RequestTimestamp      = null,
+                                                DateTimeOffset?          RequestTimestamp      = null,
                                                 TimeSpan?                RequestTimeout        = null,
                                                 EventTracking_Id?        EventTrackingId       = null,
                                                 NetworkPath?             NetworkPath           = null,
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                              Request_Id                                                      RequestId,
                                                              SourceRouting                                                   Destination,
                                                              NetworkPath                                                     NetworkPath,
-                                                             DateTime?                                                       RequestTimestamp                               = null,
+                                                             DateTimeOffset?                                                 RequestTimestamp                               = null,
                                                              TimeSpan?                                                       RequestTimeout                                 = null,
                                                              EventTracking_Id?                                               EventTrackingId                                = null,
                                                              CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser   = null)
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                     NetworkPath,
                                        [NotNullWhen(true)]  out SecurityEventNotificationRequest?      SecurityEventNotificationRequest,
                                        [NotNullWhen(false)] out String?                                ErrorResponse,
-                                       DateTime?                                                       RequestTimestamp                               = null,
+                                       DateTimeOffset?                                                 RequestTimestamp                               = null,
                                        TimeSpan?                                                       RequestTimeout                                 = null,
                                        EventTracking_Id?                                               EventTrackingId                                = null,
                                        CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser   = null)

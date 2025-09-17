@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<Get15118EVCertificateRequest, Get15118EVCertificateResponse>>
 
-        OnGet15118EVCertificateRequestFilterDelegate(DateTime                       Timestamp,
+        OnGet15118EVCertificateRequestFilterDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection           Connection,
                                                      Get15118EVCertificateRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnGet15118EVCertificateRequestFilteredDelegate(DateTime                                                                          Timestamp,
+        OnGet15118EVCertificateRequestFilteredDelegate(DateTimeOffset                                                                    Timestamp,
                                                        IEventSender                                                                      Sender,
                                                        IWebSocketConnection                                                              Connection,
                                                        Get15118EVCertificateRequest                                                      Request,

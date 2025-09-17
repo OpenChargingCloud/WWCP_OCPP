@@ -18,30 +18,30 @@
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public delegate Task UploadedFileReceivedDelegate(DateTime           Timestamp,
+    public delegate Task UploadedFileReceivedDelegate(DateTimeOffset     Timestamp,
                                                       UploadedFileInfos  UploadedFileInfo,
                                                       CancellationToken  CancellationToken);
 
-    public delegate Task UploadErrorDelegate         (DateTime           Timestamp,
+    public delegate Task UploadErrorDelegate         (DateTimeOffset     Timestamp,
                                                       String             Module,
                                                       String             Caller,
                                                       String             ErrorResponse,
                                                       CancellationToken  CancellationToken);
 
-    public delegate Task UploadExceptionDelegate     (DateTime           Timestamp,
+    public delegate Task UploadExceptionDelegate     (DateTimeOffset     Timestamp,
                                                       String             Module,
                                                       String             Caller,
                                                       Exception          ExceptionOccurred,
                                                       CancellationToken  CancellationToken);
 
 
-    public class UploadedFileInfos(DateTime  UploadTimestamp,
-                                   String    FileName,
-                                   UInt64    FileSize)
+    public class UploadedFileInfos(DateTimeOffset  UploadTimestamp,
+                                   String          FileName,
+                                   UInt64          FileSize)
     {
-        public DateTime  UploadTimestamp    { get; } = UploadTimestamp;
-        public String    FileName           { get; } = FileName;
-        public UInt64    FileSize           { get; } = FileSize;
+        public DateTimeOffset  UploadTimestamp    { get; } = UploadTimestamp;
+        public String          FileName           { get; } = FileName;
+        public UInt64          FileSize           { get; } = FileSize;
 
     }
 

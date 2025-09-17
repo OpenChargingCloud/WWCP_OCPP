@@ -45,7 +45,7 @@
 //    /// <param name="Connection">The HTTP WebSocket client connection.</param>
 //    /// <param name="Request">The request.</param>
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
-//    public delegate Task OnGetCRLRequestReceivedDelegate(DateTime               Timestamp,
+//    public delegate Task OnGetCRLRequestReceivedDelegate(DateTimeOffset         Timestamp,
 //                                                         IEventSender           Sender,
 //                                                         IWebSocketConnection   Connection,
 //                                                         GetCRLRequest          Request,
@@ -62,7 +62,7 @@
 //    /// <param name="Response">The response.</param>
 //    /// <param name="Runtime">The optional runtime of the request/response pair.</param>
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
-//    public delegate Task OnGetCRLResponseReceivedDelegate(DateTime                Timestamp,
+//    public delegate Task OnGetCRLResponseReceivedDelegate(DateTimeOffset          Timestamp,
 //                                                          IEventSender            Sender,
 //                                                          IWebSocketConnection?   Connection,
 //                                                          GetCRLRequest?          Request,
@@ -81,7 +81,7 @@
 //    /// <param name="RequestErrorMessage">The request error message.</param>
 //    /// <param name="Runtime">The runtime of the request/request error pair.</param>
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
-//    public delegate Task OnGetCRLRequestErrorReceivedDelegate(DateTime                       Timestamp,
+//    public delegate Task OnGetCRLRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
 //                                                              IEventSender                   Sender,
 //                                                              IWebSocketConnection           Connection,
 //                                                              GetCRLRequest?                 Request,
@@ -101,7 +101,7 @@
 //    /// <param name="ResponseErrorMessage">The response error message.</param>
 //    /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
-//    public delegate Task OnGetCRLResponseErrorReceivedDelegate(DateTime                        Timestamp,
+//    public delegate Task OnGetCRLResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
 //                                                               IEventSender                    Sender,
 //                                                               IWebSocketConnection            Connection,
 //                                                               GetCRLRequest?                  Request,
@@ -124,7 +124,7 @@
 //    /// <param name="CancellationToken">A token to cancel this request.</param>
 //    public delegate Task<GetCRLResponse>
 
-//        OnGetCRLDelegate(DateTime               Timestamp,
+//        OnGetCRLDelegate(DateTimeOffset         Timestamp,
 //                         IEventSender           Sender,
 //                         IWebSocketConnection   Connection,
 //                         GetCRLRequest          Request,
@@ -151,7 +151,7 @@
 
 //        public async Task<OCPP_Response>
 
-//            Receive_GetCRL(DateTime              RequestTimestamp,
+//            Receive_GetCRL(DateTimeOffset        RequestTimestamp,
 //                           IWebSocketConnection  WebSocketConnection,
 //                           SourceRouting         Destination,
 //                           NetworkPath           NetworkPath,
@@ -322,7 +322,7 @@
 //                                   NetworkPath           NetworkPath,
 //                                   EventTracking_Id      EventTrackingId,
 //                                   Request_Id            RequestId,
-//                                   DateTime?             ResponseTimestamp   = null,
+//                                   DateTimeOffset?       ResponseTimestamp   = null,
 //                                   CancellationToken     CancellationToken   = default)
 
 //        {
@@ -428,7 +428,7 @@
 //                                       NetworkPath                   NetworkPath,
 //                                       EventTracking_Id              EventTrackingId,
 //                                       Request_Id                    RequestId,
-//                                       DateTime?                     ResponseTimestamp   = null,
+//                                       DateTimeOffset?               ResponseTimestamp   = null,
 //                                       CancellationToken             CancellationToken   = default)
 //        {
 
@@ -517,7 +517,7 @@
 //                                        NetworkPath                    NetworkPath,
 //                                        EventTracking_Id               EventTrackingId,
 //                                        Request_Id                     RequestId,
-//                                        DateTime?                      ResponseTimestamp   = null,
+//                                        DateTimeOffset?                ResponseTimestamp   = null,
 //                                        CancellationToken              CancellationToken   = default)
 
 //        {

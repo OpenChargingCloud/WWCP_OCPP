@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
 
         Meter_Id?       MeterId                        { get; }
         IMeter?         Meter                          { get; }
-        DateTime?       Timestamp                      { get; }
+        DateTimeOffset? Timestamp                      { get; }
         String?         InfoStatus                     { get; }
         UInt32?         SecondsIndex                   { get; }
         String?         PaginationId                   { get; }
@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
         String?         LogBookIndex                   { get; }
         String?         AuthorizationStart             { get; }
         String?         AuthorizationStop              { get; }
-        DateTime?       AuthorizationStartTimestamp    { get; }
+        DateTimeOffset? AuthorizationStartTimestamp    { get; }
         String?         PublicKey                      { get; }
         String?         PublicKeyFormat                { get; }
 

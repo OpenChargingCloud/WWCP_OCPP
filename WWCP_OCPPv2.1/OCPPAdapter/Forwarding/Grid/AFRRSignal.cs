@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<AFRRSignalRequest, AFRRSignalResponse>>
 
-        OnAFRRSignalRequestFilterDelegate(DateTime               Timestamp,
+        OnAFRRSignalRequestFilterDelegate(DateTimeOffset         Timestamp,
                                           IEventSender           Sender,
                                           IWebSocketConnection   Connection,
                                           AFRRSignalRequest      Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnAFRRSignalRequestFilteredDelegate(DateTime                                                    Timestamp,
+        OnAFRRSignalRequestFilteredDelegate(DateTimeOffset                                              Timestamp,
                                             IEventSender                                                Sender,
                                             IWebSocketConnection                                        Connection,
                                             AFRRSignalRequest                                           Request,

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<GetInstalledCertificateIdsRequest, GetInstalledCertificateIdsResponse>>
 
-        OnGetInstalledCertificateIdsRequestFilterDelegate(DateTime                            Timestamp,
+        OnGetInstalledCertificateIdsRequestFilterDelegate(DateTimeOffset                      Timestamp,
                                                           IEventSender                        Sender,
                                                           IWebSocketConnection                Connection,
                                                           GetInstalledCertificateIdsRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnGetInstalledCertificateIdsRequestFilteredDelegate(DateTime                                                                                    Timestamp,
+        OnGetInstalledCertificateIdsRequestFilteredDelegate(DateTimeOffset                                                                              Timestamp,
                                                             IEventSender                                                                                Sender,
                                                             IWebSocketConnection                                                                        Connection,
                                                             GetInstalledCertificateIdsRequest                                                           Request,

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnMeterValuesRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnMeterValuesRequestSentDelegate(DateTimeOffset          Timestamp,
                                                           IEventSender            Sender,
                                                           IWebSocketConnection?   Connection,
                                                           MeterValuesRequest      Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnMeterValuesResponseSentDelegate(DateTime               Timestamp,
+        OnMeterValuesResponseSentDelegate(DateTimeOffset         Timestamp,
                                           IEventSender           Sender,
                                           IWebSocketConnection?  Connection,
                                           MeterValuesRequest     Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnMeterValuesRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnMeterValuesRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                               IEventSender                   Sender,
                                               IWebSocketConnection?          Connection,
                                               MeterValuesRequest?            Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnMeterValuesResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnMeterValuesResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                IEventSender                    Sender,
                                                IWebSocketConnection?           Connection,
                                                MeterValuesRequest?             Request,
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnMeterValuesResponseSentDelegate?  OnMeterValuesResponseSent;
 
-        public Task SendOnMeterValuesResponseSent(DateTime              Timestamp,
+        public Task SendOnMeterValuesResponseSent(DateTimeOffset        Timestamp,
                                                   IEventSender          Sender,
                                                   IWebSocketConnection? Connection,
                                                   MeterValuesRequest    Request,
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnMeterValuesRequestErrorSentDelegate? OnMeterValuesRequestErrorSent;
 
 
-        public Task SendOnMeterValuesRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnMeterValuesRequestErrorSent(DateTimeOffset                Timestamp,
                                                       IEventSender                  Sender,
                                                       IWebSocketConnection?         Connection,
                                                       MeterValuesRequest?           Request,
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnMeterValuesResponseErrorSentDelegate? OnMeterValuesResponseErrorSent;
 
 
-        public Task SendOnMeterValuesResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnMeterValuesResponseErrorSent(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
                                                        IWebSocketConnection?          Connection,
                                                        MeterValuesRequest?            Request,

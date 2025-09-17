@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearTariffsRequestReceivedDelegate(DateTime               Timestamp,
+        OnClearTariffsRequestReceivedDelegate(DateTimeOffset         Timestamp,
                                               IEventSender           Sender,
                                               IWebSocketConnection   Connection,
                                               ClearTariffsRequest    Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnClearTariffsResponseReceivedDelegate(DateTime                Timestamp,
+    public delegate Task OnClearTariffsResponseReceivedDelegate(DateTimeOffset          Timestamp,
                                                                 IEventSender            Sender,
                                                                 IWebSocketConnection?   Connection,
                                                                 ClearTariffsRequest?    Request,
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnClearTariffsRequestErrorReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnClearTariffsRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                     IEventSender                   Sender,
                                                                     IWebSocketConnection           Connection,
                                                                     ClearTariffsRequest?           Request,
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnClearTariffsResponseErrorReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnClearTariffsResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                      IEventSender                    Sender,
                                                                      IWebSocketConnection            Connection,
                                                                      ClearTariffsRequest?            Request,
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<ClearTariffsResponse>
 
-        OnClearTariffsDelegate(DateTime               Timestamp,
+        OnClearTariffsDelegate(DateTimeOffset         Timestamp,
                                IEventSender           Sender,
                                IWebSocketConnection   Connection,
                                ClearTariffsRequest    Request,
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_ClearTariffs(DateTime              RequestTimestamp,
+            Receive_ClearTariffs(DateTimeOffset        RequestTimestamp,
                                  IWebSocketConnection  WebSocketConnection,
                                  SourceRouting         Destination,
                                  NetworkPath           NetworkPath,
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          NetworkPath           NetworkPath,
                                          EventTracking_Id      EventTrackingId,
                                          Request_Id            RequestId,
-                                         DateTime?             ResponseTimestamp   = null,
+                                         DateTimeOffset?       ResponseTimestamp   = null,
                                          CancellationToken     CancellationToken   = default)
 
         {
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              NetworkPath                   NetworkPath,
                                              EventTracking_Id              EventTrackingId,
                                              Request_Id                    RequestId,
-                                             DateTime?                     ResponseTimestamp   = null,
+                                             DateTimeOffset?               ResponseTimestamp   = null,
                                              CancellationToken             CancellationToken   = default)
         {
 
@@ -520,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               NetworkPath                    NetworkPath,
                                               EventTracking_Id               EventTrackingId,
                                               Request_Id                     RequestId,
-                                              DateTime?                      ResponseTimestamp   = null,
+                                              DateTimeOffset?                ResponseTimestamp   = null,
                                               CancellationToken              CancellationToken   = default)
 
         {

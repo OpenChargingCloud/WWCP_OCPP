@@ -48,7 +48,7 @@
 //                                                        IEnumerable<TariffElement>                             TariffElements,
 
 //                                                        ImageLinks?                                            ProviderLogos                         = null,
-//                                                        DateTime?                                              Created                               = null,
+//                                                        DateTimeOffset?                                        Created                               = null,
 //                                                        IEnumerable<E2EChargingTariff_Id>?                        Replaces                              = null,
 //                                                        IEnumerable<E2EChargingTariff_Id>?                        References                            = null,
 //                                                        TariffType?                                            TariffType                            = null,
@@ -60,8 +60,8 @@
 
 //                                                        Price?                                                 MinPrice                              = null,
 //                                                        Price?                                                 MaxPrice                              = null,
-//                                                        DateTime?                                              NotBefore                             = null,
-//                                                        DateTime?                                              NotAfter                              = null,
+//                                                        DateTimeOffset?                                        NotBefore                             = null,
+//                                                        DateTimeOffset?                                        NotAfter                              = null,
 
 //                                                        CustomData?                                            CustomData                            = null,
 
@@ -222,7 +222,7 @@
 //        /// The timestamp when this tariff was created.
 //        /// </summary>
 //        [Mandatory] //, NonStandard("Pagination")]
-//        public   DateTime                       Created               { get; }
+//        public   DateTimeOffset                 Created               { get; }
 
 //        /// <summary>
 //        /// Optional references to other tariffs, which will be replaced by this charging tariff.
@@ -350,7 +350,7 @@
 //        /// charging station, CSMS or EMP system, before it becomes active/valid.
 //        /// </summary>
 //        [Optional]
-//        public   DateTime?                      NotBefore             { get; }
+//        public   DateTimeOffset?                NotBefore             { get; }
 
 //        /// <summary>
 //        /// The optional timestamp after which this charging tariff is no longer active/valid.
@@ -358,7 +358,7 @@
 //        /// of the tariff after this timestamp has passed.
 //        /// </summary>
 //        [Optional]
-//        public   DateTime?                      NotAfter              { get; }
+//        public   DateTimeOffset?                NotAfter              { get; }
 
 //        #endregion
 
@@ -401,7 +401,7 @@
 //                              IEnumerable<TariffElement>       TariffElements,
 
 //                              ImageLinks?                      ProviderLogos   = null,
-//                              DateTime?                        Created         = null,
+//                              DateTimeOffset?                  Created         = null,
 //                              IEnumerable<E2EChargingTariff_Id>?  Replaces        = null,
 //                              IEnumerable<E2EChargingTariff_Id>?  References      = null,
 //                              TariffType?                      TariffType      = null,
@@ -413,8 +413,8 @@
 
 //                              Price?                           MinPrice        = null,
 //                              Price?                           MaxPrice        = null,
-//                              DateTime?                        NotBefore       = null,
-//                              DateTime?                        NotAfter        = null,
+//                              DateTimeOffset?                  NotBefore       = null,
+//                              DateTimeOffset?                  NotAfter        = null,
 
 //                              IEnumerable<KeyPair>?            SignKeys        = null,
 //                              IEnumerable<SignInfo>?           SignInfos       = null,
@@ -1072,7 +1072,7 @@
 //                            out String?                                            ErrorResponse,
 //                            String?                                                SignerName                            = null,
 //                            I18NString?                                            Description                           = null,
-//                            DateTime?                                              Timestamp                             = null,
+//                            DateTimeOffset?                                        Timestamp                             = null,
 //                            CustomJObjectSerializerDelegate<E2EChargingTariff>?       CustomE2EChargingTariffSerializer        = null,
 //                            CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
 //                            CustomJObjectSerializerDelegate<TaxRate>?              CustomTaxRateSerializer               = null,

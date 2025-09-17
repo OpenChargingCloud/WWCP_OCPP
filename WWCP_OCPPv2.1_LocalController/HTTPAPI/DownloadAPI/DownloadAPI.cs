@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #region (private) SendFileDownloaded(Timestamp, DownloadedFileInfo, ...)
 
-        private async Task SendFileDownloaded(DateTime             Timestamp,
+        private async Task SendFileDownloaded(DateTimeOffset       Timestamp,
                                               DownloadedFileInfos  DownloadedFileInfo,
                                               CancellationToken    CancellationToken = default)
         {

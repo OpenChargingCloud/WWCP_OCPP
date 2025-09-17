@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifySettlementRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnNotifySettlementRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                NotifySettlementRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifySettlementResponseSentDelegate(DateTime                   Timestamp,
+        OnNotifySettlementResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                NotifySettlementRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifySettlementRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnNotifySettlementRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    NotifySettlementRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifySettlementResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnNotifySettlementResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     NotifySettlementRequest?        Request,
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnNotifySettlementResponseSentDelegate?  OnNotifySettlementResponseSent;
 
-        public Task SendOnNotifySettlementResponseSent(DateTime                  Timestamp,
+        public Task SendOnNotifySettlementResponseSent(DateTimeOffset            Timestamp,
                                                        IEventSender              Sender,
                                                        IWebSocketConnection?     Connection,
                                                        NotifySettlementRequest   Request,
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifySettlementRequestErrorSentDelegate? OnNotifySettlementRequestErrorSent;
 
 
-        public Task SendOnNotifySettlementRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnNotifySettlementRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            NotifySettlementRequest?      Request,
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifySettlementResponseErrorSentDelegate? OnNotifySettlementResponseErrorSent;
 
 
-        public Task SendOnNotifySettlementResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnNotifySettlementResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             NotifySettlementRequest?       Request,

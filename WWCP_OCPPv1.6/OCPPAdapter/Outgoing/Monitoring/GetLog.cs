@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetLogRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnGetLogRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                GetLogRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetLogResponseSentDelegate(DateTime                   Timestamp,
+        OnGetLogResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                GetLogRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetLogRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetLogRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    GetLogRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetLogResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetLogResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     GetLogRequest?        Request,
@@ -480,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnGetLogResponseSentDelegate?  OnGetLogResponseSent;
 
-        public Task SendOnGetLogResponseSent(DateTime                   Timestamp,
+        public Task SendOnGetLogResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        GetLogRequest    Request,
@@ -513,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetLogRequestErrorSentDelegate? OnGetLogRequestErrorSent;
 
 
-        public Task SendOnGetLogRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetLogRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            GetLogRequest?      Request,
@@ -546,7 +546,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetLogResponseErrorSentDelegate? OnGetLogResponseErrorSent;
 
 
-        public Task SendOnGetLogResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetLogResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             GetLogRequest?       Request,

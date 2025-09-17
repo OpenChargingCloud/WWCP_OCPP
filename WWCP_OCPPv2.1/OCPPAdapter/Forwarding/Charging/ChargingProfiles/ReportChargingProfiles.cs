@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<ReportChargingProfilesRequest, ReportChargingProfilesResponse>>
 
-        OnReportChargingProfilesRequestFilterDelegate(DateTime                        Timestamp,
+        OnReportChargingProfilesRequestFilterDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
                                                       IWebSocketConnection            Connection,
                                                       ReportChargingProfilesRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnReportChargingProfilesRequestFilteredDelegate(DateTime                                                                            Timestamp,
+        OnReportChargingProfilesRequestFilteredDelegate(DateTimeOffset                                                                      Timestamp,
                                                         IEventSender                                                                        Sender,
                                                         IWebSocketConnection                                                                Connection,
                                                         ReportChargingProfilesRequest                                                       Request,

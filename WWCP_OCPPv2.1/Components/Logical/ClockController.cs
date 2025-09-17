@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Contains the current date and time.
         /// </summary>
         [Mandatory]
-        public DateTime                 DateTime                            { get; }
+        public DateTimeOffset           DateTime                      { get; }
 
         /// <summary>
         /// This contains the address of the NTP server.
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Date time of the next time offset transition.
         /// </summary>
-        public DateTime?                NextTimeOffsetTransitionDateTime    { get; set; }
+        public DateTimeOffset?          NextTimeOffsetTransitionDateTime    { get; set; }
 
         /// <summary>
         /// Next local time offset in the format: "+01:00", "-02:00" etc.
@@ -106,13 +106,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public ClockController(DateTime                 DateTime,
+        public ClockController(DateTimeOffset           DateTime,
                                IEnumerable<TimeSource>  TimeSource,
 
                                String?                  NtpServerUri,
                                NTPSources?              NtpSource,
                                String?                  TimeOffset,
-                               DateTime?                NextTimeOffsetTransitionDateTime,
+                               DateTimeOffset?          NextTimeOffsetTransitionDateTime,
                                String?                  NextTimeOffsetTransition,
                                String?                  TimeZone,
                                Int32?                   TimeAdjustmentReportingThreshold,

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<PullDynamicScheduleUpdateRequest, PullDynamicScheduleUpdateResponse>>
 
-        OnPullDynamicScheduleUpdateRequestFilterDelegate(DateTime                           Timestamp,
+        OnPullDynamicScheduleUpdateRequestFilterDelegate(DateTimeOffset                     Timestamp,
                                                          IEventSender                       Sender,
                                                          IWebSocketConnection               Connection,
                                                          PullDynamicScheduleUpdateRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnPullDynamicScheduleUpdateRequestFilteredDelegate(DateTime                                                                                  Timestamp,
+        OnPullDynamicScheduleUpdateRequestFilteredDelegate(DateTimeOffset                                                                            Timestamp,
                                                            IEventSender                                                                              Sender,
                                                            IWebSocketConnection                                                                      Connection,
                                                            PullDynamicScheduleUpdateRequest                                                          Request,

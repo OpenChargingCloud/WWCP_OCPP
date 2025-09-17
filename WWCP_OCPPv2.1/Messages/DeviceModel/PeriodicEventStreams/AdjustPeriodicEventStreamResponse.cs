@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public AdjustPeriodicEventStreamResponse(AdjustPeriodicEventStreamRequest  Request,
                                                  GenericStatus                     Status,
                                                  StatusInfo?                       StatusInfo          = null,
-                                                 DateTime?                         ResponseTimestamp   = null,
+                                                 DateTimeOffset?                   ResponseTimestamp   = null,
 
                                                  IEnumerable<KeyPair>?             SignKeys            = null,
                                                  IEnumerable<SignInfo>?            SignInfos           = null,

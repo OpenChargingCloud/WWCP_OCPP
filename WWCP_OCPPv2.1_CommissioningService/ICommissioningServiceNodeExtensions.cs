@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                   CustomData?              CustomData            = null,
 
                   Request_Id?              RequestId             = null,
-                  DateTime?                RequestTimestamp      = null,
+                  DateTimeOffset?          RequestTimestamp      = null,
                   TimeSpan?                RequestTimeout        = null,
                   EventTracking_Id?        EventTrackingId       = null,
                   SerializationFormats?    SerializationFormat   = null,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                            CustomData?              CustomData            = null,
 
                            Request_Id?              RequestId             = null,
-                           DateTime?                RequestTimestamp      = null,
+                           DateTimeOffset?          RequestTimestamp      = null,
                            TimeSpan?                RequestTimeout        = null,
                            EventTracking_Id?        EventTrackingId       = null,
                            SerializationFormats?    SerializationFormat   = null,
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                             CustomData?              CustomData            = null,
 
                             Request_Id?              RequestId             = null,
-                            DateTime?                RequestTimestamp      = null,
+                            DateTimeOffset?          RequestTimestamp      = null,
                             TimeSpan?                RequestTimeout        = null,
                             EventTracking_Id?        EventTrackingId       = null,
                             SerializationFormats?    SerializationFormat   = null,
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                               CustomData?              CustomData            = null,
 
                               Request_Id?              RequestId             = null,
-                              DateTime?                RequestTimestamp      = null,
+                              DateTimeOffset?          RequestTimestamp      = null,
                               TimeSpan?                RequestTimeout        = null,
                               EventTracking_Id?        EventTrackingId       = null,
                               SerializationFormats?    SerializationFormat   = null,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                           CustomData?              CustomData            = null,
 
                           Request_Id?              RequestId             = null,
-                          DateTime?                RequestTimestamp      = null,
+                          DateTimeOffset?          RequestTimestamp      = null,
                           TimeSpan?                RequestTimeout        = null,
                           EventTracking_Id?        EventTrackingId       = null,
                           SerializationFormats?    SerializationFormat   = null,
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                       CustomData?                     CustomData            = null,
 
                       Request_Id?                     RequestId             = null,
-                      DateTime?                       RequestTimestamp      = null,
+                      DateTimeOffset?                 RequestTimestamp      = null,
                       TimeSpan?                       RequestTimeout        = null,
                       EventTracking_Id?               EventTrackingId       = null,
                       SerializationFormats?           SerializationFormat   = null,
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                    CustomData?              CustomData            = null,
 
                    Request_Id?              RequestId             = null,
-                   DateTime?                RequestTimestamp      = null,
+                   DateTimeOffset?          RequestTimestamp      = null,
                    TimeSpan?                RequestTimeout        = null,
                    EventTracking_Id?        EventTrackingId       = null,
                    SerializationFormats?    SerializationFormat   = null,
@@ -528,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                          CustomData?                   CustomData             = null,
 
                          Request_Id?                   RequestId              = null,
-                         DateTime?                     RequestTimestamp       = null,
+                         DateTimeOffset?               RequestTimestamp       = null,
                          TimeSpan?                     RequestTimeout         = null,
                          EventTracking_Id?             EventTrackingId        = null,
                          SerializationFormats?         SerializationFormat    = null,
@@ -588,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                          CustomData?                   CustomData            = null,
 
                          Request_Id?                   RequestId             = null,
-                         DateTime?                     RequestTimestamp      = null,
+                         DateTimeOffset?               RequestTimestamp      = null,
                          TimeSpan?                     RequestTimeout        = null,
                          EventTracking_Id?             EventTrackingId       = null,
                          SerializationFormats?         SerializationFormat   = null,
@@ -647,7 +647,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                               CustomData?              CustomData            = null,
 
                               Request_Id?              RequestId             = null,
-                              DateTime?                RequestTimestamp      = null,
+                              DateTimeOffset?          RequestTimestamp      = null,
                               TimeSpan?                RequestTimeout        = null,
                               EventTracking_Id?        EventTrackingId       = null,
                               SerializationFormats?    SerializationFormat   = null,
@@ -710,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                 CustomData?                       CustomData            = null,
 
                                 Request_Id?                       RequestId             = null,
-                                DateTime?                         RequestTimestamp      = null,
+                                DateTimeOffset?                   RequestTimestamp      = null,
                                 TimeSpan?                         RequestTimeout        = null,
                                 EventTracking_Id?                 EventTrackingId       = null,
                                 SerializationFormats?             SerializationFormat   = null,
@@ -771,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                CustomData?              CustomData            = null,
 
                                Request_Id?              RequestId             = null,
-                               DateTime?                RequestTimestamp      = null,
+                               DateTimeOffset?          RequestTimestamp      = null,
                                TimeSpan?                RequestTimeout        = null,
                                EventTracking_Id?        EventTrackingId       = null,
                                SerializationFormats?    SerializationFormat   = null,
@@ -830,7 +830,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                   CustomData?                     CustomData            = null,
 
                                   Request_Id?                     RequestId             = null,
-                                  DateTime?                       RequestTimestamp      = null,
+                                  DateTimeOffset?                 RequestTimestamp      = null,
                                   TimeSpan?                       RequestTimeout        = null,
                                   EventTracking_Id?               EventTrackingId       = null,
                                   SerializationFormats?           SerializationFormat   = null,
@@ -889,7 +889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                     CustomData?                         CustomData            = null,
 
                                     Request_Id?                         RequestId             = null,
-                                    DateTime?                           RequestTimestamp      = null,
+                                    DateTimeOffset?                     RequestTimestamp      = null,
                                     TimeSpan?                           RequestTimeout        = null,
                                     EventTracking_Id?                   EventTrackingId       = null,
                                     SerializationFormats?               SerializationFormat   = null,
@@ -950,7 +950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                               CustomData?               CustomData            = null,
 
                               Request_Id?               RequestId             = null,
-                              DateTime?                 RequestTimestamp      = null,
+                              DateTimeOffset?           RequestTimestamp      = null,
                               TimeSpan?                 RequestTimeout        = null,
                               EventTracking_Id?         EventTrackingId       = null,
                               SerializationFormats?     SerializationFormat   = null,
@@ -1014,7 +1014,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                CustomData?              CustomData            = null,
 
                                Request_Id?              RequestId             = null,
-                               DateTime?                RequestTimestamp      = null,
+                               DateTimeOffset?          RequestTimestamp      = null,
                                TimeSpan?                RequestTimeout        = null,
                                EventTracking_Id?        EventTrackingId       = null,
                                SerializationFormats?    SerializationFormat   = null,
@@ -1078,7 +1078,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                            CustomData?              CustomData            = null,
 
                            Request_Id?              RequestId             = null,
-                           DateTime?                RequestTimestamp      = null,
+                           DateTimeOffset?          RequestTimestamp      = null,
                            TimeSpan?                RequestTimeout        = null,
                            EventTracking_Id?        EventTrackingId       = null,
                            SerializationFormats?    SerializationFormat   = null,
@@ -1140,7 +1140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                          IEnumerable<Signature>?  Signatures            = null,
 
                          Request_Id?              RequestId             = null,
-                         DateTime?                RequestTimestamp      = null,
+                         DateTimeOffset?          RequestTimestamp      = null,
                          TimeSpan?                RequestTimeout        = null,
                          EventTracking_Id?        EventTrackingId       = null,
                          SerializationFormats?    SerializationFormat   = null,
@@ -1201,7 +1201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                   CustomData?              CustomData            = null,
 
                                   Request_Id?              RequestId             = null,
-                                  DateTime?                RequestTimestamp      = null,
+                                  DateTimeOffset?          RequestTimestamp      = null,
                                   TimeSpan?                RequestTimeout        = null,
                                   EventTracking_Id?        EventTrackingId       = null,
                                   SerializationFormats?    SerializationFormat   = null,
@@ -1265,7 +1265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                CustomData?                     CustomData            = null,
 
                                Request_Id?                     RequestId             = null,
-                               DateTime?                       RequestTimestamp      = null,
+                               DateTimeOffset?                 RequestTimestamp      = null,
                                TimeSpan?                       RequestTimeout        = null,
                                EventTracking_Id?               EventTrackingId       = null,
                                SerializationFormats?           SerializationFormat   = null,
@@ -1326,7 +1326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                        CustomData?                        CustomData            = null,
 
                                        Request_Id?                        RequestId             = null,
-                                       DateTime?                          RequestTimestamp      = null,
+                                       DateTimeOffset?                    RequestTimestamp      = null,
                                        TimeSpan?                          RequestTimeout        = null,
                                        EventTracking_Id?                  EventTrackingId       = null,
                                        SerializationFormats?              SerializationFormat   = null,
@@ -1385,7 +1385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                               CustomData?              CustomData            = null,
 
                               Request_Id?              RequestId             = null,
-                              DateTime?                RequestTimestamp      = null,
+                              DateTimeOffset?          RequestTimestamp      = null,
                               TimeSpan?                RequestTimeout        = null,
                               EventTracking_Id?        EventTrackingId       = null,
                               SerializationFormats?    SerializationFormat   = null,
@@ -1448,7 +1448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                   CustomData?              CustomData            = null,
 
                                   Request_Id?              RequestId             = null,
-                                  DateTime?                RequestTimestamp      = null,
+                                  DateTimeOffset?          RequestTimestamp      = null,
                                   TimeSpan?                RequestTimeout        = null,
                                   EventTracking_Id?        EventTrackingId       = null,
                                   SerializationFormats?    SerializationFormat   = null,
@@ -1508,7 +1508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                 CustomData?              CustomData            = null,
 
                                 Request_Id?              RequestId             = null,
-                                DateTime?                RequestTimestamp      = null,
+                                DateTimeOffset?          RequestTimestamp      = null,
                                 TimeSpan?                RequestTimeout        = null,
                                 EventTracking_Id?        EventTrackingId       = null,
                                 SerializationFormats?    SerializationFormat   = null,
@@ -1570,7 +1570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                           CustomData?                      CustomData               = null,
 
                           Request_Id?                      RequestId                = null,
-                          DateTime?                        RequestTimestamp         = null,
+                          DateTimeOffset?                  RequestTimestamp         = null,
                           TimeSpan?                        RequestTimeout           = null,
                           EventTracking_Id?                EventTrackingId          = null,
                           SerializationFormats?            SerializationFormat      = null,
@@ -1629,7 +1629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                        CustomData?              CustomData            = null,
 
                        Request_Id?              RequestId             = null,
-                       DateTime?                RequestTimestamp      = null,
+                       DateTimeOffset?          RequestTimestamp      = null,
                        TimeSpan?                RequestTimeout        = null,
                        EventTracking_Id?        EventTrackingId       = null,
                        SerializationFormats?    SerializationFormat   = null,
@@ -1690,7 +1690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                     CustomData?              CustomData            = null,
 
                                     Request_Id?              RequestId             = null,
-                                    DateTime?                RequestTimestamp      = null,
+                                    DateTimeOffset?          RequestTimestamp      = null,
                                     TimeSpan?                RequestTimeout        = null,
                                     EventTracking_Id?        EventTrackingId       = null,
                                     SerializationFormats?    SerializationFormat   = null,
@@ -1747,7 +1747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
             ReserveNow(this ICommissioningServiceNode           CSMS,
                        SourceRouting            Destination,
                        Reservation_Id           ReservationId,
-                       DateTime                 ExpiryDate,
+                       DateTimeOffset           ExpiryDate,
                        IdToken                  IdToken,
                        ConnectorType?           ConnectorType         = null,
                        EVSE_Id?                 EVSEId                = null,
@@ -1760,7 +1760,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                        CustomData?              CustomData            = null,
 
                        Request_Id?              RequestId             = null,
-                       DateTime?                RequestTimestamp      = null,
+                       DateTimeOffset?          RequestTimestamp      = null,
                        TimeSpan?                RequestTimeout        = null,
                        EventTracking_Id?        EventTrackingId       = null,
                        SerializationFormats?    SerializationFormat   = null,
@@ -1824,7 +1824,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                               CustomData?              CustomData            = null,
 
                               Request_Id?              RequestId             = null,
-                              DateTime?                RequestTimestamp      = null,
+                              DateTimeOffset?          RequestTimestamp      = null,
                               TimeSpan?                RequestTimeout        = null,
                               EventTracking_Id?        EventTrackingId       = null,
                               SerializationFormats?    SerializationFormat   = null,
@@ -1893,7 +1893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                           CustomData?              CustomData            = null,
 
                           Request_Id?              RequestId             = null,
-                          DateTime?                RequestTimestamp      = null,
+                          DateTimeOffset?          RequestTimestamp      = null,
                           TimeSpan?                RequestTimeout        = null,
                           EventTracking_Id?        EventTrackingId       = null,
                           SerializationFormats?    SerializationFormat   = null,
@@ -1957,7 +1957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                          CustomData?              CustomData            = null,
 
                          Request_Id?              RequestId             = null,
-                         DateTime?                RequestTimestamp      = null,
+                         DateTimeOffset?          RequestTimestamp      = null,
                          TimeSpan?                RequestTimeout        = null,
                          EventTracking_Id?        EventTrackingId       = null,
                          SerializationFormats?    SerializationFormat   = null,
@@ -2016,7 +2016,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                  CustomData?              CustomData            = null,
 
                                  Request_Id?              RequestId             = null,
-                                 DateTime?                RequestTimestamp      = null,
+                                 DateTimeOffset?          RequestTimestamp      = null,
                                  TimeSpan?                RequestTimeout        = null,
                                  EventTracking_Id?        EventTrackingId       = null,
                                  SerializationFormats?    SerializationFormat   = null,
@@ -2077,7 +2077,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                CustomData?              CustomData            = null,
 
                                Request_Id?              RequestId             = null,
-                               DateTime?                RequestTimestamp      = null,
+                               DateTimeOffset?          RequestTimestamp      = null,
                                TimeSpan?                RequestTimeout        = null,
                                EventTracking_Id?        EventTrackingId       = null,
                                SerializationFormats?    SerializationFormat   = null,
@@ -2140,7 +2140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                 CustomData?               CustomData            = null,
 
                                 Request_Id?               RequestId             = null,
-                                DateTime?                 RequestTimestamp      = null,
+                                DateTimeOffset?           RequestTimestamp      = null,
                                 TimeSpan?                 RequestTimeout        = null,
                                 EventTracking_Id?         EventTrackingId       = null,
                                 SerializationFormats?     SerializationFormat   = null,
@@ -2203,7 +2203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                  CustomData?              CustomData                = null,
 
                                  Request_Id?              RequestId                 = null,
-                                 DateTime?                RequestTimestamp          = null,
+                                 DateTimeOffset?          RequestTimestamp          = null,
                                  TimeSpan?                RequestTimeout            = null,
                                  EventTracking_Id?        EventTrackingId           = null,
                                  SerializationFormats?    SerializationFormat       = null,
@@ -2267,7 +2267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                  CustomData?              CustomData            = null,
 
                                  Request_Id?              RequestId             = null,
-                                 DateTime?                RequestTimestamp      = null,
+                                 DateTimeOffset?          RequestTimestamp      = null,
                                  TimeSpan?                RequestTimeout        = null,
                                  EventTracking_Id?        EventTrackingId       = null,
                                  SerializationFormats?    SerializationFormat   = null,
@@ -2330,7 +2330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                   CustomData?              CustomData            = null,
 
                                   Request_Id?              RequestId             = null,
-                                  DateTime?                RequestTimestamp      = null,
+                                  DateTimeOffset?          RequestTimestamp      = null,
                                   TimeSpan?                RequestTimeout        = null,
                                   EventTracking_Id?        EventTrackingId       = null,
                                   SerializationFormats?    SerializationFormat   = null,
@@ -2392,7 +2392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                         CustomData?                      CustomData            = null,
 
                                         Request_Id?                      RequestId             = null,
-                                        DateTime?                        RequestTimestamp      = null,
+                                        DateTimeOffset?                  RequestTimestamp      = null,
                                         TimeSpan?                        RequestTimeout        = null,
                                         EventTracking_Id?                EventTrackingId       = null,
                                         SerializationFormats?            SerializationFormat   = null,
@@ -2453,7 +2453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                 CustomData?              CustomData            = null,
 
                                 Request_Id?              RequestId             = null,
-                                DateTime?                RequestTimestamp      = null,
+                                DateTimeOffset?          RequestTimestamp      = null,
                                 TimeSpan?                RequestTimeout        = null,
                                 EventTracking_Id?        EventTrackingId       = null,
                                 SerializationFormats?    SerializationFormat   = null,
@@ -2514,7 +2514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                             CustomData?              CustomData            = null,
 
                             Request_Id?              RequestId             = null,
-                            DateTime?                RequestTimestamp      = null,
+                            DateTimeOffset?          RequestTimestamp      = null,
                             TimeSpan?                RequestTimeout        = null,
                             EventTracking_Id?        EventTrackingId       = null,
                             SerializationFormats?    SerializationFormat   = null,
@@ -2569,7 +2569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
 
             SendAFRRSignal(this ICommissioningServiceNode           CSMS,
                            SourceRouting            Destination,
-                           DateTime                 ActivationTimestamp,
+                           DateTimeOffset           ActivationTimestamp,
                            AFRR_Signal              Signal,
 
                            IEnumerable<KeyPair>?    SignKeys              = null,
@@ -2579,7 +2579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                            CustomData?              CustomData            = null,
 
                            Request_Id?              RequestId             = null,
-                           DateTime?                RequestTimestamp      = null,
+                           DateTimeOffset?          RequestTimestamp      = null,
                            TimeSpan?                RequestTimeout        = null,
                            EventTracking_Id?        EventTrackingId       = null,
                            SerializationFormats?    SerializationFormat   = null,
@@ -2639,7 +2639,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                               CustomData?              CustomData            = null,
 
                               Request_Id?              RequestId             = null,
-                              DateTime?                RequestTimestamp      = null,
+                              DateTimeOffset?          RequestTimestamp      = null,
                               TimeSpan?                RequestTimeout        = null,
                               EventTracking_Id?        EventTrackingId       = null,
                               SerializationFormats?    SerializationFormat   = null,
@@ -2703,7 +2703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                CustomData?                      CustomData            = null,
 
                                Request_Id?                      RequestId             = null,
-                               DateTime?                        RequestTimestamp      = null,
+                               DateTimeOffset?                  RequestTimestamp      = null,
                                TimeSpan?                        RequestTimeout        = null,
                                EventTracking_Id?                EventTrackingId       = null,
                                SerializationFormats?            SerializationFormat   = null,
@@ -2764,7 +2764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                 CustomData?              CustomData            = null,
 
                                 Request_Id?              RequestId             = null,
-                                DateTime?                RequestTimestamp      = null,
+                                DateTimeOffset?          RequestTimestamp      = null,
                                 TimeSpan?                RequestTimeout        = null,
                                 EventTracking_Id?        EventTrackingId       = null,
                                 SerializationFormats?    SerializationFormat   = null,
@@ -2824,7 +2824,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                             CustomData?              CustomData            = null,
 
                             Request_Id?              RequestId             = null,
-                            DateTime?                RequestTimestamp      = null,
+                            DateTimeOffset?          RequestTimestamp      = null,
                             TimeSpan?                RequestTimeout        = null,
                             EventTracking_Id?        EventTrackingId       = null,
                             SerializationFormats?    SerializationFormat   = null,
@@ -2893,7 +2893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                        CustomData?              CustomData            = null,
 
                                        Request_Id?              RequestId             = null,
-                                       DateTime?                RequestTimestamp      = null,
+                                       DateTimeOffset?          RequestTimestamp      = null,
                                        TimeSpan?                RequestTimeout        = null,
                                        EventTracking_Id?        EventTrackingId       = null,
                                        SerializationFormats?    SerializationFormat   = null,
@@ -2958,7 +2958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                     CustomData?              CustomData            = null,
 
                                     Request_Id?              RequestId             = null,
-                                    DateTime?                RequestTimestamp      = null,
+                                    DateTimeOffset?          RequestTimestamp      = null,
                                     TimeSpan?                RequestTimeout        = null,
                                     EventTracking_Id?        EventTrackingId       = null,
                                     SerializationFormats?    SerializationFormat   = null,
@@ -3017,7 +3017,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                          CustomData?              CustomData            = null,
 
                          Request_Id?              RequestId             = null,
-                         DateTime?                RequestTimestamp      = null,
+                         DateTimeOffset?          RequestTimestamp      = null,
                          TimeSpan?                RequestTimeout        = null,
                          EventTracking_Id?        EventTrackingId       = null,
                          SerializationFormats?    SerializationFormat   = null,
@@ -3075,7 +3075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                        CustomData?              CustomData            = null,
 
                        Request_Id?              RequestId             = null,
-                       DateTime?                RequestTimestamp      = null,
+                       DateTimeOffset?          RequestTimestamp      = null,
                        TimeSpan?                RequestTimeout        = null,
                        EventTracking_Id?        EventTrackingId       = null,
                        SerializationFormats?    SerializationFormat   = null,
@@ -3135,7 +3135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                              CustomData?              CustomData            = null,
 
                              Request_Id?              RequestId             = null,
-                             DateTime?                RequestTimestamp      = null,
+                             DateTimeOffset?          RequestTimestamp      = null,
                              TimeSpan?                RequestTimeout        = null,
                              EventTracking_Id?        EventTrackingId       = null,
                              SerializationFormats?    SerializationFormat   = null,
@@ -3201,7 +3201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                         CustomData?              CustomData            = null,
 
                                         Request_Id?              RequestId             = null,
-                                        DateTime?                RequestTimestamp      = null,
+                                        DateTimeOffset?          RequestTimestamp      = null,
                                         TimeSpan?                RequestTimeout        = null,
                                         EventTracking_Id?        EventTrackingId       = null,
                                         SerializationFormats?    SerializationFormat   = null,
@@ -3260,7 +3260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                      CustomData?              CustomData            = null,
 
                                      Request_Id?              RequestId             = null,
-                                     DateTime?                RequestTimestamp      = null,
+                                     DateTimeOffset?          RequestTimestamp      = null,
                                      TimeSpan?                RequestTimeout        = null,
                                      EventTracking_Id?        EventTrackingId       = null,
                                      SerializationFormats?    SerializationFormat   = null,
@@ -3321,7 +3321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                         CustomData?              CustomData            = null,
 
                                         Request_Id?              RequestId             = null,
-                                        DateTime?                RequestTimestamp      = null,
+                                        DateTimeOffset?          RequestTimestamp      = null,
                                         TimeSpan?                RequestTimeout        = null,
                                         EventTracking_Id?        EventTrackingId       = null,
                                         SerializationFormats?    SerializationFormat   = null,

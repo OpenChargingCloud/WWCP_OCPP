@@ -55,18 +55,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext   Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The URL where to download the firmware.
         /// </summary>
-        public URL            FirmwareURL          { get; }
+        public URL             FirmwareURL          { get; }
 
         /// <summary>
         /// The timestamp when the charge point shall retrieve the firmware.
         /// </summary>
-        public DateTime       RetrieveTimestamp    { get; }
+        public DateTimeOffset  RetrieveTimestamp    { get; }
 
         /// <summary>
         /// The optional number of retries of a charge point for trying to
@@ -74,14 +74,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// present, it is left to the charge point to decide how many times
         /// it wants to retry.
         /// </summary>
-        public Byte?          Retries              { get; }
+        public Byte?           Retries              { get; }
 
         /// <summary>
         /// The interval after which a retry may be attempted. If this field
         /// is not present, it is left to charge point to decide how long to
         /// wait between attempts.
         /// </summary>
-        public TimeSpan?      RetryInterval        { get; }
+        public TimeSpan?       RetryInterval        { get; }
 
         #endregion
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public UpdateFirmwareRequest(SourceRouting            Destination,
                                      URL                      FirmwareURL,
-                                     DateTime                 RetrieveTimestamp,
+                                     DateTimeOffset           RetrieveTimestamp,
                                      Byte?                    Retries               = null,
                                      TimeSpan?                RetryInterval         = null,
 
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      CustomData?              CustomData            = null,
 
                                      Request_Id?              RequestId             = null,
-                                     DateTime?                RequestTimestamp      = null,
+                                     DateTimeOffset?          RequestTimestamp      = null,
                                      TimeSpan?                RequestTimeout        = null,
                                      EventTracking_Id?        EventTrackingId       = null,
                                      NetworkPath?             NetworkPath           = null,
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                   Request_Id                                           RequestId,
                                                   SourceRouting                                        Destination,
                                                   NetworkPath                                          NetworkPath,
-                                                  DateTime?                                            RequestTimestamp                    = null,
+                                                  DateTimeOffset?                                      RequestTimestamp                    = null,
                                                   TimeSpan?                                            RequestTimeout                      = null,
                                                   EventTracking_Id?                                    EventTrackingId                     = null,
                                                   CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null,
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out UpdateFirmwareRequest?      UpdateFirmwareRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       DateTime?                                            RequestTimestamp                    = null,
+                                       DateTimeOffset?                                      RequestTimestamp                    = null,
                                        TimeSpan?                                            RequestTimeout                      = null,
                                        EventTracking_Id?                                    EventTrackingId                     = null,
                                        CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null,

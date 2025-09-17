@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
 
         }
 
-        public static DateTime SetTimestamp(this Byte[] CryptoBuffer, DateTime timestamp, UInt32 offset)
+        public static DateTimeOffset SetTimestamp(this Byte[] CryptoBuffer, DateTimeOffset timestamp, UInt32 offset)
         {
 
             var unixtime  = (Int64) Math.Floor(timestamp.Subtract(UnixEpoch).TotalSeconds);
@@ -111,12 +111,12 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
 
         }
 
-        public static DateTime SetTimestamp32(this Byte[] CryptoBuffer, DateTime timestamp, UInt32 offset)
+        public static DateTimeOffset SetTimestamp32(this Byte[] CryptoBuffer, DateTimeOffset timestamp, UInt32 offset)
         {
 
             // Usage of utcOffset() is afaik EMH specific!
-            var t         = new DateTimeOffset(timestamp);
-            var unixtime  = (Int64) Math.Floor(timestamp.Subtract(UnixEpoch).TotalSeconds) + 60 * t.Offset.Minutes;
+           // var t         = new DateTimeOffset(timestamp);
+            var unixtime  = (Int64) Math.Floor(timestamp.Subtract(UnixEpoch).TotalSeconds) + 60 * timestamp.Offset.Minutes;
             var bytes     = BitConverter.GetBytes(unixtime);
 
             Array.Copy(bytes, 0, CryptoBuffer, offset, 4);

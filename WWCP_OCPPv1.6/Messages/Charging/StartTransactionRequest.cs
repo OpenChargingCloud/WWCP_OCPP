@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The timestamp of the transaction start.
         /// </summary>
-        public DateTime         StartTimestamp    { get; }
+        public DateTimeOffset   StartTimestamp    { get; }
 
         /// <summary>
         /// The energy meter value in Wh for the connector at start
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public StartTransactionRequest(SourceRouting            Destination,
                                        Connector_Id             ConnectorId,
                                        IdToken                  IdTag,
-                                       DateTime                 StartTimestamp,
+                                       DateTimeOffset           StartTimestamp,
                                        UInt64                   MeterStart,
                                        Reservation_Id?          ReservationId         = null,
 
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        CustomData?              CustomData            = null,
 
                                        Request_Id?              RequestId             = null,
-                                       DateTime?                RequestTimestamp      = null,
+                                       DateTimeOffset?          RequestTimestamp      = null,
                                        TimeSpan?                RequestTimeout        = null,
                                        EventTracking_Id?        EventTrackingId       = null,
                                        NetworkPath?             NetworkPath           = null,
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     Request_Id                                             RequestId,
                                                     SourceRouting                                          Destination,
                                                     NetworkPath                                            NetworkPath,
-                                                    DateTime?                                              RequestTimestamp                      = null,
+                                                    DateTimeOffset?                                        RequestTimestamp                      = null,
                                                     TimeSpan?                                              RequestTimeout                        = null,
                                                     EventTracking_Id?                                      EventTrackingId                       = null,
                                                     CustomJObjectParserDelegate<StartTransactionRequest>?  CustomStartTransactionRequestParser   = null,
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out StartTransactionRequest?      StartTransactionRequest,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
-                                       DateTime?                                              RequestTimestamp                      = null,
+                                       DateTimeOffset?                                        RequestTimestamp                      = null,
                                        TimeSpan?                                              RequestTimeout                        = null,
                                        EventTracking_Id?                                      EventTrackingId                       = null,
                                        CustomJObjectParserDelegate<StartTransactionRequest>?  CustomStartTransactionRequestParser   = null,

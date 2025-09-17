@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<HeartbeatRequest, HeartbeatResponse>>
 
-        OnHeartbeatRequestFilterDelegate(DateTime               Timestamp,
+        OnHeartbeatRequestFilterDelegate(DateTimeOffset         Timestamp,
                                          IEventSender           Sender,
                                          IWebSocketConnection   Connection,
                                          HeartbeatRequest       Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnHeartbeatRequestFilteredDelegate(DateTime                                                  Timestamp,
+        OnHeartbeatRequestFilteredDelegate(DateTimeOffset                                            Timestamp,
                                            IEventSender                                              Sender,
                                            IWebSocketConnection                                      Connection,
                                            HeartbeatRequest                                          Request,

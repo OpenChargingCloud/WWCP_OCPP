@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetLocalListVersionRequestSentDelegate(DateTime                     Timestamp,
+    public delegate Task OnGetLocalListVersionRequestSentDelegate(DateTimeOffset               Timestamp,
                                                                   IEventSender                 Sender,
                                                                   IWebSocketConnection?        Connection,
                                                                   GetLocalListVersionRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetLocalListVersionResponseSentDelegate(DateTime                      Timestamp,
+        OnGetLocalListVersionResponseSentDelegate(DateTimeOffset                Timestamp,
                                                   IEventSender                  Sender,
                                                   IWebSocketConnection?         Connection,
                                                   GetLocalListVersionRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetLocalListVersionRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetLocalListVersionRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
                                                       IWebSocketConnection?          Connection,
                                                       GetLocalListVersionRequest?    Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetLocalListVersionResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetLocalListVersionResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                        IEventSender                    Sender,
                                                        IWebSocketConnection?           Connection,
                                                        GetLocalListVersionRequest?     Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetLocalListVersionResponseSentDelegate?  OnGetLocalListVersionResponseSent;
 
-        public Task SendOnGetLocalListVersionResponseSent(DateTime                     Timestamp,
+        public Task SendOnGetLocalListVersionResponseSent(DateTimeOffset               Timestamp,
                                                           IEventSender                 Sender,
                                                           IWebSocketConnection?        Connection,
                                                           GetLocalListVersionRequest   Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetLocalListVersionRequestErrorSentDelegate? OnGetLocalListVersionRequestErrorSent;
 
 
-        public Task SendOnGetLocalListVersionRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetLocalListVersionRequestErrorSent(DateTimeOffset                Timestamp,
                                                               IEventSender                  Sender,
                                                               IWebSocketConnection?         Connection,
                                                               GetLocalListVersionRequest?   Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetLocalListVersionResponseErrorSentDelegate? OnGetLocalListVersionResponseErrorSent;
 
 
-        public Task SendOnGetLocalListVersionResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetLocalListVersionResponseErrorSent(DateTimeOffset                 Timestamp,
                                                                IEventSender                   Sender,
                                                                IWebSocketConnection?          Connection,
                                                                GetLocalListVersionRequest?    Request,

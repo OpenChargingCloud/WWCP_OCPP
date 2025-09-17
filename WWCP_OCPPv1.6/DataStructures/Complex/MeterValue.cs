@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The timestamp of the sampled value(s).
         /// </summary>
-        public DateTime                   Timestamp       { get; }
+        public DateTimeOffset             Timestamp       { get; }
 
         /// <summary>
         /// An enumeration of sampled values.
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Timestamp">The timestamp of the sampled value(s).</param>
         /// <param name="SampledValues">An enumeration of sampled values.</param>
-        public MeterValue(DateTime                   Timestamp,
+        public MeterValue(DateTimeOffset             Timestamp,
                           IEnumerable<SampledValue>  SampledValues)
         {
 

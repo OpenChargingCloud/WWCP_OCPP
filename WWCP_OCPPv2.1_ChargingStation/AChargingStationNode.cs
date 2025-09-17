@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    public delegate Task OnQRCodeChangedDelegate (DateTime              Timestamp,
+    public delegate Task OnQRCodeChangedDelegate (DateTimeOffset        Timestamp,
                                                   AChargingStationNode  ChargingStation,
                                                   EVSE_Id               EVSEId,
                                                   String                QRCodeURL,
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                CSMSTime                    { get; private set; } = Timestamp.Now;
+        public DateTimeOffset?          CSMSTime                    { get; private set; } = Timestamp.Now;
 
 
         public HTTPAPI?                 HTTPAPI                     { get; }

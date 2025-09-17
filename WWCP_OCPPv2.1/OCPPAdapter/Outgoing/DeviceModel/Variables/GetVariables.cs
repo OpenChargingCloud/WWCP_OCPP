@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetVariablesRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnGetVariablesRequestSentDelegate(DateTimeOffset          Timestamp,
                                                            IEventSender            Sender,
                                                            IWebSocketConnection?   Connection,
                                                            GetVariablesRequest     Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetVariablesResponseSentDelegate(DateTime               Timestamp,
+        OnGetVariablesResponseSentDelegate(DateTimeOffset         Timestamp,
                                            IEventSender           Sender,
                                            IWebSocketConnection?  Connection,
                                            GetVariablesRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetVariablesRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetVariablesRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                IEventSender                   Sender,
                                                IWebSocketConnection?          Connection,
                                                GetVariablesRequest?           Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetVariablesResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetVariablesResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                 IEventSender                    Sender,
                                                 IWebSocketConnection?           Connection,
                                                 GetVariablesRequest?            Request,
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetVariablesResponseSentDelegate?  OnGetVariablesResponseSent;
 
-        public Task SendOnGetVariablesResponseSent(DateTime               Timestamp,
+        public Task SendOnGetVariablesResponseSent(DateTimeOffset         Timestamp,
                                                    IEventSender           Sender,
                                                    IWebSocketConnection?  Connection,
                                                    GetVariablesRequest    Request,
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetVariablesRequestErrorSentDelegate? OnGetVariablesRequestErrorSent;
 
 
-        public Task SendOnGetVariablesRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetVariablesRequestErrorSent(DateTimeOffset                Timestamp,
                                                        IEventSender                  Sender,
                                                        IWebSocketConnection?         Connection,
                                                        GetVariablesRequest?          Request,
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetVariablesResponseErrorSentDelegate? OnGetVariablesResponseErrorSent;
 
 
-        public Task SendOnGetVariablesResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetVariablesResponseErrorSent(DateTimeOffset                 Timestamp,
                                                         IEventSender                   Sender,
                                                         IWebSocketConnection?          Connection,
                                                         GetVariablesRequest?           Request,

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnStatusNotificationRequestSentDelegate(DateTime                    Timestamp,
+    public delegate Task OnStatusNotificationRequestSentDelegate(DateTimeOffset              Timestamp,
                                                                  IEventSender                Sender,
                                                                  IWebSocketConnection?       Connection,
                                                                  StatusNotificationRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnStatusNotificationResponseSentDelegate(DateTime                     Timestamp,
+        OnStatusNotificationResponseSentDelegate(DateTimeOffset               Timestamp,
                                                  IEventSender                 Sender,
                                                  IWebSocketConnection?        Connection,
                                                  StatusNotificationRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnStatusNotificationRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnStatusNotificationRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection?          Connection,
                                                      StatusNotificationRequest?     Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnStatusNotificationResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnStatusNotificationResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
                                                       IWebSocketConnection?           Connection,
                                                       StatusNotificationRequest?      Request,
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnStatusNotificationResponseSentDelegate?  OnStatusNotificationResponseSent;
 
-        public Task SendOnStatusNotificationResponseSent(DateTime                    Timestamp,
+        public Task SendOnStatusNotificationResponseSent(DateTimeOffset              Timestamp,
                                                          IEventSender                Sender,
                                                          IWebSocketConnection?       Connection,
                                                          StatusNotificationRequest   Request,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnStatusNotificationRequestErrorSentDelegate? OnStatusNotificationRequestErrorSent;
 
 
-        public Task SendOnStatusNotificationRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnStatusNotificationRequestErrorSent(DateTimeOffset                Timestamp,
                                                              IEventSender                  Sender,
                                                              IWebSocketConnection?         Connection,
                                                              StatusNotificationRequest?    Request,
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnStatusNotificationResponseErrorSentDelegate? OnStatusNotificationResponseErrorSent;
 
 
-        public Task SendOnStatusNotificationResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnStatusNotificationResponseErrorSent(DateTimeOffset                 Timestamp,
                                                               IEventSender                   Sender,
                                                               IWebSocketConnection?          Connection,
                                                               StatusNotificationRequest?     Request,

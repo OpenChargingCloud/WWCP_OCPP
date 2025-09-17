@@ -23,7 +23,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
         String                    Id                         { get; }
         String                    Context                    { get; }
         String                    Type                       { get; }
-        DateTime                  Timestamp                  { get; }
+        DateTimeOffset          Timestamp                  { get; }
         IChargingStationOperator  ChargingStationOperator    { get; }
         String                    RoamingNetwork             { get; }
         String                    EMobilityProvider          { get; }

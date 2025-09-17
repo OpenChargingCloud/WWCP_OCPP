@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<DataTransferRequest, DataTransferResponse>>
 
-        OnDataTransferRequestFilterDelegate(DateTime               Timestamp,
+        OnDataTransferRequestFilterDelegate(DateTimeOffset         Timestamp,
                                             IEventSender           Sender,
                                             IWebSocketConnection   Connection,
                                             DataTransferRequest    Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnDataTransferRequestFilteredDelegate(DateTime                                                        Timestamp,
+        OnDataTransferRequestFilteredDelegate(DateTimeOffset                                                  Timestamp,
                                               IEventSender                                                    Sender,
                                               IWebSocketConnection                                            Connection,
                                               DataTransferRequest                                             Request,

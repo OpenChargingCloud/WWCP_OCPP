@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetChargingProfilesRequestSentDelegate(DateTime                     Timestamp,
+    public delegate Task OnGetChargingProfilesRequestSentDelegate(DateTimeOffset               Timestamp,
                                                                   IEventSender                 Sender,
                                                                   IWebSocketConnection?        Connection,
                                                                   GetChargingProfilesRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetChargingProfilesResponseSentDelegate(DateTime                      Timestamp,
+        OnGetChargingProfilesResponseSentDelegate(DateTimeOffset                Timestamp,
                                                   IEventSender                  Sender,
                                                   IWebSocketConnection?         Connection,
                                                   GetChargingProfilesRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetChargingProfilesRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetChargingProfilesRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
                                                       IWebSocketConnection?          Connection,
                                                       GetChargingProfilesRequest?    Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetChargingProfilesResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetChargingProfilesResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                        IEventSender                    Sender,
                                                        IWebSocketConnection?           Connection,
                                                        GetChargingProfilesRequest?     Request,
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetChargingProfilesResponseSentDelegate?  OnGetChargingProfilesResponseSent;
 
-        public Task SendOnGetChargingProfilesResponseSent(DateTime                     Timestamp,
+        public Task SendOnGetChargingProfilesResponseSent(DateTimeOffset               Timestamp,
                                                           IEventSender                 Sender,
                                                           IWebSocketConnection?        Connection,
                                                           GetChargingProfilesRequest   Request,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetChargingProfilesRequestErrorSentDelegate? OnGetChargingProfilesRequestErrorSent;
 
 
-        public Task SendOnGetChargingProfilesRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetChargingProfilesRequestErrorSent(DateTimeOffset                Timestamp,
                                                               IEventSender                  Sender,
                                                               IWebSocketConnection?         Connection,
                                                               GetChargingProfilesRequest?   Request,
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetChargingProfilesResponseErrorSentDelegate? OnGetChargingProfilesResponseErrorSent;
 
 
-        public Task SendOnGetChargingProfilesResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetChargingProfilesResponseErrorSent(DateTimeOffset                 Timestamp,
                                                                IEventSender                   Sender,
                                                                IWebSocketConnection?          Connection,
                                                                GetChargingProfilesRequest?    Request,

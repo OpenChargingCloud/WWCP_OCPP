@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<NotifyChargingLimitRequest, NotifyChargingLimitResponse>>
 
-        OnNotifyChargingLimitRequestFilterDelegate(DateTime                     Timestamp,
+        OnNotifyChargingLimitRequestFilterDelegate(DateTimeOffset               Timestamp,
                                                    IEventSender                 Sender,
                                                    IWebSocketConnection         Connection,
                                                    NotifyChargingLimitRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnNotifyChargingLimitRequestFilteredDelegate(DateTime                                                                      Timestamp,
+        OnNotifyChargingLimitRequestFilteredDelegate(DateTimeOffset                                                                Timestamp,
                                                      IEventSender                                                                  Sender,
                                                      IWebSocketConnection                                                          Connection,
                                                      NotifyChargingLimitRequest                                                    Request,

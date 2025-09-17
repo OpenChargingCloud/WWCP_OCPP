@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<UsePriorityChargingRequest, UsePriorityChargingResponse>>
 
-        OnUsePriorityChargingRequestFilterDelegate(DateTime                     Timestamp,
+        OnUsePriorityChargingRequestFilterDelegate(DateTimeOffset               Timestamp,
                                                    IEventSender                 Sender,
                                                    IWebSocketConnection         Connection,
                                                    UsePriorityChargingRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnUsePriorityChargingRequestFilteredDelegate(DateTime                                                                      Timestamp,
+        OnUsePriorityChargingRequestFilteredDelegate(DateTimeOffset                                                                Timestamp,
                                                      IEventSender                                                                  Sender,
                                                      IWebSocketConnection                                                          Connection,
                                                      UsePriorityChargingRequest                                                    Request,

@@ -36,7 +36,7 @@ using cloud.charging.open.protocols.OCPP;
 namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 {
 
-    public delegate Task OnWebPaymentURLChanged (DateTime            Timestamp,
+    public delegate Task OnWebPaymentURLChanged (DateTimeOffset      Timestamp,
                                                  EVSE_Id             EVSEId,
                                                  String              QRCodeURL,
                                                  TimeSpan            RemainingTime,
@@ -124,13 +124,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         public ChargingProfile?   ChargingProfile          { get; set; }
 
 
-        public DateTime?          StartTimestamp           { get; set; }
+        public DateTimeOffset?    StartTimestamp           { get; set; }
 
         public Decimal?           MeterStartValue          { get; set; }
 
         public String?            SignedStartMeterValue    { get; set; }
 
-        public DateTime?          StopTimestamp            { get; set; }
+        public DateTimeOffset?    StopTimestamp            { get; set; }
 
         public Decimal?           MeterStopValue           { get; set; }
 

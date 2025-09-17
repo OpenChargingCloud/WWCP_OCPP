@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Contains the current date and time.
         /// </summary>
         [Mandatory]
-        public DateTimeOffset           DateTime                            { get; }
+        public DateTimeOffset           DateTime                      { get; }
 
         public Double                   Accurancy                           { get; }
 
@@ -217,11 +217,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    Boolean?           SignedResponses              = null,
 
 
-                                   String?            TimeOffset                         = null,
+                                   String?            TimeOffset                   = null,
 
-                                   DateTime?          DateTime                           = null,
+                                   DateTimeOffset?    DateTime                     = null,
 
-                                   CustomData?        CustomData                         = null)
+                                   CustomData?        CustomData                   = null)
 
             : base(nameof(NTPClientController),
                    Id,

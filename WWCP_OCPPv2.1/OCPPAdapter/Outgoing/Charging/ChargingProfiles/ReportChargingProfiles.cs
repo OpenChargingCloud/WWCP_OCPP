@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnReportChargingProfilesRequestSentDelegate(DateTime                        Timestamp,
+    public delegate Task OnReportChargingProfilesRequestSentDelegate(DateTimeOffset                  Timestamp,
                                                                      IEventSender                    Sender,
                                                                      IWebSocketConnection?           Connection,
                                                                      ReportChargingProfilesRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnReportChargingProfilesResponseSentDelegate(DateTime                         Timestamp,
+        OnReportChargingProfilesResponseSentDelegate(DateTimeOffset                   Timestamp,
                                                      IEventSender                     Sender,
                                                      IWebSocketConnection?            Connection,
                                                      ReportChargingProfilesRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnReportChargingProfilesRequestErrorSentDelegate(DateTime                         Timestamp,
+        OnReportChargingProfilesRequestErrorSentDelegate(DateTimeOffset                   Timestamp,
                                                          IEventSender                     Sender,
                                                          IWebSocketConnection?            Connection,
                                                          ReportChargingProfilesRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnReportChargingProfilesResponseErrorSentDelegate(DateTime                          Timestamp,
+        OnReportChargingProfilesResponseErrorSentDelegate(DateTimeOffset                    Timestamp,
                                                           IEventSender                      Sender,
                                                           IWebSocketConnection?             Connection,
                                                           ReportChargingProfilesRequest?    Request,
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnReportChargingProfilesResponseSentDelegate?  OnReportChargingProfilesResponseSent;
 
-        public Task SendOnReportChargingProfilesResponseSent(DateTime                        Timestamp,
+        public Task SendOnReportChargingProfilesResponseSent(DateTimeOffset                  Timestamp,
                                                              IEventSender                    Sender,
                                                              IWebSocketConnection?           Connection,
                                                              ReportChargingProfilesRequest   Request,
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnReportChargingProfilesRequestErrorSentDelegate? OnReportChargingProfilesRequestErrorSent;
 
 
-        public Task SendOnReportChargingProfilesRequestErrorSent(DateTime                        Timestamp,
+        public Task SendOnReportChargingProfilesRequestErrorSent(DateTimeOffset                  Timestamp,
                                                                  IEventSender                    Sender,
                                                                  IWebSocketConnection?           Connection,
                                                                  ReportChargingProfilesRequest?  Request,
@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnReportChargingProfilesResponseErrorSentDelegate? OnReportChargingProfilesResponseErrorSent;
 
 
-        public Task SendOnReportChargingProfilesResponseErrorSent(DateTime                          Timestamp,
+        public Task SendOnReportChargingProfilesResponseErrorSent(DateTimeOffset                    Timestamp,
                                                                   IEventSender                      Sender,
                                                                   IWebSocketConnection?             Connection,
                                                                   ReportChargingProfilesRequest?    Request,

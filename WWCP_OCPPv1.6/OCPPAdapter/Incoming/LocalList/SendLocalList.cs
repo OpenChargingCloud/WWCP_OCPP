@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSendLocalListRequestReceivedDelegate(DateTime                  Timestamp,
+    public delegate Task OnSendLocalListRequestReceivedDelegate(DateTimeOffset            Timestamp,
                                                                    IEventSender              Sender,
                                                                    IWebSocketConnection      Connection,
                                                                    SendLocalListRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSendLocalListResponseReceivedDelegate(DateTime                   Timestamp,
+    public delegate Task OnSendLocalListResponseReceivedDelegate(DateTimeOffset             Timestamp,
                                                                     IEventSender               Sender,
                                                                     IWebSocketConnection?      Connection,
                                                                     SendLocalListRequest?   Request,
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSendLocalListRequestErrorReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnSendLocalListRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                         IEventSender                   Sender,
                                                                         IWebSocketConnection           Connection,
                                                                         SendLocalListRequest?       Request,
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSendLocalListResponseErrorReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnSendLocalListResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
                                                                          IWebSocketConnection            Connection,
                                                                          SendLocalListRequest?        Request,
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SendLocalListResponse>
 
-        OnSendLocalListDelegate(DateTime                  Timestamp,
+        OnSendLocalListDelegate(DateTimeOffset            Timestamp,
                                    IEventSender              Sender,
                                    IWebSocketConnection      Connection,
                                    SendLocalListRequest   Request,
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_SendLocalList(DateTime              RequestTimestamp,
+            Receive_SendLocalList(DateTimeOffset        RequestTimestamp,
                                      IWebSocketConnection  WebSocketConnection,
                                      SourceRouting     Destination,
                                      NetworkPath           NetworkPath,
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_SendLocalList(DateTime              RequestTimestamp,
+            Receive_SendLocalList(DateTimeOffset        RequestTimestamp,
                                      IWebSocketConnection  WebSocketConnection,
                                      SourceRouting         Destination,
                                      NetworkPath           NetworkPath,
@@ -479,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
                                              Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
+                                             DateTimeOffset?          ResponseTimestamp   = null,
                                              CancellationToken        CancellationToken   = default)
 
         {
@@ -576,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
                                              Request_Id               RequestId,
-                                             DateTime?                ResponseTimestamp   = null,
+                                             DateTimeOffset?          ResponseTimestamp   = null,
                                              CancellationToken        CancellationToken   = default)
 
         {
@@ -686,7 +686,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                  NetworkPath                   NetworkPath,
                                                  EventTracking_Id              EventTrackingId,
                                                  Request_Id                    RequestId,
-                                                 DateTime?                     ResponseTimestamp   = null,
+                                                 DateTimeOffset?               ResponseTimestamp   = null,
                                                  CancellationToken             CancellationToken   = default)
         {
 
@@ -765,7 +765,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                  NetworkPath                     NetworkPath,
                                                  EventTracking_Id                EventTrackingId,
                                                  Request_Id                      RequestId,
-                                                 DateTime?                       ResponseTimestamp   = null,
+                                                 DateTimeOffset?                 ResponseTimestamp   = null,
                                                  CancellationToken               CancellationToken   = default)
         {
 
@@ -854,7 +854,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                   NetworkPath                    NetworkPath,
                                                   EventTracking_Id               EventTrackingId,
                                                   Request_Id                     RequestId,
-                                                  DateTime?                      ResponseTimestamp   = null,
+                                                  DateTimeOffset?                ResponseTimestamp   = null,
                                                   CancellationToken              CancellationToken   = default)
 
         {

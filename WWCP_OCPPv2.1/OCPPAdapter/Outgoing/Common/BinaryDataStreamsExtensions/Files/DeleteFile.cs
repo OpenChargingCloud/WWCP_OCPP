@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnDeleteFileRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnDeleteFileRequestSentDelegate(DateTimeOffset          Timestamp,
                                                          IEventSender            Sender,
                                                          IWebSocketConnection?   Connection,
                                                          DeleteFileRequest       Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnDeleteFileResponseSentDelegate(DateTime               Timestamp,
+        OnDeleteFileResponseSentDelegate(DateTimeOffset         Timestamp,
                                          IEventSender           Sender,
                                          IWebSocketConnection?  Connection,
                                          DeleteFileRequest      Request,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnDeleteFileRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnDeleteFileRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                              IEventSender                   Sender,
                                              IWebSocketConnection?          Connection,
                                              DeleteFileRequest?             Request,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnDeleteFileResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnDeleteFileResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                               IEventSender                    Sender,
                                               IWebSocketConnection?           Connection,
                                               DeleteFileRequest?              Request,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnDeleteFileResponseSentDelegate?  OnDeleteFileResponseSent;
 
-        public Task SendOnDeleteFileResponseSent(DateTime              Timestamp,
+        public Task SendOnDeleteFileResponseSent(DateTimeOffset        Timestamp,
                                                  IEventSender          Sender,
                                                  IWebSocketConnection? Connection,
                                                  DeleteFileRequest     Request,
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnDeleteFileRequestErrorSentDelegate? OnDeleteFileRequestErrorSent;
 
 
-        public Task SendOnDeleteFileRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnDeleteFileRequestErrorSent(DateTimeOffset                Timestamp,
                                                      IEventSender                  Sender,
                                                      IWebSocketConnection?         Connection,
                                                      DeleteFileRequest?            Request,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnDeleteFileResponseErrorSentDelegate? OnDeleteFileResponseErrorSent;
 
 
-        public Task SendOnDeleteFileResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnDeleteFileResponseErrorSent(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
                                                       IWebSocketConnection?          Connection,
                                                       DeleteFileRequest?             Request,

@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                        CustomData?              CustomData            = null,
 
                                                        Request_Id?              RequestId             = null,
-                                                       DateTime?                RequestTimestamp      = null,
+                                                       DateTimeOffset?          RequestTimestamp      = null,
                                                        TimeSpan?                RequestTimeout        = null,
                                                        EventTracking_Id?        EventTrackingId       = null,
                                                        NetworkPath?             NetworkPath           = null,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                     Request_Id                                                             RequestId,
                                                                     SourceRouting                                                          Destination,
                                                                     NetworkPath                                                            NetworkPath,
-                                                                    DateTime?                                                              RequestTimestamp                                      = null,
+                                                                    DateTimeOffset?                                                        RequestTimestamp                                      = null,
                                                                     TimeSpan?                                                              RequestTimeout                                        = null,
                                                                     EventTracking_Id?                                                      EventTrackingId                                       = null,
                                                                     CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser   = null)
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        NetworkPath                                                            NetworkPath,
                                        [NotNullWhen(true)]  out SignedFirmwareStatusNotificationRequest?      SignedFirmwareStatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                                       ErrorResponse,
-                                       DateTime?                                                              RequestTimestamp                                      = null,
+                                       DateTimeOffset?                                                        RequestTimestamp                                      = null,
                                        TimeSpan?                                                              RequestTimeout                                        = null,
                                        EventTracking_Id?                                                      EventTrackingId                                       = null,
                                        CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser   = null)

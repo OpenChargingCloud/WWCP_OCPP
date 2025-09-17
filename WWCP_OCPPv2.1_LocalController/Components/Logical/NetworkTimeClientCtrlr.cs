@@ -67,7 +67,7 @@
 //        /// <summary>
 //        /// Date time of the next time offset transition.
 //        /// </summary>
-//        public DateTime?                NextTimeOffsetTransitionDateTime    { get; set; }
+//        public DateTimeOffset?          NextTimeOffsetTransitionDateTime    { get; set; }
 
 //        /// <summary>
 //        /// Next local time offset in the format: "+01:00", "-02:00" etc.
@@ -115,7 +115,7 @@
 //                                      String?                  NtpServerUri,
 //                                      NTPSources?              NtpSource,
 //                                      String?                  TimeOffset,
-//                                      DateTime?                NextTimeOffsetTransitionDateTime,
+//                                      DateTimeOffset?          NextTimeOffsetTransitionDateTime,
 //                                      String?                  NextTimeOffsetTransition,
 //                                      String?                  TimeZone,
 //                                      Int32?                   TimeAdjustmentReportingThreshold,

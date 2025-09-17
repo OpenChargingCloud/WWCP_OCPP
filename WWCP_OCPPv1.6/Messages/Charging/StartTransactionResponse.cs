@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         IdTagInfo                IdTagInfo,
 
                                         Result?                  Result                = null,
-                                        DateTime?                ResponseTimestamp     = null,
+                                        DateTimeOffset?          ResponseTimestamp     = null,
 
                                         SourceRouting?           Destination           = null,
                                         NetworkPath?             NetworkPath           = null,
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      JObject                                                 JSON,
                                                      SourceRouting                                           Destination,
                                                      NetworkPath                                             NetworkPath,
-                                                     DateTime?                                               ResponseTimestamp                      = null,
+                                                     DateTimeOffset?                                         ResponseTimestamp                      = null,
                                                      CustomJObjectParserDelegate<StartTransactionResponse>?  CustomStartTransactionResponseParser   = null,
                                                      CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
                                                      CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        NetworkPath                                             NetworkPath,
                                        [NotNullWhen(true)]  out StartTransactionResponse?      StartTransactionResponse,
                                        [NotNullWhen(false)] out String?                        ErrorResponse,
-                                       DateTime?                                               ResponseTimestamp                      = null,
+                                       DateTimeOffset?                                         ResponseTimestamp                      = null,
                                        CustomJObjectParserDelegate<StartTransactionResponse>?  CustomStartTransactionResponseParser   = null,
                                        CustomJObjectParserDelegate<Signature>?                 CustomSignatureParser                  = null,
                                        CustomJObjectParserDelegate<CustomData>?                CustomCustomDataParser                 = null)
@@ -553,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                             ResultCode               ErrorCode,
                                                             String?                  ErrorDescription    = null,
                                                             JObject?                 ErrorDetails        = null,
-                                                            DateTime?                ResponseTimestamp   = null,
+                                                            DateTimeOffset?          ResponseTimestamp   = null,
 
                                                             SourceRouting?           Destination         = null,
                                                             NetworkPath?             NetworkPath         = null,

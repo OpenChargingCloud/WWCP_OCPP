@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   IEnumerable<Signature>?              Signatures            = null,
 
                                   Request_Id?                          RequestId             = null,
-                                  DateTime?                            RequestTimestamp      = null,
+                                  DateTimeOffset?                      RequestTimestamp      = null,
                                   EventTracking_Id?                    EventTrackingId       = null,
                                   SerializationFormats?                SerializationFormat   = null,
                                   CancellationToken                    CancellationToken     = default)

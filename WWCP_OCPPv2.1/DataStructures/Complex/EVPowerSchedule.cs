@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The starting time of the energy offer.
         /// </summary>
         [Mandatory]
-        public DateTime                           TimeAnchor                { get; }
+        public DateTimeOffset                     TimeAnchor                { get; }
 
         /// <summary>
         /// The enumeration of power schedule entries offered for discharging.
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TimeAnchor">An starting time of the energy offer.</param>
         /// <param name="EVPowerScheduleEntries">An enumeration of power schedule entries offered for discharging (max 1024).</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public EVPowerSchedule(DateTime                           TimeAnchor,
+        public EVPowerSchedule(DateTimeOffset                     TimeAnchor,
                                IEnumerable<EVPowerScheduleEntry>  EVPowerScheduleEntries,
                                CustomData?                        CustomData   = null)
 

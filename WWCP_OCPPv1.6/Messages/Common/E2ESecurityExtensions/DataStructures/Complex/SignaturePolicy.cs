@@ -83,13 +83,13 @@
 //        /// The timestamp before which the signature policy should not be used.
 //        /// </summary>
 //        [Mandatory]
-//        public DateTime                       NotBefore                     { get; }
+//        public DateTimeOffset                 NotBefore                     { get; }
 
 //        /// <summary>
 //        /// The optional timestamp after which the signature policy should not be used.
 //        /// </summary>
 //        [Optional]
-//        public DateTime?                      NotAfter                      { get; }
+//        public DateTimeOffset?                NotAfter                      { get; }
 
 
 //        /// <summary>
@@ -166,8 +166,8 @@
 //        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
 //        public SignaturePolicy(SignaturePolicy_Id?             Id                           = null,
 //                               Byte?                           Priority                     = null,
-//                               DateTime?                       NotBefore                    = null,
-//                               DateTime?                       NotAfter                     = null,
+//                               DateTimeOffset?                 NotBefore                    = null,
+//                               DateTimeOffset?                 NotAfter                     = null,
 
 //                               IEnumerable<SigningRule>?       SigningRules                 = null,
 //                               SigningRuleActions?             DefaultSigningAction         = null,

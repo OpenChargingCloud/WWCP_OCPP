@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<NotifyAllowedEnergyTransferRequest, NotifyAllowedEnergyTransferResponse>>
 
-        OnNotifyAllowedEnergyTransferRequestFilterDelegate(DateTime                             Timestamp,
+        OnNotifyAllowedEnergyTransferRequestFilterDelegate(DateTimeOffset                       Timestamp,
                                                            IEventSender                         Sender,
                                                            IWebSocketConnection                 Connection,
                                                            NotifyAllowedEnergyTransferRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnNotifyAllowedEnergyTransferRequestFilteredDelegate(DateTime                                                                                      Timestamp,
+        OnNotifyAllowedEnergyTransferRequestFilteredDelegate(DateTimeOffset                                                                                Timestamp,
                                                              IEventSender                                                                                  Sender,
                                                              IWebSocketConnection                                                                          Connection,
                                                              NotifyAllowedEnergyTransferRequest                                                            Request,

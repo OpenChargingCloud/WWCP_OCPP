@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetConfigurationRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnGetConfigurationRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                GetConfigurationRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetConfigurationResponseSentDelegate(DateTime                   Timestamp,
+        OnGetConfigurationResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                GetConfigurationRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetConfigurationRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetConfigurationRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    GetConfigurationRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetConfigurationResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetConfigurationResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     GetConfigurationRequest?        Request,
@@ -480,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnGetConfigurationResponseSentDelegate?  OnGetConfigurationResponseSent;
 
-        public Task SendOnGetConfigurationResponseSent(DateTime                   Timestamp,
+        public Task SendOnGetConfigurationResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        GetConfigurationRequest    Request,
@@ -513,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetConfigurationRequestErrorSentDelegate? OnGetConfigurationRequestErrorSent;
 
 
-        public Task SendOnGetConfigurationRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetConfigurationRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            GetConfigurationRequest?      Request,
@@ -546,7 +546,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetConfigurationResponseErrorSentDelegate? OnGetConfigurationResponseErrorSent;
 
 
-        public Task SendOnGetConfigurationResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetConfigurationResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             GetConfigurationRequest?       Request,

@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// If absent the schedule will be relative to start of charging.
         /// </summary>
         [Optional]
-        public DateTime?                            StartSchedule              { get; }
+        public DateTimeOffset?                      StartSchedule              { get; }
 
         /// <summary>
         /// Optional duration of the charging schedule.
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ChargingSchedule(ChargingSchedule_Id                  Id,
                                 ChargingRateUnits                    ChargingRateUnit,
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
-                                DateTime?                            StartSchedule           = null,
+                                DateTimeOffset?                      StartSchedule           = null,
                                 TimeSpan?                            Duration                = null,
                                 ChargingRateValue?                   MinChargingRate         = null,
                                 Boolean?                             UseLocalTime            = null,

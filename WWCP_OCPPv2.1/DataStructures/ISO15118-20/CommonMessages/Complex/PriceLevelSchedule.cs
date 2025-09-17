@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="PriceLevelScheduleEntries">An enumeration of price level schedule entries (max 1024).</param>
         /// <param name="Description">An optional description of the price schedule.</param>
         public PriceLevelSchedule(PriceSchedule_Id                      Id,
-                                  DateTime                              TimeAnchor,
+                                  DateTimeOffset                        TimeAnchor,
                                   Byte                                  NumberOfPriceLevels,
                                   IEnumerable<PriceLevelScheduleEntry>  PriceLevelScheduleEntries,
                                   String?                               Description   = null)

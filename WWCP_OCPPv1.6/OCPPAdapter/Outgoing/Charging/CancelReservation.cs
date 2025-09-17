@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnCancelReservationRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnCancelReservationRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                CancelReservationRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnCancelReservationResponseSentDelegate(DateTime                   Timestamp,
+        OnCancelReservationResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                CancelReservationRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnCancelReservationRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnCancelReservationRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    CancelReservationRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnCancelReservationResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnCancelReservationResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     CancelReservationRequest?        Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnCancelReservationResponseSentDelegate?  OnCancelReservationResponseSent;
 
-        public Task SendOnCancelReservationResponseSent(DateTime                   Timestamp,
+        public Task SendOnCancelReservationResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        CancelReservationRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnCancelReservationRequestErrorSentDelegate? OnCancelReservationRequestErrorSent;
 
 
-        public Task SendOnCancelReservationRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnCancelReservationRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            CancelReservationRequest?      Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnCancelReservationResponseErrorSentDelegate? OnCancelReservationResponseErrorSent;
 
 
-        public Task SendOnCancelReservationResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnCancelReservationResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             CancelReservationRequest?       Request,

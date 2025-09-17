@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<AddUserRoleRequest, AddUserRoleResponse>>
 
-        OnAddUserRoleRequestFilterDelegate(DateTime               Timestamp,
+        OnAddUserRoleRequestFilterDelegate(DateTimeOffset         Timestamp,
                                            IEventSender           Sender,
                                            IWebSocketConnection   Connection,
                                            AddUserRoleRequest     Request,
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnAddUserRoleRequestFilteredDelegate(DateTime                                                      Timestamp,
+        OnAddUserRoleRequestFilteredDelegate(DateTimeOffset                                                Timestamp,
                                              IEventSender                                                  Sender,
                                              IWebSocketConnection                                          Connection,
                                              AddUserRoleRequest                                            Request,

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetMonitoringBaseRequestSentDelegate(DateTime                   Timestamp,
+    public delegate Task OnSetMonitoringBaseRequestSentDelegate(DateTimeOffset             Timestamp,
                                                                 IEventSender               Sender,
                                                                 IWebSocketConnection?      Connection,
                                                                 SetMonitoringBaseRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetMonitoringBaseResponseSentDelegate(DateTime                    Timestamp,
+        OnSetMonitoringBaseResponseSentDelegate(DateTimeOffset              Timestamp,
                                                 IEventSender                Sender,
                                                 IWebSocketConnection?       Connection,
                                                 SetMonitoringBaseRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetMonitoringBaseRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnSetMonitoringBaseRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                     IEventSender                   Sender,
                                                     IWebSocketConnection?          Connection,
                                                     SetMonitoringBaseRequest?      Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetMonitoringBaseResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnSetMonitoringBaseResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                      IEventSender                    Sender,
                                                      IWebSocketConnection?           Connection,
                                                      SetMonitoringBaseRequest?       Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnSetMonitoringBaseResponseSentDelegate?  OnSetMonitoringBaseResponseSent;
 
-        public Task SendOnSetMonitoringBaseResponseSent(DateTime                   Timestamp,
+        public Task SendOnSetMonitoringBaseResponseSent(DateTimeOffset             Timestamp,
                                                         IEventSender               Sender,
                                                         IWebSocketConnection?      Connection,
                                                         SetMonitoringBaseRequest   Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetMonitoringBaseRequestErrorSentDelegate? OnSetMonitoringBaseRequestErrorSent;
 
 
-        public Task SendOnSetMonitoringBaseRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnSetMonitoringBaseRequestErrorSent(DateTimeOffset                Timestamp,
                                                             IEventSender                  Sender,
                                                             IWebSocketConnection?         Connection,
                                                             SetMonitoringBaseRequest?     Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetMonitoringBaseResponseErrorSentDelegate? OnSetMonitoringBaseResponseErrorSent;
 
 
-        public Task SendOnSetMonitoringBaseResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnSetMonitoringBaseResponseErrorSent(DateTimeOffset                 Timestamp,
                                                              IEventSender                   Sender,
                                                              IWebSocketConnection?          Connection,
                                                              SetMonitoringBaseRequest?      Request,

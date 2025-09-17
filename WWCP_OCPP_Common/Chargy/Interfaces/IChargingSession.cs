@@ -29,8 +29,8 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
         String                     Id                    { get; }
         String                     Context               { get; }
         I18NString                 Description           { get; }
-        DateTime                   Begin                 { get; }
-        DateTime                   End                   { get; }
+        DateTimeOffset           Begin                 { get; }
+        DateTimeOffset           End                   { get; }
         String                     ChargingPoolId        { get; }
         IChargingPool              ChargingPool          { get; }
         String                     ChargingStationId     { get; }

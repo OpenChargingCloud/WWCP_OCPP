@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnHeartbeatRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnHeartbeatRequestSentDelegate(DateTimeOffset          Timestamp,
                                                         IEventSender            Sender,
                                                         IWebSocketConnection?   Connection,
                                                         HeartbeatRequest        Request,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnHeartbeatResponseSentDelegate(DateTime                Timestamp,
+        OnHeartbeatResponseSentDelegate(DateTimeOffset          Timestamp,
                                         IEventSender            Sender,
                                         IWebSocketConnection?   Connection,
                                         HeartbeatRequest        Request,
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnHeartbeatRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnHeartbeatRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                             IEventSender                   Sender,
                                             IWebSocketConnection?          Connection,
                                             HeartbeatRequest?              Request,
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnHeartbeatResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnHeartbeatResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                              IEventSender                    Sender,
                                              IWebSocketConnection?           Connection,
                                              HeartbeatRequest?               Request,
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnHeartbeatResponseSentDelegate?  OnHeartbeatResponseSent;
 
-        public Task SendOnHeartbeatResponseSent(DateTime               Timestamp,
+        public Task SendOnHeartbeatResponseSent(DateTimeOffset         Timestamp,
                                                 IEventSender           Sender,
                                                 IWebSocketConnection?  Connection,
                                                 HeartbeatRequest       Request,
@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnHeartbeatRequestErrorSentDelegate? OnHeartbeatRequestErrorSent;
 
 
-        public Task SendOnHeartbeatRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnHeartbeatRequestErrorSent(DateTimeOffset                Timestamp,
                                                     IEventSender                  Sender,
                                                     IWebSocketConnection?         Connection,
                                                     HeartbeatRequest?             Request,
@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnHeartbeatResponseErrorSentDelegate? OnHeartbeatResponseErrorSent;
 
 
-        public Task SendOnHeartbeatResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnHeartbeatResponseErrorSent(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection?          Connection,
                                                      HeartbeatRequest?              Request,

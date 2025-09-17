@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// are relative to this time base.
         /// </summary>
         [Mandatory]
-        public DateTime          TimeBase                    { get; }
+        public DateTimeOffset    TimeBase                    { get; }
 
         /// <summary>
         /// The charging schedule applies to this EVSE.
@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyEVChargingScheduleRequest(SourceRouting            Destination,
-                                               DateTime                 TimeBase,
+                                               DateTimeOffset           TimeBase,
                                                EVSE_Id                  EVSEId,
                                                ChargingSchedule         ChargingSchedule,
                                                UInt16?                  SelectedChargingScheduleId   = null,
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                CustomData?              CustomData                   = null,
 
                                                Request_Id?              RequestId                    = null,
-                                               DateTime?                RequestTimestamp             = null,
+                                               DateTimeOffset?          RequestTimestamp             = null,
                                                TimeSpan?                RequestTimeout               = null,
                                                EventTracking_Id?        EventTrackingId              = null,
                                                NetworkPath?             NetworkPath                  = null,
@@ -1077,7 +1077,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                             Request_Id                                                     RequestId,
                                                             SourceRouting                                                  Destination,
                                                             NetworkPath                                                    NetworkPath,
-                                                            DateTime?                                                      RequestTimestamp                              = null,
+                                                            DateTimeOffset?                                                RequestTimestamp                              = null,
                                                             TimeSpan?                                                      RequestTimeout                                = null,
                                                             EventTracking_Id?                                              EventTrackingId                               = null,
                                                             CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser   = null)
@@ -1125,7 +1125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                    NetworkPath,
                                        [NotNullWhen(true)]  out NotifyEVChargingScheduleRequest?      NotifyEVChargingScheduleRequest,
                                        [NotNullWhen(false)] out String?                               ErrorResponse,
-                                       DateTime?                                                      RequestTimestamp                              = null,
+                                       DateTimeOffset?                                                RequestTimestamp                              = null,
                                        TimeSpan?                                                      RequestTimeout                                = null,
                                        EventTracking_Id?                                              EventTrackingId                               = null,
                                        CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser   = null)

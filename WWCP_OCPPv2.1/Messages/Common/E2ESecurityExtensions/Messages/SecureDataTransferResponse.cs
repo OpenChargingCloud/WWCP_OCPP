@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           Byte[]?                    Ciphertext             = null,
 
                                           Result?                    Result                 = null,
-                                          DateTime?                  ResponseTimestamp      = null,
+                                          DateTimeOffset?            ResponseTimestamp      = null,
 
                                           SourceRouting?             Destination            = null,
                                           NetworkPath?               NetworkPath            = null,
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          IEnumerable<SignInfo>?     SignInfos              = null,
                                                          IEnumerable<Signature>?    Signatures             = null,
 
-                                                         DateTime?                  ResponseTimestamp      = null,
+                                                         DateTimeOffset?            ResponseTimestamp      = null,
                                                          EventTracking_Id?          EventTrackingId        = null,
                                                          NetworkPath?               NetworkPath            = null)
         {
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                        Byte[]                                                   SecureData,
                                                        SourceRouting                                        Destination,
                                                        NetworkPath                                              NetworkPath,
-                                                       DateTime?                                                ResponseTimestamp                        = null,
+                                                       DateTimeOffset?                                          ResponseTimestamp                        = null,
                                                        CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null,
                                                        CustomBinaryParserDelegate<Signature>?                   CustomBinarySignatureParser              = null)
         {
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out SecureDataTransferResponse?     SecureDataTransferResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       DateTime?                                                ResponseTimestamp                        = null,
+                                       DateTimeOffset?                                          ResponseTimestamp                        = null,
                                        CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null,
                                        CustomBinaryParserDelegate<Signature>?                   CustomBinarySignatureParser              = null)
         {
@@ -539,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               ResultCode                 ErrorCode,
                                                               String?                    ErrorDescription    = null,
                                                               JObject?                   ErrorDetails        = null,
-                                                              DateTime?                  ResponseTimestamp   = null,
+                                                              DateTimeOffset?            ResponseTimestamp   = null,
 
                                                               SourceRouting?             Destination         = null,
                                                               NetworkPath?               NetworkPath         = null,

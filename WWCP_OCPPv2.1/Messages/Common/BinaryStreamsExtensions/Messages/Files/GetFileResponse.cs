@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                IEnumerable<Signature>?  FileSignatures        = null,
 
                                Result?                  Result                = null,
-                               DateTime?                ResponseTimestamp     = null,
+                               DateTimeOffset?          ResponseTimestamp     = null,
 
                                SourceRouting?           Destination           = null,
                                NetworkPath?             NetworkPath           = null,
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             Byte[]                                        Binary,
                                             SourceRouting                             Destination,
                                             NetworkPath                                   NetworkPath,
-                                            DateTime?                                     ResponseTimestamp             = null,
+                                            DateTimeOffset?                               ResponseTimestamp             = null,
                                             CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser   = null,
                                             CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser        = null,
                                             CustomJObjectParserDelegate<Signature>?       CustomSignatureParser         = null,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                   NetworkPath,
                                        [NotNullWhen(true)]  out GetFileResponse?     GetFileResponse,
                                        [NotNullWhen(false)] out String?              ErrorResponse,
-                                       DateTime?                                     ResponseTimestamp             = null,
+                                       DateTimeOffset?                               ResponseTimestamp             = null,
                                        CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?      CustomStatusInfoParser        = null,
                                        CustomJObjectParserDelegate<Signature>?       CustomSignatureParser         = null,
@@ -541,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    ResultCode               ErrorCode,
                                                    String?                  ErrorDescription    = null,
                                                    JObject?                 ErrorDetails        = null,
-                                                   DateTime?                ResponseTimestamp   = null,
+                                                   DateTimeOffset?          ResponseTimestamp   = null,
 
                                                    SourceRouting?           Destination         = null,
                                                    NetworkPath?             NetworkPath         = null,

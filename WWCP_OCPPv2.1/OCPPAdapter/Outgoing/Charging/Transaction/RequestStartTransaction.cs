@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnRequestStartTransactionRequestSentDelegate(DateTime                         Timestamp,
+    public delegate Task OnRequestStartTransactionRequestSentDelegate(DateTimeOffset                   Timestamp,
                                                                       IEventSender                     Sender,
                                                                       IWebSocketConnection?            Connection,
                                                                       RequestStartTransactionRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnRequestStartTransactionResponseSentDelegate(DateTime                          Timestamp,
+        OnRequestStartTransactionResponseSentDelegate(DateTimeOffset                    Timestamp,
                                                       IEventSender                      Sender,
                                                       IWebSocketConnection?             Connection,
                                                       RequestStartTransactionRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnRequestStartTransactionRequestErrorSentDelegate(DateTime                          Timestamp,
+        OnRequestStartTransactionRequestErrorSentDelegate(DateTimeOffset                    Timestamp,
                                                           IEventSender                      Sender,
                                                           IWebSocketConnection?             Connection,
                                                           RequestStartTransactionRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnRequestStartTransactionResponseErrorSentDelegate(DateTime                           Timestamp,
+        OnRequestStartTransactionResponseErrorSentDelegate(DateTimeOffset                     Timestamp,
                                                            IEventSender                       Sender,
                                                            IWebSocketConnection?              Connection,
                                                            RequestStartTransactionRequest?    Request,
@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnRequestStartTransactionResponseSentDelegate?  OnRequestStartTransactionResponseSent;
 
-        public Task SendOnRequestStartTransactionResponseSent(DateTime                          Timestamp,
+        public Task SendOnRequestStartTransactionResponseSent(DateTimeOffset                    Timestamp,
                                                               IEventSender                      Sender,
                                                               IWebSocketConnection?             Connection,
                                                               RequestStartTransactionRequest    Request,
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnRequestStartTransactionRequestErrorSentDelegate? OnRequestStartTransactionRequestErrorSent;
 
 
-        public Task SendOnRequestStartTransactionRequestErrorSent(DateTime                          Timestamp,
+        public Task SendOnRequestStartTransactionRequestErrorSent(DateTimeOffset                    Timestamp,
                                                                   IEventSender                      Sender,
                                                                   IWebSocketConnection?             Connection,
                                                                   RequestStartTransactionRequest?   Request,
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnRequestStartTransactionResponseErrorSentDelegate? OnRequestStartTransactionResponseErrorSent;
 
 
-        public Task SendOnRequestStartTransactionResponseErrorSent(DateTime                           Timestamp,
+        public Task SendOnRequestStartTransactionResponseErrorSent(DateTimeOffset                     Timestamp,
                                                                    IEventSender                       Sender,
                                                                    IWebSocketConnection?              Connection,
                                                                    RequestStartTransactionRequest?    Request,

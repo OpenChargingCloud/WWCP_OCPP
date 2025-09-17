@@ -128,7 +128,7 @@
 //                                          UInt64?                    Nonce                  = null,
 //                                          UInt64?                    Counter                = null,
 //                                          Byte[]?                    Ciphertext             = null,
-//                                          DateTime?                  ResponseTimestamp      = null,
+//                                          DateTimeOffset?            ResponseTimestamp      = null,
 
 //                                          NetworkingNode_Id?         DestinationNodeId      = null,
 //                                          NetworkPath?               NetworkPath            = null,
@@ -240,7 +240,7 @@
 //                                                         IEnumerable<WWCP.SignInfo>?SignInfos              = null,
 //                                                         IEnumerable<Signature>?    Signatures             = null,
 
-//                                                         DateTime?                  ResponseTimestamp      = null,
+//                                                         DateTimeOffset?            ResponseTimestamp      = null,
 //                                                         EventTracking_Id?          EventTrackingId        = null,
 //                                                         NetworkPath?               NetworkPath            = null)
 //        {
@@ -337,7 +337,7 @@
 //                                                       Byte[]                                                   SecureData,
 //                                                       NetworkingNode_Id                                        DestinationNodeId,
 //                                                       NetworkPath                                              NetworkPath,
-//                                                       DateTime?                                                ResponseTimestamp                       = null,
+//                                                       DateTimeOffset?                                          ResponseTimestamp                       = null,
 //                                                       CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser  = null)
 //        {
 
@@ -376,7 +376,7 @@
 //                                       NetworkPath                                              NetworkPath,
 //                                       [NotNullWhen(true)]  out SecureDataTransferResponse?     SecureDataTransferResponse,
 //                                       [NotNullWhen(false)] out String?                         ErrorResponse,
-//                                       DateTime?                                                ResponseTimestamp                        = null,
+//                                       DateTimeOffset?                                          ResponseTimestamp                        = null,
 //                                       CustomBinaryParserDelegate<SecureDataTransferResponse>?  CustomSecureDataTransferResponseParser   = null)
 //        {
 

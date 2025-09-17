@@ -162,7 +162,7 @@
 //        #region Equals(Object)
 
 //        /// <summary>
-//        /// Compares two signature informations for equality.
+//        /// Compares two signature information for equality.
 //        /// </summary>
 //        /// <param name="Object">A signature information to compare with.</param>
 //        public override Boolean Equals(Object? Object)
@@ -175,7 +175,7 @@
 //        #region Equals(AUserRole)
 
 //        /// <summary>
-//        /// Compares two signature informations for equality.
+//        /// Compares two signature information for equality.
 //        /// </summary>
 //        /// <param name="UserRole">A signature information to compare with.</param>
 //        public Boolean Equals(AUserRole? UserRole)

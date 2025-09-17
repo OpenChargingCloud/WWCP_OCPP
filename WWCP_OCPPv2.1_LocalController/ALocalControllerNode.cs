@@ -108,13 +108,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public ChargingProfile?   ChargingProfile          { get; set; }
 
 
-        public DateTime?          StartTimestamp           { get; set; }
+        public DateTimeOffset?    StartTimestamp           { get; set; }
 
         public Decimal?           MeterStartValue          { get; set; }
 
         public String?            SignedStartMeterValue    { get; set; }
 
-        public DateTime?          StopTimestamp            { get; set; }
+        public DateTimeOffset?    StopTimestamp            { get; set; }
 
         public Decimal?           MeterStopValue           { get; set; }
 
@@ -186,53 +186,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// The local controller vendor identification.
         /// </summary>
         [Mandatory]
-        public String        VendorName                        { get; }      = "";
+        public String           VendorName                        { get; }      = "";
 
         /// <summary>
         ///  The local controller model identification.
         /// </summary>
         [Mandatory]
-        public String        Model                             { get; }      = "";
+        public String           Model                             { get; }      = "";
 
         /// <summary>
         /// The optional serial number of the local controller.
         /// </summary>
         [Optional]
-        public String?       SerialNumber                      { get; }
+        public String?          SerialNumber                      { get; }
 
         /// <summary>
         /// The optional firmware version of the local controller.
         /// </summary>
         [Optional]
-        public String?       SoftwareVersion                   { get; }
+        public String?          SoftwareVersion                   { get; }
 
         /// <summary>
         /// The modem of the local controller.
         /// </summary>
         [Optional]
-        public Modem?        Modem                             { get; }
+        public Modem?           Modem                             { get; }
 
 
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?     CSMSTime                          { get; set; } = Timestamp.Now;
+        public DateTimeOffset?  CSMSTime                          { get; set; } = Timestamp.Now;
 
 
-        public HTTPAPI?      HTTPAPI                           { get; }
+        public HTTPAPI?         HTTPAPI                           { get; }
 
-        public DownloadAPI?  HTTPDownloadAPI                   { get; }
-        public HTTPPath?     HTTPDownloadAPI_Path              { get; }
-        public String?       HTTPDownloadAPI_FileSystemPath    { get; }
+        public DownloadAPI?     HTTPDownloadAPI                   { get; }
+        public HTTPPath?        HTTPDownloadAPI_Path              { get; }
+        public String?          HTTPDownloadAPI_FileSystemPath    { get; }
 
-        public UploadAPI?    HTTPUploadAPI                     { get; }
-        public HTTPPath?     HTTPUploadAPI_Path                { get; }
-        public String?       HTTPUploadAPI_FileSystemPath      { get; }
+        public UploadAPI?       HTTPUploadAPI                     { get; }
+        public HTTPPath?        HTTPUploadAPI_Path                { get; }
+        public String?          HTTPUploadAPI_FileSystemPath      { get; }
 
-        public WebAPI?       WebAPI                            { get; }
-        public HTTPPath?     WebAPI_Path                       { get; }
+        public WebAPI?          WebAPI                            { get; }
+        public HTTPPath?        WebAPI_Path                       { get; }
 
-        public NTSServer?    NTSServer                         { get; }
+        public NTSServer?       NTSServer                         { get; }
 
         #endregion
 

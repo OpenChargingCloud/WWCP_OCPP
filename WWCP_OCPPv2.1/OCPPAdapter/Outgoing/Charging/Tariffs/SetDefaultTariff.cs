@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDefaultTariffRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnSetDefaultTariffRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                SetDefaultTariffRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultTariffResponseSentDelegate(DateTime                   Timestamp,
+        OnSetDefaultTariffResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                SetDefaultTariffRequest?   Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultTariffRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnSetDefaultTariffRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    SetDefaultTariffRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDefaultTariffResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnSetDefaultTariffResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     SetDefaultTariffRequest?        Request,
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetDefaultTariffResponseSentDelegate?  OnSetDefaultTariffResponseSent;
 
 
-        public Task SendOnSetDefaultTariffResponseSent(DateTime                  Timestamp,
+        public Task SendOnSetDefaultTariffResponseSent(DateTimeOffset            Timestamp,
                                                        IEventSender              Sender,
                                                        IWebSocketConnection?     Connection,
                                                        SetDefaultTariffRequest   Request,
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetDefaultTariffRequestErrorSentDelegate? OnSetDefaultTariffRequestErrorSent;
 
 
-        public Task SendOnSetDefaultTariffRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnSetDefaultTariffRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            SetDefaultTariffRequest?      Request,
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetDefaultTariffResponseErrorSentDelegate? OnSetDefaultTariffResponseErrorSent;
 
 
-        public Task SendOnSetDefaultTariffResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnSetDefaultTariffResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             SetDefaultTariffRequest?       Request,

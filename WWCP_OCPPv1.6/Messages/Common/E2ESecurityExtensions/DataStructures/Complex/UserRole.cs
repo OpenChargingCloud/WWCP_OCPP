@@ -270,7 +270,7 @@
 //        /// Parse the given JSON representation of a cryptographic signature information.
 //        /// </summary>
 //        /// <param name="JSON">The JSON to be parsed.</param>
-//        /// <param name="CustomUserRoleParser">An optional delegate to parse custom cryptographic signature informations.</param>
+//        /// <param name="CustomUserRoleParser">An optional delegate to parse custom cryptographic signature information.</param>
 //        public static UserRole Parse(JObject                                 JSON,
 //                                     CustomJObjectParserDelegate<UserRole>?  CustomUserRoleParser   = null)
 //        {
@@ -317,7 +317,7 @@
 //        /// <param name="JSON">The JSON to be parsed.</param>
 //        /// <param name="UserRole">The parsed connector type.</param>
 //        /// <param name="ErrorResponse">An optional error response.</param>
-//        /// <param name="CustomUserRoleParser">An optional delegate to parse custom signature informations.</param>
+//        /// <param name="CustomUserRoleParser">An optional delegate to parse custom signature information.</param>
 //        public static Boolean TryParse(JObject                                 JSON,
 //                                       [NotNullWhen(true)]  out UserRole?      UserRole,
 //                                       [NotNullWhen(false)] out String?        ErrorResponse,
@@ -503,7 +503,7 @@
 //        /// Return a JSON representation of this object.
 //        /// </summary>
 //        /// <param name="SignableMessage">An optional signable message.</param>
-//        /// <param name="CustomUserRoleSerializer">A delegate to serialize cryptographic signature informations.</param>
+//        /// <param name="CustomUserRoleSerializer">A delegate to serialize cryptographic signature information.</param>
 //        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
 //        public JObject ToJSON(ISignableMessage?                             SignableMessage              = null,
 //                              CustomJObjectSerializerDelegate<UserRole>?    CustomUserRoleSerializer     = null,
@@ -620,7 +620,7 @@
 //        #region Equals(Object)
 
 //        /// <summary>
-//        /// Compares two signature informations for equality.
+//        /// Compares two signature information for equality.
 //        /// </summary>
 //        /// <param name="Object">A signature information to compare with.</param>
 //        public override Boolean Equals(Object? Object)
@@ -633,7 +633,7 @@
 //        #region Equals(UserRole)
 
 //        /// <summary>
-//        /// Compares two signature informations for equality.
+//        /// Compares two signature information for equality.
 //        /// </summary>
 //        /// <param name="UserRole">A signature information to compare with.</param>
 //        public Boolean Equals(UserRole? UserRole)

@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The timestamp at which this transaction event occurred.
         /// </summary>
         [Mandatory]
-        public DateTime                 Timestamp                { get; }
+        public DateTimeOffset           Timestamp                { get; }
 
         /// <summary>
         /// The reason the charging station sends this message.
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public TransactionEventRequest(SourceRouting             Destination,
                                        TransactionEvents         EventType,
-                                       DateTime                  Timestamp,
+                                       DateTimeOffset            Timestamp,
                                        TriggerReason             TriggerReason,
                                        UInt32                    SequenceNumber,
                                        Transaction               TransactionInfo,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        CustomData?               CustomData              = null,
 
                                        Request_Id?               RequestId               = null,
-                                       DateTime?                 RequestTimestamp        = null,
+                                       DateTimeOffset?           RequestTimestamp        = null,
                                        TimeSpan?                 RequestTimeout          = null,
                                        EventTracking_Id?         EventTrackingId         = null,
                                        NetworkPath?              NetworkPath             = null,
@@ -1155,7 +1155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     Request_Id                                             RequestId,
                                                     SourceRouting                                          Destination,
                                                     NetworkPath                                            NetworkPath,
-                                                    DateTime?                                              RequestTimestamp                      = null,
+                                                    DateTimeOffset?                                        RequestTimestamp                      = null,
                                                     TimeSpan?                                              RequestTimeout                        = null,
                                                     EventTracking_Id?                                      EventTrackingId                       = null,
                                                     CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser   = null)
@@ -1203,7 +1203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                            NetworkPath,
                                        [NotNullWhen(true)]  out TransactionEventRequest?      TransactionEventRequest,
                                        [NotNullWhen(false)] out String?                       ErrorResponse,
-                                       DateTime?                                              RequestTimestamp                      = null,
+                                       DateTimeOffset?                                        RequestTimestamp                      = null,
                                        TimeSpan?                                              RequestTimeout                        = null,
                                        EventTracking_Id?                                      EventTrackingId                       = null,
                                        CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser   = null)

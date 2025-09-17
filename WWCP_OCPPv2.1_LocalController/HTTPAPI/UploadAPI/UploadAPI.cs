@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #region (private) SendUploadedFileInfo(Timestamp, UploadedFileInfo, ...)
 
-        private async Task SendUploadedFileInfo(DateTime           Timestamp,
+        private async Task SendUploadedFileInfo(DateTimeOffset     Timestamp,
                                                 UploadedFileInfos  UploadedFileInfo,
                                                 CancellationToken  CancellationToken = default)
         {

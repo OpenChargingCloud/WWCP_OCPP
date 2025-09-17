@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSignedFirmwareStatusNotificationRequestSentDelegate(DateTime                                 Timestamp,
+    public delegate Task OnSignedFirmwareStatusNotificationRequestSentDelegate(DateTimeOffset                           Timestamp,
                                                                                IEventSender                             Sender,
                                                                                IWebSocketConnection?                    Connection,
                                                                                SignedFirmwareStatusNotificationRequest  Request,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSignedFirmwareStatusNotificationResponseSentDelegate(DateTime                                  Timestamp,
+        OnSignedFirmwareStatusNotificationResponseSentDelegate(DateTimeOffset                            Timestamp,
                                                                IEventSender                              Sender,
                                                                IWebSocketConnection?                     Connection,
                                                                SignedFirmwareStatusNotificationRequest   Request,
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSignedFirmwareStatusNotificationRequestErrorSentDelegate(DateTime                                  Timestamp,
+        OnSignedFirmwareStatusNotificationRequestErrorSentDelegate(DateTimeOffset                            Timestamp,
                                                                    IEventSender                              Sender,
                                                                    IWebSocketConnection?                     Connection,
                                                                    SignedFirmwareStatusNotificationRequest?  Request,
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSignedFirmwareStatusNotificationResponseErrorSentDelegate(DateTime                                   Timestamp,
+        OnSignedFirmwareStatusNotificationResponseErrorSentDelegate(DateTimeOffset                             Timestamp,
                                                                     IEventSender                               Sender,
                                                                     IWebSocketConnection?                      Connection,
                                                                     SignedFirmwareStatusNotificationRequest?   Request,
@@ -474,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnSignedFirmwareStatusNotificationResponseSentDelegate?  OnSignedFirmwareStatusNotificationResponseSent;
 
-        public Task SendOnSignedFirmwareStatusNotificationResponseSent(DateTime                                  Timestamp,
+        public Task SendOnSignedFirmwareStatusNotificationResponseSent(DateTimeOffset                            Timestamp,
                                                                        IEventSender                              Sender,
                                                                        IWebSocketConnection?                     Connection,
                                                                        SignedFirmwareStatusNotificationRequest   Request,
@@ -507,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnSignedFirmwareStatusNotificationRequestErrorSentDelegate? OnSignedFirmwareStatusNotificationRequestErrorSent;
 
 
-        public Task SendOnSignedFirmwareStatusNotificationRequestErrorSent(DateTime                                  Timestamp,
+        public Task SendOnSignedFirmwareStatusNotificationRequestErrorSent(DateTimeOffset                            Timestamp,
                                                                            IEventSender                              Sender,
                                                                            IWebSocketConnection?                     Connection,
                                                                            SignedFirmwareStatusNotificationRequest?  Request,
@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnSignedFirmwareStatusNotificationResponseErrorSentDelegate? OnSignedFirmwareStatusNotificationResponseErrorSent;
 
 
-        public Task SendOnSignedFirmwareStatusNotificationResponseErrorSent(DateTime                                   Timestamp,
+        public Task SendOnSignedFirmwareStatusNotificationResponseErrorSent(DateTimeOffset                             Timestamp,
                                                                             IEventSender                               Sender,
                                                                             IWebSocketConnection?                      Connection,
                                                                             SignedFirmwareStatusNotificationRequest?   Request,

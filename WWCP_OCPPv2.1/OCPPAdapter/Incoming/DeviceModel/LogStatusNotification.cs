@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnLogStatusNotificationRequestReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnLogStatusNotificationRequestReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                         IEventSender                   Sender,
                                                                         IWebSocketConnection           Connection,
                                                                         LogStatusNotificationRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnLogStatusNotificationResponseReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnLogStatusNotificationResponseReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
                                                                          IWebSocketConnection?           Connection,
                                                                          LogStatusNotificationRequest?   Request,
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnLogStatusNotificationRequestErrorReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnLogStatusNotificationRequestErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                              IEventSender                    Sender,
                                                                              IWebSocketConnection            Connection,
                                                                              LogStatusNotificationRequest?   Request,
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnLogStatusNotificationResponseErrorReceivedDelegate(DateTime                         Timestamp,
+    public delegate Task OnLogStatusNotificationResponseErrorReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                               IEventSender                     Sender,
                                                                               IWebSocketConnection             Connection,
                                                                               LogStatusNotificationRequest?    Request,
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<LogStatusNotificationResponse>
 
-        OnLogStatusNotificationDelegate(DateTime                       Timestamp,
+        OnLogStatusNotificationDelegate(DateTimeOffset                 Timestamp,
                                         IEventSender                   Sender,
                                         IWebSocketConnection           Connection,
                                         LogStatusNotificationRequest   Request,
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_LogStatusNotification(DateTime              RequestTimestamp,
+            Receive_LogStatusNotification(DateTimeOffset        RequestTimestamp,
                                           IWebSocketConnection  WebSocketConnection,
                                           SourceRouting     Destination,
                                           NetworkPath           NetworkPath,
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                   NetworkPath                   NetworkPath,
                                                   EventTracking_Id              EventTrackingId,
                                                   Request_Id                    RequestId,
-                                                  DateTime?                     ResponseTimestamp   = null,
+                                                  DateTimeOffset?               ResponseTimestamp   = null,
                                                   CancellationToken             CancellationToken   = default)
 
         {
@@ -423,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       NetworkPath                   NetworkPath,
                                                       EventTracking_Id              EventTrackingId,
                                                       Request_Id                    RequestId,
-                                                      DateTime?                     ResponseTimestamp   = null,
+                                                      DateTimeOffset?               ResponseTimestamp   = null,
                                                       CancellationToken             CancellationToken   = default)
         {
 
@@ -512,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        NetworkPath                     NetworkPath,
                                                        EventTracking_Id                EventTrackingId,
                                                        Request_Id                      RequestId,
-                                                       DateTime?                       ResponseTimestamp   = null,
+                                                       DateTimeOffset?                 ResponseTimestamp   = null,
                                                        CancellationToken               CancellationToken   = default)
 
         {

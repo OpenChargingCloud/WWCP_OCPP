@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The time for which the status is reported.
         /// </summary>
         [Mandatory]
-        public DateTime         Timestamp          { get; }
+        public DateTimeOffset   Timestamp          { get; }
 
         /// <summary>
         /// The current status of the connector.
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public StatusNotificationRequest(SourceRouting            Destination,
-                                         DateTime                 Timestamp,
+                                         DateTimeOffset           Timestamp,
                                          ConnectorStatus          ConnectorStatus,
                                          EVSE_Id                  EVSEId,
                                          Connector_Id             ConnectorId,
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          CustomData?              CustomData            = null,
 
                                          Request_Id?              RequestId             = null,
-                                         DateTime?                RequestTimestamp      = null,
+                                         DateTimeOffset?          RequestTimestamp      = null,
                                          TimeSpan?                RequestTimeout        = null,
                                          EventTracking_Id?        EventTrackingId       = null,
                                          NetworkPath?             NetworkPath           = null,
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       Request_Id                                               RequestId,
                                                       SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
-                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      DateTimeOffset?                                          RequestTimestamp                        = null,
                                                       TimeSpan?                                                RequestTimeout                          = null,
                                                       EventTracking_Id?                                        EventTrackingId                         = null,
                                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out StatusNotificationRequest?      StatusNotificationRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       DateTime?                                                RequestTimestamp                        = null,
+                                       DateTimeOffset?                                          RequestTimestamp                        = null,
                                        TimeSpan?                                                RequestTimeout                          = null,
                                        EventTracking_Id?                                        EventTrackingId                         = null,
                                        CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)

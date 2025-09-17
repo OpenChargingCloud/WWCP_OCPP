@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyNetworkTopologyMessageSentDelegate(DateTime                       Timestamp,
+    public delegate Task OnNotifyNetworkTopologyMessageSentDelegate(DateTimeOffset                 Timestamp,
                                                                     IEventSender                   Sender,
                                                                     IWebSocketConnection?          Connection,
                                                                     NotifyNetworkTopologyMessage   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     ///// <param name="CancellationToken">An optional cancellation token.</param>
     //public delegate Task
 
-    //    OnNotifyNetworkTopologyResponseSentDelegate(DateTime                        Timestamp,
+    //    OnNotifyNetworkTopologyResponseSentDelegate(DateTimeOffset                  Timestamp,
     //                                                IEventSender                    Sender,
     //                                                IWebSocketConnection?           Connection,
     //                                                NotifyNetworkTopologyMessage    Request,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     ///// <param name="CancellationToken">An optional cancellation token.</param>
     //public delegate Task
 
-    //    OnNotifyNetworkTopologyMessageErrorSentDelegate(DateTime                        Timestamp,
+    //    OnNotifyNetworkTopologyMessageErrorSentDelegate(DateTimeOffset                  Timestamp,
     //                                                    IEventSender                    Sender,
     //                                                    IWebSocketConnection?           Connection,
     //                                                    NotifyNetworkTopologyMessage?   Request,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     ///// <param name="CancellationToken">An optional cancellation token.</param>
     //public delegate Task
 
-    //    OnNotifyNetworkTopologyResponseErrorSentDelegate(DateTime                         Timestamp,
+    //    OnNotifyNetworkTopologyResponseErrorSentDelegate(DateTimeOffset                   Timestamp,
     //                                                     IEventSender                     Sender,
     //                                                     IWebSocketConnection?            Connection,
     //                                                     NotifyNetworkTopologyMessage?    Request,
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         ///// </summary>
         //public event OnNotifyNetworkTopologyResponseSentDelegate?  OnNotifyNetworkTopologyResponseSent;
 
-        //public Task SendOnNotifyNetworkTopologyResponseSent(DateTime                       Timestamp,
+        //public Task SendOnNotifyNetworkTopologyResponseSent(DateTimeOffset                 Timestamp,
         //                                                    IEventSender                   Sender,
         //                                                    IWebSocketConnection?          Connection,
         //                                                    NotifyNetworkTopologyMessage   Request,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //public event OnNotifyNetworkTopologyMessageErrorSentDelegate? OnNotifyNetworkTopologyMessageErrorSent;
 
 
-        //public Task SendOnNotifyNetworkTopologyMessageErrorSent(DateTime                       Timestamp,
+        //public Task SendOnNotifyNetworkTopologyMessageErrorSent(DateTimeOffset                 Timestamp,
         //                                                        IEventSender                   Sender,
         //                                                        IWebSocketConnection?          Connection,
         //                                                        NotifyNetworkTopologyMessage?  Request,
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //public event OnNotifyNetworkTopologyResponseErrorSentDelegate? OnNotifyNetworkTopologyResponseErrorSent;
 
 
-        //public Task SendOnNotifyNetworkTopologyResponseErrorSent(DateTime                        Timestamp,
+        //public Task SendOnNotifyNetworkTopologyResponseErrorSent(DateTimeOffset                  Timestamp,
         //                                                         IEventSender                    Sender,
         //                                                         IWebSocketConnection?           Connection,
         //                                                         NotifyNetworkTopologyMessage?   Request,

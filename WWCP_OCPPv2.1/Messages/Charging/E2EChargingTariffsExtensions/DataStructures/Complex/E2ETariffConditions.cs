@@ -38,13 +38,13 @@
 //        /// The start date, for example: 2015-12-24, valid from this day until that day (excluding that day).
 //        /// </summary>
 //        [Optional]
-//        public DateTime?                        NotBefore                  { get; }
+//        public DateTimeOffset?                  NotBefore                  { get; }
 
 //        /// <summary>
 //        /// The end date, for example: 2015-12-24, valid from this day until that day (excluding that day).
 //        /// </summary>
 //        [Optional]
-//        public DateTime?                        NotAfter                   { get; }
+//        public DateTimeOffset?                  NotAfter                   { get; }
 
 
 
@@ -279,8 +279,8 @@
 //        /// <param name="InvalidEVSEs">An enumeration of EVSEs where this charging ticket can NOT be used.</param>
 //        /// 
 //        /// <param name="Reservation"> When this field is present, the tariff element describes reservation costs.</param>
-//        public E2ETariffConditions(DateTime?                         NotBefore                 = null,  // startDate, local time
-//                                DateTime?                         NotAfter                  = null,  // endDate, local time
+//        public E2ETariffConditions(DateTimeOffset?                   NotBefore                 = null,  // startDate, local time
+//                                DateTimeOffset?                   NotAfter                  = null,  // endDate, local time
 
 //                                IEnumerable<DayOfWeek>?           DaysOfWeek                = null,
 //                                Time?                             StartTimeOfDay            = null,  // startTime, local time

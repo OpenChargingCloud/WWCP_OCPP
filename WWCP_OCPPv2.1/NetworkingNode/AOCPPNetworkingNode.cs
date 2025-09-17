@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         //private          readonly  List<EnqueuedRequest>                                       EnqueuedRequests             = [];
 
-        private DateTime lastRoutesBroadcast = Timestamp.Now;
+        private DateTimeOffset lastRoutesBroadcast = Timestamp.Now;
 
         #endregion
 

@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetFileRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnGetFileRequestSentDelegate(DateTimeOffset          Timestamp,
                                                       IEventSender            Sender,
                                                       IWebSocketConnection?   Connection,
                                                       GetFileRequest          Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetFileResponseSentDelegate(DateTime               Timestamp,
+        OnGetFileResponseSentDelegate(DateTimeOffset         Timestamp,
                                       IEventSender           Sender,
                                       IWebSocketConnection?  Connection,
                                       GetFileRequest         Request,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetFileRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetFileRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                           IEventSender                   Sender,
                                           IWebSocketConnection?          Connection,
                                           GetFileRequest?                Request,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetFileResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetFileResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                            IEventSender                    Sender,
                                            IWebSocketConnection?           Connection,
                                            GetFileRequest?                 Request,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetFileResponseSentDelegate?  OnGetFileResponseSent;
 
-        public Task SendOnGetFileResponseSent(DateTime              Timestamp,
+        public Task SendOnGetFileResponseSent(DateTimeOffset        Timestamp,
                                               IEventSender          Sender,
                                               IWebSocketConnection? Connection,
                                               GetFileRequest        Request,
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetFileRequestErrorSentDelegate? OnGetFileRequestErrorSent;
 
 
-        public Task SendOnGetFileRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetFileRequestErrorSent(DateTimeOffset                Timestamp,
                                                   IEventSender                  Sender,
                                                   IWebSocketConnection?         Connection,
                                                   GetFileRequest?               Request,
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetFileResponseErrorSentDelegate? OnGetFileResponseErrorSent;
 
 
-        public Task SendOnGetFileResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetFileResponseErrorSent(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    GetFileRequest?                Request,

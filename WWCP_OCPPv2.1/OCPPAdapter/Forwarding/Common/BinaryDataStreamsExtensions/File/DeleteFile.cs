@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<DeleteFileRequest, DeleteFileResponse>>
 
-        OnDeleteFileRequestFilterDelegate(DateTime               Timestamp,
+        OnDeleteFileRequestFilterDelegate(DateTimeOffset         Timestamp,
                                           IEventSender           Sender,
                                           IWebSocketConnection   Connection,
                                           DeleteFileRequest      Request,
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnDeleteFileRequestFilteredDelegate(DateTime                                                    Timestamp,
+        OnDeleteFileRequestFilteredDelegate(DateTimeOffset                                              Timestamp,
                                             IEventSender                                                Sender,
                                             IWebSocketConnection                                        Connection,
                                             DeleteFileRequest                                           Request,

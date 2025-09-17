@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The optional starting point of an absolute schedule. If absent the schedule
         /// will be relative to start of charging.
         /// </summary>
-        public DateTime?                            StartSchedule              { get; }
+        public DateTimeOffset?                      StartSchedule              { get; }
 
         /// <summary>
         /// An optional minimum charging rate supported by the electric vehicle. The unit
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public ChargingSchedule(ChargingRateUnits                    ChargingRateUnit,
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
                                 TimeSpan?                            Duration          = null,
-                                DateTime?                            StartSchedule     = null,
+                                DateTimeOffset?                      StartSchedule     = null,
                                 Decimal?                             MinChargingRate   = null)
         {
 

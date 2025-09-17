@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSetDisplayMessageRequestSentDelegate(DateTime                   Timestamp,
+    public delegate Task OnSetDisplayMessageRequestSentDelegate(DateTimeOffset             Timestamp,
                                                                 IEventSender               Sender,
                                                                 IWebSocketConnection?      Connection,
                                                                 SetDisplayMessageRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDisplayMessageResponseSentDelegate(DateTime                    Timestamp,
+        OnSetDisplayMessageResponseSentDelegate(DateTimeOffset              Timestamp,
                                                 IEventSender                Sender,
                                                 IWebSocketConnection?       Connection,
                                                 SetDisplayMessageRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDisplayMessageRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnSetDisplayMessageRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                     IEventSender                   Sender,
                                                     IWebSocketConnection?          Connection,
                                                     SetDisplayMessageRequest?      Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSetDisplayMessageResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnSetDisplayMessageResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                      IEventSender                    Sender,
                                                      IWebSocketConnection?           Connection,
                                                      SetDisplayMessageRequest?       Request,
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnSetDisplayMessageResponseSentDelegate?  OnSetDisplayMessageResponseSent;
 
-        public Task SendOnSetDisplayMessageResponseSent(DateTime                   Timestamp,
+        public Task SendOnSetDisplayMessageResponseSent(DateTimeOffset             Timestamp,
                                                         IEventSender               Sender,
                                                         IWebSocketConnection?      Connection,
                                                         SetDisplayMessageRequest   Request,
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetDisplayMessageRequestErrorSentDelegate? OnSetDisplayMessageRequestErrorSent;
 
 
-        public Task SendOnSetDisplayMessageRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnSetDisplayMessageRequestErrorSent(DateTimeOffset                Timestamp,
                                                             IEventSender                  Sender,
                                                             IWebSocketConnection?         Connection,
                                                             SetDisplayMessageRequest?     Request,
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnSetDisplayMessageResponseErrorSentDelegate? OnSetDisplayMessageResponseErrorSent;
 
 
-        public Task SendOnSetDisplayMessageResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnSetDisplayMessageResponseErrorSent(DateTimeOffset                 Timestamp,
                                                              IEventSender                   Sender,
                                                              IWebSocketConnection?          Connection,
                                                              SetDisplayMessageRequest?      Request,

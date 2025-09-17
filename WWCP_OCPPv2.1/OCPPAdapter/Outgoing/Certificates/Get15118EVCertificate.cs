@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGet15118EVCertificateRequestSentDelegate(DateTime                       Timestamp,
+    public delegate Task OnGet15118EVCertificateRequestSentDelegate(DateTimeOffset                 Timestamp,
                                                                     IEventSender                   Sender,
                                                                     IWebSocketConnection?          Connection,
                                                                     Get15118EVCertificateRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGet15118EVCertificateResponseSentDelegate(DateTime                        Timestamp,
+        OnGet15118EVCertificateResponseSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     Get15118EVCertificateRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGet15118EVCertificateRequestErrorSentDelegate(DateTime                        Timestamp,
+        OnGet15118EVCertificateRequestErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                         IEventSender                    Sender,
                                                         IWebSocketConnection?           Connection,
                                                         Get15118EVCertificateRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGet15118EVCertificateResponseErrorSentDelegate(DateTime                         Timestamp,
+        OnGet15118EVCertificateResponseErrorSentDelegate(DateTimeOffset                   Timestamp,
                                                          IEventSender                     Sender,
                                                          IWebSocketConnection?            Connection,
                                                          Get15118EVCertificateRequest?    Request,
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGet15118EVCertificateResponseSentDelegate?  OnGet15118EVCertificateResponseSent;
 
-        public Task SendOnGet15118EVCertificateResponseSent(DateTime                       Timestamp,
+        public Task SendOnGet15118EVCertificateResponseSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             Get15118EVCertificateRequest   Request,
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGet15118EVCertificateRequestErrorSentDelegate? OnGet15118EVCertificateRequestErrorSent;
 
 
-        public Task SendOnGet15118EVCertificateRequestErrorSent(DateTime                       Timestamp,
+        public Task SendOnGet15118EVCertificateRequestErrorSent(DateTimeOffset                 Timestamp,
                                                                 IEventSender                   Sender,
                                                                 IWebSocketConnection?          Connection,
                                                                 Get15118EVCertificateRequest?  Request,
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGet15118EVCertificateResponseErrorSentDelegate? OnGet15118EVCertificateResponseErrorSent;
 
 
-        public Task SendOnGet15118EVCertificateResponseErrorSent(DateTime                        Timestamp,
+        public Task SendOnGet15118EVCertificateResponseErrorSent(DateTimeOffset                  Timestamp,
                                                                  IEventSender                    Sender,
                                                                  IWebSocketConnection?           Connection,
                                                                  Get15118EVCertificateRequest?   Request,

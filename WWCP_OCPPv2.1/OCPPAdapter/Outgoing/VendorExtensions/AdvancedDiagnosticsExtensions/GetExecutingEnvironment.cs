@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetExecutingEnvironmentRequestSentDelegate(DateTime                         Timestamp,
+    public delegate Task OnGetExecutingEnvironmentRequestSentDelegate(DateTimeOffset                   Timestamp,
                                                                       IEventSender                     Sender,
                                                                       IWebSocketConnection?            Connection,
                                                                       GetExecutingEnvironmentRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetExecutingEnvironmentResponseSentDelegate(DateTime                          Timestamp,
+        OnGetExecutingEnvironmentResponseSentDelegate(DateTimeOffset                    Timestamp,
                                                       IEventSender                      Sender,
                                                       IWebSocketConnection?             Connection,
                                                       GetExecutingEnvironmentRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetExecutingEnvironmentRequestErrorSentDelegate(DateTime                          Timestamp,
+        OnGetExecutingEnvironmentRequestErrorSentDelegate(DateTimeOffset                    Timestamp,
                                                           IEventSender                      Sender,
                                                           IWebSocketConnection?             Connection,
                                                           GetExecutingEnvironmentRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetExecutingEnvironmentResponseErrorSentDelegate(DateTime                           Timestamp,
+        OnGetExecutingEnvironmentResponseErrorSentDelegate(DateTimeOffset                     Timestamp,
                                                            IEventSender                       Sender,
                                                            IWebSocketConnection?              Connection,
                                                            GetExecutingEnvironmentRequest?    Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetExecutingEnvironmentResponseSentDelegate?  OnGetExecutingEnvironmentResponseSent;
 
-        public Task SendOnGetExecutingEnvironmentResponseSent(DateTime                         Timestamp,
+        public Task SendOnGetExecutingEnvironmentResponseSent(DateTimeOffset                   Timestamp,
                                                               IEventSender                     Sender,
                                                               IWebSocketConnection?            Connection,
                                                               GetExecutingEnvironmentRequest   Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetExecutingEnvironmentRequestErrorSentDelegate? OnGetExecutingEnvironmentRequestErrorSent;
 
 
-        public Task SendOnGetExecutingEnvironmentRequestErrorSent(DateTime                         Timestamp,
+        public Task SendOnGetExecutingEnvironmentRequestErrorSent(DateTimeOffset                   Timestamp,
                                                                   IEventSender                     Sender,
                                                                   IWebSocketConnection?            Connection,
                                                                   GetExecutingEnvironmentRequest?  Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetExecutingEnvironmentResponseErrorSentDelegate? OnGetExecutingEnvironmentResponseErrorSent;
 
 
-        public Task SendOnGetExecutingEnvironmentResponseErrorSent(DateTime                          Timestamp,
+        public Task SendOnGetExecutingEnvironmentResponseErrorSent(DateTimeOffset                    Timestamp,
                                                                    IEventSender                      Sender,
                                                                    IWebSocketConnection?             Connection,
                                                                    GetExecutingEnvironmentRequest?   Request,

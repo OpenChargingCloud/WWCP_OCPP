@@ -313,8 +313,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                     certificateGenerator.SetSubjectDN   (parsedCSR.GetCertificationRequestInfo().Subject);
                                     certificateGenerator.SetPublicKey   (parsedCSR.GetPublicKey());
                                     certificateGenerator.SetSerialNumber(BigIntegers.CreateRandomInRange(BigInteger.One, BigInteger.ValueOf(Int64.MaxValue), secureRandom));
-                                    certificateGenerator.SetNotBefore   (now.AddDays(-1));
-                                    certificateGenerator.SetNotAfter    (now.AddMonths(3));
+                                    certificateGenerator.SetNotBefore   (now.AddDays(-1). DateTime);
+                                    certificateGenerator.SetNotAfter    (now.AddMonths(3).DateTime);
 
                                     certificateGenerator.AddExtension   (X509Extensions.KeyUsage,
                                                                          critical: true,

@@ -27,6 +27,7 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
+using Certificate = cloud.charging.open.protocols.OCPP.Certificate;
 
 #endregion
 

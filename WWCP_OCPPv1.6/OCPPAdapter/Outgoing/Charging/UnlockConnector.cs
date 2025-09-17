@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnUnlockConnectorRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnUnlockConnectorRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                UnlockConnectorRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUnlockConnectorResponseSentDelegate(DateTime                   Timestamp,
+        OnUnlockConnectorResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                UnlockConnectorRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUnlockConnectorRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnUnlockConnectorRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    UnlockConnectorRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUnlockConnectorResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnUnlockConnectorResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     UnlockConnectorRequest?        Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnUnlockConnectorResponseSentDelegate?  OnUnlockConnectorResponseSent;
 
-        public Task SendOnUnlockConnectorResponseSent(DateTime                   Timestamp,
+        public Task SendOnUnlockConnectorResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        UnlockConnectorRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnUnlockConnectorRequestErrorSentDelegate? OnUnlockConnectorRequestErrorSent;
 
 
-        public Task SendOnUnlockConnectorRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnUnlockConnectorRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            UnlockConnectorRequest?      Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnUnlockConnectorResponseErrorSentDelegate? OnUnlockConnectorResponseErrorSent;
 
 
-        public Task SendOnUnlockConnectorResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnUnlockConnectorResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             UnlockConnectorRequest?       Request,

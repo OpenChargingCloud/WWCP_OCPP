@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The time anchor.
         /// </summary>
         [Mandatory]
-        public DateTime                                   TimeAnchor                        { get; }
+        public DateTimeOffset                             TimeAnchor                        { get; }
 
         /// <summary>
         /// The currency (ISO 4217).
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Currency">A currency (ISO 4217).</param>
         /// <param name="PriceAlgorithm">A price algorithm.</param>
         /// <param name="EVAbsolutePriceScheduleEntries">An enumeration of EV absolute price schedule entries (max 1024).</param>
-        public EVAbsolutePriceSchedule(DateTime                                   TimeAnchor,
+        public EVAbsolutePriceSchedule(DateTimeOffset                             TimeAnchor,
                                        Currency                                   Currency,
                                        PriceAlgorithm                             PriceAlgorithm,
                                        IEnumerable<EVAbsolutePriceScheduleEntry>  EVAbsolutePriceScheduleEntries,

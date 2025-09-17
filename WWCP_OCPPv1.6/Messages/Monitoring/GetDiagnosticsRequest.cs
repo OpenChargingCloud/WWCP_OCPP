@@ -54,25 +54,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext    Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The URI where the diagnostics file shall be uploaded to.
         /// </summary>
-        public String         Location         { get; }
+        public String           Location         { get; }
 
         /// <summary>
         /// The timestamp of the oldest logging information to include in
         /// the diagnostics.
         /// </summary>
-        public DateTime?      StartTime        { get; }
+        public DateTimeOffset?  StartTime        { get; }
 
         /// <summary>
         /// The timestamp of the latest logging information to include in
         /// the diagnostics.
         /// </summary>
-        public DateTime?      StopTime         { get; }
+        public DateTimeOffset?  StopTime         { get; }
 
         /// <summary>
         /// The optional number of retries of a charge point for trying to
@@ -80,14 +80,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// present, it is left to the charge point to decide how many times
         /// it wants to retry.
         /// </summary>
-        public Byte?          Retries          { get; }
+        public Byte?            Retries          { get; }
 
         /// <summary>
         /// The interval after which a retry may be attempted. If this field
         /// is not present, it is left to charge point to decide how long to
         /// wait between attempts.
         /// </summary>
-        public TimeSpan?      RetryInterval    { get; }
+        public TimeSpan?        RetryInterval    { get; }
 
         #endregion
 
@@ -118,8 +118,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetDiagnosticsRequest(SourceRouting            Destination,
                                      String                   Location,
-                                     DateTime?                StartTime             = null,
-                                     DateTime?                StopTime              = null,
+                                     DateTimeOffset?          StartTime             = null,
+                                     DateTimeOffset?          StopTime              = null,
                                      Byte?                    Retries               = null,
                                      TimeSpan?                RetryInterval         = null,
 
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      CustomData?              CustomData            = null,
 
                                      Request_Id?              RequestId             = null,
-                                     DateTime?                RequestTimestamp      = null,
+                                     DateTimeOffset?          RequestTimestamp      = null,
                                      TimeSpan?                RequestTimeout        = null,
                                      EventTracking_Id?        EventTrackingId       = null,
                                      NetworkPath?             NetworkPath           = null,
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                   Request_Id                                           RequestId,
                                                   SourceRouting                                        Destination,
                                                   NetworkPath                                          NetworkPath,
-                                                  DateTime?                                            RequestTimestamp                    = null,
+                                                  DateTimeOffset?                                      RequestTimestamp                    = null,
                                                   TimeSpan?                                            RequestTimeout                      = null,
                                                   EventTracking_Id?                                    EventTrackingId                     = null,
                                                   CustomJObjectParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser   = null,
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        NetworkPath                                          NetworkPath,
                                        [NotNullWhen(true)]  out GetDiagnosticsRequest?      GetDiagnosticsRequest,
                                        [NotNullWhen(false)] out String?                     ErrorResponse,
-                                       DateTime?                                            RequestTimestamp                    = null,
+                                       DateTimeOffset?                                      RequestTimestamp                    = null,
                                        TimeSpan?                                            RequestTimeout                      = null,
                                        EventTracking_Id?                                    EventTrackingId                     = null,
                                        CustomJObjectParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser   = null,

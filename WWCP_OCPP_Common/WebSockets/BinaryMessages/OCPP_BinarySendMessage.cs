@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="Payload">The binary message payload.</param>
     /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class OCPP_BinarySendMessage(DateTime           MessageTimestamp,
+    public class OCPP_BinarySendMessage(DateTimeOffset     MessageTimestamp,
                                         EventTracking_Id   EventTrackingId,
                                         NetworkingMode     NetworkingMode,
                                         SourceRouting      Destination,
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The message time stamp.
         /// </summary>
-        public DateTime           MessageTimestamp     { get; }      = MessageTimestamp;
+        public DateTimeOffset     MessageTimestamp     { get; }      = MessageTimestamp;
 
         /// <summary>
         /// The event tracking identification for correlating this message with other events.
@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         public static Boolean TryParse(Byte[]                                            Binary,
                                        [NotNullWhen(true)]  out OCPP_BinarySendMessage?  BinarySendMessage,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
-                                       DateTime?                                         RequestTimestamp       = null,
+                                       DateTimeOffset?                                   RequestTimestamp       = null,
                                        EventTracking_Id?                                 EventTrackingId        = null,
                                        NetworkingNode_Id?                                ImplicitSourceNodeId   = null,
                                        CancellationToken                                 CancellationToken      = default)

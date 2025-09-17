@@ -82,13 +82,13 @@
 //        /// The timestamp before which the network topology information should not be used.
 //        /// </summary>
 //        [Mandatory]
-//        public DateTime                                                  NotBefore      { get; }
+//        public DateTimeOffset                                            NotBefore      { get; }
 
 //        /// <summary>
 //        /// The optional timestamp after which the network topology information should not be used.
 //        /// </summary>
 //        [Optional]
-//        public DateTime?                                                 NotAfter       { get; }
+//        public DateTimeOffset?                                           NotAfter       { get; }
 
 //        /// <summary>
 //        /// The optional priority of the network topology information.
@@ -115,8 +115,8 @@
 //        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
 //        public NetworkTopologyInformation(NetworkingNode_Id                       RoutingNode,
 //                                          IEnumerable<NetworkRoutingInformation>  Routes,
-//                                          DateTime?                               NotBefore    = null,
-//                                          DateTime?                               NotAfter     = null,
+//                                          DateTimeOffset?                         NotBefore    = null,
+//                                          DateTimeOffset?                         NotAfter     = null,
 //                                          Byte?                                   Priority     = null,
 
 //                                          IEnumerable<WWCP.KeyPair>?              SignKeys     = null,

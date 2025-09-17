@@ -78,7 +78,7 @@
 //        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
 //        public NotifyNetworkTopologyResponse(NotifyNetworkTopologyRequest  Request,
 //                                             NetworkTopologyStatus         Status,
-//                                             DateTime?                     ResponseTimestamp   = null,
+//                                             DateTimeOffset?               ResponseTimestamp   = null,
 
 //                                             NetworkingNode_Id?            DestinationNodeId   = null,
 //                                             NetworkPath?                  NetworkPath         = null,

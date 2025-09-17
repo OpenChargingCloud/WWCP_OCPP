@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnReserveNowRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnReserveNowRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                ReserveNowRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnReserveNowResponseSentDelegate(DateTime                   Timestamp,
+        OnReserveNowResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                ReserveNowRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnReserveNowRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnReserveNowRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    ReserveNowRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnReserveNowResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnReserveNowResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     ReserveNowRequest?        Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnReserveNowResponseSentDelegate?  OnReserveNowResponseSent;
 
-        public Task SendOnReserveNowResponseSent(DateTime                   Timestamp,
+        public Task SendOnReserveNowResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        ReserveNowRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnReserveNowRequestErrorSentDelegate? OnReserveNowRequestErrorSent;
 
 
-        public Task SendOnReserveNowRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnReserveNowRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            ReserveNowRequest?      Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnReserveNowResponseErrorSentDelegate? OnReserveNowResponseErrorSent;
 
 
-        public Task SendOnReserveNowResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnReserveNowResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             ReserveNowRequest?       Request,

@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                     CustomData?              CustomData             = null,
 
                                     Request_Id?              RequestId              = null,
-                                    DateTime?                RequestTimestamp       = null,
+                                    DateTimeOffset?          RequestTimestamp       = null,
                                     TimeSpan?                RequestTimeout         = null,
                                     EventTracking_Id?        EventTrackingId        = null,
                                     NetworkPath?             NetworkPath            = null,
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                  Request_Id                                          RequestId,
                                                  SourceRouting                                   Destination,
                                                  NetworkPath                                         NetworkPath,
-                                                 DateTime?                                           RequestTimestamp                   = null,
+                                                 DateTimeOffset?                                     RequestTimestamp                   = null,
                                                  TimeSpan?                                           RequestTimeout                     = null,
                                                  EventTracking_Id?                                   EventTrackingId                    = null,
                                                  CustomJObjectParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser   = null)
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out ListDirectoryRequest?      ListDirectoryRequest,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
-                                       DateTime?                                           RequestTimestamp                   = null,
+                                       DateTimeOffset?                                     RequestTimestamp                   = null,
                                        TimeSpan?                                           RequestTimeout                     = null,
                                        EventTracking_Id?                                   EventTrackingId                    = null,
                                        CustomJObjectParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser   = null)

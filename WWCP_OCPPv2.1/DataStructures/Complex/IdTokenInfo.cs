@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The optional timestamp after which the token must be considered invalid.
         /// </summary>
-        public DateTime?             CacheExpiryDateTime    { get; }
+        public DateTimeOffset?       CacheExpiryDateTime    { get; }
 
         /// <summary>
         /// The identification token is only valid fot the given optional enumeration of EVSE identifications.
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PersonalMessage">An optional personal message to be displayed at a charging station.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public IdTokenInfo(AuthorizationStatus    Status,
-                           DateTime?              CacheExpiryDateTime   = null,
+                           DateTimeOffset?        CacheExpiryDateTime   = null,
                            Int16?                 ChargingPriority      = 0,
                            IEnumerable<EVSE_Id>?  ValidEVSEIds          = null,
                            IdToken?               GroupIdToken          = null,

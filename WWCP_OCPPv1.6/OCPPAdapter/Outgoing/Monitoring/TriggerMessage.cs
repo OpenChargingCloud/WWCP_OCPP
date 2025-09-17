@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnTriggerMessageRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnTriggerMessageRequestSentDelegate(DateTimeOffset          Timestamp,
                                                              IEventSender            Sender,
                                                              IWebSocketConnection?   Connection,
                                                              TriggerMessageRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnTriggerMessageResponseSentDelegate(DateTime                 Timestamp,
+        OnTriggerMessageResponseSentDelegate(DateTimeOffset           Timestamp,
                                              IEventSender             Sender,
                                              IWebSocketConnection?    Connection,
                                              TriggerMessageRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnTriggerMessageRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnTriggerMessageRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                  IEventSender                   Sender,
                                                  IWebSocketConnection?          Connection,
                                                  TriggerMessageRequest?         Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnTriggerMessageResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnTriggerMessageResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                   IEventSender                    Sender,
                                                   IWebSocketConnection?           Connection,
                                                   TriggerMessageRequest?          Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnTriggerMessageResponseSentDelegate?  OnTriggerMessageResponseSent;
 
-        public Task SendOnTriggerMessageResponseSent(DateTime                 Timestamp,
+        public Task SendOnTriggerMessageResponseSent(DateTimeOffset           Timestamp,
                                                      IEventSender             Sender,
                                                      IWebSocketConnection?    Connection,
                                                      TriggerMessageRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnTriggerMessageRequestErrorSentDelegate? OnTriggerMessageRequestErrorSent;
 
 
-        public Task SendOnTriggerMessageRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnTriggerMessageRequestErrorSent(DateTimeOffset                Timestamp,
                                                          IEventSender                  Sender,
                                                          IWebSocketConnection?         Connection,
                                                          TriggerMessageRequest?        Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnTriggerMessageResponseErrorSentDelegate? OnTriggerMessageResponseErrorSent;
 
 
-        public Task SendOnTriggerMessageResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnTriggerMessageResponseErrorSent(DateTimeOffset                 Timestamp,
                                                           IEventSender                   Sender,
                                                           IWebSocketConnection?          Connection,
                                                           TriggerMessageRequest?         Request,

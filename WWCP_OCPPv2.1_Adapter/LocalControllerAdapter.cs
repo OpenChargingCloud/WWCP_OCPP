@@ -186,6 +186,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Timestamped<ChargingPoolAdminStatusType> IAdminStatus<ChargingPoolAdminStatusType>.AdminStatus { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         Timestamped<ChargingPoolStatusType> IStatus<ChargingPoolStatusType>.Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, bool> IChargingPool.OnChargingStationAddition => throw new NotImplementedException();
+
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, IChargingStation, bool> IChargingPool.OnChargingStationUpdate => throw new NotImplementedException();
+
+        IVotingSender<DateTimeOffset, User_Id, IChargingPool, IChargingStation, bool> IChargingPool.OnChargingStationRemoval => throw new NotImplementedException();
+
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, bool> IChargingPool.OnEVSEAddition => throw new NotImplementedException();
+
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, IEVSE, bool> IChargingPool.OnEVSEUpdate => throw new NotImplementedException();
+
+        IVotingSender<DateTimeOffset, User_Id, IChargingStation, IEVSE, bool> IChargingPool.OnEVSERemoval => throw new NotImplementedException();
+
+        DateTimeOffset IInternalData.Created { get => Created; set => throw new NotImplementedException(); }
+        DateTimeOffset IInternalData.LastChangeDate { get => LastChangeDate; set => throw new NotImplementedException(); }
+
         event OnChargingPoolDataChangedDelegate IChargingPool.OnDataChanged
         {
             add
@@ -698,6 +713,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         public void SetStatus(ChargingPoolStatusType NewStatus, DateTime Timestamp, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTimeOffset, bool>? TimestampFilter = null, Func<EVSEAdminStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTimeOffset, bool>? TimestampFilter = null, Func<EVSEStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Timestamped<ChargingPoolAdminStatusType>> AdminStatusSchedule(Func<DateTimeOffset, bool>? TimestampFilter = null, Func<ChargingPoolAdminStatusType, bool>? AdminStatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetAdminStatus(ChargingPoolAdminStatusType NewAdminStatus, DateTimeOffset Timestamp, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Timestamped<ChargingPoolStatusType>> StatusSchedule(Func<DateTimeOffset, bool>? TimestampFilter = null, Func<ChargingPoolStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStatus(ChargingPoolStatusType NewStatus, DateTimeOffset Timestamp, Context? DataSource = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthStartResult> AuthorizeStart(LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingProduct? ChargingProduct = null, ChargingSession_Id? SessionId = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthStopResult> AuthorizeStop(ChargingSession_Id SessionId, LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoteStartResult> RemoteStart(ChargingProduct? ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, JObject? AdditionalSessionInfos = null, Auth_Path? AuthenticationPath = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct? ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, JObject? AdditionalSessionInfos = null, Auth_Path? AuthenticationPath = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoteStopResult> RemoteStop(ChargingSession_Id SessionId, ReservationHandling? ReservationHandling = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, Auth_Path? AuthenticationPath = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ReservationResult> Reserve(DateTimeOffset? StartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, Auth_Path? AuthenticationPath = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<EMobilityAccount_Id>? eMAIds = null, IEnumerable<uint>? PINs = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ReservationResult> Reserve(ChargingLocation ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTimeOffset? StartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, Auth_Path? AuthenticationPath = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<EMobilityAccount_Id>? eMAIds = null, IEnumerable<uint>? PINs = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CancelReservationResult> CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
         {
             throw new NotImplementedException();
         }

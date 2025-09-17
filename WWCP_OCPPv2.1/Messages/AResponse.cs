@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AResponse(TRequest                 Request,
                          Result                   Result,
-                         DateTime?                ResponseTimestamp     = null,
+                         DateTimeOffset?          ResponseTimestamp     = null,
 
                          SourceRouting?           Destination           = null,
                          NetworkPath?             NetworkPath           = null,
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AResponse(TRequest                 Request,
                          Result                   Result,
-                         DateTime                 ResponseTimestamp,
+                         DateTimeOffset           ResponseTimestamp,
 
                          SourceRouting?           SourceRouting         = null,
                          NetworkPath?             NetworkPath           = null,
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The timestamp of the response message.
         /// </summary>
         [Mandatory]
-        public DateTime              ResponseTimestamp      { get; }
+        public DateTimeOffset        ResponseTimestamp      { get; }
 
         /// <summary>
         /// The networking node identification of the message destination.
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public AResponse(Result                   Result,
-                         DateTime                 ResponseTimestamp,
+                         DateTimeOffset           ResponseTimestamp,
                          TimeSpan                 Runtime,
 
                          SourceRouting            Destination,

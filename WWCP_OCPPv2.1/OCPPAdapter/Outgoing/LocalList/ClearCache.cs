@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnClearCacheRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnClearCacheRequestSentDelegate(DateTimeOffset          Timestamp,
                                                          IEventSender            Sender,
                                                          IWebSocketConnection?   Connection,
                                                          ClearCacheRequest       Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearCacheResponseSentDelegate(DateTime               Timestamp,
+        OnClearCacheResponseSentDelegate(DateTimeOffset         Timestamp,
                                          IEventSender           Sender,
                                          IWebSocketConnection?  Connection,
                                          ClearCacheRequest      Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearCacheRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnClearCacheRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                              IEventSender                   Sender,
                                              IWebSocketConnection?          Connection,
                                              ClearCacheRequest?             Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearCacheResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnClearCacheResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                               IEventSender                    Sender,
                                               IWebSocketConnection?           Connection,
                                               ClearCacheRequest?              Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnClearCacheResponseSentDelegate?  OnClearCacheResponseSent;
 
-        public Task SendOnClearCacheResponseSent(DateTime              Timestamp,
+        public Task SendOnClearCacheResponseSent(DateTimeOffset        Timestamp,
                                                  IEventSender          Sender,
                                                  IWebSocketConnection? Connection,
                                                  ClearCacheRequest     Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearCacheRequestErrorSentDelegate? OnClearCacheRequestErrorSent;
 
 
-        public Task SendOnClearCacheRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnClearCacheRequestErrorSent(DateTimeOffset                Timestamp,
                                                      IEventSender                  Sender,
                                                      IWebSocketConnection?         Connection,
                                                      ClearCacheRequest?            Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearCacheResponseErrorSentDelegate? OnClearCacheResponseErrorSent;
 
 
-        public Task SendOnClearCacheResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnClearCacheResponseErrorSent(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
                                                       IWebSocketConnection?          Connection,
                                                       ClearCacheRequest?             Request,

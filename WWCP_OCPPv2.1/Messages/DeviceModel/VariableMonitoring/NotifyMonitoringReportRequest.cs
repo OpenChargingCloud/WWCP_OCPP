@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The timestamp of the moment this message was generated at the charging station.
         /// </summary>
         [Mandatory]
-        public DateTime                     GeneratedAt                        { get; }
+        public DateTimeOffset               GeneratedAt                        { get; }
 
         /// <summary>
         /// The enumeration of event data.
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public NotifyMonitoringReportRequest(SourceRouting                Destination,
                                              Int32                        NotifyMonitoringReportRequestId,
                                              UInt32                       SequenceNumber,
-                                             DateTime                     GeneratedAt,
+                                             DateTimeOffset               GeneratedAt,
                                              IEnumerable<MonitoringData>  MonitoringData,
                                              Boolean?                     ToBeContinued         = null,
 
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              CustomData?                  CustomData            = null,
 
                                              Request_Id?                  RequestId             = null,
-                                             DateTime?                    RequestTimestamp      = null,
+                                             DateTimeOffset?              RequestTimestamp      = null,
                                              TimeSpan?                    RequestTimeout        = null,
                                              EventTracking_Id?            EventTrackingId       = null,
                                              NetworkPath?                 NetworkPath           = null,
@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                           Request_Id                                                   RequestId,
                                                           SourceRouting                                                Destination,
                                                           NetworkPath                                                  NetworkPath,
-                                                          DateTime?                                                    RequestTimestamp                            = null,
+                                                          DateTimeOffset?                                              RequestTimestamp                            = null,
                                                           TimeSpan?                                                    RequestTimeout                              = null,
                                                           EventTracking_Id?                                            EventTrackingId                             = null,
                                                           CustomJObjectParserDelegate<NotifyMonitoringReportRequest>?  CustomNotifyMonitoringReportRequestParser   = null)
@@ -488,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out NotifyMonitoringReportRequest?      NotifyMonitoringReportRequest,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
-                                       DateTime?                                                    RequestTimestamp                            = null,
+                                       DateTimeOffset?                                              RequestTimestamp                            = null,
                                        TimeSpan?                                                    RequestTimeout                              = null,
                                        EventTracking_Id?                                            EventTrackingId                             = null,
                                        CustomJObjectParserDelegate<NotifyMonitoringReportRequest>?  CustomNotifyMonitoringReportRequestParser   = null)

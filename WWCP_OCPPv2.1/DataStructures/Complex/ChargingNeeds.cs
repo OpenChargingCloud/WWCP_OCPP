@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional estimated departure time of the EV.
         /// </summary>
         [Optional]
-        public DateTime?                        DepartureTime                   { get; }
+        public DateTimeOffset?                  DepartureTime                   { get; }
 
         /// <summary>
         /// Optional ISO 15118-2 EV AC charging parameters.
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                              ControlModes?                     ControlMode                    = null,
                              MobilityNeedsMode?                MobilityNeedsMode              = null,
                              PricingTypes?                     Pricing                        = null,
-                             DateTime?                         DepartureTime                  = null,
+                             DateTimeOffset?                   DepartureTime                  = null,
                              ACChargingParameters?             ACChargingParameters           = null,
                              DCChargingParameters?             DCChargingParameters           = null,
                              V2XChargingParameters?            V2XChargingParameters          = null,

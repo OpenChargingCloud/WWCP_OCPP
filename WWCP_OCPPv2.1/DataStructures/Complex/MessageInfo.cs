@@ -65,12 +65,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Optional timestamp after which the message should be shown.
         /// If omitted: Show it at once.
         /// </summary>
-        public DateTime?          StartTimestamp    { get; }
+        public DateTimeOffset?    StartTimestamp    { get; }
 
         /// <summary>
         /// Optional timestamp after which the message should be removed.
         /// </summary>
-        public DateTime?          EndTimestamp      { get; }
+        public DateTimeOffset?    EndTimestamp      { get; }
 
         /// <summary>
         /// When the message should only be shown during a specific transaction and removed after afterwards.
@@ -102,8 +102,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            MessagePriority    Priority,
                            MessageContents    Messages,
                            MessageState?      State            = null,
-                           DateTime?          StartTimestamp   = null,
-                           DateTime?          EndTimestamp     = null,
+                           DateTimeOffset?    StartTimestamp   = null,
+                           DateTimeOffset?    EndTimestamp     = null,
                            Transaction_Id?    TransactionId    = null,
                            Component?         Display          = null,
                            CustomData?        CustomData       = null)

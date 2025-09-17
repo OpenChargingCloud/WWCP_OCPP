@@ -63,7 +63,7 @@
 //        /// The current time at the central system. [UTC]
 //        /// </summary>
 //        [Mandatory]
-//        public DateTime            CurrentTime   { get; }
+//        public DateTimeOffset      CurrentTime   { get; }
 
 //        /// <summary>
 //        /// When the registration status is 'accepted', the interval defines
@@ -103,7 +103,7 @@
 //        public AddUserRoleResponse(CSMS.AddUserRoleRequest   Request,
 //                                   GenericStatus             Status,
 //                                   StatusInfo?               StatusInfo          = null,
-//                                   DateTime?                 ResponseTimestamp   = null,
+//                                   DateTimeOffset?           ResponseTimestamp   = null,
 
 //                                   NetworkingNode_Id?        DestinationNodeId   = null,
 //                                   NetworkPath?              NetworkPath         = null,

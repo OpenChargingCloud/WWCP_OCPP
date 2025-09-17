@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<ClearCacheRequest, ClearCacheResponse>>
 
-        OnClearCacheRequestFilterDelegate(DateTime               Timestamp,
+        OnClearCacheRequestFilterDelegate(DateTimeOffset         Timestamp,
                                           IEventSender           Sender,
                                           IWebSocketConnection   Connection,
                                           ClearCacheRequest      Request,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ForwardingDecision">The forwarding decision.</param>
     public delegate Task
 
-        OnClearCacheRequestFilteredDelegate(DateTime                                                    Timestamp,
+        OnClearCacheRequestFilteredDelegate(DateTimeOffset                                              Timestamp,
                                             IEventSender                                                Sender,
                                             IWebSocketConnection                                        Connection,
                                             ClearCacheRequest                                           Request,

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetPWMValueRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnGetPWMValueRequestSentDelegate(DateTimeOffset          Timestamp,
                                                           IEventSender            Sender,
                                                           IWebSocketConnection?   Connection,
                                                           GetPWMValueRequest      Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetPWMValueResponseSentDelegate(DateTime                Timestamp,
+        OnGetPWMValueResponseSentDelegate(DateTimeOffset          Timestamp,
                                           IEventSender            Sender,
                                           IWebSocketConnection?   Connection,
                                           GetPWMValueRequest      Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetPWMValueRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetPWMValueRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                               IEventSender                   Sender,
                                               IWebSocketConnection?          Connection,
                                               GetPWMValueRequest?            Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetPWMValueResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetPWMValueResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                IEventSender                    Sender,
                                                IWebSocketConnection?           Connection,
                                                GetPWMValueRequest?             Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetPWMValueResponseSentDelegate?  OnGetPWMValueResponseSent;
 
-        public Task SendOnGetPWMValueResponseSent(DateTime               Timestamp,
+        public Task SendOnGetPWMValueResponseSent(DateTimeOffset         Timestamp,
                                                   IEventSender           Sender,
                                                   IWebSocketConnection?  Connection,
                                                   GetPWMValueRequest     Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetPWMValueRequestErrorSentDelegate? OnGetPWMValueRequestErrorSent;
 
 
-        public Task SendOnGetPWMValueRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetPWMValueRequestErrorSent(DateTimeOffset                Timestamp,
                                                       IEventSender                  Sender,
                                                       IWebSocketConnection?         Connection,
                                                       GetPWMValueRequest?           Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetPWMValueResponseErrorSentDelegate? OnGetPWMValueResponseErrorSent;
 
 
-        public Task SendOnGetPWMValueResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetPWMValueResponseErrorSent(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
                                                        IWebSocketConnection?          Connection,
                                                        GetPWMValueRequest?            Request,

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetBaseReportRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnGetBaseReportRequestSentDelegate(DateTimeOffset          Timestamp,
                                                             IEventSender            Sender,
                                                             IWebSocketConnection?   Connection,
                                                             GetBaseReportRequest    Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetBaseReportResponseSentDelegate(DateTime               Timestamp,
+        OnGetBaseReportResponseSentDelegate(DateTimeOffset         Timestamp,
                                             IEventSender           Sender,
                                             IWebSocketConnection?  Connection,
                                             GetBaseReportRequest   Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetBaseReportRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetBaseReportRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                 IEventSender                   Sender,
                                                 IWebSocketConnection?          Connection,
                                                 GetBaseReportRequest?          Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetBaseReportResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetBaseReportResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                  IEventSender                    Sender,
                                                  IWebSocketConnection?           Connection,
                                                  GetBaseReportRequest?           Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetBaseReportResponseSentDelegate?  OnGetBaseReportResponseSent;
 
-        public Task SendOnGetBaseReportResponseSent(DateTime               Timestamp,
+        public Task SendOnGetBaseReportResponseSent(DateTimeOffset         Timestamp,
                                                     IEventSender           Sender,
                                                     IWebSocketConnection?  Connection,
                                                     GetBaseReportRequest   Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetBaseReportRequestErrorSentDelegate? OnGetBaseReportRequestErrorSent;
 
 
-        public Task SendOnGetBaseReportRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetBaseReportRequestErrorSent(DateTimeOffset                Timestamp,
                                                         IEventSender                  Sender,
                                                         IWebSocketConnection?         Connection,
                                                         GetBaseReportRequest?         Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetBaseReportResponseErrorSentDelegate? OnGetBaseReportResponseErrorSent;
 
 
-        public Task SendOnGetBaseReportResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetBaseReportResponseErrorSent(DateTimeOffset                 Timestamp,
                                                          IEventSender                   Sender,
                                                          IWebSocketConnection?          Connection,
                                                          GetBaseReportRequest?          Request,

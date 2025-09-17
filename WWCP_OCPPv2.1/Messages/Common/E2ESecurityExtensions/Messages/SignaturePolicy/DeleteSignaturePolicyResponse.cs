@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              StatusInfo?                   StatusInfo            = null,
 
                                              Result?                       Result                = null,
-                                             DateTime?                     ResponseTimestamp     = null,
+                                             DateTimeOffset?               ResponseTimestamp     = null,
 
                                              SourceRouting?                Destination           = null,
                                              NetworkPath?                  NetworkPath           = null,
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                           JObject                                                      JSON,
                                                           SourceRouting                                            Destination,
                                                           NetworkPath                                                  NetworkPath,
-                                                          DateTime?                                                    ResponseTimestamp                           = null,
+                                                          DateTimeOffset?                                              ResponseTimestamp                           = null,
                                                           CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null,
                                                           CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
                                                           CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                                  NetworkPath,
                                        [NotNullWhen(true)]  out DeleteSignaturePolicyResponse?      DeleteSignaturePolicyResponse,
                                        [NotNullWhen(false)] out String?                             ErrorResponse,
-                                       DateTime?                                                    ResponseTimestamp                           = null,
+                                       DateTimeOffset?                                              ResponseTimestamp                           = null,
                                        CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?  CustomDeleteSignaturePolicyResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?                     CustomStatusInfoParser                      = null,
                                        CustomJObjectParserDelegate<Signature>?                      CustomSignatureParser                       = null,
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                  ResultCode                    ErrorCode,
                                                                  String?                       ErrorDescription    = null,
                                                                  JObject?                      ErrorDetails        = null,
-                                                                 DateTime?                     ResponseTimestamp   = null,
+                                                                 DateTimeOffset?               ResponseTimestamp   = null,
 
                                                                  SourceRouting?                Destination         = null,
                                                                  NetworkPath?                  NetworkPath         = null,

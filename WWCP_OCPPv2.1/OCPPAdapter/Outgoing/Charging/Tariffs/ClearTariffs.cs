@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnClearTariffsRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnClearTariffsRequestSentDelegate(DateTimeOffset          Timestamp,
                                                            IEventSender            Sender,
                                                            IWebSocketConnection?   Connection,
                                                            ClearTariffsRequest     Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearTariffsResponseSentDelegate(DateTime                Timestamp,
+        OnClearTariffsResponseSentDelegate(DateTimeOffset          Timestamp,
                                            IEventSender            Sender,
                                            IWebSocketConnection?   Connection,
                                            ClearTariffsRequest?    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearTariffsRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnClearTariffsRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                IEventSender                   Sender,
                                                IWebSocketConnection?          Connection,
                                                ClearTariffsRequest?           Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearTariffsResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnClearTariffsResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                 IEventSender                    Sender,
                                                 IWebSocketConnection?           Connection,
                                                 ClearTariffsRequest?            Request,
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearTariffsResponseSentDelegate?  OnClearTariffsResponseSent;
 
 
-        public Task SendOnClearTariffsResponseSent(DateTime               Timestamp,
+        public Task SendOnClearTariffsResponseSent(DateTimeOffset         Timestamp,
                                                    IEventSender           Sender,
                                                    IWebSocketConnection?  Connection,
                                                    ClearTariffsRequest    Request,
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearTariffsRequestErrorSentDelegate? OnClearTariffsRequestErrorSent;
 
 
-        public Task SendOnClearTariffsRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnClearTariffsRequestErrorSent(DateTimeOffset                Timestamp,
                                                        IEventSender                  Sender,
                                                        IWebSocketConnection?         Connection,
                                                        ClearTariffsRequest?          Request,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearTariffsResponseErrorSentDelegate? OnClearTariffsResponseErrorSent;
 
 
-        public Task SendOnClearTariffsResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnClearTariffsResponseErrorSent(DateTimeOffset                 Timestamp,
                                                         IEventSender                   Sender,
                                                         IWebSocketConnection?          Connection,
                                                         ClearTariffsRequest?           Request,

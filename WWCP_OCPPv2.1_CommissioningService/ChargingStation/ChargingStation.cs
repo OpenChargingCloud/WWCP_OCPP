@@ -119,14 +119,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
             public ChargingProfile    ChargingProfile          { get; set; }
 
 
-            public DateTime           StartTimestamp           { get; set; }
+            public DateTimeOffset     StartTimestamp           { get; set; }
 
             public UInt64             MeterStartValue          { get; set; }
 
             public String             SignedStartMeterValue    { get; set; }
 
 
-            public DateTime           StopTimestamp            { get; set; }
+            public DateTimeOffset     StopTimestamp            { get; set; }
 
             public UInt64             MeterStopValue           { get; set; }
 
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
         /// <summary>
         /// The time at the central system.
         /// </summary>
-        public DateTime?                CSMSTime           { get; private set; }
+        public DateTimeOffset?          CSMSTime           { get; private set; }
 
         /// <summary>
         /// The default request timeout for all requests.
@@ -677,7 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                          IEnumerable<AttachedFile>?                  AttachedFiles                       = default,
                          JSONLDContext?                              JSONLDContext                       = default,
                          String?                                     DataSource                          = default,
-                         DateTime?                                   LastChange                          = default)
+                         DateTimeOffset?                             LastChange                          = default)
 
             : base(Id,
                    JSONLDContext ?? DefaultJSONLDContext,
@@ -1158,7 +1158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
             /// <summary>
             /// The time at the central system.
             /// </summary>
-            public DateTime?                CSMSTime           { get; set; }
+            public DateTimeOffset?          CSMSTime           { get; set; }
 
 
 
@@ -1438,8 +1438,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                            IEnumerable<AttachedFile>?                         AttachedFiles                             = null,
                            JSONLDContext?                                     JSONLDContext                             = null,
                            String?                                            DataSource                                = null,
-                           DateTime?                                          Created                                   = null,
-                           DateTime?                                          LastChange                                = null)
+                           DateTimeOffset?                                    Created                                   = null,
+                           DateTimeOffset?                                    LastChange                                = null)
 
                 : base(Id,
                        JSONLDContext ?? DefaultJSONLDContext,

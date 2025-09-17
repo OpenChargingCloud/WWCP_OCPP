@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnListDirectoryRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnListDirectoryRequestSentDelegate(DateTimeOffset          Timestamp,
                                                             IEventSender            Sender,
                                                             IWebSocketConnection?   Connection,
                                                             ListDirectoryRequest    Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnListDirectoryResponseSentDelegate(DateTime                Timestamp,
+        OnListDirectoryResponseSentDelegate(DateTimeOffset          Timestamp,
                                             IEventSender            Sender,
                                             IWebSocketConnection?   Connection,
                                             ListDirectoryRequest    Request,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnListDirectoryRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnListDirectoryRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                 IEventSender                   Sender,
                                                 IWebSocketConnection?          Connection,
                                                 ListDirectoryRequest?          Request,
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnListDirectoryResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnListDirectoryResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                  IEventSender                    Sender,
                                                  IWebSocketConnection?           Connection,
                                                  ListDirectoryRequest?           Request,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnListDirectoryResponseSentDelegate?  OnListDirectoryResponseSent;
 
-        public Task SendOnListDirectoryResponseSent(DateTime               Timestamp,
+        public Task SendOnListDirectoryResponseSent(DateTimeOffset         Timestamp,
                                                     IEventSender           Sender,
                                                     IWebSocketConnection?  Connection,
                                                     ListDirectoryRequest   Request,
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnListDirectoryRequestErrorSentDelegate? OnListDirectoryRequestErrorSent;
 
 
-        public Task SendOnListDirectoryRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnListDirectoryRequestErrorSent(DateTimeOffset                Timestamp,
                                                         IEventSender                  Sender,
                                                         IWebSocketConnection?         Connection,
                                                         ListDirectoryRequest?         Request,
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnListDirectoryResponseErrorSentDelegate? OnListDirectoryResponseErrorSent;
 
 
-        public Task SendOnListDirectoryResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnListDirectoryResponseErrorSent(DateTimeOffset                 Timestamp,
                                                          IEventSender                   Sender,
                                                          IWebSocketConnection?          Connection,
                                                          ListDirectoryRequest?          Request,

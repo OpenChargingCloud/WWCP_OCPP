@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnExtendedTriggerMessageRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnExtendedTriggerMessageRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                ExtendedTriggerMessageRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnExtendedTriggerMessageResponseSentDelegate(DateTime                   Timestamp,
+        OnExtendedTriggerMessageResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                ExtendedTriggerMessageRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnExtendedTriggerMessageRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnExtendedTriggerMessageRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    ExtendedTriggerMessageRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnExtendedTriggerMessageResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnExtendedTriggerMessageResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     ExtendedTriggerMessageRequest?        Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnExtendedTriggerMessageResponseSentDelegate?  OnExtendedTriggerMessageResponseSent;
 
-        public Task SendOnExtendedTriggerMessageResponseSent(DateTime                   Timestamp,
+        public Task SendOnExtendedTriggerMessageResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        ExtendedTriggerMessageRequest    Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnExtendedTriggerMessageRequestErrorSentDelegate? OnExtendedTriggerMessageRequestErrorSent;
 
 
-        public Task SendOnExtendedTriggerMessageRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnExtendedTriggerMessageRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            ExtendedTriggerMessageRequest?      Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnExtendedTriggerMessageResponseErrorSentDelegate? OnExtendedTriggerMessageResponseErrorSent;
 
 
-        public Task SendOnExtendedTriggerMessageResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnExtendedTriggerMessageResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             ExtendedTriggerMessageRequest?       Request,

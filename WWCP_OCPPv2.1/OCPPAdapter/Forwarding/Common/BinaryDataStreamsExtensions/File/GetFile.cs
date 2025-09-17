@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<GetFileRequest, GetFileResponse>>
 
-        OnGetFileRequestFilterDelegate(DateTime               Timestamp,
+        OnGetFileRequestFilterDelegate(DateTimeOffset         Timestamp,
                                        IEventSender           Sender,
                                        IWebSocketConnection   Connection,
                                        GetFileRequest         Request,
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnGetFileRequestFilteredDelegate(DateTime                                              Timestamp,
+        OnGetFileRequestFilteredDelegate(DateTimeOffset                                        Timestamp,
                                          IEventSender                                          Sender,
                                          IWebSocketConnection                                  Connection,
                                          GetFileRequest                                        Request,

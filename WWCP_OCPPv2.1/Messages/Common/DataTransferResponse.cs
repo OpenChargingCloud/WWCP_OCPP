@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                     StatusInfo?              StatusInfo            = null,
 
                                     Result?                  Result                = null,
-                                    DateTime?                ResponseTimestamp     = null,
+                                    DateTimeOffset?          ResponseTimestamp     = null,
 
                                     SourceRouting?           Destination           = null,
                                     NetworkPath?             NetworkPath           = null,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                  JObject                                             JSON,
                                                  SourceRouting                                       Destination,
                                                  NetworkPath                                         NetworkPath,
-                                                 DateTime?                                           ResponseTimestamp                 = null,
+                                                 DateTimeOffset?                                     ResponseTimestamp                 = null,
                                                  CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null,
                                                  CustomJObjectParserDelegate<StatusInfo>?            CustomStatusInfoParser            = null,
                                                  CustomJObjectParserDelegate<Signature>?             CustomSignatureParser             = null,
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        NetworkPath                                         NetworkPath,
                                        [NotNullWhen(true)]  out DataTransferResponse?      DataTransferResponse,
                                        [NotNullWhen(false)] out String?                    ErrorResponse,
-                                       DateTime?                                           ResponseTimestamp                  = null,
+                                       DateTimeOffset?                                     ResponseTimestamp                  = null,
                                        CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?            CustomStatusInfoParser             = null,
                                        CustomJObjectParserDelegate<Signature>?             CustomSignatureParser              = null,
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         ResultCode               ErrorCode,
                                                         String?                  ErrorDescription    = null,
                                                         JObject?                 ErrorDetails        = null,
-                                                        DateTime?                ResponseTimestamp   = null,
+                                                        DateTimeOffset?          ResponseTimestamp   = null,
 
                                                         SourceRouting?           Destination         = null,
                                                         NetworkPath?             NetworkPath         = null,

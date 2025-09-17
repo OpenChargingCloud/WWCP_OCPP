@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Payload">A JSON response message payload.</param>
     /// <param name="CancellationToken">The cancellation token.</param>
-    public class OCPP_JSONResponseMessage(DateTime           ResponseTimestamp,
+    public class OCPP_JSONResponseMessage(DateTimeOffset     ResponseTimestamp,
                                           EventTracking_Id   EventTrackingId,
                                           NetworkingMode     NetworkingMode,
                                           SourceRouting      Destination,
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// The response time stamp.
         /// </summary>
-        public DateTime           ResponseTimestamp    { get; }      = ResponseTimestamp;
+        public DateTimeOffset     ResponseTimestamp    { get; }      = ResponseTimestamp;
 
         /// <summary>
         /// The event tracking identification.

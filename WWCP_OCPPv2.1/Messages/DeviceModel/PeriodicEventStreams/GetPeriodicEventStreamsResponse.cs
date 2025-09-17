@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                GenericStatus?                    Status               = null,
                                                StatusInfo?                       StatusInfo           = null,
                                                IEnumerable<ConstantStreamData>?  ConstantStreamData   = null,
-                                               DateTime?                         ResponseTimestamp    = null,
+                                               DateTimeOffset?                   ResponseTimestamp    = null,
 
                                                IEnumerable<KeyPair>?             SignKeys             = null,
                                                IEnumerable<SignInfo>?            SignInfos            = null,

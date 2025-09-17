@@ -33,13 +33,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     public class ResponseInfo(Request_Id         RequestId,
                               JSONLDContext      RequestContext,
                               NetworkingNode_Id  SourceNodeId,
-                              DateTime           Timeout)
+                              DateTimeOffset     Timeout)
     {
 
         public Request_Id         RequestId         { get; } = RequestId;
         public JSONLDContext      RequestContext    { get; } = RequestContext;
         public NetworkingNode_Id  SourceNodeId      { get; } = SourceNodeId;
-        public DateTime           Timeout           { get; } = Timeout;
+        public DateTimeOffset     Timeout           { get; } = Timeout;
 
 
     }

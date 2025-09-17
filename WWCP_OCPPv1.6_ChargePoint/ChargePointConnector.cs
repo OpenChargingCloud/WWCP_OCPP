@@ -70,14 +70,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public ChargingProfile?  ChargingProfile          { get; set; }
 
 
-        public DateTime          StartTimestamp           { get; set; }
+        public DateTimeOffset    StartTimestamp           { get; set; }
 
         public UInt64            MeterStartValue          { get; set; }
 
         public String?           SignedStartMeterValue    { get; set; }
 
 
-        public DateTime          StopTimestamp            { get; set; }
+        public DateTimeOffset    StopTimestamp            { get; set; }
 
         public UInt64            MeterStopValue           { get; set; }
 

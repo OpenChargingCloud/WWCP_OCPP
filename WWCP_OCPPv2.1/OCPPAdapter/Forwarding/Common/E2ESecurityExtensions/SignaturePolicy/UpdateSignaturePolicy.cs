@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<UpdateSignaturePolicyRequest, UpdateSignaturePolicyResponse>>
 
-        OnUpdateSignaturePolicyRequestFilterDelegate(DateTime                       Timestamp,
+        OnUpdateSignaturePolicyRequestFilterDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection           Connection,
                                                      UpdateSignaturePolicyRequest   Request,
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnUpdateSignaturePolicyRequestFilteredDelegate(DateTime                                                                          Timestamp,
+        OnUpdateSignaturePolicyRequestFilteredDelegate(DateTimeOffset                                                                    Timestamp,
                                                        IEventSender                                                                      Sender,
                                                        IWebSocketConnection                                                              Connection,
                                                        UpdateSignaturePolicyRequest                                                      Request,

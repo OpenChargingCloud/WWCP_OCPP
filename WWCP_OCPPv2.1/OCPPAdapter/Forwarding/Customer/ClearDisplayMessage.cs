@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<ClearDisplayMessageRequest, ClearDisplayMessageResponse>>
 
-        OnClearDisplayMessageRequestFilterDelegate(DateTime                     Timestamp,
+        OnClearDisplayMessageRequestFilterDelegate(DateTimeOffset               Timestamp,
                                                    IEventSender                 Sender,
                                                    IWebSocketConnection         Connection,
                                                    ClearDisplayMessageRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnClearDisplayMessageRequestFilteredDelegate(DateTime                                                                      Timestamp,
+        OnClearDisplayMessageRequestFilteredDelegate(DateTimeOffset                                                                Timestamp,
                                                      IEventSender                                                                  Sender,
                                                      IWebSocketConnection                                                          Connection,
                                                      ClearDisplayMessageRequest                                                    Request,

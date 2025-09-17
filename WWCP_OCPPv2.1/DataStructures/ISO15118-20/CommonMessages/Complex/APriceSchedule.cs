@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// The time anchor of the price schedule.
         /// </summary>
         [Mandatory]
-        public DateTime          TimeAnchor     { get; }
+        public DateTimeOffset    TimeAnchor     { get; }
 
         /// <summary>
         /// The description of the price schedule.
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="TimeAnchor">A time anchor of the price schedule.</param>
         /// <param name="Description">An optional description of the price schedule.</param>
         public APriceSchedule(PriceSchedule_Id  Id,
-                              DateTime          TimeAnchor,
+                              DateTimeOffset    TimeAnchor,
                               String?           Description   = null)
         {
 

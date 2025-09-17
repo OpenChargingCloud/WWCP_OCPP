@@ -43,7 +43,7 @@
 //    /// <param name="Request">The request.</param>
 //    /// <param name="SentMessageResult">The result of the send message process.</param>
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
-//    public delegate Task OnGetCRLRequestSentDelegate(DateTime                Timestamp,
+//    public delegate Task OnGetCRLRequestSentDelegate(DateTimeOffset          Timestamp,
 //                                                     IEventSender            Sender,
 //                                                     IWebSocketConnection?   Connection,
 //                                                     GetCRLRequest           Request,
@@ -64,7 +64,7 @@
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
 //    public delegate Task
 
-//        OnGetCRLResponseSentDelegate(DateTime                Timestamp,
+//        OnGetCRLResponseSentDelegate(DateTimeOffset          Timestamp,
 //                                     IEventSender            Sender,
 //                                     IWebSocketConnection?   Connection,
 //                                     GetCRLRequest           Request,
@@ -87,7 +87,7 @@
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
 //    public delegate Task
 
-//        OnGetCRLRequestErrorSentDelegate(DateTime                       Timestamp,
+//        OnGetCRLRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
 //                                         IEventSender                   Sender,
 //                                         IWebSocketConnection?          Connection,
 //                                         GetCRLRequest?                 Request,
@@ -111,7 +111,7 @@
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
 //    public delegate Task
 
-//        OnGetCRLResponseErrorSentDelegate(DateTime                        Timestamp,
+//        OnGetCRLResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
 //                                          IEventSender                    Sender,
 //                                          IWebSocketConnection?           Connection,
 //                                          GetCRLRequest?                  Request,
@@ -268,7 +268,7 @@
 //        /// </summary>
 //        public event OnGetCRLResponseSentDelegate?  OnGetCRLResponseSent;
 
-//        public Task SendOnGetCRLResponseSent(DateTime              Timestamp,
+//        public Task SendOnGetCRLResponseSent(DateTimeOffset        Timestamp,
 //                                             IEventSender          Sender,
 //                                             IWebSocketConnection? Connection,
 //                                             GetCRLRequest         Request,
@@ -301,7 +301,7 @@
 //        public event OnGetCRLRequestErrorSentDelegate? OnGetCRLRequestErrorSent;
 
 
-//        public Task SendOnGetCRLRequestErrorSent(DateTime                      Timestamp,
+//        public Task SendOnGetCRLRequestErrorSent(DateTimeOffset                Timestamp,
 //                                                 IEventSender                  Sender,
 //                                                 IWebSocketConnection?         Connection,
 //                                                 GetCRLRequest?                Request,
@@ -334,7 +334,7 @@
 //        public event OnGetCRLResponseErrorSentDelegate? OnGetCRLResponseErrorSent;
 
 
-//        public Task SendOnGetCRLResponseErrorSent(DateTime                       Timestamp,
+//        public Task SendOnGetCRLResponseErrorSent(DateTimeOffset                 Timestamp,
 //                                                  IEventSender                   Sender,
 //                                                  IWebSocketConnection?          Connection,
 //                                                  GetCRLRequest?                 Request,

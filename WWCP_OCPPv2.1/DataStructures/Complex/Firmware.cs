@@ -42,31 +42,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The URL where to download the firmware.
         /// </summary>
         [Mandatory]
-        public URL        FirmwareURL           { get; }
+        public URL              FirmwareURL           { get; }
 
         /// <summary>
         /// The timestamp at which the charging station shall retrieve the firmware image.
         /// </summary>
         [Mandatory]
-        public DateTime   RetrieveTimestamp     { get; }
+        public DateTimeOffset   RetrieveTimestamp     { get; }
 
         /// <summary>
         /// The timestamp at which the charging station shall installed the firmware image.
         /// </summary>
         [Optional]
-        public DateTime?  InstallTimestamp      { get; }
+        public DateTimeOffset?  InstallTimestamp      { get; }
 
         /// <summary>
         /// The optional PEM encoded X.509 firmware signing certificate.
         /// [max 5500]
         /// </summary>
-        public String?    SigningCertificate    { get; }
+        public String?          SigningCertificate    { get; }
 
         /// <summary>
         /// The optional base64 encoded firmware signature.
         /// [max 800]
         /// </summary>
-        public String?    Signature             { get; }
+        public String?          Signature             { get; }
 
         #endregion
 
@@ -81,12 +81,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SigningCertificate">The optional PEM encoded X.509 firmware signing certificate.</param>
         /// <param name="Signature">The optional base64 encoded firmware signature.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public Firmware(URL          FirmwareURL,
-                        DateTime     RetrieveTimestamp,
-                        DateTime?    InstallTimestamp     = null,
-                        String?      SigningCertificate   = null,
-                        String?      Signature            = null,
-                        CustomData?  CustomData           = null)
+        public Firmware(URL              FirmwareURL,
+                        DateTimeOffset   RetrieveTimestamp,
+                        DateTimeOffset?  InstallTimestamp     = null,
+                        String?          SigningCertificate   = null,
+                        String?          Signature            = null,
+                        CustomData?      CustomData           = null)
 
             : base(CustomData)
 

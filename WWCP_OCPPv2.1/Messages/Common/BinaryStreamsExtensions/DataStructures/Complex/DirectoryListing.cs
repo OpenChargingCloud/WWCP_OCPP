@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDirectoryListingSerializer">A delegate to serialize custom directory listings.</param>
-        /// <param name="CustomFileInformationSerializer">A delegate to serialize file informations.</param>
+        /// <param name="CustomFileInformationSerializer">A delegate to serialize file information.</param>
         public JToken ToJSON(Boolean?                                            IncludeMetadata                    = null,
                              CustomJObjectSerializerDelegate<DirectoryListing>?  CustomDirectoryListingSerializer   = null,
                              CustomJObjectSerializerDelegate<FileInformation>?   CustomFileInformationSerializer    = null)

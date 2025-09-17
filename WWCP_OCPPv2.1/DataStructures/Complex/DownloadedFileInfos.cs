@@ -18,30 +18,30 @@
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public delegate Task FileDownloadedDelegate   (DateTime             Timestamp,
+    public delegate Task FileDownloadedDelegate   (DateTimeOffset       Timestamp,
                                                    DownloadedFileInfos  DownloadedFileInfo,
                                                    CancellationToken    CancellationToken);
 
-    public delegate Task DownloadErrorDelegate    (DateTime             Timestamp,
+    public delegate Task DownloadErrorDelegate    (DateTimeOffset       Timestamp,
                                                    String               Module,
                                                    String               Caller,
                                                    String               ErrorResponse,
                                                    CancellationToken    CancellationToken);
 
-    public delegate Task DownloadExceptionDelegate(DateTime             Timestamp,
+    public delegate Task DownloadExceptionDelegate(DateTimeOffset       Timestamp,
                                                    String               Module,
                                                    String               Caller,
                                                    Exception            ExceptionOccurred,
                                                    CancellationToken    CancellationToken);
 
 
-    public class DownloadedFileInfos(String    FileName,
-                                     UInt64    FileSize,
-                                     DateTime  DownloadTimestamp)
+    public class DownloadedFileInfos(String          FileName,
+                                     UInt64          FileSize,
+                                     DateTimeOffset  DownloadTimestamp)
     {
-        public String    FileName             { get; } = FileName;
-        public UInt64    FileSize             { get; } = FileSize;
-        public DateTime  DownloadTimestamp    { get; } = DownloadTimestamp;
+        public String          FileName             { get; } = FileName;
+        public UInt64          FileSize             { get; } = FileSize;
+        public DateTimeOffset  DownloadTimestamp    { get; } = DownloadTimestamp;
 
     }
 

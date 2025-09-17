@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ClosePeriodicEventStreamResponse(ClosePeriodicEventStreamRequest  Request,
                                                 StatusInfo?                      StatusInfo          = null,
-                                                DateTime?                        ResponseTimestamp   = null,
+                                                DateTimeOffset?                  ResponseTimestamp   = null,
 
                                                 IEnumerable<KeyPair>?            SignKeys            = null,
                                                 IEnumerable<SignInfo>?           SignInfos           = null,

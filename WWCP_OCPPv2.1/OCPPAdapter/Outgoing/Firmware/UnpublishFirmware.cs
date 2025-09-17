@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnUnpublishFirmwareRequestSentDelegate(DateTime                   Timestamp,
+    public delegate Task OnUnpublishFirmwareRequestSentDelegate(DateTimeOffset             Timestamp,
                                                                 IEventSender               Sender,
                                                                 IWebSocketConnection?     Connection,
                                                                 UnpublishFirmwareRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUnpublishFirmwareResponseSentDelegate(DateTime                    Timestamp,
+        OnUnpublishFirmwareResponseSentDelegate(DateTimeOffset              Timestamp,
                                                 IEventSender                Sender,
                                                 IWebSocketConnection?       Connection,
                                                 UnpublishFirmwareRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUnpublishFirmwareRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnUnpublishFirmwareRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                     IEventSender                   Sender,
                                                     IWebSocketConnection?          Connection,
                                                     UnpublishFirmwareRequest?      Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnUnpublishFirmwareResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnUnpublishFirmwareResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                      IEventSender                    Sender,
                                                      IWebSocketConnection?           Connection,
                                                      UnpublishFirmwareRequest?       Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnUnpublishFirmwareResponseSentDelegate?  OnUnpublishFirmwareResponseSent;
 
-        public Task SendOnUnpublishFirmwareResponseSent(DateTime                    Timestamp,
+        public Task SendOnUnpublishFirmwareResponseSent(DateTimeOffset              Timestamp,
                                                         IEventSender                Sender,
                                                         IWebSocketConnection?       Connection,
                                                         UnpublishFirmwareRequest    Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnUnpublishFirmwareRequestErrorSentDelegate? OnUnpublishFirmwareRequestErrorSent;
 
 
-        public Task SendOnUnpublishFirmwareRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnUnpublishFirmwareRequestErrorSent(DateTimeOffset                Timestamp,
                                                             IEventSender                  Sender,
                                                             IWebSocketConnection?         Connection,
                                                             UnpublishFirmwareRequest?     Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnUnpublishFirmwareResponseErrorSentDelegate? OnUnpublishFirmwareResponseErrorSent;
 
 
-        public Task SendOnUnpublishFirmwareResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnUnpublishFirmwareResponseErrorSent(DateTimeOffset                 Timestamp,
                                                              IEventSender                   Sender,
                                                              IWebSocketConnection?          Connection,
                                                              UnpublishFirmwareRequest?      Request,

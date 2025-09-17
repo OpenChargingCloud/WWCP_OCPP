@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnCostUpdatedRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnCostUpdatedRequestSentDelegate(DateTimeOffset          Timestamp,
                                                           IEventSender            Sender,
                                                           IWebSocketConnection?   Connection,
                                                           CostUpdatedRequest      Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnCostUpdatedResponseSentDelegate(DateTime               Timestamp,
+        OnCostUpdatedResponseSentDelegate(DateTimeOffset         Timestamp,
                                           IEventSender           Sender,
                                           IWebSocketConnection?  Connection,
                                           CostUpdatedRequest     Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnCostUpdatedRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnCostUpdatedRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                               IEventSender                   Sender,
                                               IWebSocketConnection?          Connection,
                                               CostUpdatedRequest?            Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnCostUpdatedResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnCostUpdatedResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                IEventSender                    Sender,
                                                IWebSocketConnection?           Connection,
                                                CostUpdatedRequest?             Request,
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnCostUpdatedResponseSentDelegate?  OnCostUpdatedResponseSent;
 
-        public Task SendOnCostUpdatedResponseSent(DateTime              Timestamp,
+        public Task SendOnCostUpdatedResponseSent(DateTimeOffset        Timestamp,
                                                   IEventSender          Sender,
                                                   IWebSocketConnection? Connection,
                                                   CostUpdatedRequest    Request,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnCostUpdatedRequestErrorSentDelegate? OnCostUpdatedRequestErrorSent;
 
 
-        public Task SendOnCostUpdatedRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnCostUpdatedRequestErrorSent(DateTimeOffset                Timestamp,
                                                       IEventSender                  Sender,
                                                       IWebSocketConnection?         Connection,
                                                       CostUpdatedRequest?           Request,
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnCostUpdatedResponseErrorSentDelegate? OnCostUpdatedResponseErrorSent;
 
 
-        public Task SendOnCostUpdatedResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnCostUpdatedResponseErrorSent(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
                                                        IWebSocketConnection?          Connection,
                                                        CostUpdatedRequest?            Request,

@@ -645,34 +645,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// <param name="MeterPublicKey">An optional public key of the main power meter of the charge point.</param>
         /// 
         /// <param name="ExpectHeartbeatEvery">The time span between expected heartbeat.</param>
-        public ChargePoint(ChargePoint_Id                                Id,
-                         Byte                                        NumberOfConnectors,
-                         String                                      ChargePointVendor,
-                         String                                      ChargePointModel,
+        public ChargePoint(ChargePoint_Id                              Id,
+                           Byte                                        NumberOfConnectors,
+                           String                                      ChargePointVendor,
+                           String                                      ChargePointModel,
 
-                         I18NString?                                 Description                         = null,
-                         String?                                     ChargePointSerialNumber             = null,
-                         //String?                                     ChargePointSerialNumber               = null,
-                         String?                                     FirmwareVersion                     = null,
-                         String?                                     Iccid                               = null,
-                         String?                                     IMSI                                = null,
-                         String?                                     MeterType                           = null,
-                         String?                                     MeterSerialNumber                   = null,
-                         String?                                     MeterPublicKey                      = null,
+                           I18NString?                                 Description                         = null,
+                           String?                                     ChargePointSerialNumber             = null,
+                           //String?                                     ChargePointSerialNumber               = null,
+                           String?                                     FirmwareVersion                     = null,
+                           String?                                     Iccid                               = null,
+                           String?                                     IMSI                                = null,
+                           String?                                     MeterType                           = null,
+                           String?                                     MeterSerialNumber                   = null,
+                           String?                                     MeterPublicKey                      = null,
 
-                         TimeSpan?                                   ExpectHeartbeatEvery                = null,
+                           TimeSpan?                                   ExpectHeartbeatEvery                = null,
 
-                         IEnumerable<ANotification>?                 Notifications                       = null,
+                           IEnumerable<ANotification>?                 Notifications                       = null,
 
-                         //IEnumerable<Organization2ChargePointEdge>?    Organization2ChargePointEdges         = null,
-                         IEnumerable<ChargePoint2ChargePointEdge>?       ChargePoint2ChargePointInEdges          = null,
-                         IEnumerable<ChargePoint2ChargePointEdge>?       ChargePoint2ChargePointOutEdges         = null,
+                           //IEnumerable<Organization2ChargePointEdge>?    Organization2ChargePointEdges         = null,
+                           IEnumerable<ChargePoint2ChargePointEdge>?       ChargePoint2ChargePointInEdges          = null,
+                           IEnumerable<ChargePoint2ChargePointEdge>?       ChargePoint2ChargePointOutEdges         = null,
 
-                         JObject?                                    CustomData                          = default,
-                         IEnumerable<AttachedFile>?                  AttachedFiles                       = default,
-                         JSONLDContext?                              JSONLDContext                       = default,
-                         String?                                     DataSource                          = default,
-                         DateTime?                                   LastChange                          = default)
+                           JObject?                                    CustomData                          = default,
+                           IEnumerable<AttachedFile>?                  AttachedFiles                       = default,
+                           JSONLDContext?                              JSONLDContext                       = default,
+                           String?                                     DataSource                          = default,
+                           DateTimeOffset?                             LastChange                          = default)
 
             : base(Id,
                    JSONLDContext ?? DefaultJSONLDContext,
@@ -1432,8 +1432,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                            IEnumerable<AttachedFile>?                 AttachedFiles                     = null,
                            JSONLDContext?                             JSONLDContext                     = null,
                            String?                                    DataSource                        = null,
-                           DateTime?                                  Created                           = null,
-                           DateTime?                                  LastChange                        = null)
+                           DateTimeOffset?                            Created                           = null,
+                           DateTimeOffset?                            LastChange                        = null)
 
                 : base(Id,
                        JSONLDContext ?? DefaultJSONLDContext,
@@ -1623,34 +1623,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     //if (!Branch.HasValue || Branch.Value.IsNullOrEmpty)
                     //    throw new ArgumentNullException(nameof(Branch), "The given branch must not be null or empty!");
 
-                    return new ChargePoint(Id,
-                                         1,
-                                         ChargePointVendor,
-                                         ChargePointModel,
+                    return new ChargePoint(
 
-                                         Description,
-                                         ChargePointSerialNumber,
-                                         //ChargePointSerialNumber,
-                                         FirmwareVersion,
-                                         Iccid,
-                                         IMSI,
-                                         MeterType,
-                                         MeterSerialNumber,
-                                         MeterPublicKey,
+                               Id,
+                               1,
+                               ChargePointVendor,
+                               ChargePointModel,
 
-                                         ExpectHeartbeatEvery,
+                               Description,
+                               ChargePointSerialNumber,
+                               //ChargePointSerialNumber,
+                               FirmwareVersion,
+                               Iccid,
+                               IMSI,
+                               MeterType,
+                               MeterSerialNumber,
+                               MeterPublicKey,
 
-                                                          _Notifications,
+                               ExpectHeartbeatEvery,
 
-                                                          //_User2ChargePoint_Edges,
-                                                          _ChargePoint2ChargePoint_InEdges,
-                                                          _ChargePoint2ChargePoint_OutEdges,
+                               _Notifications,
 
-                                                          CustomData,
-                                                          AttachedFiles,
-                                                          JSONLDContext,
-                                                          DataSource,
-                                                          LastChangeDate);
+                               //_User2ChargePoint_Edges,
+                               _ChargePoint2ChargePoint_InEdges,
+                               _ChargePoint2ChargePoint_OutEdges,
+
+                               CustomData,
+                               AttachedFiles,
+                               JSONLDContext,
+                               DataSource,
+                               LastChangeDate
+
+                           );
 
                 }
             }

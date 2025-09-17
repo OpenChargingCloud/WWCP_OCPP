@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                   CSMSTime                          { get; set; } = Timestamp.Now;
+        public DateTimeOffset?             CSMSTime                          { get; set; } = Timestamp.Now;
 
 
         //public HTTPAPI?                    HTTPAPI                           { get; }
@@ -2013,7 +2013,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
         /// <param name="ChargeBox">The added charge box.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxAddedDelegate(DateTime           Timestamp,
+        public delegate Task OnChargeBoxAddedDelegate(DateTimeOffset     Timestamp,
                                                       ChargeBox          ChargeBox,
                                                       EventTracking_Id?  EventTrackingId   = null,
                                                       User_Id?           CurrentUserId     = null);
@@ -2679,7 +2679,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
         /// <param name="OldChargeBox">The old charge box.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxUpdatedDelegate(DateTime              Timestamp,
+        public delegate Task OnChargeBoxUpdatedDelegate(DateTimeOffset        Timestamp,
                                                         ChargeBox             ChargeBox,
                                                         ChargeBox             OldChargeBox,
                                                         ChargeBoxAccessTypes  ChargeBoxAccessType,
@@ -3032,7 +3032,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
         /// <param name="ChargeBox">The chargeBox to be deleted.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxDeletedDelegate(DateTime           Timestamp,
+        public delegate Task OnChargeBoxDeletedDelegate(DateTimeOffset     Timestamp,
                                                         ChargeBox          ChargeBox,
                                                         EventTracking_Id?  EventTrackingId   = null,
                                                         User_Id?           CurrentUserId     = null);

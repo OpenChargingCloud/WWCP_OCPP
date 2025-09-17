@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
+        public DateTimeOffset?             CSMSTime                   { get; set; } = Timestamp.Now;
 
 
 

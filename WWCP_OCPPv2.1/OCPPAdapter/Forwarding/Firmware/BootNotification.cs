@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>>
 
-        OnBootNotificationRequestFilterDelegate(DateTime                  Timestamp,
+        OnBootNotificationRequestFilterDelegate(DateTimeOffset            Timestamp,
                                                 IEventSender              Sender,
                                                 IWebSocketConnection      Connection,
                                                 BootNotificationRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnBootNotificationRequestFilteredDelegate(DateTime                                                                Timestamp,
+        OnBootNotificationRequestFilteredDelegate(DateTimeOffset                                                          Timestamp,
                                                   IEventSender                                                            Sender,
                                                   IWebSocketConnection                                                    Connection,
                                                   BootNotificationRequest                                                 Request,

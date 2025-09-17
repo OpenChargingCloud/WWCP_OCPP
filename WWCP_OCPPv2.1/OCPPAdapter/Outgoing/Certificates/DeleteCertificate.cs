@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnDeleteCertificateRequestSentDelegate(DateTime                   Timestamp,
+    public delegate Task OnDeleteCertificateRequestSentDelegate(DateTimeOffset             Timestamp,
                                                                 IEventSender               Sender,
                                                                 IWebSocketConnection?      Connection,
                                                                 DeleteCertificateRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnDeleteCertificateResponseSentDelegate(DateTime                    Timestamp,
+        OnDeleteCertificateResponseSentDelegate(DateTimeOffset              Timestamp,
                                                 IEventSender                Sender,
                                                 IWebSocketConnection?       Connection,
                                                 DeleteCertificateRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnDeleteCertificateRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnDeleteCertificateRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                     IEventSender                   Sender,
                                                     IWebSocketConnection?          Connection,
                                                     DeleteCertificateRequest?      Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnDeleteCertificateResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnDeleteCertificateResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                      IEventSender                    Sender,
                                                      IWebSocketConnection?           Connection,
                                                      DeleteCertificateRequest?       Request,
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnDeleteCertificateResponseSentDelegate?  OnDeleteCertificateResponseSent;
 
-        public Task SendOnDeleteCertificateResponseSent(DateTime                   Timestamp,
+        public Task SendOnDeleteCertificateResponseSent(DateTimeOffset             Timestamp,
                                                         IEventSender               Sender,
                                                         IWebSocketConnection?      Connection,
                                                         DeleteCertificateRequest   Request,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnDeleteCertificateRequestErrorSentDelegate? OnDeleteCertificateRequestErrorSent;
 
 
-        public Task SendOnDeleteCertificateRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnDeleteCertificateRequestErrorSent(DateTimeOffset                Timestamp,
                                                             IEventSender                  Sender,
                                                             IWebSocketConnection?         Connection,
                                                             DeleteCertificateRequest?     Request,
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnDeleteCertificateResponseErrorSentDelegate? OnDeleteCertificateResponseErrorSent;
 
 
-        public Task SendOnDeleteCertificateResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnDeleteCertificateResponseErrorSent(DateTimeOffset                 Timestamp,
                                                              IEventSender                   Sender,
                                                              IWebSocketConnection?          Connection,
                                                              DeleteCertificateRequest?      Request,

@@ -28,8 +28,8 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
     {
         String                                 Id                          { get; }
         String                                 Context                     { get; }
-        DateTime                               Begin                       { get; }
-        DateTime                               End                         { get; }
+        DateTimeOffset                       Begin                       { get; }
+        DateTimeOffset                       End                         { get; }
         I18NString                             Description                 { get; }
         IContract                              Contract                    { get; }
         IEnumerable<IChargingStationOperator>  ChargingStationOperators    { get; }

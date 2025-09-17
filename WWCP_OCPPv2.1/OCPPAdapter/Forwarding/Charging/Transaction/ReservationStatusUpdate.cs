@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<ReservationStatusUpdateRequest, ReservationStatusUpdateResponse>>
 
-        OnReservationStatusUpdateRequestFilterDelegate(DateTime                         Timestamp,
+        OnReservationStatusUpdateRequestFilterDelegate(DateTimeOffset                   Timestamp,
                                                        IEventSender                     Sender,
                                                        IWebSocketConnection             Connection,
                                                        ReservationStatusUpdateRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnReservationStatusUpdateRequestFilteredDelegate(DateTime                                                                              Timestamp,
+        OnReservationStatusUpdateRequestFilteredDelegate(DateTimeOffset                                                                        Timestamp,
                                                          IEventSender                                                                          Sender,
                                                          IWebSocketConnection                                                                  Connection,
                                                          ReservationStatusUpdateRequest                                                        Request,

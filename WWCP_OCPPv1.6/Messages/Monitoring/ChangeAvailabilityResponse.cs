@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                           AvailabilityStatus         Status,
 
                                           Result?                    Result                = null,
-                                          DateTime?                  ResponseTimestamp     = null,
+                                          DateTimeOffset?            ResponseTimestamp     = null,
 
                                           SourceRouting?             Destination           = null,
                                           NetworkPath?               NetworkPath           = null,
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                        JObject                                                   JSON,
                                                        SourceRouting                                             Destination,
                                                        NetworkPath                                               NetworkPath,
-                                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                                       DateTimeOffset?                                           ResponseTimestamp                        = null,
                                                        CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null,
                                                        CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
                                                        CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        NetworkPath                                               NetworkPath,
                                        [NotNullWhen(true)]  out ChangeAvailabilityResponse?      ChangeAvailabilityResponse,
                                        [NotNullWhen(false)] out String?                          ErrorResponse,
-                                       DateTime?                                                 ResponseTimestamp                        = null,
+                                       DateTimeOffset?                                           ResponseTimestamp                        = null,
                                        CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null,
                                        CustomJObjectParserDelegate<Signature>?                   CustomSignatureParser                    = null,
                                        CustomJObjectParserDelegate<CustomData>?                  CustomCustomDataParser                   = null)
@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                               ResultCode                 ErrorCode,
                                                               String?                    ErrorDescription    = null,
                                                               JObject?                   ErrorDetails        = null,
-                                                              DateTime?                  ResponseTimestamp   = null,
+                                                              DateTimeOffset?            ResponseTimestamp   = null,
 
                                                               SourceRouting?             Destination         = null,
                                                               NetworkPath?               NetworkPath         = null,

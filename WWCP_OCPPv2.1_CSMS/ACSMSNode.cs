@@ -115,13 +115,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public ChargingProfile?   ChargingProfile          { get; set; }
 
 
-        public DateTime?          StartTimestamp           { get; set; }
+        public DateTimeOffset?    StartTimestamp           { get; set; }
 
         public Decimal?           MeterStartValue          { get; set; }
 
         public String?            SignedStartMeterValue    { get; set; }
 
-        public DateTime?          StopTimestamp            { get; set; }
+        public DateTimeOffset?    StopTimestamp            { get; set; }
 
         public Decimal?           MeterStopValue           { get; set; }
 
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                    CSMSTime                                 { get; set; } = Timestamp.Now;
+        public DateTimeOffset?              CSMSTime                                 { get; set; } = Timestamp.Now;
 
 
         public HTTPAPI?                     HTTPAPI                                  { get; }
@@ -1093,7 +1093,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargingStation">The added charging station.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargingStation identification initiating this command/request.</param>
-        public delegate Task OnChargingStationAddedDelegate(DateTime           Timestamp,
+        public delegate Task OnChargingStationAddedDelegate(DateTimeOffset     Timestamp,
                                                             ChargingStation    ChargingStation,
                                                             EventTracking_Id?  EventTrackingId   = null,
                                                             User_Id?           CurrentUserId     = null);
@@ -1759,7 +1759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="OldChargingStation">The old charging station.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargingStation identification initiating this command/request.</param>
-        public delegate Task OnChargingStationUpdatedDelegate(DateTime                    Timestamp,
+        public delegate Task OnChargingStationUpdatedDelegate(DateTimeOffset              Timestamp,
                                                               ChargingStation             ChargingStation,
                                                               ChargingStation             OldChargingStation,
                                                               ChargingStationAccessTypes  ChargingStationAccessType,
@@ -2111,7 +2111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargingStation">The chargingStation to be deleted.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public delegate Task OnChargingStationDeletedDelegate(DateTime           Timestamp,
+        public delegate Task OnChargingStationDeletedDelegate(DateTimeOffset     Timestamp,
                                                               ChargingStation    ChargingStation,
                                                               EventTracking_Id?  EventTrackingId   = null,
                                                               User_Id?           CurrentUserId     = null);

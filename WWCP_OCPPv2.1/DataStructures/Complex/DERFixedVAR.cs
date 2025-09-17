@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The timestamp when this setting becomes active.
         /// </summary>
         [Optional]
-        public DateTime?         StartTime    { get; }
+        public DateTimeOffset?   StartTime    { get; }
 
         /// <summary>
         /// The duration that this setting is active.
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public DERFixedVAR(Byte              Priority,
                            SignedPercentage  Setpoint,
                            DERUnit           Unit,
-                           DateTime?         StartTime    = null,
+                           DateTimeOffset?   StartTime    = null,
                            TimeSpan?         Duration     = null,
                            CustomData?       CustomData   = null)
 

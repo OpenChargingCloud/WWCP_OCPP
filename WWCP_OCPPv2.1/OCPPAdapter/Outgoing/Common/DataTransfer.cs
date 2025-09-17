@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
-    public delegate Task OnDataTransferRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnDataTransferRequestSentDelegate(DateTimeOffset          Timestamp,
                                                            IEventSender            Sender,
                                                            IWebSocketConnection?   Connection,
                                                            DataTransferRequest     Request,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SentMessageResult">The result of the send message process.</param>
     public delegate Task
 
-        OnDataTransferResponseSentDelegate(DateTime               Timestamp,
+        OnDataTransferResponseSentDelegate(DateTimeOffset         Timestamp,
                                            IEventSender           Sender,
                                            IWebSocketConnection?  Connection,
                                            DataTransferRequest?   Request,
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SentMessageResult">The result of the send message process.</param>
     public delegate Task
 
-        OnDataTransferRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnDataTransferRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                IEventSender                   Sender,
                                                IWebSocketConnection?          Connection,
                                                DataTransferRequest?           Request,
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SentMessageResult">The result of the send message process.</param>
     public delegate Task
 
-        OnDataTransferResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnDataTransferResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                 IEventSender                    Sender,
                                                 IWebSocketConnection?           Connection,
                                                 DataTransferRequest?            Request,
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnDataTransferResponseSentDelegate?  OnDataTransferResponseSent;
 
 
-        public Task SendOnDataTransferResponseSent(DateTime              Timestamp,
+        public Task SendOnDataTransferResponseSent(DateTimeOffset        Timestamp,
                                                    IEventSender          Sender,
                                                    IWebSocketConnection? Connection,
                                                    DataTransferRequest   Request,
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnDataTransferRequestErrorSentDelegate? OnDataTransferRequestErrorSent;
 
 
-        public Task SendOnDataTransferRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnDataTransferRequestErrorSent(DateTimeOffset                Timestamp,
                                                        IEventSender                  Sender,
                                                        IWebSocketConnection?         Connection,
                                                        DataTransferRequest?          Request,
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnDataTransferResponseErrorSentDelegate? OnDataTransferResponseErrorSent;
 
 
-        public Task SendOnDataTransferResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnDataTransferResponseErrorSent(DateTimeOffset                 Timestamp,
                                                         IEventSender                   Sender,
                                                         IWebSocketConnection?          Connection,
                                                         DataTransferRequest?           Request,

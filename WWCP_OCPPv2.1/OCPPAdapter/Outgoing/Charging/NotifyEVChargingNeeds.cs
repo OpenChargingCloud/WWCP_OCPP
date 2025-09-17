@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyEVChargingNeedsRequestSentDelegate(DateTime                       Timestamp,
+    public delegate Task OnNotifyEVChargingNeedsRequestSentDelegate(DateTimeOffset                 Timestamp,
                                                                     IEventSender                   Sender,
                                                                     IWebSocketConnection?          Connection,
                                                                     NotifyEVChargingNeedsRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyEVChargingNeedsResponseSentDelegate(DateTime                        Timestamp,
+        OnNotifyEVChargingNeedsResponseSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     NotifyEVChargingNeedsRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyEVChargingNeedsRequestErrorSentDelegate(DateTime                        Timestamp,
+        OnNotifyEVChargingNeedsRequestErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                         IEventSender                    Sender,
                                                         IWebSocketConnection?           Connection,
                                                         NotifyEVChargingNeedsRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyEVChargingNeedsResponseErrorSentDelegate(DateTime                         Timestamp,
+        OnNotifyEVChargingNeedsResponseErrorSentDelegate(DateTimeOffset                   Timestamp,
                                                          IEventSender                     Sender,
                                                          IWebSocketConnection?            Connection,
                                                          NotifyEVChargingNeedsRequest?    Request,
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnNotifyEVChargingNeedsResponseSentDelegate?  OnNotifyEVChargingNeedsResponseSent;
 
-        public Task SendOnNotifyEVChargingNeedsResponseSent(DateTime                       Timestamp,
+        public Task SendOnNotifyEVChargingNeedsResponseSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             NotifyEVChargingNeedsRequest   Request,
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifyEVChargingNeedsRequestErrorSentDelegate? OnNotifyEVChargingNeedsRequestErrorSent;
 
 
-        public Task SendOnNotifyEVChargingNeedsRequestErrorSent(DateTime                       Timestamp,
+        public Task SendOnNotifyEVChargingNeedsRequestErrorSent(DateTimeOffset                 Timestamp,
                                                                 IEventSender                   Sender,
                                                                 IWebSocketConnection?          Connection,
                                                                 NotifyEVChargingNeedsRequest?  Request,
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifyEVChargingNeedsResponseErrorSentDelegate? OnNotifyEVChargingNeedsResponseErrorSent;
 
 
-        public Task SendOnNotifyEVChargingNeedsResponseErrorSent(DateTime                        Timestamp,
+        public Task SendOnNotifyEVChargingNeedsResponseErrorSent(DateTimeOffset                  Timestamp,
                                                                  IEventSender                    Sender,
                                                                  IWebSocketConnection?           Connection,
                                                                  NotifyEVChargingNeedsRequest?   Request,

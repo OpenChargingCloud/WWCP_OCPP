@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<SetDefaultE2EChargingTariffRequest, SetDefaultE2EChargingTariffResponse>>
 
-        OnSetDefaultE2EChargingTariffRequestFilterDelegate(DateTime                          Timestamp,
+        OnSetDefaultE2EChargingTariffRequestFilterDelegate(DateTimeOffset                    Timestamp,
                                                         IEventSender                      Sender,
                                                         IWebSocketConnection              Connection,
                                                         SetDefaultE2EChargingTariffRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnSetDefaultE2EChargingTariffRequestFilteredDelegate(DateTime                                                                                Timestamp,
+        OnSetDefaultE2EChargingTariffRequestFilteredDelegate(DateTimeOffset                                                                          Timestamp,
                                                           IEventSender                                                                            Sender,
                                                           IWebSocketConnection                                                                    Connection,
                                                           SetDefaultE2EChargingTariffRequest                                                         Request,

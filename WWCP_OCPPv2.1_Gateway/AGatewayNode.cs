@@ -107,13 +107,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         public ChargingProfile?   ChargingProfile          { get; set; }
 
 
-        public DateTime?          StartTimestamp           { get; set; }
+        public DateTimeOffset?    StartTimestamp           { get; set; }
 
         public Decimal?           MeterStartValue          { get; set; }
 
         public String?            SignedStartMeterValue    { get; set; }
 
-        public DateTime?          StopTimestamp            { get; set; }
+        public DateTimeOffset?    StopTimestamp            { get; set; }
 
         public Decimal?           MeterStopValue           { get; set; }
 
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
+        public DateTimeOffset?             CSMSTime                   { get; set; } = Timestamp.Now;
 
 
 

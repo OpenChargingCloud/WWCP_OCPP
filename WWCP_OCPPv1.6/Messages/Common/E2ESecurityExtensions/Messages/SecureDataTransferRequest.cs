@@ -119,7 +119,7 @@
 //                                         IEnumerable<Signature>?  Signatures          = null,
 
 //                                         Request_Id?              RequestId           = null,
-//                                         DateTime?                RequestTimestamp    = null,
+//                                         DateTimeOffset?          RequestTimestamp    = null,
 //                                         TimeSpan?                RequestTimeout      = null,
 //                                         EventTracking_Id?        EventTrackingId     = null,
 //                                         NetworkPath?             NetworkPath         = null,
@@ -205,7 +205,7 @@
 //                                                        IEnumerable<Signature>?  Signatures          = null,
 
 //                                                        Request_Id?              RequestId           = null,
-//                                                        DateTime?                RequestTimestamp    = null,
+//                                                        DateTimeOffset?          RequestTimestamp    = null,
 //                                                        TimeSpan?                RequestTimeout      = null,
 //                                                        EventTracking_Id?        EventTrackingId     = null,
 //                                                        NetworkPath?             NetworkPath         = null,
@@ -305,7 +305,7 @@
 //                                                      Request_Id                                              RequestId,
 //                                                      NetworkingNode_Id                                       NetworkingNodeId,
 //                                                      NetworkPath                                             NetworkPath,
-//                                                      DateTime?                                               RequestTimestamp                  = null,
+//                                                      DateTimeOffset?                                         RequestTimestamp                  = null,
 //                                                      TimeSpan?                                               RequestTimeout                    = null,
 //                                                      EventTracking_Id?                                       EventTrackingId                   = null,
 //                                                      CustomBinaryParserDelegate<SecureDataTransferRequest>?  CustomDataTransferRequestParser   = null)
@@ -353,7 +353,7 @@
 //                                       NetworkPath                                             NetworkPath,
 //                                       [NotNullWhen(true)]  out SecureDataTransferRequest?     SecureDataTransferRequest,
 //                                       [NotNullWhen(false)] out String?                        ErrorResponse,
-//                                       DateTime?                                               RequestTimestamp                        = null,
+//                                       DateTimeOffset?                                         RequestTimestamp                        = null,
 //                                       TimeSpan?                                               RequestTimeout                          = null,
 //                                       EventTracking_Id?                                       EventTrackingId                         = null,
 //                                       CustomBinaryParserDelegate<SecureDataTransferRequest>?  CustomSecureDataTransferRequestParser   = null)

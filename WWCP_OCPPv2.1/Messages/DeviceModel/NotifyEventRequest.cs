@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The timestamp of the moment this message was generated at the charging station.
         /// </summary>
         [Mandatory]
-        public DateTime                GeneratedAt       { get; }
+        public DateTimeOffset          GeneratedAt       { get; }
 
         /// <summary>
         /// The sequence number of this message.
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyEventRequest(SourceRouting            Destination,
-                                  DateTime                 GeneratedAt,
+                                  DateTimeOffset           GeneratedAt,
                                   UInt32                   SequenceNumber,
                                   IEnumerable<EventData>   EventData,
                                   Boolean?                 ToBeContinued         = null,
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   CustomData?              CustomData            = null,
 
                                   Request_Id?              RequestId             = null,
-                                  DateTime?                RequestTimestamp      = null,
+                                  DateTimeOffset?          RequestTimestamp      = null,
                                   TimeSpan?                RequestTimeout        = null,
                                   EventTracking_Id?        EventTrackingId       = null,
                                   NetworkPath?             NetworkPath           = null,
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                Request_Id                                        RequestId,
                                                SourceRouting                                     Destination,
                                                NetworkPath                                       NetworkPath,
-                                               DateTime?                                         RequestTimestamp                 = null,
+                                               DateTimeOffset?                                   RequestTimestamp                 = null,
                                                TimeSpan?                                         RequestTimeout                   = null,
                                                EventTracking_Id?                                 EventTrackingId                  = null,
                                                CustomJObjectParserDelegate<NotifyEventRequest>?  CustomNotifyEventRequestParser   = null)
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath                                       NetworkPath,
                                        [NotNullWhen(true)]  out NotifyEventRequest?      NotifyEventRequest,
                                        [NotNullWhen(false)] out String?                  ErrorResponse,
-                                       DateTime?                                         RequestTimestamp                 = null,
+                                       DateTimeOffset?                                   RequestTimestamp                 = null,
                                        TimeSpan?                                         RequestTimeout                   = null,
                                        EventTracking_Id?                                 EventTrackingId                  = null,
                                        CustomJObjectParserDelegate<NotifyEventRequest>?  CustomNotifyEventRequestParser   = null)

@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="TextMessage">The web socket text message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">A token to cancel the processing.</param>
-        Task<WebSocketTextMessageResponse>    ProcessTextMessage  (DateTime                   RequestTimestamp,
+        Task<WebSocketTextMessageResponse>    ProcessTextMessage  (DateTimeOffset           RequestTimestamp,
                                                                    WebSocketServerConnection  Connection,
                                                                    String                     TextMessage,
                                                                    EventTracking_Id           EventTrackingId,
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <param name="BinaryMessage">The web socket binary message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">A token to cancel the processing.</param>
-        Task<WebSocketBinaryMessageResponse>  ProcessBinaryMessage(DateTime                   RequestTimestamp,
+        Task<WebSocketBinaryMessageResponse>  ProcessBinaryMessage(DateTimeOffset           RequestTimestamp,
                                                                    WebSocketServerConnection  Connection,
                                                                    Byte[]                     BinaryMessage,
                                                                    EventTracking_Id           EventTrackingId,

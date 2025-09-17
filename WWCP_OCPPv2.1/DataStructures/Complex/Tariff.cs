@@ -48,8 +48,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 DisplayTexts                                         ProviderName,
                                                 Currency                                             Currency,
                                                 MessageContents?                                     Description                         = null,
-                                                DateTime?                                            ValidFrom                           = null,
-                                                DateTime?                                            ValidTo                             = null,
+                                                DateTimeOffset?                                      ValidFrom                           = null,
+                                                DateTimeOffset?                                      ValidTo                             = null,
                                                 Price?                                               MinCost                             = null,
                                                 Price?                                               MaxCost                             = null,
                                                 TariffFixed?                                         FixedFee                            = null,
@@ -211,13 +211,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Time when this tariff becomes active. When absent, it is immediately active.
         /// </summary>
         [Optional]
-        public   DateTime?        ValidFrom           { get; }
+        public   DateTimeOffset?  ValidFrom           { get; }
 
         /// <summary>
         /// Time when this tariff is no longer valid. When absent, it is valid indefinitely.
         /// </summary>
         [Optional]
-        public   DateTime?        ValidTo             { get; }
+        public   DateTimeOffset?  ValidTo             { get; }
 
         /// <summary>
         /// When this optional field is set, a charging session with this tariff will at least cost
@@ -301,8 +301,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Tariff(Tariff_Id                Id,
                       Currency                 Currency,
                       MessageContents?         Description        = null,
-                      DateTime?                ValidFrom          = null,
-                      DateTime?                ValidTo            = null,
+                      DateTimeOffset?          ValidFrom          = null,
+                      DateTimeOffset?          ValidTo            = null,
                       Price?                   MinCost            = null,
                       Price?                   MaxCost            = null,
                       TariffFixed?             FixedFee           = null,
@@ -937,7 +937,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             out String?                                          ErrorResponse,
                             String?                                              SignerName                          = null,
                             I18NString?                                          Description                         = null,
-                            DateTime?                                            Timestamp                           = null,
+                            DateTimeOffset?                                      Timestamp                           = null,
 
                             CustomJObjectSerializerDelegate<Tariff>?             CustomTariffSerializer              = null,
                             CustomJObjectSerializerDelegate<MessageContent>?     CustomMessageContentSerializer      = null,

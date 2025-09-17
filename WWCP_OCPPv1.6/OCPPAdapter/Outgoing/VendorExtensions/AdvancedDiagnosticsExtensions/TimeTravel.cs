@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnTimeTravelRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnTimeTravelRequestSentDelegate(DateTimeOffset          Timestamp,
                                                          IEventSender            Sender,
                                                          IWebSocketConnection?   Connection,
                                                          TimeTravelRequest       Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnTimeTravelResponseSentDelegate(DateTime                Timestamp,
+        OnTimeTravelResponseSentDelegate(DateTimeOffset          Timestamp,
                                          IEventSender            Sender,
                                          IWebSocketConnection?   Connection,
                                          TimeTravelRequest       Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnTimeTravelRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnTimeTravelRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                              IEventSender                   Sender,
                                              IWebSocketConnection?          Connection,
                                              TimeTravelRequest?             Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnTimeTravelResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnTimeTravelResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                               IEventSender                    Sender,
                                               IWebSocketConnection?           Connection,
                                               TimeTravelRequest?              Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnTimeTravelResponseSentDelegate?  OnTimeTravelResponseSent;
 
-        public Task SendOnTimeTravelResponseSent(DateTime               Timestamp,
+        public Task SendOnTimeTravelResponseSent(DateTimeOffset         Timestamp,
                                                  IEventSender           Sender,
                                                  IWebSocketConnection?  Connection,
                                                  TimeTravelRequest      Request,
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnTimeTravelRequestErrorSentDelegate? OnTimeTravelRequestErrorSent;
 
 
-        public Task SendOnTimeTravelRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnTimeTravelRequestErrorSent(DateTimeOffset                Timestamp,
                                                      IEventSender                  Sender,
                                                      IWebSocketConnection?         Connection,
                                                      TimeTravelRequest?            Request,
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnTimeTravelResponseErrorSentDelegate? OnTimeTravelResponseErrorSent;
 
 
-        public Task SendOnTimeTravelResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnTimeTravelResponseErrorSent(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
                                                       IWebSocketConnection?          Connection,
                                                       TimeTravelRequest?             Request,

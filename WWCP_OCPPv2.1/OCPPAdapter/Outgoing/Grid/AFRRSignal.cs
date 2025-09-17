@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAFRRSignalRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnAFRRSignalRequestSentDelegate(DateTimeOffset          Timestamp,
                                                          IEventSender            Sender,
                                                          IWebSocketConnection?   Connection,
                                                          AFRRSignalRequest       Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAFRRSignalResponseSentDelegate(DateTime               Timestamp,
+        OnAFRRSignalResponseSentDelegate(DateTimeOffset         Timestamp,
                                          IEventSender           Sender,
                                          IWebSocketConnection?  Connection,
                                          AFRRSignalRequest      Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAFRRSignalRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnAFRRSignalRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                              IEventSender                   Sender,
                                              IWebSocketConnection?          Connection,
                                              AFRRSignalRequest?             Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAFRRSignalResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnAFRRSignalResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                               IEventSender                    Sender,
                                               IWebSocketConnection?           Connection,
                                               AFRRSignalRequest?              Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnAFRRSignalResponseSentDelegate?  OnAFRRSignalResponseSent;
 
-        public Task SendOnAFRRSignalResponseSent(DateTime              Timestamp,
+        public Task SendOnAFRRSignalResponseSent(DateTimeOffset        Timestamp,
                                                  IEventSender          Sender,
                                                  IWebSocketConnection? Connection,
                                                  AFRRSignalRequest     Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnAFRRSignalRequestErrorSentDelegate? OnAFRRSignalRequestErrorSent;
 
 
-        public Task SendOnAFRRSignalRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnAFRRSignalRequestErrorSent(DateTimeOffset                Timestamp,
                                                      IEventSender                  Sender,
                                                      IWebSocketConnection?         Connection,
                                                      AFRRSignalRequest?            Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnAFRRSignalResponseErrorSentDelegate? OnAFRRSignalResponseErrorSent;
 
 
-        public Task SendOnAFRRSignalResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnAFRRSignalResponseErrorSent(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
                                                       IWebSocketConnection?          Connection,
                                                       AFRRSignalRequest?             Request,

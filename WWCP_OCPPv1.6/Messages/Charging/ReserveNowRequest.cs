@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// The timestamp when the reservation ends.
         /// </summary>
         [Mandatory]
-        public DateTime        ExpiryDate       { get; }
+        public DateTimeOffset  ExpiryDate       { get; }
 
         /// <summary>
         /// The unique token identification for which the reservation is being made.
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public ReserveNowRequest(SourceRouting            Destination,
                                  Connector_Id             ConnectorId,
                                  Reservation_Id           ReservationId,
-                                 DateTime                 ExpiryDate,
+                                 DateTimeOffset           ExpiryDate,
                                  IdToken                  IdTag,
                                  IdToken?                 ParentIdTag           = null,
 
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                  CustomData?              CustomData            = null,
 
                                  Request_Id?              RequestId             = null,
-                                 DateTime?                RequestTimestamp      = null,
+                                 DateTimeOffset?          RequestTimestamp      = null,
                                  TimeSpan?                RequestTimeout        = null,
                                  EventTracking_Id?        EventTrackingId       = null,
                                  NetworkPath?             NetworkPath           = null,
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                               Request_Id                                       RequestId,
                                               SourceRouting                                    Destination,
                                               NetworkPath                                      NetworkPath,
-                                              DateTime?                                        RequestTimestamp                = null,
+                                              DateTimeOffset?                                  RequestTimestamp                = null,
                                               TimeSpan?                                        RequestTimeout                  = null,
                                               EventTracking_Id?                                EventTrackingId                 = null,
                                               CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null,
@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out ReserveNowRequest?      ReserveNowRequest,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       DateTime?                                        RequestTimestamp                = null,
+                                       DateTimeOffset?                                  RequestTimestamp                = null,
                                        TimeSpan?                                        RequestTimeout                  = null,
                                        EventTracking_Id?                                EventTrackingId                 = null,
                                        CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null,

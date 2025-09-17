@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// allowed to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
         [Optional]
-        public DateTime?                      ValidFrom                      { get; }
+        public DateTimeOffset?                ValidFrom                      { get; }
 
         /// <summary>
         /// An optional timestamp at which the profile stops to be valid. If absent,
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
         [Optional]
-        public DateTime?                      ValidTo                        { get; }
+        public DateTimeOffset?                ValidTo                        { get; }
 
         /// <summary>
         /// When the ChargingProfilePurpose is set to TxProfile, this value MAY
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Only relevant in a dynamic charging profile.
         /// </summary>
         [Optional]
-        public DateTime?                      DynUpdateTime                  { get; }
+        public DateTimeOffset?                DynUpdateTime                  { get; }
 
         /// <summary>
         /// Optional Base64 encoded ISO 15118-2/20 signature for all price schedules
@@ -173,12 +173,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                IEnumerable<ChargingSchedule>  ChargingSchedules,
                                Transaction_Id?                TransactionId                 = null,
                                RecurrencyKinds?               RecurrencyKind                = null,
-                               DateTime?                      ValidFrom                     = null,
-                               DateTime?                      ValidTo                       = null,
+                               DateTimeOffset?                ValidFrom                     = null,
+                               DateTimeOffset?                ValidTo                       = null,
                                TimeSpan?                      MaxOfflineDuration            = null,
                                Boolean?                       InvalidAfterOfflineDuration   = null,
                                TimeSpan?                      DynUpdateInterval             = null,
-                               DateTime?                      DynUpdateTime                 = null,
+                               DateTimeOffset?                DynUpdateTime                 = null,
                                String?                        PriceScheduleSignature        = null,
 
                                CustomData?                    CustomData                    = null)

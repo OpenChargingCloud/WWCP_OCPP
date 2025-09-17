@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public ReservationStatusUpdateResponse(ReservationStatusUpdateRequest  Request,
 
                                                Result?                         Result                = null,
-                                               DateTime?                       ResponseTimestamp     = null,
+                                               DateTimeOffset?                 ResponseTimestamp     = null,
 
                                                SourceRouting?                  Destination           = null,
                                                NetworkPath?                    NetworkPath           = null,
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                             JObject                                                        JSON,
                                                             SourceRouting                                                  Destination,
                                                             NetworkPath                                                    NetworkPath,
-                                                            DateTime?                                                      ResponseTimestamp                             = null,
+                                                            DateTimeOffset?                                                ResponseTimestamp                             = null,
                                                             CustomJObjectParserDelegate<ReservationStatusUpdateResponse>?  CustomReservationStatusUpdateResponseParser   = null,
                                                             CustomJObjectParserDelegate<Signature>?                        CustomSignatureParser                         = null,
                                                             CustomJObjectParserDelegate<CustomData>?                       CustomCustomDataParser                        = null)
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                                    NetworkPath,
                                        [NotNullWhen(true)]  out ReservationStatusUpdateResponse?      ReservationStatusUpdateResponse,
                                        [NotNullWhen(false)] out String?                               ErrorResponse,
-                                       DateTime?                                                      ResponseTimestamp                             = null,
+                                       DateTimeOffset?                                                ResponseTimestamp                             = null,
                                        CustomJObjectParserDelegate<ReservationStatusUpdateResponse>?  CustomReservationStatusUpdateResponseParser   = null,
                                        CustomJObjectParserDelegate<Signature>?                        CustomSignatureParser                         = null,
                                        CustomJObjectParserDelegate<CustomData>?                       CustomCustomDataParser                        = null)
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                    ResultCode                      ErrorCode,
                                                                    String?                         ErrorDescription    = null,
                                                                    JObject?                        ErrorDetails        = null,
-                                                                   DateTime?                       ResponseTimestamp   = null,
+                                                                   DateTimeOffset?                 ResponseTimestamp   = null,
 
                                                                    SourceRouting?                  Destination         = null,
                                                                    NetworkPath?                    NetworkPath         = null,

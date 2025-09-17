@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime              RequestTimestamp       { get; }
+        public DateTimeOffset        RequestTimestamp       { get; }
 
         /// <summary>
         /// The timeout of this request.
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         CustomData?              CustomData            = null,
 
                         Request_Id?              RequestId             = null,
-                        DateTime?                RequestTimestamp      = null,
+                        DateTimeOffset?          RequestTimestamp      = null,
                         TimeSpan?                RequestTimeout        = null,
                         EventTracking_Id?        EventTrackingId       = null,
                         NetworkPath?             NetworkPath           = null,
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         CustomData?              CustomData            = null,
 
                         Request_Id?              RequestId             = null,
-                        DateTime?                RequestTimestamp      = null,
+                        DateTimeOffset?          RequestTimestamp      = null,
                         TimeSpan?                RequestTimeout        = null,
                         EventTracking_Id?        EventTrackingId       = null,
                         NetworkPath?             NetworkPath           = null,

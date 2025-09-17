@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnBinaryDataTransferRequestReceivedDelegate(DateTime                    Timestamp,
+        OnBinaryDataTransferRequestReceivedDelegate(DateTimeOffset              Timestamp,
                                                     IEventSender                Sender,
                                                     IWebSocketConnection        Connection,
                                                     BinaryDataTransferRequest   Request,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnBinaryDataTransferResponseReceivedDelegate(DateTime                     Timestamp,
+    public delegate Task OnBinaryDataTransferResponseReceivedDelegate(DateTimeOffset               Timestamp,
                                                                       IEventSender                 Sender,
                                                                       IWebSocketConnection?        Connection,
                                                                       BinaryDataTransferRequest?   Request,
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The optional runtime of the request/request error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnBinaryDataTransferRequestErrorReceivedDelegate(DateTime                         Timestamp,
+    public delegate Task OnBinaryDataTransferRequestErrorReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                           IEventSender                     Sender,
                                                                           IWebSocketConnection             Connection,
                                                                           BinaryDataTransferRequest?       Request,
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnBinaryDataTransferResponseErrorReceivedDelegate(DateTime                          Timestamp,
+    public delegate Task OnBinaryDataTransferResponseErrorReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                            IEventSender                      Sender,
                                                                            IWebSocketConnection              Connection,
                                                                            BinaryDataTransferRequest?        Request,
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task<BinaryDataTransferResponse>
 
-        OnBinaryDataTransferDelegate(DateTime                    Timestamp,
+        OnBinaryDataTransferDelegate(DateTimeOffset              Timestamp,
                                      IEventSender                Sender,
                                      IWebSocketConnection        Connection,
                                      BinaryDataTransferRequest   Request,
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_BinaryDataTransfer(DateTime              RequestTimestamp,
+            Receive_BinaryDataTransfer(DateTimeOffset        RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
                                        SourceRouting         Destination,
                                        NetworkPath           NetworkPath,
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                NetworkPath                NetworkPath,
                                                EventTracking_Id           EventTrackingId,
                                                Request_Id                 RequestId,
-                                               DateTime?                  ResponseTimestamp   = null,
+                                               DateTimeOffset?            ResponseTimestamp   = null,
                                                CancellationToken          CancellationToken   = default)
 
         {
@@ -418,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    NetworkPath                     NetworkPath,
                                                    EventTracking_Id                EventTrackingId,
                                                    Request_Id                      RequestId,
-                                                   DateTime?                       ResponseTimestamp   = null,
+                                                   DateTimeOffset?                 ResponseTimestamp   = null,
                                                    CancellationToken               CancellationToken   = default)
         {
 
@@ -507,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     NetworkPath                      NetworkPath,
                                                     EventTracking_Id                 EventTrackingId,
                                                     Request_Id                       RequestId,
-                                                    DateTime?                        ResponseTimestamp   = null,
+                                                    DateTimeOffset?                  ResponseTimestamp   = null,
                                                     CancellationToken                CancellationToken   = default)
 
         {

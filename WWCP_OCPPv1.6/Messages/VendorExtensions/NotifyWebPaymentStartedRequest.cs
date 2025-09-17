@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                               CustomData?                 CustomData            = null,
 
                                               Request_Id?                 RequestId             = null,
-                                              DateTime?                   RequestTimestamp      = null,
+                                              DateTimeOffset?             RequestTimestamp      = null,
                                               TimeSpan?                   RequestTimeout        = null,
                                               EventTracking_Id?           EventTrackingId       = null,
                                               NetworkPath?                NetworkPath           = null,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                            Request_Id                                                    RequestId,
                                                            SourceRouting                                                 Destination,
                                                            NetworkPath                                                   NetworkPath,
-                                                           DateTime?                                                     RequestTimestamp                             = null,
+                                                           DateTimeOffset?                                               RequestTimestamp                             = null,
                                                            TimeSpan?                                                     RequestTimeout                               = null,
                                                            EventTracking_Id?                                             EventTrackingId                              = null,
                                                            CustomJObjectParserDelegate<NotifyWebPaymentStartedRequest>?  CustomNotifyWebPaymentStartedRequestParser   = null)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        NetworkPath                                                   NetworkPath,
                                        [NotNullWhen(true)]  out NotifyWebPaymentStartedRequest?      NotifyWebPaymentStartedRequest,
                                        [NotNullWhen(false)] out String?                              ErrorResponse,
-                                       DateTime?                                                     RequestTimestamp                             = null,
+                                       DateTimeOffset?                                               RequestTimestamp                             = null,
                                        TimeSpan?                                                     RequestTimeout                               = null,
                                        EventTracking_Id?                                             EventTrackingId                              = null,
                                        CustomJObjectParserDelegate<NotifyWebPaymentStartedRequest>?  CustomNotifyWebPaymentStartedRequestParser   = null)

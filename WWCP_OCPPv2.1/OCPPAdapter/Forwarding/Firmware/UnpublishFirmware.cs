@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<UnpublishFirmwareRequest, UnpublishFirmwareResponse>>
 
-        OnUnpublishFirmwareRequestFilterDelegate(DateTime                   Timestamp,
+        OnUnpublishFirmwareRequestFilterDelegate(DateTimeOffset             Timestamp,
                                                  IEventSender               Sender,
                                                  IWebSocketConnection       Connection,
                                                  UnpublishFirmwareRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnUnpublishFirmwareRequestFilteredDelegate(DateTime                                                                  Timestamp,
+        OnUnpublishFirmwareRequestFilteredDelegate(DateTimeOffset                                                            Timestamp,
                                                    IEventSender                                                              Sender,
                                                    IWebSocketConnection                                                      Connection,
                                                    UnpublishFirmwareRequest                                                  Request,

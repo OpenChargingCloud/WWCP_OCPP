@@ -85,7 +85,7 @@
 //        public AddSignaturePolicyResponse(CSMS.AddSignaturePolicyRequest  Request,
 //                                          GenericStatus                   Status,
 //                                          StatusInfo?                     StatusInfo          = null,
-//                                          DateTime?                       ResponseTimestamp   = null,
+//                                          DateTimeOffset?                 ResponseTimestamp   = null,
 
 //                                          NetworkingNode_Id?              DestinationNodeId   = null,
 //                                          NetworkPath?                    NetworkPath         = null,

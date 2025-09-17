@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<ChangeTransactionTariffRequest, ChangeTransactionTariffResponse>>
 
-        OnChangeTransactionTariffRequestFilterDelegate(DateTime                         Timestamp,
+        OnChangeTransactionTariffRequestFilterDelegate(DateTimeOffset                   Timestamp,
                                                        IEventSender                     Sender,
                                                        IWebSocketConnection             Connection,
                                                        ChangeTransactionTariffRequest   Request,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ForwardingDecision">The forwarding decision.</param>
     public delegate Task
 
-        OnChangeTransactionTariffRequestFilteredDelegate(DateTime                                                                              Timestamp,
+        OnChangeTransactionTariffRequestFilteredDelegate(DateTimeOffset                                                                        Timestamp,
                                                          IEventSender                                                                          Sender,
                                                          IWebSocketConnection                                                                  Connection,
                                                          ChangeTransactionTariffRequest                                                        Request,

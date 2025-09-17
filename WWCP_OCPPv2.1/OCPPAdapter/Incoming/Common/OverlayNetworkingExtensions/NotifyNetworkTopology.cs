@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyNetworkTopologyMessageReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnNotifyNetworkTopologyMessageReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                         IEventSender                   Sender,
                                                                         IWebSocketConnection           Connection,
                                                                         NotifyNetworkTopologyMessage   Request,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyNetworkTopologyResponseErrorReceivedDelegate(DateTime                         Timestamp,
+    public delegate Task OnNotifyNetworkTopologyResponseErrorReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                               IEventSender                     Sender,
                                                                               IWebSocketConnection             Connection,
                                                                               NotifyNetworkTopologyMessage?    Request,
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_NotifyNetworkTopology(DateTime              RequestTimestamp,
+            Receive_NotifyNetworkTopology(DateTimeOffset        RequestTimestamp,
                                           IWebSocketConnection  WebSocketConnection,
                                           SourceRouting         Destination,
                                           NetworkPath           NetworkPath,
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //                                              NetworkPath                   NetworkPath,
         //                                              EventTracking_Id              EventTrackingId,
         //                                              Request_Id                    RequestId,
-        //                                              DateTime?                     ResponseTimestamp   = null,
+        //                                              DateTimeOffset?               ResponseTimestamp   = null,
         //                                              CancellationToken             CancellationToken   = default)
         //{
 

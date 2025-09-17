@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The starting point of schedule.
         /// All time measurements within the schedule are relative to this timestamp.
         /// </summary>
-        public DateTime                             ScheduleStart              { get; }
+        public DateTimeOffset                       ScheduleStart              { get; }
 
         /// <summary>
         /// The unit of measure the limit is expressed in.
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingSchedulePeriods">An enumeration of composite schedule periods defining maximum power or current usage over time.</param>
         public CompositeSchedule(EVSE_Id                              EVSEId,
                                  TimeSpan                             Duration,
-                                 DateTime                             ScheduleStart,
+                                 DateTimeOffset                       ScheduleStart,
                                  ChargingRateUnits                    ChargingRateUnit,
                                  IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
 

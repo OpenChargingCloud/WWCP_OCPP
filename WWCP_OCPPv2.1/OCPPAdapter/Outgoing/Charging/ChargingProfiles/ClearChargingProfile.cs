@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnClearChargingProfileRequestSentDelegate(DateTime                      Timestamp,
+    public delegate Task OnClearChargingProfileRequestSentDelegate(DateTimeOffset                Timestamp,
                                                                    IEventSender                  Sender,
                                                                    IWebSocketConnection?         Connection,
                                                                    ClearChargingProfileRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearChargingProfileResponseSentDelegate(DateTime                       Timestamp,
+        OnClearChargingProfileResponseSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    ClearChargingProfileRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearChargingProfileRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnClearChargingProfileRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
                                                        IWebSocketConnection?          Connection,
                                                        ClearChargingProfileRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearChargingProfileResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnClearChargingProfileResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                         IEventSender                    Sender,
                                                         IWebSocketConnection?           Connection,
                                                         ClearChargingProfileRequest?    Request,
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnClearChargingProfileResponseSentDelegate?  OnClearChargingProfileResponseSent;
 
-        public Task SendOnClearChargingProfileResponseSent(DateTime                      Timestamp,
+        public Task SendOnClearChargingProfileResponseSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            ClearChargingProfileRequest   Request,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearChargingProfileRequestErrorSentDelegate? OnClearChargingProfileRequestErrorSent;
 
 
-        public Task SendOnClearChargingProfileRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnClearChargingProfileRequestErrorSent(DateTimeOffset                Timestamp,
                                                                IEventSender                  Sender,
                                                                IWebSocketConnection?         Connection,
                                                                ClearChargingProfileRequest?  Request,
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearChargingProfileResponseErrorSentDelegate? OnClearChargingProfileResponseErrorSent;
 
 
-        public Task SendOnClearChargingProfileResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnClearChargingProfileResponseErrorSent(DateTimeOffset                 Timestamp,
                                                                 IEventSender                   Sender,
                                                                 IWebSocketConnection?          Connection,
                                                                 ClearChargingProfileRequest?   Request,

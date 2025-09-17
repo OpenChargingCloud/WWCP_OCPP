@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<ChangeAvailabilityRequest, ChangeAvailabilityResponse>>
 
-        OnChangeAvailabilityRequestFilterDelegate(DateTime                    Timestamp,
+        OnChangeAvailabilityRequestFilterDelegate(DateTimeOffset              Timestamp,
                                                   IEventSender                Sender,
                                                   IWebSocketConnection        Connection,
                                                   ChangeAvailabilityRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnChangeAvailabilityRequestFilteredDelegate(DateTime                                                                    Timestamp,
+        OnChangeAvailabilityRequestFilteredDelegate(DateTimeOffset                                                              Timestamp,
                                                     IEventSender                                                                Sender,
                                                     IWebSocketConnection                                                        Connection,
                                                     ChangeAvailabilityRequest                                                   Request,

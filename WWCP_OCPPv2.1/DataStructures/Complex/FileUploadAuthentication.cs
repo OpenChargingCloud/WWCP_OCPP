@@ -18,29 +18,29 @@
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    //public delegate Task UploadedFileReceivedDelegate(DateTime           Timestamp,
+    //public delegate Task UploadedFileReceivedDelegate(DateTimeOffset     Timestamp,
     //                                                  UploadedFileInfos  UploadedFileInfo,
     //                                                  CancellationToken  CancellationToken);
 
-    //public delegate Task UploadErrorDelegate         (DateTime           Timestamp,
+    //public delegate Task UploadErrorDelegate         (DateTimeOffset     Timestamp,
     //                                                  String             Module,
     //                                                  String             Caller,
     //                                                  String             ErrorResponse,
     //                                                  CancellationToken  CancellationToken);
 
-    //public delegate Task UploadExceptionDelegate     (DateTime           Timestamp,
+    //public delegate Task UploadExceptionDelegate     (DateTimeOffset     Timestamp,
     //                                                  String             Module,
     //                                                  String             Caller,
     //                                                  Exception          ExceptionOccurred,
     //                                                  CancellationToken  CancellationToken);
 
 
-    public class FileUploadAuthentication(String    PathPrefix,
-                                DateTime  Timeout) : IEquatable<FileUploadAuthentication>
+    public class FileUploadAuthentication(String          PathPrefix,
+                                          DateTimeOffset  Timeout) : IEquatable<FileUploadAuthentication>
     {
 
-        public String    PathPrefix    { get; } = PathPrefix;
-        public DateTime  Timeout       { get; } = Timeout;
+        public String          PathPrefix    { get; } = PathPrefix;
+        public DateTimeOffset  Timeout       { get; } = Timeout;
 
         public Boolean Equals(FileUploadAuthentication? FileUploadAuth)
             => PathPrefix == PathPrefix;

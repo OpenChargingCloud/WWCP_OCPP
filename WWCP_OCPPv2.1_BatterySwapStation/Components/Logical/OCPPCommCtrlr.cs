@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         /// for example by a local service action. This can be monitored by CSMS to decide whether to
         /// issue a new GetBaseReportRequest to get the updated configuration.
         /// </summary>
-        public DateTime?                          ExternalConfigChangeDate            { get; internal set; }
+        public DateTimeOffset?                    ExternalConfigChangeDate            { get; internal set; }
 
         /// <summary>
         /// List of supported file transfer protocols.
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                              Byte                               ResetRetries,                               // ToDo: Only defined in 2.1.14. but not under 3.1.12. OCPPCommCtrlr
 
                              NetworkProfiles?                   ActiveNetworkProfile               = null,
-                             DateTime?                          ExternalConfigChangeDate           = null,
+                             DateTimeOffset?                    ExternalConfigChangeDate           = null,
                              TimeSpan?                          HeartbeatInterval                  = null,
                              PublicKeyWithSignedMeterValues?    PublicKeyWithSignedMeterValue      = null,  // ToDo: Should not be here!
                              Boolean?                           QueueAllMessages                   = null,

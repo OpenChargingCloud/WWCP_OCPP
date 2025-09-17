@@ -80,14 +80,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// the profile is valid as soon as it is received by the charge point. Not
         /// allowed to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
-        public DateTime?                ValidFrom                 { get; }
+        public DateTimeOffset?          ValidFrom                 { get; }
 
         /// <summary>
         /// An optional timestamp at which the profile stops to be valid. If absent,
         /// the profile is valid until it is replaced by another profile. Not allowed
         /// to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
-        public DateTime?                ValidTo                   { get; }
+        public DateTimeOffset?          ValidTo                   { get; }
 
         #endregion
 
@@ -114,8 +114,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                Transaction_Id?          TransactionId    = null,
                                RecurrencyKinds?         RecurrencyKind   = null,
-                               DateTime?                ValidFrom        = null,
-                               DateTime?                ValidTo          = null)
+                               DateTimeOffset?          ValidFrom        = null,
+                               DateTimeOffset?          ValidTo          = null)
 
         {
 

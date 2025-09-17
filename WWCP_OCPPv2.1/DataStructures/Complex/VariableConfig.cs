@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The last time this variable was set/updated.
         /// </summary>
-        public DateTime?                 LastUpdate         { get; private set; }
+        public DateTimeOffset?           LastUpdate         { get; private set; }
 
         /// <summary>
         /// The value of the variable.

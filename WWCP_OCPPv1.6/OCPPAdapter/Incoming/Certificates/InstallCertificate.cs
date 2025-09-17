@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnInstallCertificateRequestReceivedDelegate(DateTime                    Timestamp,
+    public delegate Task OnInstallCertificateRequestReceivedDelegate(DateTimeOffset              Timestamp,
                                                                      IEventSender                Sender,
                                                                      IWebSocketConnection        Connection,
                                                                      InstallCertificateRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnInstallCertificateResponseReceivedDelegate(DateTime                     Timestamp,
+    public delegate Task OnInstallCertificateResponseReceivedDelegate(DateTimeOffset               Timestamp,
                                                                       IEventSender                 Sender,
                                                                       IWebSocketConnection?        Connection,
                                                                       InstallCertificateRequest?   Request,
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnInstallCertificateRequestErrorReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnInstallCertificateRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                           IEventSender                   Sender,
                                                                           IWebSocketConnection           Connection,
                                                                           InstallCertificateRequest?     Request,
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnInstallCertificateResponseErrorReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnInstallCertificateResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                            IEventSender                    Sender,
                                                                            IWebSocketConnection            Connection,
                                                                            InstallCertificateRequest?      Request,
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<InstallCertificateResponse>
 
-        OnInstallCertificateDelegate(DateTime                   Timestamp,
+        OnInstallCertificateDelegate(DateTimeOffset             Timestamp,
                                      IEventSender               Sender,
                                      IWebSocketConnection       Connection,
                                      InstallCertificateRequest  Request,
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_InstallCertificate(DateTime              RequestTimestamp,
+            Receive_InstallCertificate(DateTimeOffset        RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
                                        SourceRouting         Destination,
                                        NetworkPath           NetworkPath,
@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_InstallCertificate(DateTime              RequestTimestamp,
+            Receive_InstallCertificate(DateTimeOffset        RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
                                        SourceRouting         Destination,
                                        NetworkPath           NetworkPath,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                NetworkPath                NetworkPath,
                                                EventTracking_Id           EventTrackingId,
                                                Request_Id                 RequestId,
-                                               DateTime?                  ResponseTimestamp   = null,
+                                               DateTimeOffset?            ResponseTimestamp   = null,
                                                CancellationToken          CancellationToken   = default)
 
         {
@@ -575,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                NetworkPath                NetworkPath,
                                                EventTracking_Id           EventTrackingId,
                                                Request_Id                 RequestId,
-                                               DateTime?                  ResponseTimestamp   = null,
+                                               DateTimeOffset?            ResponseTimestamp   = null,
                                                CancellationToken          CancellationToken   = default)
 
         {
@@ -685,7 +685,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                    NetworkPath                   NetworkPath,
                                                    EventTracking_Id              EventTrackingId,
                                                    Request_Id                    RequestId,
-                                                   DateTime?                     ResponseTimestamp   = null,
+                                                   DateTimeOffset?               ResponseTimestamp   = null,
                                                    CancellationToken             CancellationToken   = default)
         {
 
@@ -764,7 +764,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                    NetworkPath                     NetworkPath,
                                                    EventTracking_Id                EventTrackingId,
                                                    Request_Id                      RequestId,
-                                                   DateTime?                       ResponseTimestamp   = null,
+                                                   DateTimeOffset?                 ResponseTimestamp   = null,
                                                    CancellationToken               CancellationToken   = default)
         {
 
@@ -853,7 +853,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                     NetworkPath                    NetworkPath,
                                                     EventTracking_Id               EventTrackingId,
                                                     Request_Id                     RequestId,
-                                                    DateTime?                      ResponseTimestamp   = null,
+                                                    DateTimeOffset?                ResponseTimestamp   = null,
                                                     CancellationToken              CancellationToken   = default)
 
         {

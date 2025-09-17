@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSendLocalListRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnSendLocalListRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                SendLocalListRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSendLocalListResponseSentDelegate(DateTime                   Timestamp,
+        OnSendLocalListResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                SendLocalListRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSendLocalListRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnSendLocalListRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    SendLocalListRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnSendLocalListResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnSendLocalListResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     SendLocalListRequest?        Request,
@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnSendLocalListResponseSentDelegate?  OnSendLocalListResponseSent;
 
-        public Task SendOnSendLocalListResponseSent(DateTime                   Timestamp,
+        public Task SendOnSendLocalListResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        SendLocalListRequest    Request,
@@ -515,7 +515,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnSendLocalListRequestErrorSentDelegate? OnSendLocalListRequestErrorSent;
 
 
-        public Task SendOnSendLocalListRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnSendLocalListRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            SendLocalListRequest?      Request,
@@ -548,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnSendLocalListResponseErrorSentDelegate? OnSendLocalListResponseErrorSent;
 
 
-        public Task SendOnSendLocalListResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnSendLocalListResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             SendLocalListRequest?       Request,

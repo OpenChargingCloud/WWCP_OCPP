@@ -19,11 +19,11 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
-using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                IEnumerable<Signature>?         Signatures            = null,
 
                                Request_Id?                     RequestId             = null,
-                               DateTime?                       RequestTimestamp      = null,
+                               DateTimeOffset?                 RequestTimestamp      = null,
                                TimeSpan?                       RequestTimeout        = null,
                                EventTracking_Id?               EventTrackingId       = null,
                                SerializationFormats?           SerializationFormat   = null,
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                IEnumerable<Signature>?  Signatures            = null,
 
                                Request_Id?              RequestId             = null,
-                               DateTime?                RequestTimestamp      = null,
+                               DateTimeOffset?          RequestTimestamp      = null,
                                TimeSpan?                RequestTimeout        = null,
                                EventTracking_Id?        EventTrackingId       = null,
                                SerializationFormats?    SerializationFormat   = null,
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     IEnumerable<Signature>?  Signatures            = null,
 
                     Request_Id?              RequestId             = null,
-                    DateTime?                RequestTimestamp      = null,
+                    DateTimeOffset?          RequestTimestamp      = null,
                     TimeSpan?                RequestTimeout        = null,
                     EventTracking_Id?        EventTrackingId       = null,
                     SerializationFormats?    SerializationFormat   = null,
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                      IEnumerable<Signature>?  Signatures            = null,
 
                      Request_Id?              RequestId             = null,
-                     DateTime?                RequestTimestamp      = null,
+                     DateTimeOffset?          RequestTimestamp      = null,
                      TimeSpan?                RequestTimeout        = null,
                      EventTracking_Id?        EventTrackingId       = null,
                      SerializationFormats?    SerializationFormat   = null,
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        IEnumerable<Signature>?  Signatures            = null,
 
                        Request_Id?              RequestId             = null,
-                       DateTime?                RequestTimestamp      = null,
+                       DateTimeOffset?          RequestTimestamp      = null,
                        TimeSpan?                RequestTimeout        = null,
                        EventTracking_Id?        EventTrackingId       = null,
                        SerializationFormats?    SerializationFormat   = null,
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           IEnumerable<Signature>?  Signatures             = null,
 
                           Request_Id?              RequestId              = null,
-                          DateTime?                RequestTimestamp       = null,
+                          DateTimeOffset?          RequestTimestamp       = null,
                           TimeSpan?                RequestTimeout         = null,
                           EventTracking_Id?        EventTrackingId        = null,
                           SerializationFormats?    SerializationFormat    = null,

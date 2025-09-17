@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<RequestForwardingDecision<LogStatusNotificationRequest, LogStatusNotificationResponse>>
 
-        OnLogStatusNotificationRequestFilterDelegate(DateTime                       Timestamp,
+        OnLogStatusNotificationRequestFilterDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection           Connection,
                                                      LogStatusNotificationRequest   Request,
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task
 
-        OnLogStatusNotificationRequestFilteredDelegate(DateTime                                                                          Timestamp,
+        OnLogStatusNotificationRequestFilteredDelegate(DateTimeOffset                                                                    Timestamp,
                                                        IEventSender                                                                      Sender,
                                                        IWebSocketConnection                                                              Connection,
                                                        LogStatusNotificationRequest                                                      Request,

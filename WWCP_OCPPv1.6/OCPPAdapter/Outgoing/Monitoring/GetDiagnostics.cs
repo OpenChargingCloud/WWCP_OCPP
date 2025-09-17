@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetDiagnosticsRequestSentDelegate(DateTime                  Timestamp,
+    public delegate Task OnGetDiagnosticsRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
                                                                IWebSocketConnection?     Connection,
                                                                GetDiagnosticsRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetDiagnosticsResponseSentDelegate(DateTime                   Timestamp,
+        OnGetDiagnosticsResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
                                                IWebSocketConnection?      Connection,
                                                GetDiagnosticsRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetDiagnosticsRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetDiagnosticsRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    GetDiagnosticsRequest?       Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetDiagnosticsResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetDiagnosticsResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
                                                     IWebSocketConnection?           Connection,
                                                     GetDiagnosticsRequest?        Request,
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public event OnGetDiagnosticsResponseSentDelegate?  OnGetDiagnosticsResponseSent;
 
-        public Task SendOnGetDiagnosticsResponseSent(DateTime                   Timestamp,
+        public Task SendOnGetDiagnosticsResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
                                                        IWebSocketConnection?      Connection,
                                                        GetDiagnosticsRequest    Request,
@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetDiagnosticsRequestErrorSentDelegate? OnGetDiagnosticsRequestErrorSent;
 
 
-        public Task SendOnGetDiagnosticsRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetDiagnosticsRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            GetDiagnosticsRequest?      Request,
@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public event OnGetDiagnosticsResponseErrorSentDelegate? OnGetDiagnosticsResponseErrorSent;
 
 
-        public Task SendOnGetDiagnosticsResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetDiagnosticsResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
                                                             IWebSocketConnection?          Connection,
                                                             GetDiagnosticsRequest?       Request,

@@ -56,13 +56,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext   Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The current time at the central system.
         /// </summary>
-        public DateTime       CurrentTime    { get; }
+        public DateTimeOffset  CurrentTime    { get; }
 
         #endregion
 
@@ -86,10 +86,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public HeartbeatResponse(HeartbeatRequest         Request,
-                                 DateTime                 CurrentTime,
+                                 DateTimeOffset           CurrentTime,
 
                                  Result?                  Result                = null,
-                                 DateTime?                ResponseTimestamp     = null,
+                                 DateTimeOffset?          ResponseTimestamp     = null,
 
                                  SourceRouting?           Destination           = null,
                                  NetworkPath?             NetworkPath           = null,
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               JObject                                          JSON,
                                               SourceRouting                                    Destination,
                                               NetworkPath                                      NetworkPath,
-                                              DateTime?                                        ResponseTimestamp               = null,
+                                              DateTimeOffset?                                  ResponseTimestamp               = null,
                                               CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null,
                                               CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
                                               CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out HeartbeatResponse?      HeartbeatResponse,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       DateTime?                                        ResponseTimestamp               = null,
+                                       DateTimeOffset?                                  ResponseTimestamp               = null,
                                        CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null,
                                        CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
                                        CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
@@ -374,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      ResultCode               ErrorCode,
                                                      String?                  ErrorDescription    = null,
                                                      JObject?                 ErrorDetails        = null,
-                                                     DateTime?                ResponseTimestamp   = null,
+                                                     DateTimeOffset?          ResponseTimestamp   = null,
 
                                                      SourceRouting?           Destination         = null,
                                                      NetworkPath?             NetworkPath         = null,

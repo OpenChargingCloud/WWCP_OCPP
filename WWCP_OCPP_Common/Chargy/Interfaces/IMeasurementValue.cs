@@ -22,7 +22,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
     {
 
         IMeasurement             Measurement    { get; set; }
-        DateTime                 Timestamp      { get; }
+        DateTimeOffset         Timestamp      { get; }
         UInt64                   Value          { get; }
         ACrypt                   Method         { get; }
         IEnumerable<ISignature>  Signatures     { get; }
@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.GermanCalibrationLaw
     {
 
         IMeasurement             Measurement    { get; set; }
-        DateTime                 Timestamp      { get; }
+        DateTimeOffset         Timestamp      { get; }
         UInt64                   Value          { get; }
         ACrypt                   Method         { get; }
 

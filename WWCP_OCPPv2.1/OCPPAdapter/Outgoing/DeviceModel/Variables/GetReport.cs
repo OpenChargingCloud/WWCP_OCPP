@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnGetReportRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnGetReportRequestSentDelegate(DateTimeOffset          Timestamp,
                                                         IEventSender            Sender,
                                                         IWebSocketConnection?   Connection,
                                                         GetReportRequest        Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetReportResponseSentDelegate(DateTime               Timestamp,
+        OnGetReportResponseSentDelegate(DateTimeOffset         Timestamp,
                                         IEventSender           Sender,
                                         IWebSocketConnection?  Connection,
                                         GetReportRequest       Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetReportRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnGetReportRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                             IEventSender                   Sender,
                                             IWebSocketConnection?          Connection,
                                             GetReportRequest?              Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnGetReportResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnGetReportResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                              IEventSender                    Sender,
                                              IWebSocketConnection?           Connection,
                                              GetReportRequest?               Request,
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnGetReportResponseSentDelegate?  OnGetReportResponseSent;
 
-        public Task SendOnGetReportResponseSent(DateTime              Timestamp,
+        public Task SendOnGetReportResponseSent(DateTimeOffset        Timestamp,
                                                 IEventSender          Sender,
                                                 IWebSocketConnection? Connection,
                                                 GetReportRequest      Request,
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetReportRequestErrorSentDelegate? OnGetReportRequestErrorSent;
 
 
-        public Task SendOnGetReportRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnGetReportRequestErrorSent(DateTimeOffset                Timestamp,
                                                     IEventSender                  Sender,
                                                     IWebSocketConnection?         Connection,
                                                     GetReportRequest?             Request,
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnGetReportResponseErrorSentDelegate? OnGetReportResponseErrorSent;
 
 
-        public Task SendOnGetReportResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnGetReportResponseErrorSent(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection?          Connection,
                                                      GetReportRequest?              Request,

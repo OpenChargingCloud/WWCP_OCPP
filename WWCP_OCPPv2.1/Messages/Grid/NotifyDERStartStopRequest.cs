@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The timestamp of event start or end.
         /// </summary>
         [Mandatory]
-        public DateTime                    Timestamp        { get; }
+        public DateTimeOffset              Timestamp        { get; }
 
         /// <summary>
         /// True if DER control has started. False if it has ended.
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyDERStartStopRequest(SourceRouting                Destination,
                                          DERControl_Id                ControlId,
-                                         DateTime                     Timestamp,
+                                         DateTimeOffset               Timestamp,
                                          Boolean                      Started,
                                          IEnumerable<DERControl_Id>?  SupersededIds         = null,
 
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          CustomData?                  CustomData            = null,
 
                                          Request_Id?                  RequestId             = null,
-                                         DateTime?                    RequestTimestamp      = null,
+                                         DateTimeOffset?              RequestTimestamp      = null,
                                          TimeSpan?                    RequestTimeout        = null,
                                          EventTracking_Id?            EventTrackingId       = null,
                                          NetworkPath?                 NetworkPath           = null,
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                       Request_Id                                               RequestId,
                                                       SourceRouting                                            Destination,
                                                       NetworkPath                                              NetworkPath,
-                                                      DateTime?                                                RequestTimestamp                        = null,
+                                                      DateTimeOffset?                                          RequestTimestamp                        = null,
                                                       TimeSpan?                                                RequestTimeout                          = null,
                                                       EventTracking_Id?                                        EventTrackingId                         = null,
                                                       CustomJObjectParserDelegate<NotifyDERStartStopRequest>?  CustomNotifyDERStartStopRequestParser   = null)
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out NotifyDERStartStopRequest?      NotifyDERStartStopRequest,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       DateTime?                                                RequestTimestamp                        = null,
+                                       DateTimeOffset?                                          RequestTimestamp                        = null,
                                        TimeSpan?                                                RequestTimeout                          = null,
                                        EventTracking_Id?                                        EventTrackingId                         = null,
                                        CustomJObjectParserDelegate<NotifyDERStartStopRequest>?  CustomNotifyDERStartStopRequestParser   = null)

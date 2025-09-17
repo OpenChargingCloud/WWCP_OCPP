@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnAuthorizeRequestSentDelegate(DateTime                Timestamp,
+    public delegate Task OnAuthorizeRequestSentDelegate(DateTimeOffset          Timestamp,
                                                         IEventSender            Sender,
                                                         IWebSocketConnection?   Connection,
                                                         AuthorizeRequest        Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAuthorizeResponseSentDelegate(DateTime               Timestamp,
+        OnAuthorizeResponseSentDelegate(DateTimeOffset         Timestamp,
                                         IEventSender           Sender,
                                         IWebSocketConnection?  Connection,
                                         AuthorizeRequest?      Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAuthorizeRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnAuthorizeRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                             IEventSender                   Sender,
                                             IWebSocketConnection?          Connection,
                                             AuthorizeRequest?              Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnAuthorizeResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnAuthorizeResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                              IEventSender                    Sender,
                                              IWebSocketConnection?           Connection,
                                              AuthorizeRequest?               Request,
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnAuthorizeResponseSentDelegate?  OnAuthorizeResponseSent;
 
 
-        public Task SendOnAuthorizeResponseSent(DateTime               Timestamp,
+        public Task SendOnAuthorizeResponseSent(DateTimeOffset         Timestamp,
                                                 IEventSender           Sender,
                                                 IWebSocketConnection?  Connection,
                                                 AuthorizeRequest       Request,
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnAuthorizeRequestErrorSentDelegate? OnAuthorizeRequestErrorSent;
 
 
-        public Task SendOnAuthorizeRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnAuthorizeRequestErrorSent(DateTimeOffset                Timestamp,
                                                     IEventSender                  Sender,
                                                     IWebSocketConnection?         Connection,
                                                     AuthorizeRequest?             Request,
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnAuthorizeResponseErrorSentDelegate? OnAuthorizeResponseErrorSent;
 
 
-        public Task SendOnAuthorizeResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnAuthorizeResponseErrorSent(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection?          Connection,
                                                      AuthorizeRequest?              Request,

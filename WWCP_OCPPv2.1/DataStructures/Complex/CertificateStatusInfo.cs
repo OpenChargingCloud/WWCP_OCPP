@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The next update of the certificate status.
         /// </summary>
         [Mandatory]
-        public DateTime                 NextUpdate             { get; }
+        public DateTimeOffset           NextUpdate             { get; }
 
         #endregion
 
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CertificateStatusInfo(CertificateHashData      CertificateHashData,
                                      CertificateStatusSource  Source,
                                      CertificateStatus        Status,
-                                     DateTime                 NextUpdate,
+                                     DateTimeOffset           NextUpdate,
                                      CustomData?              CustomData   = null)
 
             : base(CustomData)

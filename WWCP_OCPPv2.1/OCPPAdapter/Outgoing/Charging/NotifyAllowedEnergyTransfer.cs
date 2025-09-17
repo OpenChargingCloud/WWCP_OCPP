@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyAllowedEnergyTransferRequestSentDelegate(DateTime                             Timestamp,
+    public delegate Task OnNotifyAllowedEnergyTransferRequestSentDelegate(DateTimeOffset                       Timestamp,
                                                                           IEventSender                         Sender,
                                                                           IWebSocketConnection?                Connection,
                                                                           NotifyAllowedEnergyTransferRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyAllowedEnergyTransferResponseSentDelegate(DateTime                              Timestamp,
+        OnNotifyAllowedEnergyTransferResponseSentDelegate(DateTimeOffset                        Timestamp,
                                                           IEventSender                          Sender,
                                                           IWebSocketConnection?                 Connection,
                                                           NotifyAllowedEnergyTransferRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyAllowedEnergyTransferRequestErrorSentDelegate(DateTime                              Timestamp,
+        OnNotifyAllowedEnergyTransferRequestErrorSentDelegate(DateTimeOffset                        Timestamp,
                                                               IEventSender                          Sender,
                                                               IWebSocketConnection?                 Connection,
                                                               NotifyAllowedEnergyTransferRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnNotifyAllowedEnergyTransferResponseErrorSentDelegate(DateTime                               Timestamp,
+        OnNotifyAllowedEnergyTransferResponseErrorSentDelegate(DateTimeOffset                         Timestamp,
                                                                IEventSender                           Sender,
                                                                IWebSocketConnection?                  Connection,
                                                                NotifyAllowedEnergyTransferRequest?    Request,
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnNotifyAllowedEnergyTransferResponseSentDelegate?  OnNotifyAllowedEnergyTransferResponseSent;
 
-        public Task SendOnNotifyAllowedEnergyTransferResponseSent(DateTime                             Timestamp,
+        public Task SendOnNotifyAllowedEnergyTransferResponseSent(DateTimeOffset                       Timestamp,
                                                                   IEventSender                         Sender,
                                                                   IWebSocketConnection?                Connection,
                                                                   NotifyAllowedEnergyTransferRequest   Request,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifyAllowedEnergyTransferRequestErrorSentDelegate? OnNotifyAllowedEnergyTransferRequestErrorSent;
 
 
-        public Task SendOnNotifyAllowedEnergyTransferRequestErrorSent(DateTime                             Timestamp,
+        public Task SendOnNotifyAllowedEnergyTransferRequestErrorSent(DateTimeOffset                       Timestamp,
                                                                       IEventSender                         Sender,
                                                                       IWebSocketConnection?                Connection,
                                                                       NotifyAllowedEnergyTransferRequest?  Request,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnNotifyAllowedEnergyTransferResponseErrorSentDelegate? OnNotifyAllowedEnergyTransferResponseErrorSent;
 
 
-        public Task SendOnNotifyAllowedEnergyTransferResponseErrorSent(DateTime                              Timestamp,
+        public Task SendOnNotifyAllowedEnergyTransferResponseErrorSent(DateTimeOffset                        Timestamp,
                                                                        IEventSender                          Sender,
                                                                        IWebSocketConnection?                 Connection,
                                                                        NotifyAllowedEnergyTransferRequest?   Request,

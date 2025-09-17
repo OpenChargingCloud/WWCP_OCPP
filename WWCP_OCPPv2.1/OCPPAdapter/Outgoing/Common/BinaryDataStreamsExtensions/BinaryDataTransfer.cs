@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The connection of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
-    public delegate Task OnBinaryDataTransferRequestSentDelegate(DateTime                    Timestamp,
+    public delegate Task OnBinaryDataTransferRequestSentDelegate(DateTimeOffset              Timestamp,
                                                                  IEventSender                Sender,
                                                                  IWebSocketConnection?       Connection,
                                                                  BinaryDataTransferRequest   Request,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SentMessageResult">The result of the send message process.</param>
     public delegate Task
 
-        OnBinaryDataTransferResponseSentDelegate(DateTime                     Timestamp,
+        OnBinaryDataTransferResponseSentDelegate(DateTimeOffset               Timestamp,
                                                  IEventSender                 Sender,
                                                  IWebSocketConnection?        Connection,
                                                  BinaryDataTransferRequest?   Request,
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SentMessageResult">The result of the send message process.</param>
     public delegate Task
 
-        OnBinaryDataTransferRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnBinaryDataTransferRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
                                                      IWebSocketConnection?          Connection,
                                                      BinaryDataTransferRequest?     Request,
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SentMessageResult">The result of the send message process.</param>
     public delegate Task
 
-        OnBinaryDataTransferResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnBinaryDataTransferResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
                                                       IWebSocketConnection?           Connection,
                                                       BinaryDataTransferRequest?      Request,
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnBinaryDataTransferResponseSentDelegate?  OnBinaryDataTransferResponseSent;
 
 
-        public Task SendOnBinaryDataTransferResponseSent(DateTime                    Timestamp,
+        public Task SendOnBinaryDataTransferResponseSent(DateTimeOffset              Timestamp,
                                                          IEventSender                Sender,
                                                          IWebSocketConnection?       Connection,
                                                          BinaryDataTransferRequest   Request,
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnBinaryDataTransferRequestErrorSentDelegate? OnBinaryDataTransferRequestErrorSent;
 
 
-        public Task SendOnBinaryDataTransferRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnBinaryDataTransferRequestErrorSent(DateTimeOffset                Timestamp,
                                                              IEventSender                  Sender,
                                                              IWebSocketConnection?         Connection,
                                                              BinaryDataTransferRequest?    Request,
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnBinaryDataTransferResponseErrorSentDelegate? OnBinaryDataTransferResponseErrorSent;
 
 
-        public Task SendOnBinaryDataTransferResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnBinaryDataTransferResponseErrorSent(DateTimeOffset                 Timestamp,
                                                               IEventSender                   Sender,
                                                               IWebSocketConnection?          Connection,
                                                               BinaryDataTransferRequest?     Request,

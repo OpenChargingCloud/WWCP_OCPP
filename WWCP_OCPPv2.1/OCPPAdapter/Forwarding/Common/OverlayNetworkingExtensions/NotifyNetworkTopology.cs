@@ -40,7 +40,7 @@
 //    /// <param name="CancellationToken">A token to cancel this request.</param>
 //    public delegate Task<ForwardingDecision<NotifyNetworkTopologyMessage>>
 
-//        OnNotifyNetworkTopologyMessageFilterDelegate(DateTime                       Timestamp,
+//        OnNotifyNetworkTopologyMessageFilterDelegate(DateTimeOffset                 Timestamp,
 //                                                     IEventSender                   Sender,
 //                                                     IWebSocketConnection           Connection,
 //                                                     NotifyNetworkTopologyMessage   Request,
@@ -58,7 +58,7 @@
 //    /// <param name="CancellationToken">A token to cancel this request.</param>
 //    public delegate Task
 
-//        OnNotifyNetworkTopologyMessageFilteredDelegate(DateTime                                           Timestamp,
+//        OnNotifyNetworkTopologyMessageFilteredDelegate(DateTimeOffset                                     Timestamp,
 //                                                       IEventSender                                       Sender,
 //                                                       IWebSocketConnection                               Connection,
 //                                                       NotifyNetworkTopologyMessage                       Request,

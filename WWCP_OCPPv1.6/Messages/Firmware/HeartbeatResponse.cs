@@ -56,13 +56,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext  Context
+        public JSONLDContext   Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The current time at the central system.
         /// </summary>
-        public DateTime       CurrentTime    { get; }
+        public DateTimeOffset  CurrentTime    { get; }
 
         #endregion
 
@@ -88,10 +88,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="SerializationFormat">The optional serialization format for this response.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public HeartbeatResponse(HeartbeatRequest         Request,
-                                 DateTime                 CurrentTime,
+                                 DateTimeOffset           CurrentTime,
 
                                  Result?                  Result                = null,
-                                 DateTime?                ResponseTimestamp     = null,
+                                 DateTimeOffset?          ResponseTimestamp     = null,
 
                                  SourceRouting?           Destination           = null,
                                  NetworkPath?             NetworkPath           = null,
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                               JObject                                          JSON,
                                               SourceRouting                                    Destination,
                                               NetworkPath                                      NetworkPath,
-                                              DateTime?                                        ResponseTimestamp               = null,
+                                              DateTimeOffset?                                  ResponseTimestamp               = null,
                                               CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null,
                                               CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
                                               CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        NetworkPath                                      NetworkPath,
                                        [NotNullWhen(true)]  out HeartbeatResponse?      HeartbeatResponse,
                                        [NotNullWhen(false)] out String?                 ErrorResponse,
-                                       DateTime?                                        ResponseTimestamp               = null,
+                                       DateTimeOffset?                                  ResponseTimestamp               = null,
                                        CustomJObjectParserDelegate<HeartbeatResponse>?  CustomHeartbeatResponseParser   = null,
                                        CustomJObjectParserDelegate<Signature>?          CustomSignatureParser           = null,
                                        CustomJObjectParserDelegate<CustomData>?         CustomCustomDataParser          = null)
@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      ResultCode               ErrorCode,
                                                      String?                  ErrorDescription    = null,
                                                      JObject?                 ErrorDetails        = null,
-                                                     DateTime?                ResponseTimestamp   = null,
+                                                     DateTimeOffset?          ResponseTimestamp   = null,
 
                                                      SourceRouting?           Destination         = null,
                                                      NetworkPath?             NetworkPath         = null,

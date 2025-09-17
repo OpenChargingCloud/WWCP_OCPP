@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecureDataTransferRequestReceivedDelegate(DateTime                    Timestamp,
+    public delegate Task OnSecureDataTransferRequestReceivedDelegate(DateTimeOffset              Timestamp,
                                                                      IEventSender                Sender,
                                                                      IWebSocketConnection        Connection,
                                                                      SecureDataTransferRequest   Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecureDataTransferResponseReceivedDelegate(DateTime                     Timestamp,
+    public delegate Task OnSecureDataTransferResponseReceivedDelegate(DateTimeOffset               Timestamp,
                                                                       IEventSender                 Sender,
                                                                       IWebSocketConnection?        Connection,
                                                                       SecureDataTransferRequest?   Request,
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecureDataTransferRequestErrorReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnSecureDataTransferRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                           IEventSender                   Sender,
                                                                           IWebSocketConnection           Connection,
                                                                           SecureDataTransferRequest?     Request,
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnSecureDataTransferResponseErrorReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnSecureDataTransferResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                            IEventSender                    Sender,
                                                                            IWebSocketConnection            Connection,
                                                                            SecureDataTransferRequest?      Request,
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SecureDataTransferResponse>
 
-        OnSecureDataTransferDelegate(DateTime                    Timestamp,
+        OnSecureDataTransferDelegate(DateTimeOffset              Timestamp,
                                      IEventSender                Sender,
                                      IWebSocketConnection        Connection,
                                      SecureDataTransferRequest   Request,
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_SecureDataTransfer(DateTime              RequestTimestamp,
+            Receive_SecureDataTransfer(DateTimeOffset        RequestTimestamp,
                                        IWebSocketConnection  WebSocketConnection,
                                        SourceRouting         Destination,
                                        NetworkPath           NetworkPath,
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                NetworkPath                NetworkPath,
                                                EventTracking_Id           EventTrackingId,
                                                Request_Id                 RequestId,
-                                               DateTime?                  ResponseTimestamp   = null,
+                                               DateTimeOffset?            ResponseTimestamp   = null,
                                                CancellationToken          CancellationToken   = default)
 
         {
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                    NetworkPath                   NetworkPath,
                                                    EventTracking_Id              EventTrackingId,
                                                    Request_Id                    RequestId,
-                                                   DateTime?                     ResponseTimestamp   = null,
+                                                   DateTimeOffset?               ResponseTimestamp   = null,
                                                    CancellationToken             CancellationToken   = default)
         {
 
@@ -508,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     NetworkPath                    NetworkPath,
                                                     EventTracking_Id               EventTrackingId,
                                                     Request_Id                     RequestId,
-                                                    DateTime?                      ResponseTimestamp   = null,
+                                                    DateTimeOffset?                ResponseTimestamp   = null,
                                                     CancellationToken              CancellationToken   = default)
 
         {

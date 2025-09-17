@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyEventRequestReceivedDelegate(DateTime               Timestamp,
+    public delegate Task OnNotifyEventRequestReceivedDelegate(DateTimeOffset         Timestamp,
                                                               IEventSender           Sender,
                                                               IWebSocketConnection   Connection,
                                                               NotifyEventRequest     Request,
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The optional runtime of the request/response pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyEventResponseReceivedDelegate(DateTime                Timestamp,
+    public delegate Task OnNotifyEventResponseReceivedDelegate(DateTimeOffset          Timestamp,
                                                                IEventSender            Sender,
                                                                IWebSocketConnection?   Connection,
                                                                NotifyEventRequest?     Request,
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="RequestErrorMessage">The request error message.</param>
     /// <param name="Runtime">The runtime of the request/request error pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyEventRequestErrorReceivedDelegate(DateTime                       Timestamp,
+    public delegate Task OnNotifyEventRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                    IEventSender                   Sender,
                                                                    IWebSocketConnection           Connection,
                                                                    NotifyEventRequest?            Request,
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="ResponseErrorMessage">The response error message.</param>
     /// <param name="Runtime">The optional runtime of the response/response error message pair.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnNotifyEventResponseErrorReceivedDelegate(DateTime                        Timestamp,
+    public delegate Task OnNotifyEventResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                     IEventSender                    Sender,
                                                                     IWebSocketConnection            Connection,
                                                                     NotifyEventRequest?             Request,
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<NotifyEventResponse>
 
-        OnNotifyEventDelegate(DateTime               Timestamp,
+        OnNotifyEventDelegate(DateTimeOffset         Timestamp,
                               IEventSender           Sender,
                               IWebSocketConnection   Connection,
                               NotifyEventRequest     Request,
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public async Task<OCPP_Response>
 
-            Receive_NotifyEvent(DateTime              RequestTimestamp,
+            Receive_NotifyEvent(DateTimeOffset        RequestTimestamp,
                                 IWebSocketConnection  WebSocketConnection,
                                 SourceRouting         Destination,
                                 NetworkPath           NetworkPath,
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                         NetworkPath           NetworkPath,
                                         EventTracking_Id      EventTrackingId,
                                         Request_Id            RequestId,
-                                        DateTime?             ResponseTimestamp   = null,
+                                        DateTimeOffset?       ResponseTimestamp   = null,
                                         CancellationToken     CancellationToken   = default)
 
         {
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                             NetworkPath                   NetworkPath,
                                             EventTracking_Id              EventTrackingId,
                                             Request_Id                    RequestId,
-                                            DateTime?                     ResponseTimestamp   = null,
+                                            DateTimeOffset?               ResponseTimestamp   = null,
                                             CancellationToken             CancellationToken   = default)
         {
 
@@ -516,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              NetworkPath                    NetworkPath,
                                              EventTracking_Id               EventTrackingId,
                                              Request_Id                     RequestId,
-                                             DateTime?                      ResponseTimestamp   = null,
+                                             DateTimeOffset?                ResponseTimestamp   = null,
                                              CancellationToken              CancellationToken   = default)
 
         {

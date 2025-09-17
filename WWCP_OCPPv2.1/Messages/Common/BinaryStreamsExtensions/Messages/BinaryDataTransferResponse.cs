@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           Byte[]?                    Data                   = null,
 
                                           Result?                    Result                 = null,
-                                          DateTime?                  ResponseTimestamp      = null,
+                                          DateTimeOffset?            ResponseTimestamp      = null,
 
                                           SourceRouting?             Destination            = null,
                                           NetworkPath?               NetworkPath            = null,
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                        Byte[]                                                   Binary,
                                                        SourceRouting                                            Destination,
                                                        NetworkPath                                              NetworkPath,
-                                                       DateTime?                                                ResponseTimestamp                        = null,
+                                                       DateTimeOffset?                                          ResponseTimestamp                        = null,
                                                        CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null,
                                                        CustomJObjectParserDelegate<StatusInfo>?                 CustomStatusInfoParser                   = null,
                                                        CustomBinaryParserDelegate<Signature>?                   CustomBinarySignatureParser              = null)
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        NetworkPath                                              NetworkPath,
                                        [NotNullWhen(true)]  out BinaryDataTransferResponse?     BinaryDataTransferResponse,
                                        [NotNullWhen(false)] out String?                         ErrorResponse,
-                                       DateTime?                                                ResponseTimestamp                        = null,
+                                       DateTimeOffset?                                          ResponseTimestamp                        = null,
                                        CustomBinaryParserDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser   = null,
                                        CustomJObjectParserDelegate<StatusInfo>?                 CustomStatusInfoParser                   = null,
                                        CustomBinaryParserDelegate<Signature>?                   CustomBinarySignatureParser              = null)
@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                               ResultCode                 ErrorCode,
                                                               String?                    ErrorDescription    = null,
                                                               JObject?                   ErrorDetails        = null,
-                                                              DateTime?                  ResponseTimestamp   = null,
+                                                              DateTimeOffset?            ResponseTimestamp   = null,
 
                                                               SourceRouting?             Destination         = null,
                                                               NetworkPath?               NetworkPath         = null,

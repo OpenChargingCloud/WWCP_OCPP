@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="Request">The request.</param>
     /// <param name="SentMessageResult">The result of the send message process.</param>
     /// <param name="CancellationToken">An optional cancellation token.</param>
-    public delegate Task OnClearedChargingLimitRequestSentDelegate(DateTime                      Timestamp,
+    public delegate Task OnClearedChargingLimitRequestSentDelegate(DateTimeOffset                Timestamp,
                                                                    IEventSender                  Sender,
                                                                    IWebSocketConnection?         Connection,
                                                                    ClearedChargingLimitRequest   Request,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearedChargingLimitResponseSentDelegate(DateTime                       Timestamp,
+        OnClearedChargingLimitResponseSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
                                                    IWebSocketConnection?          Connection,
                                                    ClearedChargingLimitRequest    Request,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearedChargingLimitRequestErrorSentDelegate(DateTime                       Timestamp,
+        OnClearedChargingLimitRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
                                                        IWebSocketConnection?          Connection,
                                                        ClearedChargingLimitRequest?   Request,
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task
 
-        OnClearedChargingLimitResponseErrorSentDelegate(DateTime                        Timestamp,
+        OnClearedChargingLimitResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                         IEventSender                    Sender,
                                                         IWebSocketConnection?           Connection,
                                                         ClearedChargingLimitRequest?    Request,
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         public event OnClearedChargingLimitResponseSentDelegate?  OnClearedChargingLimitResponseSent;
 
-        public Task SendOnClearedChargingLimitResponseSent(DateTime                      Timestamp,
+        public Task SendOnClearedChargingLimitResponseSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
                                                            IWebSocketConnection?         Connection,
                                                            ClearedChargingLimitRequest   Request,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearedChargingLimitRequestErrorSentDelegate? OnClearedChargingLimitRequestErrorSent;
 
 
-        public Task SendOnClearedChargingLimitRequestErrorSent(DateTime                      Timestamp,
+        public Task SendOnClearedChargingLimitRequestErrorSent(DateTimeOffset                Timestamp,
                                                                IEventSender                  Sender,
                                                                IWebSocketConnection?         Connection,
                                                                ClearedChargingLimitRequest?  Request,
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public event OnClearedChargingLimitResponseErrorSentDelegate? OnClearedChargingLimitResponseErrorSent;
 
 
-        public Task SendOnClearedChargingLimitResponseErrorSent(DateTime                       Timestamp,
+        public Task SendOnClearedChargingLimitResponseErrorSent(DateTimeOffset                 Timestamp,
                                                                 IEventSender                   Sender,
                                                                 IWebSocketConnection?          Connection,
                                                                 ClearedChargingLimitRequest?   Request,

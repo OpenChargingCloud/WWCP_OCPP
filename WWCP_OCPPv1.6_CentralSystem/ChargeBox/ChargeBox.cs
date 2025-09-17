@@ -828,7 +828,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          IEnumerable<AttachedFile>?                  AttachedFiles                       = default,
                          JSONLDContext?                              JSONLDContext                       = default,
                          String?                                     DataSource                          = default,
-                         DateTime?                                   LastChange                          = default)
+                         DateTimeOffset?                             LastChange                          = default)
 
             : base(Id,
                    JSONLDContext ?? DefaultJSONLDContext,
@@ -1586,8 +1586,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            IEnumerable<AttachedFile>?             AttachedFiles                 = null,
                            JSONLDContext?                         JSONLDContext                 = null,
                            String?                                DataSource                    = null,
-                           DateTime?                              Created                       = null,
-                           DateTime?                              LastChange                    = null)
+                           DateTimeOffset?                        Created                       = null,
+                           DateTimeOffset?                        LastChange                    = null)
 
                 : base(Id,
                        JSONLDContext ?? DefaultJSONLDContext,
@@ -1777,34 +1777,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     //if (!Branch.HasValue || Branch.Value.IsNullOrEmpty)
                     //    throw new ArgumentNullException(nameof(Branch), "The given branch must not be null or empty!");
 
-                    return new ChargeBox(Id,
-                                         1,
-                                         ChargePointVendor,
-                                         ChargePointModel,
+                    return new ChargeBox(
 
-                                         Description,
-                                         ChargePointSerialNumber,
-                                         ChargeBoxSerialNumber,
-                                         FirmwareVersion,
-                                         Iccid,
-                                         IMSI,
-                                         MeterType,
-                                         MeterSerialNumber,
-                                         MeterPublicKey,
+                               Id,
+                               1,
+                               ChargePointVendor,
+                               ChargePointModel,
 
-                                         ExpectHeartbeatEvery,
+                               Description,
+                               ChargePointSerialNumber,
+                               ChargeBoxSerialNumber,
+                               FirmwareVersion,
+                               Iccid,
+                               IMSI,
+                               MeterType,
+                               MeterSerialNumber,
+                               MeterPublicKey,
 
-                                                          _Notifications,
+                               ExpectHeartbeatEvery,
 
-                                                          //_User2ChargeBox_Edges,
-                                                          _ChargeBox2ChargeBox_InEdges,
-                                                          _ChargeBox2ChargeBox_OutEdges,
+                               _Notifications,
 
-                                                          CustomData,
-                                                          AttachedFiles,
-                                                          JSONLDContext,
-                                                          DataSource,
-                                                          LastChangeDate);
+                               //_User2ChargeBox_Edges,
+                               _ChargeBox2ChargeBox_InEdges,
+                               _ChargeBox2ChargeBox_OutEdges,
+
+                               CustomData,
+                               AttachedFiles,
+                               JSONLDContext,
+                               DataSource,
+                               LastChangeDate
+
+                           );
 
                 }
             }

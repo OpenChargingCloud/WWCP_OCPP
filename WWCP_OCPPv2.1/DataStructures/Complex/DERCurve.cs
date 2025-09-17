@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Only absent when this is a _default_ DER control curve.
         /// </summary>
         [Optional]
-        public DateTime?                   StartTime                  { get; }
+        public DateTimeOffset?             StartTime                  { get; }
 
         /// <summary>
         /// The optional duration in seconds that this curve will be active.
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         ReactivePowerParameters?    ReactivePowerParameters   = null,
                         VoltageParameters?          VoltageParameters         = null,
                         TimeSpan?                   ResponseTime              = null,
-                        DateTime?                   StartTime                 = null,
+                        DateTimeOffset?             StartTime                 = null,
                         TimeSpan?                   Duration                  = null,
                         CustomData?                 CustomData                = null)
 
