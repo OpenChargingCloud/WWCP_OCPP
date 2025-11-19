@@ -233,6 +233,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
             throw new NotImplementedException();
         }
+
+        public Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct? ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, JObject? AdditionalSessionInfos = null, Auth_Path? AuthenticationPath = null, ICSORoamingProvider? CSORoamingProvider = null, DateTimeOffset? RequestTimestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoteStopResult> RemoteStop(ChargingSession_Id SessionId, ReservationHandling? ReservationHandling = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, Auth_Path? AuthenticationPath = null, ICSORoamingProvider? CSORoamingProvider = null, DateTimeOffset? RequestTimestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ReservationResult> Reserve(ChargingLocation ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTimeOffset? StartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, Auth_Path? AuthenticationPath = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<EMobilityAccount_Id>? eMAIds = null, IEnumerable<uint>? PINs = null, ICSORoamingProvider? CSORoamingProvider = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CancelReservationResult> CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, ICSORoamingProvider? CSORoamingProvider = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
 }
