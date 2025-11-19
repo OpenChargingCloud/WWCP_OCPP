@@ -1017,10 +1017,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 Assert.Multiple(() => {
 
-                    Assert.That(setVariablesResponse.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
-                    Assert.That(setVariablesRequests.Count,                        Is.EqualTo(1));
+                    Assert.That(setVariablesResponse.Result.ResultCode,                     Is.EqualTo(ResultCode.OK));
+                    Assert.That(setVariablesRequests.Count,                                 Is.EqualTo(1));
 
-                    Assert.That(setVariablesResponse.SetVariableResults.Count,     Is.EqualTo(5));
+                    Assert.That(setVariablesResponse.SetVariableResults.Count,              Is.EqualTo(5));
 
                     var firstResult  = setVariablesResponse.SetVariableResults.First();
                     Assert.That(firstResult. AttributeStatus,                               Is.EqualTo(SetVariableStatus.Accepted));
