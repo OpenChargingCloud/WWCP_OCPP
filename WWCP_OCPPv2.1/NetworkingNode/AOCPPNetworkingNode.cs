@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -219,7 +220,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        Boolean?                                                        PreferIPv4                   = null,
                                        RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
                                        LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                       X509Certificate2?                                               ClientCertificate            = null,
+                                       IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
+                                       SslStreamCertificateContext?                                    ClientCertificateContext     = null,
+                                       IEnumerable<X509Certificate2>?                                  ClientCertificateChain       = null,
                                        SslProtocols?                                                   TLSProtocol                  = null,
                                        String?                                                         HTTPUserAgent                = null,
                                        IHTTPAuthentication?                                            HTTPAuthentication           = null,
@@ -263,7 +266,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           PreferIPv4,
                                           RemoteCertificateValidator,
                                           LocalCertificateSelector,
-                                          ClientCertificate,
+                                          ClientCertificates,
+                                          ClientCertificateContext,
+                                          ClientCertificateChain,
                                           TLSProtocol,
                                           HTTPUserAgent,
                                           HTTPAuthentication,
