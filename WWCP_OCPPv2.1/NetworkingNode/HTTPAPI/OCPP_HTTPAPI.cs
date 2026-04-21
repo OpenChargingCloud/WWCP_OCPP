@@ -24,16 +24,19 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using org.GraphDefined.Vanaheimr.Hermod.SMTP;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
     /// <summary>
-    /// The OCPP v1.6 Networking Node HTTP API.
+    /// The OCPP v2.1 Networking Node HTTP API.
     /// </summary>
-    public class HTTPAPI : OCPP.NetworkingNode.HTTPAPI
+    public class OCPP_HTTPAPI : OCPP.NetworkingNode.OCPP_HTTPAPI
     {
 
         #region Data
@@ -51,15 +54,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const String  HTTPRoot               = "cloud.charging.open.protocols.OCPPv1_6.NetworkingNode.HTTPAPI.HTTPRoot.";
+        public new const String  HTTPRoot               = "cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.HTTPAPI.HTTPRoot.";
 
         #endregion
 
-        #region Properties
-
-        public AOCPPNetworkingNode  NetworkingNode    { get; }
-
-        #endregion
+        public AOCPPNetworkingNode NetworkingNode { get; }
 
         #region Constructor(s)
 
@@ -71,29 +70,81 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(AOCPPNetworkingNode                         NetworkingNode,
-                       HTTPExtAPI                                  HTTPAPI,
-                       String?                                     HTTPServerName         = null,
-                       HTTPPath?                                   URLPathPrefix          = null,
-                       HTTPPath?                                   BasePath               = null,
+        public OCPP_HTTPAPI(AOCPPNetworkingNode            NetworkingNode,
+                            HTTPExtAPI                     HTTPAPI,
 
-                       Boolean                                     EventLoggingDisabled   = true,
+                            IEnumerable<HTTPHostname>?     Hostnames                 = null,
+                            HTTPPath?                      RootPath                  = null,
+                            IEnumerable<HTTPContentType>?  HTTPContentTypes          = null,
+                            I18NString?                    Description               = null,
 
-                       String                                      HTTPRealm              = DefaultHTTPRealm,
-                       IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
-                       Formatting                                  JSONFormatting         = Formatting.None)
+                            HTTPPath?                      BasePath                  = null,  // For URL prefixes in HTML!
+
+                            String?                        ExternalDNSName           = null,
+                            String?                        HTTPServerName            = DefaultHTTPServerName,
+                            String?                        HTTPServiceName           = DefaultHTTPServiceName,
+                            String?                        APIVersionHash            = null,
+                            JObject?                       APIVersionHashes          = null,
+
+                            EMailAddress?                  APIRobotEMailAddress      = null,
+                            String?                        APIRobotGPGPassphrase     = null,
+                            ISMTPClient?                   SMTPClient                = null,
+
+                            Boolean?                       IsDevelopment             = null,
+                            IEnumerable<String>?           DevelopmentServers        = null,
+                            //Boolean?                       SkipURLTemplates          = false,
+                            String?                        DatabaseFileName          = null,//DefaultAssetsDBFileName,
+                            Boolean?                       DisableNotifications      = false,
+
+                            Boolean?                       DisableLogging            = null,
+                            String?                        LoggingContext            = null,
+                            String?                        LoggingPath               = null,
+                            String?                        LogfileName               = null,
+                            LogfileCreatorDelegate?        LogfileCreator            = null)
 
             : base(NetworkingNode,
                    HTTPAPI,
-                   HTTPServerName ?? DefaultHTTPServerName,
-                   URLPathPrefix,
+
+                   Hostnames,
+                   RootPath,
+                   HTTPContentTypes,
+                   Description ?? I18NString.Create("Norn HTTP API"),
+
                    BasePath,
 
-                   EventLoggingDisabled,
+                   ExternalDNSName,
+                   HTTPServerName,
+                   HTTPServiceName,
+                   APIVersionHash,
+                   APIVersionHashes,
 
-                   HTTPRealm,
-                   HTTPLogins,
-                   JSONFormatting)
+                   APIRobotEMailAddress,
+                   APIRobotGPGPassphrase,
+                   SMTPClient,
+
+                   IsDevelopment,
+                   DevelopmentServers,
+                   DatabaseFileName,
+                   DisableNotifications,
+
+                   DisableLogging,
+                   LoggingContext,
+                   LoggingPath,
+                   LogfileName
+                   //LogfileCreator is not null
+                   //    ? (loggingPath, context, logfileName) => LogfileCreator(loggingPath, null, context, logfileName)
+                   //    : (loggingPath, context, logfileName) => String.Concat(
+                   //                                                 loggingPath + Path.DirectorySeparatorChar,
+                   //                                              //   remoteParty is not null
+                   //                                              //       ? remoteParty.Id.ToString() + Path.DirectorySeparatorChar
+                   //                                              //       : null,
+                   //                                                 context is not null ? context + "_" : "",
+                   //                                                 logfileName, "_",
+                   //                                                 Timestamp.Now.Year, "-",
+                   //                                                 Timestamp.Now.Month.ToString("D2"),
+                   //                                                 ".log"
+                   //                                             )
+                   )
 
         {
 
@@ -107,11 +158,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             RegisterURITemplates();
             AttachNetworkingNode(networkingNode);
 
-            DebugX.Log($"OCPP {Version.String} Networking Node HTTP API started on {HTTPBaseAPI.HTTPServer.IPPorts.AggregateWith(", ")}");
+            DebugX.Log($"OCPP {Version.String} Networking Node HTTP API started on {HTTPBaseAPI.HTTPServer.TCPPort}");
 
         }
 
         #endregion
+
+
+
 
 
         #region (private) RegisterURLTemplates()
@@ -123,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         protected override Stream? GetResourceStream(String ResourceName)
 
             => base.GetResourceStream(ResourceName,
-                                 new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                 new Tuple<string, Assembly>(OCPP_HTTPAPI.HTTPRoot, typeof(OCPP_HTTPAPI).Assembly),
                                  new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -134,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
             => base.GetResourceMemoryStream(ResourceName,
-                                       new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                       new Tuple<string, Assembly>(OCPP_HTTPAPI.HTTPRoot, typeof(OCPP_HTTPAPI).Assembly),
                                        new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                        new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -145,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         protected override String GetResourceString(String ResourceName)
 
             => base.GetResourceString(ResourceName,
-                                 new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                 new Tuple<string, Assembly>(OCPP_HTTPAPI.HTTPRoot, typeof(OCPP_HTTPAPI).Assembly),
                                  new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -156,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         protected override Byte[] GetResourceBytes(String ResourceName)
 
             => base.GetResourceBytes(ResourceName,
-                                new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                new Tuple<string, Assembly>(OCPP_HTTPAPI.HTTPRoot, typeof(OCPP_HTTPAPI).Assembly),
                                 new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                 new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -167,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         protected override String MixWithHTMLTemplate(String ResourceName)
 
             => base.MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                   new Tuple<string, Assembly>(OCPP_HTTPAPI.HTTPRoot, typeof(OCPP_HTTPAPI).Assembly),
                                    new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -180,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             => base.MixWithHTMLTemplate(ResourceName,
                                    HTMLConverter,
-                                   new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                   new Tuple<string, Assembly>(OCPP_HTTPAPI.HTTPRoot, typeof(OCPP_HTTPAPI).Assembly),
                                    new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly));
 
@@ -195,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             => base.MixWithHTMLTemplate(Template,
                                    ResourceName,
                                    new[] {
-                                       new Tuple<string, Assembly>(HTTPAPI.HTTPRoot, typeof(HTTPAPI).Assembly),
+                                       new Tuple<string, Assembly>(OCPP_HTTPAPI.HTTPRoot, typeof(OCPP_HTTPAPI).Assembly),
                                        new Tuple<string, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                        new Tuple<string, Assembly>(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI.   HTTPRoot, typeof(org.GraphDefined.Vanaheimr.Hermod.HTTP.HTTPAPI).   Assembly)
                                    },
@@ -208,20 +262,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         private void RegisterURITemplates()
         {
 
-            HTTPBaseAPI.HTTPServer.AddAuth(request => {
+            //HTTPBaseAPI.HTTPServer.AddAuth(request => {
 
-                if (request.Path.ToString() == "/systemInfo"       ||
-                    request.Path.ToString() == "/webSocketClients" ||
-                    request.Path.ToString() == "/webSocketServers" ||
-                    request.Path.ToString() == "/ocppAdapter"      ||
-                    request.Path.ToString() == "/connections")
-                {
-                    return HTTPExtAPI.Anonymous;
-                }
+            //    if (request.Path.ToString() == "/systemInfo"       ||
+            //        request.Path.ToString() == "/webSocketClients" ||
+            //        request.Path.ToString() == "/webSocketServers" ||
+            //        request.Path.ToString() == "/ocppAdapter"      ||
+            //        request.Path.ToString() == "/connections"      ||
+            //        request.Path.ToString() == "/events")
+            //    {
+            //        return HTTPExtAPI.Anonymous;
+            //    }
 
-                return null;
+            //    return null;
 
-            });
+            //});
 
 
             #region / (HTTPRoot)
@@ -229,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //HTTPBaseAPI.RegisterResourcesFolder(this,
             //                                HTTPHostname.Any,
             //                                URLPathPrefix,
-            //                                "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
+            //                                "cloud.charging.open.protocols.OCPPv2_1.WebAPI.HTTPRoot",
             //                                DefaultFilename: "index.html");
 
             //HTTPServer.AddMethodCallback(HTTPHostname.Any,
@@ -267,8 +322,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             // curl -v -H "Accept: application/json" http://127.0.0.1:6000/systemInfo
             // curl -v -H "Accept: application/json" http://127.0.0.1:7000/systemInfo
             // ------------------------------------------------------------------------
-            HTTPBaseAPI.AddMethodCallback(
-                HTTPHostname.Any,
+            HTTPBaseAPI.AddHandler(
+
                 HTTPMethod.GET,
                 URLPathPrefix + "systemInfo",
                 HTTPContentType.Application.JSON_UTF8,
@@ -332,8 +387,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             // curl -v -H "Accept: application/json" http://127.0.0.1:6000/ocppAdapter?pretty
             // curl -v -H "Accept: application/json" http://127.0.0.1:7000/ocppAdapter?pretty
             // --------------------------------------------------------------------------------
-            HTTPBaseAPI.AddMethodCallback(
-                HTTPHostname.Any,
+            HTTPBaseAPI.AddHandler(
+
                 HTTPMethod.GET,
                 URLPathPrefix + "ocppAdapter",
                 HTTPContentType.Application.JSON_UTF8,

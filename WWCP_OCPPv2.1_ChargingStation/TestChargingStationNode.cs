@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        String?                 HTTPAPI_RobotGPGPassphrase     = null,
                                        Boolean                 HTTPAPI_EventLoggingDisabled   = false,
 
-                                       WebAPI?                 WebAPI                         = null,
+                                       OCPP_WebAPI?                 WebAPI                         = null,
                                        Boolean                 WebAPI_Disabled                = false,
                                        HTTPPath?               WebAPI_Path                    = null,
 
@@ -718,7 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                   Offline:              false,
                                   NumberOfPhasesUsed:   3,
-                                  CableMaxCurrent:      Ampere.ParseA(32),
+                                  CableMaxCurrent:      Ampere.FromA(32),
                                   ReservationId:        evse.ReservationId,
                                   IdToken:              evse.IdToken,
                                   EVSE:                 new EVSE(
@@ -823,7 +823,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                   Offline:              false,
                                   NumberOfPhasesUsed:   3,
-                                  CableMaxCurrent:      Ampere.ParseA(32),
+                                  CableMaxCurrent:      Ampere.FromA(32),
                                   ReservationId:        evse.ReservationId,
                                   IdToken:              evse.IdToken,
                                   EVSE:                 new EVSE(

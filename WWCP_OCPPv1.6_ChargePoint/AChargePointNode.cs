@@ -561,18 +561,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   !HTTPAPI_Disabled
-                       ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
-                             HTTPServerName:          "GraphDefined OCPP Test Charging Station",
-                             HTTPServiceName:         "GraphDefined OCPP Test Charging Station Service",
-                             APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Charging Station Robot <robot@charging.cloud>"),
-                             APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer(),
-                             DNSClient:               DNSClient,
-                             AutoStart:               true
-                         )
-                       : null,
+                   null, //!HTTPAPI_Disabled
+                   //    ? new HTTPExtAPI(
+                   //          HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
+                   //          HTTPServerName:          "GraphDefined OCPP Test Charging Station",
+                   //          HTTPServiceName:         "GraphDefined OCPP Test Charging Station Service",
+                   //          APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Charging Station Robot <robot@charging.cloud>"),
+                   //          APIRobotGPGPassphrase:   "test123",
+                   //          SMTPClient:              new NullMailer(),
+                   //          DNSClient:               DNSClient,
+                   //          AutoStart:               true
+                   //      )
+                   //    : null,
                    ControlWebSocketServer,
 
                    DisableSendHeartbeats,
@@ -620,7 +620,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                         connectorSpec[i - 1].Availability,
 
                         connectorSpec[i - 1].MaxPower,
-                        connectorSpec[i - 1].MaxCapacity,
+                        connectorSpec[i - 1].MaxEnergy,
                         connectorSpec[i - 1].EnergyMeter
 
                     )
@@ -731,7 +731,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             ConnectOCPPWebSocketClient(URL                                                             RemoteURL,
                                        HTTPHostname?                                                   VirtualHostname              = null,
                                        I18NString?                                                     Description                  = null,
-                                       Boolean?                                                        PreferIPv4                   = null,
+                                       IPVersionPreference?                                            PreferIPv4                   = null,
                                        RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
                                        LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                        IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,

@@ -18,8 +18,13 @@
 #region Usings
 
 using System.Reflection;
-
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using org.GraphDefined.Vanaheimr.Hermod.SMTP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -38,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The OCPP Networking Node WebAPI.
     /// </summary>
-    public class WebAPI
+    public class OCPP_WebAPI : AHTTPExtAPIExtension2<OCPP_HTTPAPI, HTTPExtAPI>
     {
 
         #region Data
@@ -80,14 +85,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public WebAPI(AChargingStationNode                        ChargingStation,
-                      HTTPServer                                  HTTPServer,
-                      String?                                     HTTPServerName   = null,
-                      HTTPPath?                                   URLPathPrefix    = null,
-                      HTTPPath?                                   BasePath         = null,
-                      String                                      HTTPRealm        = DefaultHTTPRealm,
-                      IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                      String?                                     HTMLTemplate     = null)
+        public OCPP_WebAPI(OCPP_HTTPAPI                   OCPPHTTPAPI,
+                           HTTPExtAPI                     HTTPAPI,
+                           IEnumerable<HTTPHostname>?     Hostnames                 = null,
+                           HTTPPath?                      RootPath                  = null,
+                           IEnumerable<HTTPContentType>?  HTTPContentTypes          = null,
+                           I18NString?                    Description               = null,
+
+                           HTTPPath?                      BasePath                  = null,  // For URL prefixes in HTML!
+
+                           String?                        ExternalDNSName           = null,
+                           String?                        HTTPServerName            = DefaultHTTPServerName,
+                           String?                        HTTPServiceName           = DefaultHTTPServiceName,
+                           String?                        APIVersionHash            = null,
+                           JObject?                       APIVersionHashes          = null,
+
+                           EMailAddress?                  APIRobotEMailAddress      = null,
+                           String?                        APIRobotGPGPassphrase     = null,
+                           ISMTPClient?                   SMTPClient                = null,
+
+                           HTTPPath?                      AdditionalURLPathPrefix   = null,
+                           Boolean?                       LocationsAsOpenData       = null,
+                           Boolean?                       TariffsAsOpenData         = null,
+                           Boolean?                       AllowDowngrades           = null,
+
+                           String?                        RemotePartyDBFileName     = null,
+
+                           Boolean?                       IsDevelopment             = null,
+                           IEnumerable<String>?           DevelopmentServers        = null,
+                           //Boolean?                       SkipURLTemplates          = false,
+                           String?                        DatabaseFileName          = null,//DefaultAssetsDBFileName,
+                           Boolean?                       DisableNotifications      = false,
+
+                           Boolean?                       DisableLogging            = null,
+                           String?                        LoggingContext            = null,
+                           String?                        LoggingPath               = null,
+                           String?                        LogfileName               = null,
+                           LogfileCreatorDelegate?        LogfileCreator            = null)
+
+            : base(OCPPHTTPAPI,
+               //    HTTPAPI,
+                   RootPath,
+                   BasePath,
+                   Description ?? I18NString.Create("OCPP Web API"),
+
+                   ExternalDNSName,
+                   HTTPServerName,
+                   HTTPServiceName,
+                   APIVersionHash,
+                   APIVersionHashes,
+
+                   IsDevelopment,
+                   DevelopmentServers,
+                   DisableLogging,
+                   LoggingPath,
+                   LogfileName
+                   //LogfileCreator is not null
+                   //    ? (loggingPath, context, logfileName) => LogfileCreator(loggingPath, null, context, logfileName)
+                   //    : (loggingPath, context, logfileName) => String.Concat(
+                   //                                                 loggingPath + Path.DirectorySeparatorChar,
+                   //                                              //   remoteParty is not null
+                   //                                              //       ? remoteParty.Id.ToString() + Path.DirectorySeparatorChar
+                   //                                              //       : null,
+                   //                                                 context is not null ? context + "_" : "",
+                   //                                                 logfileName, "_",
+                   //                                                 Timestamp.Now.Year, "-",
+                   //                                                 Timestamp.Now.Month.ToString("D2"),
+                   //                                                 ".log"
+                   //                                             )
+                   )
+
         {
 
             // Link HTTP events...

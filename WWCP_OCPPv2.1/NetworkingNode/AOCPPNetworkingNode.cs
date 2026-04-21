@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             ConnectOCPPWebSocketClient(URL                                                             RemoteURL,
                                        HTTPHostname?                                                   VirtualHostname              = null,
                                        I18NString?                                                     Description                  = null,
-                                       Boolean?                                                        PreferIPv4                   = null,
+                                       IPVersionPreference?                                            PreferIPv4                   = null,
                                        RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
                                        LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                        IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,

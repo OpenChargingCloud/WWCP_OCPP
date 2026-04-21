@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //publiuc ConnectorFormats        Format             { get; }
 
         public Watt              MaxPower             { get; }
-        public WattHour?         MaxCapacity          { get; }
+        public WattHour?         MaxEnergy            { get; }
         public IEnergyMeter?     EnergyMeter          { get; }
 
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                              String?         PhysicalReference   = null,
 
                              Watt?           MaxPower            = null,
-                             WattHour?       MaxCapacity         = null,
+                             WattHour?       MaxEnergy           = null,
                              IEnergyMeter?   EnergyMeter         = null)
 
         {
@@ -61,8 +61,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             this.PhysicalReference  = PhysicalReference;
 
-            this.MaxPower           = MaxPower ?? Watt.ParseKW(11);
-            this.MaxCapacity        = MaxCapacity;
+            this.MaxPower           = MaxPower ?? Watt.FromKW(11m);
+            this.MaxEnergy          = MaxEnergy;
             this.EnergyMeter        = EnergyMeter;
 
         }

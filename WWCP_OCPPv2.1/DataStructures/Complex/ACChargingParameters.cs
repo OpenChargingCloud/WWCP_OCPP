@@ -317,10 +317,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("energyAmount",   EnergyAmount.IntegerValue),
-                                 new JProperty("evMinCurrent",   EVMinCurrent.IntegerValue),
-                                 new JProperty("evMaxCurrent",   EVMaxCurrent.IntegerValue),
-                                 new JProperty("evMaxVoltage",   EVMaxVoltage.IntegerValue),
+                                 new JProperty("energyAmount",   EnergyAmount.RoundedIntegerValue),
+                                 new JProperty("evMinCurrent",   EVMinCurrent.RoundedIntegerValue),
+                                 new JProperty("evMaxCurrent",   EVMaxCurrent.RoundedIntegerValue),
+                                 new JProperty("evMaxVoltage",   EVMaxVoltage.RoundedIntegerValue),
 
                            CustomData is not null
                                ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))

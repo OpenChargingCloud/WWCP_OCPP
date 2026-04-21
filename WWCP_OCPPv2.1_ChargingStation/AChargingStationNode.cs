@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         public HTTPAPI?                 HTTPAPI                     { get; }
 
-        public WebAPI?                  WebAPI                      { get; }
+        public OCPP_WebAPI?                  WebAPI                      { get; }
         public HTTPPath?                WebAPI_Path                 { get; }
 
         #endregion
@@ -627,7 +627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     String?                 HTTPAPI_RobotGPGPassphrase     = null,
                                     Boolean                 HTTPAPI_EventLoggingDisabled   = false,
 
-                                    WebAPI?                 WebAPI                         = null,
+                                    OCPP_WebAPI?                 WebAPI                         = null,
                                     Boolean                 WebAPI_Disabled                = false,
                                     HTTPPath?               WebAPI_Path                    = null,
 
@@ -649,18 +649,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   !HTTPAPI_Disabled
-                       ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
-                             HTTPServerName:          "GraphDefined OCPP Test Charging Station",
-                             HTTPServiceName:         "GraphDefined OCPP Test Charging Station Service",
-                             APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Charging Station Robot <robot@charging.cloud>"),
-                             APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer(),
-                             DNSClient:               DNSClient,
-                             AutoStart:               true
-                         )
-                       : null,
+                   null,//!HTTPAPI_Disabled
+                   //    ? new HTTPExtAPI(
+                   //          HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
+                   //          HTTPServerName:          "GraphDefined OCPP Test Charging Station",
+                   //          HTTPServiceName:         "GraphDefined OCPP Test Charging Station Service",
+                   //          APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Charging Station Robot <robot@charging.cloud>"),
+                   //          APIRobotGPGPassphrase:   "test123",
+                   //          SMTPClient:              new NullMailer(),
+                   //          DNSClient:               DNSClient,
+                   //          AutoStart:               true
+                   //      )
+                   //    : null,
                    ControlWebSocketServer,
 
                    DisableSendHeartbeats,
@@ -713,36 +713,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             if (HTTPExtAPI is not null)
             {
 
-                this.HTTPAPI            = HTTPAPI ?? new HTTPAPI(
-                                                         this,
-                                                         HTTPExtAPI,
-                                                         EventLoggingDisabled: HTTPAPI_EventLoggingDisabled
-                                                     );
+                //this.HTTPAPI            = HTTPAPI ?? new HTTPAPI(
+                //                                         this,
+                //                                         HTTPExtAPI,
+                //                                         EventLoggingDisabled: HTTPAPI_EventLoggingDisabled
+                //                                     );
 
                 #region HTTP API Security Settings
 
-                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
+                //this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
-                    // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
-                    {
-                        return HTTPExtAPI.Anonymous;
-                    }
+                //    // Allow some URLs for anonymous access...
+                //    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                //    {
+                //        return HTTPExtAPI.Anonymous;
+                //    }
 
-                    return null;
+                //    return null;
 
-                });
+                //});
 
                 #endregion
 
                 if (!WebAPI_Disabled)
                 {
 
-                    this.WebAPI  = WebAPI ?? new WebAPI(
-                                                 this,
-                                                 HTTPExtAPI.HTTPServer,
-                                                 URLPathPrefix:   this.WebAPI_Path
-                                             );
+                    //this.WebAPI  = WebAPI ?? new WebAPI(
+                    //                             this,
+                    //                             HTTPExtAPI.HTTPServer,
+                    //                             URLPathPrefix:   this.WebAPI_Path
+                    //                         );
 
                 }
 
@@ -821,7 +821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             ConnectOCPPWebSocketClient(URL                                                             RemoteURL,
                                        HTTPHostname?                                                   VirtualHostname              = null,
                                        I18NString?                                                     Description                  = null,
-                                       Boolean?                                                        PreferIPv4                   = null,
+                                       IPVersionPreference?                                            PreferIPv4                   = null,
                                        RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
                                        LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                        IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,

@@ -440,15 +440,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evMaxCurrent",       EVMaxCurrent.          IntegerValue),
-                                 new JProperty("evMaxVoltage",       EVMaxVoltage.          IntegerValue),
+                                 new JProperty("evMaxCurrent",       EVMaxCurrent.          RoundedIntegerValue),
+                                 new JProperty("evMaxVoltage",       EVMaxVoltage.          RoundedIntegerValue),
 
                            EnergyAmount.HasValue
-                               ? new JProperty("energyAmount",       EnergyAmount.    Value.IntegerValue)
+                               ? new JProperty("energyAmount",       EnergyAmount.    Value.RoundedIntegerValue)
                                : null,
 
                            EVMaxPower.HasValue
-                               ? new JProperty("evMaxPower",         EVMaxPower.      Value.IntegerValue)
+                               ? new JProperty("evMaxPower",         EVMaxPower.      Value.RoundedIntegerValue)
                                : null,
 
                            StateOfCharge.HasValue
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            EVEnergyCapacity.HasValue
-                               ? new JProperty("evEnergyCapacity",   EVEnergyCapacity.Value.IntegerValue)
+                               ? new JProperty("evEnergyCapacity",   EVEnergyCapacity.Value.RoundedIntegerValue)
                                : null,
 
                            FullSoC.HasValue

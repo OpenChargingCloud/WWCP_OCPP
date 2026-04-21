@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Calculate TotalEnergy
 
-            var totalEnergy = WattHour.ParseKWh(stopMeteringValue.Value - startMeteringValue.Value);
+            var totalEnergy = WattHour.FromKWh(stopMeteringValue.Value - startMeteringValue.Value);
 
             #endregion
 
@@ -1012,8 +1012,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var BilledChargingTime     = TimeSpan.Zero;
             var TotalChargingTimeCost  = new Price(0, 0);
 
-            var TotalEnergy            = WattHour.ParseKWh(0);
-            var BilledEnergy           = WattHour.ParseKWh(0);
+            var TotalEnergy            = WattHour.FromKWh(0);
+            var BilledEnergy           = WattHour.FromKWh(0);
             var TotalEnergyCost        = new Price(0, 0);
 
             var TotalParkingTime       = TimeSpan.Zero;

@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (
                    Type.Clone(),
-                   Tax. Clone(),
+                   Tax,
                    Stack
                );
 

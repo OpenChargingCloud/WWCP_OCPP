@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
                 var TotalEnergy = TotalEnergyNumber.HasValue
-                                      ? WattHour.TryParseKWh(TotalEnergyNumber.Value)
+                                      ? WattHour.TryFromKWh(TotalEnergyNumber.Value)
                                       : null;
 
                 #endregion

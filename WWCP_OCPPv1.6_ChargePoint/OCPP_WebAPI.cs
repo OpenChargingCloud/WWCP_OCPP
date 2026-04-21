@@ -21,6 +21,10 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using org.GraphDefined.Vanaheimr.Hermod.SMTP;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
+using cloud.charging.open.protocols.OCPPv1_6.NetworkingNode;
 
 #endregion
 
@@ -30,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// The OCPP WebAPI.
     /// </summary>
-    public class OCPPWebAPI : HTTPAPI
+    public class OCPP_WebAPI : AHTTPExtAPIExtension2<OCPP_HTTPAPI, HTTPExtAPI>
     {
 
         #region Data
@@ -104,38 +108,75 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URIs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public OCPPWebAPI(HTTPServer                                  HTTPServer,
-                          HTTPPath?                                   URLPathPrefix   = null,
-                          HTTPPath?                                   BasePath        = null,
-                          String                                      HTTPRealm       = DefaultHTTPRealm,
-                          IEnumerable<KeyValuePair<String, String>>?  HTTPLogins      = null,
-                          String?                                     HTMLTemplate    = null)
+        public OCPP_WebAPI(OCPP_HTTPAPI                   OCPPHTTPAPI,
+                           HTTPExtAPI                     HTTPAPI,
+                           IEnumerable<HTTPHostname>?     Hostnames                 = null,
+                           HTTPPath?                      RootPath                  = null,
+                           IEnumerable<HTTPContentType>?  HTTPContentTypes          = null,
+                           I18NString?                    Description               = null,
 
-            : base(HTTPServer,
-                   null,
-                   null, // ExternalDNSName,
-                   null, // HTTPServiceName,
+                           HTTPPath?                      BasePath                  = null,  // For URL prefixes in HTML!
+
+                           String?                        ExternalDNSName           = null,
+                           String?                        HTTPServerName            = DefaultHTTPServerName,
+                           String?                        HTTPServiceName           = DefaultHTTPServiceName,
+                           String?                        APIVersionHash            = null,
+                           JObject?                       APIVersionHashes          = null,
+
+                           EMailAddress?                  APIRobotEMailAddress      = null,
+                           String?                        APIRobotGPGPassphrase     = null,
+                           ISMTPClient?                   SMTPClient                = null,
+
+                           HTTPPath?                      AdditionalURLPathPrefix   = null,
+                           Boolean?                       LocationsAsOpenData       = null,
+                           Boolean?                       TariffsAsOpenData         = null,
+                           Boolean?                       AllowDowngrades           = null,
+
+                           String?                        RemotePartyDBFileName     = null,
+
+                           Boolean?                       IsDevelopment             = null,
+                           IEnumerable<String>?           DevelopmentServers        = null,
+                           //Boolean?                       SkipURLTemplates          = false,
+                           String?                        DatabaseFileName          = null,//DefaultAssetsDBFileName,
+                           Boolean?                       DisableNotifications      = false,
+
+                           Boolean?                       DisableLogging            = null,
+                           String?                        LoggingContext            = null,
+                           String?                        LoggingPath               = null,
+                           String?                        LogfileName               = null,
+                           LogfileCreatorDelegate?        LogfileCreator            = null)
+
+            : base(OCPPHTTPAPI,
+               //    HTTPAPI,
+                   RootPath,
                    BasePath,
+                   Description ?? I18NString.Create("OCPP Web API"),
 
-                   URLPathPrefix ?? DefaultURLPathPrefix,
-                   null, // HTMLTemplate,
-                   null, // APIVersionHashes,
+                   ExternalDNSName,
+                   HTTPServerName,
+                   HTTPServiceName,
+                   APIVersionHash,
+                   APIVersionHashes,
 
-                   null, // DisableMaintenanceTasks,
-                   null, // MaintenanceInitialDelay,
-                   null, // MaintenanceEvery,
-
-                   null, // DisableWardenTasks,
-                   null, // WardenInitialDelay,
-                   null, // WardenCheckEvery,
-
-                   null, // IsDevelopment,
-                   null, // DevelopmentServers,
-                   null, // DisableLogging,
-                   null, // LoggingPath,
-                   null, // LogfileName,
-                   null, // LogfileCreator,
-                   false)// AutoStart
+                   IsDevelopment,
+                   DevelopmentServers,
+                   DisableLogging,
+                   LoggingPath,
+                   LogfileName
+                   //LogfileCreator is not null
+                   //    ? (loggingPath, context, logfileName) => LogfileCreator(loggingPath, null, context, logfileName)
+                   //    : (loggingPath, context, logfileName) => String.Concat(
+                   //                                                 loggingPath + Path.DirectorySeparatorChar,
+                   //                                              //   remoteParty is not null
+                   //                                              //       ? remoteParty.Id.ToString() + Path.DirectorySeparatorChar
+                   //                                              //       : null,
+                   //                                                 context is not null ? context + "_" : "",
+                   //                                                 logfileName, "_",
+                   //                                                 Timestamp.Now.Year, "-",
+                   //                                                 Timestamp.Now.Month.ToString("D2"),
+                   //                                                 ".log"
+                   //                                             )
+                   )
 
         {
 
@@ -150,14 +191,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var LogfilePrefix        = "HTTPSSEs" + Path.DirectorySeparatorChar;
 
-            this.EventLog            = this.AddJSONEventSource(
-                                           EventIdentification:      EventLogId,
-                                           URLTemplate:              this.URLPathPrefix + "/events",
-                                           MaxNumberOfCachedEvents:  10000,
-                                           RetryInterval:            TimeSpan.FromSeconds(5),
-                                           EnableLogging:            true,
-                                           LogfilePrefix:            LogfilePrefix
-                                       );
+            //this.EventLog            = this.AddJSONEventSource(
+            //                               EventIdentification:      EventLogId,
+            //                               URLTemplate:              this.URLPathPrefix + "/events",
+            //                               MaxNumberOfCachedEvents:  10000,
+            //                               RetryInterval:            TimeSpan.FromSeconds(5),
+            //                               EnableLogging:            true,
+            //                               LogfilePrefix:            LogfilePrefix
+            //                           );
 
             RegisterURITemplates();
 
@@ -175,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected override Stream? GetResourceStream(String ResourceName)
 
             => GetResourceStream(ResourceName,
-                                 new Tuple<String, System.Reflection.Assembly>(OCPPWebAPI.HTTPRoot, typeof(OCPPWebAPI).Assembly),
+                                 new Tuple<String, System.Reflection.Assembly>(OCPP_WebAPI.HTTPRoot, typeof(OCPP_WebAPI).Assembly),
                                  new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -186,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
             => GetResourceMemoryStream(ResourceName,
-                                       new Tuple<String, System.Reflection.Assembly>(OCPPWebAPI.HTTPRoot, typeof(OCPPWebAPI).Assembly),
+                                       new Tuple<String, System.Reflection.Assembly>(OCPP_WebAPI.HTTPRoot, typeof(OCPP_WebAPI).Assembly),
                                        new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                        new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -197,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected override String GetResourceString(String ResourceName)
 
             => GetResourceString(ResourceName,
-                                 new Tuple<String, System.Reflection.Assembly>(OCPPWebAPI.HTTPRoot, typeof(OCPPWebAPI).Assembly),
+                                 new Tuple<String, System.Reflection.Assembly>(OCPP_WebAPI.HTTPRoot, typeof(OCPP_WebAPI).Assembly),
                                  new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                  new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -208,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected override Byte[] GetResourceBytes(String ResourceName)
 
             => GetResourceBytes(ResourceName,
-                                new Tuple<String, System.Reflection.Assembly>(OCPPWebAPI.HTTPRoot, typeof(OCPPWebAPI).Assembly),
+                                new Tuple<String, System.Reflection.Assembly>(OCPP_WebAPI.HTTPRoot, typeof(OCPP_WebAPI).Assembly),
                                 new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                 new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -219,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected override String MixWithHTMLTemplate(String ResourceName)
 
             => MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<String, System.Reflection.Assembly>(OCPPWebAPI.HTTPRoot, typeof(OCPPWebAPI).Assembly),
+                                   new Tuple<String, System.Reflection.Assembly>(OCPP_WebAPI.HTTPRoot, typeof(OCPP_WebAPI).Assembly),
                                    new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
                                    new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
@@ -232,10 +273,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region / (HTTPRoot)
 
-            this.MapResourceAssemblyFolder(HTTPHostname.Any,
-                                           URLPathPrefix,
-                                           "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
-                                           DefaultFilename: "index.html");
+            //this.MapResourceAssemblyFolder(HTTPHostname.Any,
+            //                               URLPathPrefix,
+            //                               "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
+            //                               DefaultFilename: "index.html");
 
             //HTTPServer.AddMethodCallback(HTTPHostname.Any,
             //                             HTTPMethod.GET,
@@ -269,44 +310,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region HTML
 
-            // --------------------------------------------------------------------
-            // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
-            // --------------------------------------------------------------------
-            AddMethodCallback(Hostname,
-                              HTTPMethod.GET,
-                              URLPathPrefix + "events",
-                              HTTPContentType.Text.HTML_UTF8,
-                              HTTPDelegate: Request => {
+            //// --------------------------------------------------------------------
+            //// curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
+            //// --------------------------------------------------------------------
+            //AddMethodCallback(Hostname,
+            //                  HTTPMethod.GET,
+            //                  URLPathPrefix + "events",
+            //                  HTTPContentType.Text.HTML_UTF8,
+            //                  HTTPDelegate: Request => {
 
-                                  #region Get HTTP user and its organizations
+            //                      #region Get HTTP user and its organizations
 
-                                  //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                  //if (!TryGetHTTPUser(Request,
-                                  //                    out User                   HTTPUser,
-                                  //                    out HashSet<Organization>  HTTPOrganizations,
-                                  //                    out HTTPResponse.Builder   Response,
-                                  //                    Recursive:                 true))
-                                  //{
-                                  //    return Task.FromResult(Response.AsImmutable);
-                                  //}
+            //                      //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+            //                      //if (!TryGetHTTPUser(Request,
+            //                      //                    out User                   HTTPUser,
+            //                      //                    out HashSet<Organization>  HTTPOrganizations,
+            //                      //                    out HTTPResponse.Builder   Response,
+            //                      //                    Recursive:                 true))
+            //                      //{
+            //                      //    return Task.FromResult(Response.AsImmutable);
+            //                      //}
 
-                                  #endregion
+            //                      #endregion
 
-                                  return Task.FromResult(
-                                             new HTTPResponse.Builder(Request) {
-                                                 HTTPStatusCode             = HTTPStatusCode.OK,
-                                                 Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
-                                                 AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "GET" ],
-                                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
-                                                 ContentType                = HTTPContentType.Text.HTML_UTF8,
-                                                 Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-                                                 Connection                 = ConnectionType.Close,
-                                                 Vary                       = "Accept"
-                                             }.AsImmutable);
+            //                      return Task.FromResult(
+            //                                 new HTTPResponse.Builder(Request) {
+            //                                     HTTPStatusCode             = HTTPStatusCode.OK,
+            //                                     Server                     = DefaultHTTPServerName,
+            //                                     Date                       = Timestamp.Now,
+            //                                     AccessControlAllowOrigin   = "*",
+            //                                     AccessControlAllowMethods  = [ "GET" ],
+            //                                     AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+            //                                     ContentType                = HTTPContentType.Text.HTML_UTF8,
+            //                                     Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
+            //                                     Connection                 = ConnectionType.Close,
+            //                                     Vary                       = "Accept"
+            //                                 }.AsImmutable);
 
-                              });
+            //                  });
 
             #endregion
 

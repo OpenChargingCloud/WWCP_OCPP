@@ -1524,7 +1524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CableMaxCurrent.HasValue
-                               ? new JProperty("cableMaxCurrent",         CableMaxCurrent.            Value.IntegerValue)
+                               ? new JProperty("cableMaxCurrent",         CableMaxCurrent.            Value.RoundedIntegerValue)
                                : null,
 
                            ReservationId.HasValue
