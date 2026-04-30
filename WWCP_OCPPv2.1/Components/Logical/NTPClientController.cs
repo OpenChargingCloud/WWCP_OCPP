@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Contains the current date and time.
         /// </summary>
         [Mandatory]
-        public DateTimeOffset           DateTime                      { get; }
+        public DateTimeOffset           DateTime                            { get; }
 
         public Double                   Accurancy                           { get; }
 

@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data
 
         private readonly static Dictionary<String, CertificateGroup>  lookup = new (StringComparer.OrdinalIgnoreCase);
-        private readonly        String                                     InternalId;
+        private readonly        String                                InternalId;
 
         #endregion
 
