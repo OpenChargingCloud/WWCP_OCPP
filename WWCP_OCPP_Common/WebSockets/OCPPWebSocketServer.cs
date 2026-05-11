@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                    TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
                                    Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                   RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
+                                   RemoteTLSClientCertificateValidationHandler<AWebSocketServer>?  ClientCertificateValidator   = null,
                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                    SslProtocols?                                                   AllowedTLSProtocols          = null,
                                    Boolean?                                                        ClientCertificateRequired    = null,

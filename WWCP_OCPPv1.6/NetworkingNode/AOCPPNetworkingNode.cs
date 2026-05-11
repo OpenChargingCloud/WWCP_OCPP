@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                           InternalBufferSize,
 
                                           SecWebSocketProtocols ?? [
-                                                                      "ocpp2.0.1",
+                                                                      //"ocpp2.0.1",
                                                                        Version.WebSocketSubProtocolId
                                                                    ],
                                           NetworkingMode,
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                   TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
                                   Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                  RemoteTLSClientCertificateValidationHandler<IWebSocketServer>?  ClientCertificateValidator   = null,
+                                  RemoteTLSClientCertificateValidationHandler<AWebSocketServer>?  ClientCertificateValidator   = null,
                                   LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                   SslProtocols?                                                   AllowedTLSProtocols          = null,
                                   Boolean?                                                        ClientCertificateRequired    = null,
