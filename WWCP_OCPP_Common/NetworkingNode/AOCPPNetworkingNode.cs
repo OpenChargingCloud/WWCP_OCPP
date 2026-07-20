@@ -247,10 +247,10 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                  Boolean?                                                        ClientCertificateRequired    = null,
                                                                  Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                                                 ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
-                                                                 ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
+                                                           //      ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
+                                                           //      ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
                                                                  Boolean?                                                        ServerThreadIsBackground     = null,
-                                                                 ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
+                                                           //      ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
                                                                  TimeSpan?                                                       ConnectionTimeout            = null,
                                                                  UInt32?                                                         MaxClientConnections         = null,
 
@@ -280,15 +280,15 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                           ClientCertificateRequired,
                                           CheckCertificateRevocation,
 
-                                          ServerThreadNameCreator,
-                                          ServerThreadPrioritySetter,
-                                          ServerThreadIsBackground,
-                                          ConnectionIdBuilder,
-                                          ConnectionTimeout,
-                                          MaxClientConnections,
+                                          //ServerThreadNameCreator,
+                                          //ServerThreadPrioritySetter,
+                                          //ServerThreadIsBackground,
+                                          //ConnectionIdBuilder,
+                                          //ConnectionTimeout,
+                                          //MaxClientConnections,
 
-                                          DNSClient,
-                                          AutoStart: false
+                                          DNSClient:  DNSClient,
+                                          AutoStart:  false
 
                                       );
 

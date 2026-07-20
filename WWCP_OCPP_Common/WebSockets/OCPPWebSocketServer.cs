@@ -94,10 +94,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                    Boolean?                                                        ClientCertificateRequired    = null,
                                    Boolean?                                                        CheckCertificateRevocation   = null,
 
-                                   ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
-                                   ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
+                                   //ServerThreadNameCreatorDelegate?                                ServerThreadNameCreator      = null,
+                                   //ServerThreadPriorityDelegate?                                   ServerThreadPrioritySetter   = null,
                                    Boolean?                                                        ServerThreadIsBackground     = null,
-                                   ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
+                                   //ConnectionIdBuilder?                                            ConnectionIdBuilder          = null,
                                    TimeSpan?                                                       ConnectionTimeout            = null,
                                    UInt32?                                                         MaxClientConnections         = null,
 
@@ -105,9 +105,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                    Boolean                                                         AutoStart                    = true)
 
             : base(NetworkingNode,
-                   HTTPServiceName ?? DefaultHTTPServiceName,
+
                    IPAddress,
                    TCPPort,
+                   HTTPServiceName ?? DefaultHTTPServiceName,
                    Description,
 
                    RequireAuthentication,
@@ -117,22 +118,22 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
 
-                   ServerCertificateSelector,
-                   ClientCertificateValidator,
-                   LocalCertificateSelector,
-                   AllowedTLSProtocols,
-                   ClientCertificateRequired,
-                   CheckCertificateRevocation,
+                   //ServerCertificateSelector,
+                   //ClientCertificateValidator,
+                   //LocalCertificateSelector,
+                   //AllowedTLSProtocols,
+                   //ClientCertificateRequired,
+                   //CheckCertificateRevocation,
 
-                   ServerThreadNameCreator,
-                   ServerThreadPrioritySetter,
-                   ServerThreadIsBackground,
-                   ConnectionIdBuilder,
-                   ConnectionTimeout,
-                   MaxClientConnections,
+                   //ServerThreadNameCreator,
+                   //ServerThreadPrioritySetter,
+                   //ServerThreadIsBackground,
+                   //ConnectionIdBuilder,
+                   //ConnectionTimeout,
+                   //MaxClientConnections,
 
-                   DNSClient,
-                   false)
+                   DNSClient:  DNSClient,
+                   AutoStart:  false)
 
         {
 

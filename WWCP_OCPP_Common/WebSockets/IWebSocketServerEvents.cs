@@ -45,8 +45,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         Boolean                                 IsRunning                    { get; }
         HashSet<String>                         SecWebSocketProtocols        { get; }
         Boolean                                 ServerThreadIsBackground     { get; }
-        ServerThreadNameCreatorDelegate         ServerThreadNameCreator      { get; }
-        ServerThreadPriorityDelegate            ServerThreadPrioritySetter   { get; }
+        //ServerThreadNameCreatorDelegate         ServerThreadNameCreator      { get; }
+        //ServerThreadPriorityDelegate            ServerThreadPrioritySetter   { get; }
         TimeSpan?                               SlowNetworkSimulationDelay   { get; set; }
         IEnumerable<WebSocketServerConnection>  WebSocketConnections         { get; }
         TimeSpan                                WebSocketPingEvery           { get; set; }

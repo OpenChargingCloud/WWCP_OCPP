@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
                             EMailAddress?                  APIRobotEMailAddress      = null,
                             String?                        APIRobotGPGPassphrase     = null,
-                            ISMTPClient?                   SMTPClient                = null,
+                            ISMTPSubmissionClient?         SMTPClient                = null,
 
                             Boolean?                       IsDevelopment             = null,
                             IEnumerable<String>?           DevelopmentServers        = null,
