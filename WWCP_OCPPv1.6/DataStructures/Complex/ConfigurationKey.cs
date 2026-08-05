@@ -434,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// it reads out all configuration keys.
         /// This configuration key is required unless only "security profile 3 - TLS with client side certificates" is implemented.
         /// </summary>
-        public static readonly ConfigurationKey AuthorizationKey                = new (Keys.WebSocketPingInterval,
+        public static readonly ConfigurationKey AuthorizationKey                = new (Keys.AuthorizationKey,
                                                                                        KeyStatus.   Optional,
                                                                                        AccessRights.WriteOnly,
                                                                                        ValueTypes.  String,
