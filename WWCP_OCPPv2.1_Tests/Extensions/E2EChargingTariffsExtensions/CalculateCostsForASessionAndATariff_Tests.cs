@@ -89,7 +89,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public void SimpleChargingSessionWithFlatRateTariff()
         {
 
-            var timeReference      = Timestamp.Now - TimeSpan.FromHours(1);
+            // A Wednesday 10:00 UTC, so that time-of-day and day-of-week tariff conditions are deterministic!
+            var timeReference      = new DateTimeOffset(2025, 10, 1, 10, 0, 0, TimeSpan.Zero);
 
             #region Define a  charging tariff
 
@@ -129,10 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //EnergyMix:                 null,
 
                                          MinCost:                   null,
-                                         MaxCost:                   new Price(
-                                                                        ExcludingTaxes:  0.51M,
-                                                                        IncludingTaxes:  0.53M
-                                                                    ),
+                                         MaxCost:                   null,
                                          //NotBefore:                 timeReference,
                                          //NotAfter:                  null,
 
@@ -229,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  },
@@ -292,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  },
@@ -357,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                     ClassicAssert.AreEqual(0M,       cdr.BilledEnergy.     Value,          "Billed energy");
 
                     ClassicAssert.AreEqual(42.00M,   cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(51.87M,   cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
+                    ClassicAssert.AreEqual(48.30M,   cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
 
                 }
 
@@ -376,7 +374,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public void SimpleChargingSessionWith15MinutesTariff()
         {
 
-            var timeReference      = Timestamp.Now - TimeSpan.FromHours(1);
+            // A Wednesday 10:00 UTC, so that time-of-day and day-of-week tariff conditions are deterministic!
+            var timeReference      = new DateTimeOffset(2025, 10, 1, 10, 0, 0, TimeSpan.Zero);
 
             #region Define a  charging tariff
 
@@ -417,10 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //EnergyMix:                 null,
 
                                          MinCost:                   null,
-                                         MaxCost:                   new Price(
-                                                                        ExcludingTaxes:  0.51M,
-                                                                        IncludingTaxes:  0.53M
-                                                                    ),
+                                         MaxCost:                   null,
                                          //NotBefore:                 timeReference,
                                          //NotAfter:                  null,
 
@@ -517,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -580,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  },
@@ -641,16 +637,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                     ClassicAssert.AreEqual(39M,        cdr.TotalChargingTime.     TotalMinutes,   "Total charging time");
                     ClassicAssert.AreEqual(45M,        cdr.BilledChargingTime.    TotalMinutes,   "Billed charging time");
-                    ClassicAssert.AreEqual(4.875M,     cdr.BilledChargingTimeCost.ExcludingTaxes,   "Billed charging time cost excl. VAT");
-                    ClassicAssert.AreEqual(5.80125M,   cdr.BilledChargingTimeCost.IncludingTaxes,   "Billed charging time cost incl. VAT");
+                    ClassicAssert.AreEqual(292.50M,    cdr.BilledChargingTimeCost.ExcludingTaxes,   "Billed charging time cost excl. VAT");
+                    ClassicAssert.AreEqual(348.075M,   cdr.BilledChargingTimeCost.IncludingTaxes,   "Billed charging time cost incl. VAT");
 
                     ClassicAssert.AreEqual(9999M,      cdr.TotalEnergy.           Value,          "Total energy");
                     ClassicAssert.AreEqual(0M,         cdr.BilledEnergy.          Value,          "Billed energy");
-                    ClassicAssert.AreEqual(4.875M,     cdr.BilledEnergyCost.      ExcludingTaxes,   "Billed energy cost excl. VAT");
-                    ClassicAssert.AreEqual(5.80125M,   cdr.BilledEnergyCost.      IncludingTaxes,   "Billed energy cost incl. VAT");
+                    ClassicAssert.AreEqual(0M,         cdr.BilledEnergyCost.      ExcludingTaxes,   "Billed energy cost excl. VAT");
+                    ClassicAssert.AreEqual(0M,         cdr.BilledEnergyCost.      IncludingTaxes,   "Billed energy cost incl. VAT");
 
-                    ClassicAssert.AreEqual(4.875M,     cdr.TotalCost.             ExcludingTaxes,   "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(5.80125M,   cdr.TotalCost.             IncludingTaxes,   "Total cost incl. VAT");
+                    ClassicAssert.AreEqual(292.50M,    cdr.TotalCost.             ExcludingTaxes,   "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(348.075M,   cdr.TotalCost.             IncludingTaxes,   "Total cost incl. VAT");
 
                 }
 
@@ -669,7 +665,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public void SimpleChargingSessionWithKWhTariff()
         {
 
-            var timeReference      = Timestamp.Now - TimeSpan.FromHours(1);
+            // A Wednesday 10:00 UTC, so that time-of-day and day-of-week tariff conditions are deterministic!
+            var timeReference      = new DateTimeOffset(2025, 10, 1, 10, 0, 0, TimeSpan.Zero);
 
             #region Define a  charging tariff
 
@@ -683,7 +680,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //                           ),
                                          Currency:                  Currency.EUR,
                                          Energy:                    new TariffEnergy(
-                                                                        [ new TariffEnergyPrice(0.51M) ],
+                                                                        [ new TariffEnergyPrice(0.51M, StepSize: WattHour.FromKWh(1)) ],
                                                                         [ TaxRate.VAT(19)]
                                                                     ),
                                          //TariffElements:            [
@@ -709,10 +706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //EnergyMix:                 null,
 
                                          MinCost:                   null,
-                                         MaxCost:                   new Price(
-                                                                        ExcludingTaxes:  0.51M,
-                                                                        IncludingTaxes:  0.53M
-                                                                    ),
+                                         MaxCost:                   null,
                                          //NotBefore:                 timeReference,
                                          //NotAfter:                  null,
 
@@ -809,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -872,7 +866,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -958,7 +952,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public void SimpleChargingSessionWithKWhTariffWithIdleFee()
         {
 
-            var timeReference      = Timestamp.Now - TimeSpan.FromHours(1);
+            // A Wednesday 10:00 UTC, so that time-of-day and day-of-week tariff conditions are deterministic!
+            var timeReference      = new DateTimeOffset(2025, 10, 1, 10, 0, 0, TimeSpan.Zero);
 
             #region Define a  charging tariff
 
@@ -975,6 +970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                         [
                                                                             new TariffEnergyPrice(
                                                                                 PriceKWh:     0.40M,
+                                                                                StepSize:     WattHour.FromKWh(1),
                                                                                 Conditions:   new TariffConditions(
                                                                                                   StartTimeOfDay:   new TimeOnly( 8, 0),
                                                                                                   EndTimeOfDay:     new TimeOnly(18, 0)
@@ -982,6 +978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                             ),
                                                                             new TariffEnergyPrice(
                                                                                 PriceKWh:     0.25M,
+                                                                                StepSize:     WattHour.FromKWh(1),
                                                                                 Conditions:   new TariffConditions(
                                                                                                   StartTimeOfDay:   new TimeOnly(18, 0),
                                                                                                   EndTimeOfDay:     new TimeOnly( 8, 0)
@@ -1147,7 +1144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -1210,7 +1207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -1266,16 +1263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
-                    ClassicAssert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
+                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
+                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
 
-                    ClassicAssert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
+                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
 
-                    ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
-                    ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
+                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
+                    ClassicAssert.AreEqual(10000M,   cdr.BilledEnergy.     Value,          "Billed energy");
 
-                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingTaxes);
-                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingTaxes);
+                    ClassicAssert.AreEqual(4.00M,    cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(4.40M,    cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
 
                 }
 
@@ -1295,7 +1292,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public void SimpleChargingSessionWithComplexHourlyTariff()
         {
 
-            var timeReference      = Timestamp.Now - TimeSpan.FromHours(1);
+            // A Wednesday 10:00 UTC, so that time-of-day and day-of-week tariff conditions are deterministic!
+            var timeReference      = new DateTimeOffset(2025, 10, 1, 10, 0, 0, TimeSpan.Zero);
 
             #region Define a  charging tariff
 
@@ -1461,7 +1459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -1524,7 +1522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -1580,16 +1578,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
-                    ClassicAssert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
+                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
+                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
 
-                    ClassicAssert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
+                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
 
-                    ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
-                    ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
+                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
+                    ClassicAssert.AreEqual(0M,       cdr.BilledEnergy.     Value,          "Billed energy");
 
-                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingTaxes);
-                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingTaxes);
+                    ClassicAssert.AreEqual(2.50M,    cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(2.875M,   cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
 
                 }
 
@@ -1609,7 +1607,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public void SimpleChargingSessionWithKWhTariffAndDelayedIdleFee()
         {
 
-            var timeReference      = Timestamp.Now - TimeSpan.FromHours(1);
+            // A Wednesday 10:00 UTC, so that time-of-day and day-of-week tariff conditions are deterministic!
+            var timeReference      = new DateTimeOffset(2025, 10, 1, 10, 0, 0, TimeSpan.Zero);
 
             #region Define a  charging tariff
 
@@ -1623,7 +1622,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //                           ),
                                          Currency:                  Currency.EUR,
                                          Energy:                    new TariffEnergy(
-                                                                        [ new TariffEnergyPrice(0.40M) ],
+                                                                        [ new TariffEnergyPrice(0.40M, StepSize: WattHour.FromKWh(1)) ],
                                                                         [ TaxRate.VAT(10) ]
                                                                     ),
                                          IdleTime:                  new TariffTime(
@@ -1674,10 +1673,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          //EnergyMix:                 null,
 
                                          MinCost:                   null,
-                                         MaxCost:                   new Price(
-                                                                        ExcludingTaxes:  0.51M,
-                                                                        IncludingTaxes:  0.53M
-                                                                    ),
+                                         MaxCost:                   null,
                                          //NotBefore:                 timeReference,
                                          //NotAfter:                  null,
 
@@ -1774,7 +1770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -1837,7 +1833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                                                                     PublicKey:         "",
                                                                                                                                     CustomData:        null
                                                                                                                                 ),
-                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(),
                                                                                                          CustomData:            null
                                                                                                      )
                                                                                                  ],
@@ -1893,16 +1889,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
-                    ClassicAssert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
+                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
+                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
 
-                    ClassicAssert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
+                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
 
-                    ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
-                    ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
+                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
+                    ClassicAssert.AreEqual(10000M,   cdr.BilledEnergy.     Value,          "Billed energy");
 
-                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingTaxes);
-                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingTaxes);
+                    ClassicAssert.AreEqual(4.00M,    cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(4.40M,    cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
 
                 }
 

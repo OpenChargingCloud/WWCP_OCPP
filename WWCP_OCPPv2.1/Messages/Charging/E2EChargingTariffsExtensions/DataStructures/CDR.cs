@@ -415,21 +415,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region Calculate TotalTime
+            #region Calculate TotalIdleTime / TotalTime
 
-            var totalTime = totalChargingTime;
-
-            #endregion
-
-            #region Calculate TotalTimeCost
-
-            var totalTimeCost = new Price(0, 0);
+            // Without charging periods or charging state information only the overall duration
+            // of the transaction is known, thus all time is considered to be charging time!
+            var totalIdleTime  = TimeSpan.Zero;
+            var totalTime      = totalChargingTime + totalIdleTime;
 
             #endregion
 
             #region Calculate TotalEnergy
 
-            var totalEnergy = WattHour.FromKWh(stopMeteringValue.Value - startMeteringValue.Value);
+            if (!TryConvertToWattHours(startMeteringValue, out var startWattHours, out ErrorResponse) ||
+                !TryConvertToWattHours(stopMeteringValue,  out var stopWattHours,  out ErrorResponse))
+            {
+                return false;
+            }
+
+            var totalEnergy = WattHour.FromWh(stopWattHours - startWattHours);
+
+            if (totalEnergy.Value < 0)
+            {
+                ErrorResponse = $"Transaction total energy is invalid: {totalEnergy}!";
+                return false;
+            }
 
             #endregion
 
@@ -439,95 +448,230 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 ChargingTariff.IdleTime     is null &&
                 ChargingTariff.FixedFee     is null)
             {
-                ErrorResponse = "No charge detail record elements found!";
+                ErrorResponse = "The given charging tariff does not define any price components!";
                 return false;
             }
 
-            #region Get first matching charge detail record element
 
-          //  var tariffElement               = ChargingTariff.TariffElements.First();
+            #region Tariff condition matching
+
+            // Tariff conditions are evaluated at the start of the charging session and
+            // against the totals of the entire session. Splitting a charging session
+            // into multiple charging periods with different prices, e.g. when a tariff
+            // price changes during the session, is not yet supported!
+            var sessionStart      = startMeteringValue.Timestamp;
+            var sessionStartDate  = DateOnly.FromDateTime(sessionStart.DateTime);
+            var sessionStartTime  = TimeOnly.FromDateTime(sessionStart.DateTime);
+
+            Boolean ConditionsMatch(TariffConditions? Conditions)
+            {
+
+                if (Conditions is null)
+                    return true;
+
+                // Conditions that cannot be evaluated on start/stop metering values alone
+                // (EVSE kind, current and power limits) exclude the price component,
+                // as we cannot proof that the condition was met!
+                if (Conditions.EVSEKind.  HasValue ||
+                    Conditions.MinCurrent.HasValue ||
+                    Conditions.MaxCurrent.HasValue ||
+                    Conditions.MinPower.  HasValue ||
+                    Conditions.MaxPower.  HasValue)
+                {
+                    return false;
+                }
+
+                if (Conditions.ValidFrom.HasValue && sessionStartDate <  Conditions.ValidFrom.Value)
+                    return false;
+
+                if (Conditions.ValidTo.  HasValue && sessionStartDate >= Conditions.ValidTo.  Value)
+                    return false;
+
+                if (Conditions.DaysOfWeek.Any() && !Conditions.DaysOfWeek.Contains(sessionStart.DayOfWeek))
+                    return false;
+
+                if (Conditions.StartTimeOfDay.HasValue || Conditions.EndTimeOfDay.HasValue)
+                {
+
+                    // TimeOnly.IsBetween(...) treats the start as inclusive, the end as exclusive
+                    // and supports time ranges that span midnight!
+                    if (!sessionStartTime.IsBetween(
+                             Conditions.StartTimeOfDay ?? TimeOnly.MinValue,
+                             Conditions.EndTimeOfDay   ?? TimeOnly.MinValue
+                         ))
+                    {
+                        return false;
+                    }
+
+                }
+
+                if (Conditions.MinEnergy.      HasValue && totalEnergy.Value  <  Conditions.MinEnergy.Value.Value)
+                    return false;
+
+                if (Conditions.MaxEnergy.      HasValue && totalEnergy.Value  >= Conditions.MaxEnergy.Value.Value)
+                    return false;
+
+                if (Conditions.MinTime.        HasValue && totalTime          <  Conditions.MinTime.        Value)
+                    return false;
+
+                if (Conditions.MaxTime.        HasValue && totalTime          >= Conditions.MaxTime.        Value)
+                    return false;
+
+                if (Conditions.MinChargingTime.HasValue && totalChargingTime  <  Conditions.MinChargingTime.Value)
+                    return false;
+
+                if (Conditions.MaxChargingTime.HasValue && totalChargingTime  >= Conditions.MaxChargingTime.Value)
+                    return false;
+
+                if (Conditions.MinIdleTime.    HasValue && totalIdleTime      <  Conditions.MinIdleTime.    Value)
+                    return false;
+
+                if (Conditions.MaxIdleTime.    HasValue && totalIdleTime      >= Conditions.MaxIdleTime.    Value)
+                    return false;
+
+                return true;
+
+            }
+
+            #endregion
+
+            #region Price/StepSize helper methods
+
+            // Tax rates having the same stack level are applied to the same base amount,
+            // higher stack levels are applied on top of all lower stack levels.
+            Price ApplyTaxRates(Decimal NetAmount, IEnumerable<TaxRate> TaxRates)
+            {
+
+                var includingTaxes = NetAmount;
+
+                foreach (var stackLevel in TaxRates.GroupBy  (taxRate => taxRate.Stack ?? 0).
+                                                    OrderBy  (group   => group.Key))
+                {
+
+                    var taxBase = includingTaxes;
+
+                    foreach (var taxRate in stackLevel)
+                        includingTaxes += taxBase * taxRate.Tax.Value / 100;
+
+                }
+
+                return new Price(
+                           NetAmount,
+                           includingTaxes,
+                           TaxRates
+                       );
+
+            }
+
+            // "When absent, the exact amount is billed. When present, this type is billed
+            //  in blocks of stepSize of the base unit. Amounts are rounded up to a multiple
+            //  of stepSize."
+            static TimeSpan RoundUpToStepSize(TimeSpan Total, TimeSpan? StepSize)
+
+                => !StepSize.HasValue || StepSize.Value <= TimeSpan.Zero || Total <= TimeSpan.Zero
+                       ? Total
+                       : TimeSpan.FromTicks(
+                             StepSize.Value.Ticks * (Int64) Math.Ceiling(Total.Ticks / (Double) StepSize.Value.Ticks)
+                         );
+
+            static WattHour RoundUpEnergyToStepSize(WattHour Total, WattHour? StepSize)
+
+                => !StepSize.HasValue || StepSize.Value.Value <= 0 || Total.Value <= 0
+                       ? Total
+                       : WattHour.FromWh(
+                             StepSize.Value.Value * Math.Ceiling(Total.Value / StepSize.Value.Value)
+                         );
 
             #endregion
 
 
-            #region Calculate FlatPrice
+            #region Calculate TotalFixedCost          (FixedFee)
 
-            //var flatPriceComponent          = ChargingTariff.FixedFee; //tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.FLAT);
-            //var flatPrice                   = flatPriceComponent?.Prices.First();
-            //var flatVAT                     = flatPriceComponent?.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
+            var fixedFeePrice          = ChargingTariff.FixedFee?.Prices.FirstOrDefault(price => ConditionsMatch(price.Conditions));
 
-            //var totalFixedCost              = flatPrice.HasValue
-            //                                      ? new Price(
-            //                                            ExcludingTaxes:  flatPrice.Value,
-            //                                            IncludingTaxes:  flatPrice.Value + flatPrice.Value * (flatVAT ?? 0) / 100
-            //                                        )
-            //                                      : OCPPv2_1.Price.Zero;
+            var totalFixedCost         = fixedFeePrice is not null
+                                             ? ApplyTaxRates(fixedFeePrice.PriceFixed, ChargingTariff.FixedFee!.TaxRates)
+                                             : OCPPv2_1.Price.Zero;
 
             #endregion
 
-            #region Calculate BilledChargingTime
+            #region Calculate BilledChargingTime/Cost (ChargingTime)
 
-            //var chargingTimePriceComponent  = ChargingTariff.ChargingTime; //tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS);
-            //var chargingTimeStepSize        = chargingTimePriceComponent?.StepSize ?? 1;
-            //var chargingTimePrice           = chargingTimePriceComponent?.Price;
-            //var chargingTimeVAT             = chargingTimePriceComponent?.TaxRates.Get("VAT", AppliesToEnergyFee: true)?.Tax;
+            var chargingTimePrice      = ChargingTariff.ChargingTime?.Prices.FirstOrDefault(price => ConditionsMatch(price.Conditions));
 
-            //var billedChargingTimeSteps     = Math.Ceiling(totalChargingTime.TotalSeconds / chargingTimeStepSize);
-            //var billedChargingTime          = chargingTimePriceComponent is not null
-            //                                      ? TimeSpan.FromSeconds(billedChargingTimeSteps * chargingTimeStepSize)
-            //                                      : TimeSpan.Zero;
-            //var totalChargingTimeCost       = chargingTimePrice.HasValue
-            //                                      ? new Price(
-            //                                            ExcludingVAT:  ((Decimal) billedChargingTime.TotalSeconds) / 3600 *  chargingTimePrice.Value,
-            //                                            IncludingVAT:  ((Decimal) billedChargingTime.TotalSeconds) / 3600 * (chargingTimePrice.Value + chargingTimePrice.Value * (chargingTimeVAT ?? 0) / 100)
-            //                                        )
-            //                                      : OCPPv2_1.Price.Zero;
+            var billedChargingTime     = chargingTimePrice is not null
+                                             ? RoundUpToStepSize(totalChargingTime, chargingTimePrice.StepSize)
+                                             : TimeSpan.Zero;
+
+            var totalChargingTimeCost  = chargingTimePrice is not null
+                                             ? ApplyTaxRates(
+                                                   ((Decimal) billedChargingTime.TotalMinutes) * chargingTimePrice.PriceMinute,
+                                                   ChargingTariff.ChargingTime!.TaxRates
+                                               )
+                                             : OCPPv2_1.Price.Zero;
 
             #endregion
 
-            #region Calculate BilledTime
+            #region Calculate BilledParkingTime/Cost  (IdleTime)
 
-            //var timePriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS);
-            //var timeStepSize                = timePriceComponent?.StepSize ?? 1;
-            //var timePrice                   = timePriceComponent?.Price;
-            //var timeVAT                     = timePriceComponent?.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
+            var idleTimePrice          = ChargingTariff.IdleTime?.Prices.FirstOrDefault(price => ConditionsMatch(price.Conditions));
 
-            //var billedTimeSteps             = Math.Ceiling(totalTime.TotalSeconds / timeStepSize);
-            //var billedTime                  = timePriceComponent is not null
-            //                                      ? TimeSpan.FromSeconds(billedTimeSteps * timeStepSize)
-            //                                      : TimeSpan.Zero;
+            var billedParkingTime      = idleTimePrice is not null
+                                             ? RoundUpToStepSize(totalIdleTime, idleTimePrice.StepSize)
+                                             : TimeSpan.Zero;
 
-            #endregion
-
-            #region Calculate BilledEnergy
-
-            //var energyPriceComponent        = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.ENERGY);
-            //var energyStepSize              = energyPriceComponent?.StepSize ?? 1;
-            //var energyPrice                 = energyPriceComponent?.Price;
-            //var energyVAT                   = energyPriceComponent?.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
-
-            //var billedEnergySteps           = Math.Ceiling(totalEnergy.Value / energyStepSize);
-            //var billedEnergy                = energyPriceComponent is not null
-            //                                      ? WattHour.ParseWh(billedEnergySteps * energyStepSize)
-            //                                      : WattHour.Zero;
-            //var totalEnergyCost             = energyPrice.HasValue
-            //                                      ? new Price(
-            //                                            ExcludingVAT:  billedEnergy.kWh *  energyPrice.Value,
-            //                                            IncludingVAT:  billedEnergy.kWh * (energyPrice.Value + energyPrice.Value * (energyVAT ?? 0) / 100)
-            //                                        )
-            //                                      : OCPPv2_1.Price.Zero;
+            var totalParkingCost       = idleTimePrice is not null
+                                             ? ApplyTaxRates(
+                                                   ((Decimal) billedParkingTime.TotalMinutes) * idleTimePrice.PriceMinute,
+                                                   ChargingTariff.IdleTime!.TaxRates
+                                               )
+                                             : OCPPv2_1.Price.Zero;
 
             #endregion
 
+            #region Calculate BilledEnergy/Cost       (Energy)
 
-            var totalReservationCost        = new Price(0, 0);
+            var energyPrice            = ChargingTariff.Energy?.Prices.FirstOrDefault(price => ConditionsMatch(price.Conditions));
 
-            var totalParkingTime            = TimeSpan.Zero;
-            var billedParkingTime           = TimeSpan.Zero;
-            var totalParkingCost            = new Price(0, 0);
+            var billedEnergy           = energyPrice is not null
+                                             ? RoundUpEnergyToStepSize(totalEnergy, energyPrice.StepSize)
+                                             : WattHour.Zero;
 
-            var totalCost                   = new Price(0, 0); //totalFixedCost + totalReservationCost + totalChargingTimeCost + totalEnergyCost + totalParkingCost + totalTimeCost;
-            var currency                    = ChargingTariff.Currency;
+            var totalEnergyCost        = energyPrice is not null
+                                             ? ApplyTaxRates(
+                                                   billedEnergy.kWh * energyPrice.PriceKWh,
+                                                   ChargingTariff.Energy!.TaxRates
+                                               )
+                                             : OCPPv2_1.Price.Zero;
+
+            #endregion
+
+            #region Calculate TotalCost               (incl. MinCost/MaxCost clamping)
+
+            // OCPP v2.1 tariffs no longer define an overall-time price component,
+            // only charging time and idle time, thus the overall billed time is
+            // just the sum of both and has no own costs.
+            var billedTime            = billedChargingTime + billedParkingTime;
+            var totalTimeCost         = OCPPv2_1.Price.Zero;
+
+            // Reservation costs are not yet supported!
+            var totalReservationCost  = OCPPv2_1.Price.Zero;
+
+            var totalCost             = totalFixedCost + totalReservationCost + totalChargingTimeCost + totalEnergyCost + totalParkingCost;
+
+            if (ChargingTariff.MinCost.HasValue)
+                totalCost = new Price(
+                                Math.Max(totalCost.ExcludingTaxes, ChargingTariff.MinCost.Value.ExcludingTaxes),
+                                Math.Max(totalCost.IncludingTaxes, ChargingTariff.MinCost.Value.IncludingTaxes)
+                            );
+
+            if (ChargingTariff.MaxCost.HasValue)
+                totalCost = new Price(
+                                Math.Min(totalCost.ExcludingTaxes, ChargingTariff.MaxCost.Value.ExcludingTaxes),
+                                Math.Min(totalCost.IncludingTaxes, ChargingTariff.MaxCost.Value.IncludingTaxes)
+                            );
+
+            #endregion
 
 
             CDR = new CDR(
@@ -546,33 +690,77 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           stopMeteringValue
                       ],
 
-                      new Price(0, 0), //totalFixedCost,
+                      totalFixedCost,
                       totalReservationCost,
 
                       totalTime,
-                      totalTime, //billedTime,
+                      billedTime,
                       totalTimeCost,
 
                       totalChargingTime,
-                      totalChargingTime, //billedChargingTime,
-                      new Price(0, 0), //totalChargingTimeCost,
+                      billedChargingTime,
+                      totalChargingTimeCost,
 
                       totalEnergy,
-                      totalEnergy, //billedEnergy,
-                      new Price(0, 0), //totalEnergyCost,
+                      billedEnergy,
+                      totalEnergyCost,
 
-                      totalParkingTime,
+                      totalIdleTime,
                       billedParkingTime,
                       totalParkingCost,
 
                       totalCost,
-                      currency
+                      ChargingTariff.Currency,
+
+                      ChargingTariff: ChargingTariff
 
                   );
 
             return true;
 
         }
+
+
+        #region (private static) TryConvertToWattHours(MeteringValue, out WattHours, out ErrorResponse)
+
+        /// <summary>
+        /// Convert the given metering value into WattHours honoring
+        /// its unit of measure and multiplier (exponent to base 10).
+        /// </summary>
+        /// <param name="MeteringValue">A metering value.</param>
+        /// <param name="WattHours">The converted WattHours.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        private static Boolean TryConvertToWattHours(MeteringValue  MeteringValue,
+                                                     out Decimal    WattHours,
+                                                     out String?    ErrorResponse)
+        {
+
+            WattHours      = 0;
+            ErrorResponse  = null;
+
+            // When no unit of measure is given, the default is "Wh" with multiplier 0 (10^0 == *1)!
+            var unit        = MeteringValue.UnitOfMeasure?.Unit       ?? UnitOfMeasure.Wh;
+            var multiplier  = MeteringValue.UnitOfMeasure?.Multiplier ?? 0;
+
+            var scale       = (Decimal) Math.Pow(10, multiplier);
+
+            if      (unit == UnitOfMeasure.Wh)
+                WattHours = MeteringValue.Value * scale;
+
+            else if (unit == UnitOfMeasure.kWh)
+                WattHours = MeteringValue.Value * scale * 1000;
+
+            else
+            {
+                ErrorResponse = $"The unit of measure '{unit}' of the metering value is not an energy unit!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
 
 
         #region (static) Parse   (JSON, CountryCodeURL = null, PartyIdURL = null, CDRIdURL = null, CustomCDRParser = null)
