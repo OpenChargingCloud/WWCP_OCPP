@@ -843,6 +843,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public override async Task ShutdownEachTest()
         {
 
+            // Really stop the charging stations, otherwise their WebSocket
+            // clients (and their auto reconnects!) will pile up and fight
+            // over the same networking node identifications at the CSMS!
+            if (chargingStation1 is not null)
+                await chargingStation1.Stop();
+
+            if (chargingStation2 is not null)
+                await chargingStation2.Stop();
+
+            if (chargingStation3 is not null)
+                await chargingStation3.Stop();
+
             await base.ShutdownEachTest();
 
             chargingStation1 = null;

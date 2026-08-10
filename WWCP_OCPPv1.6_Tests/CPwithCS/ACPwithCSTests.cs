@@ -221,6 +221,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
         public async virtual Task ShutdownOnce()
         {
 
+            if (chargePoint is not null)
+                await chargePoint.Stop();
+
             if (centralSystem is not null)
                 await centralSystem.Shutdown();
 

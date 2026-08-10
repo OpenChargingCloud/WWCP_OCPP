@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 
                 lcOCPPWebSocketServer1 = localController1.AttachWebSocketServer(
 
-                                             HTTPServiceName:              null,
+                                             HTTPServiceName:              $"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API",
                                              IPAddress:                    null,
                                              TCPPort:                      null,   // Random port!
                                              Description:                  null,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                         // Sec-WebSocket-Version:   13
 
                         Assert.That(response.HTTPStatusCode,                                                  Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
-                        Assert.That(response.Server,                                                          Is.EqualTo($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API"));
+                        Assert.That(response.Server,                                                          Is.EqualTo($"GraphDefined OCPP {Version.String} WebSocket Server"));
                         Assert.That(response.Connection,                                                      Is.EqualTo(ConnectionType.Upgrade));
                         Assert.That(response.Upgrade,                                                         Is.EqualTo("websocket"));
                         Assert.That(response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId),   Is.True);
@@ -333,11 +333,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
         public override async Task ShutdownOnce()
         {
 
-            if (lcOCPPWebSocketServer1 is not null)
-                await lcOCPPWebSocketServer1.Shutdown();
+            if (localController1 is not null)
+                await localController1.Stop();
 
-            if (lcOCPPWebSocketServer2 is not null)
-                await lcOCPPWebSocketServer2.Shutdown();
+            if (localController2 is not null)
+                await localController2.Stop();
 
             localController1         = null;
             localController2         = null;

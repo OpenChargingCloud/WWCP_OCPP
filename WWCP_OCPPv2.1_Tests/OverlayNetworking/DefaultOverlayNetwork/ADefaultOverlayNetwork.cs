@@ -160,6 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             #region Attach HTTP WebSocket Server
 
             csmsWSServer = CSMS.AttachWebSocketServer(
+                               HTTPServiceName:         $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",
                                TCPPort:                 null,   // Random port!
                                RequireAuthentication:   true,
                                DisableWebSocketPings:   true,
@@ -236,6 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             #region Attach HTTP WebSocket Server
 
             lcOCPPWebSocketServer = localController.AttachWebSocketServer(
+                                        HTTPServiceName:         $"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API",
                                         TCPPort:                 null,   // Random port!
                                         DisableWebSocketPings:   true,
                                         AutoStart:               true
@@ -270,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    connectionSetupResponse1.HTTPStatusCode);
             ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   connectionSetupResponse1.Server);
-            ClassicAssert.AreEqual("Upgrade",                                                            connectionSetupResponse1.Connection);
+            ClassicAssert.AreEqual(ConnectionType.Upgrade, connectionSetupResponse1.Connection);
             ClassicAssert.AreEqual("websocket",                                                          connectionSetupResponse1.Upgrade);
             ClassicAssert.IsTrue  (connectionSetupResponse1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
             ClassicAssert.AreEqual("13",                                                                 connectionSetupResponse1.SecWebSocketVersion);
@@ -374,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                               connectionSetupResponse2.HTTPStatusCode);
             ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API",   connectionSetupResponse2.Server);
-            ClassicAssert.AreEqual("Upgrade",                                                                       connectionSetupResponse2.Connection);
+            ClassicAssert.AreEqual(ConnectionType.Upgrade, connectionSetupResponse2.Connection);
             ClassicAssert.AreEqual("websocket",                                                                     connectionSetupResponse2.Upgrade);
             ClassicAssert.IsTrue  (connectionSetupResponse2.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
             ClassicAssert.AreEqual("13",                                                                            connectionSetupResponse2.SecWebSocketVersion);
@@ -443,6 +445,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             if (localController is not null)
                 await localController.Stop();
+
+            if (chargingStation is not null)
+                await chargingStation.Stop();
 
             if (CSMS is not null)
                 await CSMS.Stop();

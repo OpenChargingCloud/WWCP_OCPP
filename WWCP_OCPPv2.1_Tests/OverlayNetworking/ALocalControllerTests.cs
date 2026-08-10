@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
 
                         ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response.HTTPStatusCode);
                         ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response.Server);
-                        ClassicAssert.AreEqual("Upgrade",                                                            response.Connection);
+                        ClassicAssert.AreEqual(ConnectionType.Upgrade, response.Connection);
                         ClassicAssert.AreEqual("websocket",                                                          response.Upgrade);
                         ClassicAssert.IsTrue  (response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
                         ClassicAssert.AreEqual("13",                                                                 response.SecWebSocketVersion);

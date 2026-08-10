@@ -277,6 +277,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public override async Task ShutdownEachTest()
         {
 
+            if (chargePoint1 is not null)
+                await chargePoint1.Stop();
+
+            if (chargePoint2 is not null)
+                await chargePoint2.Stop();
+
+            if (chargePoint3 is not null)
+                await chargePoint3.Stop();
+
             await base.ShutdownEachTest();
 
             chargePoint1 = null;

@@ -32,15 +32,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
     public abstract class AChargingStationWithNetworkingNodeTests : AChargingStationTests
     {
 
-        #region SetupEachTest()
+        #region SetupOnce()
 
-        [SetUp]
-        public override async Task SetupEachTest()
+        [OneTimeSetUp]
+        public override async Task SetupOnce()
         {
 
+            // Must be set BEFORE the base class OneTimeSetUp runs,
+            // as the local controller is created there!
             InitLocalController1 = true;
 
-            await base.SetupEachTest();
+            await base.SetupOnce();
 
         }
 
