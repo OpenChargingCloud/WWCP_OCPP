@@ -66,20 +66,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
             Timestamp.Reset();
 
             testCentralSystem01      = new TestCentralSystemNode(
-                                           Id:                     NetworkingNode_Id.Parse("OCPPTest01"),
-                                           VendorName:             "GraphDefined",
-                                           Model:                  "CSSimulator1",
-                                           HTTPUploadPort:         IPPort.Parse(9100),
-                                           DNSClient:              new DNSClient(
-                                                                       SearchForIPv6DNSServers: false,
-                                                                       SearchForIPv4DNSServers: false
-                                                                   )
+                                           Id:                       NetworkingNode_Id.Parse("OCPPTest01"),
+                                           VendorName:               "GraphDefined",
+                                           Model:                    "CSSimulator1",
+                                           HTTPAPI_Disabled:         true,
+                                           HTTPUploadAPI_Disabled:   true,
+                                           DNSClient:                new DNSClient(
+                                                                         SearchForIPv6DNSServers: false,
+                                                                         SearchForIPv4DNSServers: false
+                                                                     )
                                        );
 
             ClassicAssert.IsNotNull(testCentralSystem01);
 
+                                       // Will use a random TCP port!
             testBackendWebSockets01  = testCentralSystem01.AttachWebSocketServer(
-                                           TCPPort:    IPPort.Parse(9101),
                                            AutoStart:  true
                                        );
 
@@ -95,10 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
         #region ShutdownEachTest()
 
         [TearDown]
-        public virtual void ShutdownEachTest()
+        public async virtual Task ShutdownEachTest()
         {
 
-            testBackendWebSockets01?.Shutdown();
+            if (testCentralSystem01 is not null)
+                await testCentralSystem01.Shutdown();
 
             testCentralSystem01      = null;
             testBackendWebSockets01  = null;

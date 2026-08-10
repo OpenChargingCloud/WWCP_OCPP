@@ -132,6 +132,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                        VendorName:              "GraphDefined",
                        Model:                   "CSMS M.1",
                        //HTTPUploadPort:          IPPort.Parse(9100),
+                       HTTPAPI_Disabled:          true,
+                       HTTPDownloadAPI_Disabled:  true,
+                       HTTPUploadAPI_Disabled:    true,
+                       WebPaymentsAPI_Disabled:   true,
+                       WebAPI_Disabled:           true,
                        DNSClient:               dnsClient
                    );
 
@@ -155,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             #region Attach HTTP WebSocket Server
 
             csmsWSServer = CSMS.AttachWebSocketServer(
-                               TCPPort:                 IPPort.Parse(9101),
+                               TCPPort:                 null,   // Random port!
                                RequireAuthentication:   true,
                                DisableWebSocketPings:   true,
                                AutoStart:               true
@@ -204,6 +209,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                  DisableSendHeartbeats:   true,
 
                                  //HTTPBasicAuth:           new Tuple<String, String>("GDNN001", "1234"),
+                                 HTTPAPI_Disabled:          true,
+                                 HTTPDownloadAPI_Disabled:  true,
+                                 HTTPUploadAPI_Disabled:    true,
+                                 WebAPI_Disabled:           true,
                                  DNSClient:               dnsClient
                              );
 
@@ -227,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             #region Attach HTTP WebSocket Server
 
             lcOCPPWebSocketServer = localController.AttachWebSocketServer(
-                                        TCPPort:                 IPPort.Parse(9103),
+                                        TCPPort:                 null,   // Random port!
                                         DisableWebSocketPings:   true,
                                         AutoStart:               true
                                     );
@@ -319,6 +328,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                                    //HTTPBasicAuth:           new Tuple<String, String>("OLI_001", "1234"),
                                    //HTTPBasicAuth:           new Tuple<String, String>("GD001", "1234"),
+                                   HTTPAPI_Disabled:  true,
+                                   WebAPI_Disabled:   true,
                                    DNSClient:               dnsClient
                                );
 
@@ -432,6 +443,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             if (localController is not null)
                 await localController.Stop();
+
+            if (CSMS is not null)
+                await CSMS.Stop();
 
             CSMS             = null;
             csmsWSServer     = null;

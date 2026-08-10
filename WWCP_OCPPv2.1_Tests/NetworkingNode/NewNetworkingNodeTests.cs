@@ -55,11 +55,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
             var tn01      = new TestLocalControllerNode(
                                 NetworkingNode_Id.Parse("NN01"),
                                 "GraphDefined GmbH",
-                                "NN-0001"
+                                "NN-0001",
+                                HTTPAPI_Disabled:          true,
+                                HTTPDownloadAPI_Disabled:  true,
+                                HTTPUploadAPI_Disabled:    true,
+                                WebAPI_Disabled:           true
                             );
 
             var server1   = tn01.AttachWebSocketServer(
-                                TCPPort:                 IPPort.Parse(4599),
+                                TCPPort:                 null,   // Random port!
                                 RequireAuthentication:   true,
                                 DisableWebSocketPings:   true,
                                 AutoStart:               true
@@ -83,12 +87,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
             var testCSMS01               = new TestCSMSNode(
                                                Id:                      NetworkingNode_Id.Parse("OCPPTest01"),
                                                VendorName:              "GraphDefined",
-                                               Model:                   "GraphDefined OCPP Test"
+                                               Model:                     "GraphDefined OCPP Test",
+                                               HTTPAPI_Disabled:          true,
+                                               HTTPDownloadAPI_Disabled:  true,
+                                               HTTPUploadAPI_Disabled:    true,
+                                               WebPaymentsAPI_Disabled:   true,
+                                               WebAPI_Disabled:           true
                                                //HTTPUploadPort:          IPPort.Parse(3416)
                                            );
 
             var testBackendWebSockets01  = testCSMS01.AttachWebSocketServer(
-                                               TCPPort:                 IPPort.Parse(3415),
+                                               TCPPort:                 null,   // Random port!
                                                RequireAuthentication:   true,
                                                DisableWebSocketPings:   true,
                                                AutoStart:               true
@@ -144,6 +153,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
                                                                      SerialNumber:   "SN-EN0001"
                                                                      //PublicKeys:     [ ECCPublicKey.ParseASN1("0xcafebabe") ]
                                                                  ),
+                                       HTTPAPI_Disabled:         true,
+                                       WebAPI_Disabled:          true,
                                        DisableSendHeartbeats:    true
                                    );
 
@@ -204,6 +215,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.New
             //                                ResetType.Immediate
             //                            )
             //                        );
+
+
+            await chargingStation1.Stop();
+            await tn01.            Stop();
+            await testCSMS01.      Stop();
 
         }
 

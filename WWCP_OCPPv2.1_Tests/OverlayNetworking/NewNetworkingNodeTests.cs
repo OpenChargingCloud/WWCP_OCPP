@@ -55,11 +55,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
             var tn01      = new TestLocalControllerNode(
                                 NetworkingNode_Id.Parse("NN01"),
                                 "GraphDefined GmbH",
-                                "NN-0001"
+                                "NN-0001",
+                                HTTPAPI_Disabled:          true,
+                                HTTPDownloadAPI_Disabled:  true,
+                                HTTPUploadAPI_Disabled:    true,
+                                WebAPI_Disabled:           true
                             );
 
             var server1   = tn01.AttachWebSocketServer(
-                                TCPPort:                 IPPort.Parse(4599),
+                                TCPPort:                 null,   // Random port!
                                 RequireAuthentication:   true,
                                 DisableWebSocketPings:   true,
                                 AutoStart:               true
@@ -88,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
                                            );
 
             var testBackendWebSockets01  = testCSMS01.AttachWebSocketServer(
-                                               TCPPort:                 IPPort.Parse(3415),
+                                               TCPPort:                 null,   // Random port!
                                                RequireAuthentication:   true,
                                                DisableWebSocketPings:   true,
                                                AutoStart:               true
@@ -204,6 +208,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.New
             //                                ResetType.Immediate
             //                            )
             //                        );
+
+
+            await chargingStation1.Stop();
+            await tn01.            Stop();
+            await testCSMS01.      Stop();
 
         }
 

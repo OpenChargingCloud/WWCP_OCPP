@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                                        SignaturePolicy:                  null,
                                        ForwardingSignaturePolicy:        null,
 
-                                       HTTPAPI_Disabled:                 false,
+                                       HTTPAPI_Disabled:                 true,
                                        HTTPAPI_Port:                     null,
                                        HTTPAPI_ServerName:               null,
                                        HTTPAPI_ServiceName:              null,
@@ -174,17 +174,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                                        HTTPAPI_EventLoggingDisabled:     true,
 
                                        HTTPDownloadAPI:                  null,
-                                       HTTPDownloadAPI_Disabled:         false,
+                                       HTTPDownloadAPI_Disabled:         true,
                                        HTTPDownloadAPI_Path:             null,
                                        HTTPDownloadAPI_FileSystemPath:   null,
 
                                        HTTPUploadAPI:                    null,
-                                       HTTPUploadAPI_Disabled:           false,
+                                       HTTPUploadAPI_Disabled:           true,
                                        HTTPUploadAPI_Path:               null,
                                        HTTPUploadAPI_FileSystemPath:     null,
 
                                        WebAPI:                           null,
-                                       WebAPI_Disabled:                  false,
+                                       WebAPI_Disabled:                  true,
                                        WebAPI_Path:                      null,
 
                                        DefaultRequestTimeout:            null,
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 
                                              HTTPServiceName:              null,
                                              IPAddress:                    null,
-                                             TCPPort:                      IPPort.Parse(9103),
+                                             TCPPort:                      null,   // Random port!
                                              Description:                  null,
 
                                              RequireAuthentication:        true,

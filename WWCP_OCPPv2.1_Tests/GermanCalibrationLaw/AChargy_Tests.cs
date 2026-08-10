@@ -112,6 +112,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
                                   VendorName:              "GraphDefined",
                                   Model:                   "OCPPTest",
                                   //HTTPUploadPort:          IPPort.Parse(9100),
+                                  HTTPAPI_Disabled:          true,
+                                  HTTPDownloadAPI_Disabled:  true,
+                                  HTTPUploadAPI_Disabled:    true,
+                                  WebPaymentsAPI_Disabled:   true,
+                                  WebAPI_Disabled:           true,
                                   DNSClient:               new DNSClient(
                                                                SearchForIPv6DNSServers: false,
                                                                SearchForIPv4DNSServers: false
@@ -121,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
             ClassicAssert.IsNotNull(testCSMS01);
 
             testBackendWebSockets01  = testCSMS01.AttachWebSocketServer(
-                                           TCPPort:                 IPPort.Parse(9101),
+                                           TCPPort:                 null,   // Random port!
                                            RequireAuthentication:   true,
                                            DisableWebSocketPings:   true,
                                            AutoStart:               true
@@ -162,10 +167,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
         #region ShutdownEachTest()
 
         [TearDown]
-        public virtual void ShutdownEachTest()
+        public virtual async Task ShutdownEachTest()
         {
 
-            testBackendWebSockets01?.Shutdown();
+            if (testCSMS01 is not null)
+                await testCSMS01.Stop();
 
             testCSMS01               = null;
             testBackendWebSockets01  = null;

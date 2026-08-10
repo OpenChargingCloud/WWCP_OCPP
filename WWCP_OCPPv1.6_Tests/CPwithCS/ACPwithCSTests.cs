@@ -61,14 +61,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
             Timestamp.Reset();
 
             centralSystem     = new TestCentralSystemNode(
-                                    Id:                     NetworkingNode_Id.Parse("OCPPTest01"),
-                                    VendorName:             "GraphDefined",
-                                    Model:                  "CSSimulator1",
-                                    HTTPUploadPort:         IPPort.Parse(9100),
-                                    DNSClient:              new DNSClient(
-                                                                SearchForIPv6DNSServers: false,
-                                                                SearchForIPv4DNSServers: false
-                                                            )
+                                    Id:                       NetworkingNode_Id.Parse("OCPPTest01"),
+                                    VendorName:               "GraphDefined",
+                                    Model:                    "CSSimulator1",
+                                    HTTPAPI_Disabled:         true,
+                                    HTTPUploadAPI_Disabled:   true,
+                                    DNSClient:                new DNSClient(
+                                                                  SearchForIPv6DNSServers: false,
+                                                                  SearchForIPv4DNSServers: false
+                                                              )
                                 );
 
             Assert.That(centralSystem, Is.Not.Null);
@@ -217,10 +218,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
         #region ShutdownOnce()
 
         [OneTimeTearDown]
-        public virtual void ShutdownOnce()
+        public async virtual Task ShutdownOnce()
         {
 
-            centralSystemWSS?.Shutdown();
+            if (centralSystem is not null)
+                await centralSystem.Shutdown();
 
             centralSystem     = null;
             centralSystemWSS  = null;

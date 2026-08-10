@@ -274,10 +274,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         #region ShutdownEachTest()
 
         [TearDown]
-        public override void ShutdownEachTest()
+        public override async Task ShutdownEachTest()
         {
 
-            base.ShutdownEachTest();
+            await base.ShutdownEachTest();
 
             chargePoint1 = null;
             chargePoint2 = null;

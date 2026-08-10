@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
 
 
                 lcOCPPWebSocketServer01 = localController1.AttachWebSocketServer(
-                                              TCPPort:                 IPPort.Parse(9103),
+                                              TCPPort:                 null,   // Random port!
                                               DisableWebSocketPings:   true,
                                               AutoStart:               true
                                           );

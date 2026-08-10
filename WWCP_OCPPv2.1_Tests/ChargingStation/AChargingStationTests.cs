@@ -218,6 +218,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                                    //HTTPBasicAuth:           new Tuple<String, String>("OLI_001", "1234"),
                                    //HTTPBasicAuth:           new Tuple<String, String>("GD001", "1234"),
+                                   HTTPAPI_Disabled:  true,
+                                   WebAPI_Disabled:   true,
                                    DNSClient:               testCSMS1.DNSClient
 
                                );
@@ -485,6 +487,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                             ),
                                    DisableSendHeartbeats:   true,
 
+                                   HTTPAPI_Disabled:  true,
+                                   WebAPI_Disabled:   true,
                                    DNSClient:               testCSMS1.DNSClient
 
                                );
@@ -693,6 +697,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                             ),
                                    DisableSendHeartbeats:   true,
 
+                                   HTTPAPI_Disabled:  true,
+                                   WebAPI_Disabled:   true,
                                    DNSClient:               testCSMS1.DNSClient
 
                                );

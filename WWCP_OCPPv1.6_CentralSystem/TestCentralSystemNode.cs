@@ -65,9 +65,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<OCPPv1_6.CS.ICentralSystemChannel, DateTime>>   reachableChargeBoxes     = [];
 
-        private          readonly  HTTPExtAPI                                                                                    TestAPI;
+        private          readonly  HTTPExtAPI?                                                                                   TestAPI;
 
-        private          readonly  OCPPWebAPI                                                                                    WebAPI;
+        private          readonly  OCPPWebAPI?                                                                                   WebAPI;
 
         protected static readonly  SemaphoreSlim                                                                                 ChargeBoxesSemaphore     = new (1, 1);
 
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Properties
 
-        public UploadAPI  HTTPUploadAPI             { get; }
+        public UploadAPI? HTTPUploadAPI             { get; }
 
         public IPPort     HTTPUploadPort            { get; }
 
@@ -138,7 +138,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                      AsymmetricCipherKeyPair?           ClientCAKeyPair        = null,
                                      Org.BouncyCastle.X509.X509Certificate?  ClientCACertificate  = null,
 
+                                     Boolean                HTTPAPI_Disabled                   = false,
+                                     IPPort?                HTTPAPI_Port                       = null,
+
                                      IPPort?                HTTPUploadPort                     = null,
+                                     Boolean                HTTPUploadAPI_Disabled             = false,
 
                                      WebSocketServer?       ControlWebSocketServer             = null,
 
@@ -202,9 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             Directory.CreateDirectory("HTTPSSEs");
 
-            this.TestAPI                = new HTTPExtAPI(
+            if (!HTTPAPI_Disabled)
+                this.TestAPI            = new HTTPExtAPI(
                                               new HTTPServer(
-                                                  TCPPort:            IPPort.Parse(3500),
+                                                  TCPPort:            HTTPAPI_Port ?? IPPort.Parse(3500),
                                                   HTTPServerName:     "GraphDefined OCPP v1.6 Test Central System",
                                                   DNSClient:          DNSClient,
                                                   AutoStart:          true
@@ -231,7 +236,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //});
 
 
-            this.HTTPUploadAPI           = new UploadAPI(
+            if (!HTTPUploadAPI_Disabled)
+                this.HTTPUploadAPI       = new UploadAPI(
                                                this,
                                                new HTTPServer(
                                                    TCPPort:          this.HTTPUploadPort,
@@ -239,7 +245,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                )
                                            );
 
-            this.WebAPI                  = new OCPPWebAPI(
+            if (TestAPI is not null)
+                this.WebAPI              = new OCPPWebAPI(
                                                this,
                                                TestAPI.HTTPServer
                                            );
@@ -6635,37 +6642,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Shutdown(Message, Wait = true)
 
         /// <summary>
-        /// Shutdown the HTTP web socket listener thread.
+        /// Shutdown all attached HTTP WebSocket and HTTP servers.
         /// </summary>
         /// <param name="Message">An optional shutdown message.</param>
-        /// <param name="Wait">Wait until the server finally shutted down.</param>
+        /// <param name="Wait">Wait until the servers finally shutted down.</param>
         public async Task Shutdown(String?  Message   = null,
                                    Boolean  Wait      = true)
         {
 
-            //var centralSystemServersCopy = centralSystemServers.ToArray();
-            //if (centralSystemServersCopy.Length > 0)
-            //{
-            //    try
-            //    {
+            try
+            {
 
-            //        await Task.WhenAll(centralSystemServers.
-            //                               Select(centralSystemServer => centralSystemServer.Shutdown(
-            //                                                                 Message,
-            //                                                                 Wait
-            //                                                             )).
-            //                               ToArray());
+                // All attached OCPP WebSocket servers...
+                await Stop(EventTracking_Id.New, Message);
 
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        await HandleErrors(
-            //                  nameof(TestCentralSystem),
-            //                  nameof(Shutdown),
-            //                  e
-            //              );
-            //    }
-            //}
+                if (TestAPI       is not null)
+                    await TestAPI.      HTTPServer.Stop(EventTracking_Id.New, Message);
+
+                if (HTTPUploadAPI is not null)
+                    await HTTPUploadAPI.HTTPServer.Stop(EventTracking_Id.New, Message);
+
+            }
+            catch (Exception e)
+            {
+                await HandleErrors(
+                          nameof(TestCentralSystemNode),
+                          nameof(Shutdown),
+                          e
+                      );
+            }
 
         }
 

@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 ForwardingSignaturePolicy:               null,
 
                                                                 HTTPAPI:                                 null,
-                                                                HTTPAPI_Disabled:                        false,
+                                                                HTTPAPI_Disabled:                        true,
                                                                 HTTPAPI_Port:                            null,
                                                                 HTTPAPI_ServerName:                      null,
                                                                 HTTPAPI_ServiceName:                     null,
@@ -203,21 +203,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 HTTPAPI_EventLoggingDisabled:            true,
 
                                                                 HTTPDownloadAPI:                         null,
-                                                                HTTPDownloadAPI_Disabled:                false,
+                                                                HTTPDownloadAPI_Disabled:                true,
                                                                 HTTPDownloadAPI_Path:                    null,
                                                                 HTTPDownloadAPI_FileSystemPath:          null,
 
                                                                 HTTPUploadAPI:                           null,
-                                                                HTTPUploadAPI_Disabled:                  false,
+                                                                HTTPUploadAPI_Disabled:                  true,
                                                                 HTTPUploadAPI_Path:                      null,
                                                                 HTTPUploadAPI_FileSystemPath:            null,
 
                                                                 WebPaymentsAPI:                          null,
-                                                                WebPaymentsAPI_Disabled:                 false,
+                                                                WebPaymentsAPI_Disabled:                 true,
                                                                 WebPaymentsAPI_Path:                     null,
 
                                                                 WebAPI:                                  null,
-                                                                WebAPI_Disabled:                         false,
+                                                                WebAPI_Disabled:                         true,
                                                                 WebAPI_Path:                             null,
 
                                                                 NTSServer:                               (csmsNode) => new nts.NTSServer(
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                 HTTPServiceName:              null,
                                                                 IPAddress:                    null,
-                                                                TCPPort:                      IPPort.Parse(9101),
+                                                                TCPPort:                      null,   // Random port!
                                                                 Description:                  I18NString.Create($"{testCSMS1.Id} HTTP WebSocket Server"),
 
                                                                 RequireAuthentication:        true,
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 ForwardingSignaturePolicy:               null,
 
                                                                 HTTPAPI:                                 null,
-                                                                HTTPAPI_Disabled:                        false,
+                                                                HTTPAPI_Disabled:                        true,
                                                                 HTTPAPI_Port:                            null,
                                                                 HTTPAPI_ServerName:                      null,
                                                                 HTTPAPI_ServiceName:                     null,
@@ -408,21 +408,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 HTTPAPI_EventLoggingDisabled:            true,
 
                                                                 HTTPDownloadAPI:                         null,
-                                                                HTTPDownloadAPI_Disabled:                false,
+                                                                HTTPDownloadAPI_Disabled:                true,
                                                                 HTTPDownloadAPI_Path:                    null,
                                                                 HTTPDownloadAPI_FileSystemPath:          null,
 
                                                                 HTTPUploadAPI:                           null,
-                                                                HTTPUploadAPI_Disabled:                  false,
+                                                                HTTPUploadAPI_Disabled:                  true,
                                                                 HTTPUploadAPI_Path:                      null,
                                                                 HTTPUploadAPI_FileSystemPath:            null,
 
                                                                 WebPaymentsAPI:                          null,
-                                                                WebPaymentsAPI_Disabled:                 false,
+                                                                WebPaymentsAPI_Disabled:                 true,
                                                                 WebPaymentsAPI_Path:                     null,
 
                                                                 WebAPI:                                  null,
-                                                                WebAPI_Disabled:                         false,
+                                                                WebAPI_Disabled:                         true,
                                                                 WebAPI_Path:                             null,
 
                                                                 AutoCreatedChargingStationsAccessType:   null,
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                 HTTPServiceName:              null,
                                                                 IPAddress:                    null,
-                                                                TCPPort:                      IPPort.Parse(9201),
+                                                                TCPPort:                      null,   // Random port!
                                                                 Description:                  I18NString.Create($"{testCSMS2.Id} HTTP WebSocket Server"),
 
                                                                 RequireAuthentication:        true,
@@ -596,7 +596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 ForwardingSignaturePolicy:               null,
 
                                                                 HTTPAPI:                                 null,
-                                                                HTTPAPI_Disabled:                        false,
+                                                                HTTPAPI_Disabled:                        true,
                                                                 HTTPAPI_Port:                            null,
                                                                 HTTPAPI_ServerName:                      null,
                                                                 HTTPAPI_ServiceName:                     null,
@@ -605,21 +605,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 HTTPAPI_EventLoggingDisabled:            true,
 
                                                                 HTTPDownloadAPI:                         null,
-                                                                HTTPDownloadAPI_Disabled:                false,
+                                                                HTTPDownloadAPI_Disabled:                true,
                                                                 HTTPDownloadAPI_Path:                    null,
                                                                 HTTPDownloadAPI_FileSystemPath:          null,
 
                                                                 HTTPUploadAPI:                           null,
-                                                                HTTPUploadAPI_Disabled:                  false,
+                                                                HTTPUploadAPI_Disabled:                  true,
                                                                 HTTPUploadAPI_Path:                      null,
                                                                 HTTPUploadAPI_FileSystemPath:            null,
 
                                                                 WebPaymentsAPI:                          null,
-                                                                WebPaymentsAPI_Disabled:                 false,
+                                                                WebPaymentsAPI_Disabled:                 true,
                                                                 WebPaymentsAPI_Path:                     null,
 
                                                                 WebAPI:                                  null,
-                                                                WebAPI_Disabled:                         false,
+                                                                WebAPI_Disabled:                         true,
                                                                 WebAPI_Path:                             null,
 
                                                                 AutoCreatedChargingStationsAccessType:   null,
@@ -643,7 +643,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                                                                 HTTPServiceName:              null,
                                                                 IPAddress:                    null,
-                                                                TCPPort:                      IPPort.Parse(9301),
+                                                                TCPPort:                      null,   // Random port!
                                                                 Description:                  I18NString.Create($"{testCSMS3.Id} HTTP WebSocket Server"),
 
                                                                 RequireAuthentication:        true,
@@ -878,6 +878,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             if (testBackendWebSockets3 is not null)
                 await testBackendWebSockets3.Shutdown();
+
+            if (testCSMS1?.NTSServer is not null)
+                await testCSMS1.NTSServer.ShutdownAsync();
+
+            if (testCSMS1 is not null)
+                await testCSMS1.Stop();
+
+            if (testCSMS2 is not null)
+                await testCSMS2.Stop();
+
+            if (testCSMS3 is not null)
+                await testCSMS3.Stop();
 
             testCSMS1               = null;
             testCSMS2               = null;

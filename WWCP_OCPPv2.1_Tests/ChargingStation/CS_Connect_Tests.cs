@@ -107,6 +107,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                   VendorName:              "GraphDefined",
                                   Model:                   "OCPP-CSMS-Test-Server",
                                   //HTTPUploadPort:          IPPort.Parse(9100),
+                                  HTTPAPI_Disabled:          true,
+                                  HTTPDownloadAPI_Disabled:  true,
+                                  HTTPUploadAPI_Disabled:    true,
+                                  WebPaymentsAPI_Disabled:   true,
+                                  WebAPI_Disabled:           true,
                                   DNSClient:               new DNSClient(
                                                                SearchForIPv6DNSServers: false,
                                                                SearchForIPv4DNSServers: false
@@ -116,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             ClassicAssert.IsNotNull(testCSMS01);
 
             testWebSocketServer01  = testCSMS01.AttachWebSocketServer(
-                                         TCPPort:                 IPPort.Parse(9101),
+                                         TCPPort:                 null,   // Random port!
                                          RequireAuthentication:   RequireAuthentication,
                                          DisableWebSocketPings:   DisableWebSocketPings,
                                          AutoStart:               true
@@ -211,6 +216,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                                     //HTTPBasicAuth:            new Tuple<String, String>("OLI_001", "1234"),
                                     //HTTPBasicAuth:            new Tuple<String, String>("GD001", "1234"),
+                                    HTTPAPI_Disabled:  true,
+                                    WebAPI_Disabled:   true,
                                     DNSClient:                testCSMS01!.DNSClient
                                 );
 
@@ -293,13 +300,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         #region ShutdownEachTest()
 
         [TearDown]
-        public virtual void ShutdownEachTest()
+        public virtual async Task ShutdownEachTest()
         {
 
-            testWebSocketServer01?.Shutdown();
+            if (testCSMS01 is not null)
+                await testCSMS01.Stop();
 
             testCSMS01               = null;
-            testWebSocketServer01  = null;
+            testWebSocketServer01    = null;
 
             chargingStation1         = null;
             chargingStation2         = null;
