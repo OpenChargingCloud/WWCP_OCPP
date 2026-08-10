@@ -362,15 +362,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 StopTransactionResponse = null;
 
-                #region IdTagInfo     [mandatory]
+                #region IdTagInfo     [optional]
 
-                if (!JSON.ParseMandatoryJSON("idTagInfo",
-                                             "identification tag information",
-                                             OCPPv1_6.IdTagInfo.TryParse,
-                                             out IdTagInfo IdTagInfo,
-                                             out ErrorResponse))
+                if (JSON.ParseOptionalJSON("idTagInfo",
+                                           "identification tag information",
+                                           OCPPv1_6.IdTagInfo.TryParse,
+                                           out IdTagInfo? IdTagInfo,
+                                           out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion

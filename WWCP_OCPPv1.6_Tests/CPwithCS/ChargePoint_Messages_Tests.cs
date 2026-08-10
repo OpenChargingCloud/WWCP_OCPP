@@ -608,7 +608,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                     Assert.That(securityEventNotification.NetworkPath.Source,   Is.EqualTo(chargePoint.Id));
                     Assert.That(securityEventNotification.DestinationId,        Is.EqualTo(NetworkingNode_Id.CentralSystem));
                     Assert.That(securityEventNotification.Type,                 Is.EqualTo(securityEventType));
-                    Assert.That(securityEventNotification.Timestamp,            Is.EqualTo(timestamp));
+                    Assert.That(securityEventNotification.Timestamp.ToISO8601(),Is.EqualTo(timestamp.ToISO8601()));
                     Assert.That(securityEventNotification.TechInfo,             Is.EqualTo(techInfo));
 
                 });
@@ -695,6 +695,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 };
 
 
+                // An empty CSR is syntactically valid OCPP, but the central system
+                // will not be able to parse it and therefore must reject it!
                 var CSR       = "";
 
                 var response  = await chargePoint.SignCertificate(CSR);
@@ -703,7 +705,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                             Is.EqualTo(RegistrationStatus.Accepted));
+                    Assert.That(response.Status,                             Is.EqualTo(GenericStatus.Rejected));
 
                     Assert.That(signCertificateRequests.Count,               Is.EqualTo(1));
                     var signCertificateRequest = signCertificateRequests.First();
@@ -769,7 +771,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                     Assert.That(startTransactionRequests.Count,                       Is.EqualTo(1));
                     var startTransactionRequest = startTransactionRequests.First();
 
-                    Assert.That(startTransactionRequest.DestinationId,                Is.EqualTo(chargePoint.Id));
+                    Assert.That(startTransactionRequest.NetworkPath.Source,           Is.EqualTo(chargePoint.Id));
+                    Assert.That(startTransactionRequest.DestinationId,                Is.EqualTo(NetworkingNode_Id.CentralSystem));
                     Assert.That(startTransactionRequest.IdTag,                        Is.EqualTo(idToken));
                     Assert.That(startTransactionRequest.ConnectorId,                  Is.EqualTo(connectorId));
                     Assert.That(startTransactionRequest.IdTag,                        Is.EqualTo(idToken));
@@ -883,6 +886,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 var meterStop        = RandomExtensions.RandomUInt64();
                 var idToken          = IdToken.NewRandom();
                 var reason           = Reasons.EVDisconnected;
+
+                await centralSystem.RegisterToken(idToken, IdTagInfo.Accepted);
                 var transactionData  = new[] {
                                            new MeterValue(
                                                Timestamp.Now - TimeSpan.FromMinutes(5),

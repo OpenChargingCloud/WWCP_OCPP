@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 Assert.That(response1.HTTPStatusCode,                 Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
                 Assert.That(response1.Connection,                     Is.EqualTo(ConnectionType.Upgrade));
                 Assert.That(response1.Upgrade,                        Is.EqualTo("websocket"));
-                Assert.That(response1.SecWebSocketProtocol.First(),   Is.EqualTo("ocpp1.6"));
+                Assert.That(response1.SecWebSocketProtocol,           Is.EqualTo("ocpp1.6"));
 
             }
 

@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Operators;
@@ -134,6 +135,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                      I18NString?            Description                        = null,
                                      CustomData?            CustomData                         = null,
 
+                                     AsymmetricCipherKeyPair?           ClientCAKeyPair        = null,
+                                     Org.BouncyCastle.X509.X509Certificate?  ClientCACertificate  = null,
+
                                      IPPort?                HTTPUploadPort                     = null,
 
                                      WebSocketServer?       ControlWebSocketServer             = null,
@@ -162,8 +166,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    Description,
                    CustomData,
 
-                   null,
-                   null,
+                   ClientCAKeyPair,
+                   ClientCACertificate,
 
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
@@ -523,7 +527,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return Task.FromResult(
                            new StopTransactionResponse(
                                Request:      request,
-                               IdTagInfo:    null,
+                               IdTagInfo:    request.IdTag.HasValue
+                                                 ? idTags.TryGetValue(request.IdTag.Value, out var idTagInfo)
+                                                       ? idTagInfo
+                                                       : new IdTagInfo(
+                                                             Status:  AuthorizationStatus.Invalid
+                                                         )
+                                                 : null,
                                CustomData:   null
                            )
                        );
