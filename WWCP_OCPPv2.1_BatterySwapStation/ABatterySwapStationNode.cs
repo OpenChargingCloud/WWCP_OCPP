@@ -41,6 +41,7 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -591,43 +592,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         /// </summary>
         /// <param name="Id">The unique identification of this battery swap station.</param>
         public ABatterySwapStationNode(NetworkingNode_Id                  Id,
-                                    String                             VendorName,
-                                    String                             Model,
-                                    I18NString?                        Description                    = null,
-                                    String?                            SerialNumber                   = null,
-                                    String?                            FirmwareVersion                = null,
-                                    Modem?                             Modem                          = null,
+                                       String                             VendorName,
+                                       String                             Model,
+                                       I18NString?                        Description                    = null,
+                                       String?                            SerialNumber                   = null,
+                                       String?                            FirmwareVersion                = null,
+                                       Modem?                             Modem                          = null,
 
-                                    IEnumerable<EVSESpec>?             EVSEs                          = null,
-                                    OCPP.IEnergyMeter?                 UplinkEnergyMeter              = null,
+                                       IEnumerable<EVSESpec>?             EVSEs                          = null,
+                                       OCPP.IEnergyMeter?                 UplinkEnergyMeter              = null,
 
-                                    TimeSpan?                          DefaultRequestTimeout          = null,
+                                       TimeSpan?                          DefaultRequestTimeout          = null,
 
-                                    SignaturePolicy?                   SignaturePolicy                = null,
-                                    SignaturePolicy?                   ForwardingSignaturePolicy      = null,
+                                       SignaturePolicy?                   SignaturePolicy                = null,
+                                       SignaturePolicy?                   ForwardingSignaturePolicy      = null,
 
-                                    Boolean                            HTTPAPI_Disabled               = false,
-                                    IPPort?                            HTTPAPI_Port                   = null,
-                                    String?                            HTTPAPI_ServerName             = null,
-                                    String?                            HTTPAPI_ServiceName            = null,
-                                    EMailAddress?                      HTTPAPI_RobotEMailAddress      = null,
-                                    String?                            HTTPAPI_RobotGPGPassphrase     = null,
-                                    Boolean                            HTTPAPI_EventLoggingDisabled   = false,
+                                       Boolean                            HTTPAPI_Disabled               = false,
+                                       IPPort?                            HTTPAPI_Port                   = null,
+                                       String?                            HTTPAPI_ServerName             = null,
+                                       String?                            HTTPAPI_ServiceName            = null,
+                                       EMailAddress?                      HTTPAPI_RobotEMailAddress      = null,
+                                       String?                            HTTPAPI_RobotGPGPassphrase     = null,
+                                       Boolean                            HTTPAPI_EventLoggingDisabled   = false,
 
-                                    WebAPI?                            WebAPI                         = null,
-                                    Boolean                            WebAPI_Disabled                = false,
-                                    HTTPPath?                          WebAPI_Path                    = null,
+                                       WebAPI?                            WebAPI                         = null,
+                                       Boolean                            WebAPI_Disabled                = false,
+                                       HTTPPath?                          WebAPI_Path                    = null,
 
-                                    WebSocketServer?                   ControlWebSocketServer         = null,
+                                       WebSocketServer?                   ControlWebSocketServer         = null,
 
-                                    Boolean                            DisableSendHeartbeats          = false,
-                                    TimeSpan?                          SendHeartbeatsEvery            = null,
+                                       Boolean                            DisableSendHeartbeats          = false,
+                                       TimeSpan?                          SendHeartbeatsEvery            = null,
 
-                                    Boolean                            DisableMaintenanceTasks        = false,
-                                    TimeSpan?                          MaintenanceEvery               = null,
+                                       Boolean                            DisableMaintenanceTasks        = false,
+                                       TimeSpan?                          MaintenanceEvery               = null,
 
-                                    CustomData?                        CustomData                     = null,
-                                    DNSClient?                         DNSClient                      = null)
+                                       CustomData?                        CustomData                     = null,
+                                       DNSClient?                         DNSClient                      = null)
 
             : base(Id,
                    Description,
@@ -636,18 +637,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                    SignaturePolicy,
                    ForwardingSignaturePolicy,
 
-                   !HTTPAPI_Disabled
-                       ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
-                             HTTPServerName:          "GraphDefined OCPP Test Charging Station",
-                             HTTPServiceName:         "GraphDefined OCPP Test Charging Station Service",
-                             APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Charging Station Robot <robot@charging.cloud>"),
-                             APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer(),
-                             DNSClient:               DNSClient,
-                             AutoStart:               true
-                         )
-                       : null,
+                   null,//!HTTPAPI_Disabled
+                   //    ? new HTTPExtAPI(
+                   //          HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
+                   //          HTTPServerName:          "GraphDefined OCPP Test Charging Station",
+                   //          HTTPServiceName:         "GraphDefined OCPP Test Charging Station Service",
+                   //          APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Charging Station Robot <robot@charging.cloud>"),
+                   //          APIRobotGPGPassphrase:   "test123",
+                   //          SMTPClient:              new NullMailer(),
+                   //          DNSClient:               DNSClient,
+                   //          AutoStart:               true
+                   //      )
+                   //    : null,
                    ControlWebSocketServer,
 
                    DisableSendHeartbeats,
@@ -708,17 +709,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                 #region HTTP API Security Settings
 
-                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
+                //this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
-                    // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
-                    {
-                        return HTTPExtAPI.Anonymous;
-                    }
+                //    // Allow some URLs for anonymous access...
+                //    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                //    {
+                //        return HTTPExtAPI.Anonymous;
+                //    }
 
-                    return null;
+                //    return null;
 
-                });
+                //});
 
                 #endregion
 
@@ -806,64 +807,77 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         public override Task<HTTPResponse>
 
             ConnectOCPPWebSocketClient(URL                                                             RemoteURL,
-                                       HTTPHostname?                                                   VirtualHostname              = null,
-                                       I18NString?                                                     Description                  = null,
-                                       Boolean?                                                        PreferIPv4                   = null,
-                                       RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
-                                       LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
-                                       IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
-                                       SslStreamCertificateContext?                                    ClientCertificateContext     = null,
-                                       IEnumerable<X509Certificate2>?                                  ClientCertificateChain       = null,
-                                       SslProtocols?                                                   TLSProtocol                  = null,
-                                       String?                                                         HTTPUserAgent                = null,
-                                       IHTTPAuthentication?                                            HTTPAuthentication           = null,
-                                       TimeSpan?                                                       RequestTimeout               = null,
-                                       TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay       = null,
-                                       UInt16?                                                         MaxNumberOfRetries           = 3,
-                                       UInt32?                                                         InternalBufferSize           = null,
+                                       I18NString?                                                     Description                      = null,
 
-                                       IEnumerable<String>?                                            SecWebSocketProtocols        = null,
-                                       NetworkingMode?                                                 NetworkingMode               = null,
-                                       NetworkingNode_Id?                                              NextHopNetworkingNodeId      = null,
-                                       IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds     = null,
+                                       NetworkingMode?                                                 NetworkingMode                   = null,
 
-                                       Boolean                                                         DisableWebSocketPings        = false,
-                                       TimeSpan?                                                       WebSocketPingEvery           = null,
-                                       TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
+                                       HTTPHostname?                                                   VirtualHostname                  = null,
+                                       String?                                                         HTTPUserAgent                    = null,
+                                       IHTTPAuthentication?                                            HTTPAuthentication               = null,
+                                       IEnumerable<String>?                                            SecWebSocketProtocols            = null,
+                                       TimeSpan?                                                       RequestTimeout                   = null,
 
-                                       Boolean                                                         DisableMaintenanceTasks      = false,
-                                       TimeSpan?                                                       MaintenanceEvery             = null,
+                                       NetworkingNode_Id?                                              NextHopNetworkingNodeId          = null,
+                                       IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds         = null,
 
-                                       String?                                                         LoggingPath                  = null,
-                                       String                                                          LoggingContext               = null, //CPClientLogger.DefaultContext,
-                                       LogfileCreatorDelegate?                                         LogfileCreator               = null,
-                                       HTTPClientLogger?                                               HTTPLogger                   = null,
-                                       DNSClient?                                                      DNSClient                    = null,
+                                       Boolean                                                         DisableWebSocketPings            = false,
+                                       TimeSpan?                                                       WebSocketPingEvery               = null,
+                                       TimeSpan?                                                       SlowNetworkSimulationDelay       = null,
 
-                                       EventTracking_Id?                                               EventTrackingId              = null,
-                                       CancellationToken                                               CancellationToken            = default)
+                                       Boolean                                                         DisableMaintenanceTasks          = false,
+                                       TimeSpan?                                                       MaintenanceEvery                 = null,
+
+                                       String?                                                         TLSHostname                      = null,
+                                       RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator       = null,
+                                       LocalCertificateSelectionHandler?                               LocalCertificateSelector         = null,
+                                       IEnumerable<X509Certificate2>?                                  ClientCertificates               = null,
+                                       SslStreamCertificateContext?                                    ClientCertificateContext         = null,
+                                       IEnumerable<X509Certificate2>?                                  ClientCertificateChain           = null,
+                                       SslProtocols?                                                   TLSProtocols                     = null,
+                                       CipherSuitesPolicy?                                             CipherSuitesPolicy               = null,
+                                       X509ChainPolicy?                                                CertificateChainPolicy           = null,
+                                       X509RevocationMode?                                             CertificateRevocationCheckMode   = null,
+                                       Boolean?                                                        EnforceTLS                       = null,
+                                       IEnumerable<SslApplicationProtocol>?                            ApplicationProtocols             = null,
+                                       Boolean?                                                        AllowRenegotiation               = null,
+                                       Boolean?                                                        AllowTLSResume                   = null,
+                                       TOTPConfig?                                                     TOTPConfig                       = null,
+
+                                       IPVersionPreference?                                            IPVersionPreference              = null,
+                                       TimeSpan?                                                       ConnectTimeout                   = null,
+                                       TimeSpan?                                                       ReceiveTimeout                   = null,
+                                       TimeSpan?                                                       SendTimeout                      = null,
+                                       TransmissionRetryDelayDelegate?                                 TransmissionRetryDelay           = null,
+                                       UInt16?                                                         MaxNumberOfRetries               = null,
+                                       UInt32?                                                         InternalBufferSize               = null,
+
+                                       Boolean?                                                        DisableLogging                   = null,
+                                       String?                                                         LoggingPath                      = null,
+                                       String                                                          LoggingContext                   = "logcontext", //CPClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate?                                         LogfileCreator                   = null,
+                                       HTTPClientLogger?                                               HTTPLogger                       = null,
+
+                                       IDNSClient?                                                     DNSClient                        = null,
+                                       ILogger<ATLSClient>?                                            Logger                           = null,
+                                       ILoggerFactory?                                                 LoggerFactory                    = null,
+
+                                       EventTracking_Id?                                               EventTrackingId                  = null,
+                                       CancellationToken                                               CancellationToken                = default)
 
             => base.ConnectOCPPWebSocketClient(
+
                    RemoteURL,
-                   VirtualHostname,
                    Description,
-                   PreferIPv4,
-                   RemoteCertificateValidator,
-                   LocalCertificateSelector,
-                   ClientCertificates,
-                   ClientCertificateContext,
-                   ClientCertificateChain,
-                   TLSProtocol,
+
+                   NetworkingMode,
+
+                   VirtualHostname,
                    HTTPUserAgent,
                    HTTPAuthentication,
-                   RequestTimeout,
-                   TransmissionRetryDelay,
-                   MaxNumberOfRetries,
-                   InternalBufferSize,
-
                    SecWebSocketProtocols,
-                   NetworkingMode,
-                   NextHopNetworkingNodeId ??= NetworkingNode_Id.CSMS,
+                   RequestTimeout,
+
+                   NextHopNetworkingNodeId,
                    RoutingNetworkingNodeIds,
 
                    DisableWebSocketPings,
@@ -873,14 +887,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
+                   TLSHostname,
+                   RemoteCertificateValidator,
+                   LocalCertificateSelector,
+                   ClientCertificates,
+                   ClientCertificateContext,
+                   ClientCertificateChain,
+                   TLSProtocols,
+                   CipherSuitesPolicy,
+                   CertificateChainPolicy,
+                   CertificateRevocationCheckMode,
+                   EnforceTLS,
+                   ApplicationProtocols,
+                   AllowRenegotiation,
+                   AllowTLSResume,
+                   TOTPConfig,
+
+                   IPVersionPreference,
+                   ConnectTimeout,
+                   ReceiveTimeout,
+                   SendTimeout,
+                   TransmissionRetryDelay,
+                   MaxNumberOfRetries,
+                   InternalBufferSize,
+
+                   DisableLogging,
                    LoggingPath,
                    LoggingContext,
                    LogfileCreator,
                    HTTPLogger,
+
                    DNSClient,
+                   Logger,
+                   LoggerFactory,
 
                    EventTrackingId,
                    CancellationToken
+
                );
 
         #endregion

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.TimeServer
     /// <summary>
     /// The TimeServer HTTP API.
     /// </summary>
-    public class HTTPAPI : NetworkingNode.HTTPAPI
+    public class HTTPAPI : NetworkingNode.OCPP_HTTPAPI
     {
 
         #region Data
@@ -107,15 +107,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.TimeServer
 
             : base(TimeServer,
                    HTTPExtAPI,
-                   HTTPServerName ?? DefaultHTTPServerName,
+
+                   null,
+                   //HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
-                   BasePath,
+                   null,
+                   null,
 
-                   EventLoggingDisabled,
+                   BasePath)
 
-                   HTTPRealm,
-                   HTTPLogins,
-                   JSONFormatting)
+                   //EventLoggingDisabled,
+
+                   //HTTPRealm,
+                   //HTTPLogins,
+                   //JSONFormatting)
 
         {
 

@@ -1318,14 +1318,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                                                 PriceMinute:  1.00M,
                                                                                 StepSize:     TimeSpan.FromSeconds(900),
                                                                                 Conditions:   new TariffConditions(
-                                                                                                  MinEnergy:  WattHour.ParseKWh(11)
+                                                                                                  MinEnergy:  WattHour.FromKWh(11)
                                                                                               )
                                                                             ),
                                                                             new TariffTimePrice(
                                                                                 PriceMinute:  2.00M,
                                                                                 StepSize:     TimeSpan.FromSeconds(600),
                                                                                 Conditions:   new TariffConditions(
-                                                                                                  MinEnergy:  WattHour.ParseKWh(11)
+                                                                                                  MinEnergy:  WattHour.FromKWh(11)
                                                                                               )
                                                                             )
                                                                         ],

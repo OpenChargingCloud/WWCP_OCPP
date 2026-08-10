@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.TimeServer
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                   CSMSTime                   { get; set; } = Timestamp.Now;
+        public DateTimeOffset?             CSMSTime                   { get; set; } = Timestamp.Now;
 
 
 
@@ -274,14 +274,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.TimeServer
 
                    !HTTPAPI_Disabled
                        ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
+                             new HTTPServer(
+                                 TCPPort:            HTTPAPI_Port               ?? IPPort.Auto,
+                                 HTTPServerName:     HTTPAPI_ServerName         ?? "GraphDefined OCPP Test TimeServer",
+                                 DNSClient:          DNSClient,
+                                 AutoStart:          true
+                             ),
                              HTTPServerName:          "GraphDefined OCPP Test TimeServer",
                              HTTPServiceName:         "GraphDefined OCPP Test TimeServer Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test TimeServer Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer(),
-                             DNSClient:               DNSClient,
-                             AutoStart:               true
+                             SMTPClient:              new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,
@@ -324,17 +327,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.TimeServer
 
                 #region HTTP API Security Settings
 
-                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
+                //this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
-                    // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
-                    {
-                        return HTTPExtAPI.Anonymous;
-                    }
+                //    // Allow some URLs for anonymous access...
+                //    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                //    {
+                //        return HTTPExtAPI.Anonymous;
+                //    }
 
-                    return null;
+                //    return null;
 
-                });
+                //});
 
                 #endregion
 

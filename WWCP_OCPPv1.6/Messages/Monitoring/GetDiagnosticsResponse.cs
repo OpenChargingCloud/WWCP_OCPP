@@ -176,38 +176,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (Request, XML,  Destination, NetworkPath)
-
-        /// <summary>
-        /// Parse the given XML representation of a GetDiagnostics response.
-        /// </summary>
-        /// <param name="Request">The GetDiagnostics request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the response.</param>
-        public static GetDiagnosticsResponse Parse(GetDiagnosticsRequest  Request,
-                                                   XElement               XML,
-                                                   SourceRouting          Destination,
-                                                   NetworkPath            NetworkPath)
-        {
-
-            if (TryParse(Request,
-                         XML,
-                         Destination,
-                         NetworkPath,
-                         out var getDiagnosticsResponse,
-                         out var errorResponse))
-            {
-                return getDiagnosticsResponse;
-            }
-
-            throw new ArgumentException("The given XML representation of a GetDiagnostics response is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
-
-        #endregion
-
         #region (static) Parse   (Request, JSON, Destination, NetworkPath, ...)
 
         /// <summary>
@@ -247,51 +215,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             throw new ArgumentException("The given JSON representation of a GetDiagnostics response is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, XML,  Destination, NetworkPath, out GetDiagnosticsResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a GetDiagnostics response.
-        /// </summary>
-        /// <param name="Request">The GetDiagnostics request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the response.</param>
-        /// <param name="GetDiagnosticsResponse">The parsed GetDiagnostics response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(GetDiagnosticsRequest                             Request,
-                                       XElement                                          XML,
-                                       SourceRouting                                     Destination,
-                                       NetworkPath                                       NetworkPath,
-                                       [NotNullWhen(true)]  out GetDiagnosticsResponse?  GetDiagnosticsResponse,
-                                       [NotNullWhen(false)] out String?                  ErrorResponse)
-        {
-
-            try
-            {
-
-                GetDiagnosticsResponse = new GetDiagnosticsResponse(
-
-                                             Request,
-
-                                             XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "fileName")
-
-                                         );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                GetDiagnosticsResponse  = null;
-                ErrorResponse           = "The given JSON representation of a GetDiagnostics response is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -399,23 +322,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
         }
-
-        #endregion
-
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "getDiagnosticsResponse",
-
-                   FileName != null
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "fileName",  FileName.SubstringMax(MaxFileNameLength))
-                       : null
-
-               );
 
         #endregion
 

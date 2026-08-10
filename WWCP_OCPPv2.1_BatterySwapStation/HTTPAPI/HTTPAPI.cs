@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
     /// <summary>
     /// The OCPP Networking Node HTTP API.
     /// </summary>
-    public class HTTPAPI : NetworkingNode.HTTPAPI
+    public class HTTPAPI : NetworkingNode.OCPP_HTTPAPI
     {
 
         #region Data
@@ -86,14 +86,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         #region Constructor(s)
 
         /// <summary>
-        /// Attach the given OCPP battery swap station management system WebAPI to the given HTTP API.
+        /// Attach the given OCPP battery swap station WebAPI to the given HTTP API.
         /// </summary>
-        /// <param name="ChargingStation">An OCPP battery swap station management system.</param>
+        /// <param name="BatterySwapStation">An OCPP battery swap station.</param>
         /// <param name="HTTPExtAPI">A HTTP API.</param>
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public HTTPAPI(ABatterySwapStationNode                        ChargingStation,
+        public HTTPAPI(ABatterySwapStationNode                     BatterySwapStation,
                        HTTPExtAPI                                  HTTPExtAPI,
                        String?                                     HTTPServerName         = null,
                        HTTPPath?                                   URLPathPrefix          = null,
@@ -105,21 +105,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                        IEnumerable<KeyValuePair<String, String>>?  HTTPLogins             = null,
                        Formatting                                  JSONFormatting         = Formatting.None)
 
-            : base(ChargingStation,
+            : base(BatterySwapStation,
                    HTTPExtAPI,
-                   HTTPServerName ?? DefaultHTTPServerName,
+
+                   null,
+                   //HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
-                   BasePath,
+                   null,
+                   null,
 
-                   EventLoggingDisabled,
+                   BasePath)
 
-                   HTTPRealm,
-                   HTTPLogins,
-                   JSONFormatting)
+                   //EventLoggingDisabled,
+
+                   //HTTPRealm,
+                   //HTTPLogins,
+                   //JSONFormatting)
 
         {
 
-            this.chargingStation = ChargingStation;
+            this.chargingStation = BatterySwapStation;
 
             RegisterURITemplates();
             AttachChargingStation(chargingStation);
@@ -234,16 +239,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         private void RegisterURITemplates()
         {
 
-            HTTPBaseAPI.HTTPServer.AddAuth(request => {
+            //HTTPBaseAPI.HTTPServer.AddAuth(request => {
 
-                if (request.Path.ToString() == "/evses")
-                {
-                    return HTTPExtAPI.Anonymous;
-                }
+            //    if (request.Path.ToString() == "/evses")
+            //    {
+            //        return HTTPExtAPI.Anonymous;
+            //    }
 
-                return null;
+            //    return null;
 
-            });
+            //});
 
 
             #region / (HTTPRoot)
@@ -337,8 +342,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
             // curl -v -H "Accept: application/json" http://127.0.0.1:9020/evses?pretty
             // curl -v -H "Accept: application/json" http://127.0.0.1:9030/evses?pretty
             // --------------------------------------------------------------------------------
-            HTTPBaseAPI.AddMethodCallback(
-                HTTPHostname.Any,
+            HTTPBaseAPI.AddHandler(
+
                 HTTPMethod.GET,
                 URLPathPrefix + "evses",
                 HTTPContentType.Application.JSON_UTF8,
@@ -376,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = new JArray(chargingStation.EVSEs.Select(evse => evse.ToJSON())).ToUTF8Bytes(jsonFormatting),

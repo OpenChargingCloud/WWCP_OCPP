@@ -226,50 +226,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (XML, XMLNamespace, RequestId, Destination, NetworkPath, ...)
-
-        /// <summary>
-        /// Parse the given XML representation of a DataTransfer request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="XMLNamespace">The XML namespace to use.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional request timeout.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        public static DataTransferRequest Parse(XElement           XML,
-                                                XNamespace         XMLNamespace,
-                                                Request_Id         RequestId,
-                                                SourceRouting      Destination,
-                                                NetworkPath        NetworkPath,
-                                                DateTimeOffset?    RequestTimestamp   = null,
-                                                TimeSpan?          RequestTimeout     = null,
-                                                EventTracking_Id?  EventTrackingId    = null)
-        {
-
-            if (TryParse(XML,
-                         XMLNamespace,
-                         RequestId,
-                         Destination,
-                         NetworkPath,
-                         out var dataTransferRequest,
-                         out var errorResponse,
-                         RequestTimestamp,
-                         RequestTimeout,
-                         EventTrackingId))
-            {
-                return dataTransferRequest;
-            }
-
-            throw new ArgumentException("The given XML representation of a DataTransfer request is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
-
-        #endregion
-
         #region (static) Parse   (JSON,              RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
@@ -315,60 +271,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             throw new ArgumentException("The given JSON representation of a DataTransfer request is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML, XMLNamespace, RequestId, Destination, NetworkPath, out DataTransferRequest, out ErrorResponse, ...)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a DataTransfer request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="XMLNamespace">The XML namespace to use.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="DataTransferRequest">The parsed BootNotification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional request timeout.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        public static Boolean TryParse(XElement                                       XML,
-                                       XNamespace                                     XMLNamespace,
-                                       Request_Id                                     RequestId,
-                                       SourceRouting                                  Destination,
-                                       NetworkPath                                    NetworkPath,
-                                       [NotNullWhen(true)]  out DataTransferRequest?  DataTransferRequest,
-                                       [NotNullWhen(false)] out String?               ErrorResponse,
-                                       DateTimeOffset?                                RequestTimestamp   = null,
-                                       TimeSpan?                                      RequestTimeout     = null,
-                                       EventTracking_Id?                              EventTrackingId    = null)
-        {
-
-            try
-            {
-
-                DataTransferRequest = new DataTransferRequest(
-                                          Destination,
-                                          Vendor_Id. Parse(XML.ElementValueOrFail   (XMLNamespace + "vendorId")),
-                                          Message_Id.Parse(XML.ElementValueOrDefault(XMLNamespace + "messageId")),
-                                          XML.ElementValueOrDefault(XMLNamespace + "data"),
-                                          RequestId:    RequestId,
-                                          NetworkPath:  NetworkPath
-                                      );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                DataTransferRequest  = null;
-                ErrorResponse        = "The given XML representation of a DataTransfer request is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -506,30 +408,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
 
         }
-
-        #endregion
-
-        #region ToXML (XMLNamespace)
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        /// <param name="XMLNamespace">The XML namespace to use.</param>
-        public XElement ToXML(XNamespace XMLNamespace) // OCPPNS.OCPPv1_6_CS
-
-            => new (XMLNamespace + "dataTransferRequest",
-
-                         new XElement(XMLNamespace + "vendorId",    VendorId),
-
-                   MessageId.IsNotNullOrEmpty()
-                       ? new XElement(XMLNamespace + "messageId",   MessageId)
-                       : null,
-
-                   Data is not null && Data.Type == JTokenType.String
-                       ? new XElement(XMLNamespace + "data",        Data.Value<String>())
-                       : null
-
-               );
 
         #endregion
 

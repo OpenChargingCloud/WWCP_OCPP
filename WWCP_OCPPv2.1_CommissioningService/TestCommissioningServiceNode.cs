@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                             Boolean                           DisableMaintenanceTasks                 = false,
                             TimeSpan?                         MaintenanceEvery                        = null,
 
-                            ISMTPClient?                      SMTPClient                              = null,
+                            ISMTPSubmissionClient?            SMTPSubmissionClient                    = null,
                             DNSClient?                        DNSClient                               = null)
 
             : base(Id,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   SMTPClient,
+                   SMTPSubmissionClient,
                    DNSClient)
 
         {

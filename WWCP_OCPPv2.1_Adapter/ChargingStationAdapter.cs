@@ -284,12 +284,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
 
-        public Task<AuthStartResult> AuthorizeStart(LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingProduct? ChargingProduct = null, ChargingSession_Id? SessionId = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        public Task<AuthStartResult> AuthorizeStart(LocalAuthentication          LocalAuthentication,
+                                                    ChargingLocation?            ChargingLocation      = null,
+                                                    ChargingProduct?             ChargingProduct       = null,
+                                                    ChargingSession_Id?          SessionId             = null,
+                                                    ChargingSession_Id?          CPOPartnerSessionId   = null,
+                                                    //ChargingStationOperator_Id?  OperatorId            = null,
+                                                    EMobilityProvider_Id?        EMobilityProviderId   = null,
+
+                                                    DateTimeOffset?              RequestTimestamp      = null,
+                                                    EventTracking_Id?            EventTrackingId       = null,
+                                                    TimeSpan?                    RequestTimeout        = null,
+                                                    CancellationToken            CancellationToken     = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AuthStopResult> AuthorizeStop(ChargingSession_Id SessionId, LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        public Task<AuthStopResult> AuthorizeStop(ChargingSession_Id           SessionId,
+                                                  LocalAuthentication          LocalAuthentication,
+                                                  ChargingLocation?            ChargingLocation      = null,
+                                                  ChargingSession_Id?          CPOPartnerSessionId   = null,
+                                                  //ChargingStationOperator_Id?  OperatorId            = null,
+                                                  EMobilityProvider_Id?        EMobilityProviderId   = null,
+
+                                                  DateTimeOffset?              RequestTimestamp      = null,
+                                                  EventTracking_Id?            EventTrackingId       = null,
+                                                  TimeSpan?                    RequestTimeout        = null,
+                                                  CancellationToken            CancellationToken     = default)
         {
             throw new NotImplementedException();
         }
@@ -304,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                    ChargingSession_Id?      SessionId                = null,
                                                    EMobilityProvider_Id?    ProviderId               = null,
                                                    RemoteAuthentication?    RemoteAuthentication     = null,
-                                                   JObject?                 AdditionalSessionInfos   = null,
+                                                   CustomDataNew?           AdditionalSessionInfos   = null,
                                                    Auth_Path?               AuthenticationPath       = null,
                                                    ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -338,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          ChargingSession_Id?      SessionId                = null,
                                                          EMobilityProvider_Id?    ProviderId               = null,
                                                          RemoteAuthentication?    RemoteAuthentication     = null,
-                                                         JObject?                 AdditionalSessionInfos   = null,
+                                                         CustomDataNew?           AdditionalSessionInfos   = null,
                                                          Auth_Path?               AuthenticationPath       = null,
                                                          ICSORoamingProvider?     CSORoamingProvider       = null,
 
@@ -462,16 +483,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region RemoteStop(SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, AuthenticationPath = null, RequestTimestamp = null, EventTrackingId = null, RequestTimeout = null, CancellationToken = default)
 
         public async Task<RemoteStopResult> RemoteStop(ChargingSession_Id     SessionId,
-                                                       ReservationHandling?   ReservationHandling    = null,
-                                                       EMobilityProvider_Id?  ProviderId             = null,
-                                                       RemoteAuthentication?  RemoteAuthentication   = null,
-                                                       Auth_Path?             AuthenticationPath     = null,
-                                                       ICSORoamingProvider?   CSORoamingProvider     = null,
+                                                       ReservationHandling?   ReservationHandling      = null,
+                                                       EMobilityProvider_Id?  ProviderId               = null,
+                                                       RemoteAuthentication?  RemoteAuthentication     = null,
+                                                       CustomDataNew?         AdditionalSessionInfos   = null,
+                                                       Auth_Path?             AuthenticationPath       = null,
+                                                       ICSORoamingProvider?   CSORoamingProvider       = null,
 
-                                                       DateTimeOffset?        RequestTimestamp       = null,
-                                                       EventTracking_Id?      EventTrackingId        = null,
-                                                       TimeSpan?              RequestTimeout         = null,
-                                                       CancellationToken      CancellationToken      = default)
+                                                       DateTimeOffset?        RequestTimestamp         = null,
+                                                       EventTracking_Id?      EventTrackingId          = null,
+                                                       TimeSpan?              RequestTimeout           = null,
+                                                       CancellationToken      CancellationToken        = default)
         {
 
             var response = await CSMS.StopCharging(
@@ -762,7 +784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
 
-        public JObject CustomData => throw new NotImplementedException();
+        public CustomDataNew CustomData => throw new NotImplementedException();
 
 
         public bool IsEmpty => throw new NotImplementedException();

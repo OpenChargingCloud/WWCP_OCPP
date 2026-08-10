@@ -191,14 +191,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
 
                    !HTTPAPI_Disabled
                        ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
+                             new HTTPServer(
+                                 TCPPort:            HTTPAPI_Port               ?? IPPort.Auto,
+                                 HTTPServerName:     HTTPAPI_ServerName         ?? "GraphDefined OCPP Test Local Controller",
+                                 DNSClient:          DNSClient,
+                                 AutoStart:          true
+                             ),
                              HTTPServerName:          "GraphDefined OCPP Test Local Controller",
                              HTTPServiceName:         "GraphDefined OCPP Test Local Controller Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Local Controller Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer(),
-                             DNSClient:               DNSClient,
-                             AutoStart:               true
+                             SMTPClient:              new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,
@@ -247,19 +250,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
 
                 #region HTTP API Security Settings
 
-                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
+                //this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
-                    // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
-                        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
-                        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
-                    {
-                        return HTTPExtAPI.Anonymous;
-                    }
+                //    // Allow some URLs for anonymous access...
+                //    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
+                //        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
+                //        request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                //    {
+                //        return HTTPExtAPI.Anonymous;
+                //    }
 
-                    return null;
+                //    return null;
 
-                });
+                //});
 
                 #endregion
 

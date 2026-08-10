@@ -151,14 +151,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                    !HTTPAPI_Disabled
                        ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
+                             new HTTPServer(
+                                 TCPPort:            HTTPAPI_Port               ?? IPPort.Auto,
+                                 HTTPServerName:     HTTPAPI_ServerName         ?? "GraphDefined OCPP Test Energy Meter",
+                                 DNSClient:          DNSClient,
+                                 AutoStart:          true
+                             ),
                              HTTPServerName:          "GraphDefined OCPP Test Energy Meter",
                              HTTPServiceName:         "GraphDefined OCPP Test Energy Meter Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Energy Meter Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer(),
-                             DNSClient:               DNSClient,
-                             AutoStart:               true
+                             SMTPClient:              new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,
@@ -202,17 +205,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                 #region HTTP API Security Settings
 
-                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
+                //this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
-                    // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
-                    {
-                        return HTTPExtAPI.Anonymous;
-                    }
+                //    // Allow some URLs for anonymous access...
+                //    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                //    {
+                //        return HTTPExtAPI.Anonymous;
+                //    }
 
-                    return null;
+                //    return null;
 
-                });
+                //});
 
                 #endregion
 

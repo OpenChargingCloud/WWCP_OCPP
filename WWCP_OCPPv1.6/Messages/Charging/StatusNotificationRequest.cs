@@ -298,38 +298,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
-
-        /// <summary>
-        /// Parse the given XML representation of a StatusNotification request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        public static StatusNotificationRequest Parse(XElement       XML,
-                                                      Request_Id     RequestId,
-                                                      SourceRouting  Destination,
-                                                      NetworkPath    NetworkPath)
-        {
-
-            if (TryParse(XML,
-                         RequestId,
-                         Destination,
-                         NetworkPath,
-                         out var statusNotificationRequest,
-                         out var errorResponse))
-            {
-                return statusNotificationRequest;
-            }
-
-            throw new ArgumentException("The given XML representation of a StatusNotification request is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
-
-        #endregion
-
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
@@ -375,69 +343,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             throw new ArgumentException("The given JSON representation of a StatusNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out StatusNotificationRequest, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a StatusNotification request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="StatusNotificationRequest">The parsed StatusNotification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                                             XML,
-                                       Request_Id                                           RequestId,
-                                       SourceRouting                                        Destination,
-                                       NetworkPath                                          NetworkPath,
-                                       [NotNullWhen(true)]  out StatusNotificationRequest?  StatusNotificationRequest,
-                                       [NotNullWhen(false)] out String?                     ErrorResponse)
-        {
-
-            try
-            {
-
-                StatusNotificationRequest = new StatusNotificationRequest(
-
-                                                Destination,
-
-                                                XML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "connectorId",
-                                                                          Connector_Id.Parse),
-
-                                                XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
-                                                                          ChargePointStatusExtensions.Parse),
-
-                                                XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "errorCode",
-                                                                          ChargePointErrorCodeExtensions.Parse),
-
-                                                XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "info"),
-
-                                                XML.MapValueOrNullable   (OCPPNS.OCPPv1_6_CS + "timestamp",
-                                                                          DateTime.Parse),
-
-                                                XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorId"),
-
-                                                XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "vendorErrorCode"),
-
-                                                RequestId: RequestId
-
-                                            );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                StatusNotificationRequest  = null;
-                ErrorResponse              = "The given XML representation of a StatusNotification request is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -642,39 +547,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
         }
-
-        #endregion
-
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CS + "statusNotificationRequest",
-
-                   new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",            ConnectorId.ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "status",                 Status.     AsText()),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "errorCode",              ErrorCode.  AsText()),
-
-                   Info.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "info",             Info)
-                       : null,
-
-                   StatusTimestamp.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",        StatusTimestamp.Value.ToISO8601())
-                       : null,
-
-                   VendorId.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "vendorId",         VendorId)
-                       : null,
-
-                   VendorErrorCode.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "vendorErrorCode",  VendorErrorCode)
-                       : null
-
-               );
 
         #endregion
 

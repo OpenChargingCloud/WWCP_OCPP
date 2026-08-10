@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 await csmsWSServer.  Shutdown();
 
             if (localController is not null)
-                await localController.Shutdown();
+                await localController.Stop();
 
             CSMS             = null;
             csmsWSServer     = null;

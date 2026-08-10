@@ -156,32 +156,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CommandLine
                                                                                     Prices: [ 
                                                                                                 new TariffEnergyPrice(
                                                                                                     PriceKWh:     2.5M,
-                                                                                                    StepSize:     WattHour.ParseKWh(1.0M),
+                                                                                                    StepSize:     WattHour.FromKWh(1.0M),
                                                                                                     Conditions:   new TariffConditions(
 
-                                                                                                                      ValidFrom:      Timestamp.NowDate,
-                                                                                                                      ValidTo:        Timestamp.NowDate.AddDays(3),
+                                                                                                                      ValidFrom:         Timestamp.NowDate,
+                                                                                                                      ValidTo:           Timestamp.NowDate.AddDays(3),
 
-                                                                                                                      DaysOfWeek:      null,
-                                                                                                                      StartTimeOfDay:      null,
+                                                                                                                      DaysOfWeek:        null,
+                                                                                                                      StartTimeOfDay:    null,
                                                                                                                       EndTimeOfDay:      null,
 
 
-                                                                                                                      EVSEKind:      null,
-                                                                                                                      MinEnergy:      null,
-                                                                                                                      MaxEnergy:      WattHour.ParseKWh(20),
-                                                                                                                      MinCurrent:      null,
-                                                                                                                      MaxCurrent:      null,
-                                                                                                                      MinPower:      null,
-                                                                                                                      MaxPower:      null,
+                                                                                                                      EVSEKind:          null,
+                                                                                                                      MinEnergy:         null,
+                                                                                                                      MaxEnergy:         WattHour.FromKWh(20),
+                                                                                                                      MinCurrent:        null,
+                                                                                                                      MaxCurrent:        null,
+                                                                                                                      MinPower:          null,
+                                                                                                                      MaxPower:          null,
 
 
-                                                                                                                      MinTime:      null,
-                                                                                                                      MaxTime:      null,
-                                                                                                                      MinChargingTime:      null,
-                                                                                                                      MaxChargingTime:      null,
-                                                                                                                      MinIdleTime:      null,
-                                                                                                                      MaxIdleTime:      null
+                                                                                                                      MinTime:           null,
+                                                                                                                      MaxTime:           null,
+                                                                                                                      MinChargingTime:   null,
+                                                                                                                      MaxChargingTime:   null,
+                                                                                                                      MinIdleTime:       null,
+                                                                                                                      MaxIdleTime:       null
 
                                                                                                                   )
                                                                                                 )

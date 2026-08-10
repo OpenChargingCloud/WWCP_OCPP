@@ -125,30 +125,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                            IEnumerable<KeyValuePair<String, String>>?  HTTPLogins      = null)
 
             : base(HTTPServer,
-                   null,
-                   null, // ExternalDNSName,
-                   null, // HTTPServiceName,
-                   BasePath,
-
+                   null, // Hostnames
                    URLPathPrefix ?? DefaultURLPathPrefix,
-                   null, // HTMLTemplate,
-                   null, // APIVersionHashes,
+                   null,
+                   null,
 
-                   null, // DisableMaintenanceTasks,
-                   null, // MaintenanceInitialDelay,
-                   null, // MaintenanceEvery,
-
-                   null, // DisableWardenTasks,
-                   null, // WardenInitialDelay,
-                   null, // WardenCheckEvery,
-
-                   null, // IsDevelopment,
-                   null, // DevelopmentServers,
-                   null, // DisableLogging,
-                   null, // LoggingPath,
-                   null, // LogfileName,
-                   null, // LogfileCreator,
-                   true) // AutoStart
+                   BasePath)
 
         {
 
@@ -161,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             RegisterURITemplates();
 
-            DebugX.Log($"OCPP {Version.String} LocalController DownloadAPI started on {HTTPServer.IPSockets.AggregateWith(", ")}{URLPathPrefix}");
+            DebugX.Log($"OCPP {Version.String} LocalController DownloadAPI started on {HTTPServer.IPSocket}{URLPathPrefix}");
 
         }
 
@@ -215,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #region GET  ~/*
 
             // curl http://127.0.0.1:9901/downloads/LICENSE.txt
-            AddMethodCallback(HTTPHostname.Any,
+            AddHandler(
                               HTTPMethod.GET,
                               URLPathPrefix + "{file}",
                               HTTPDelegate: async request => {
@@ -234,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                      Server                     = DefaultHTTPServerName,
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = [ "GET" ],
+                                                     AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                                      Connection                 = ConnectionType.Close
                                                  };
                                       }
@@ -264,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "GET" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                                  ContentType                = HTTPContentType.ForFileExtension(
                                                                                   fileName.LastIndexOf('.') > 0
                                                                                       ? fileName[(fileName.LastIndexOf('.') + 1)..]
@@ -291,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "GET" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = ConnectionType.Close

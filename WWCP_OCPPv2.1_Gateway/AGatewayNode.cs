@@ -274,14 +274,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
                    !HTTPAPI_Disabled
                        ? new HTTPExtAPI(
-                             HTTPServerPort:          HTTPAPI_Port ?? IPPort.Auto,
+                             new HTTPServer(
+                                 TCPPort:            HTTPAPI_Port               ?? IPPort.Auto,
+                                 HTTPServerName:     HTTPAPI_ServerName         ?? "GraphDefined OCPP Test Gateway",
+                                 DNSClient:          DNSClient,
+                                 AutoStart:          true
+                             ),
                              HTTPServerName:          "GraphDefined OCPP Test Gateway",
                              HTTPServiceName:         "GraphDefined OCPP Test Gateway Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Gateway Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer(),
-                             DNSClient:               DNSClient,
-                             AutoStart:               true
+                             SMTPClient:              new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,
@@ -324,17 +327,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
                 #region HTTP API Security Settings
 
-                this.HTTPExtAPI.HTTPServer.AddAuth(request => {
+                //this.HTTPExtAPI.HTTPServer.AddAuth(request => {
 
-                    // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
-                    {
-                        return HTTPExtAPI.Anonymous;
-                    }
+                //    // Allow some URLs for anonymous access...
+                //    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
+                //    {
+                //        return HTTPExtAPI.Anonymous;
+                //    }
 
-                    return null;
+                //    return null;
 
-                });
+                //});
 
                 #endregion
 

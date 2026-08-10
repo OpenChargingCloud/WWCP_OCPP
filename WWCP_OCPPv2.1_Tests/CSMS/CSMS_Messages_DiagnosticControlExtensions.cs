@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                            Destination:     SourceRouting.To(chargingStation1.Id),
                                            EVSEId:          EVSE_Id.     Parse(1),
                                            ConnectorId:     Connector_Id.Parse(1),
-                                           ResistorValue:   Ohm.         ParseOhm(680)
+                                           ResistorValue:   Ohm.         From_Ω(680)
                                        );
 
                 Assert.Multiple(() => {
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response   = await testCSMS1.SetCPVoltage(
                                            Destination:      SourceRouting.To(chargingStation1.Id),
-                                           Voltage:          Volt.      ParseV(9),
+                                           Voltage:          Volt.      FromV(9),
                                            VoltageError:     Percentage.Parse(4),
                                            TransitionTime:   TimeSpan.  FromMilliseconds(200)
                                        );

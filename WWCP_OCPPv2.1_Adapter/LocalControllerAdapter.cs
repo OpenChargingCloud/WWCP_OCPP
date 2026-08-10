@@ -99,8 +99,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public ReactiveSet<ChargingPoolFeature> Features => throw new NotImplementedException();
 
-        public ReactiveSet<Facilities> Facilities => throw new NotImplementedException();
-
         public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
 
         public PhoneNumber? HotlinePhoneNumber => throw new NotImplementedException();
@@ -200,6 +198,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         DateTimeOffset IInternalData.Created { get => Created; set => throw new NotImplementedException(); }
         DateTimeOffset IInternalData.LastChangeDate { get => LastChangeDate; set => throw new NotImplementedException(); }
+
+        ReactiveSet<Facility> IChargingPool.Facilities => throw new NotImplementedException();
+
+        CustomDataNew IInternalData.CustomData => throw new NotImplementedException();
 
         event OnChargingPoolDataChangedDelegate IChargingPool.OnDataChanged
         {
@@ -818,6 +820,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         public Task<CancelReservationResult> CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, ICSORoamingProvider? CSORoamingProvider = null, DateTimeOffset? Timestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JObject ToJSON(bool Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationIds = InfoStatus.Expanded, InfoStatus ExpandEVSEIds = InfoStatus.Hidden, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, IncludeChargingStationDelegate? IncludeChargingStations = null, bool? IncludeRemovedChargingStations = null, bool? IncludeCustomData = null, CustomJObjectSerializerDelegate<IChargingPool>? CustomChargingPoolSerializer = null, CustomJObjectSerializerDelegate<IChargingStation>? CustomChargingStationSerializer = null, CustomJObjectSerializerDelegate<IEVSE>? CustomEVSESerializer = null, CustomJObjectSerializerDelegate<ChargingConnector>? CustomChargingConnectorSerializer = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthStartResult> AuthorizeStart(LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingProduct? ChargingProduct = null, ChargingSession_Id? SessionId = null, ChargingSession_Id? CPOPartnerSessionId = null, EMobilityProvider_Id? EMobilityProviderId = null, DateTimeOffset? RequestTimestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthStopResult> AuthorizeStop(ChargingSession_Id SessionId, LocalAuthentication LocalAuthentication, ChargingLocation? ChargingLocation = null, ChargingSession_Id? CPOPartnerSessionId = null, EMobilityProvider_Id? EMobilityProviderId = null, DateTimeOffset? RequestTimestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoteStartResult> RemoteStart(ChargingProduct? ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, CustomDataNew? AdditionalSessionInfos = null, Auth_Path? AuthenticationPath = null, ICSORoamingProvider? CSORoamingProvider = null, DateTimeOffset? RequestTimestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct? ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, CustomDataNew? AdditionalSessionInfos = null, Auth_Path? AuthenticationPath = null, ICSORoamingProvider? CSORoamingProvider = null, DateTimeOffset? RequestTimestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoteStopResult> RemoteStop(ChargingSession_Id SessionId, ReservationHandling? ReservationHandling = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, CustomDataNew? AdditionalSessionInfos = null, Auth_Path? AuthenticationPath = null, ICSORoamingProvider? CSORoamingProvider = null, DateTimeOffset? RequestTimestamp = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null, CancellationToken CancellationToken = default)
         {
             throw new NotImplementedException();
         }

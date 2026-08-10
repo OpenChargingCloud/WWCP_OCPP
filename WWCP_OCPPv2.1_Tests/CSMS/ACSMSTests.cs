@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 DisableMaintenanceTasks:                 false,
                                                                 MaintenanceEvery:                        null,
 
-                                                                SMTPClient:                              null,
+                                                                SMTPSubmissionClient:                    null,
                                                                 DNSClient:                               dnsClient
 
                                                             );
@@ -265,10 +265,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 ClientCertificateRequired:    null,
                                                                 CheckCertificateRevocation:   null,
 
-                                                                ServerThreadNameCreator:      null,
-                                                                ServerThreadPrioritySetter:   null,
                                                                 ServerThreadIsBackground:     null,
-                                                                ConnectionIdBuilder:          null,
+                                                                //ConnectionIdBuilder:          null,
                                                                 ConnectionTimeout:            null,
                                                                 MaxClientConnections:         null,
 
@@ -437,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 DisableMaintenanceTasks:                 false,
                                                                 MaintenanceEvery:                        null,
 
-                                                                SMTPClient:                              null,
+                                                                SMTPSubmissionClient:                    null,
                                                                 DNSClient:                               dnsClient
 
                                                             );
@@ -464,10 +462,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 ClientCertificateRequired:    null,
                                                                 CheckCertificateRevocation:   null,
 
-                                                                ServerThreadNameCreator:      null,
-                                                                ServerThreadPrioritySetter:   null,
                                                                 ServerThreadIsBackground:     null,
-                                                                ConnectionIdBuilder:          null,
+                                                                //ConnectionIdBuilder:          null,
                                                                 ConnectionTimeout:            null,
                                                                 MaxClientConnections:         null,
 
@@ -636,7 +632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 DisableMaintenanceTasks:                 false,
                                                                 MaintenanceEvery:                        null,
 
-                                                                SMTPClient:                              null,
+                                                                SMTPSubmissionClient:                    null,
                                                                 DNSClient:                               dnsClient
 
                                                             );
@@ -663,10 +659,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                 ClientCertificateRequired:    null,
                                                                 CheckCertificateRevocation:   null,
 
-                                                                ServerThreadNameCreator:      null,
-                                                                ServerThreadPrioritySetter:   null,
                                                                 ServerThreadIsBackground:     null,
-                                                                ConnectionIdBuilder:          null,
+                                                                //ConnectionIdBuilder:          null,
                                                                 ConnectionTimeout:            null,
                                                                 MaxClientConnections:         null,
 

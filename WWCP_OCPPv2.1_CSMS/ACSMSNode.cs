@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          Boolean                           DisableMaintenanceTasks                 = false,
                          TimeSpan?                         MaintenanceEvery                        = null,
 
-                         ISMTPClient?                      SMTPClient                              = null,
+                         ISMTPSubmissionClient?            SMTPSubmissionClient                    = null,
                          DNSClient?                        DNSClient                               = null)
 
             : base(Id,
@@ -346,14 +346,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    !HTTPAPI_Disabled
                        ? new HTTPExtAPI(
-                             HTTPServerPort:         HTTPAPI_Port               ?? IPPort.Auto,
+                             new HTTPServer(
+                                 TCPPort:            HTTPAPI_Port               ?? IPPort.Auto,
+                                 HTTPServerName:     HTTPAPI_ServerName         ?? "GraphDefined OCPP Test Central System",
+                                 DNSClient:          DNSClient,
+                                 AutoStart:          true
+                             ),
                              HTTPServerName:         HTTPAPI_ServerName         ?? "GraphDefined OCPP Test Central System",
                              HTTPServiceName:        HTTPAPI_ServiceName        ?? "GraphDefined OCPP Test Central System Service",
                              APIRobotEMailAddress:   HTTPAPI_RobotEMailAddress  ?? EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:  HTTPAPI_RobotGPGPassphrase ?? "test123",
-                             SMTPClient:             SMTPClient                 ?? new NullMailer(),
-                             DNSClient:              DNSClient,
-                             AutoStart:              true
+                             SMTPClient:             SMTPSubmissionClient       ?? new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,
@@ -412,19 +415,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region HTTP API Security Settings
 
-                this.HTTPAPI.HTTPBaseAPI.HTTPServer.AddAuth(request => {
+                //this.HTTPAPI.HTTPBaseAPI.HTTPServer.AddAuth(request => {
 
-                    // Allow some URLs for anonymous access...
-                    if (request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
-                        request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
-                        request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.WebAPI_Path))
-                    {
-                        return HTTPExtAPI.Anonymous;
-                    }
+                //    // Allow some URLs for anonymous access...
+                //    if (request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
+                //        request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
+                //        request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.WebAPI_Path))
+                //    {
+                //        return HTTPExtAPI.Anonymous;
+                //    }
 
-                    return null;
+                //    return null;
 
-                });
+                //});
 
                 #endregion
 
@@ -529,10 +532,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public HashSet<string> SecWebSocketProtocols => throw new NotImplementedException();
 
         public bool ServerThreadIsBackground => throw new NotImplementedException();
-
-        public ServerThreadNameCreatorDelegate ServerThreadNameCreator => throw new NotImplementedException();
-
-        public ServerThreadPriorityDelegate ServerThreadPrioritySetter => throw new NotImplementedException();
 
         public TimeSpan? SlowNetworkSimulationDelay { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

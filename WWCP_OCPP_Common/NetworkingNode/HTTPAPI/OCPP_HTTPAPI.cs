@@ -1160,7 +1160,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = systemInfo.ToUTF8Bytes(jsonFormatting),
@@ -1251,7 +1251,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = withMetadata
@@ -1351,7 +1351,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = withMetadata

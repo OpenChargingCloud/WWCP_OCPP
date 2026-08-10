@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                               Connectors:                [
                                                              new ConnectorSpec(
                                                                  Availabilities.Operative,
-                                                                 MaxPower:     Watt.ParseKW(11),
+                                                                 MaxPower:     Watt.FromKW(11),
                                                                  EnergyMeter:  new OCPP.Energy_Meter(
                                                                                    Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0011"),
                                                                                    Manufacturer:  "GraphDefined",
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                                                              ),
                                                              new ConnectorSpec(
                                                                  Availabilities.Operative,
-                                                                 MaxPower:     Watt.ParseKW(22),
+                                                                 MaxPower:     Watt.FromKW(22),
                                                                  EnergyMeter:  new OCPP.Energy_Meter(
                                                                                    Id:             OCPP.EnergyMeter_Id.Parse("SN-EN0012"),
                                                                                    Manufacturer:  "GraphDefined",

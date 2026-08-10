@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URIs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public OCPPWebAPI(TestCentralSystemNode                           TestCentralSystem,
+        public OCPPWebAPI(TestCentralSystemNode                       TestCentralSystem,
                           HTTPServer                                  HTTPServer,
                           HTTPPath?                                   URLPathPrefix   = null,
                           HTTPPath?                                   BasePath        = null,
@@ -280,29 +280,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             : base(HTTPServer,
                    null,
-                   null, // ExternalDNSName,
-                   null, // HTTPServiceName,
-                   BasePath,
-
                    URLPathPrefix ?? DefaultURLPathPrefix,
-                   null, // HTMLTemplate,
-                   null, // APIVersionHashes,
+                   null,
+                   null,
 
-                   null, // DisableMaintenanceTasks,
-                   null, // MaintenanceInitialDelay,
-                   null, // MaintenanceEvery,
-
-                   null, // DisableWardenTasks,
-                   null, // WardenInitialDelay,
-                   null, // WardenCheckEvery,
-
-                   null, // IsDevelopment,
-                   null, // DevelopmentServers,
-                   null, // DisableLogging,
-                   null, // LoggingPath,
-                   null, // LogfileName,
-                   null, // LogfileCreator,
-                   false)// AutoStart
+                   BasePath)
 
         {
 
@@ -319,14 +301,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var LogfilePrefix        = "HTTPSSEs" + Path.DirectorySeparatorChar;
 
-            this.EventLog            = this.AddJSONEventSource(
-                                           EventIdentification:      EventLogId,
-                                           URLTemplate:              this.URLPathPrefix + "/events",
-                                           MaxNumberOfCachedEvents:  10000,
-                                           RetryInterval:            TimeSpan.FromSeconds(5),
-                                           EnableLogging:            true,
-                                           LogfilePrefix:            LogfilePrefix
-                                       );
+            //this.EventLog            = this.AddJSONEventSource(
+            //                               EventIdentification:      EventLogId,
+            //                               URLTemplate:              this.URLPathPrefix + "/events",
+            //                               MaxNumberOfCachedEvents:  10000,
+            //                               RetryInterval:            TimeSpan.FromSeconds(5),
+            //                               EnableLogging:            true,
+            //                               LogfilePrefix:            LogfilePrefix
+            //                           );
 
             RegisterURITemplates();
 
@@ -1424,19 +1406,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region ~/networkingNodeIds
 
-            AddMethodCallback(HTTPHostname.Any,
+            AddHandler(
                               HTTPMethod.GET,
                               URLPathPrefix + "networkingNodeIds",
                               HTTPContentType.Application.JSON_UTF8,
-                              HTTPDelegate: Request => {
+                              HTTPDelegate: request => {
 
                                   return Task.FromResult(
-                                      new HTTPResponse.Builder(Request) {
+                                      new HTTPResponse.Builder(request) {
                                           HTTPStatusCode             = HTTPStatusCode.OK,
                                           Server                     = DefaultHTTPServerName,
                                           Date                       = Timestamp.Now,
                                           AccessControlAllowOrigin   = "*",
-                                          AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                          AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                           AccessControlAllowHeaders  = [ "Authorization" ],
                                           ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = JSONArray.Create(
@@ -1451,19 +1433,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region ~/chargeBoxes
 
-            AddMethodCallback(HTTPHostname.Any,
+            AddHandler(
                               HTTPMethod.GET,
                               URLPathPrefix + "chargeBoxes",
                               HTTPContentType.Application.JSON_UTF8,
-                              HTTPDelegate: Request => {
+                              HTTPDelegate: request => {
 
                                   return Task.FromResult(
-                                      new HTTPResponse.Builder(Request) {
+                                      new HTTPResponse.Builder(request) {
                                           HTTPStatusCode             = HTTPStatusCode.OK,
                                           Server                     = DefaultHTTPServerName,
                                           Date                       = Timestamp.Now,
                                           AccessControlAllowOrigin   = "*",
-                                          AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                          AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                           AccessControlAllowHeaders  = [ "Authorization" ],
                                           ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = JSONArray.Create(
@@ -1479,11 +1461,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region ~/chargeBoxes/{networkingNodeId}
 
-            AddMethodCallback(HTTPHostname.Any,
+            AddHandler(
                               HTTPMethod.GET,
                               URLPathPrefix + "chargeBoxes/{networkingNodeId}",
                               HTTPContentType.Application.JSON_UTF8,
-                              HTTPDelegate: Request => {
+                              HTTPDelegate: request => {
 
                                   #region Get HTTP user and its organizations
 
@@ -1502,7 +1484,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                   #region Check NetworkingNodeId URL parameter
 
-                                  if (!Request.ParseChargeBox(this,
+                                  if (!request.ParseChargeBox(this,
                                                               out ChargeBox_Id?          NetworkingNodeId,
                                                               out ChargeBox?             ChargeBox,
                                                               out HTTPResponse.Builder?  Response))
@@ -1514,12 +1496,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
                                   return Task.FromResult(
-                                      new HTTPResponse.Builder(Request) {
+                                      new HTTPResponse.Builder(request) {
                                           HTTPStatusCode             = HTTPStatusCode.OK,
                                           Server                     = DefaultHTTPServerName,
                                           Date                       = Timestamp.Now,
                                           AccessControlAllowOrigin   = "*",
-                                          AccessControlAllowMethods  = [ "OPTIONS", "GET" ],
+                                          AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                           AccessControlAllowHeaders  = [ "Authorization" ],
                                           ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
@@ -1538,11 +1520,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             // --------------------------------------------------------------------
             // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
             // --------------------------------------------------------------------
-            AddMethodCallback(Hostname,
+            AddHandler(
                               HTTPMethod.GET,
                               URLPathPrefix + "events",
                               HTTPContentType.Text.HTML_UTF8,
-                              HTTPDelegate: Request => {
+                              HTTPDelegate: request => {
 
                                   #region Get HTTP user and its organizations
 
@@ -1559,12 +1541,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                   #endregion
 
                                   return Task.FromResult(
-                                             new HTTPResponse.Builder(Request) {
+                                             new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.OK,
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "GET" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                                  AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                                  ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                  Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),

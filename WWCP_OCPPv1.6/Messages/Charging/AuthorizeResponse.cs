@@ -372,11 +372,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region IdTagInfo     [mandatory]
 
-                if (!JSON.ParseMandatoryJSONStruct("idTagInfo",
-                                                   "identification tag information",
-                                                   OCPPv1_6.IdTagInfo.TryParse,
-                                                   out IdTagInfo IdTagInfo,
-                                                   out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("idTagInfo",
+                                             "identification tag information",
+                                             OCPPv1_6.IdTagInfo.TryParse,
+                                             out IdTagInfo IdTagInfo,
+                                             out ErrorResponse))
                 {
                     return false;
                 }

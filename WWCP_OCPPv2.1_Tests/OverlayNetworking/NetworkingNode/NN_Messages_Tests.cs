@@ -369,13 +369,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                                                                    Priority:        23,
                                                                    Uplink:          new VirtualNetworkLinkInformation(
                                                                                         Distance:     2,
-                                                                                        Capacity:     BitsPerSecond.           ParseBPS        ( 5000M,  10M),
+                                                                                        Capacity:     StdDev<BitPerSecond>.    From            (BitPerSecond.FromBPS(5000M), BitPerSecond.FromBPS(10M)),
                                                                                         Latency:      StdDevTimeSpanExtensions.FromMilliseconds(    40,    3),
                                                                                         PacketLoss:   PercentageDouble.        Parse           (  0.05, 0.05)
                                                                                     ),
                                                                    Downlink:        new VirtualNetworkLinkInformation(
                                                                                         Distance:     3,
-                                                                                        Capacity:     BitsPerSecond.           ParseBPS        (15000M,  30M),
+                                                                                        Capacity:     StdDev<BitPerSecond>.    From            (BitPerSecond.FromBPS(15000M), BitPerSecond.FromBPS(30M)),
                                                                                         Latency:      StdDevTimeSpanExtensions.FromMilliseconds(    20,   23),
                                                                                         PacketLoss:   PercentageDouble.        Parse           (  0.52, 0.12)
                                                                                     )
@@ -425,12 +425,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                         Assert.That(routes.Values.First().Uplink,                        Is.Not.Null);
                         Assert.That(routes.Values.First().Uplink?.Capacity,              Is.EqualTo(5000));
                         Assert.That(routes.Values.First().Uplink?.Latency,               Is.EqualTo(TimeSpan.FromMilliseconds(10)));
-                        Assert.That(routes.Values.First().Uplink?.PacketLoss?.Value,     Is.EqualTo(0.05));
+                        Assert.That(routes.Values.First().Uplink?.PacketLoss?.Mean,      Is.EqualTo(0.05));
 
                         Assert.That(routes.Values.First().Downlink,                      Is.Not.Null);
                         Assert.That(routes.Values.First().Downlink?.Capacity,            Is.EqualTo(15000));
                         Assert.That(routes.Values.First().Downlink?.Latency,             Is.EqualTo(TimeSpan.FromMilliseconds(23)));
-                        Assert.That(routes.Values.First().Downlink?.PacketLoss?.Value,   Is.EqualTo(0.42));
+                        Assert.That(routes.Values.First().Downlink?.PacketLoss?.Mean,    Is.EqualTo(0.42));
 
                     }
 
@@ -491,13 +491,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                                                                                              Priority:        23,
                                                                                              Uplink:          new VirtualNetworkLinkInformation(
                                                                                                                   Distance:     2,
-                                                                                                                  Capacity:     BitsPerSecond.           ParseBPS        ( 5000M,  10M),
+                                                                                                                  Capacity:     StdDev<BitPerSecond>.    From            (BitPerSecond.FromBPS(5000M), BitPerSecond.FromBPS(10M)),
                                                                                                                   Latency:      StdDevTimeSpanExtensions.FromMilliseconds(    40,    3),
                                                                                                                   PacketLoss:   PercentageDouble.        Parse           (  0.05, 0.05)
                                                                                                               ),
                                                                                              Downlink:        new VirtualNetworkLinkInformation(
                                                                                                                   Distance:     3,
-                                                                                                                  Capacity:     BitsPerSecond.           ParseBPS        (15000M,  30M),
+                                                                                                                  Capacity:     StdDev<BitPerSecond>.    From            (BitPerSecond.FromBPS(15000M), BitPerSecond.FromBPS(30M)),
                                                                                                                   Latency:      StdDevTimeSpanExtensions.FromMilliseconds(    20,   23),
                                                                                                                   PacketLoss:   PercentageDouble.        Parse           (  0.52, 0.12)
                                                                                                               )
@@ -546,12 +546,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                         Assert.That(routes.Values.First().Uplink,                              Is.Not.Null);
                         Assert.That(routes.Values.First().Uplink?.Capacity,                    Is.EqualTo(5000));
                         Assert.That(routes.Values.First().Uplink?.Latency,                     Is.EqualTo(TimeSpan.FromMilliseconds(10)));
-                        Assert.That(routes.Values.First().Uplink?.PacketLoss?.Value,           Is.EqualTo(0.05));
+                        Assert.That(routes.Values.First().Uplink?.PacketLoss?.Mean,            Is.EqualTo(0.05));
 
                         Assert.That(routes.Values.First().Downlink,                            Is.Not.Null);
                         Assert.That(routes.Values.First().Downlink?.Capacity,                  Is.EqualTo(15000));
                         Assert.That(routes.Values.First().Downlink?.Latency,                   Is.EqualTo(TimeSpan.FromMilliseconds(23)));
-                        Assert.That(routes.Values.First().Downlink?.PacketLoss?.Value,         Is.EqualTo(0.42));
+                        Assert.That(routes.Values.First().Downlink?.PacketLoss?.Mean,          Is.EqualTo(0.42));
 
                     }
 

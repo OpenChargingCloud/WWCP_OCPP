@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
     /// <summary>
     /// The OCPP Networking Node HTTP API.
     /// </summary>
-    public class HTTPAPI : NetworkingNode.HTTPAPI
+    public class HTTPAPI : NetworkingNode.OCPP_HTTPAPI
     {
 
         #region Data
@@ -251,15 +251,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
 
             : base(LocalController,
                    HTTPExtAPI,
-                   HTTPServerName ?? DefaultHTTPServerName,
+
+                   null,
+                   //HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
-                   BasePath,
+                   null,
+                   null,
 
-                   EventLoggingDisabled,
+                   BasePath)
 
-                   HTTPRealm,
-                   HTTPLogins,
-                   JSONFormatting)
+                   //EventLoggingDisabled,
+
+                   //HTTPRealm,
+                   //HTTPLogins,
+                   //JSONFormatting)
 
         {
 

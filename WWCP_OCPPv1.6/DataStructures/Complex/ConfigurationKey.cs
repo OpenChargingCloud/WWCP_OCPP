@@ -208,29 +208,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) Parse   (XML)
-
-        /// <summary>
-        /// Parse the given XML representation of a configuration key value pair.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        public static ConfigurationKey Parse(XElement XML)
-        {
-
-            if (TryParse(XML,
-                         out var configurationKey,
-                         out var errorResponse))
-            {
-                return configurationKey;
-            }
-
-            throw new ArgumentException("The given XML representation of a configuration key value pair is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
-
-        #endregion
-
         #region (static) Parse   (JSON)
 
         /// <summary>
@@ -249,46 +226,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             throw new ArgumentException("The given JSON representation of a configuration key value pair is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  out ConfigurationKey, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a configuration key value pair.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="ConfigurationKey">The parsed configuration key.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                                   XML,
-                                       [NotNullWhen(true)]  out ConfigurationKey  ConfigurationKey,
-                                       [NotNullWhen(false)] out String?           ErrorResponse)
-        {
-
-            ErrorResponse = null;
-
-            try
-            {
-
-                ConfigurationKey = new ConfigurationKey(
-                                       XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CP + "key"),
-                                       XML.MapBooleanOrFail     (OCPPNS.OCPPv1_6_CP + "readonly")
-                                           ? AccessRights.ReadOnly
-                                           : AccessRights.ReadWrite,
-                                       XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "value")
-                                   );
-
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                ConfigurationKey  = default;
-                ErrorResponse     = "The given XML representation of a configuration key is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -371,27 +308,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
 
         }
-
-        #endregion
-
-        #region ToXML (XName = null)
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CP:configurationKey"]</param>
-        public XElement ToXML(XName? XName = null)
-
-            => new XElement(XName ?? OCPPNS.OCPPv1_6_CP + "configurationKey",
-
-                   new XElement(OCPPNS.OCPPv1_6_CP + "key",       Key.SubstringMax(MaxConfigurationKeyLength)),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "readonly",  AccessRights == AccessRights.ReadOnly),
-
-                   Value is not null
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "value",  Value.SubstringMax(MaxConfigurationValueLength))
-                       : null
-
-               );
 
         #endregion
 

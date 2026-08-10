@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                      Boolean                DisableMaintenanceTasks            = false,
                                      TimeSpan?              MaintenanceEvery                   = null,
 
-                                     ISMTPClient?           SMTPClient                         = null,
+                                     ISMTPSubmissionClient? SMTPSubmissionClient               = null,
                                      DNSClient?             DNSClient                          = null)
 
             : base(Id,
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   SMTPClient,
+                   SMTPSubmissionClient,
                    DNSClient)
 
         {
@@ -199,37 +199,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             Directory.CreateDirectory("HTTPSSEs");
 
             this.TestAPI                = new HTTPExtAPI(
-                                              HTTPServerPort:         IPPort.Parse(3500),
+                                              new HTTPServer(
+                                                  TCPPort:            IPPort.Parse(3500),
+                                                  HTTPServerName:     "GraphDefined OCPP v1.6 Test Central System",
+                                                  DNSClient:          DNSClient,
+                                                  AutoStart:          true
+                                              ),
                                               HTTPServerName:         "GraphDefined OCPP v1.6 Test Central System",
                                               HTTPServiceName:        "GraphDefined OCPP v1.6 Test Central System Service",
                                               APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                              SMTPClient:             new NullMailer(),
-                                              DNSClient:              DNSClient,
-                                              AutoStart:              true
+                                              SMTPClient:             new NullMailer()
                                           );
 
-            this.TestAPI.HTTPServer.AddAuth(request => {
+            //this.TestAPI.HTTPServer.AddAuth(request => {
 
-                #region Allow some URLs for anonymous access...
+            //    #region Allow some URLs for anonymous access...
 
-                if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
-                {
-                    return HTTPExtAPI.Anonymous;
-                }
+            //    if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
+            //    {
+            //        return HTTPExtAPI.Anonymous;
+            //    }
 
-                #endregion
+            //    #endregion
 
-                return null;
+            //    return null;
 
-            });
+            //});
 
 
             this.HTTPUploadAPI           = new UploadAPI(
                                                this,
                                                new HTTPServer(
-                                                   this.HTTPUploadPort,
-                                                   "Open Charging Cloud OCPP Upload Server",
-                                                   "Open Charging Cloud OCPP Upload Service"
+                                                   TCPPort:          this.HTTPUploadPort,
+                                                   HTTPServerName:  "Open Charging Cloud OCPP Upload Server"
                                                )
                                            );
 

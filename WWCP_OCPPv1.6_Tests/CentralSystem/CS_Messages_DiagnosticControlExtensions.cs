@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 var response   = await testCentralSystem01.AttachCable(
                                            Destination:    SourceRouting.To(chargePoint1.Id),
                                            ConnectorId:    Connector_Id.Parse(1),
-                                           ResistorValue:  Ohm.ParseOhm(680)
+                                           ResistorValue:  Ohm.From_Ω(680)
                                        );
 
                 Assert.Multiple(() => {
@@ -298,8 +298,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var response   = await testCentralSystem01.SetCPVoltage(
                                            Destination:      SourceRouting.To(chargePoint1.Id),
-                                           Voltage:          Volt.      ParseV(9),
-                                           VoltageError:     Percentage.Parse (4),
+                                           Voltage:          Volt.      FromV(9),
+                                           VoltageError:     Percentage.Parse(4),
                                            ProcessingDelay:  TimeSpan.  FromMilliseconds(50),
                                            TransitionTime:   TimeSpan.  FromMilliseconds(200)
                                        );

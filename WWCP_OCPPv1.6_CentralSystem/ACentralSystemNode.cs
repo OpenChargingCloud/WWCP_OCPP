@@ -1262,7 +1262,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
                                   Boolean                        DisableMaintenanceTasks            = false,
                                   TimeSpan?                      MaintenanceEvery                   = null,
 
-                                  ISMTPClient?                   SMTPClient                         = null,
+                                  ISMTPSubmissionClient?         SMTPSubmissionClient               = null,
                                   DNSClient?                     DNSClient                          = null)
 
             : base(Id,

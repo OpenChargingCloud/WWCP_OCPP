@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
 
             RegisterURITemplates();
 
-            DebugX.Log($"OCPP {Version.String} LocalController WebAPI started on {HTTPServer.IPSockets.AggregateWith(", ")}{URLPathPrefix}");
+            DebugX.Log($"OCPP {Version.String} LocalController WebAPI started on {HTTPServer.IPSocket}{URLPathPrefix}");
 
         }
 

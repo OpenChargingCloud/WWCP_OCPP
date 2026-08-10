@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                              //                  ),
                                              Currency:         Currency.EUR,
                                              Energy:           new TariffEnergy(
-                                                                   [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                   [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryFromKWh(1)) ],
                                                                    [ TaxRate.VAT(15)]
                                                                ),
 
@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //                  ),
                                            Currency:         Currency.EUR,
                                            Energy:           new TariffEnergy(
-                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryFromKWh(1)) ],
                                                                  [ TaxRate.VAT(15)]
                                                              ),
                                            //TariffElements:   [
@@ -784,7 +784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //                  ),
                                            Currency:         Currency.EUR,
                                            Energy:           new TariffEnergy(
-                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryFromKWh(1)) ],
                                                                  [ TaxRate.VAT(15)]
                                                              ),
                                            //TariffElements:   [
@@ -1121,7 +1121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //                  ),
                                            Currency:         Currency.EUR,
                                            Energy:           new TariffEnergy(
-                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryFromKWh(1)) ],
                                                                  [ TaxRate.VAT(15)]
                                                              ),
                                            //TariffElements:   [
@@ -1461,7 +1461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //                  ),
                                            Currency:         Currency.EUR,
                                            Energy:           new TariffEnergy(
-                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryFromKWh(1)) ],
                                                                  [ TaxRate.VAT(15)]
                                                              ),
                                            //TariffElements:   [
@@ -1542,7 +1542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                            //                  ),
                                            Currency:         Currency.EUR,
                                            Energy:           new TariffEnergy(
-                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryParseKWh(1)) ],
+                                                                 [ new TariffEnergyPrice(0.51M, StepSize: WattHour.TryFromKWh(1)) ],
                                                                  [ TaxRate.VAT(15)]
                                                              ),
 

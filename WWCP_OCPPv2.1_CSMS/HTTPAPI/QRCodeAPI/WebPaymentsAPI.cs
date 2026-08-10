@@ -79,36 +79,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
         public WebPaymentsAPI(ACSMSNode   CSMSNode,
-                         HTTPServer  HTTPServer,
+                              HTTPServer  HTTPServer,
 
-                         HTTPPath?   BasePath        = null,
-                         HTTPPath?   URLPathPrefix   = null)
+                              HTTPPath?   BasePath        = null,
+                              HTTPPath?   URLPathPrefix   = null)
 
             : base(HTTPServer,
-                   null,
-                   null, // ExternalDNSName,
-                   null, // HTTPServiceName,
-                   BasePath,
-
+                   null, // Hostnames
                    URLPathPrefix ?? DefaultURLPathPrefix,
-                   null, // HTMLTemplate,
-                   null, // APIVersionHashes,
+                   null,
+                   null,
 
-                   null, // DisableMaintenanceTasks,
-                   null, // MaintenanceInitialDelay,
-                   null, // MaintenanceEvery,
-
-                   null, // DisableWardenTasks,
-                   null, // WardenInitialDelay,
-                   null, // WardenCheckEvery,
-
-                   null, // IsDevelopment,
-                   null, // DevelopmentServers,
-                   null, // DisableLogging,
-                   null, // LoggingPath,
-                   null, // LogfileName,
-                   null, // LogfileCreator,
-                   true) // AutoStart
+                   BasePath)
 
         {
 
@@ -261,41 +243,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             // --------------------------------------------------------------------
             // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
             // --------------------------------------------------------------------
-            AddMethodCallback(HTTPHostname.Any,
-                              HTTPMethod.GET,
-                              URLPathPrefix + "events",
-                              HTTPContentType.Text.HTML_UTF8,
-                              HTTPDelegate: Request => {
+            AddHandler(
+                HTTPMethod.GET,
+                URLPathPrefix + "events",
+                HTTPContentType.Text.HTML_UTF8,
+                HTTPDelegate: request => {
 
-                                  #region Get HTTP user and its organizations
+                    #region Get HTTP user and its organizations
 
-                                  //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                  //if (!TryGetHTTPUser(Request,
-                                  //                    out User                   HTTPUser,
-                                  //                    out HashSet<Organization>  HTTPOrganizations,
-                                  //                    out HTTPResponse.Builder   Response,
-                                  //                    Recursive:                 true))
-                                  //{
-                                  //    return Task.FromResult(Response.AsImmutable);
-                                  //}
+                    //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                    //if (!TryGetHTTPUser(Request,
+                    //                    out User                   HTTPUser,
+                    //                    out HashSet<Organization>  HTTPOrganizations,
+                    //                    out HTTPResponse.Builder   Response,
+                    //                    Recursive:                 true))
+                    //{
+                    //    return Task.FromResult(Response.AsImmutable);
+                    //}
 
-                                  #endregion
+                    #endregion
 
-                                  return Task.FromResult(
-                                             new HTTPResponse.Builder(Request) {
-                                                 HTTPStatusCode             = HTTPStatusCode.OK,
-                                                 Server                     = HTTPServiceName,
-                                                 Date                       = Timestamp.Now,
-                                                 AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "GET" ],
-                                                 AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
-                                                 ContentType                = HTTPContentType.Text.HTML_UTF8,
-                                                 Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-                                                 Connection                 = ConnectionType.Close,
-                                                 Vary                       = "Accept"
-                                             }.AsImmutable);
+                    return Task.FromResult(
+                               new HTTPResponse.Builder(request) {
+                                   HTTPStatusCode             = HTTPStatusCode.OK,
+                                   Server                     = HTTPServiceName,
+                                   Date                       = Timestamp.Now,
+                                   AccessControlAllowOrigin   = "*",
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
+                                   AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
+                                   ContentType                = HTTPContentType.Text.HTML_UTF8,
+                                   Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
+                                   Connection                 = ConnectionType.Close,
+                                   Vary                       = "Accept"
+                               }.AsImmutable);
 
-                              });
+                }
+            );
 
             #endregion
 

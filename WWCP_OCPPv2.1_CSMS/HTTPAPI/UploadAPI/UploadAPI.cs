@@ -118,30 +118,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          IEnumerable<KeyValuePair<String, String>>?  HTTPLogins      = null)
 
             : base(HTTPServer,
-                   null,
-                   null, // ExternalDNSName,
-                   null, // HTTPServiceName,
-                   BasePath,
-
+                   null, // Hostnames
                    URLPathPrefix ?? DefaultURLPathPrefix,
-                   null, // HTMLTemplate,
-                   null, // APIVersionHashes,
+                   null,
+                   null,
 
-                   null, // DisableMaintenanceTasks,
-                   null, // MaintenanceInitialDelay,
-                   null, // MaintenanceEvery,
-
-                   null, // DisableWardenTasks,
-                   null, // WardenInitialDelay,
-                   null, // WardenCheckEvery,
-
-                   null, // IsDevelopment,
-                   null, // DevelopmentServers,
-                   null, // DisableLogging,
-                   null, // LoggingPath,
-                   null, // LogfileName,
-                   null, // LogfileCreator,
-                   true) // AutoStart
+                   BasePath)
 
         {
 
@@ -233,10 +215,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #region PUT   ~/*
 
             // curl -X PUT http://127.0.0.1:9901/diagnostics/test.log -T test.log
-            AddMethodCallback(HTTPHostname.Any,
-                              HTTPMethod.PUT,
-                              URLPathPrefix + "{file}",
-                              HTTPDelegate: async request => {
+            AddHandler(
+
+                HTTPMethod.PUT,
+                URLPathPrefix + "{file}",
+                HTTPDelegate: async request => {
 
                                   try
                                   {
@@ -252,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Server                     = DefaultHTTPServerName,
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = [ "PUT" ],
+                                                     AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
                                                  };
 
@@ -265,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Server                     = DefaultHTTPServerName,
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = [ "PUT" ],
+                                                     AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
                                                  };
 
@@ -278,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Server                     = DefaultHTTPServerName,
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = [ "PUT" ],
+                                                     AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
                                                  };
 
@@ -310,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "PUT" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                  Connection                 = ConnectionType.Close
                                              };
 
@@ -330,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "PUT" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = ConnectionType.Close
@@ -345,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #region POST  ~/*
 
             // curl -X PUT http://127.0.0.1:9901/diagnostics/test.log -T test.log
-            AddMethodCallback(HTTPHostname.Any,
+            AddHandler(
                               HTTPMethod.POST,
                               URLPathPrefix + "{file}",
                               HTTPDelegate: async request => {
@@ -364,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Server                     = DefaultHTTPServerName,
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = [ "POST" ],
+                                                     AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
                                                  };
 
@@ -377,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Server                     = DefaultHTTPServerName,
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = [ "POST" ],
+                                                     AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
                                                  };
 
@@ -390,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Server                     = DefaultHTTPServerName,
                                                      Date                       = Timestamp.Now,
                                                      AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = [ "POST" ],
+                                                     AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
                                                  };
 
@@ -422,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "POST" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                  Connection                 = ConnectionType.Close
                                              };
 
@@ -442,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = [ "POST" ],
+                                                 AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = ConnectionType.Close

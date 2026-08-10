@@ -668,7 +668,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                            IEnumerable<ChargePoint2ChargePointEdge>?       ChargePoint2ChargePointInEdges          = null,
                            IEnumerable<ChargePoint2ChargePointEdge>?       ChargePoint2ChargePointOutEdges         = null,
 
-                           JObject?                                    CustomData                          = default,
+                           CustomDataNew?                              CustomData                          = default,
                            IEnumerable<AttachedFile>?                  AttachedFiles                       = default,
                            JSONLDContext?                              JSONLDContext                       = default,
                            String?                                     DataSource                          = default,
@@ -1428,7 +1428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                            IEnumerable<ChargePoint2ChargePointEdge>?  ChargePoint2ChargePointInEdges    = null,
                            IEnumerable<ChargePoint2ChargePointEdge>?  ChargePoint2ChargePointOutEdges   = null,
 
-                           JObject?                                   CustomData                        = null,
+                           CustomDataNew?                             CustomData                        = null,
                            IEnumerable<AttachedFile>?                 AttachedFiles                     = null,
                            JSONLDContext?                             JSONLDContext                     = null,
                            String?                                    DataSource                        = null,

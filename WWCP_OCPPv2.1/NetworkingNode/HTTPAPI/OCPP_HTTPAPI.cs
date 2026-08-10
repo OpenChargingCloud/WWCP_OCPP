@@ -73,34 +73,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public OCPP_HTTPAPI(AOCPPNetworkingNode            NetworkingNode,
                             HTTPExtAPI                     HTTPAPI,
 
-                            IEnumerable<HTTPHostname>?     Hostnames                 = null,
-                            HTTPPath?                      RootPath                  = null,
-                            IEnumerable<HTTPContentType>?  HTTPContentTypes          = null,
-                            I18NString?                    Description               = null,
+                            IEnumerable<HTTPHostname>?     Hostnames               = null,
+                            HTTPPath?                      RootPath                = null,
+                            IEnumerable<HTTPContentType>?  HTTPContentTypes        = null,
+                            I18NString?                    Description             = null,
 
-                            HTTPPath?                      BasePath                  = null,  // For URL prefixes in HTML!
+                            HTTPPath?                      BasePath                = null,  // For URL prefixes in HTML!
 
-                            String?                        ExternalDNSName           = null,
-                            String?                        HTTPServerName            = DefaultHTTPServerName,
-                            String?                        HTTPServiceName           = DefaultHTTPServiceName,
-                            String?                        APIVersionHash            = null,
-                            JObject?                       APIVersionHashes          = null,
+                            String?                        ExternalDNSName         = null,
+                            String?                        HTTPServerName          = DefaultHTTPServerName,
+                            String?                        HTTPServiceName         = DefaultHTTPServiceName,
+                            String?                        APIVersionHash          = null,
+                            JObject?                       APIVersionHashes        = null,
 
-                            EMailAddress?                  APIRobotEMailAddress      = null,
-                            String?                        APIRobotGPGPassphrase     = null,
-                            ISMTPClient?                   SMTPClient                = null,
+                            EMailAddress?                  APIRobotEMailAddress    = null,
+                            String?                        APIRobotGPGPassphrase   = null,
+                            ISMTPSubmissionClient?         ISMTPSubmissionClient   = null,
 
-                            Boolean?                       IsDevelopment             = null,
-                            IEnumerable<String>?           DevelopmentServers        = null,
-                            //Boolean?                       SkipURLTemplates          = false,
-                            String?                        DatabaseFileName          = null,//DefaultAssetsDBFileName,
-                            Boolean?                       DisableNotifications      = false,
+                            Boolean?                       IsDevelopment           = null,
+                            IEnumerable<String>?           DevelopmentServers      = null,
+                            //Boolean?                       SkipURLTemplates        = false,
+                            String?                        DatabaseFileName        = null,//DefaultAssetsDBFileName,
+                            Boolean?                       DisableNotifications    = false,
 
-                            Boolean?                       DisableLogging            = null,
-                            String?                        LoggingContext            = null,
-                            String?                        LoggingPath               = null,
-                            String?                        LogfileName               = null,
-                            LogfileCreatorDelegate?        LogfileCreator            = null)
+                            Boolean?                       DisableLogging          = null,
+                            String?                        LoggingContext          = null,
+                            String?                        LoggingPath             = null,
+                            String?                        LogfileName             = null,
+                            LogfileCreatorDelegate?        LogfileCreator          = null)
 
             : base(NetworkingNode,
                    HTTPAPI,
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    Hostnames,
                    RootPath,
                    HTTPContentTypes,
-                   Description ?? I18NString.Create("Norn HTTP API"),
+                   Description ?? I18NString.Create("OCPP HTTP API"),
 
                    BasePath,
 
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                    APIRobotEMailAddress,
                    APIRobotGPGPassphrase,
-                   SMTPClient,
+                   ISMTPSubmissionClient,
 
                    IsDevelopment,
                    DevelopmentServers,
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = systemInfo.ToUTF8Bytes(jsonFormatting),
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = NetworkingNode.OCPP.ToJSON().ToUTF8Bytes(jsonFormatting),

@@ -41,8 +41,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
     /// <summary>
     /// The OCPP Local Controller WebAPI.
     /// </summary>
-    public class WebAPI : AHTTPAPIExtension<HTTPExtAPI>,
-                          IHTTPAPIExtension<HTTPExtAPI>
+    public class WebAPI : AHTTPAPIExtension<HTTPExtAPI>
+                          //IHTTPAPIExtension<HTTPExtAPI>
     {
 
         #region Data
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                       String?                                     HTMLTemplate     = null)
 
             : base(HTTPAPI,
-                   HTTPServerName ?? DefaultHTTPServerName,
+                   //HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
                    BasePath ?? HTTPPath.Parse("webapi"))
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             RegisterURITemplates();
 
-            DebugX.Log($"OCPP {Version.String} Local Controller WebAPI started on {HTTPAPI.HTTPServer.IPSockets.AggregateWith(", ")}{URLPathPrefix}");
+            DebugX.Log($"OCPP {Version.String} Local Controller WebAPI started on {HTTPAPI.HTTPServer.IPSocket}{URLPathPrefix}");
 
         }
 

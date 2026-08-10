@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>WWCP_OCPPv2._1_TimeServer</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -20,10 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="HTTPAPI\WebAPI\HTTPRoot\css\" />
   </ItemGroup>
 
 </Project>

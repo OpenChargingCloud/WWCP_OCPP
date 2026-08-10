@@ -719,7 +719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                                   Offline:              false,
                                   NumberOfPhasesUsed:   3,
-                                  CableMaxCurrent:      Ampere.ParseA(32),
+                                  CableMaxCurrent:      Ampere.FromA(32),
                                   ReservationId:        evse.ReservationId,
                                   IdToken:              evse.IdToken,
                                   EVSE:                 new EVSE(
@@ -824,7 +824,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                                   Offline:              false,
                                   NumberOfPhasesUsed:   3,
-                                  CableMaxCurrent:      Ampere.ParseA(32),
+                                  CableMaxCurrent:      Ampere.FromA(32),
                                   ReservationId:        evse.ReservationId,
                                   IdToken:              evse.IdToken,
                                   EVSE:                 new EVSE(

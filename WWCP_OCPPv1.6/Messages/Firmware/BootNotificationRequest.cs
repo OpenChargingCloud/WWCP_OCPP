@@ -375,39 +375,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, Destination, NetworkPath)
-
-        /// <summary>
-        /// Parse the given XML representation of a BootNotification request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        public static BootNotificationRequest Parse(XElement       XML,
-                                                    Request_Id     RequestId,
-                                                    SourceRouting  Destination,
-                                                    NetworkPath    NetworkPath)
-        {
-
-
-            if (TryParse(XML,
-                         RequestId,
-                         Destination,
-                         NetworkPath,
-                         out var bootNotificationRequest,
-                         out var errorResponse))
-            {
-                return bootNotificationRequest;
-            }
-
-            throw new ArgumentException("The given XML representation of a BootNotification request is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
-
-        #endregion
-
         #region (static) Parse   (JSON, RequestId, Destination, NetworkPath, ...)
 
         /// <summary>
@@ -454,57 +421,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             throw new ArgumentException("The given JSON representation of a BootNotification request is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, Destination, NetworkPath, out BootNotificationRequest, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a BootNotification request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="Destination">The destination networking node identification or source routing path.</param>
-        /// <param name="NetworkPath">The network path of the request.</param>
-        /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                                           XML,
-                                       Request_Id                                         RequestId,
-                                       SourceRouting                                      Destination,
-                                       NetworkPath                                        NetworkPath,
-                                       [NotNullWhen(true)]  out BootNotificationRequest?  BootNotificationRequest,
-                                       [NotNullWhen(false)] out String?                   ErrorResponse)
-        {
-
-            try
-            {
-
-                BootNotificationRequest = new BootNotificationRequest(
-                                              Destination,
-                                              XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointVendor"),
-                                              XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointModel"),
-                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargePointSerialNumber"),
-                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargeBoxSerialNumber"),
-                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "firmwareVersion"),
-                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "iccid"),
-                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "imsi"),
-                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterType"),
-                                              XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterSerialNumber"),
-                                              RequestId: RequestId
-                                          );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                BootNotificationRequest  = null;
-                ErrorResponse            = "The given XML representation of a BootNotification request is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -636,50 +552,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             }
 
         }
-
-        #endregion
-
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CS + "bootNotificationRequest",
-
-                   new XElement(OCPPNS.OCPPv1_6_CS + "chargePointVendor",              ChargePointVendor),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "chargePointModel",               ChargePointModel),
-
-                   ChargePointSerialNumber.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "chargePointSerialNumber",  ChargePointSerialNumber)
-                       : null,
-
-                   ChargeBoxSerialNumber.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "chargeBoxSerialNumber",    ChargeBoxSerialNumber)
-                       : null,
-
-                   ChargePointSerialNumber.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "firmwareVersion",          FirmwareVersion)
-                       : null,
-
-                   ChargeBoxSerialNumber.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "iccid",                    Iccid)
-                       : null,
-
-                   ChargePointSerialNumber.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "imsi",                     IMSI)
-                       : null,
-
-                   ChargeBoxSerialNumber.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "meterType",                MeterType)
-                       : null,
-
-                   ChargePointSerialNumber.IsNotNullOrEmpty()
-                       ? new XElement(OCPPNS.OCPPv1_6_CS + "meterSerialNumber",        MeterSerialNumber)
-                       : null
-
-               );
 
         #endregion
 

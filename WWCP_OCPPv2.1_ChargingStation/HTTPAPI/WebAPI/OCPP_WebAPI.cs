@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            EMailAddress?                  APIRobotEMailAddress      = null,
                            String?                        APIRobotGPGPassphrase     = null,
-                           ISMTPClient?                   SMTPClient                = null,
+                           ISMTPSubmissionClient?         SMTPSubmissionClient      = null,
 
                            HTTPPath?                      AdditionalURLPathPrefix   = null,
                            Boolean?                       LocationsAsOpenData       = null,

@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             EMailAddress?                  APIRobotEMailAddress      = null,
                             String?                        APIRobotGPGPassphrase     = null,
-                            ISMTPClient?                   SMTPClient                = null,
+                            ISMTPSubmissionClient?         SMTPSubmissionClient      = null,
 
                             Boolean?                       IsDevelopment             = null,
                             IEnumerable<String>?           DevelopmentServers        = null,
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                    APIRobotEMailAddress,
                    APIRobotGPGPassphrase,
-                   SMTPClient,
+                   SMTPSubmissionClient,
 
                    IsDevelopment,
                    DevelopmentServers,
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = systemInfo.ToUTF8Bytes(jsonFormatting),
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                    Server                     = HTTPServiceName,
                                    Date                       = Timestamp.Now,
                                    AccessControlAllowOrigin   = "*",
-                                   AccessControlAllowMethods  = [ "GET" ],
+                                   AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
                                    ContentType                = HTTPContentType.Application.JSON_UTF8,
                                    Content                    = NetworkingNode.OCPP.ToJSON().ToUTF8Bytes(jsonFormatting),

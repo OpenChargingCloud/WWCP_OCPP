@@ -220,10 +220,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                                              ClientCertificateRequired:    null,
                                              CheckCertificateRevocation:   null,
 
-                                             ServerThreadNameCreator:      null,
-                                             ServerThreadPrioritySetter:   null,
                                              ServerThreadIsBackground:     null,
-                                             ConnectionIdBuilder:          null,
+                                             //ConnectionIdBuilder:          null,
                                              ConnectionTimeout:            null,
                                              MaxClientConnections:         null,
 

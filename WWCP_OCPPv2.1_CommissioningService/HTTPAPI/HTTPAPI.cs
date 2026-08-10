@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
     /// <summary>
     /// The OCPP CSMS HTTP API.
     /// </summary>
-    public class HTTPAPI : NetworkingNode.HTTPAPI
+    public class HTTPAPI : NetworkingNode.OCPP_HTTPAPI
     {
 
         #region Data
@@ -255,15 +255,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
 
             : base(CommissioningService,
                    HTTPExtAPI,
-                   HTTPServerName ?? DefaultHTTPServerName,
+
+                   null,
+                   //HTTPServerName ?? DefaultHTTPServerName,
                    URLPathPrefix,
-                   BasePath,
+                   null,
+                   null,
 
-                   EventLoggingDisabled,
+                   BasePath)
 
-                   HTTPRealm,
-                   HTTPLogins,
-                   JSONFormatting)
+                   //EventLoggingDisabled,
+
+                   //HTTPRealm,
+                   //HTTPLogins,
+                   //JSONFormatting)
 
         {
 
@@ -272,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
             RegisterURITemplates();
             AttachCommissioningService(commissioningService);
 
-            DebugX.Log($"CSMS HTTP API started on {HTTPBaseAPI.HTTPServer.IPPorts.AggregateWith(", ")}");
+            DebugX.Log($"CSMS HTTP API started on {HTTPBaseAPI.HTTPServer.IPSocket}");
 
         }
 
