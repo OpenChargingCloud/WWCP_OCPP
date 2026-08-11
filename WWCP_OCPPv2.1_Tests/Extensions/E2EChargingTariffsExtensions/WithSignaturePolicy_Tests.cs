@@ -43,6 +43,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
     public class WithSignaturePolicy_Tests : AChargingStationTests
     {
 
+        #region SetupEachTest()
+
+        [SetUp]
+        public override async Task SetupEachTest()
+        {
+
+            await base.SetupEachTest();
+
+            // The CSMS and the charging stations are shared between all tests of this fixture,
+            // but every test registers its own signing/verification rules with fresh key pairs.
+            // Without a reset the signing rules accumulate and later tests sign every message
+            // multiple times, breaking their "exactly one signature" assertions!
+            foreach (var signaturePolicy in new[] {
+                                                testCSMS1?.       OCPP.SignaturePolicy,
+                                                chargingStation1?.OCPP.SignaturePolicy,
+                                                chargingStation2?.OCPP.SignaturePolicy,
+                                                chargingStation3?.OCPP.SignaturePolicy
+                                            })
+            {
+                signaturePolicy?.ClearSigningRules().
+                                 ClearVerificationRules();
+            }
+
+        }
+
+        #endregion
+
+
         #region SetDefaultE2EChargingTariffRequest_Test1()
 
         /// <summary>

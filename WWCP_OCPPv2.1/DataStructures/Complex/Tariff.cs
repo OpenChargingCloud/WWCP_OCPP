@@ -822,11 +822,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("validTo",            ValidTo.  Value. ToISO8601())
                                : null,
 
-                           MaxCost.HasValue
-                               ? new JProperty("maxCost",            MaxCost.  Value. ToJSON(CustomPriceSerializer,
-                                                                                             CustomTaxRateSerializer))
-                               : null,
-
                            MinCost.HasValue
                                ? new JProperty("minCost",            MinCost.  Value. ToJSON(CustomPriceSerializer,
                                                                                              CustomTaxRateSerializer))
@@ -866,7 +861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            ChargingTime is not null
-                               ? new JProperty("chargingTIme",       ChargingTime.    ToJSON(CustomTariffTimeSerializer,
+                               ? new JProperty("chargingTime",       ChargingTime.    ToJSON(CustomTariffTimeSerializer,
                                                                                              CustomTariffTimePriceSerializer,
                                                                                              CustomTariffConditionsSerializer,
                                                                                              CustomTaxRateSerializer))
