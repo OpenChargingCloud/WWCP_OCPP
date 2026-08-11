@@ -107,7 +107,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           CancellationToken        CancellationToken     = default)
 
             : base(Destination,
-                   nameof(VATNumberValidationRequest)[..^7],
+                   // NOT nameof(...): The official OCPP action is "VatNumberValidation",
+                   // while the class name intentionally keeps the "VAT" spelling!
+                   "VatNumberValidation",
 
                    SignKeys,
                    SignInfos,
@@ -380,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  new JProperty("vatNumber",    VATNumber),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",       EVSEId.              ToString())
+                               ? new JProperty("evseId",       EVSEId.        Value.Value)
                                : null,
 
 

@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",     DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("id",           Id.                  ToString()),
+                                 new JProperty("id",           Id.                  Value),
                                  new JProperty("data",         new JArray(StreamDataElements.Select(streamDataElement => streamDataElement.ToJSON(CustomStreamDataElementSerializer)))),
 
                            Signatures.Any()

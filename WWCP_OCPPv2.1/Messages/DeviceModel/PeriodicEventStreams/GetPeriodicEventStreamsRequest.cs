@@ -91,7 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               CancellationToken        CancellationToken     = default)
 
             : base(Destination,
-                   nameof(GetPeriodicEventStreamsRequest)[..^7],
+                   // NOT nameof(...): The official OCPP action is "GetPeriodicEventStream"
+                   // (singular), while the class name intentionally keeps the plural!
+                   "GetPeriodicEventStream",
 
                    SignKeys,
                    SignInfos,
