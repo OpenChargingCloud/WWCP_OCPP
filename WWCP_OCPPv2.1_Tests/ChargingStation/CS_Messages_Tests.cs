@@ -781,12 +781,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                            ),
                                                                                     VariableMonitorings:   new[] {
                                                                                                                new VariableMonitoring(
-                                                                                                                   Id:            VariableMonitoring_Id.NewRandom,
-                                                                                                                   Transaction:   true,
-                                                                                                                   Value:         1.01M,
-                                                                                                                   Type:          MonitorType.Periodic,
-                                                                                                                   Severity:      Severities.Warning,
-                                                                                                                   CustomData:    null
+                                                                                                                   Id:                      VariableMonitoring_Id.NewRandom,
+                                                                                                                   Transaction:             true,
+                                                                                                                   Value:                   1.01M,
+                                                                                                                   Type:                    MonitorType.Periodic,
+                                                                                                                   Severity:                Severities.Warning,
+                                                                                                                   EventNotificationType:   EventNotificationType.PreconfiguredMonitor,
+                                                                                                                   CustomData:              null
                                                                                                                )
                                                                                                            },
                                                                                     CustomData:            null

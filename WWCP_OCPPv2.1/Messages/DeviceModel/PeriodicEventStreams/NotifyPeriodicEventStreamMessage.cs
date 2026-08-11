@@ -63,6 +63,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public PeriodicEventStream_Id          Id                    { get; }
 
         /// <summary>
+        /// The number of data elements still pending to be sent.
+        /// </summary>
+        [Mandatory]
+        public UInt32                          Pending               { get; }
+
+        /// <summary>
+        /// The base timestamp to add to the time offsets of the stream data elements.
+        /// </summary>
+        [Mandatory]
+        public DateTimeOffset                  BaseTime              { get; }
+
+        /// <summary>
         /// The enumeration of periodic event stream data elements.
         /// </summary>
         [Mandatory]
@@ -77,11 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="Id">The unique identification of the periodic event stream.</param>
+        /// <param name="Pending">The number of data elements still pending to be sent.</param>
+        /// <param name="BaseTime">The base timestamp to add to the time offsets of the stream data elements.</param>
         /// <param name="StreamDataElements">An enumeration of periodic event stream data elements.</param>
-        /// 
+        ///
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
+        ///
         /// <param name="MessageId">An optional request identification.</param>
         /// <param name="MessageTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -90,6 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyPeriodicEventStreamMessage(SourceRouting                   Destination,
                                                 PeriodicEventStream_Id          Id,
+                                                UInt32                          Pending,
+                                                DateTimeOffset                  BaseTime,
                                                 IEnumerable<StreamDataElement>  StreamDataElements,
 
                                                 IEnumerable<KeyPair>?           SignKeys              = null,
@@ -128,14 +144,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             nameof(StreamDataElements));
 
             this.Id                  = Id;
+            this.Pending             = Pending;
+            this.BaseTime            = BaseTime;
             this.StreamDataElements  = StreamDataElements.Distinct();
 
 
             unchecked
             {
 
-                hashCode = this.Id.                GetHashCode()  * 5 ^
-                           this.StreamDataElements.CalcHashCode() * 3 ^
+                hashCode = this.Id.                GetHashCode()  * 11 ^
+                           this.Pending.           GetHashCode()  *  7 ^
+                           this.BaseTime.          GetHashCode()  *  5 ^
+                           this.StreamDataElements.CalcHashCode() *  3 ^
                            base.                   GetHashCode();
 
             }
@@ -331,6 +351,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Pending               [mandatory]
+
+                if (!JSON.ParseMandatory("pending",
+                                         "number of pending data elements",
+                                         out UInt32 Pending,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region BaseTime              [mandatory]
+
+                if (!JSON.ParseMandatory("basetime",
+                                         "base timestamp",
+                                         out DateTimeOffset BaseTime,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
                 #region StreamDataElements    [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("data",
@@ -377,6 +421,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                        Destination,
                                                        Id,
+                                                       Pending,
+                                                       BaseTime,
                                                        StreamDataElements,
 
                                                        null,
@@ -433,6 +479,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                                  new JProperty("id",           Id.                  Value),
+                                 new JProperty("pending",      Pending),
+                                 new JProperty("basetime",     BaseTime.            ToISO8601()),
                                  new JProperty("data",         new JArray(StreamDataElements.Select(streamDataElement => streamDataElement.ToJSON(CustomStreamDataElementSerializer)))),
 
                            Signatures.Any()

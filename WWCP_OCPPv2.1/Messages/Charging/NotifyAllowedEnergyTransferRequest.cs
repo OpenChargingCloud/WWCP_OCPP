@@ -57,6 +57,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
+        /// The transaction for which the allowed energy transfer modes apply.
+        /// </summary>
+        [Mandatory]
+        public Transaction_Id                   TransactionId                 { get; }
+
+        /// <summary>
         /// The enumeration of allowed energy transfer modes.
         /// </summary>
         [Mandatory]
@@ -70,11 +76,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new NotifyAllowedEnergyTransfer request.
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="TransactionId">The transaction for which the allowed energy transfer modes apply.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
-        /// 
+        ///
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
+        ///
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -82,6 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyAllowedEnergyTransferRequest(SourceRouting                    Destination,
+                                                  Transaction_Id                   TransactionId,
                                                   IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
                                                   IEnumerable<KeyPair>?            SignKeys              = null,
@@ -121,11 +129,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 throw new ArgumentException("The given enumeration of allowed energy transfer modes must not be empty!",
                                             nameof(AllowedEnergyTransferModes));
 
-            this.AllowedEnergyTransferModes = AllowedEnergyTransferModes.Distinct();
+            this.TransactionId               = TransactionId;
+            this.AllowedEnergyTransferModes  = AllowedEnergyTransferModes.Distinct();
 
             unchecked
             {
-                hashCode = this.AllowedEnergyTransferModes.CalcHashCode() * 3 ^
+                hashCode = this.TransactionId.             GetHashCode()  * 5 ^
+                           this.AllowedEnergyTransferModes.CalcHashCode() * 3 ^
                            base.GetHashCode();
             }
 
@@ -279,6 +289,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 NotifyAllowedEnergyTransferRequest = null;
 
+                #region TransactionId                 [mandatory]
+
+                if (!JSON.ParseMandatory("transactionId",
+                                         "transaction identification",
+                                         Transaction_Id.TryParse,
+                                         out Transaction_Id TransactionId,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
                 #region AllowedEnergyTransferModes    [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("allowedEnergyTransfer",
@@ -324,6 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 NotifyAllowedEnergyTransferRequest = new NotifyAllowedEnergyTransferRequest(
 
                                                          Destination,
+                                                         TransactionId,
                                                          AllowedEnergyTransferModes,
 
                                                          null,
@@ -378,6 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("@context",                DefaultJSONLDContext.ToString())
                                : null,
 
+                                 new JProperty("transactionId",           TransactionId.       ToString()),
                                  new JProperty("allowedEnergyTransfer",   new JArray(AllowedEnergyTransferModes.Select(allowedEnergyTransferMode => allowedEnergyTransferMode.ToString()))),
 
                            Signatures.Any()

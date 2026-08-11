@@ -68,7 +68,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The severity that will be assigned to an event that is triggered by this monitor.
         /// </summary>
         [Mandatory]
-        public Severities             Severity       { get; }
+        public Severities             Severity               { get; }
+
+        /// <summary>
+        /// The type of the notification of the monitor.
+        /// </summary>
+        [Mandatory]
+        public EventNotificationType  EventNotificationType  { get; }
 
         #endregion
 
@@ -82,23 +88,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Value">Value for threshold or delta monitoring. For periodic or periodicClockAligned monitors this is their monitoring interval in seconds.</param>
         /// <param name="Type">The enumeration of monitors for the given variable monitoring pair.</param>
         /// <param name="Severity">The severity that will be assigned to an event that is triggered by this monitor.</param>
+        /// <param name="EventNotificationType">The type of the notification of the monitor.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public VariableMonitoring(VariableMonitoring_Id  Id,
                                   Boolean                Transaction,
                                   Decimal                Value,
                                   MonitorType            Type,
                                   Severities             Severity,
+                                  EventNotificationType  EventNotificationType,
                                   CustomData?            CustomData   = null)
 
             : base(CustomData)
 
         {
 
-            this.Id           = Id;
-            this.Transaction  = Transaction;
-            this.Value        = Value;
-            this.Type         = Type;
-            this.Severity     = Severity;
+            this.Id                     = Id;
+            this.Transaction            = Transaction;
+            this.Value                  = Value;
+            this.Type                   = Type;
+            this.Severity               = Severity;
+            this.EventNotificationType  = EventNotificationType;
 
         }
 
@@ -284,6 +293,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region EventNotificationType    [mandatory]
+
+                if (!JSON.ParseMandatory("eventNotificationType",
+                                         "event notification type",
+                                         OCPPv2_1.EventNotificationType.TryParse,
+                                         out EventNotificationType EventNotificationType,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
                 #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -305,6 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          Value,
                                          Type,
                                          Severity!.Value,
+                                         EventNotificationType,
                                          CustomData
                                      );
 
@@ -339,14 +362,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",            Id.        Value),
-                                 new JProperty("transaction",   Transaction),
-                                 new JProperty("value",         Value),
-                                 new JProperty("type",          Type.      ToString()),
-                                 new JProperty("severity",      Severity.  AsNumber()),
+                                 new JProperty("id",                      Id.                   Value),
+                                 new JProperty("transaction",             Transaction),
+                                 new JProperty("value",                   Value),
+                                 new JProperty("type",                    Type.                 ToString()),
+                                 new JProperty("severity",                Severity.             AsNumber()),
+                                 new JProperty("eventNotificationType",   EventNotificationType.ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",              CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -373,6 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Value,
                    Type.Clone(),
                    Severity,
+                   EventNotificationType.Clone(),
 
                    CustomData
 
@@ -451,13 +476,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => VariableMonitoring is not null &&
 
-               Id.         Equals(VariableMonitoring.Id)          &&
-               Transaction.Equals(VariableMonitoring.Transaction) &&
-               Value.      Equals(VariableMonitoring.Value)       &&
-               Type.       Equals(VariableMonitoring.Type)        &&
-               Severity.   Equals(VariableMonitoring.Severity)    &&
+               Id.                   Equals(VariableMonitoring.Id)                    &&
+               Transaction.          Equals(VariableMonitoring.Transaction)           &&
+               Value.                Equals(VariableMonitoring.Value)                 &&
+               Type.                 Equals(VariableMonitoring.Type)                  &&
+               Severity.             Equals(VariableMonitoring.Severity)              &&
+               EventNotificationType.Equals(VariableMonitoring.EventNotificationType) &&
 
-               base.       Equals(VariableMonitoring);
+               base.                 Equals(VariableMonitoring);
 
         #endregion
 
@@ -473,13 +499,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return Id.         GetHashCode() * 13 ^
-                       Transaction.GetHashCode() * 11 ^
-                       Value.      GetHashCode() *  7 ^
-                       Type.       GetHashCode() *  5 ^
-                       Severity.   GetHashCode() *  3 ^
+                return Id.                   GetHashCode() * 17 ^
+                       Transaction.          GetHashCode() * 13 ^
+                       Value.                GetHashCode() * 11 ^
+                       Type.                 GetHashCode() *  7 ^
+                       Severity.             GetHashCode() *  5 ^
+                       EventNotificationType.GetHashCode() *  3 ^
 
-                       base.       GetHashCode();
+                       base.                 GetHashCode();
 
             }
         }

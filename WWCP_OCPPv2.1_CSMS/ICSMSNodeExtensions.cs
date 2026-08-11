@@ -2362,17 +2362,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer (Destination, AllowedEnergyTransferModes, ...)
+        #region NotifyAllowedEnergyTransfer (Destination, TransactionId, AllowedEnergyTransferModes, ...)
 
         /// <summary>
-        /// Unlock the given charging station connector.
+        /// Notify the charging station about the allowed energy transfer modes of a transaction.
         /// </summary>
         /// <param name="Destination">The networking node identification.</param>
+        /// <param name="TransactionId">The transaction for which the allowed energy transfer modes apply.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
-        /// 
+        ///
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
+        ///
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -2382,6 +2383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NotifyAllowedEnergyTransfer(this ICSMSNode                   CSMS,
                                         SourceRouting                    Destination,
+                                        Transaction_Id                   TransactionId,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
                                         IEnumerable<KeyPair>?            SignKeys              = null,
@@ -2401,6 +2403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 => CSMS.OCPP.OUT.NotifyAllowedEnergyTransfer(
                        new NotifyAllowedEnergyTransferRequest(
                            Destination,
+                           TransactionId,
                            AllowedEnergyTransferModes,
 
                            SignKeys,

@@ -4529,6 +4529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS1.NotifyAllowedEnergyTransfer(
                                          Destination:    SourceRouting.To(              chargingStation1.Id),
+                                         TransactionId:                Transaction_Id.Parse("DEGEFE12345678"),
                                          AllowedEnergyTransferModes:   [
                                                                            EnergyTransferMode.AC_SinglePhase,
                                                                            EnergyTransferMode.AC_ThreePhases
