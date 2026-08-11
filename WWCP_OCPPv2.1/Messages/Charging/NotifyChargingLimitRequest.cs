@@ -1162,7 +1162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 if (JSON.ParseOptional("evseId",
                                        "EVSE identification",
                                        EVSE_Id.TryParse,
-                                       out EVSE_Id EVSEId,
+                                       out EVSE_Id? EVSEId,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

@@ -415,13 +415,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #region CertificateHashDataChain    [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("certificateHashDataChain",
-                                             "certificate hash data chain",
-                                             OCPPv2_1.CertificateHashDataChain.TryParse,
-                                             out IEnumerable<CertificateHashDataChain> CertificateHashDataChain,
-                                             out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("certificateHashDataChain",
+                                              "certificate hash data chain",
+                                              OCPPv2_1.CertificateHashDataChain.TryParse,
+                                              out HashSet<CertificateHashDataChain> CertificateHashDataChain,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion

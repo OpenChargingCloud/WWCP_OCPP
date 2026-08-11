@@ -304,13 +304,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                if (!JSON.ParseMandatoryHashSet("messageExtra",
-                                                "messages extra",
-                                                MessageContent.TryParse,
-                                                out HashSet<MessageContent> messages,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("messageExtra",
+                                              "messages extra",
+                                              MessageContent.TryParse,
+                                              out HashSet<MessageContent> messages,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 var Messages = new MessageContents(Message);

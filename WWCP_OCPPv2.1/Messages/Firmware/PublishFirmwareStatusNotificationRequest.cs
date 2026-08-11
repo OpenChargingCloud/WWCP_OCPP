@@ -359,8 +359,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #region DownloadLocations                             [optional]
 
-                if (JSON.ParseOptionalHashSet("reportData",
-                                              "report data",
+                if (JSON.ParseOptionalHashSet("location",
+                                              "firmware download locations",
                                               URL.TryParse,
                                               out HashSet<URL> DownloadLocations,
                                               out ErrorResponse))

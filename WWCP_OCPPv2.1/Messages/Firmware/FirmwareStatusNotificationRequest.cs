@@ -324,8 +324,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #region UpdateFirmwareRequestId    [optional]
 
-                if (JSON.ParseOptional("customData",
-                                       "custom data",
+                if (JSON.ParseOptional("requestId",
+                                       "update firmware request identification",
                                        out Int64? UpdateFirmwareRequestId,
                                        out ErrorResponse))
                 {

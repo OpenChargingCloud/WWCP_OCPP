@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region CertificateStatus    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("status",
+                if (!JSON.ParseMandatoryHashSet("certificateStatus",
                                                 "GetCertificateChainStatus",
                                                 CertificateStatusInfo.TryParse,
                                                 out HashSet<CertificateStatusInfo> CertificateStatus,

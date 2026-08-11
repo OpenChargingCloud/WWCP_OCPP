@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #region CertificateStatusRequests    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("ocspRequestData",
+                if (!JSON.ParseMandatoryHashSet("certificateStatusRequests",
                                                 "OCSP request data",
                                                 CertificateStatusRequestInfo.TryParse,
                                                 out HashSet<CertificateStatusRequestInfo> CertificateStatusRequests,

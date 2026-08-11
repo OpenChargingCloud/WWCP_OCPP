@@ -326,8 +326,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region GetDERControlRequestId    [mandatory]
 
-                if (!JSON.ParseMandatory("isDefault",
-                                         "is default or scheduled DER controls",
+                if (!JSON.ParseMandatory("requestId",
+                                         "get DER control request identification",
                                          out Int32 GetDERControlRequestId,
                                          out ErrorResponse))
                 {

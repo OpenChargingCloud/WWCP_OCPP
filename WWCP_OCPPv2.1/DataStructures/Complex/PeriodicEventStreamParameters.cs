@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("values",       MaxItems),
 
                            MaxTime.HasValue
-                               ? new JProperty("maxTime",      MaxTime.Value.TotalSeconds)
+                               ? new JProperty("interval",     (UInt32) MaxTime.Value.TotalSeconds)
                                : null,
 
                            CustomData is not null

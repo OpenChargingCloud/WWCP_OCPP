@@ -246,8 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region TransactionId        [optional]
 
-                if (JSON.ParseOptional("customData",
-                                       "custom data",
+                if (JSON.ParseOptional("transactionId",
+                                       "transaction identification",
                                        Transaction_Id.TryParse,
                                        out Transaction_Id? TransactionId,
                                        out ErrorResponse))

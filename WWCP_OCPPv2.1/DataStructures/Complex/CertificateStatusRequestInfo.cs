@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region CertificateHashData    [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("certificateStatusRequestInfo",
+                if (!JSON.ParseMandatoryJSON("certificateHashData",
                                              "certificate hash data",
                                              OCPPv2_1.CertificateHashData.TryParse,
                                              out CertificateHashData? CertificateHashData,
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region URLs                   [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("serialNumber",
+                if (!JSON.ParseMandatoryHashSet("urls",
                                                 "serial number",
                                                 URL.TryParse,
                                                 out HashSet<URL> URLs,
