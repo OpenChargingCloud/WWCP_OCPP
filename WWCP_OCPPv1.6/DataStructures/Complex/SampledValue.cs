@@ -487,8 +487,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("phase",
                                        "phase",
-                                       PhasesExtensions.Parse,
-                                       out Phases Phase,
+                                       PhasesExtensions.TryParse,
+                                       out Phases? Phase,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

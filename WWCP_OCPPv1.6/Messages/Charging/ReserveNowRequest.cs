@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (JSON.ParseOptional("parentIdTag",
                                        "parent identification tag",
                                        IdToken.TryParse,
-                                       out IdToken ParentIdTag,
+                                       out IdToken? ParentIdTag,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

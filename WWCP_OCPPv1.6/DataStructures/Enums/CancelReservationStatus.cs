@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Text">A string representation of a cancel reservation status.</param>
         public static CancelReservationStatus Parse(String Text)
 
-            => Text.ToLower() switch {
+            => Text switch {
                    "Accepted"  => CancelReservationStatus.Accepted,
                    "Rejected"  => CancelReservationStatus.Rejected,
                    _           => CancelReservationStatus.Unknown

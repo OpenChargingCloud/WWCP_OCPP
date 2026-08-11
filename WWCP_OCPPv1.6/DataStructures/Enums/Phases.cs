@@ -44,6 +44,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+        #region TryParse(Text)
+
+        public static Phases? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var phase))
+                return phase;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Phase)
+
+        public static Boolean TryParse(String Text, out Phases Phase)
+        {
+
+            Phase = Parse(Text);
+
+            return Phase != Phases.Unknown ||
+                   Text.Trim() == "Unknown";
+
+        }
+
+        #endregion
+
         #region AsText(this Phase)
 
         public static String AsText(this Phases Phase)

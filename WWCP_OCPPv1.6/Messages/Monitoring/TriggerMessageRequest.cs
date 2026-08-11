@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (JSON.ParseOptional("connectorId",
                                        "connector identification",
                                        Connector_Id.TryParse,
-                                       out Connector_Id ConnectorId,
+                                       out Connector_Id? ConnectorId,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

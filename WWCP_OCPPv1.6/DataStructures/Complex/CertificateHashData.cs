@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             var json = JSONObject.Create(
-                           new JProperty("hashAlgorithm",   HashAlgorithm),
+                           new JProperty("hashAlgorithm",   HashAlgorithm.AsText()),
                            new JProperty("issuerNameHash",  IssuerNameHash),
                            new JProperty("issuerKeyHash",   IssuerPublicKeyHash),
                            new JProperty("serialNumber",    SerialNumber)

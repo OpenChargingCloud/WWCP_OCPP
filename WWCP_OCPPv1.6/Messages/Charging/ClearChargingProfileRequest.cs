@@ -407,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ChargingProfileId         [optional]
 
-                if (JSON.ParseOptional("chargingProfileId",
+                if (JSON.ParseOptional("id",
                                        "charging profile identification",
                                        ChargingProfile_Id.TryParse,
                                        out ChargingProfile_Id? ChargingProfileId,
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                : null,
 
                            StackLevel.HasValue
-                               ? new JProperty("stackLevel",               StackLevel.            Value.ToString())
+                               ? new JProperty("stackLevel",               StackLevel.            Value)
                                : null,
 
                            Signatures.Any()
