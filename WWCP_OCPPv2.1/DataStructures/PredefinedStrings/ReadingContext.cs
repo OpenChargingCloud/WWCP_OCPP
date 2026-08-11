@@ -202,13 +202,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Value taken at start of interruption.
         /// </summary>
         public static ReadingContext  InterruptionBegin    { get; }
-            = Register("InterruptionBegin");
+            = Register("Interruption.Begin");
 
         /// <summary>
         /// Value taken when resuming after interruption.
         /// </summary>
         public static ReadingContext  InterruptionEnd      { get; }
-            = Register("InterruptionEnd");
+            = Register("Interruption.End");
 
         /// <summary>
         /// Value for any other situations.
@@ -220,25 +220,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Value taken at clock aligned interval.
         /// </summary>
         public static ReadingContext  SampleClock          { get; }
-            = Register("SampleClock");
+            = Register("Sample.Clock");
 
         /// <summary>
         /// Value taken as periodic sample relative to start time of transaction.
         /// </summary>
         public static ReadingContext  SamplePeriodic       { get; }
-            = Register("SamplePeriodic");
+            = Register("Sample.Periodic");
 
         /// <summary>
         /// Value taken at the beginning of a transaction.
         /// </summary>
         public static ReadingContext  TransactionBegin     { get; }
-            = Register("TransactionBegin");
+            = Register("Transaction.Begin");
 
         /// <summary>
         /// Value taken at the end of a transaction.
         /// </summary>
         public static ReadingContext  TransactionEnd       { get; }
-            = Register("TransactionEnd");
+            = Register("Transaction.End");
 
         /// <summary>
         /// Value taken in response to a TriggerMessage request.
