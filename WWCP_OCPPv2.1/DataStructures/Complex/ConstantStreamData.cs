@@ -279,8 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",                     Id.                        ToString()),
-                                 new JProperty("variableMonitoringId",   VariableMonitoringId.Value.ToString()),
+                                 new JProperty("id",                     Id.                        Value),
+                                 new JProperty("variableMonitoringId",   VariableMonitoringId.      Value),
                                  new JProperty("params",                 Parameters.                ToJSON(CustomPeriodicEventStreamParametersSerializer,
                                                                                                            CustomCustomDataSerializer)),
 

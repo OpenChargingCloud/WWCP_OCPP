@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",       EVSEId.        Value.ToString())
+                               ? new JProperty("evseId",       EVSEId.        Value.Value)
                                : null,
 
                            Signatures.Any()

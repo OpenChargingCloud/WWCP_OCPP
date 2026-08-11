@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse TaxRates    [optional]
 
-                if (JSON.ParseOptionalHashSet("taxRate",
+                if (JSON.ParseOptionalHashSet("taxRates",
                                               "tax rates",
                                               TaxRate.TryParse,
                                               out HashSet<TaxRate> TaxRates,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                                                 CustomTariffConditionsSerializer)))),
 
                            TaxRates.Any()
-                               ? new JProperty("taxRate",  new JArray(TaxRates.Select(taxRate         => taxRate.        ToJSON(CustomTaxRateSerializer))))
+                               ? new JProperty("taxRates",  new JArray(TaxRates.Select(taxRate         => taxRate.        ToJSON(CustomTaxRateSerializer))))
                                : null
 
                        );

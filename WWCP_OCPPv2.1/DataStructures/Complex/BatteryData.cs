@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evseId",           EVSEId.              ToString()),
+                                 new JProperty("evseId",           EVSEId.              Value),
                                  new JProperty("serialNumber",     SerialNumber),
                                  new JProperty("soC",              SoC.Value),
                                  new JProperty("soH",              SoH.Value),

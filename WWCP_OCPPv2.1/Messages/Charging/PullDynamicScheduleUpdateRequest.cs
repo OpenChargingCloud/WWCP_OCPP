@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",            DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("chargingProfileId",   ChargingProfileId.   ToString()),
+                                 new JProperty("chargingProfileId",   ChargingProfileId.   Value),
 
                            Signatures.Any()
                                ? new JProperty("signatures",          new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,

@@ -535,8 +535,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                                  new JProperty("status",                     Status.              AsText()),
-                                 new JProperty("certificateHashDataChain",   new JArray(CertificateHashDataChain.Select(certificateHashDataChain => certificateHashDataChain.ToJSON(CustomCertificateHashDataChainSerializer,
-                                                                                                                                                                                    CustomCertificateHashDataSerializer)))),
+
+                           CertificateHashDataChain.Any()
+                               ? new JProperty("certificateHashDataChain",   new JArray(CertificateHashDataChain.Select(certificateHashDataChain => certificateHashDataChain.ToJSON(CustomCertificateHashDataChainSerializer,
+                                                                                                                                                                                    CustomCertificateHashDataSerializer))))
+                               : null,
 
                            StatusInfo is not null
                                ? new JProperty("statusInfo",                 StatusInfo.          ToJSON(CustomStatusInfoSerializer,

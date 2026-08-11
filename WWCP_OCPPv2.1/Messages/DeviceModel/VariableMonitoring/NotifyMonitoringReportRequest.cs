@@ -661,7 +661,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",      DefaultJSONLDContext.           ToString())
                                : null,
 
-                                 new JProperty("requestId",     NotifyMonitoringReportRequestId.ToString()),
+                                 new JProperty("requestId",     NotifyMonitoringReportRequestId),
                                  new JProperty("seqNo",         SequenceNumber),
                                  new JProperty("generatedAt",   GeneratedAt.                    ToISO8601()),
 

@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",            DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("setVariableResult",   new JArray(SetMonitoringResults.Select(setMonitoringResult => setMonitoringResult.ToJSON(CustomSetMonitoringResultSerializer,
+                                 new JProperty("setMonitoringResult", new JArray(SetMonitoringResults.Select(setMonitoringResult => setMonitoringResult.ToJSON(CustomSetMonitoringResultSerializer,
                                                                                                                                                                CustomComponentSerializer,
                                                                                                                                                                CustomEVSESerializer,
                                                                                                                                                                CustomVariableSerializer,

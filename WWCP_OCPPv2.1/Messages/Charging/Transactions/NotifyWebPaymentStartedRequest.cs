@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                                  new JProperty("evseId",       EVSEId. Value),
-                                 new JProperty("timeout",      Timeout.TotalSeconds),
+                                 new JProperty("timeout",      (UInt64) Timeout.TotalSeconds),
 
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,

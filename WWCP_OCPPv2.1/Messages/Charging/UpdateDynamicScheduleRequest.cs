@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("@context",            DefaultJSONLDContext.ToString())
                                : null,
 
-                                 new JProperty("chargingProfileId",   ChargingProfileId.   ToString()),
+                                 new JProperty("chargingProfileId",   ChargingProfileId.   Value),
                                  new JProperty("scheduleUpdate",      ScheduleUpdate.      ToJSON(CustomChargingScheduleUpdateSerializer,
                                                                                                   CustomCustomDataSerializer)),
 
