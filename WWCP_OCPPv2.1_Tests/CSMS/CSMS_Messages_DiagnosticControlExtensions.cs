@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
                     //Assert.That(response.Data,                                                          Is.Not.Null);
                     //Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
                     //Assert.That(response.Data,                                                          Is.Not.Null);
                     //Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
                     //Assert.That(response.Data,                                                          Is.Not.Null);
                     //Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
                     //Assert.That(response.Data,                                                          Is.Not.Null);
                     //Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
                     //Assert.That(response.Data,                                                          Is.Not.Null);
                     //Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));
@@ -444,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
                     //Assert.That(response.Data,                                                          Is.Not.Null);
                     //Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));
@@ -514,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
                     //Assert.That(response.Data,                                                          Is.Not.Null);
                     //Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
                     //Assert.That(response.Data,                                                          Is.Not.Null);
                     //Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));

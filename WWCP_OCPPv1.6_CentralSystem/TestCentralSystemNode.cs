@@ -3017,30 +3017,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
-            #region OnSecurityEventNotification
-
-            OCPP.IN.OnSecurityEventNotification += (timestamp,
-                                                    sender,
-                                                    connection,
-                                                    request,
-                                                    cancellationToken) => {
-
-                DebugX.Log("OnSecurityEventNotification: " + request.DestinationId);
-
-                // Type
-                // Timestamp
-                // TechInfo
-
-                return Task.FromResult(
-                           new SecurityEventNotificationResponse(
-                               Request:      request,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
+            // Note: The OnSecurityEventNotification processor is registered within the
+            //       constructor. Registering it twice would attach a second responder!
 
             #endregion
 

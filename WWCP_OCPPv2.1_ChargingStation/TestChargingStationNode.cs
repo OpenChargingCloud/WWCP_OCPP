@@ -3266,6 +3266,178 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
 
+            // Advanced diagnostics vendor extensions
+            // (test bench remote control: accepted without further effects for now)
+
+            #region OnAdjustTimeScale
+
+            OCPP.IN.OnAdjustTimeScale += (timestamp,
+                                          sender,
+                                          connection,
+                                          request,
+                                          ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming AdjustTimeScale!");
+
+                return Task.FromResult(
+                           new AdjustTimeScaleResponse(
+                               Request:   request,
+                               Status:    GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnAttachCable
+
+            OCPP.IN.OnAttachCable += (timestamp,
+                                      sender,
+                                      connection,
+                                      request,
+                                      ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming AttachCable!");
+
+                return Task.FromResult(
+                           new AttachCableResponse(
+                               Request:   request,
+                               Status:    GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetExecutingEnvironment
+
+            OCPP.IN.OnGetExecutingEnvironment += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming GetExecutingEnvironment!");
+
+                return Task.FromResult(
+                           new GetExecutingEnvironmentResponse(
+                               Request:   request,
+                               Status:    GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetPWMValue
+
+            OCPP.IN.OnGetPWMValue += (timestamp,
+                                      sender,
+                                      connection,
+                                      request,
+                                      ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming GetPWMValue!");
+
+                return Task.FromResult(
+                           new GetPWMValueResponse(
+                               Request:   request,
+                               Status:    GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetCPVoltage
+
+            OCPP.IN.OnSetCPVoltage += (timestamp,
+                                       sender,
+                                       connection,
+                                       request,
+                                       ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming SetCPVoltage!");
+
+                return Task.FromResult(
+                           new SetCPVoltageResponse(
+                               Request:   request,
+                               Status:    GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetErrorState
+
+            OCPP.IN.OnSetErrorState += (timestamp,
+                                        sender,
+                                        connection,
+                                        request,
+                                        ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming SetErrorState!");
+
+                return Task.FromResult(
+                           new SetErrorStateResponse(
+                               Request:   request,
+                               Status:    GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSwipeRFIDCard
+
+            OCPP.IN.OnSwipeRFIDCard += (timestamp,
+                                        sender,
+                                        connection,
+                                        request,
+                                        ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming SwipeRFIDCard!");
+
+                return Task.FromResult(
+                           new SwipeRFIDCardResponse(
+                               Request:   request,
+                               Status:    GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnTimeTravel
+
+            OCPP.IN.OnTimeTravel += (timestamp,
+                                     sender,
+                                     connection,
+                                     request,
+                                     ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming TimeTravel!");
+
+                return Task.FromResult(
+                           new TimeTravelResponse(
+                               Request:   request,
+                               Status:    GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+
         }
 
     }

@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// This means that the certificate should be derived from the V2G root.
         /// </summary>
         public static CertificateSigningUse  V2G20Certificate              { get; }
-            = Register("V2GCertificate");
+            = Register("V2G20Certificate");
 
         #endregion
 
