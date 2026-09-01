@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        String?                 HTTPAPI_RobotGPGPassphrase     = null,
                                        Boolean                 HTTPAPI_EventLoggingDisabled   = false,
 
-                                       OCPP_WebAPI?                 WebAPI                         = null,
+                                       OCPP_WebAPI?            WebAPI                         = null,
                                        Boolean                 WebAPI_Disabled                = false,
                                        HTTPPath?               WebAPI_Path                    = null,
 
