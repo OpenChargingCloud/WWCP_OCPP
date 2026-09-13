@@ -561,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             ct) => {
 
                 var success = reservations.ContainsKey(request.ReservationId)
-                                  ? reservations.TryRemove(request.ReservationId, out _)
+                                  ? CancelReservation(request.ReservationId)
                                   : true;
 
                 DebugX.Log($"Charging station '{Id}': Incoming CancelReservation request for reservation id '{request.ReservationId}': {(success ? "accepted" : "rejected")}!");
@@ -887,24 +887,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      request,
                                      ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming ReserveNow request (reservation id: {request.Id}, idToken: '{request.IdToken.Value}'{(request.EVSEId.HasValue ? $", evseId: '{request.EVSEId.Value}'" : "")})!");
+                var status = Reserve(request, Timestamp.Now);
 
-                // ReservationId
-                // ExpiryDate
-                // IdToken
-                // ConnectorType
-                // EVSEId
-                // GroupIdToken
-
-                var success = reservations.TryAdd(request.Id,
-                                                  request.Id);
+                DebugX.Log($"Charging station '{Id}': Incoming ReserveNow request (reservation id: {request.Id}, idToken: '{request.IdToken.Value}'{(request.EVSEId.HasValue ? $", evseId: '{request.EVSEId.Value}'" : "")}): {status}!");
 
                 return Task.FromResult(
                            new ReserveNowResponse(
                                Request:      request,
-                               Status:       success
-                                                 ? ReservationStatus.Accepted
-                                                 : ReservationStatus.Rejected,
+                               Status:       status,
                                StatusInfo:   null,
                                CustomData:   null
                            )

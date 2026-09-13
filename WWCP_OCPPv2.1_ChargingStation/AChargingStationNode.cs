@@ -40,6 +40,7 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using Microsoft.Extensions.Logging;
 
 #endregion
@@ -100,7 +101,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         protected readonly ConcurrentDictionary<EVSE_Id,               ChargingStationEVSE> evses             = [];
         protected readonly ConcurrentDictionary<DisplayMessage_Id,     MessageInfo>         displayMessages   = [];
-        protected readonly ConcurrentDictionary<Reservation_Id,        Reservation_Id>      reservations      = [];
+        /// <summary>
+        /// The outlets held for somebody who is on their way.
+        /// </summary>
+        /// <remarks>
+        /// The truth about reservations. <see cref="ChargingStationEVSE.IsReserved"/>
+        /// and <see cref="ChargingStationEVSE.ReservationId"/> are kept in step
+        /// with this and are a convenience for whoever has an EVSE in their
+        /// hand - they are never written to from anywhere else, because two
+        /// places that may disagree about whether an outlet is taken is one
+        /// place too many.
+        /// </remarks>
+        protected readonly ConcurrentDictionary<Reservation_Id,        Reservation>         reservations      = [];
         protected readonly ConcurrentDictionary<Transaction_Id,        Transaction>         transactions      = [];
         protected readonly ConcurrentDictionary<Transaction_Id,        Decimal>             totalCosts        = [];
         protected readonly ConcurrentDictionary<InstallCertificateUse, OCPP.Certificate>    certificates      = [];
@@ -980,6 +992,189 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
+
+        #region Reservations
+
+        /// <summary>
+        /// Every reservation that has not run out.
+        /// </summary>
+        /// <remarks>
+        /// Expiry is noticed when somebody looks rather than by a timer: a
+        /// reservation that ran out while nobody was asking changed nothing,
+        /// and a timer for it would be a timer to start, stop and get wrong
+        /// when this station is reconfigured.
+        /// </remarks>
+        public IEnumerable<Reservation> Reservations
+        {
+            get
+            {
+
+                ExpireReservations();
+
+                return reservations.Values;
+
+            }
+        }
+
+        /// <summary>
+        /// The reservation holding the given EVSE, or null when it is free.
+        /// </summary>
+        /// <remarks>
+        /// A reservation that named no EVSE holds none of them in particular:
+        /// it is a promise that one will be free, and the display should not
+        /// show an outlet as taken because of it.
+        /// </remarks>
+        public Reservation? ReservationOf(EVSE_Id EVSEId)
+
+            => Reservations.FirstOrDefault(reservation => reservation.EVSEId == EVSEId);
+
+        /// <summary>
+        /// Hold an outlet, as a ReserveNow request asks.
+        /// </summary>
+        /// <remarks>
+        /// The whole of what a charging station may answer here is in the
+        /// status it returns, so each refusal says something different:
+        /// Rejected for a request this station cannot make sense of - an EVSE
+        /// it does not have, a date that has already passed - Unavailable for
+        /// an outlet that is out of service, and Occupied for one that is
+        /// charging or already held for somebody else.
+        ///
+        /// A request repeating a reservation id replaces it, which is what a
+        /// CSMS extending a reservation does.
+        /// </remarks>
+        public ReservationStatus Reserve(ReserveNowRequest  Request,
+                                         DateTimeOffset     Now)
+        {
+
+            ExpireReservations();
+
+            if (Request.ExpiryDate <= Now)
+                return ReservationStatus.Rejected;
+
+            var reservation = Reservation.From(Request, Now);
+
+            if (Request.EVSEId.HasValue)
+            {
+
+                if (!evses.TryGetValue(Request.EVSEId.Value, out var evse))
+                    return ReservationStatus.Rejected;
+
+                if (evse.AdminStatus != OperationalStatus.Operative)
+                    return ReservationStatus.Unavailable;
+
+                if (evse.IsCharging)
+                    return ReservationStatus.Occupied;
+
+                // Already held for somebody else. The same reservation id is
+                // the same reservation being extended, and is allowed.
+                if (reservations.Values.Any(other => other.EVSEId == Request.EVSEId &&
+                                                     other.Id     != Request.Id))
+                {
+                    return ReservationStatus.Occupied;
+                }
+
+                if (Request.ConnectorType.HasValue &&
+                    !evse.Connectors.Any(connector => connector.ConnectorType == Request.ConnectorType.Value))
+                {
+                    return ReservationStatus.Rejected;
+                }
+
+            }
+
+            else
+            {
+
+                // A reservation for no EVSE in particular is a promise that one
+                // will be free, so there has to be one that could be.
+                var free = evses.Values.Count(evse => evse.AdminStatus == OperationalStatus.Operative &&
+                                                      !evse.IsCharging);
+
+                var held = reservations.Values.Count(other => other.Id != Request.Id);
+
+                if (free <= held)
+                    return ReservationStatus.Occupied;
+
+            }
+
+            reservations[Request.Id] = reservation;
+
+            Project(reservation.EVSEId);
+
+            return ReservationStatus.Accepted;
+
+        }
+
+        /// <summary>
+        /// Let an outlet go again.
+        /// </summary>
+        public Boolean CancelReservation(Reservation_Id ReservationId)
+        {
+
+            if (!reservations.TryRemove(ReservationId, out var gone))
+                return false;
+
+            Project(gone.EVSEId);
+
+            return true;
+
+        }
+
+        /// <summary>
+        /// Put a reservation back, as it was.
+        /// </summary>
+        /// <remarks>
+        /// For carrying reservations across a rebuild of this node, which is
+        /// what happens when the charging station around it is reconfigured.
+        /// Not the same thing as <see cref="Reserve"/> and deliberately not
+        /// validated the same way: this reservation was accepted once already,
+        /// by this station, and whoever asked for it has been told so. Whether
+        /// it still makes sense after the change is for the caller to decide -
+        /// that is the only place that knows what the change was.
+        /// </remarks>
+        public void Restore(Reservation Reservation)
+        {
+
+            reservations[Reservation.Id] = Reservation;
+
+            Project(Reservation.EVSEId);
+
+        }
+
+        /// <summary>
+        /// Let go of everything that has run out.
+        /// </summary>
+        private void ExpireReservations()
+        {
+
+            var now = Timestamp.Now;
+
+            foreach (var expired in reservations.Values.Where(reservation => reservation.HasExpired(now)).ToArray())
+                if (reservations.TryRemove(expired.Id, out _))
+                    Project(expired.EVSEId);
+
+        }
+
+        /// <summary>
+        /// Write the reservations of one EVSE onto the EVSE itself.
+        /// </summary>
+        /// <remarks>
+        /// See the remarks on <see cref="reservations"/>: this is a projection
+        /// and never a second opinion.
+        /// </remarks>
+        private void Project(EVSE_Id? EVSEId)
+        {
+
+            if (!EVSEId.HasValue || !evses.TryGetValue(EVSEId.Value, out var evse))
+                return;
+
+            var reservation = reservations.Values.FirstOrDefault(candidate => candidate.EVSEId == EVSEId);
+
+            evse.IsReserved     = reservation is not null;
+            evse.ReservationId  = reservation?.Id;
+
+        }
+
+        #endregion
 
         #region EVSEs
 
