@@ -251,6 +251,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        #region (private) LearnRouteBack (SenderId, WebSocketConnection)
+
+        /// <summary>
+        /// Remember that the given node can be reached over the connection one of its
+        /// requests just arrived on, unless we already know a way there.
+        /// </summary>
+        /// <param name="SenderId">The node that sent us a request.</param>
+        /// <param name="WebSocketConnection">The connection it arrived on.</param>
+        private void LearnRouteBack(NetworkingNode_Id     SenderId,
+                                    IWebSocketConnection  WebSocketConnection)
+        {
+
+            if (SenderId == NetworkingNode_Id.Zero ||
+                SenderId == parentNetworkingNode.Id)
+                return;
+
+            if (parentNetworkingNode.Routing.LookupNetworkingNode(SenderId, out _))
+                return;
+
+            // Only for a client connection. It has exactly one far end, so "reachable via this
+            // client" is unambiguous. A server carries many connections, and a route pointing at
+            // the server as a whole would claim we can reach this node while the server still has
+            // to find a connection registered under that very identification - which is precisely
+            // what it could not do. Incoming server connections already register themselves.
+            if (WebSocketConnection is WebSocketClientConnection clientConnection &&
+                clientConnection.WebSocketClient is IWWCPWebSocketClient wwcpWebSocketClient)
+            {
+                parentNetworkingNode.Routing.AddOrUpdateStaticRouting(SenderId, wwcpWebSocketClient);
+            }
+
+        }
+
+        #endregion
+
         #region ProcessJSONMessage   (MessageTimestamp, WebSocketConnection, JSONMessage,   EventTrackingId, CancellationToken)
 
         /// <summary>
@@ -309,6 +343,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // Most likely the first request message of a new connection (e.g. a BootNotificationRequest) will set the networking mode
                     WebSocketConnection.TryAddCustomData(WebSocketKeys.X_WWCP_NetworkingMode, jsonRequestMessage.NetworkingMode);
+
+                    #region Learn the way back to whoever sent this
+
+                    // The response to this request will be addressed to the node that sent it. If we
+                    // do not know how to reach that node, the response is dropped as "UnknownClient"
+                    // and the sender waits out its whole request timeout for an answer that was
+                    // produced, accepted and then thrown away.
+                    //
+                    // That happens whenever a connection is registered under a well-known alias
+                    // rather than under the identification its far end actually puts into the
+                    // network path - a local controller dialling NetworkingNode_Id.CSMS, for
+                    // instance, while the CSMS signs its requests as "csms01".
+                    //
+                    // An incoming request is proof that its sender is reachable this way, so
+                    // remember it. Existing routes win: this only fills in what we do not know.
+                    LearnRouteBack(jsonRequestMessage.NetworkPath.Source, WebSocketConnection);
+
+                    #endregion
+
 
 
                     #region OnJSONMessageRequestReceived
@@ -816,6 +869,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
+
+                    #region Learn the way back to whoever sent this
+
+                    // The response to this request will be addressed to the node that sent it. If we
+                    // do not know how to reach that node, the response is dropped as "UnknownClient"
+                    // and the sender waits out its whole request timeout for an answer that was
+                    // produced, accepted and then thrown away.
+                    //
+                    // That happens whenever a connection is registered under a well-known alias
+                    // rather than under the identification its far end actually puts into the
+                    // network path - a local controller dialling NetworkingNode_Id.CSMS, for
+                    // instance, while the CSMS signs its requests as "csms01".
+                    //
+                    // An incoming request is proof that its sender is reachable this way, so
+                    // remember it. Existing routes win: this only fills in what we do not know.
+                    LearnRouteBack(binaryRequestMessage.NetworkPath.Source, WebSocketConnection);
+
+                    #endregion
 
                     #region OnBinaryRequestMessageReceived
 
