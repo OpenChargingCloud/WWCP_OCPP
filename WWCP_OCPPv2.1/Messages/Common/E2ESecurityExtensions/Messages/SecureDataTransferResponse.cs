@@ -298,6 +298,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Byte[] Decrypt(Byte[] Key)
         {
 
+            if (Ciphertext is null)
+                throw new InvalidOperationException(
+                          "There is no ciphertext to decrypt! A SecureDataTransfer response can legitimately carry none, e.g. when it timed out or was rejected, so check Ciphertext before calling Decrypt(...)."
+                      );
+
             var nonce = new Byte[16]; // 128-bit Nonce
             Array.Copy(BitConverter.GetBytes(Nonce   ?? 0), 0, nonce, 0, 8);
             Array.Copy(BitConverter.GetBytes(Counter ?? 0), 0, nonce, 8, 8);
