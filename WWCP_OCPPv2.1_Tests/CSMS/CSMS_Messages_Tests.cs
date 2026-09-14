@@ -2123,6 +2123,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         /// <summary>
         /// A test for triggering a message at a charging station.
         /// </summary>
+        /// <remarks>
+        /// THIS TEST IS EXPECTED TO FAIL on its last two counters until the gap below is
+        /// closed. The counts it asserts are the right ones; what they record is missing.
+        ///
+        /// Measured: the CSMS triggers a StatusNotification, the charging station accepts
+        /// the trigger and sends the StatusNotification, and the CSMS receives it - the
+        /// request counters on both sides reach 1. Then nothing comes back. Not a response,
+        /// not a request error, not after four seconds either. The charging station is left
+        /// waiting for an answer to a message that was delivered and accepted.
+        ///
+        /// The likely reason is visible in the frame the station sends:
+        ///
+        ///     ["StatusNotification",{"timestamp":"...","connectorStatus":"","evseId":1,...}]
+        ///
+        /// connectorStatus is empty, because TestChargingStationNode passes
+        /// evses[EVSE.Id].Status and the simulated EVSE never got a status to begin with.
+        /// So the CSMS is handed something it cannot parse - and answers it with silence
+        /// instead of a request error, which is the part that actually needs fixing: a
+        /// sender that gets no reply at all cannot tell a rejected message from a lost one.
+        /// </remarks>
         [Test]
         public async Task TriggerMessage_Test()
         {
@@ -2166,6 +2186,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                             );
 
 
+                // The charging station answers first and sends its follow-up message after that,
+                // on its own. Counting it means waiting for it rather than racing it.
+                await Task.Delay(500);
+
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
@@ -2177,13 +2201,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(1));
                     Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(1));
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(1));
 
                     Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
                     Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
@@ -2908,9 +2932,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                     Assert.That(getInstalledCertificateIdsRequests.Count,                    Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    // The counters run for the whole test, so these are running totals, not just the last exchange.
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(2));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(2));
 
                     Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
@@ -2920,8 +2945,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
                     Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(2));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(2));
                     Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
                 });
@@ -3068,9 +3093,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                     Assert.That(getInstalledCertificateIdsRequests.Count,                    Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    // The counters run for the whole test, so these are running totals, not just the last exchange.
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(2));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(2));
 
                     Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
@@ -3080,8 +3106,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
                     Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(2));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(2));
                     Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
                 });
@@ -3113,9 +3139,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                     Assert.That(deleteCertificateRequests.Count,                             Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    // The counters run for the whole test, so these are running totals, not just the last exchange.
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(3));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(3));
 
                     Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
@@ -3125,8 +3152,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
                     Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(3));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(3));
                     Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
                 });
@@ -3150,9 +3177,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                     Assert.That(getInstalledCertificateIdsRequests.Count,                    Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                    // The counters run for the whole test, so these are running totals, not just the last exchange.
+                    Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(4));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(4));
 
                     Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
@@ -3162,8 +3190,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
                     Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                    Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(4));
+                    Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(4));
                     Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
                 });
@@ -3865,6 +3893,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                           );
 
 
+                // The charging station answers first and sends its follow-up message after that,
+                // on its own. Counting it means waiting for it rather than racing it.
+                await Task.Delay(500);
+
                 Assert.Multiple(() => {
 
                     Assert.That(startResponse.Result.ResultCode,                             Is.EqualTo(ResultCode.OK));
@@ -3876,13 +3908,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(1));
                     Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(1));
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(1));
 
                     Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
                     Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
@@ -3907,20 +3939,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                         Assert.That(requestStopTransactionRequests.Count,                        Is.EqualTo(1));
 
-                        Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
+                        // The counters run for the whole test, so these are running totals, not just the last exchange.
+                        Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(2));
                         Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
-                        Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
+                        Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(2));
 
-                        Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                        Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                        Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(2));
+                        Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(2));
                         Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                        Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                        Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(2));
                         Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                        Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                        Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(2));
 
-                        Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
-                        Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
+                        Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(2));
+                        Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(2));
                         Assert.That(chargingStation1WebSocketJSONResponseErrorsReceived.Count,   Is.EqualTo(0));
 
                     });
@@ -4979,6 +5012,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 Assert.Multiple(() => {
 
+                    // The counters run for the whole test, so these are running totals, not just the last exchange.
                     Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(10));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo( 0));
                     Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(10));
@@ -5032,17 +5066,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 Assert.Multiple(() => {
 
+                    // The counters run for the whole test, so these are running totals, not just the last exchange.
                     Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(11));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo( 0));
                     Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(11));
 
-                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo( 0));
-                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo( 0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo( 1));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo( 1));
                     Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo( 0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo( 1));
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo( 0));
-                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo( 0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo( 1));
 
                     Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(11));
                     Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(11));
@@ -5299,17 +5334,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(notifyDisplayMessagesRequests[0].MessageInfos.Count(),       Is.EqualTo(2));
                     Assert.That(notifyDisplayMessagesRequests[1].MessageInfos.Count(),       Is.EqualTo(1));
 
+                    // The counters run for the whole test, so these are running totals, not just the last exchange.
                     Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(5));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(5));
 
-                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(2));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(2));
                     Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(2));
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(2));
 
                     Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(5));
                     Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(5));
@@ -5503,13 +5539,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(1));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(1));
                     Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(1));
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(1));
 
                     Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
                     Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
