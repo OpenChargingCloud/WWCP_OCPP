@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     Assert.That(nnDataTransferRequestsIN.      First().NetworkPath.Last,     Is.EqualTo(testCSMS1.Id));
                     Assert.That(nnDataTransferRequestsIN.      First().VendorId,             Is.EqualTo(vendorId));
                     Assert.That(nnDataTransferRequestsIN.      First().MessageId,            Is.EqualTo(messageId));
-                    Assert.That(nnDataTransferRequestsIN.      First().Data,                 Is.EqualTo(data));
+                    Assert.That(nnDataTransferRequestsIN.      First().Data?.ToString(),     Is.EqualTo(data));
 
                     Assert.That(nnDataTransferRequestsFWD.     Count,                        Is.EqualTo(1), "The DataTransfer did not reach the FORWARD of the networking node!");
 
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     //Assert.That(csIncomingDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(networkingNode1. Id));
                     Assert.That(csIncomingDataTransferRequests.First().VendorId,             Is.EqualTo(vendorId));
                     Assert.That(csIncomingDataTransferRequests.First().MessageId,            Is.EqualTo(messageId));
-                    Assert.That(csIncomingDataTransferRequests.First().Data,                 Is.EqualTo(data));
+                    Assert.That(csIncomingDataTransferRequests.First().Data?.ToString(),     Is.EqualTo(data));
 
                 });
 
