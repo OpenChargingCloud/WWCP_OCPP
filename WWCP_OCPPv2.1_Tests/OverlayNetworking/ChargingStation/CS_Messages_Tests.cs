@@ -114,20 +114,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.IN.     OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
-                //    nnBootNotificationRequestsIN. TryAdd(bootNotificationRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest, ct) => {
+                    nnBootNotificationRequestsIN.TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
 
                 localController1.OCPP.FORWARD.OnBootNotificationRequestFiltered += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision, ct) => {
                     nnBootNotificationRequestsFWD.TryAdd(new Tuple<BootNotificationRequest, RequestForwardingDecision<BootNotificationRequest, BootNotificationResponse>>(bootNotificationRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.OUT.    OnBootNotificationRequest += (timestamp, sender,             bootNotificationRequest) => {
-                //    nnBootNotificationRequestsOUT.TryAdd(bootNotificationRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnBootNotificationRequestSent += (timestamp, sender, connection, bootNotificationRequest, sentMessageResult, ct) => {
+                    nnBootNotificationRequestsOUT.TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
+                };
 
                 testCSMS1.      OCPP.IN.     OnBootNotificationRequestReceived += (timestamp, sender, connection, bootNotificationRequest, ct) => {
                     csmsBootNotificationRequests. TryAdd(bootNotificationRequest);
@@ -242,20 +242,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CS
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.IN.     OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
-                //    nnBinaryDataTransferRequestsIN. TryAdd(incomingBinaryDataTransferRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest, ct) => {
+                    nnBinaryDataTransferRequestsIN.TryAdd(incomingBinaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
 
                 localController1.OCPP.FORWARD.OnBinaryDataTransferRequestFiltered += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision, ct) => {
                     nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.OUT.    OnBinaryDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
-                //    nnBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnBinaryDataTransferRequestSent += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
+                    nnBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
 
                 testCSMS1.      OCPP.IN.     OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest, ct) => {
                     csmsIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);

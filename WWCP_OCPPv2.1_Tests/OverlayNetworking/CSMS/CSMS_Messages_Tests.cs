@@ -78,20 +78,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.IN.     OnResetRequest += (timestamp, sender, connection, resetRequest) => {
-                //    nnResetRequestsIN.TryAdd(resetRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
+                    nnResetRequestsIN.TryAdd(resetRequest);
+                    return Task.CompletedTask;
+                };
 
                 localController1.OCPP.FORWARD.OnResetRequestFiltered  += (timestamp, sender, connection, resetRequest, forwardingDecision, ct) => {
                     nnResetRequestsFWD.TryAdd(new Tuple<ResetRequest, RequestForwardingDecision<ResetRequest, ResetResponse>>(resetRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.OUT.    OnResetRequest += (timestamp, sender,             resetRequest) => {
-                //    nnResetRequestsOUT.TryAdd(resetRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnResetRequestSent += (timestamp, sender, connection, resetRequest, sentMessageResult, ct) => {
+                    nnResetRequestsOUT.TryAdd(resetRequest);
+                    return Task.CompletedTask;
+                };
 
                 chargingStation1.OCPP.IN.     OnResetRequestReceived += (timestamp, sender, connection, resetRequest, ct) => {
                     csResetRequests.TryAdd(resetRequest);
@@ -190,20 +190,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.IN.     OnIncomingDataTransferRequest += (timestamp, sender, connection, incomingDataTransferRequest) => {
-                //    nnDataTransferRequestsIN.      TryAdd(incomingDataTransferRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnDataTransferRequestReceived += (timestamp, sender, connection, incomingDataTransferRequest, ct) => {
+                    nnDataTransferRequestsIN.TryAdd(incomingDataTransferRequest);
+                    return Task.CompletedTask;
+                };
 
                 localController1.OCPP.FORWARD.OnDataTransferRequestFiltered += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision, ct) => {
                     nnDataTransferRequestsFWD.TryAdd(new Tuple<DataTransferRequest, RequestForwardingDecision<DataTransferRequest, DataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.OUT.    OnDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
-                //    nnDataTransferRequestsOUT.     TryAdd(binaryDataTransferRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnDataTransferRequestSent += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
+                    nnDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
 
                 chargingStation1.OCPP.IN.     OnDataTransferRequestReceived += (timestamp, sender, connection, incomingDataTransferRequest, ct) => {
                     csIncomingDataTransferRequests.TryAdd(incomingDataTransferRequest);
@@ -312,20 +312,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.IN.     OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, incomingBinaryDataTransferRequest) => {
-                //    nnBinaryDataTransferRequestsIN.      TryAdd(incomingBinaryDataTransferRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnBinaryDataTransferRequestReceived += (timestamp, sender, connection, incomingBinaryDataTransferRequest, ct) => {
+                    nnBinaryDataTransferRequestsIN.TryAdd(incomingBinaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
 
                 localController1.OCPP.FORWARD.OnBinaryDataTransferRequestFiltered += (timestamp, sender, connection, binaryDataTransferRequest, forwardingDecision, ct) => {
                     nnBinaryDataTransferRequestsFWD.TryAdd(new Tuple<BinaryDataTransferRequest, RequestForwardingDecision<BinaryDataTransferRequest, BinaryDataTransferResponse>>(binaryDataTransferRequest, forwardingDecision));
                     return Task.CompletedTask;
                 };
 
-                //networkingNode1.OUT.    OnBinaryDataTransferRequest         += (timestamp, sender,             binaryDataTransferRequest) => {
-                //    nnBinaryDataTransferRequestsOUT.     TryAdd(binaryDataTransferRequest);
-                //    return Task.CompletedTask;
-                //};
+                localController1.OCPP.FORWARD.OnBinaryDataTransferRequestSent += (timestamp, sender, connection, binaryDataTransferRequest, sentMessageResult, ct) => {
+                    nnBinaryDataTransferRequestsOUT.TryAdd(binaryDataTransferRequest);
+                    return Task.CompletedTask;
+                };
 
                 chargingStation1.OCPP.IN. OnBinaryDataTransferRequestReceived     += (timestamp, sender, connection, incomingBinaryDataTransferRequest, ct) => {
                     csIncomingBinaryDataTransferRequests.TryAdd(incomingBinaryDataTransferRequest);
