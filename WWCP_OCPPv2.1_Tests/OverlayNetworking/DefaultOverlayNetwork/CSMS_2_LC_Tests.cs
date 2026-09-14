@@ -250,8 +250,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     var nnJSONMessageRequest = nnJSONMessageRequestsReceived.First();
                     Assert.That(nnJSONMessageRequest.Destination.Next,                   Is.EqualTo(localController.Id));
                     Assert.That(nnJSONMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
-                    Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
-                    Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Source,                  Is.EqualTo(CSMS.Id));   // Its own identification - NetworkingNode_Id.CSMS is a routing label, not a sender!
+                    Assert.That(nnJSONMessageRequest.NetworkPath.Last,                    Is.EqualTo(CSMS.Id));   // Its own identification - NetworkingNode_Id.CSMS is a routing label, not a sender!
 
 
                     // Networking Node Request IN
@@ -259,8 +259,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     var nnDataTransferRequestReceived = nnDataTransferRequestsReceived.First();
                     Assert.That(nnDataTransferRequestReceived.DestinationId,          Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
-                    Assert.That(nnDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
-                    Assert.That(nnDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(CSMS.Id));   // Its own identification - NetworkingNode_Id.CSMS is a routing label, not a sender!
+                    Assert.That(nnDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(CSMS.Id));   // Its own identification - NetworkingNode_Id.CSMS is a routing label, not a sender!
                     Assert.That(nnDataTransferRequestReceived.VendorId,                   Is.EqualTo(vendorId));
                     Assert.That(nnDataTransferRequestReceived.MessageId,                  Is.EqualTo(messageId));
                     Assert.That(nnDataTransferRequestReceived.Data?.ToString(),           Is.EqualTo(data));
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Networking Node Response OUT
                     Assert.That(nnDataTransferResponsesSent.    Count,                    Is.EqualTo(1), "The DataTransfer response did not leave the networking node!");
                     var nnDataTransferResponseSent = nnDataTransferResponsesSent.First();
-                    Assert.That(nnDataTransferResponseSent.DestinationId,             Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnDataTransferResponseSent.DestinationId,             Is.EqualTo(CSMS.Id));   // The reply goes back to the CSMS itself, not to the routing label!
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Length,            Is.EqualTo(1));
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(localController.Id));
                     Assert.That(nnDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(localController.Id));
@@ -401,8 +401,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     var nnBinaryMessageRequest = nnBinaryMessageRequestsReceived.First();
                     Assert.That(nnBinaryMessageRequest.Destination.Next,                         Is.EqualTo(localController.Id));
                     Assert.That(nnBinaryMessageRequest.NetworkPath.Length,                  Is.EqualTo(1));
-                    Assert.That(nnBinaryMessageRequest.NetworkPath.Source,                  Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
-                    Assert.That(nnBinaryMessageRequest.NetworkPath.Last,                    Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnBinaryMessageRequest.NetworkPath.Source,                  Is.EqualTo(CSMS.Id));   // Its own identification - NetworkingNode_Id.CSMS is a routing label, not a sender!
+                    Assert.That(nnBinaryMessageRequest.NetworkPath.Last,                    Is.EqualTo(CSMS.Id));   // Its own identification - NetworkingNode_Id.CSMS is a routing label, not a sender!
 
 
                     // Networking Node Request IN
@@ -410,8 +410,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     var nnSecureDataTransferRequestReceived = nnSecureDataTransferRequestsReceived.First();
                     Assert.That(nnSecureDataTransferRequestReceived.DestinationId,          Is.EqualTo(localController.Id));
                     Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Length,         Is.EqualTo(1));
-                    Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
-                    Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Source,         Is.EqualTo(CSMS.Id));   // Its own identification - NetworkingNode_Id.CSMS is a routing label, not a sender!
+                    Assert.That(nnSecureDataTransferRequestReceived.NetworkPath.Last,           Is.EqualTo(CSMS.Id));   // Its own identification - NetworkingNode_Id.CSMS is a routing label, not a sender!
                 //    Assert.That(nnSecureDataTransferRequestReceived.VendorId,                   Is.EqualTo(vendorId));
                 //    Assert.That(nnSecureDataTransferRequestReceived.MessageId,                  Is.EqualTo(messageId));
                 //    Assert.That(nnSecureDataTransferRequestReceived.SecureData?.ToString(),           Is.EqualTo(data));
@@ -424,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Networking Node Response OUT
                     Assert.That(nnSecureDataTransferResponsesSent.    Count,                    Is.EqualTo(1), "The SecureDataTransfer response did not leave the networking node!");
                     var nnSecureDataTransferResponseSent = nnSecureDataTransferResponsesSent.First();
-                    Assert.That(nnSecureDataTransferResponseSent.DestinationId,             Is.EqualTo(NetworkingNode_Id.CSMS));  // Because of "standard" networking mode!
+                    Assert.That(nnSecureDataTransferResponseSent.DestinationId,             Is.EqualTo(CSMS.Id));   // The reply goes back to the CSMS itself, not to the routing label!
                     Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Length,            Is.EqualTo(1));
                     Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Source,            Is.EqualTo(localController.Id));
                     Assert.That(nnSecureDataTransferResponseSent.NetworkPath.Last,              Is.EqualTo(localController.Id));
