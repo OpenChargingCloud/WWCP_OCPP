@@ -279,6 +279,74 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     //                            );
 
+                    // The compact format carries the vendor and the message by their numeric
+                    // identifications rather than their text, so both have to be looked up.
+
+                    var vendorNumericId   = stream.ReadUInt32();
+
+                    if (!Vendor_Id.TryParse(vendorNumericId, out var vendorId))
+                    {
+                        ErrorResponse = $"The received vendor identification '{vendorNumericId}' is unknown!";
+                        return false;
+                    }
+
+                    // A numeric identification of 0 means the message carries none.
+                    Message_Id? messageId = null;
+                    var messageNumericId  = stream.ReadUInt32();
+
+                    if (messageNumericId != 0)
+                    {
+                        if (Message_Id.TryParse(messageNumericId, out var parsedMessageId))
+                            messageId = parsedMessageId;
+                        else
+                        {
+                            ErrorResponse = $"The received message identification '{messageNumericId}' is unknown!";
+                            return false;
+                        }
+                    }
+
+                    var dataLength        = stream.ReadUInt32();
+                    var data              = stream.ReadBytes(dataLength);
+
+                    var signatures        = new List<Signature>();
+                    var signaturesCount   = stream.ReadUInt16();
+
+                    for (var i = 0; i < signaturesCount; i++)
+                    {
+
+                        var signatureLength = stream.ReadUInt16();
+                        var signatureBytes  = stream.ReadBytes(signatureLength);
+
+                        if (!Signature.TryParse(signatureBytes, out var signature, out var signatureError))
+                        {
+                            ErrorResponse = $"The received signature at position {i + 1} is invalid: {signatureError}";
+                            return false;
+                        }
+
+                        signatures.Add(signature);
+
+                    }
+
+                    BinaryDataTransferRequest = new BinaryDataTransferRequest(
+
+                                                    Destination,
+                                                    vendorId,
+                                                    messageId,
+                                                    data,
+
+                                                    null,
+                                                    null,
+                                                    signatures,
+
+                                                    RequestId,
+                                                    RequestTimestamp,
+                                                    RequestTimeout,
+                                                    EventTrackingId,
+                                                    NetworkPath,
+                                                    format
+
+                                                );
+
                 }
 
                 #endregion
@@ -380,21 +448,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 case SerializationFormats.BinaryCompact: {
 
-                    binaryStream.Write(BitConverter.GetBytes(VendorId.  NumericId));
-                    binaryStream.Write(BitConverter.GetBytes(MessageId?.NumericId ?? 0));
-                    binaryStream.Write(BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0)));
+                    // Big endian throughout, like every other number in these messages: the
+                    // format header above goes through AsBytes(), which reverses on a little
+                    // endian machine, and the BinaryTextIds branch below uses the same
+                    // WriteUIntXX helpers. This branch used BitConverter.GetBytes directly and
+                    // so wrote its body the other way round - which nobody noticed, because
+                    // nothing read the format back until now.
+
+                    binaryStream.WriteUInt32(VendorId.  NumericId);
+                    binaryStream.WriteUInt32(MessageId?.NumericId ?? 0);
+                    binaryStream.WriteUInt32((UInt32) (Data?.LongLength ?? 0));
 
                     if (Data is not null)
-                        binaryStream.Write(Data,                                          0, (Int32) (Data?.LongLength ?? 0));
+                        binaryStream.Write(Data, 0, (Int32) Data.LongLength);
 
                     var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
-                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+                    binaryStream.WriteUInt16(signaturesCount);
 
                     if (IncludeSignatures) {
                         foreach (var signature in Signatures)
                         {
                             var binarySignature = signature.ToBinary();
-                            binaryStream.Write(BitConverter.GetBytes((UInt16) binarySignature.Length));
+                            binaryStream.WriteUInt16((UInt16) binarySignature.Length);
                             binaryStream.Write(binarySignature);
                         }
                     }
