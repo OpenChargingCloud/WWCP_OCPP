@@ -22,6 +22,7 @@ using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -128,7 +129,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
 
                 ClassicAssert.AreEqual(1,                                       bootNotificationRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().DestinationId);
+
+                // A BootNotification travels from the station to the CSMS, so the station is
+                // its source, not its destination. A standard-mode message carries no
+                // destination at all, and the receiving server fills in NetworkingNode_Id.CSMS.
+                ClassicAssert.AreEqual(NetworkingNode_Id.CSMS,                  bootNotificationRequests.First().DestinationId);
+                ClassicAssert.AreEqual(1,                                       bootNotificationRequests.First().NetworkPath.Length);
+                ClassicAssert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().NetworkPath.Source);
                 ClassicAssert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 ClassicAssert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
                 ClassicAssert.AreEqual(VerificationStatus.ValidSignature,       bootNotificationRequests.First().Signatures.First().Status);
