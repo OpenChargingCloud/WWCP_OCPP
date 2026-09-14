@@ -2192,9 +2192,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                 #region Require 'admin' user role / digital signature
 
+                // User roles are our own extension to OCPP, not part of the standard. A node
+                // that has none configured must not turn that into a lock: every request would
+                // be signed by nobody, carry no role, and be refused - which is what a standard
+                // conforming client sends, and SetVariables would be unusable for all of them.
+                // Only enforce the role once somebody has actually configured roles to enforce.
+
                 var userRoles = GetValidUserRolesFor(request);
 
-                if (userRoles.IsMissing(BatterySwapStationSettings.UserRoles.Admin))
+                if (UserRoles.Count != 0 &&
+                    userRoles.IsMissing(BatterySwapStationSettings.UserRoles.Admin))
                     return Task.FromResult(
                         new SetVariablesResponse(
                             Request:             request,
