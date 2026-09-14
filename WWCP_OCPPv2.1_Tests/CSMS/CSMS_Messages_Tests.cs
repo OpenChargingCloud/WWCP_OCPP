@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(UpdateFirmwareStatus.Accepted));
 
                     Assert.That(updateFirmwareRequests.Count,                                Is.EqualTo(1));
 
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericStatus.Accepted));
 
                     Assert.That(publishFirmwareRequests.Count,                               Is.EqualTo(1));
 
@@ -626,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericDeviceModelStatus.Accepted));
 
                     Assert.That(getBaseReportRequests.Count,                                 Is.EqualTo(1));
 
@@ -725,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericDeviceModelStatus.Accepted));
 
                     Assert.That(getReportRequests.Count,                                     Is.EqualTo(1));
 
@@ -808,7 +808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(LogStatus.Accepted));
 
                     Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
 
@@ -3505,7 +3505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ReservationStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(ClearCacheStatus.Accepted));
 
                     Assert.That(clearCacheRequests.Count,                                    Is.EqualTo(1));
 
@@ -4618,7 +4618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(GenericStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(PriorityChargingStatus.Accepted));
 
                     Assert.That(usePriorityChargingRequests.Count,                           Is.EqualTo(1));
 
@@ -4866,7 +4866,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(GenericStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(DisplayMessageStatus.Accepted));
 
                     Assert.That(setDisplayMessageRequests.Count,                             Is.EqualTo(1));
 
