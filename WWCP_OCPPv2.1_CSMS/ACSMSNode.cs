@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                              HTTPServiceName:        HTTPAPI_ServiceName        ?? "GraphDefined OCPP Test Central System Service",
                              APIRobotEMailAddress:   HTTPAPI_RobotEMailAddress  ?? EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:  HTTPAPI_RobotGPGPassphrase ?? "test123",
-                             SMTPClient:             SMTPSubmissionClient       ?? new NullMailer()
+                             SMTPSubmissionClient:   SMTPSubmissionClient       ?? new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,

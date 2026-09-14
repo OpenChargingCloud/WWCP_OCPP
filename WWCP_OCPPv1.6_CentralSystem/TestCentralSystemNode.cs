@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                               HTTPServerName:         "GraphDefined OCPP v1.6 Test Central System",
                                               HTTPServiceName:        "GraphDefined OCPP v1.6 Test Central System Service",
                                               APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                              SMTPClient:             new NullMailer()
+                                              SMTPSubmissionClient:   new NullMailer()
                                           );
 
             //this.TestAPI.HTTPServer.AddAuth(request => {

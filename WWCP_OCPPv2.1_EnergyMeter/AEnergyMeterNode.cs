@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                              HTTPServiceName:         "GraphDefined OCPP Test Energy Meter Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Energy Meter Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer()
+                             SMTPSubmissionClient:    new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,

@@ -2363,12 +2363,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer (Destination, AllowedEnergyTransferModes, ...)
+        #region NotifyAllowedEnergyTransfer (Destination, TransactionId, AllowedEnergyTransferModes, ...)
 
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
         /// <param name="Destination">The networking node identification.</param>
+        /// <param name="TransactionId">The transaction for which the allowed energy transfer modes apply.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2381,8 +2382,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.NotifyAllowedEnergyTransferResponse>
 
-            NotifyAllowedEnergyTransfer(this ICommissioningServiceNode                   CSMS,
+            NotifyAllowedEnergyTransfer(this ICommissioningServiceNode   CSMS,
                                         SourceRouting                    Destination,
+                                        Transaction_Id                   TransactionId,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
                                         IEnumerable<KeyPair>?            SignKeys              = null,
@@ -2402,6 +2404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                 => CSMS.OCPP.OUT.NotifyAllowedEnergyTransfer(
                        new NotifyAllowedEnergyTransferRequest(
                            Destination,
+                           TransactionId,
                            AllowedEnergyTransferModes,
 
                            SignKeys,

@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                              HTTPServiceName:         "GraphDefined OCPP Test Gateway Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Gateway Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer()
+                             SMTPSubmissionClient:    new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,

@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
                              HTTPServiceName:         "GraphDefined OCPP Test Local Controller Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test Local Controller Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer()
+                             SMTPSubmissionClient:    new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,
