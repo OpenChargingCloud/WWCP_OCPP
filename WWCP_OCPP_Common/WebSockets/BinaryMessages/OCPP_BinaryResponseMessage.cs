@@ -166,19 +166,23 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                 }
 
-                if (ImplicitSourceNodeId.HasValue &&
+                // Only when the sender recorded nothing at all. It is tempting to also append
+                // the connection's identification when it differs from the last hop, and the
+                // binary parsers used to - but that identification is the alias the receiver
+                // registered the far end under, not the name the sender goes by. Measured over
+                // one hop from a CSMS to a local controller:
+                //
+                //     on the wire   [ OCPPTest01 ]
+                //     parsed        [ OCPPTest01, CSMS ]
+                //
+                // One hop counted twice, the second entry naming the same node under a second
+                // name. The JSON parsers do not do this, which is why the same message arrived
+                // with a different path depending on how it was encoded.
+                if (networkPath.Count == 0 &&
+                    ImplicitSourceNodeId.HasValue &&
                     ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero)
                 {
-
-                    if (networkPath.Count > 0 &&
-                        networkPath.Last() != ImplicitSourceNodeId)
-                    {
-                        networkPath.Add(ImplicitSourceNodeId.Value);
-                    }
-
-                    if (networkPath.Count == 0)
-                        networkPath.Add(ImplicitSourceNodeId.Value);
-
+                    networkPath.Add(ImplicitSourceNodeId.Value);
                 }
 
 
