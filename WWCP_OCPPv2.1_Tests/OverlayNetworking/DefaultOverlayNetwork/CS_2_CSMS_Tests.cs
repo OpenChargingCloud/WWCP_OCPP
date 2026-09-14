@@ -101,7 +101,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 //OnBootNotificationRequest;
 
-                CSMS.           OCPP.FORWARD.OnBootNotificationRequestFiltered  += (timestamp, sender, connection, bootNotificationRequest, forwardingDecision, ct) => {
+                // IN, not FORWARD: NetworkingNode_Id.CSMS is one of this node's anycast
+                // identifications, so a request addressed to it is for us and never reaches
+                // the forwarding processor.
+                CSMS.           OCPP.IN.     OnBootNotificationRequestReceived  += (timestamp, sender, connection, bootNotificationRequest, ct) => {
                     csmsBootNotificationRequests.       TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };
@@ -147,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Networking Node JSON Request OUT
                     Assert.That(nnJSONRequestMessagesSent.           Count,                   Is.EqualTo(1), "The BootNotification JSON request did not leave the networking node!");
                     var nnJSONRequestMessage = nnJSONRequestMessagesSent.First();
-                    Assert.That(nnJSONRequestMessage.Item1.Destination,                 Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONRequestMessage.Item1.Destination.Next,                 Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Length,                Is.EqualTo(2));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Source,                Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Last,                  Is.EqualTo(localController.Id));
@@ -262,7 +265,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.FORWARD.OnDataTransferRequestFiltered  += (timestamp, sender, connection, dataTransferRequest, forwardingDecision, ct) => {
+                // IN, not FORWARD - see the BootNotification test above.
+                CSMS.           OCPP.IN.     OnDataTransferRequestReceived  += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     csmsDataTransferRequests.       TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -320,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Networking Node JSON Request OUT
                     Assert.That(nnJSONRequestMessagesSent.           Count,               Is.EqualTo(1), "The DataTransfer JSON request did not leave the networking node!");
                     var nnJSONRequestMessage = nnJSONRequestMessagesSent.First();
-                    Assert.That(nnJSONRequestMessage.Item1.Destination,                 Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(nnJSONRequestMessage.Item1.Destination.Next,                 Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Length,            Is.EqualTo(2));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Source,            Is.EqualTo(chargingStation.Id));
                     Assert.That(nnJSONRequestMessage.Item1.NetworkPath.Last,              Is.EqualTo(localController.Id));
@@ -420,7 +424,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     return Task.CompletedTask;
                 };
 
-                CSMS.           OCPP.FORWARD.OnDataTransferRequestFiltered  += (timestamp, sender, connection, dataTransferRequest, forwardingDecision, ct) => {
+                // IN, not FORWARD - see the BootNotification test above.
+                CSMS.           OCPP.IN.     OnDataTransferRequestReceived  += (timestamp, sender, connection, dataTransferRequest, ct) => {
                     csmsDataTransferRequests.       TryAdd(dataTransferRequest);
                     return Task.CompletedTask;
                 };
