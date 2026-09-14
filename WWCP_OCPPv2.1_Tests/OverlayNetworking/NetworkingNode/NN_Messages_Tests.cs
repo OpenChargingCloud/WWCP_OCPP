@@ -426,14 +426,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                         Assert.That(routes.Values.First().Priority,                      Is.EqualTo(23));
 
                         Assert.That(routes.Values.First().Uplink,                        Is.Not.Null);
-                        Assert.That(routes.Values.First().Uplink?.Capacity,              Is.EqualTo(5000));
-                        Assert.That(routes.Values.First().Uplink?.Latency,               Is.EqualTo(TimeSpan.FromMilliseconds(10)));
-                        Assert.That(routes.Values.First().Uplink?.PacketLoss?.Mean,      Is.EqualTo(0.05));
+                        Assert.That(routes.Values.First().Uplink?.Distance,              Is.EqualTo(2));
+                        Assert.That(routes.Values.First().Uplink?.Capacity?.Mean,              Is.EqualTo(BitPerSecond.FromBPS(5000)));
+                        Assert.That(routes.Values.First().Uplink?.Latency?.Mean,               Is.EqualTo(TimeSpan.FromMilliseconds(40)));
+                        Assert.That(routes.Values.First().Uplink?.PacketLoss?.Mean.Value,      Is.EqualTo(0.05));
 
                         Assert.That(routes.Values.First().Downlink,                      Is.Not.Null);
-                        Assert.That(routes.Values.First().Downlink?.Capacity,            Is.EqualTo(15000));
-                        Assert.That(routes.Values.First().Downlink?.Latency,             Is.EqualTo(TimeSpan.FromMilliseconds(23)));
-                        Assert.That(routes.Values.First().Downlink?.PacketLoss?.Mean,    Is.EqualTo(0.42));
+                        Assert.That(routes.Values.First().Downlink?.Distance,            Is.EqualTo(3));
+                        Assert.That(routes.Values.First().Downlink?.Capacity?.Mean,            Is.EqualTo(BitPerSecond.FromBPS(15000)));
+                        Assert.That(routes.Values.First().Downlink?.Latency?.Mean,             Is.EqualTo(TimeSpan.FromMilliseconds(20)));
+                        Assert.That(routes.Values.First().Downlink?.PacketLoss?.Mean.Value,    Is.EqualTo(0.52));
 
                     }
 
@@ -549,14 +551,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                         Assert.That(routes.Values.First().Priority,                            Is.EqualTo(23));
 
                         Assert.That(routes.Values.First().Uplink,                              Is.Not.Null);
-                        Assert.That(routes.Values.First().Uplink?.Capacity,                    Is.EqualTo(5000));
-                        Assert.That(routes.Values.First().Uplink?.Latency,                     Is.EqualTo(TimeSpan.FromMilliseconds(10)));
-                        Assert.That(routes.Values.First().Uplink?.PacketLoss?.Mean,            Is.EqualTo(0.05));
+                        Assert.That(routes.Values.First().Uplink?.Distance,                    Is.EqualTo(2));
+                        Assert.That(routes.Values.First().Uplink?.Capacity?.Mean,                    Is.EqualTo(BitPerSecond.FromBPS(5000)));
+                        Assert.That(routes.Values.First().Uplink?.Latency?.Mean,                     Is.EqualTo(TimeSpan.FromMilliseconds(40)));
+                        Assert.That(routes.Values.First().Uplink?.PacketLoss?.Mean.Value,            Is.EqualTo(0.05));
 
                         Assert.That(routes.Values.First().Downlink,                            Is.Not.Null);
-                        Assert.That(routes.Values.First().Downlink?.Capacity,                  Is.EqualTo(15000));
-                        Assert.That(routes.Values.First().Downlink?.Latency,                   Is.EqualTo(TimeSpan.FromMilliseconds(23)));
-                        Assert.That(routes.Values.First().Downlink?.PacketLoss?.Mean,          Is.EqualTo(0.42));
+                        Assert.That(routes.Values.First().Downlink?.Distance,                  Is.EqualTo(3));
+                        Assert.That(routes.Values.First().Downlink?.Capacity?.Mean,                  Is.EqualTo(BitPerSecond.FromBPS(15000)));
+                        Assert.That(routes.Values.First().Downlink?.Latency?.Mean,                   Is.EqualTo(TimeSpan.FromMilliseconds(20)));
+                        Assert.That(routes.Values.First().Downlink?.PacketLoss?.Mean.Value,          Is.EqualTo(0.52));
 
                     }
 
