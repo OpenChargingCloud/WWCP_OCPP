@@ -119,15 +119,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                NumericId
                            );
 
-            textLookup.AddAndReturnValue(
+            textLookup.TryAdd(
                 TextId,
                 vendorId
             );
 
-            numericLookup.AddAndReturnValue(
-                NumericId,
-                vendorId
-            );
+            // A numeric identification of 0 means the vendor has none. It must not claim
+            // key 0 in the numeric lookup, or the second vendor parsed from text without
+            // one collides with the first - TryParse would throw instead of parsing.
+            // TryAdd for the rest, because a number already taken belongs to whoever
+            // registered it first, and TryParse must never throw either way.
+            if (NumericId != 0)
+                numericLookup.TryAdd(
+                    NumericId,
+                    vendorId
+                );
 
             return vendorId;
 
