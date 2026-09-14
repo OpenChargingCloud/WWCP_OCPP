@@ -358,10 +358,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
 
 
                 var reason    = BootReason.PowerUp;
-                var response  = await localController1.OCPP.OUT.NotifyNetworkTopology(
-                                    new NotifyNetworkTopologyMessage(
-                                        SourceRouting.CSMS,
-                                        new NetworkTopologyInformation(
+                // Through the extension method, not OCPP.OUT directly: it fills in
+                // NetworkPath.From(localController1.Id), and a send message that carries no
+                // network path is rejected by the receiver's parser and dropped.
+                var response  = await localController1.NotifyNetworkTopology(
+                                    Destination:                  SourceRouting.CSMS,
+                                    NetworkTopologyInformation:   new NetworkTopologyInformation(
                                             RoutingNode:   localController1.Id,
                                             Routes:        [
                                                                new NetworkRoutingInformation(
@@ -386,9 +388,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                                             Priority:      5,
                                             CustomData:    null
                                         )
-                                    )
                                 );
 
+                // A send message is fire and forget, so give it a moment to cross the wire.
+                await Task.Delay(500);
 
                 Assert.Multiple(() => {
 
@@ -510,6 +513,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.NN
                                                                   )
                                 );
 
+                // A send message is fire and forget, so give it a moment to cross the wire.
+                await Task.Delay(500);
 
                 Assert.Multiple(() => {
 

@@ -857,6 +857,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 }
 
+                // A frame that is none of the five kinds ends up here. Report every reason we
+                // have, and name the kind, so a dropped message does not look like a different
+                // one that failed - or like nothing at all.
+                else if (sendParsingError     is not null)
+                    DebugX.Log($"Failed to parse a JSON send message within {nameof(OCPPWebSocketAdapterIN)}: '{sendParsingError}'{Environment.NewLine}'{JSONMessage.ToString(Formatting.None)}'!");
+
                 else if (requestParsingError  is not null)
                     DebugX.Log($"Failed to parse a JSON request message within {nameof(OCPPWebSocketAdapterIN)}: '{requestParsingError}'{Environment.NewLine}'{JSONMessage.ToString(Formatting.None)}'!");
 
@@ -1293,6 +1299,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
 
                 }
+
+                // A frame that is none of the five kinds ends up here. Report every reason we
+                // have, and name the kind, so a dropped message does not look like a different
+                // one that failed - or like nothing at all.
+                else if (sendParsingError     is not null)
+                    DebugX.Log($"Failed to parse a binary send message within {nameof(OCPPWebSocketAdapterIN)}: '{sendParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
 
                 else if (requestParsingError  is not null)
                     DebugX.Log($"Failed to parse a binary request message within {nameof(OCPPWebSocketAdapterIN)}: '{requestParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
