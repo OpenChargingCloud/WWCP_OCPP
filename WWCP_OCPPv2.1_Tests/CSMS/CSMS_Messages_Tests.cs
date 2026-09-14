@@ -2123,26 +2123,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         /// <summary>
         /// A test for triggering a message at a charging station.
         /// </summary>
-        /// <remarks>
-        /// THIS TEST IS EXPECTED TO FAIL on its last two counters until the gap below is
-        /// closed. The counts it asserts are the right ones; what they record is missing.
-        ///
-        /// Measured: the CSMS triggers a StatusNotification, the charging station accepts
-        /// the trigger and sends the StatusNotification, and the CSMS receives it - the
-        /// request counters on both sides reach 1. Then nothing comes back. Not a response,
-        /// not a request error, not after four seconds either. The charging station is left
-        /// waiting for an answer to a message that was delivered and accepted.
-        ///
-        /// The likely reason is visible in the frame the station sends:
-        ///
-        ///     ["StatusNotification",{"timestamp":"...","connectorStatus":"","evseId":1,...}]
-        ///
-        /// connectorStatus is empty, because TestChargingStationNode passes
-        /// evses[EVSE.Id].Status and the simulated EVSE never got a status to begin with.
-        /// So the CSMS is handed something it cannot parse - and answers it with silence
-        /// instead of a request error, which is the part that actually needs fixing: a
-        /// sender that gets no reply at all cannot tell a rejected message from a lost one.
-        /// </remarks>
         [Test]
         public async Task TriggerMessage_Test()
         {
@@ -2186,8 +2166,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                             );
 
 
-                // The charging station answers first and sends its follow-up message after that,
-                // on its own. Counting it means waiting for it rather than racing it.
+                // The charging station answers the trigger first and sends the triggered
+                // StatusNotification after that, on its own. Counting it means waiting for it
+                // rather than racing it.
                 await Task.Delay(500);
 
                 Assert.Multiple(() => {

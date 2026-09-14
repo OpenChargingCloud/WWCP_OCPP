@@ -107,7 +107,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         public Reservation_Id?    ReservationId            { get; set; }
 
-        public ConnectorStatus    Status                   { get; set; }
+        /// <summary>
+        /// The connector status. Available until something says otherwise - an EVSE with
+        /// no status at all serializes as an empty connectorStatus, which no receiver can
+        /// parse, so a triggered StatusNotification would be malformed before it is sent.
+        /// </summary>
+        public ConnectorStatus    Status                   { get; set; } = ConnectorStatus.Available;
 
         public Boolean            IsReserved               { get; set; }
 

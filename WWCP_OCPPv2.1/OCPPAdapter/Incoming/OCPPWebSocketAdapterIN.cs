@@ -285,6 +285,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (private) AddressToSender (RequestError, RequestNetworkPath)
+
+        /// <summary>
+        /// Return the given request error addressed at the node whose request caused it.
+        /// </summary>
+        /// <remarks>
+        /// A request error is built where the parsing failed. That place knows the request
+        /// identification and the action, but not who sent them, so every factory on
+        /// OCPP_JSONRequestErrorMessage fills in SourceRouting.Zero - and a message addressed
+        /// to nobody is dropped as "UnknownClient". The sender then waits out its whole
+        /// request timeout for an answer that was written and thrown away, and cannot tell a
+        /// rejected message from a lost one.
+        ///
+        /// The successful path two lines further up already does this: it answers with
+        /// SourceRouting.To(NetworkPath.Source). This gives the error path the same address.
+        /// </remarks>
+        /// <param name="RequestError">The request error to address.</param>
+        /// <param name="RequestNetworkPath">The network path of the request that caused it.</param>
+        private OCPP_JSONRequestErrorMessage AddressToSender(OCPP_JSONRequestErrorMessage  RequestError,
+                                                             NetworkPath                   RequestNetworkPath)
+        {
+
+            // Whoever built it knew where it should go: leave it alone.
+            if (RequestError.Destination.Next != NetworkingNode_Id.Zero)
+                return RequestError;
+
+            // An empty network path leaves us no better idea than the factory had.
+            if (RequestNetworkPath.Source == NetworkingNode_Id.Zero)
+                return RequestError;
+
+            return RequestError.ChangeNetworking(
+                       SourceRouting.To(RequestNetworkPath.Source),
+                       NetworkPath.From(parentNetworkingNode.Id)
+                   );
+
+        }
+
+        /// <summary>
+        /// Return the given binary request error addressed at the node whose request caused it.
+        /// </summary>
+        /// <param name="RequestError">The request error to address.</param>
+        /// <param name="RequestNetworkPath">The network path of the request that caused it.</param>
+        private OCPP_BinaryRequestErrorMessage AddressToSender(OCPP_BinaryRequestErrorMessage  RequestError,
+                                                               NetworkPath                     RequestNetworkPath)
+        {
+
+            if (RequestError.Destination.Next != NetworkingNode_Id.Zero)
+                return RequestError;
+
+            if (RequestNetworkPath.Source == NetworkingNode_Id.Zero)
+                return RequestError;
+
+            return RequestError.ChangeNetworking(
+                       SourceRouting.To(RequestNetworkPath.Source),
+                       NetworkPath.From(parentNetworkingNode.Id)
+                   );
+
+        }
+
+        #endregion
+
         #region ProcessJSONMessage   (MessageTimestamp, WebSocketConnection, JSONMessage,   EventTrackingId, CancellationToken)
 
         /// <summary>
@@ -431,7 +492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 if (ocppResponse.JSONRequestErrorMessage   is not null)
                                 {
 
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (ocppResponse.JSONRequestErrorMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (AddressToSender(ocppResponse.JSONRequestErrorMessage, jsonRequestMessage.NetworkPath));
 
                                     if (sentMessageResult.Result != SentMessageResults.Success)
                                     {
@@ -461,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
                                 {
 
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, jsonRequestMessage.NetworkPath));
 
                                     if (sentMessageResult.Result != SentMessageResults.Success)
                                     {
@@ -749,7 +810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.JSONRequestErrorMessage is not null)
-                                    sentMessageResult  = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(ocppResponse.JSONRequestErrorMessage);
+                                    sentMessageResult  = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(AddressToSender(ocppResponse.JSONRequestErrorMessage, jsonSendMessage.NetworkPath));
 
 
                                 // Notify about the result of the sent message
@@ -938,13 +999,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.JSONRequestErrorMessage   is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (ocppResponse.JSONRequestErrorMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (AddressToSender(ocppResponse.JSONRequestErrorMessage, binaryRequestMessage.NetworkPath));
 
                                 if (ocppResponse.JSONResponseMessage       is not null)
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse      (ocppResponse.JSONResponseMessage);
 
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, binaryRequestMessage.NetworkPath));
 
                                 if (ocppResponse.BinaryResponseMessage     is not null)
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage);
@@ -1186,7 +1247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, binarySendMessage.NetworkPath));
 
 
                                 // Notify about the result of the sent message

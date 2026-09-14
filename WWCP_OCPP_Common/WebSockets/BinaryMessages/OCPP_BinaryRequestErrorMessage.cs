@@ -561,6 +561,31 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
+        #region ChangeNetworking(NewDestination = null, NewNetworkPath = null, NewNetworkingMode = null)
+
+        /// <summary>
+        /// Return a copy of this request error message, addressed differently.
+        /// </summary>
+        /// <param name="NewDestination">An optional new destination.</param>
+        /// <param name="NewNetworkPath">An optional new (source) network path.</param>
+        /// <param name="NewNetworkingMode">An optional new networking mode.</param>
+        public OCPP_BinaryRequestErrorMessage ChangeNetworking(SourceRouting?   NewDestination      = null,
+                                                               NetworkPath?     NewNetworkPath      = null,
+                                                               NetworkingMode?  NewNetworkingMode   = null)
+
+            => new (ResponseTimestamp,
+                    EventTrackingId,
+                    NewNetworkingMode ?? NetworkingMode,
+                    NewDestination    ?? Destination,
+                    NewNetworkPath    ?? NetworkPath,
+                    RequestId,
+                    ErrorCode,
+                    ErrorDescription,
+                    ErrorDetails,
+                    CancellationToken);
+
+        #endregion
+
         #region ToJSON()
 
         /// <summary>
