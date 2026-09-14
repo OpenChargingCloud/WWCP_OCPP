@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(UnpublishFirmwareStatus.Unpublished));
 
                     Assert.That(unpublishFirmwareRequests.Count,                             Is.EqualTo(1));
 
@@ -1643,7 +1643,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Rejected));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericDeviceModelStatus.Accepted));
 
                     Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
 
@@ -1719,7 +1719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(ResetStatus.Rejected));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericStatus.Accepted));
 
                     Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
 
@@ -2437,7 +2437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
 
                     Assert.That(response.Data?.Type,                                         Is.EqualTo(JTokenType.Array));
-                    Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),           Is.EqualTo(data["key"]?.Value<String>()));
+                    Assert.That(response.Data?[0]?.Value<String>(),                          Is.EqualTo(data[0]?.Value<String>()?.Reverse()));
 
                     Assert.That(dataTransferRequests.Count,                                  Is.EqualTo(1));
                     Assert.That(dataTransferRequests.First().VendorId,                       Is.EqualTo(vendorId));
@@ -3665,7 +3665,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var reservationId   = Reservation_Id.NewRandom;
                 var evseId          = EVSE_Id.       Parse(1);
-                var connectorType   = ConnectorType.sType2;
+                // Charging station 1 is built with a cType2 connector. Asking for one it does not
+                // have is a reservation the simulator rejects, and rightly so.
+                var connectorType   = ConnectorType.cType2;
 
                 var response        = await testCSMS1.ReserveNow(
                                                 Destination:     SourceRouting.To( chargingStation1.Id),
