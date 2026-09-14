@@ -523,10 +523,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                     Assert.That(response.HTTPStatusCode,                                                  Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
 
-                    if (lcOCPPWebSocketServer1 is not null)
-                        Assert.That(response.Server,                                                      Is.EqualTo($"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API"));
-                    else
-                        Assert.That(response.Server,                                                      Is.EqualTo($"GraphDefined OCPP {Version.String} WebSocket Server"));
+                    // chargingStation2 always connects to the CSMS above, never through the
+                    // local controller - so its handshake reports the CSMS server name
+                    // whether or not a local controller exists.
+                    Assert.That(response.Server,                                                      Is.EqualTo($"GraphDefined OCPP {Version.String} WebSocket Server"));
 
                     Assert.That(response.Connection,                                                      Is.EqualTo(ConnectionType.Upgrade));
                     Assert.That(response.Upgrade,                                                         Is.EqualTo("websocket"));
