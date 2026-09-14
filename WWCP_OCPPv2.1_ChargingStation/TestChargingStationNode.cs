@@ -1758,8 +1758,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 // DisplayMessageId
 
-                if (displayMessages.TryGetValue(request.DisplayMessageId, out var messageInfo) &&
-                    displayMessages.TryRemove(new KeyValuePair<DisplayMessage_Id, MessageInfo>(request.DisplayMessageId, messageInfo))) {
+                if (ClearDisplayMessage(request.DisplayMessageId)) {
 
                     response = new ClearDisplayMessageResponse(
                                    request,
@@ -1935,33 +1934,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             request,
                                             ct) => {
 
-                SetDisplayMessageResponse? response = null;
+                var status = SetDisplayMessage(request.Message, Timestamp.Now);
 
-                DebugX.Log($"Charging station '{Id}': Incoming SetDisplayMessage '{request.Message.Messages.First().Content}'!");
+                DebugX.Log($"Charging station '{Id}': Incoming SetDisplayMessage '{request.Message.Messages.First().Content}': {status}!");
 
-                // Message
-
-                if (displayMessages.TryAdd(request.Message.Id,
-                                           request.Message)) {
-
-                    response = new SetDisplayMessageResponse(
-                                   Request:      request,
-                                   Status:       DisplayMessageStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
-
-                }
-
-                else
-                    response = new SetDisplayMessageResponse(
-                                   Request:      request,
-                                   Status:       DisplayMessageStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
-
-                return Task.FromResult(response);
+                return Task.FromResult(
+                           new SetDisplayMessageResponse(
+                               Request:      request,
+                               Status:       status,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
 
             };
 

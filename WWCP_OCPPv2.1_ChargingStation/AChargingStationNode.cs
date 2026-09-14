@@ -988,6 +988,199 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
 
+        #region Display messages
+
+        /// <summary>
+        /// The messages a CSMS has asked this station to show, minus the ones
+        /// whose time has passed.
+        /// </summary>
+        /// <remarks>
+        /// A message may carry a start and an end, and one that has run out is
+        /// not a message any more. Noticed when somebody looks rather than by a
+        /// timer, for the same reason as the reservations below.
+        /// </remarks>
+        public IEnumerable<MessageInfo> DisplayMessages
+        {
+            get
+            {
+
+                ExpireDisplayMessages();
+
+                return displayMessages.Values;
+
+            }
+        }
+
+        /// <summary>
+        /// The formats this station can put in front of somebody.
+        /// </summary>
+        /// <remarks>
+        /// Text, and only text. A display driven by this software draws a line
+        /// of characters; it does not lay out HTML, follow a URI or render a
+        /// second QR code beside the one it already shows. Saying so is the
+        /// point of <c>NotSupportedMessageFormat</c> existing: a CSMS that is
+        /// told "accepted" and then sees nothing has no way to find out why.
+        /// </remarks>
+        public static readonly IReadOnlySet<MessageFormat> SupportedMessageFormats =
+            new HashSet<MessageFormat> {
+                MessageFormat.ASCII,
+                MessageFormat.UTF8
+            };
+
+        /// <summary>
+        /// The states a message may be tied to here.
+        /// </summary>
+        public static readonly IReadOnlySet<MessageState> SupportedMessageStates =
+            new HashSet<MessageState> {
+                MessageState.Charging,
+                MessageState.Faulted,
+                MessageState.Idle,
+                MessageState.Unavailable,
+                MessageState.Suspended,
+                MessageState.Discharging
+            };
+
+
+        /// <summary>
+        /// Take a message to show, or say why not.
+        /// </summary>
+        /// <remarks>
+        /// A message that arrives under an id this station already holds
+        /// replaces it. That is what a CSMS correcting or extending a message
+        /// does, and refusing it - which is what adding to a dictionary and
+        /// reporting failure amounted to - leaves the CSMS with no way to
+        /// change a message short of clearing it and hoping nothing reads the
+        /// screen in between.
+        /// </remarks>
+        public DisplayMessageStatus SetDisplayMessage(MessageInfo     Message,
+                                                      DateTimeOffset  Now)
+        {
+
+            ExpireDisplayMessages();
+
+            if (Message.Messages.Any(content => !SupportedMessageFormats.Contains(content.Format)))
+                return DisplayMessageStatus.NotSupportedMessageFormat;
+
+            if (Message.Priority != MessagePriority.AlwaysFront &&
+                Message.Priority != MessagePriority.InFront     &&
+                Message.Priority != MessagePriority.NormalCycle)
+            {
+                return DisplayMessageStatus.NotSupportedPriority;
+            }
+
+            if (Message.State.HasValue && !SupportedMessageStates.Contains(Message.State.Value))
+                return DisplayMessageStatus.NotSupportedState;
+
+            // A message for an outlet this station does not have is a message
+            // nobody can walk up to.
+            if (Message.Display?.EVSE is not null &&
+                !evses.ContainsKey(Message.Display.EVSE.Id))
+            {
+                return DisplayMessageStatus.Rejected;
+            }
+
+            if (Message.StartTimestamp.HasValue &&
+                Message.EndTimestamp.  HasValue &&
+                Message.EndTimestamp.Value <= Message.StartTimestamp.Value)
+            {
+                return DisplayMessageStatus.Rejected;
+            }
+
+            // Already over before it was asked for.
+            if (Message.EndTimestamp.HasValue && Message.EndTimestamp.Value <= Now)
+                return DisplayMessageStatus.Rejected;
+
+            displayMessages[Message.Id] = Message;
+
+            return DisplayMessageStatus.Accepted;
+
+        }
+
+        /// <summary>
+        /// Take a message off the screen again.
+        /// </summary>
+        public Boolean ClearDisplayMessage(DisplayMessage_Id DisplayMessageId)
+
+            => displayMessages.TryRemove(DisplayMessageId, out _);
+
+        /// <summary>
+        /// The messages to put in front of somebody standing at the given
+        /// outlet right now, the ones that matter most first.
+        /// </summary>
+        /// <remarks>
+        /// Three things decide whether a message belongs on the screen, and all
+        /// three are in the message rather than in the caller: when it applies,
+        /// where it applies, and what the thing it applies to is doing.
+        ///
+        /// A message with no state applies whatever is happening; one with a
+        /// state applies only then, which is what makes "unplug before you
+        /// leave" a message for somebody charging and not for somebody walking
+        /// past. A message with no EVSE belongs to the whole station; one with
+        /// an EVSE belongs beside that outlet and nowhere else.
+        ///
+        /// The order is the priority: AlwaysFront, then InFront, then the
+        /// normal cycle - and within a priority, by id, so that two messages of
+        /// equal standing do not swap places between one look and the next.
+        /// Whoever draws the screen decides what to do with the order; this
+        /// only says what it is.
+        /// </remarks>
+        /// <param name="State">What the thing being looked at is doing.</param>
+        /// <param name="EVSEId">Which outlet, or null for the station itself.</param>
+        /// <param name="Now">The moment to judge the time windows against.</param>
+        public IEnumerable<MessageInfo> DisplayMessagesFor(MessageState     State,
+                                                           EVSE_Id?         EVSEId,
+                                                           DateTimeOffset   Now)
+
+            => DisplayMessages.
+                   Where  (message => (!message.StartTimestamp.HasValue || message.StartTimestamp.Value <= Now) &&
+                                      (!message.State.         HasValue || message.State.         Value == State) &&
+                                      (message.Display?.EVSE is null
+                                           ? EVSEId is null
+                                           : EVSEId.HasValue && message.Display.EVSE.Id == EVSEId.Value)).
+                   OrderBy(message => message.Priority == MessagePriority.AlwaysFront ? 0
+                                    : message.Priority == MessagePriority.InFront     ? 1
+                                    : 2).
+                   ThenBy (message => message.Id.ToString(), StringComparer.Ordinal);
+
+        /// <summary>
+        /// Put a message back, as it was.
+        /// </summary>
+        /// <remarks>
+        /// For carrying messages across a rebuild of this node, which is what
+        /// happens when the charging station around it is reconfigured. Not the
+        /// same thing as <see cref="SetDisplayMessage"/> and deliberately not
+        /// checked the same way: this message was accepted once already, by
+        /// this station, and whoever sent it has been told so. Whether it still
+        /// makes sense after the change is for the caller to decide - that is
+        /// the only place that knows what the change was.
+        /// </remarks>
+        public void RestoreDisplayMessage(MessageInfo Message)
+        {
+
+            displayMessages[Message.Id] = Message;
+
+        }
+
+        /// <summary>
+        /// Let go of everything whose time has passed.
+        /// </summary>
+        private void ExpireDisplayMessages()
+        {
+
+            var now = Timestamp.Now;
+
+            foreach (var over in displayMessages.Values.
+                                     Where(message => message.EndTimestamp.HasValue &&
+                                                      message.EndTimestamp.Value <= now).
+                                     ToArray())
+            {
+                displayMessages.TryRemove(over.Id, out _);
+            }
+
+        }
+
+        #endregion
+
         #region Reservations
 
         /// <summary>
