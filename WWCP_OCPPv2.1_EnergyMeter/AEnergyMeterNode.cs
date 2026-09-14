@@ -205,17 +205,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                 #region HTTP API Security Settings
 
-                //this.HTTPExtAPI.HTTPServer.AddAuth(request => {
-
-                //    // Allow some URLs for anonymous access...
-                //    if (request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path))
-                //    {
-                //        return HTTPExtAPI.Anonymous;
-                //    }
-
-                //    return null;
-
-                //});
+                this.HTTPExtAPI.HTTPServer.AddPipeline(
+                    new AnonymousAccessPipeline(
+                        // Allow some URLs for anonymous access...
+                        request => request.Path.StartsWith(HTTPExtAPI.URLPathPrefix + this.WebAPI_Path)
+                    )
+                );
 
                 #endregion
 
