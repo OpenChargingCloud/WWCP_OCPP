@@ -59,7 +59,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var jsonOut2 = directoryListing.ToJSON(IncludeMetadata: true);
                 var textOut2 = directoryListing.ToTreeView();
 
-                ClassicAssert.AreEqual(jsonIn.ToString(Newtonsoft.Json.Formatting.None), jsonOut1.ToString(Newtonsoft.Json.Formatting.None));
+                // A listing has two output shapes on purpose, and neither is the input shape.
+                // The test used to compare the compact one against the input and could not
+                // have passed. Both are checked here instead.
+
+                // Without metadata: an array, files by name, a directory as a single property
+                // holding its own array.
+                ClassicAssert.AreEqual(
+                    @"[""file1"",""file2"",{""dir1"":[""file1_1"",""file1_2"",{""dir1_1"":[""file1_1_1"",""file1_1_2""]}]},""file3""]",
+                    jsonOut1.ToString(Newtonsoft.Json.Formatting.None)
+                );
+
+                // With metadata: the shape of the input, with each file described instead of
+                // null. The sizes are not asserted: AddFile hands every file a hard coded
+                // Size of 23, so they say nothing about the file.
+                var withMetadata = jsonOut2 as JObject;
+                ClassicAssert.IsNotNull(withMetadata);
+
+                CollectionAssert.AreEqual(
+                    new[] { "file1", "file2", "dir1", "file3" },
+                    withMetadata!.Properties().Select(property => property.Name).ToArray()
+                );
+
+                ClassicAssert.AreEqual("FILE",  withMetadata["file1"]?["type"]?.Value<String>());
+                ClassicAssert.IsNull  (         withMetadata["dir1" ]?["type"]);
+
+                CollectionAssert.AreEqual(
+                    new[] { "file1_1", "file1_2", "dir1_1" },
+                    (withMetadata["dir1"] as JObject)!.Properties().Select(property => property.Name).ToArray()
+                );
+
+                // The tree view draws the same tree, one line per entry, the last entry of each
+                // level closing it off.
+                CollectionAssert.AreEqual(
+                    new[] {
+                        "├── file1",
+                        "├── file2",
+                        "├── dir1",
+                        "│   ├── file1_1",
+                        "│   ├── file1_2",
+                        "│   └── dir1_1",
+                        "│       ├── file1_1_1",
+                        "│       └── file1_1_2",
+                        "└── file3"
+                    },
+                    textOut2.ToArray()
+                );
 
             }
 
