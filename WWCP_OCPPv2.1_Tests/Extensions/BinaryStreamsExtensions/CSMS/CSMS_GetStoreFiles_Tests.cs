@@ -93,8 +93,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.FileSHA512.ToHexString(),            Is.EqualTo(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString()));
 
                     Assert.That(getFileRequests.Count,                        Is.EqualTo(1), "The GetFileRequest did not reach the charging station!");
-                    Assert.That(getFileRequests.First().DestinationId,    Is.EqualTo(NetworkingNode_Id.Zero));
-                    Assert.That(getFileRequests.First().NetworkPath.Length,   Is.EqualTo(0));
+                    // A standard-mode message carries neither a destination nor a network path,
+                    // so the receiver fills both in from the connection it arrived on: its own
+                    // identification as the destination, and the identification it knows the far
+                    // end by as the one and only hop. A charging station registers its upstream
+                    // as NetworkingNode_Id.CSMS, so that is the hop recorded here - not nn01 or
+                    // OCPPTest01, whichever node actually sent it.
+                    Assert.That(getFileRequests.First().DestinationId,        Is.EqualTo(chargingStation1.Id));
+                    Assert.That(getFileRequests.First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(getFileRequests.First().NetworkPath.Source,   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(getFileRequests.First().NetworkPath.Last,     Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(getFileRequests.First().FileName,             Is.EqualTo(filename));
 
                 });
@@ -157,8 +165,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.FileName,                                     Is.EqualTo(filename));
 
                     Assert.That(sendFileRequests.Count,                                Is.EqualTo(1), "The SendFileRequest did not reach the charging station!");
-                    Assert.That(sendFileRequests.First().DestinationId,            Is.EqualTo(NetworkingNode_Id.Zero));
-                    Assert.That(sendFileRequests.First().NetworkPath.Length,           Is.EqualTo(0));
+                    // A standard-mode message carries neither a destination nor a network path,
+                    // so the receiver fills both in from the connection it arrived on: its own
+                    // identification as the destination, and the identification it knows the far
+                    // end by as the one and only hop. A charging station registers its upstream
+                    // as NetworkingNode_Id.CSMS, so that is the hop recorded here - not nn01 or
+                    // OCPPTest01, whichever node actually sent it.
+                    Assert.That(sendFileRequests.First().DestinationId,                Is.EqualTo(chargingStation1.Id));
+                    Assert.That(sendFileRequests.First().NetworkPath.Length,           Is.EqualTo(1));
+                    Assert.That(sendFileRequests.First().NetworkPath.Source,           Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(sendFileRequests.First().NetworkPath.Last,             Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(sendFileRequests.First().FileName,                     Is.EqualTo(filename));
                     Assert.That(sendFileRequests.First().FileContent.ToUTF8String(),   Is.EqualTo("Hello world!"));
                     Assert.That(sendFileRequests.First().FileContentType,              Is.EqualTo(ContentType.Text.Plain));
@@ -221,8 +237,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.FileName,                               Is.EqualTo(filename));
 
                     Assert.That(deleteFileRequests.Count,                        Is.EqualTo(1), "The SendFileRequest did not reach the charging station!");
-                    Assert.That(deleteFileRequests.First().DestinationId,        Is.EqualTo(NetworkingNode_Id.Zero));
-                    Assert.That(deleteFileRequests.First().NetworkPath.Length,   Is.EqualTo(0));
+                    // A standard-mode message carries neither a destination nor a network path,
+                    // so the receiver fills both in from the connection it arrived on: its own
+                    // identification as the destination, and the identification it knows the far
+                    // end by as the one and only hop. A charging station registers its upstream
+                    // as NetworkingNode_Id.CSMS, so that is the hop recorded here - not nn01 or
+                    // OCPPTest01, whichever node actually sent it.
+                    Assert.That(deleteFileRequests.First().DestinationId,        Is.EqualTo(chargingStation1.Id));
+                    Assert.That(deleteFileRequests.First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(deleteFileRequests.First().NetworkPath.Source,   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(deleteFileRequests.First().NetworkPath.Last,     Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(deleteFileRequests.First().FileName,             Is.EqualTo(filename));
 
                 });

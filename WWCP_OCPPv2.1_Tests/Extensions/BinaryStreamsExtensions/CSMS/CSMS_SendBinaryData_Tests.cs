@@ -91,8 +91,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                     Assert.That(response.Data?.ToUTF8String(),                           Is.EqualTo(data.Reverse().ToUTF8String()));
 
                     Assert.That(binaryDataTransferRequests.Count,                        Is.EqualTo(1), "The BinaryDataTransferRequest did not reach the charging station!");
-                    Assert.That(binaryDataTransferRequests.First().DestinationId,        Is.EqualTo(NetworkingNode_Id.Zero));
-                    Assert.That(binaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(0));
+                    // A standard-mode message carries neither a destination nor a network path,
+                    // so the receiver fills both in from the connection it arrived on: its own
+                    // identification as the destination, and the identification it knows the far
+                    // end by as the one and only hop. A charging station registers its upstream
+                    // as NetworkingNode_Id.CSMS, so that is the hop recorded here - not nn01 or
+                    // OCPPTest01, whichever node actually sent it.
+                    Assert.That(binaryDataTransferRequests.First().DestinationId,        Is.EqualTo(chargingStation1.Id));
+                    Assert.That(binaryDataTransferRequests.First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(binaryDataTransferRequests.First().NetworkPath.Source,   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(binaryDataTransferRequests.First().NetworkPath.Last,     Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(binaryDataTransferRequests.First().VendorId,             Is.EqualTo(vendorId));
                     Assert.That(binaryDataTransferRequests.First().MessageId,            Is.EqualTo(messageId));
                     Assert.That(binaryDataTransferRequests.First().Data,                 Is.EqualTo(data));

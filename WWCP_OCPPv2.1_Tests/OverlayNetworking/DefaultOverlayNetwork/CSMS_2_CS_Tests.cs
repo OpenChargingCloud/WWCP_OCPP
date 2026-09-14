@@ -153,8 +153,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Charging Station Request IN
                     Assert.That(csResetRequests.               Count,             Is.EqualTo(1), "The Reset request did not reach the charging station!");
                     var csResetRequest = csResetRequests.First();
-                    Assert.That(csResetRequest.DestinationId,                 Is.EqualTo(NetworkingNode_Id.Zero));   // Because of "standard" networking mode!
-                    Assert.That(csResetRequest.NetworkPath.Length,                Is.EqualTo(0));                        // Because of "standard" networking mode!
+                    // A standard-mode message carries neither a destination nor a network path,
+                    // so the receiver fills both in from the connection it arrived on: its own
+                    // identification as the destination, and the identification it knows the far
+                    // end by as the one and only hop. A charging station registers its upstream
+                    // as NetworkingNode_Id.CSMS, so that is the hop recorded here - not nn01 or
+                    // OCPPTest01, whichever node actually sent it.
+                    Assert.That(csResetRequest.DestinationId,                     Is.EqualTo(chargingStation.Id));
+                    Assert.That(csResetRequest.NetworkPath.Length,                Is.EqualTo(1));
+                    Assert.That(csResetRequest.NetworkPath.Source,                Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csResetRequest.NetworkPath.Last,                  Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csResetRequest.ResetType,                         Is.EqualTo(resetType));
 
 
@@ -302,8 +310,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     // Charging Station Request IN
                     Assert.That(csDataTransferRequests.               Count,             Is.EqualTo(1), "The DataTransfer request did not reach the charging station!");
                     var csDataTransferRequest = csDataTransferRequests.First();
-                    Assert.That(csDataTransferRequest.DestinationId,                 Is.EqualTo(NetworkingNode_Id.Zero));   // Because of "standard" networking mode!
-                    Assert.That(csDataTransferRequest.NetworkPath.Length,                Is.EqualTo(0));                        // Because of "standard" networking mode!
+                    // A standard-mode message carries neither a destination nor a network path,
+                    // so the receiver fills both in from the connection it arrived on: its own
+                    // identification as the destination, and the identification it knows the far
+                    // end by as the one and only hop. A charging station registers its upstream
+                    // as NetworkingNode_Id.CSMS, so that is the hop recorded here - not nn01 or
+                    // OCPPTest01, whichever node actually sent it.
+                    Assert.That(csDataTransferRequest.DestinationId,                     Is.EqualTo(chargingStation.Id));
+                    Assert.That(csDataTransferRequest.NetworkPath.Length,                Is.EqualTo(1));
+                    Assert.That(csDataTransferRequest.NetworkPath.Source,                Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csDataTransferRequest.NetworkPath.Last,                  Is.EqualTo(NetworkingNode_Id.CSMS));
                     Assert.That(csDataTransferRequest.VendorId,                          Is.EqualTo(vendorId));
                     Assert.That(csDataTransferRequest.MessageId,                         Is.EqualTo(messageId));
                     Assert.That(csDataTransferRequest.Data?.ToString(),                  Is.EqualTo(data));

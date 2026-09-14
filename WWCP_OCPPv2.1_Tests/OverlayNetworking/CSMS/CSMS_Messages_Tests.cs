@@ -136,9 +136,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.CSMS
                     Assert.That(nnResetRequestsOUT.First().NetworkPath.Last,     Is.EqualTo(testCSMS1.      Id));
 
                     Assert.That(csResetRequests.   Count,                        Is.EqualTo(1), "The ResetRequest did not reach the charging station!");
-                    // Because of 'standard' networking mode towards the charging station!
-                    Assert.That(csResetRequests.   First().DestinationId,        Is.EqualTo(NetworkingNode_Id.Zero));
-                    Assert.That(csResetRequests.   First().NetworkPath.Length,   Is.EqualTo(0));
+                    // A standard-mode message carries neither a destination nor a network path,
+                    // so the receiver fills both in from the connection it arrived on: its own
+                    // identification as the destination, and the identification it knows the far
+                    // end by as the one and only hop. A charging station registers its upstream
+                    // as NetworkingNode_Id.CSMS, so that is the hop recorded here - not nn01 or
+                    // OCPPTest01, whichever node actually sent it.
+                    Assert.That(csResetRequests.   First().DestinationId,        Is.EqualTo(chargingStation1.Id));
+                    Assert.That(csResetRequests.   First().NetworkPath.Length,   Is.EqualTo(1));
+                    Assert.That(csResetRequests.   First().NetworkPath.Source,   Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(csResetRequests.   First().NetworkPath.Last,     Is.EqualTo(NetworkingNode_Id.CSMS));
 
                 });
 
