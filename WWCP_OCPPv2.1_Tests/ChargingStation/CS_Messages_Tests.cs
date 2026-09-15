@@ -1595,7 +1595,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 };
 
 
-                var idToken   = IdToken.NewRandomRFID7();
+                // A token the CSMS knows. The test used to send IdToken.NewRandomRFID7() and
+                // expect Accepted, which the CSMS has no reason to give: an identifier it has
+                // never seen is Invalid, and it said so. The unknown case is covered by
+                // AnUnknownIdentifierIsInvalid below.
+                var idToken   = new IdToken(
+                                    Value:   "aabbccdd",
+                                    Type:    IdTokenType.ISO14443
+                                );
+
                 var response  = await chargingStation1.Authorize(
                                           IdToken:                       idToken,
                                           CertificateChain:                   null,
@@ -1635,6 +1643,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             else
                 Assert.Fail($"{nameof(Authorize_Test)} preconditions failed!");
+
+        }
+
+        #endregion
+
+        #region AnUnknownIdentifierIsInvalid()
+
+        /// <summary>
+        /// An identifier the CSMS has never seen is refused as Invalid.
+        /// </summary>
+        /// <remarks>
+        /// The status text is asserted as well, because it was wrong and nothing noticed:
+        /// AuthorizationStatus.Invalid was registered as "DiagnosticsLog", a value copied from
+        /// LogType that AuthorizationStatusEnumType does not have. A station refusing an
+        /// unknown card put that on the wire, where no conformant peer could read it.
+        /// </remarks>
+        [Test]
+        public async Task AnUnknownIdentifierIsInvalid()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCSMS1,         Is.Not.Null);
+                Assert.That(chargingStation1,  Is.Not.Null);
+            });
+
+            var response = await chargingStation1!.Authorize(
+                                     IdToken:                       IdToken.NewRandomRFID7(),
+                                     CertificateChain:              null,
+                                     ISO15118CertificateHashData:   null,
+                                     CustomData:                    null
+                                 );
+
+            Assert.Multiple(() => {
+
+                Assert.That(response.Result.ResultCode,           Is.EqualTo(ResultCode.OK));
+                Assert.That(response.IdTokenInfo.Status,          Is.EqualTo(AuthorizationStatus.Invalid),
+                            "An identifier the CSMS has never seen was not refused!");
+
+                Assert.That(response.IdTokenInfo.Status.ToString(), Is.EqualTo("Invalid"),
+                            "The refusal goes onto the wire under a name OCPP does not define!");
+
+            });
 
         }
 

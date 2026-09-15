@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Identifier is unknown. Not allowed for charging.
         /// </summary>
         public static AuthorizationStatus  Invalid               { get; }
-            = Register("DiagnosticsLog");
+            = Register("Invalid");
 
         /// <summary>
         /// NoCredit
