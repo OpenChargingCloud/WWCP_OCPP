@@ -22,6 +22,8 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.GermanCalibrationLaw;
+using cloud.charging.open.chargy.Formats.Alfen;
+using chargy = cloud.charging.open.chargy;
 
 #endregion
 
@@ -232,14 +234,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
         #region AP_Test3()
 
         /// <summary>
-        /// AP_Test3
+        /// The start and stop meter value of one Alfen charging session are read back.
         /// </summary>
+        /// <remarks>
+        /// This test used to hand both strings to FromBASE64() and throw. They are not
+        /// Base64: an Alfen record is "AP;" followed by semicolon separated fields, and the
+        /// fields inside it are Base32. There was nothing here that could read them -
+        /// WWCP_OCPP_Common carries a partial copy of Chargy whose only verifier is EMHCrypt01.
+        ///
+        /// ChargyCore.NET brings the Alfen format with it, so the record is parsed by the code
+        /// that knows the format instead of being decoded by hand.
+        /// </remarks>
         [Test]
-        public async Task AP_Test3()
+        public void AP_Test3()
         {
 
-            var signedMeterValueStart  = "AP;0;3;AOLSXBSVKBLDTBFT32PMBOGIIWLUPGTZA3X2JVMR;BIHEIWSHAAA2XCD3OYYDCNQAAAFACRC2I4ADGALYGMAAAABAUFEEOBJELKKGKAIAAEEAB7Y6ADLDVSIAAAAAAABQGQYTKNJVGUZDAQJXG44DAAAAAAAAAAEQAIAAAIAFAAAA====;5DVH22MH5JFXNIME7PSAFAFMWUIKSHVWWX53ZY25JPPBFJWB6PLWDFJ2Y3KNE5Q6ONBF5URUQP37Y===;".FromBASE64();
-            var signedMeterValueStop   = "AP;1;3;AOLSXBSVKBLDTBFT32PMBOGIIWLUPGTZA3X2JVMR;BIHEIWSHAAA2XCD3OYYDCNQAAAFACRC2I4ADGALYGMAAAAAQKZLEOBOZM6KGKAIAAEEAB7Y6ADHGFSIAAAAAAABQGQYTKNJVGUZDAQJXG44DAAAAAAAAAAEQAIAAAIIFAAAA====;Z37FRGZHEGRZB2YIXRCSKZTMP5WHPWRB3XBDT4PHJUHJN6IWBCEWZDMLM2G3LRVVUSKSIFQABYPIU===;".FromBASE64();
+            var signedMeterValueStart  = "AP;0;3;AOLSXBSVKBLDTBFT32PMBOGIIWLUPGTZA3X2JVMR;BIHEIWSHAAA2XCD3OYYDCNQAAAFACRC2I4ADGALYGMAAAABAUFEEOBJELKKGKAIAAEEAB7Y6ADLDVSIAAAAAAABQGQYTKNJVGUZDAQJXG44DAAAAAAAAAAEQAIAAAIAFAAAA====;5DVH22MH5JFXNIME7PSAFAFMWUIKSHVWWX53ZY25JPPBFJWB6PLWDFJ2Y3KNE5Q6ONBF5URUQP37Y===;";
+            var signedMeterValueStop   = "AP;1;3;AOLSXBSVKBLDTBFT32PMBOGIIWLUPGTZA3X2JVMR;BIHEIWSHAAA2XCD3OYYDCNQAAAFACRC2I4ADGALYGMAAAAAQKZLEOBOZM6KGKAIAAEEAB7Y6ADHGFSIAAAAAAABQGQYTKNJVGUZDAQJXG44DAAAAAAAAAAEQAIAAAIIFAAAA====;Z37FRGZHEGRZB2YIXRCSKZTMP5WHPWRB3XBDT4PHJUHJN6IWBCEWZDMLM2G3LRVVUSKSIFQABYPIU===;";
+
+            var alfen                  = new AlfenFormat(chargy.I18NDictionary.Default());
+
+            Assert.Multiple(() => {
+                Assert.That(alfen.CanParse(signedMeterValueStart),  Is.True, "The start value was not recognised as an Alfen record!");
+                Assert.That(alfen.CanParse(signedMeterValueStop),   Is.True, "The stop value was not recognised as an Alfen record!");
+            });
+
+            // Both values belong to one session, so they are read together.
+            var parsed = alfen.TryParse(
+                             [ signedMeterValueStart, signedMeterValueStop ],
+                             null
+                         );
+
+            Assert.That(parsed, Is.InstanceOf<chargy.ChargeTransparencyRecord>(),
+                        $"The two Alfen meter values were not read back: {parsed}");
 
         }
 
