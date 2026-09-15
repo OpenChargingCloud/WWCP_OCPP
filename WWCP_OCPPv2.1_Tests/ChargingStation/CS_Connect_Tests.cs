@@ -60,24 +60,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
 
         protected TestChargingStationNode?                chargingStation1;
-        protected TestChargingStationNode?                chargingStation2;
-        protected TestChargingStationNode?                chargingStation3;
 
         protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesReceived;
-        protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketJSONMessagesReceived;
-        protected ConcurrentList<LogJSONRequest>?         chargingStation3WebSocketJSONMessagesReceived;
 
         protected ConcurrentList<LogDataJSONResponse>?    chargingStation1WebSocketJSONMessageResponsesReceived;
-        protected ConcurrentList<LogDataJSONResponse>?    chargingStation2WebSocketJSONMessageResponsesReceived;
-        protected ConcurrentList<LogDataJSONResponse>?    chargingStation3WebSocketJSONMessageResponsesReceived;
 
         protected ConcurrentList<LogDataJSONResponse>?    chargingStation1WebSocketJSONMessageResponsesSent;
-        protected ConcurrentList<LogDataJSONResponse>?    chargingStation2WebSocketJSONMessageResponsesSent;
-        protected ConcurrentList<LogDataJSONResponse>?    chargingStation3WebSocketJSONMessageResponsesSent;
 
         protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesSent;
-        protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketJSONMessagesSent;
-        protected ConcurrentList<LogJSONRequest>?         chargingStation3WebSocketJSONMessagesSent;
 
         #endregion
 
@@ -87,8 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         [SetUp]
         public virtual void SetupEachTest()
         {
-
-
+            SetupCSMS();
         }
 
         #endregion
@@ -251,7 +240,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     // Sec-WebSocket-Version:   13
 
                     ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
-                    ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response1.Server);
+                    // Against the constant, not a copy of it: the name has moved once already
+                    // and this assertion was the last place still expecting the old one.
+                    ClassicAssert.AreEqual(NetworkingNode.AOCPPNetworkingNode.DefaultHTTPServiceName,           response1.Server);
                     ClassicAssert.AreEqual(ConnectionType.Upgrade, response1.Connection);
                     ClassicAssert.AreEqual("websocket",                                                          response1.Upgrade);
                     ClassicAssert.IsTrue  (response1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
@@ -290,11 +281,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         }
 
-        private Task TestBackendWebSockets01_OnNewTCPConnection()
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
         #region ShutdownEachTest()
@@ -310,8 +296,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             testWebSocketServer01    = null;
 
             chargingStation1         = null;
-            chargingStation2         = null;
-            chargingStation3         = null;
 
         }
 
@@ -330,19 +314,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             ClassicAssert.IsNotNull(testCSMS01);
             ClassicAssert.IsNotNull(testWebSocketServer01);
             ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
 
-            if (testCSMS01              is not null &&
+
+            // One station, because that is what this fixture is about: SetupCSMS brings up a
+            // CSMS, attaches a WebSocket server and connects a single charging station, and
+            // asserts the HTTP upgrade handshake along the way. Stations two and three were
+            // declared and torn down here but never built, so a guard on them skipped
+            // everything below without a word.
+            if (testCSMS01            is not null &&
                 testWebSocketServer01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargingStation1      is not null)
             {
 
                 ClassicAssert.AreEqual("GraphDefined OEM #1",  chargingStation1.VendorName);
-                ClassicAssert.AreEqual("GraphDefined OEM #2",  chargingStation2.VendorName);
-                ClassicAssert.AreEqual("GraphDefined OEM #3",  chargingStation3.VendorName);
 
             }
 
