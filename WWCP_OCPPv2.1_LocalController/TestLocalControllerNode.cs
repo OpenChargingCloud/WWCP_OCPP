@@ -164,6 +164,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
 
 
+            #region OnBootNotification
+
+            // A local controller normally forwards a BootNotification, and OCPP.FORWARD below
+            // does exactly that. But it can also be the CSMS for the stations behind it - a
+            // node that answers to NetworkingNode_Id.CSMS itself rather than passing it on -
+            // and then the request ends up here. Without a handler the adapter falls back to
+            // BootNotificationResponse.Failed, so a station booting against its local
+            // controller was told RegistrationStatus.Error and had no way to know why.
+            OCPP.IN.OnBootNotification += (timestamp,
+                                           sender,
+                                           connection,
+                                           request,
+                                           cancellationToken) => {
+
+                DebugX.Log($"'{Id}': Incoming BootNotification request: {request.ChargingStation.SerialNumber}, {request.Reason}");
+
+                // The station just told us how to reach it: over the connection this arrived on.
+                if (!Routing.LookupNetworkingNode(request.NetworkPath.Source, out _))
+                {
+                    Routing.AddOrUpdateStaticRouting(
+                        request.NetworkPath.Source,
+                        request.NetworkPath.Last
+                    );
+                }
+
+                return Task.FromResult(
+                           new BootNotificationResponse(
+                               Request:               request,
+                               NetworkPath:           NetworkPath.From(Id),
+                               Status:                RegistrationStatus.Accepted,
+                               CurrentTime:           Timestamp.Now,
+                               Interval:              TimeSpan.FromMinutes(5),
+                               SerializationFormat:   request.SerializationFormat
+                           )
+                       );
+
+            };
+
+            #endregion
+
+
             // Common
 
             #region BinaryDataStreamsExtensions
