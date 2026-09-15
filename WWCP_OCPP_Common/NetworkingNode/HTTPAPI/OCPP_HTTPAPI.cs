@@ -1057,20 +1057,20 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         private void RegisterURITemplates()
         {
 
-            //HTTPBaseAPI.HTTPServer.AddAuth(request => {
+            #region HTTP API Security Settings
 
-            //    if (request.Path.ToString() == "/systemInfo"       ||
-            //        request.Path.ToString() == "/webSocketClients" ||
-            //        request.Path.ToString() == "/webSocketServers" ||
-            //        request.Path.ToString() == "/ocppAdapter"      ||
-            //        request.Path.ToString() == "/connections")
-            //    {
-            //        return HTTPExtAPI.Anonymous;
-            //    }
+            HTTPBaseAPI.HTTPServer.AddPipeline(
+                new AnonymousAccessPipeline(
+                    // Allow some URLs for anonymous access...
+                    request => request.Path.ToString() == "/systemInfo"       ||
+                               request.Path.ToString() == "/webSocketClients" ||
+                               request.Path.ToString() == "/webSocketServers" ||
+                               request.Path.ToString() == "/ocppAdapter"      ||
+                               request.Path.ToString() == "/connections"
+                )
+            );
 
-            //    return null;
-
-            //});
+            #endregion
 
 
             #region / (HTTPRoot)

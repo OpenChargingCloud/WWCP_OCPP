@@ -10098,18 +10098,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         private void RegisterURITemplates()
         {
 
-            //HTTPBaseAPI.HTTPServer.AddAuth(request => {
+            #region HTTP API Security Settings
 
-            //    if (request.Path.ToString() == "/systemInfo" ||
-            //        request.Path.ToString() == "/servers"    ||
-            //        request.Path.ToString() == "/connections")
-            //    {
-            //        return HTTPExtAPI.Anonymous;
-            //    }
+            HTTPBaseAPI.HTTPServer.AddPipeline(
+                new AnonymousAccessPipeline(
+                    // Allow some URLs for anonymous access...
+                    request => request.Path.ToString() == "/systemInfo"  ||
+                               request.Path.ToString() == "/servers"     ||
+                               request.Path.ToString() == "/connections"
+                )
+            );
 
-            //    return null;
-
-            //});
+            #endregion
 
 
             #region / (HTTPRoot)

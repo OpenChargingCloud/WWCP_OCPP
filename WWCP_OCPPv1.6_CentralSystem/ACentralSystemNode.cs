@@ -1342,19 +1342,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
 
             //    #region HTTP API Security Settings
 
-            //    this.HTTPAPI.HTTPBaseAPI.HTTPServer.AddAuth(request => {
-
-            //        // Allow some URLs for anonymous access...
-            //        if (request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
-            //            request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
-            //            request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.WebAPI_Path))
-            //        {
-            //            return HTTPExtAPI.Anonymous;
-            //        }
-
-            //        return null;
-
-            //    });
+            //    this.HTTPAPI.HTTPBaseAPI.HTTPServer.AddPipeline(
+            //        new AnonymousAccessPipeline(
+            //            // Allow some URLs for anonymous access...
+            //            request => request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPUploadAPI_Path)   ||
+            //                       request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.HTTPDownloadAPI_Path) ||
+            //                       request.Path.StartsWith(this.HTTPAPI.URLPathPrefix + this.WebAPI_Path)
+            //        )
+            //    );
 
             //    #endregion
 

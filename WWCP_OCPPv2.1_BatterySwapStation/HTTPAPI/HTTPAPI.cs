@@ -239,16 +239,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         private void RegisterURITemplates()
         {
 
-            //HTTPBaseAPI.HTTPServer.AddAuth(request => {
+            #region HTTP API Security Settings
 
-            //    if (request.Path.ToString() == "/evses")
-            //    {
-            //        return HTTPExtAPI.Anonymous;
-            //    }
+            HTTPBaseAPI.HTTPServer.AddPipeline(
+                new AnonymousAccessPipeline(
+                    // Allow some URLs for anonymous access...
+                    request => request.Path.ToString() == "/evses"
+                )
+            );
 
-            //    return null;
-
-            //});
+            #endregion
 
 
             #region / (HTTPRoot)

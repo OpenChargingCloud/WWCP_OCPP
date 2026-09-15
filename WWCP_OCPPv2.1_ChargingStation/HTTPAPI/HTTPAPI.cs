@@ -234,16 +234,12 @@
 //        private void RegisterURITemplates()
 //        {
 
-//            HTTPBaseAPI.HTTPServer.AddAuth(request => {
-
-//                if (request.Path.ToString() == "/evses")
-//                {
-//                    return HTTPExtAPI.Anonymous;
-//                }
-
-//                return null;
-
-//            });
+//            HTTPBaseAPI.HTTPServer.AddPipeline(
+//                new AnonymousAccessPipeline(
+//                    // Allow some URLs for anonymous access...
+//                    request => request.Path.ToString() == "/evses"
+//                )
+//            );
 
 
 //            #region / (HTTPRoot)

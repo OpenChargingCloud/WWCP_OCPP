@@ -220,20 +220,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                               SMTPSubmissionClient:   new NullMailer()
                                           );
 
-            //this.TestAPI.HTTPServer.AddAuth(request => {
+            #region HTTP API Security Settings
 
-            //    #region Allow some URLs for anonymous access...
+            // Only when there is an API: TestAPI stays null when HTTPAPI_Disabled is set,
+            // which is how the tests build this node.
+            if (this.TestAPI is not null)
+                this.TestAPI.HTTPServer.AddPipeline(
+                    new AnonymousAccessPipeline(
+                        // Allow some URLs for anonymous access...
+                        request => request.Path.StartsWith(this.TestAPI.URLPathPrefix + "/webapi")
+                    )
+                );
 
-            //    if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
-            //    {
-            //        return HTTPExtAPI.Anonymous;
-            //    }
-
-            //    #endregion
-
-            //    return null;
-
-            //});
+            #endregion
 
 
             if (!HTTPUploadAPI_Disabled)
