@@ -1175,6 +1175,343 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         //    #endregion
 
+            #region OnReset
+
+            OCPP.IN.OnReset += (timestamp,
+                                sender,
+                                connection,
+                                request,
+                                cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming '{request.ResetType}' reset request accepted.");
+
+                return Task.FromResult(
+                           new ResetResponse(
+                               request,
+                               ResetStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnChangeAvailability
+
+            OCPP.IN.OnChangeAvailability += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming ChangeAvailability '{request.Availability}' request for connector '{request.ConnectorId}'.");
+
+                // Only a connector this charge point actually has.
+                var connector = Connectors.FirstOrDefault(connector => connector.Id == request.ConnectorId);
+
+                if (connector is null)
+                    return Task.FromResult(
+                               new ChangeAvailabilityResponse(
+                                   request,
+                                   AvailabilityStatus.Rejected
+                               )
+                           );
+
+                connector.Availability = request.Availability;
+
+                return Task.FromResult(
+                           new ChangeAvailabilityResponse(
+                               request,
+                               AvailabilityStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetConfiguration
+
+            OCPP.IN.OnGetConfiguration += (timestamp,
+                                           sender,
+                                           connection,
+                                           request,
+                                           cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming get configuration request.");
+
+                var configurationKeys  = new List<ConfigurationKey>();
+                var unknownKeys        = new List<String>();
+
+                // No keys asked for means all of them.
+                if (request.Keys.Any())
+                {
+                    foreach (var key in request.Keys)
+                    {
+
+                        if (Configuration.TryGetValue(key, out var configurationData))
+                            configurationKeys.Add(
+                                new ConfigurationKey(
+                                    key,
+                                    configurationData.AccessRights,
+                                    configurationData.Value
+                                )
+                            );
+
+                        else
+                            unknownKeys.Add(key);
+
+                    }
+                }
+
+                else
+                {
+                    foreach (var configuration in Configuration)
+                        configurationKeys.Add(
+                            new ConfigurationKey(
+                                configuration.Key,
+                                configuration.Value.AccessRights,
+                                configuration.Value.Value
+                            )
+                        );
+                }
+
+                return Task.FromResult(
+                           new GetConfigurationResponse(
+                               request,
+                               configurationKeys,
+                               unknownKeys
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnChangeConfiguration
+
+            OCPP.IN.OnChangeConfiguration += (timestamp,
+                                              sender,
+                                              connection,
+                                              request,
+                                              cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming change configuration for '{request.Key}' with value '{request.Value}'.");
+
+                if (Configuration.TryGetValue(request.Key, out var configurationData))
+                {
+
+                    // A read-only key keeps its value, whoever asks.
+                    if (configurationData.AccessRights == AccessRights.ReadOnly)
+                        return Task.FromResult(
+                                   new ChangeConfigurationResponse(
+                                       request,
+                                       ConfigurationStatus.Rejected
+                                   )
+                               );
+
+                    configurationData.Value = request.Value;
+
+                    return Task.FromResult(
+                               new ChangeConfigurationResponse(
+                                   request,
+                                   configurationData.RebootRequired
+                                       ? ConfigurationStatus.RebootRequired
+                                       : ConfigurationStatus.Accepted
+                               )
+                           );
+
+                }
+
+                // An unknown key is created, and is writable from then on.
+                Configuration.TryAdd(
+                    request.Key,
+                    new ConfigurationData(
+                        request.Value,
+                        AccessRights.ReadWrite,
+                        false
+                    )
+                );
+
+                return Task.FromResult(
+                           new ChangeConfigurationResponse(
+                               request,
+                               ConfigurationStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnTimeTravel
+
+            OCPP.IN.OnTimeTravel += (timestamp,
+                                         sender,
+                                         connection,
+                                         request,
+                                         cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming time travel request accepted.");
+
+                return Task.FromResult(
+                           new TimeTravelResponse(
+                               request,
+                               GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnAdjustTimeScale
+
+            OCPP.IN.OnAdjustTimeScale += (timestamp,
+                                              sender,
+                                              connection,
+                                              request,
+                                              cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming time scale adjustment request accepted.");
+
+                return Task.FromResult(
+                           new AdjustTimeScaleResponse(
+                               request,
+                               GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetErrorState
+
+            OCPP.IN.OnSetErrorState += (timestamp,
+                                            sender,
+                                            connection,
+                                            request,
+                                            cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming error state request accepted.");
+
+                return Task.FromResult(
+                           new SetErrorStateResponse(
+                               request,
+                               GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnAttachCable
+
+            OCPP.IN.OnAttachCable += (timestamp,
+                                          sender,
+                                          connection,
+                                          request,
+                                          cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming cable attachment request accepted.");
+
+                return Task.FromResult(
+                           new AttachCableResponse(
+                               request,
+                               GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetCPVoltage
+
+            OCPP.IN.OnSetCPVoltage += (timestamp,
+                                           sender,
+                                           connection,
+                                           request,
+                                           cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming control pilot voltage request accepted.");
+
+                return Task.FromResult(
+                           new SetCPVoltageResponse(
+                               request,
+                               GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetPWMValue
+
+            OCPP.IN.OnGetPWMValue += (timestamp,
+                                          sender,
+                                          connection,
+                                          request,
+                                          cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming PWM value request accepted.");
+
+                return Task.FromResult(
+                           new GetPWMValueResponse(
+                               request,
+                               GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSwipeRFIDCard
+
+            OCPP.IN.OnSwipeRFIDCard += (timestamp,
+                                            sender,
+                                            connection,
+                                            request,
+                                            cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming RFID card swipe request accepted.");
+
+                return Task.FromResult(
+                           new SwipeRFIDCardResponse(
+                               request,
+                               GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetExecutingEnvironment
+
+            OCPP.IN.OnGetExecutingEnvironment += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming executing environment request accepted.");
+
+                return Task.FromResult(
+                           new GetExecutingEnvironmentResponse(
+                               request,
+                               GenericStatus.Accepted
+                           )
+                       );
+
+            };
+
+            #endregion
+
             #region OnIncomingDataTransfer
 
             OCPP.IN.OnDataTransfer += async (LogTimestamp,
