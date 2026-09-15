@@ -134,8 +134,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,   Is.EqualTo(ResultCode. NetworkError));
-                    Assert.That(response.Status,              Is.EqualTo(ResetStatus.Unknown));
+                    // A charge box that is not connected is not reachable, and that is what
+                    // the send reports: UnknownClient, naming the node. The status stays
+                    // Rejected - the request never left the device, so nothing about the box
+                    // itself is known. This is what the v2.1 counterpart asserts too.
+                    Assert.That(response.Result.ResultCode,   Is.EqualTo(ResultCode.UnknownClient));
+                    Assert.That(response.Result.Description,  Is.EqualTo($"The given networking node '{chargePoint2.Id}' is unknown or unreachable!"));
+                    Assert.That(response.Status,              Is.EqualTo(ResetStatus.Rejected));
 
                     Assert.That(resetRequests.Count,          Is.EqualTo(0));
 
@@ -246,8 +251,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 Assert.Multiple(() => {
 
-                    Assert.That(response.Result.ResultCode,         Is.EqualTo(ResultCode.NetworkError));
-                    Assert.That(response.Status,                    Is.EqualTo(AvailabilityStatus.Unknown));
+                    // A charge box that is not connected is not reachable, and that is what
+                    // the send reports: UnknownClient, naming the node. The status stays
+                    // Rejected - the request never left the device, so nothing about the box
+                    // itself is known. This is what the v2.1 counterpart asserts too.
+                    Assert.That(response.Result.ResultCode,         Is.EqualTo(ResultCode.UnknownClient));
+                    Assert.That(response.Result.Description,        Is.EqualTo($"The given networking node '{chargePoint2.Id}' is unknown or unreachable!"));
+                    Assert.That(response.Status,                    Is.EqualTo(AvailabilityStatus.Rejected));
 
                     Assert.That(changeAvailabilityRequests.Count,   Is.EqualTo(0));
 

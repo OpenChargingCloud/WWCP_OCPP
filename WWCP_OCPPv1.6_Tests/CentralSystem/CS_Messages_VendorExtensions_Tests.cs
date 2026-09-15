@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                             Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                        Is.EqualTo(GenericStatus.Accepted));
+                    Assert.That(response.Status,                                                        Is.EqualTo(DataTransferStatus.Accepted));
                     Assert.That(response.Data,                                                          Is.Not.Null);
                     Assert.That(response.Data?.Type,                                                    Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                      Is.EqualTo(data["key"]?.Value<String>()));
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                            Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                                       Is.EqualTo(GenericStatus.Accepted));
+                    Assert.That(response.Status,                                                       Is.EqualTo(DataTransferStatus.Accepted));
                     Assert.That(response.Data,                                                         Is.Not.Null);
                     Assert.That(response.Data?.Type,                                                   Is.EqualTo(JTokenType.Object));
                     //Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),                     Is.EqualTo(data["key"]?.Value<String>()));
@@ -155,7 +155,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(notifyWebPaymentFailedRequest.MessageId?.TextId,                       Is.EqualTo("NotifyWebPaymentFailed"));
                     Assert.That(notifyWebPaymentFailedRequest.Data?.Type,                              Is.EqualTo(JTokenType.Object));
                     Assert.That(notifyWebPaymentFailedRequest.Data?["connectorId"]?.Value<UInt64>(),   Is.EqualTo(1));
-                    Assert.That(notifyWebPaymentFailedRequest.Data?["timeout"]?.    Value<UInt64>(),   Is.EqualTo(30));
+                    // NotifyWebPaymentFailed carries an error message, not a timeout; the
+                    // assertion was copied from the NotifyWebPaymentStarted test above.
+                    Assert.That(notifyWebPaymentFailedRequest.Data?["errorMessage"],                  Is.Not.Null);
 
                 });
 

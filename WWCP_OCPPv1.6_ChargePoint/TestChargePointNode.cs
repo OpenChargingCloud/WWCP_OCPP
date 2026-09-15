@@ -1654,6 +1654,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                            responseData
                                        );
                         }
+
+                        // The web payment notifications ride inside a DataTransfer rather than
+                        // having a message of their own, so they arrive here. Without this the
+                        // charge point refused its own vendor's messages.
+                        else if (request.VendorId == Vendor_Id.Parse("cloud.charging.open"))
+                        {
+                            response = new DataTransferResponse(
+                                           request,
+                                           DataTransferStatus.Accepted,
+                                           JSONObject.Create(
+                                               new JProperty("vendorId",   request.VendorId. ToString()),
+                                               new JProperty("messageId",  request.MessageId?.ToString() ?? "")
+                                           )
+                                       );
+                        }
+
                         else
                             response = new DataTransferResponse(
                                            request,

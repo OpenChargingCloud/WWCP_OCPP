@@ -1182,6 +1182,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             }
 
+            // A destination nobody knows how to reach is not an internal error. Saying so sends
+            // the caller looking for a bug in here, when what happened is that the node it asked
+            // for is not connected. OCPP v2.1 reports this as UnknownClient; this is the same.
+            else if (sentMessageResult.Result == SentMessageResults.UnknownClient)
+            {
+
+                return SendRequestState.FromJSONRequest(
+
+                       RequestTimestamp:         JSONRequestMessage.RequestTimestamp,
+                       Destination:              JSONRequestMessage.Destination,
+                       Timeout:                  JSONRequestMessage.RequestTimeout,
+                       JSONRequest:              JSONRequestMessage,
+                       SentMessageResult:        sentMessageResult,
+                       ResponseTimestamp:        Timestamp.Now,
+
+                       JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
+
+                                                     Timestamp.Now,
+                                                     JSONRequestMessage.EventTrackingId,
+                                                     NetworkingMode.Unknown,
+                                                     SourceRouting.To(JSONRequestMessage.NetworkPath.Source),
+                                                     NetworkPath.From(NetworkingNode.Id),
+                                                     JSONRequestMessage.RequestId,
+
+                                                     ErrorCode:          ResultCode.UnknownClient,
+                                                     ErrorDescription:   $"The given networking node '{JSONRequestMessage.Destination.Last()}' is unknown or unreachable!"
+
+                                                 )
+
+                   );
+
+            }
+
+
             // Just in case...
             return SendRequestState.FromJSONRequest(
 
