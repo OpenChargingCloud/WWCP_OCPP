@@ -6067,7 +6067,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
         #region TryGetChargingStation(ChargingStationId, out ChargingStation)
 
-        public Boolean TryGetChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation? ChargingStation)
+        public Boolean TryGetChargingStation(ChargingStation_Id ChargingStationId, [NotNullWhen(true)] out ChargingStation? ChargingStation)
         {
 
             if (chargingStations.TryGetValue(ChargingStationId, out ChargingStation))
