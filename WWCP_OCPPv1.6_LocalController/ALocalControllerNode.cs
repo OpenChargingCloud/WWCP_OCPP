@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?  CSMSTime                          { get; set; } = Timestamp.Now;
+        public DateTimeOffset?  CSMSTime                          { get; set; }
 
 
         public HTTPAPI?         HTTPAPI                           { get; }
@@ -180,7 +180,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
                                     Boolean            DisableMaintenanceTasks          = false,
                                     TimeSpan?          MaintenanceEvery                 = null,
 
-                                    DNSClient?         DNSClient                        = null)
+                                    DNSClient?         DNSClient                        = null,
+
+                                    TimeProvider?      Clock                            = null)
 
             : base(Id,
                    Description,
@@ -214,9 +216,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.LocalController
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
+
+            // Not a property initialiser: those run before the constructor
+            // and so cannot reach this node's clock. Until a CSMS says
+            // otherwise, the time this node was built is the best guess.
+            CSMSTime = Now;
 
             if (VendorName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");

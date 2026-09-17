@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?                    CSMSTime                    { get; private set; } = Timestamp.Now;
+        public DateTimeOffset?                    CSMSTime                    { get; private set; }
 
 
         //public HTTPAPI?                 HTTPAPI                     { get; }
@@ -553,7 +553,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 TimeSpan?                          MaintenanceEvery               = null,
 
                                 CustomData?                        CustomData                     = null,
-                                IDNSClient?                        DNSClient                      = null)
+                                IDNSClient?                        DNSClient                      = null,
+
+                                TimeProvider?                      Clock                          = null)
 
             : base(ChargeBoxId,
                    Description,
@@ -584,9 +586,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
+
+            // Not a property initialiser: those run before the constructor
+            // and so cannot reach this node's clock. Until a CSMS says
+            // otherwise, the time this node was built is the best guess.
+            CSMSTime = Now;
 
             if (ChargeBoxId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ChargeBoxId),        "The given charge box identification must not be null or empty!");

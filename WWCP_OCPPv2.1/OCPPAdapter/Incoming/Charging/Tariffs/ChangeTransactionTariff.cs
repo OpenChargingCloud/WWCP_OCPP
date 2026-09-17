@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     await LogEvent(
                               OnChangeTransactionTariffRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     response ??= await CallProcessor(
                                            OnChangeTransactionTariff,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnChangeTransactionTariffResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnChangeTransactionTariffResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -462,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       ChangeTransactionTariffRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -491,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnChangeTransactionTariffResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -552,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       ChangeTransactionTariffResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     await LogEvent(
                               OnCancelReservationRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     response ??= await CallProcessor(
                                            OnCancelReservation,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnCancelReservationResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -392,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnCancelReservationResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -451,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       CancelReservationRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -480,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnCancelReservationResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -541,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       CancelReservationResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

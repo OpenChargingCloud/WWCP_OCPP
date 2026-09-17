@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     await LogEvent(
                               OnSecureDataTransferRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     response ??= await CallProcessor(
                                            OnSecureDataTransfer,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            IncludeSignatures: true
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnSecureDataTransferResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnSecureDataTransferResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       SecureDataTransferRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -472,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnSecureDataTransferResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       SecureDataTransferResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

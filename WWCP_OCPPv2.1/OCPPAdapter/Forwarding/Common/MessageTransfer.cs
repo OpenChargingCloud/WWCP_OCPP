@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnMessageTransferMessageReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           message,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var forwardingDecision = await CallFilter(
                                                OnMessageTransferMessageFilter,
                                                filter => filter.Invoke(
-                                                             Timestamp.Now,
+                                                             Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              message,
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnMessageTransferMessageFiltered,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           message,
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         await LogEvent(
                                   OnMessageTransferMessageSent,
                                   loggingDelegate => loggingDelegate.Invoke(
-                                      Timestamp.Now,
+                                      Now,
                                       parentNetworkingNode,
                                       sentMessageResult.Connection,
                                       message,

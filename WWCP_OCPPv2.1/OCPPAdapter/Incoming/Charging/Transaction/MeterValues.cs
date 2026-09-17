@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     await LogEvent(
                               OnMeterValuesRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     response ??= await CallProcessor(
                                            OnMeterValues,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnMeterValuesResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -390,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnMeterValuesResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -449,7 +449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       MeterValuesRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnMeterValuesResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -539,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       MeterValuesResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

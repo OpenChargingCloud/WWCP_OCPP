@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     await LogEvent(
                               OnNotifyNetworkTopologyMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   message,
@@ -223,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //    await LogEvent(
         //              NotifyNetworkTopologyMessageErrorReceived,
         //              loggingDelegate => loggingDelegate.Invoke(
-        //                  Timestamp.Now,
+        //                  Now,
         //                  parentNetworkingNode,
         //                  Connection,
         //                  Request,
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //    await LogEvent(
         //              OnNotifyNetworkTopologyResponseReceived,
         //              loggingDelegate => loggingDelegate.Invoke(
-        //                  Timestamp.Now,
+        //                  Now,
         //                  parentNetworkingNode,
         //                  Connection,
         //                  Request,

@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     await LogEvent(
                               OnRemoveDefaultChargingTariffRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     response ??= await CallProcessor(
                                            OnRemoveDefaultChargingTariff,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnRemoveDefaultChargingTariffResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnRemoveDefaultChargingTariffResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       RemoveDefaultChargingTariffRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnRemoveDefaultChargingTariffResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       RemoveDefaultChargingTariffResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

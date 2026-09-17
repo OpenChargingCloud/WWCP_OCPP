@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      sentMessageResult => LogEvent(
                                                          OnHeartbeatRequestSent,
                                                          loggingDelegate => loggingDelegate.Invoke(
-                                                             Timestamp.Now,
+                                                             Now,
                                                              parentNetworkingNode,
                                                              sentMessageResult.Connection,
                                                              Request,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= new HeartbeatResponse(
                                      Request,
-                                     Timestamp.Now,
+                                     Now,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
 

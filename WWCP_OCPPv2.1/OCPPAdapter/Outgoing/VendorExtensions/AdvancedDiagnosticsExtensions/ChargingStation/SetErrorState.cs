@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                  sentMessageResult => LogEvent(
                                                                      OnSetErrorStateRequestSent,
                                                                      loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         Now,
                                                                          parentNetworkingNode,
                                                                          sentMessageResult.Connection,
                                                                          Request,
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         //                                         sentMessageResult => LogEvent(
                         //                                             OnSetErrorStateRequestSent,
                         //                                             loggingDelegate => loggingDelegate.Invoke(
-                        //                                                 Timestamp.Now,
+                        //                                                 Now,
                         //                                                 parentNetworkingNode,
                         //                                                 sentMessageResult.Connection,
                         //                                                 Request,
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         //        response ??= new SetErrorStateResponse(
                         //                         Request,
                         //                         RegistrationStatus.Rejected,
-                        //                         Timestamp.Now,
+                        //                         Now,
                         //                         SetErrorStateResponse.DefaultInterval,
                         //                         Result: Result.FromSendRequestState(sendRequestState)
                         //                     );
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //                                     sentMessageResult => LogEvent(
                             //                                         OnSetErrorStateRequestSent,
                             //                                         loggingDelegate => loggingDelegate.Invoke(
-                            //                                             Timestamp.Now,
+                            //                                             Now,
                             //                                             parentNetworkingNode,
                             //                                             sentMessageResult.Connection,
                             //                                             Request,
@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //    response ??= new SetErrorStateResponse(
                             //                     Request,
                             //                     RegistrationStatus.Rejected,
-                            //                     Timestamp.Now,
+                            //                     Now,
                             //                     SetErrorStateResponse.DefaultInterval,
                             //                     Result: Result.FromSendRequestState(sendRequestState)
                             //                 );

@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                             out var request,
                                                             out var errorResponse,
                                                             JSONRequestMessage.RequestTimestamp,
-                                                            JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                                            JSONRequestMessage.RequestTimeout - Now,
                                                             JSONRequestMessage.EventTrackingId,
                                                             parentNetworkingNode.OCPP.CustomFirmwareStatusNotificationRequestParser))
             {
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnFirmwareStatusNotificationRequestReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           request,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var forwardingDecision = await CallFilter(
                                                OnFirmwareStatusNotificationRequestFilter,
                                                filter => filter.Invoke(
-                                                             Timestamp.Now,
+                                                             Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request,
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnFirmwareStatusNotificationRequestFiltered,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           request,
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         await LogEvent(
                                   OnFirmwareStatusNotificationRequestSent,
                                   loggingDelegate => loggingDelegate.Invoke(
-                                      Timestamp.Now,
+                                      Now,
                                       parentNetworkingNode,
                                       sentMessageResult.Connection,
                                       request,

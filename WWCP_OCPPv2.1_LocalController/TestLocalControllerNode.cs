@@ -107,7 +107,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
                                        Boolean                                   DisableMaintenanceTasks          = false,
                                        TimeSpan?                                 MaintenanceEvery                 = null,
-                                       DNSClient?                                DNSClient                        = null)
+                                       DNSClient?                                DNSClient                        = null,
+
+                                       TimeProvider?                             Clock                            = null)
 
             : base(Id,
                    VendorName,
@@ -156,7 +158,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 
@@ -194,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                Request:               request,
                                NetworkPath:           NetworkPath.From(Id),
                                Status:                RegistrationStatus.Accepted,
-                               CurrentTime:           Timestamp.Now,
+                               CurrentTime:           Now,
                                Interval:              TimeSpan.FromMinutes(5),
                                SerializationFormat:   request.SerializationFormat
                            )

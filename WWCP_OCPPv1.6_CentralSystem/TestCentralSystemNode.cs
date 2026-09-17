@@ -160,7 +160,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                      TimeSpan?              MaintenanceEvery                   = null,
 
                                      ISMTPSubmissionClient? SMTPSubmissionClient               = null,
-                                     IDNSClient?            DNSClient                          = null)
+                                     IDNSClient?            DNSClient                          = null,
+
+                                     TimeProvider?          Clock                              = null)
 
             : base(Id,
                    VendorName,
@@ -194,7 +196,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    MaintenanceEvery,
 
                    SMTPSubmissionClient,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 
@@ -318,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                     await Task.Delay(100);
 
                                     var secureRandom  = new SecureRandom();
-                                    var now           = Timestamp.Now;
+                                    var now           = Now;
 
                                     var certificateGenerator = new X509V3CertificateGenerator();
                                     certificateGenerator.SetIssuerDN    (ClientCACertificate.SubjectDN);
@@ -424,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                      Request:      request,
                                      IdTagInfo:    new IdTagInfo(
                                                        Status:      AuthorizationStatus.Invalid,
-                                                       ExpiryDate:  Timestamp.Now.AddMinutes(15)
+                                                       ExpiryDate:  Now.AddMinutes(15)
                                                    ),
                                      CustomData:   null
                                  )
@@ -642,7 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return new BootNotificationResponse(
                     Request:             request,
                     Status:              RegistrationStatus.Accepted,
-                    CurrentTime:         Timestamp.Now,
+                    CurrentTime:         Now,
                     HeartbeatInterval:   TimeSpan.FromSeconds(30),
                     CustomData:          null
                 );
@@ -653,7 +656,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     return new BootNotificationResponse(
                                request,
                                RegistrationStatus.Rejected,
-                               Timestamp.Now,
+                               Now,
                                TimeSpan.FromSeconds(30)
                            );
                 }
@@ -665,7 +668,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         return new BootNotificationResponse(
                                    Request:             request,
                                    Status:              RegistrationStatus.Rejected,
-                                   CurrentTime:         Timestamp.Now,
+                                   CurrentTime:         Now,
                                    HeartbeatInterval:   TimeSpan.FromMinutes(5),
                                    CustomData:          null
                                );
@@ -705,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         return new BootNotificationResponse(
                                    Request:             request,
                                    Status:              RegistrationStatus.Pending,
-                                   CurrentTime:         Timestamp.Now,
+                                   CurrentTime:         Now,
                                    HeartbeatInterval:   TimeSpan.FromSeconds(30),
                                    CustomData:          null
                                );
@@ -714,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         return new BootNotificationResponse(
                                    Request:             request,
                                    Status:              RegistrationStatus.Accepted,
-                                   CurrentTime:         Timestamp.Now,
+                                   CurrentTime:         Now,
                                    HeartbeatInterval:   TimeSpan.FromSeconds(30),
                                    CustomData:          null
                                );
@@ -754,7 +757,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             ChargeBoxAccessTypes.Pending  => RegistrationStatus.Pending,
                                                             _                             => RegistrationStatus.Rejected
                                                         },
-                                   CurrentTime:         Timestamp.Now,
+                                   CurrentTime:         Now,
                                    HeartbeatInterval:   TimeSpan.FromSeconds(30),
                                    CustomData:          null
                                );
@@ -766,7 +769,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return new BootNotificationResponse(
                            Request:             request,
                            Status:              RegistrationStatus.Rejected,
-                           CurrentTime:         Timestamp.Now,
+                           CurrentTime:         Now,
                            HeartbeatInterval:   TimeSpan.FromSeconds(30),
                            CustomData:          null
                        );
@@ -808,7 +811,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return Task.FromResult(
                            new HeartbeatResponse(
                                Request:       request,
-                               CurrentTime:   Timestamp.Now,
+                               CurrentTime:   Now,
                                CustomData:    null
                            )
                        );

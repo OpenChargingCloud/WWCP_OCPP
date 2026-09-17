@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnSendLocalListRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     response ??= await CallProcessor(
                                            OnSendLocalList,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnSendLocalListResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -364,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //        await LogEvent(
             //                  OnSendLocalListRequestReceived,
             //                  loggingDelegate => loggingDelegate.Invoke(
-            //                      Timestamp.Now,
+            //                      Now,
             //                      parentNetworkingNode,
             //                      WebSocketConnection,
             //                      request,
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //        response ??= await CallProcessor(
             //                               OnSendLocalList,
             //                               filter => filter.Invoke(
-            //                                             Timestamp.Now,
+            //                                             Now,
             //                                             parentNetworkingNode,
             //                                             WebSocketConnection,
             //                                             request,
@@ -418,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //                               IncludeSignatures: true
             //                           ),
             //                           async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnSendLocalListResponseSent(
-            //                                                                Timestamp.Now,
+            //                                                                Now,
             //                                                                parentNetworkingNode,
             //                                                                sentMessageResult.Connection,
             //                                                                request,
@@ -547,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnSendLocalListResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -650,7 +650,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //await LogEvent(
             //          OnSendLocalListResponseReceived,
             //          loggingDelegate => loggingDelegate.Invoke(
-            //              Timestamp.Now,
+            //              Now,
             //              parentNetworkingNode,
             //              WebSocketConnection,
             //              Request,
@@ -710,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       SendLocalListRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -739,7 +739,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnSendLocalListResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -789,7 +789,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //await LogEvent(
             //          SendLocalListRequestErrorReceived,
             //          loggingDelegate => loggingDelegate.Invoke(
-            //              Timestamp.Now,
+            //              Now,
             //              parentNetworkingNode,
             //              Connection,
             //              Request,
@@ -818,7 +818,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnSendLocalListResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       SendLocalListResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

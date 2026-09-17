@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                          sentMessageResult => LogEvent(
                                              OnMessageTransferMessageSent,
                                              loggingDelegate => loggingDelegate.Invoke(
-                                                 Timestamp.Now,
+                                                 Now,
                                                  parentNetworkingNode,
                                                  sentMessageResult.Connection,
                                                  Message,

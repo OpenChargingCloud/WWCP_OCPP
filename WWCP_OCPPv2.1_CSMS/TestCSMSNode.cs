@@ -123,7 +123,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             TimeSpan?                         MaintenanceEvery                        = null,
 
                             ISMTPSubmissionClient?            SMTPSubmissionClient                    = null,
-                            IDNSClient?                       DNSClient                               = null)
+                            IDNSClient?                       DNSClient                               = null,
+
+                            TimeProvider?                     Clock                                   = null)
 
             : base(Id,
                    VendorName,
@@ -182,7 +184,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    MaintenanceEvery,
 
                    SMTPSubmissionClient,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 
@@ -343,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     await Task.Delay(100);
 
                                     var secureRandom  = new SecureRandom();
-                                    var now           = Timestamp.Now;
+                                    var now           = Now;
 
                                     var certificateGenerator = new X509V3CertificateGenerator();
                                     certificateGenerator.SetIssuerDN    (ClientCACertificate.SubjectDN);
@@ -492,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      Request:             request,
                                      IdTokenInfo:         new IdTokenInfo(
                                                               Status:               AuthorizationStatus.Invalid,
-                                                              CacheExpiryDateTime:  Timestamp.Now.AddMinutes(15)
+                                                              CacheExpiryDateTime:  Now.AddMinutes(15)
                                                           ),
                                      CustomData:          null
                                  )
@@ -825,7 +828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      ChargingPriority:         null,
                                      IdTokenInfo:              new IdTokenInfo(
                                                                    Status:                AuthorizationStatus.Accepted,
-                                                                   CacheExpiryDateTime:   Timestamp.Now + TimeSpan.FromDays(1)
+                                                                   CacheExpiryDateTime:   Now + TimeSpan.FromDays(1)
                                                                ),
                                      UpdatedPersonalMessage:   null,
                                      CustomData:               null
@@ -935,7 +938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                Request:               request,
                                NetworkPath:           NetworkPath.From(Id),
                                Status:                RegistrationStatus.Accepted,
-                               CurrentTime:           Timestamp.Now,
+                               CurrentTime:           Now,
                                Interval:              TimeSpan.FromMinutes(5),
                                SerializationFormat:   request.SerializationFormat
                            )
@@ -982,7 +985,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 return Task.FromResult(
                            new HeartbeatResponse(
                                Request:       request,
-                               CurrentTime:   Timestamp.Now,
+                               CurrentTime:   Now,
                                CustomData:    null
                            )
                        );

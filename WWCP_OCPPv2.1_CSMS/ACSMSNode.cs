@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?              CSMSTime                                 { get; set; } = Timestamp.Now;
+        public DateTimeOffset?              CSMSTime                                 { get; set; } = Now;
 
 
         public HTTPAPI?                     HTTPAPI                                  { get; }
@@ -335,7 +335,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          TimeSpan?                         MaintenanceEvery                        = null,
 
                          ISMTPSubmissionClient?            SMTPSubmissionClient                    = null,
-                         IDNSClient?                       DNSClient                               = null)
+                         IDNSClient?                       DNSClient                               = null,
+
+                         TimeProvider?                     Clock                                   = null)
 
             : base(Id,
                    Description,
@@ -369,7 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 
@@ -1175,7 +1178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var OnChargingStationAddedLocal = OnChargingStationAdded;
             if (OnChargingStationAddedLocal is not null)
-                await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
+                await OnChargingStationAddedLocal.Invoke(Now,
                                                          ChargingStation,
                                                          eventTrackingId,
                                                          CurrentUserId);
@@ -1346,7 +1349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var OnChargingStationAddedLocal = OnChargingStationAdded;
             if (OnChargingStationAddedLocal is not null)
-                await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
+                await OnChargingStationAddedLocal.Invoke(Now,
                                                    ChargingStation,
                                                    eventTrackingId,
                                                    CurrentUserId);
@@ -1521,7 +1524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 var OnChargingStationAddedLocal = OnChargingStationAdded;
                 if (OnChargingStationAddedLocal is not null)
-                    await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
+                    await OnChargingStationAddedLocal.Invoke(Now,
                                                              ChargingStation,
                                                              eventTrackingId,
                                                              CurrentUserId);
@@ -1546,7 +1549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var OnChargingStationUpdatedLocal = OnChargingStationUpdated;
             if (OnChargingStationUpdatedLocal is not null)
-                await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
+                await OnChargingStationUpdatedLocal.Invoke(Now,
                                                            ChargingStation,
                                                            OldChargingStationAccess.ChargingStation,
                                                            ChargingStationAccessType,
@@ -1830,7 +1833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var OnChargingStationUpdatedLocal = OnChargingStationUpdated;
             if (OnChargingStationUpdatedLocal is not null)
-                await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
+                await OnChargingStationUpdatedLocal.Invoke(Now,
                                                            ChargingStation,
                                                            OldChargingStation,
                                                            ChargingStationAccessType,
@@ -1999,7 +2002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var OnChargingStationUpdatedLocal = OnChargingStationUpdated;
             if (OnChargingStationUpdatedLocal is not null)
-                await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
+                await OnChargingStationUpdatedLocal.Invoke(Now,
                                                            updatedChargingStation,
                                                            ChargingStation,
                                                            ChargingStationAccessType,
@@ -2226,7 +2229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var OnChargingStationDeletedLocal = OnChargingStationDeleted;
             if (OnChargingStationDeletedLocal is not null)
-                await OnChargingStationDeletedLocal.Invoke(Timestamp.Now,
+                await OnChargingStationDeletedLocal.Invoke(Now,
                                                      ChargingStation,
                                                      eventTrackingId,
                                                      CurrentUserId);

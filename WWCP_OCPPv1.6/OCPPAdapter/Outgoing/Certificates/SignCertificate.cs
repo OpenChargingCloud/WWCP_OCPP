@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                                  sentMessageResult => LogEvent(
                                                                      OnSignCertificateRequestSent,
                                                                      loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         Now,
                                                                          parentNetworkingNode,
                                                                          sentMessageResult.Connection,
                                                                          Request,
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         //                                         sentMessageResult => LogEvent(
                         //                                             OnSignCertificateRequestSent,
                         //                                             loggingDelegate => loggingDelegate.Invoke(
-                        //                                                 Timestamp.Now,
+                        //                                                 Now,
                         //                                                 parentNetworkingNode,
                         //                                                 sentMessageResult.Connection,
                         //                                                 Request,
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         //        response ??= new SignCertificateResponse(
                         //                         Request,
                         //                         RegistrationStatus.Rejected,
-                        //                         Timestamp.Now,
+                        //                         Now,
                         //                         SignCertificateResponse.DefaultInterval,
                         //                         Result: Result.FromSendRequestState(sendRequestState)
                         //                     );
@@ -392,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             //                                     sentMessageResult => LogEvent(
                             //                                         OnSignCertificateRequestSent,
                             //                                         loggingDelegate => loggingDelegate.Invoke(
-                            //                                             Timestamp.Now,
+                            //                                             Now,
                             //                                             parentNetworkingNode,
                             //                                             sentMessageResult.Connection,
                             //                                             Request,
@@ -434,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             //    response ??= new SignCertificateResponse(
                             //                     Request,
                             //                     RegistrationStatus.Rejected,
-                            //                     Timestamp.Now,
+                            //                     Now,
                             //                     SignCertificateResponse.DefaultInterval,
                             //                     Result: Result.FromSendRequestState(sendRequestState)
                             //                 );

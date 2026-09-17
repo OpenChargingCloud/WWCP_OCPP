@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -497,7 +497,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -629,7 +629,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -704,7 +704,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -770,7 +770,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -833,7 +833,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -898,7 +898,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            Signatures,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -965,7 +965,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1037,7 +1037,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1109,7 +1109,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1174,7 +1174,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1235,7 +1235,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1305,7 +1305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1376,7 +1376,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1443,7 +1443,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1510,7 +1510,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1574,7 +1574,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1649,7 +1649,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1725,7 +1725,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1792,7 +1792,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            CustomData,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1852,7 +1852,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1910,7 +1910,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -1962,7 +1962,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -2017,7 +2017,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -2081,7 +2081,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -2145,7 +2145,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -2213,7 +2213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -2268,7 +2268,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -2332,7 +2332,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),
@@ -2392,7 +2392,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            null,
 
                            RequestId        ?? CentralSystem.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CentralSystem.Id),

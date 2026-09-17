@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                       out request,
                                                       out errorResponse,
                                                       JSONRequestMessage.RequestTimestamp,
-                                                      JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                                      JSONRequestMessage.RequestTimeout - Now,
                                                       JSONRequestMessage.EventTrackingId,
                                                       parentNetworkingNode.OCPP.CustomBootNotificationRequestParser,
                                                       parentNetworkingNode.OCPP.CustomSignatureParser,
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //                                          out request,
             //                                          out errorResponse,
             //                                          BinaryRequestMessage.RequestTimestamp,
-            //                                          BinaryRequestMessage.RequestTimeout - Timestamp.Now,
+            //                                          BinaryRequestMessage.RequestTimeout - Now,
             //                                          BinaryRequestMessage.EventTrackingId,
             //                                          parentNetworkingNode.OCPP.CustomBootNotificationRequestParser,
             //                                          parentNetworkingNode.OCPP.CustomSignatureParser,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnBootNotificationRequestReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           request,
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             var forwardingDecision = await CallFilter(
                                                OnBootNotificationRequestFilter,
                                                filter => filter.Invoke(
-                                                             Timestamp.Now,
+                                                             Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                new BootNotificationResponse(
                                                    request,
                                                    RegistrationStatus.Rejected,
-                                                   Timestamp.Now,
+                                                   Now,
                                                    BootNotificationResponse.DefaultInterval,
                                                    Result: Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                                );
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnBootNotificationRequestFiltered,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           request,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         await LogEvent(
                                   OnBootNotificationRequestSent,
                                   loggingDelegate => loggingDelegate.Invoke(
-                                      Timestamp.Now,
+                                      Now,
                                       parentNetworkingNode,
                                       sentMessageResult.Connection,
                                       request,

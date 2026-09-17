@@ -87,7 +87,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.TimeServer
 
                                Boolean            DisableMaintenanceTasks        = false,
                                TimeSpan?          MaintenanceEvery               = null,
-                               DNSClient?         DNSClient                      = null)
+                               DNSClient?         DNSClient                      = null,
+
+                               TimeProvider?      Clock                          = null)
 
             : base(Id,
                    VendorName,
@@ -120,7 +122,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.TimeServer
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 

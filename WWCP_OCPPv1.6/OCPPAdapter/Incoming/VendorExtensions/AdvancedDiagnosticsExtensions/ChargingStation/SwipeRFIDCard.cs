@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnSwipeRFIDCardRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     response ??= await CallProcessor(
                                            OnSwipeRFIDCard,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnSwipeRFIDCardResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnSwipeRFIDCardResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -444,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       SwipeRFIDCardRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnSwipeRFIDCardResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //await LogEvent(
             //          SwipeRFIDCardRequestErrorReceived,
             //          loggingDelegate => loggingDelegate.Invoke(
-            //              Timestamp.Now,
+            //              Now,
             //              parentNetworkingNode,
             //              Connection,
             //              Request,
@@ -552,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnSwipeRFIDCardResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -613,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       SwipeRFIDCardResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

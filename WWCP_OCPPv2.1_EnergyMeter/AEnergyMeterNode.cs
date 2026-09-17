@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?             CSMSTime                   { get; set; } = Timestamp.Now;
+        public DateTimeOffset?             CSMSTime                   { get; set; } = Now;
 
 
 
@@ -140,7 +140,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                                 Boolean            DisableMaintenanceTasks        = false,
                                 TimeSpan?          MaintenanceEvery               = null,
-                                DNSClient?         DNSClient                      = null)
+                                DNSClient?         DNSClient                      = null,
+
+                                TimeProvider?      Clock                          = null)
 
             : base(Id,
                    Description,
@@ -174,7 +176,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 

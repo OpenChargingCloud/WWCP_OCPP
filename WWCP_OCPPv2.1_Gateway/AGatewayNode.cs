@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?             CSMSTime                   { get; set; } = Timestamp.Now;
+        public DateTimeOffset?             CSMSTime                   { get; set; } = Now;
 
 
 
@@ -263,7 +263,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
                             Boolean            DisableMaintenanceTasks        = false,
                             TimeSpan?          MaintenanceEvery               = null,
-                            DNSClient?         DNSClient                      = null)
+                            DNSClient?         DNSClient                      = null,
+
+                            TimeProvider?      Clock                          = null)
 
             : base(Id,
                    Description,
@@ -297,7 +299,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 

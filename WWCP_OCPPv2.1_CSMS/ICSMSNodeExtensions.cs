@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -484,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -547,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -606,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -665,7 +665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -730,7 +730,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -789,7 +789,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -848,7 +848,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -907,7 +907,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -969,7 +969,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1033,7 +1033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1098,7 +1098,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1158,7 +1158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            Signatures,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1220,7 +1220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1285,7 +1285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1344,7 +1344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1403,7 +1403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1468,7 +1468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1525,7 +1525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1590,7 +1590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1646,7 +1646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1709,7 +1709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1783,7 +1783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1842,7 +1842,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1916,7 +1916,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -1975,7 +1975,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2034,7 +2034,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2096,7 +2096,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2160,7 +2160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2222,7 +2222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2287,7 +2287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2350,7 +2350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2413,7 +2413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2475,7 +2475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2536,7 +2536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2601,7 +2601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2660,7 +2660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2727,7 +2727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2785,7 +2785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2846,7 +2846,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2919,7 +2919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -2980,7 +2980,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3038,7 +3038,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3096,7 +3096,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3157,7 +3157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3223,7 +3223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3281,7 +3281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3343,7 +3343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CustomData,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3401,7 +3401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3453,7 +3453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3508,7 +3508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3571,7 +3571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3626,7 +3626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3690,7 +3690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3756,7 +3756,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3820,7 +3820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3886,7 +3886,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),
@@ -3950,7 +3950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            null,
 
                            RequestId        ?? CSMS.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? CSMS.Now,
                            RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(CSMS.Id),

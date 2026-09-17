@@ -123,6 +123,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region Properties
 
+        /// <summary>
+        /// The current time, as the networking node this adapter belongs to sees it.
+        /// </summary>
+        /// <remarks>
+        /// Every timestamp this adapter puts into a message comes from here and
+        /// not from the global clock, so that a node moved through time takes
+        /// its whole OCPP side along with it.
+        /// </remarks>
+        public DateTimeOffset Now
+            => parentNetworkingNode.Now;
+
         public HashSet<NetworkingNode_Id>  AnycastIds    { get; } = [];
 
         #endregion
@@ -313,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnJSONRequestMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   this,
                                   WebSocketConnection,
                                   jsonRequestMessage,
@@ -392,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                                       new OCPP_JSONRequestErrorMessage(
-                                          Timestamp.Now,
+                                          Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.Unknown,
                                           SourceRouting.Zero,
@@ -451,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnJSONResponseMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   this,
                                   WebSocketConnection,
                                   jsonResponseMessage,
@@ -490,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             await Task.WhenAll(logger.GetInvocationList().
                                                    OfType <OnJSONRequestErrorMessageReceivedDelegate>().
                                                    Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                                  Timestamp.Now,
+                                                                                  Now,
                                                                                   this,
                                                                                   WebSocketConnection,
                                                                                   jsonRequestErrorMessage,
@@ -527,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             await Task.WhenAll(logger.GetInvocationList().
                                                    OfType <OnJSONResponseErrorMessageReceivedDelegate>().
                                                    Select (loggingDelegate => loggingDelegate.Invoke(
-                                                                                  Timestamp.Now,
+                                                                                  Now,
                                                                                   this,
                                                                                   WebSocketConnection,
                                                                                   jsonResponseErrorMessage,
@@ -587,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnJSONSendMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   this,
                                   WebSocketConnection,
                                   jsonSendMessage,
@@ -657,7 +668,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                                       new OCPP_JSONRequestErrorMessage(
-                                          Timestamp.Now,
+                                          Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.Unknown,
                                           SourceRouting.Zero,
@@ -758,7 +769,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnBinaryRequestMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   this,
                                   WebSocketConnection,
                                   binaryRequestMessage,
@@ -837,7 +848,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                                       new OCPP_JSONRequestErrorMessage(
-                                          Timestamp.Now,
+                                          Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.Unknown,
                                           SourceRouting.Zero,
@@ -896,7 +907,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnBinaryResponseMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   this,
                                   WebSocketConnection,
                                   binaryResponseMessage,
@@ -929,7 +940,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnBinaryRequestErrorMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   this,
                                   WebSocketConnection,
                                   binaryRequestErrorMessage,
@@ -953,7 +964,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnBinaryResponseErrorMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   this,
                                   WebSocketConnection,
                                   binaryResponseErrorMessage,
@@ -1006,7 +1017,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnBinarySendMessageReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   this,
                                   WebSocketConnection,
                                   binarySendMessage,
@@ -1076,7 +1087,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(
                                       new OCPP_BinaryRequestErrorMessage(
-                                          Timestamp.Now,
+                                          Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.Unknown,
                                           SourceRouting.Zero,

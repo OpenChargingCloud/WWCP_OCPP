@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?          CSMSTime                    { get; private set; } = Timestamp.Now;
+        public DateTimeOffset?          CSMSTime                    { get; private set; }
 
 
         public HTTPAPI?                 HTTPAPI                     { get; }
@@ -653,7 +653,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                     TimeSpan?               MaintenanceEvery               = null,
 
                                     CustomData?             CustomData                     = null,
-                                    IDNSClient?             DNSClient                      = null)
+                                    IDNSClient?             DNSClient                      = null,
+
+                                    TimeProvider?           Clock                          = null)
 
             : base(Id,
                    Description,
@@ -684,9 +686,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
+
+            // Not a property initialiser: those run before the constructor
+            // and so cannot reach this node's clock. Until a CSMS says
+            // otherwise, the time this node was built is the best guess.
+            CSMSTime = Now;
 
             if (VendorName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
@@ -970,7 +978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData:         null, //CustomData
 
                            RequestId:          null, //RequestId        ?? ChargingStation.NextRequestId
-                           RequestTimestamp:   null, //RequestTimestamp ?? Timestamp.Now
+                           RequestTimestamp:   null, //RequestTimestamp ?? Now
                            RequestTimeout:     null  //RequestTimeout   ?? ChargingStation.DefaultRequestTimeout
 
                         )
@@ -1167,7 +1175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         private void ExpireDisplayMessages()
         {
 
-            var now = Timestamp.Now;
+            var now = Now;
 
             foreach (var over in displayMessages.Values.
                                      Where(message => message.EndTimestamp.HasValue &&
@@ -1334,7 +1342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         private void ExpireReservations()
         {
 
-            var now = Timestamp.Now;
+            var now = Now;
 
             foreach (var expired in reservations.Values.Where(reservation => reservation.HasExpired(now)).ToArray())
                 if (reservations.TryRemove(expired.Id, out _))

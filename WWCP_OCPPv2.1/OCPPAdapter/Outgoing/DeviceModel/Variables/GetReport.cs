@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      sentMessageResult => LogEvent(
                                                          OnGetReportRequestSent,
                                                          loggingDelegate => loggingDelegate.Invoke(
-                                                             Timestamp.Now,
+                                                             Now,
                                                              parentNetworkingNode,
                                                              sentMessageResult.Connection,
                                                              Request,

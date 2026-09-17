@@ -90,7 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        TimeSpan?               MaintenanceEvery               = null,
 
                                        CustomData?             CustomData                     = null,
-                                       IDNSClient?             DNSClient                      = null)
+                                       IDNSClient?             DNSClient                      = null,
+
+                                       TimeProvider?           Clock                          = null)
 
             : base(Id,
                    VendorName,
@@ -129,7 +131,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    MaintenanceEvery,
 
                    CustomData,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         #endregion
 
@@ -685,7 +688,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     evse.TransactionId           = Transaction_Id.NewRandom;
                     evse.RemoteStartId           = request.RequestStartTransactionRequestId;
 
-                    evse.StartTimestamp          = Timestamp.Now;
+                    evse.StartTimestamp          = Now;
                     evse.MeterStartValue         = 0;
                     evse.SignedStartMeterValue   = "0";
 
@@ -800,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     evse.IsCharging             = false;
 
-                    evse.StopTimestamp          = Timestamp.Now;
+                    evse.StopTimestamp          = Now;
                     evse.MeterStopValue         = 123;
                     evse.SignedStopMeterValue   = "123";
 
@@ -887,7 +890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      request,
                                      ct) => {
 
-                var status = Reserve(request, Timestamp.Now);
+                var status = Reserve(request, Now);
 
                 DebugX.Log($"Charging station '{Id}': Incoming ReserveNow request (reservation id: {request.Id}, idToken: '{request.IdToken.Value}'{(request.EVSEId.HasValue ? $", evseId: '{request.EVSEId.Value}'" : "")}): {status}!");
 
@@ -1863,7 +1866,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   NotifyCustomerInformationRequestId:   request.CustomerInformationRequestId,
                                   Data:                                 customer,
                                   SequenceNumber:                       1,
-                                  GeneratedAt:                          Timestamp.Now,
+                                  GeneratedAt:                          Now,
                                   ToBeContinued:                        false,
                                   CustomData:                           null
                               );
@@ -1934,7 +1937,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             request,
                                             ct) => {
 
-                var status = SetDisplayMessage(request.Message, Timestamp.Now);
+                var status = SetDisplayMessage(request.Message, Now);
 
                 DebugX.Log($"Charging station '{Id}': Incoming SetDisplayMessage '{request.Message.Messages.First().Content}': {status}!");
 
@@ -2709,7 +2712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         await this.SendStatusNotification(
                                   EVSEId:        request.EVSE.Id,
                                   ConnectorId:   Connector_Id.Parse(1),
-                                  Timestamp:     Timestamp.Now,
+                                  Timestamp:     Now,
                                   Status:        evses[request.EVSE.Id].Status,
                                   CustomData:    null
                               );
@@ -2929,7 +2932,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return Task.FromResult(
                            new AFRRSignalResponse(
                                Request:      request,
-                               Status:       request.ActivationTimestamp < Timestamp.Now - TimeSpan.FromDays(1)
+                               Status:       request.ActivationTimestamp < Now - TimeSpan.FromDays(1)
                                                  ? GenericStatus.Rejected
                                                  : GenericStatus.Accepted,
                                StatusInfo:   null,

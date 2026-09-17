@@ -357,14 +357,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     var systemInfo = JSONObject.Create(
                                          new JProperty("id",     networkingNode.Id.ToString()),
-                                         new JProperty("time",   Timestamp.Now.    ToISO8601())
+                                         new JProperty("time",   NetworkingNode.Now.    ToISO8601())
                                      );
 
                     return Task.FromResult(
                                new HTTPResponse.Builder(request) {
                                    HTTPStatusCode             = HTTPStatusCode.OK,
                                    Server                     = HTTPServiceName,
-                                   Date                       = Timestamp.Now,
+                                   Date                       = NetworkingNode.Now,
                                    AccessControlAllowOrigin   = "*",
                                    AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
@@ -424,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                new HTTPResponse.Builder(request) {
                                    HTTPStatusCode             = HTTPStatusCode.OK,
                                    Server                     = HTTPServiceName,
-                                   Date                       = Timestamp.Now,
+                                   Date                       = NetworkingNode.Now,
                                    AccessControlAllowOrigin   = "*",
                                    AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],

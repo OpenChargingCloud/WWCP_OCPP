@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -502,7 +502,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -576,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -641,7 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -710,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -784,7 +784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -846,7 +846,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -912,7 +912,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
         //                   CustomData,
 
         //                   RequestId        ?? LocalController.OCPP.NextRequestId,
-        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimestamp ?? LocalController.Now,
         //                   RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
         //                   EventTrackingId  ?? EventTracking_Id.New,
         //                   NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -978,7 +978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1046,7 +1046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1117,7 +1117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1218,7 +1218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1289,7 +1289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1354,7 +1354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1422,7 +1422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1487,7 +1487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1561,7 +1561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1635,7 +1635,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1700,7 +1700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1762,7 +1762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1831,7 +1831,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1905,7 +1905,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -1973,7 +1973,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2043,7 +2043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2116,7 +2116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2177,7 +2177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2241,7 +2241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2308,7 +2308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2381,7 +2381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2446,7 +2446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2507,7 +2507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2568,7 +2568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2635,7 +2635,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2696,7 +2696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2757,7 +2757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2818,7 +2818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2882,7 +2882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -2948,7 +2948,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3015,7 +3015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3079,7 +3079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3146,7 +3146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3207,7 +3207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3268,7 +3268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3335,7 +3335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3394,7 +3394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3461,7 +3461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3519,7 +3519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3596,7 +3596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3657,7 +3657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3733,7 +3733,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3794,7 +3794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3855,7 +3855,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3919,7 +3919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -3985,7 +3985,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4049,7 +4049,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4116,7 +4116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4181,7 +4181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4246,7 +4246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4310,7 +4310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4373,7 +4373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4440,7 +4440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4501,7 +4501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4570,7 +4570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4630,7 +4630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4693,7 +4693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4768,7 +4768,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4837,7 +4837,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4897,7 +4897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),
@@ -4961,7 +4961,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            CustomData,
 
                            RequestId        ?? LocalController.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? LocalController.Now,
                            RequestTimeout   ?? LocalController.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(LocalController.Id),

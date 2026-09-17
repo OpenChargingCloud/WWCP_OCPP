@@ -75,6 +75,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public INetworkingNode              NetworkingNode           { get; }
 
         /// <summary>
+        /// The current time, as the networking node this adapter belongs to sees it.
+        /// </summary>
+        /// <remarks>
+        /// Every timestamp this adapter puts into a message comes from here and
+        /// not from the global clock, so that a node moved through time takes
+        /// its whole OCPP side along with it.
+        /// </remarks>
+        public DateTimeOffset Now
+            => NetworkingNode.Now;
+
+        /// <summary>
         /// Incoming OCPP messages.
         /// </summary>
         public OCPPWebSocketAdapterIN       IN                       { get; }
@@ -1105,7 +1116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 requests.TryAdd(JSONRequestMessage.RequestId,
                                 SendRequestState.FromJSONRequest(
-                                    Timestamp.Now,
+                                    Now,
                                     JSONRequestMessage.Destination,
                                     JSONRequestMessage.RequestTimeout,
                                     JSONRequestMessage
@@ -1142,7 +1153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
 
                 }
-                while (Timestamp.Now < JSONRequestMessage.RequestTimeout);
+                while (Now < JSONRequestMessage.RequestTimeout);
 
                 #endregion
 
@@ -1154,7 +1165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     sendRequestState2.JSONRequestErrorMessage = new OCPP_JSONRequestErrorMessage(
 
-                                                                     Timestamp.Now,
+                                                                     Now,
                                                                      JSONRequestMessage.EventTrackingId,
                                                                      NetworkingMode.Unknown,
                                                                      SourceRouting.To(JSONRequestMessage.NetworkPath.Source),
@@ -1185,11 +1196,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Timeout:                  JSONRequestMessage.RequestTimeout,
                        JSONRequest:              JSONRequestMessage,
                        SentMessageResult:        sentMessageResult,
-                       ResponseTimestamp:        Timestamp.Now,
+                       ResponseTimestamp:        Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
 
-                                                     Timestamp.Now,
+                                                     Now,
                                                      JSONRequestMessage.EventTrackingId,
                                                      NetworkingMode.Unknown,
                                                      SourceRouting.To(JSONRequestMessage.NetworkPath.Source),
@@ -1214,11 +1225,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Timeout:                  JSONRequestMessage.RequestTimeout,
                        JSONRequest:              JSONRequestMessage,
                        SentMessageResult:        sentMessageResult,
-                       ResponseTimestamp:        Timestamp.Now,
+                       ResponseTimestamp:        Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
 
-                                                     Timestamp.Now,
+                                                     Now,
                                                      JSONRequestMessage.EventTrackingId,
                                                      NetworkingMode.Unknown,
                                                      SourceRouting.To(JSONRequestMessage.NetworkPath.Source),
@@ -1401,7 +1412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 requests.TryAdd(BinaryRequestMessage.RequestId,
                                 SendRequestState.FromBinaryRequest(
-                                    Timestamp.Now,
+                                    Now,
                                     BinaryRequestMessage.Destination,
                                     BinaryRequestMessage.RequestTimeout,
                                     BinaryRequestMessage
@@ -1438,7 +1449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     }
 
                 }
-                while (Timestamp.Now < BinaryRequestMessage.RequestTimeout);
+                while (Now < BinaryRequestMessage.RequestTimeout);
 
                 #endregion
 
@@ -1450,7 +1461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     sendRequestState2.JSONRequestErrorMessage =  new OCPP_JSONRequestErrorMessage(
 
-                                                                     Timestamp.Now,
+                                                                     Now,
                                                                      BinaryRequestMessage.EventTrackingId,
                                                                      NetworkingMode.Unknown,
                                                                      SourceRouting.To(BinaryRequestMessage.NetworkPath.Source),
@@ -1479,11 +1490,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        Timeout:                  BinaryRequestMessage.RequestTimeout,
                        BinaryRequest:            BinaryRequestMessage,
                        SentMessageResult:        sentMessageResult,
-                       ResponseTimestamp:        Timestamp.Now,
+                       ResponseTimestamp:        Now,
 
                        JSONRequestErrorMessage:  new OCPP_JSONRequestErrorMessage(
 
-                                                     Timestamp.Now,
+                                                     Now,
                                                      BinaryRequestMessage.EventTrackingId,
                                                      NetworkingMode.Unknown,
                                                      SourceRouting.To(BinaryRequestMessage.NetworkPath.Source),
@@ -1613,7 +1624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (requests.TryGetValue(JSONResponseMessage.RequestId, out var sendRequestState))
             {
 
-                sendRequestState.ResponseTimestamp            = Timestamp.Now;
+                sendRequestState.ResponseTimestamp            = Now;
                 sendRequestState.JSONResponse                 = JSONResponseMessage;
                 sendRequestState.WebSocketConnectionReceived  = WebSocketConnection;
                 sendRequestState.DestinationReceived          = JSONResponseMessage.Destination;
@@ -1639,7 +1650,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (requests.TryGetValue(JSONRequestErrorMessage.RequestId, out var sendRequestState))
             {
 
-                sendRequestState.ResponseTimestamp            = Timestamp.Now;
+                sendRequestState.ResponseTimestamp            = Now;
                 sendRequestState.JSONRequestErrorMessage      = JSONRequestErrorMessage;
                 sendRequestState.WebSocketConnectionReceived  = WebSocketConnection;
                 sendRequestState.DestinationReceived          = JSONRequestErrorMessage.Destination;
@@ -1665,7 +1676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (requests.TryGetValue(JSONResponseErrorMessage.RequestId, out var sendRequestState))
             {
 
-                sendRequestState.ResponseTimestamp            = Timestamp.Now;
+                sendRequestState.ResponseTimestamp            = Now;
                 sendRequestState.JSONResponseErrorMessage     = JSONResponseErrorMessage;
                 sendRequestState.WebSocketConnectionReceived  = WebSocketConnection;
                 sendRequestState.DestinationReceived          = JSONResponseErrorMessage.Destination;
@@ -1697,7 +1708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (requests.TryGetValue(BinaryResponseMessage.RequestId, out var sendRequestState))
             {
 
-                sendRequestState.ResponseTimestamp            = Timestamp.Now;
+                sendRequestState.ResponseTimestamp            = Now;
                 sendRequestState.BinaryResponse               = BinaryResponseMessage;
                 sendRequestState.WebSocketConnectionReceived  = WebSocketConnection;
                 sendRequestState.DestinationReceived          = BinaryResponseMessage.Destination;
@@ -1723,7 +1734,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (requests.TryGetValue(BinaryRequestErrorMessage.RequestId, out var sendRequestState))
             {
 
-                sendRequestState.ResponseTimestamp            = Timestamp.Now;
+                sendRequestState.ResponseTimestamp            = Now;
                 sendRequestState.BinaryRequestErrorMessage    = BinaryRequestErrorMessage;
                 sendRequestState.WebSocketConnectionReceived  = WebSocketConnection;
                 sendRequestState.DestinationReceived          = BinaryRequestErrorMessage.Destination;
@@ -1749,7 +1760,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (requests.TryGetValue(BinaryResponseErrorMessage.RequestId, out var sendRequestState))
             {
 
-                sendRequestState.ResponseTimestamp            = Timestamp.Now;
+                sendRequestState.ResponseTimestamp            = Now;
                 sendRequestState.BinaryResponseErrorMessage   = BinaryResponseErrorMessage;
                 sendRequestState.WebSocketConnectionReceived  = WebSocketConnection;
                 sendRequestState.DestinationReceived          = BinaryResponseErrorMessage.Destination;

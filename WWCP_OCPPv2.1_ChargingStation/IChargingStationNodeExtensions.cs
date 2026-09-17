@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -421,7 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -494,7 +494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -567,7 +567,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -631,7 +631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -691,7 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            Signatures,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -750,7 +750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            Signatures,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
                            SerializationFormat,
@@ -818,7 +818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -891,7 +891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -952,7 +952,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1017,7 +1017,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         //                   CustomData,
 
         //                   RequestId        ?? ChargingStation.NextRequestId,
-        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimestamp ?? ChargingStation.Now,
         //                   RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
         //                   EventTrackingId  ?? EventTracking_Id.New,
         //                   NetworkPath.Empty,
@@ -1082,7 +1082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1149,7 +1149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1219,7 +1219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1319,7 +1319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1389,7 +1389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1453,7 +1453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1520,7 +1520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1584,7 +1584,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1657,7 +1657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1730,7 +1730,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1794,7 +1794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1886,7 +1886,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -1948,7 +1948,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -2016,7 +2016,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -2089,7 +2089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -2150,7 +2150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? ChargingStation.Now,
                            RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,

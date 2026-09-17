@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                            out var request,
                                            out var errorResponse,
                                            JSONRequestMessage.RequestTimestamp,
-                                           JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                           JSONRequestMessage.RequestTimeout - Now,
                                            JSONRequestMessage.EventTrackingId,
                                            parentNetworkingNode.OCPP.CustomHeartbeatRequestParser))
             {
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnHeartbeatRequestReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           request,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var forwardingDecision = await CallFilter(
                                                OnHeartbeatRequestFilter,
                                                filter => filter.Invoke(
-                                                             Timestamp.Now,
+                                                             Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request,
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 var response = forwardingDecision?.RejectResponse ??
                                    new HeartbeatResponse(
                                        request,
-                                       Timestamp.Now,
+                                       Now,
                                        Result.Filtered(RequestForwardingDecision.DefaultLogMessage)
                                    );
 
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnHeartbeatRequestFiltered,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           request,
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         await LogEvent(
                                   OnHeartbeatRequestSent,
                                   loggingDelegate => loggingDelegate.Invoke(
-                                      Timestamp.Now,
+                                      Now,
                                       parentNetworkingNode,
                                       sentMessageResult.Connection,
                                       request,

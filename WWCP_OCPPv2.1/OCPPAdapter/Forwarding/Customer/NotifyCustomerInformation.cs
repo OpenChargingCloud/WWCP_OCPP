@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                            out var request,
                                                            out var errorResponse,
                                                            JSONRequestMessage.RequestTimestamp,
-                                                           JSONRequestMessage.RequestTimeout - Timestamp.Now,
+                                                           JSONRequestMessage.RequestTimeout - Now,
                                                            JSONRequestMessage.EventTrackingId,
                                                            parentNetworkingNode.OCPP.CustomNotifyCustomerInformationRequestParser))
             {
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnNotifyCustomerInformationRequestReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           request,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var forwardingDecision = await CallFilter(
                                                OnNotifyCustomerInformationRequestFilter,
                                                filter => filter.Invoke(
-                                                             Timestamp.Now,
+                                                             Now,
                                                              parentNetworkingNode,
                                                              WebSocketConnection,
                                                              request,
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             await LogEvent(
                       OnNotifyCustomerInformationRequestFiltered,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           request,
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         await LogEvent(
                                   OnNotifyCustomerInformationRequestSent,
                                   loggingDelegate => loggingDelegate.Invoke(
-                                      Timestamp.Now,
+                                      Now,
                                       parentNetworkingNode,
                                       sentMessageResult.Connection,
                                       request,

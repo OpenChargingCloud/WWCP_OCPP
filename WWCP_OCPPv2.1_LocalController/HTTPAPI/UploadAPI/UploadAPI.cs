@@ -155,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             var auth = new FileUploadAuthentication(
                            RandomExtensions.RandomString(Length),
-                           Timestamp.Now + (Timeout ?? TimeSpan.FromMinutes(15))
+                           NetworkingNode.Now + (Timeout ?? TimeSpan.FromMinutes(15))
                        );
 
             validFileUploadAuths.Add(auth.PathPrefix,
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = NetworkingNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.Forbidden,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = NetworkingNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = NetworkingNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
@@ -279,9 +279,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                       fileStream.Close();
 
                                       await SendUploadedFileInfo(
-                                                Timestamp.Now,
+                                                NetworkingNode.Now,
                                                 new UploadedFileInfos(
-                                                    Timestamp.Now,
+                                                    NetworkingNode.Now,
                                                     fileName,
                                                     fileLength
                                                 ),
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Created,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = NetworkingNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                  Connection                 = ConnectionType.Close
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.InternalServerError,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = NetworkingNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = NetworkingNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.Forbidden,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = NetworkingNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = NetworkingNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
@@ -391,9 +391,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                       fileStream.Close();
 
                                       await SendUploadedFileInfo(
-                                                Timestamp.Now,
+                                                NetworkingNode.Now,
                                                 new UploadedFileInfos(
-                                                    Timestamp.Now,
+                                                    NetworkingNode.Now,
                                                     fileName,
                                                     fileLength
                                                 ),
@@ -404,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Created,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = NetworkingNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                  Connection                 = ConnectionType.Close
@@ -424,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.InternalServerError,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = NetworkingNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     await Task.WhenAll(onUploadException.GetInvocationList().
                                            OfType<UploadErrorDelegate>().
                                            Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         NetworkingNode.Now,
                                                                          Module,
                                                                          Caller,
                                                                          ErrorResponse,
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     await Task.WhenAll(onUploadException.GetInvocationList().
                                            OfType<UploadExceptionDelegate>().
                                            Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         NetworkingNode.Now,
                                                                          Module,
                                                                          Caller,
                                                                          ExceptionOccurred,

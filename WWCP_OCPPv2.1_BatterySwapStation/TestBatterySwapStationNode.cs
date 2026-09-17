@@ -91,7 +91,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                           TimeSpan?               MaintenanceEvery               = null,
 
                                           CustomData?             CustomData                     = null,
-                                          DNSClient?              DNSClient                      = null)
+                                          DNSClient?              DNSClient                      = null,
+
+                                          TimeProvider?           Clock                          = null)
 
             : base(Id,
                    VendorName,
@@ -130,7 +132,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                    MaintenanceEvery,
 
                    CustomData,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         #endregion
 
@@ -686,7 +689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                     evse.TransactionId           = Transaction_Id.NewRandom;
                     evse.RemoteStartId           = request.RequestStartTransactionRequestId;
 
-                    evse.StartTimestamp          = Timestamp.Now;
+                    evse.StartTimestamp          = Now;
                     evse.MeterStartValue         = 0;
                     evse.SignedStartMeterValue   = "0";
 
@@ -801,7 +804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                     evse.IsCharging             = false;
 
-                    evse.StopTimestamp          = Timestamp.Now;
+                    evse.StopTimestamp          = Now;
                     evse.MeterStopValue         = 123;
                     evse.SignedStopMeterValue   = "123";
 
@@ -1875,7 +1878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                   NotifyCustomerInformationRequestId:   request.CustomerInformationRequestId,
                                   Data:                                 customer,
                                   SequenceNumber:                       1,
-                                  GeneratedAt:                          Timestamp.Now,
+                                  GeneratedAt:                          Now,
                                   ToBeContinued:                        false,
                                   CustomData:                           null
                               );
@@ -2736,7 +2739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                         await this.SendStatusNotification(
                                   EVSEId:        request.EVSE.Id,
                                   ConnectorId:   Connector_Id.Parse(1),
-                                  Timestamp:     Timestamp.Now,
+                                  Timestamp:     Now,
                                   Status:        evses[request.EVSE.Id].Status,
                                   CustomData:    null
                               );
@@ -2956,7 +2959,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 return Task.FromResult(
                            new AFRRSignalResponse(
                                Request:      request,
-                               Status:       request.ActivationTimestamp < Timestamp.Now - TimeSpan.FromDays(1)
+                               Status:       request.ActivationTimestamp < Now - TimeSpan.FromDays(1)
                                                  ? GenericStatus.Rejected
                                                  : GenericStatus.Accepted,
                                StatusInfo:   null,

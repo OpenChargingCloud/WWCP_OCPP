@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         //private          readonly  List<EnqueuedRequest>                                       EnqueuedRequests             = [];
 
-        private DateTimeOffset lastRoutesBroadcast = Timestamp.Now;
+        private DateTimeOffset lastRoutesBroadcast;
 
         #endregion
 
@@ -176,7 +176,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                    Boolean            DisableMaintenanceTasks     = false,
                                    TimeSpan?          MaintenanceEvery            = null,
-                                   IDNSClient?        DNSClient                   = null)
+                                   IDNSClient?        DNSClient                   = null,
+
+                                   TimeProvider?      Clock                       = null)
 
             : base(Id,
                    Description,
@@ -194,9 +196,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
+
+            // Not a field initialiser: those run before the constructor and so
+            // cannot reach this node's clock.
+            lastRoutesBroadcast = Now;
 
             this.OCPP = new OCPPAdapter(
                             this,

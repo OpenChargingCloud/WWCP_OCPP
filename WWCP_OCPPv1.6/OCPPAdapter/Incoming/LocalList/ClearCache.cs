@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnClearCacheRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     response ??= await CallProcessor(
                                            OnClearCache,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnClearCacheResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //        await LogEvent(
             //                  OnClearCacheRequestReceived,
             //                  loggingDelegate => loggingDelegate.Invoke(
-            //                      Timestamp.Now,
+            //                      Now,
             //                      parentNetworkingNode,
             //                      WebSocketConnection,
             //                      request,
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //        response ??= await CallProcessor(
             //                               OnClearCache,
             //                               filter => filter.Invoke(
-            //                                             Timestamp.Now,
+            //                                             Now,
             //                                             parentNetworkingNode,
             //                                             WebSocketConnection,
             //                                             request,
@@ -416,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //                               IncludeSignatures: true
             //                           ),
             //                           async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnClearCacheResponseSent(
-            //                                                                Timestamp.Now,
+            //                                                                Now,
             //                                                                parentNetworkingNode,
             //                                                                sentMessageResult.Connection,
             //                                                                request,
@@ -545,7 +545,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnClearCacheResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -648,7 +648,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //await LogEvent(
             //          OnClearCacheResponseReceived,
             //          loggingDelegate => loggingDelegate.Invoke(
-            //              Timestamp.Now,
+            //              Now,
             //              parentNetworkingNode,
             //              WebSocketConnection,
             //              Request,
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       ClearCacheRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -737,7 +737,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnClearCacheResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -787,7 +787,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //await LogEvent(
             //          ClearCacheRequestErrorReceived,
             //          loggingDelegate => loggingDelegate.Invoke(
-            //              Timestamp.Now,
+            //              Now,
             //              parentNetworkingNode,
             //              Connection,
             //              Request,
@@ -816,7 +816,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnClearCacheResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -877,7 +877,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       ClearCacheResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

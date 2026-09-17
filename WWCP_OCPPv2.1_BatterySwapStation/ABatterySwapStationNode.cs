@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?          CSMSTime                    { get; private set; } = Timestamp.Now;
+        public DateTimeOffset?          CSMSTime                    { get; private set; } = Now;
 
 
         public HTTPAPI?                 HTTPAPI                     { get; }
@@ -628,7 +628,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                        TimeSpan?                          MaintenanceEvery               = null,
 
                                        CustomData?                        CustomData                     = null,
-                                       DNSClient?                         DNSClient                      = null)
+                                       DNSClient?                         DNSClient                      = null,
+
+                                       TimeProvider?                      Clock                          = null)
 
             : base(Id,
                    Description,
@@ -659,7 +661,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 
@@ -945,7 +948,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                            CustomData:         null, //CustomData
 
                            RequestId:          null, //RequestId        ?? ChargingStation.NextRequestId
-                           RequestTimestamp:   null, //RequestTimestamp ?? Timestamp.Now
+                           RequestTimestamp:   null, //RequestTimestamp ?? Now
                            RequestTimeout:     null  //RequestTimeout   ?? ChargingStation.DefaultRequestTimeout
 
                         )

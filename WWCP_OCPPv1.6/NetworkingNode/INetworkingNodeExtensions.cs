@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         //                   Signatures,
 
         //                   RequestId        ?? NetworkingNode.NextRequestId,
-        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimestamp ?? NetworkingNode.Now,
         //                   RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
         //                   EventTrackingId  ?? EventTracking_Id.New,
         //                   NetworkPath.From(NetworkingNode.Id),
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         //                   Signatures,
 
         //                   RequestId        ?? NetworkingNode.NextRequestId,
-        //                   RequestTimestamp ?? Timestamp.Now,
+        //                   RequestTimestamp ?? NetworkingNode.Now,
         //                   EventTrackingId  ?? EventTracking_Id.New,
         //                   NetworkPath.From(NetworkingNode.Id),
         //                   SerializationFormat,

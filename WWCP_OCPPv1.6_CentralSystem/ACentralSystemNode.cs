@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?             CSMSTime                          { get; set; } = Timestamp.Now;
+        public DateTimeOffset?             CSMSTime                          { get; set; }
 
 
         //public HTTPAPI?                    HTTPAPI                           { get; }
@@ -1263,7 +1263,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
                                   TimeSpan?                      MaintenanceEvery                   = null,
 
                                   ISMTPSubmissionClient?         SMTPSubmissionClient               = null,
-                                  IDNSClient?                    DNSClient                          = null)
+                                  IDNSClient?                    DNSClient                          = null,
+
+                                  TimeProvider?                  Clock                              = null)
 
             : base(Id,
                    Description,
@@ -1296,9 +1298,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
 
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
+
+            // Not a property initialiser: those run before the constructor
+            // and so cannot reach this node's clock. Until a CSMS says
+            // otherwise, the time this node was built is the best guess.
+            CSMSTime = Now;
 
             if (VendorName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
@@ -2096,7 +2104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
 
             var OnChargeBoxAddedLocal = OnChargeBoxAdded;
             if (OnChargeBoxAddedLocal is not null)
-                await OnChargeBoxAddedLocal.Invoke(Timestamp.Now,
+                await OnChargeBoxAddedLocal.Invoke(Now,
                                                    ChargeBox,
                                                    eventTrackingId,
                                                    CurrentUserId);
@@ -2267,7 +2275,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
 
             var OnChargeBoxAddedLocal = OnChargeBoxAdded;
             if (OnChargeBoxAddedLocal is not null)
-                await OnChargeBoxAddedLocal.Invoke(Timestamp.Now,
+                await OnChargeBoxAddedLocal.Invoke(Now,
                                                    ChargeBox,
                                                    eventTrackingId,
                                                    CurrentUserId);
@@ -2442,7 +2450,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
 
                 var OnChargeBoxAddedLocal = OnChargeBoxAdded;
                 if (OnChargeBoxAddedLocal is not null)
-                    await OnChargeBoxAddedLocal.Invoke(Timestamp.Now,
+                    await OnChargeBoxAddedLocal.Invoke(Now,
                                                        ChargeBox,
                                                        eventTrackingId,
                                                        CurrentUserId);
@@ -2467,7 +2475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
 
             var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
             if (OnChargeBoxUpdatedLocal is not null)
-                await OnChargeBoxUpdatedLocal.Invoke(Timestamp.Now,
+                await OnChargeBoxUpdatedLocal.Invoke(Now,
                                                      ChargeBox,
                                                      OldChargeBoxAccess.ChargeBox,
                                                      ChargeBoxAccessType,
@@ -2751,7 +2759,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
 
             var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
             if (OnChargeBoxUpdatedLocal is not null)
-                await OnChargeBoxUpdatedLocal.Invoke(Timestamp.Now,
+                await OnChargeBoxUpdatedLocal.Invoke(Now,
                                                      ChargeBox,
                                                      OldChargeBox,
                                                      ChargeBoxAccessType,
@@ -2921,7 +2929,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
 
             var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
             if (OnChargeBoxUpdatedLocal is not null)
-                await OnChargeBoxUpdatedLocal.Invoke(Timestamp.Now,
+                await OnChargeBoxUpdatedLocal.Invoke(Now,
                                                      updatedChargeBox,
                                                      ChargeBox,
                                                      ChargeBoxAccessType,
@@ -3147,7 +3155,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
 
             var OnChargeBoxDeletedLocal = OnChargeBoxDeleted;
             if (OnChargeBoxDeletedLocal is not null)
-                await OnChargeBoxDeletedLocal.Invoke(Timestamp.Now,
+                await OnChargeBoxDeletedLocal.Invoke(Now,
                                                      ChargeBox,
                                                      eventTrackingId,
                                                      CurrentUserId);

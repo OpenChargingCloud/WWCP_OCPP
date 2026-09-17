@@ -118,7 +118,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                             TimeSpan?                         MaintenanceEvery                        = null,
 
                             ISMTPSubmissionClient?            SMTPSubmissionClient                    = null,
-                            DNSClient?                        DNSClient                               = null)
+                            DNSClient?                        DNSClient                               = null,
+
+                            TimeProvider?                     Clock                                   = null)
 
             : base(Id,
                    VendorName,
@@ -173,7 +175,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                    MaintenanceEvery,
 
                    SMTPSubmissionClient,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 
@@ -334,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                     await Task.Delay(100);
 
                                     var secureRandom  = new SecureRandom();
-                                    var now           = Timestamp.Now;
+                                    var now           = Now;
 
                                     var certificateGenerator = new X509V3CertificateGenerator();
                                     certificateGenerator.SetIssuerDN    (ClientCACertificate.SubjectDN);
@@ -477,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                Request:               request,
                                NetworkPath:           NetworkPath.From(Id),
                                Status:                RegistrationStatus.Accepted,
-                               CurrentTime:           Timestamp.Now,
+                               CurrentTime:           Now,
                                Interval:              TimeSpan.FromMinutes(5),
                                SerializationFormat:   request.SerializationFormat
                            )
@@ -524,7 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                 return Task.FromResult(
                            new HeartbeatResponse(
                                Request:       request,
-                               CurrentTime:   Timestamp.Now,
+                               CurrentTime:   Now,
                                CustomData:    null
                            )
                        );

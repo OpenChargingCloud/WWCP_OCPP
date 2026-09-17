@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -499,7 +499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -563,7 +563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            Signatures,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -689,7 +689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),
@@ -757,7 +757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EM
                            CustomData,
 
                            RequestId        ?? EnergyMeter.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? EnergyMeter.Now,
                            RequestTimeout   ?? EnergyMeter.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.From(EnergyMeter.Id),

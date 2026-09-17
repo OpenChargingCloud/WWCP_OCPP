@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                                  sentMessageResult => LogEvent(
                                                                      OnGetInstalledCertificateIdsRequestSent,
                                                                      loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         Now,
                                                                          parentNetworkingNode,
                                                                          sentMessageResult.Connection,
                                                                          Request,
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         //                                         sentMessageResult => LogEvent(
                         //                                             OnGetInstalledCertificateIdsRequestSent,
                         //                                             loggingDelegate => loggingDelegate.Invoke(
-                        //                                                 Timestamp.Now,
+                        //                                                 Now,
                         //                                                 parentNetworkingNode,
                         //                                                 sentMessageResult.Connection,
                         //                                                 Request,
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         //        response ??= new GetInstalledCertificateIdsResponse(
                         //                         Request,
                         //                         RegistrationStatus.Rejected,
-                        //                         Timestamp.Now,
+                        //                         Now,
                         //                         GetInstalledCertificateIdsResponse.DefaultInterval,
                         //                         Result: Result.FromSendRequestState(sendRequestState)
                         //                     );
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             //                                     sentMessageResult => LogEvent(
                             //                                         OnGetInstalledCertificateIdsRequestSent,
                             //                                         loggingDelegate => loggingDelegate.Invoke(
-                            //                                             Timestamp.Now,
+                            //                                             Now,
                             //                                             parentNetworkingNode,
                             //                                             sentMessageResult.Connection,
                             //                                             Request,
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             //    response ??= new GetInstalledCertificateIdsResponse(
                             //                     Request,
                             //                     RegistrationStatus.Rejected,
-                            //                     Timestamp.Now,
+                            //                     Now,
                             //                     GetInstalledCertificateIdsResponse.DefaultInterval,
                             //                     Result: Result.FromSendRequestState(sendRequestState)
                             //                 );

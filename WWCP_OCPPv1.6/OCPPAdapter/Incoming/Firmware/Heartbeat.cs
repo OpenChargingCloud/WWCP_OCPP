@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     await LogEvent(
                               OnHeartbeatRequestReceived,
                               loggingDelegate => loggingDelegate.Invoke(
-                                  Timestamp.Now,
+                                  Now,
                                   parentNetworkingNode,
                                   WebSocketConnection,
                                   request,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     response ??= await CallProcessor(
                                            OnHeartbeat,
                                            filter => filter.Invoke(
-                                                         Timestamp.Now,
+                                                         Now,
                                                          parentNetworkingNode,
                                                          WebSocketConnection,
                                                          request,
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                            parentNetworkingNode.OCPP.CustomCustomDataSerializer
                                        ),
                                        async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnHeartbeatResponseSent(
-                                                                            Timestamp.Now,
+                                                                            Now,
                                                                             parentNetworkingNode,
                                                                             sentMessageResult.Connection,
                                                                             request,
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //        await LogEvent(
             //                  OnHeartbeatRequestReceived,
             //                  loggingDelegate => loggingDelegate.Invoke(
-            //                      Timestamp.Now,
+            //                      Now,
             //                      parentNetworkingNode,
             //                      WebSocketConnection,
             //                      request,
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //        response ??= await CallProcessor(
             //                               OnHeartbeat,
             //                               filter => filter.Invoke(
-            //                                             Timestamp.Now,
+            //                                             Now,
             //                                             parentNetworkingNode,
             //                                             WebSocketConnection,
             //                                             request,
@@ -417,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //                               IncludeSignatures: true
             //                           ),
             //                           async sentMessageResult => await parentNetworkingNode.OCPP.OUT.SendOnHeartbeatResponseSent(
-            //                                                                Timestamp.Now,
+            //                                                                Now,
             //                                                                parentNetworkingNode,
             //                                                                sentMessageResult.Connection,
             //                                                                request,
@@ -546,7 +546,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnHeartbeatResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           WebSocketConnection,
                           Request,
@@ -649,7 +649,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //await LogEvent(
             //          OnHeartbeatResponseReceived,
             //          loggingDelegate => loggingDelegate.Invoke(
-            //              Timestamp.Now,
+            //              Now,
             //              parentNetworkingNode,
             //              WebSocketConnection,
             //              Request,
@@ -709,7 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       HeartbeatRequestErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -738,7 +738,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnHeartbeatResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -788,7 +788,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             //await LogEvent(
             //          HeartbeatRequestErrorReceived,
             //          loggingDelegate => loggingDelegate.Invoke(
-            //              Timestamp.Now,
+            //              Now,
             //              parentNetworkingNode,
             //              Connection,
             //              Request,
@@ -817,7 +817,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       OnHeartbeatResponseReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,
@@ -878,7 +878,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             await LogEvent(
                       HeartbeatResponseErrorReceived,
                       loggingDelegate => loggingDelegate.Invoke(
-                          Timestamp.Now,
+                          Now,
                           parentNetworkingNode,
                           Connection,
                           Request,

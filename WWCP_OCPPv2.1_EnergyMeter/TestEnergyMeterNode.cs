@@ -89,7 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                                    Boolean            DisableMaintenanceTasks        = false,
                                    TimeSpan?          MaintenanceEvery               = null,
-                                   DNSClient?         DNSClient                      = null)
+                                   DNSClient?         DNSClient                      = null,
+
+                                   TimeProvider?      Clock                          = null)
 
             : base(Id,
                    VendorName,
@@ -124,7 +126,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,
-                   DNSClient)
+                   DNSClient,
+                   Clock)
 
         {
 

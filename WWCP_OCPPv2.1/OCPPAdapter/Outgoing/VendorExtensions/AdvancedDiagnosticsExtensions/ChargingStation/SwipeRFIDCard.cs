@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                  sentMessageResult => LogEvent(
                                                                      OnSwipeRFIDCardRequestSent,
                                                                      loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         Now,
                                                                          parentNetworkingNode,
                                                                          sentMessageResult.Connection,
                                                                          Request,
@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         //                                         sentMessageResult => LogEvent(
                         //                                             OnSwipeRFIDCardRequestSent,
                         //                                             loggingDelegate => loggingDelegate.Invoke(
-                        //                                                 Timestamp.Now,
+                        //                                                 Now,
                         //                                                 parentNetworkingNode,
                         //                                                 sentMessageResult.Connection,
                         //                                                 Request,
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         //        response ??= new SwipeRFIDCardResponse(
                         //                         Request,
                         //                         RegistrationStatus.Rejected,
-                        //                         Timestamp.Now,
+                        //                         Now,
                         //                         SwipeRFIDCardResponse.DefaultInterval,
                         //                         Result: Result.FromSendRequestState(sendRequestState)
                         //                     );
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //                                     sentMessageResult => LogEvent(
                             //                                         OnSwipeRFIDCardRequestSent,
                             //                                         loggingDelegate => loggingDelegate.Invoke(
-                            //                                             Timestamp.Now,
+                            //                                             Now,
                             //                                             parentNetworkingNode,
                             //                                             sentMessageResult.Connection,
                             //                                             Request,
@@ -437,7 +437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //    response ??= new SwipeRFIDCardResponse(
                             //                     Request,
                             //                     RegistrationStatus.Rejected,
-                            //                     Timestamp.Now,
+                            //                     Now,
                             //                     SwipeRFIDCardResponse.DefaultInterval,
                             //                     Result: Result.FromSendRequestState(sendRequestState)
                             //                 );
