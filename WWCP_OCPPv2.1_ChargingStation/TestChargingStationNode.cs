@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        TimeSpan?               MaintenanceEvery               = null,
 
                                        CustomData?             CustomData                     = null,
-                                       DNSClient?              DNSClient                      = null)
+                                       IDNSClient?             DNSClient                      = null)
 
             : base(Id,
                    VendorName,

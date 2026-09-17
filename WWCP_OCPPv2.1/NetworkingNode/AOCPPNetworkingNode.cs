@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                    Boolean            DisableMaintenanceTasks     = false,
                                    TimeSpan?          MaintenanceEvery            = null,
-                                   DNSClient?         DNSClient                   = null)
+                                   IDNSClient?        DNSClient                   = null)
 
             : base(Id,
                    Description,

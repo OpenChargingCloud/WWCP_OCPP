@@ -553,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 TimeSpan?                          MaintenanceEvery               = null,
 
                                 CustomData?                        CustomData                     = null,
-                                DNSClient?                         DNSClient                      = null)
+                                IDNSClient?                        DNSClient                      = null)
 
             : base(ChargeBoxId,
                    Description,

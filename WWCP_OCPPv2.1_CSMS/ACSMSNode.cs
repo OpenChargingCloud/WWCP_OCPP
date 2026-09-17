@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          TimeSpan?                         MaintenanceEvery                        = null,
 
                          ISMTPSubmissionClient?            SMTPSubmissionClient                    = null,
-                         DNSClient?                        DNSClient                               = null)
+                         IDNSClient?                       DNSClient                               = null)
 
             : base(Id,
                    Description,

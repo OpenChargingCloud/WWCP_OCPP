@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                    TimeSpan?                                                       ConnectionTimeout            = null,
                                    UInt32?                                                         MaxClientConnections         = null,
 
-                                   DNSClient?                                                      DNSClient                    = null,
+                                   IDNSClient?                                                     DNSClient                    = null,
                                    Boolean                                                         AutoStart                    = true)
 
             : base(NetworkingNode,

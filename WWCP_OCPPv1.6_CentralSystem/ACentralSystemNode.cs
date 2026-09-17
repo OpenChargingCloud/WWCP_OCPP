@@ -1263,7 +1263,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CentralSystem
                                   TimeSpan?                      MaintenanceEvery                   = null,
 
                                   ISMTPSubmissionClient?         SMTPSubmissionClient               = null,
-                                  DNSClient?                     DNSClient                          = null)
+                                  IDNSClient?                    DNSClient                          = null)
 
             : base(Id,
                    Description,
