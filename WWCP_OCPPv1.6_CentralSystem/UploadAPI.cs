@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Created,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CentralSystem.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                  Connection                 = ConnectionType.Close
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.InternalServerError,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CentralSystem.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Created,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CentralSystem.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                  Connection                 = ConnectionType.Close
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       return new HTTPResponse.Builder(Request) {
                                                  HTTPStatusCode             = HTTPStatusCode.InternalServerError,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CentralSystem.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,

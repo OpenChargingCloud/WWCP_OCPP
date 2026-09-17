@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                new HTTPResponse.Builder(request) {
                                    HTTPStatusCode             = HTTPStatusCode.OK,
                                    Server                     = HTTPServiceName,
-                                   Date                       = Timestamp.Now,
+                                   Date                       = chargingStation.Now,
                                    AccessControlAllowOrigin   = "*",
                                    AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],

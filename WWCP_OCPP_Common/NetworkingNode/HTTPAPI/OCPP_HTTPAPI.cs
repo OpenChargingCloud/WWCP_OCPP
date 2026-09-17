@@ -1151,14 +1151,14 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
                     var systemInfo = JSONObject.Create(
                                          new JProperty("id",     networkingNode.Id.ToString()),
-                                         new JProperty("time",   Timestamp.Now.    ToISO8601())
+                                         new JProperty("time",   networkingNode.Now.    ToISO8601())
                                      );
 
                     return Task.FromResult(
                                new HTTPResponse.Builder(request) {
                                    HTTPStatusCode             = HTTPStatusCode.OK,
                                    Server                     = HTTPServiceName,
-                                   Date                       = Timestamp.Now,
+                                   Date                       = networkingNode.Now,
                                    AccessControlAllowOrigin   = "*",
                                    AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
@@ -1249,7 +1249,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                new HTTPResponse.Builder(request) {
                                    HTTPStatusCode             = HTTPStatusCode.OK,
                                    Server                     = HTTPServiceName,
-                                   Date                       = Timestamp.Now,
+                                   Date                       = networkingNode.Now,
                                    AccessControlAllowOrigin   = "*",
                                    AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],
@@ -1349,7 +1349,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                new HTTPResponse.Builder(request) {
                                    HTTPStatusCode             = HTTPStatusCode.OK,
                                    Server                     = HTTPServiceName,
-                                   Date                       = Timestamp.Now,
+                                   Date                       = networkingNode.Now,
                                    AccessControlAllowOrigin   = "*",
                                    AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                    AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],

@@ -1416,7 +1416,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       new HTTPResponse.Builder(request) {
                                           HTTPStatusCode             = HTTPStatusCode.OK,
                                           Server                     = DefaultHTTPServerName,
-                                          Date                       = Timestamp.Now,
+                                          Date                       = CentralSystem.Now,
                                           AccessControlAllowOrigin   = "*",
                                           AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                           AccessControlAllowHeaders  = [ "Authorization" ],
@@ -1443,7 +1443,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       new HTTPResponse.Builder(request) {
                                           HTTPStatusCode             = HTTPStatusCode.OK,
                                           Server                     = DefaultHTTPServerName,
-                                          Date                       = Timestamp.Now,
+                                          Date                       = CentralSystem.Now,
                                           AccessControlAllowOrigin   = "*",
                                           AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                           AccessControlAllowHeaders  = [ "Authorization" ],
@@ -1499,7 +1499,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       new HTTPResponse.Builder(request) {
                                           HTTPStatusCode             = HTTPStatusCode.OK,
                                           Server                     = DefaultHTTPServerName,
-                                          Date                       = Timestamp.Now,
+                                          Date                       = CentralSystem.Now,
                                           AccessControlAllowOrigin   = "*",
                                           AccessControlAllowMethods  = [ HTTPMethod.OPTIONS, HTTPMethod.GET ],
                                           AccessControlAllowHeaders  = [ "Authorization" ],
@@ -1544,7 +1544,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                              new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.OK,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CentralSystem.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                                  AccessControlAllowHeaders  = [ "Content-Type", "Accept", "Authorization" ],

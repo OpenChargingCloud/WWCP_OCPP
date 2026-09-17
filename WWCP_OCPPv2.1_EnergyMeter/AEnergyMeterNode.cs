@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTimeOffset?             CSMSTime                   { get; set; } = Now;
+        public DateTimeOffset?             CSMSTime                   { get; set; }
 
 
 
@@ -180,6 +180,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                    Clock)
 
         {
+
+            // Not a property initialiser: those run before the constructor
+            // and so cannot reach this node's clock. Until a CSMS says
+            // otherwise, the time this node was built is the best guess.
+            CSMSTime = Now;
 
             if (VendorName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");

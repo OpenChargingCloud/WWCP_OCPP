@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = CSMSNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                                      Connection                 = ConnectionType.Close
@@ -230,11 +230,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                                                   : [];
 
                                       await SendFileDownloaded(
-                                                Timestamp.Now,
+                                                CSMSNode.Now,
                                                 new DownloadedFileInfos(
                                                     fileName,
                                                     (UInt64) fileContent.Length,
-                                                    Timestamp.Now
+                                                    CSMSNode.Now
                                                 ),
                                                 request.CancellationToken
                                             );
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.OK,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CSMSNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                                  ContentType                = HTTPContentType.ForFileExtension(
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.InternalServerError,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CSMSNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.GET ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                     await Task.WhenAll(onDownloadException.GetInvocationList().
                                            OfType<DownloadErrorDelegate>().
                                            Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         CSMSNode.Now,
                                                                          Module,
                                                                          Caller,
                                                                          ErrorResponse,
@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                     await Task.WhenAll(onDownloadException.GetInvocationList().
                                            OfType<DownloadExceptionDelegate>().
                                            Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         CSMSNode.Now,
                                                                          Module,
                                                                          Caller,
                                                                          ExceptionOccurred,

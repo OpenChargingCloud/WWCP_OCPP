@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 webPaymentsController.Enabled == true &&
                 webPaymentsController.URLTemplate.HasValue &&
                 webPaymentsController.SharedSecret.IsNotNullOrEmpty() &&
-                (!WebPaymentsEndTime.HasValue || Timestamp.Now > WebPaymentsEndTime.Value == true))
+                (!WebPaymentsEndTime.HasValue || parentChargingStation.Now > WebPaymentsEndTime.Value == true))
             {
 
                 var (url,
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 await LogEvent(
                           OnWebPaymentURLChanged,
                           logger => logger.Invoke(
-                                        Timestamp.Now,
+                                        parentChargingStation.Now,
                                         Id,
                                         WebPaymentsURL,
                                         remainingTime,

@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            Signatures,
 
                            RequestId        ?? NetworkingNode.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? NetworkingNode.Now,
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath.Empty,
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            Signatures,
 
                            RequestId        ?? NetworkingNode.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? NetworkingNode.Now,
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            CustomData,
 
                            RequestId        ?? NetworkingNode.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? NetworkingNode.Now,
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            CustomData,
 
                            RequestId        ?? NetworkingNode.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? NetworkingNode.Now,
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            CustomData,
 
                            RequestId        ?? NetworkingNode.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? NetworkingNode.Now,
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            CustomData,
 
                            RequestId        ?? NetworkingNode.OCPP.NextRequestId,
-                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimestamp ?? NetworkingNode.Now,
                            RequestTimeout   ?? NetworkingNode.OCPP.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
                            NetworkPath      ?? NetworkPath.From(NetworkingNode.Id),

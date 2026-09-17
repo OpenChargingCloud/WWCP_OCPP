@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
 
             var auth = new FileUploadAuthentication(
                            RandomExtensions.RandomString(Length),
-                           Timestamp.Now + (Timeout ?? TimeSpan.FromMinutes(15))
+                           CSMSNode.Now + (Timeout ?? TimeSpan.FromMinutes(15))
                        );
 
             validFileUploadAuths.Add(auth.PathPrefix,
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = CSMSNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.Forbidden,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = CSMSNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = CSMSNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                      Connection                 = ConnectionType.Close
@@ -277,9 +277,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                       fileStream.Close();
 
                                       await SendUploadedFileInfo(
-                                                Timestamp.Now,
+                                                CSMSNode.Now,
                                                 new UploadedFileInfos(
-                                                    Timestamp.Now,
+                                                    CSMSNode.Now,
                                                     fileName,
                                                     fileLength
                                                 ),
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Created,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CSMSNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                  Connection                 = ConnectionType.Close
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.InternalServerError,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CSMSNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.PUT ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = CSMSNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.Forbidden,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = CSMSNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                           return new HTTPResponse.Builder(request) {
                                                      HTTPStatusCode             = HTTPStatusCode.BadRequest,
                                                      Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
+                                                     Date                       = CSMSNode.Now,
                                                      AccessControlAllowOrigin   = "*",
                                                      AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                      Connection                 = ConnectionType.Close
@@ -389,9 +389,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                       fileStream.Close();
 
                                       await SendUploadedFileInfo(
-                                                Timestamp.Now,
+                                                CSMSNode.Now,
                                                 new UploadedFileInfos(
-                                                    Timestamp.Now,
+                                                    CSMSNode.Now,
                                                     fileName,
                                                     fileLength
                                                 ),
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.Created,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CSMSNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                  Connection                 = ConnectionType.Close
@@ -422,7 +422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                                       return new HTTPResponse.Builder(request) {
                                                  HTTPStatusCode             = HTTPStatusCode.InternalServerError,
                                                  Server                     = DefaultHTTPServerName,
-                                                 Date                       = Timestamp.Now,
+                                                 Date                       = CSMSNode.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = [ HTTPMethod.POST ],
                                                  ContentType                = HTTPContentType.Text.PLAIN,
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                     await Task.WhenAll(onUploadException.GetInvocationList().
                                            OfType<UploadErrorDelegate>().
                                            Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         CSMSNode.Now,
                                                                          Module,
                                                                          Caller,
                                                                          ErrorResponse,
@@ -499,7 +499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CMS
                     await Task.WhenAll(onUploadException.GetInvocationList().
                                            OfType<UploadExceptionDelegate>().
                                            Select(loggingDelegate => loggingDelegate.Invoke(
-                                                                         Timestamp.Now,
+                                                                         CSMSNode.Now,
                                                                          Module,
                                                                          Caller,
                                                                          ExceptionOccurred,
