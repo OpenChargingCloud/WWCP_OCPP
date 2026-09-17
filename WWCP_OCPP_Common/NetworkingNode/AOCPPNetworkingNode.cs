@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 
 using cloud.charging.open.protocols.WWCP;
@@ -282,8 +283,8 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                  TimeSpan?                                                       WebSocketPingEvery           = null,
                                                                  TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                                                 Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                                                 RemoteTLSClientCertificateValidationHandler<AWebSocketServer>?  ClientCertificateValidator   = null,
+                                                                 ServerCertificateSelectorDelegate?                              ServerCertificateSelector    = null,
+                                                                 RemoteTLSClientCertificateValidationHandler<ITCPServer>?        ClientCertificateValidator   = null,
                                                                  LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                                                  SslProtocols?                                                   AllowedTLSProtocols          = null,
                                                                  Boolean?                                                        ClientCertificateRequired    = null,

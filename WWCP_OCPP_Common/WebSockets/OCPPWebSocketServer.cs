@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
@@ -87,8 +88,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                                    TimeSpan?                                                       WebSocketPingEvery           = null,
                                    TimeSpan?                                                       SlowNetworkSimulationDelay   = null,
 
-                                   Func<X509Certificate2>?                                         ServerCertificateSelector    = null,
-                                   RemoteTLSClientCertificateValidationHandler<AWebSocketServer>?  ClientCertificateValidator   = null,
+                                   ServerCertificateSelectorDelegate?                              ServerCertificateSelector    = null,
+                                   RemoteTLSClientCertificateValidationHandler<ITCPServer>?        ClientCertificateValidator   = null,
                                    LocalCertificateSelectionHandler?                               LocalCertificateSelector     = null,
                                    SslProtocols?                                                   AllowedTLSProtocols          = null,
                                    Boolean?                                                        ClientCertificateRequired    = null,
@@ -118,22 +119,22 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
 
-                   //ServerCertificateSelector,
-                   //ClientCertificateValidator,
-                   //LocalCertificateSelector,
-                   //AllowedTLSProtocols,
-                   //ClientCertificateRequired,
-                   //CheckCertificateRevocation,
+                   ServerCertificateSelector:    ServerCertificateSelector,
+                   ClientCertificateValidator:   ClientCertificateValidator,
+                   LocalCertificateSelector:     LocalCertificateSelector,
+                   AllowedTLSProtocols:          AllowedTLSProtocols,
+                   ClientCertificateRequired:    ClientCertificateRequired,
+                   CheckCertificateRevocation:   CheckCertificateRevocation,
 
                    //ServerThreadNameCreator,
                    //ServerThreadPrioritySetter,
                    //ServerThreadIsBackground,
                    //ConnectionIdBuilder,
                    //ConnectionTimeout,
-                   //MaxClientConnections,
+                   MaxClientConnections:         MaxClientConnections,
 
-                   DNSClient:  DNSClient,
-                   AutoStart:  false)
+                   DNSClient:                    DNSClient,
+                   AutoStart:                    false)
 
         {
 
