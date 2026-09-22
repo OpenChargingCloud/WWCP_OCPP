@@ -37,9 +37,36 @@
     turning that on now would rewrite files nobody asked about.
   -->
 
+  <!--
+    And the same for the stylesheets, which is the same fault twice.
+
+    HTTPRoot/css is generated from the .scss files beside it, gitignored, and
+    embedded as a resource. Six of these projects could therefore not be built
+    at all on a machine where nobody had run compileSASS.sh:
+
+      error CS1566: Fehler beim Lesen der Ressource
+                    "...HTTPRoot.css.events.events.css"
+
+    which names the missing file and not the missing step. A seventh -
+    WWCP_OCPPv2.1_ChargingStation, the one this solution actually uses - built
+    only because those files happened to be lying around from an earlier run.
+    A fresh clone would not have had them, so it was one "git clean" away from
+    the same failure.
+
+    That script needed "sass" and "jq" installed globally, the same
+    arrangement that made "tsc" fail, so it gets the same answer: sass pinned
+    in package.json, the work in compileSASS.mjs at the repository root, and
+    the build runs it. One copy rather than eleven beside the projects,
+    because eleven copies of a thing this small are eleven chances to fix nine
+    of them.
+
+    NodeToolsRoot rather than TypeScriptRoot: it holds two tools now.
+  -->
+
   <PropertyGroup>
-    <TypeScriptRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</TypeScriptRoot>
-    <TypeScriptCompiler>$(TypeScriptRoot)node_modules/typescript/bin/tsc</TypeScriptCompiler>
+    <NodeToolsRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</NodeToolsRoot>
+    <TypeScriptCompiler>$(NodeToolsRoot)node_modules/typescript/bin/tsc</TypeScriptCompiler>
+    <StylesheetCompiler>$(NodeToolsRoot)compileSASS.mjs</StylesheetCompiler>
   </PropertyGroup>
 
 </Project>

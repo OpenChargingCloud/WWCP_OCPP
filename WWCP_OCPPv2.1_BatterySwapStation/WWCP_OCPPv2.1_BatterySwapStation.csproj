@@ -30,4 +30,15 @@
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
   </ItemGroup>
 
+  <!-- The compiler comes with the repository rather than from whichever
+       machine is building; Directory.Build.targets at the repository root
+       says why, and package.json beside it pins the version. No TypeScript
+       step here: this project has a tsconfig.json it has never compiled as
+       part of a build, and turning that on now would rewrite files nobody
+       asked about. -->
+  <Target Name="CompileWebAssets" BeforeTargets="PreBuildEvent" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec Command="npm ci" WorkingDirectory="$(NodeToolsRoot)" Condition="!Exists('$(NodeToolsRoot)node_modules')" />
+    <Exec Command="node &quot;$(StylesheetCompiler)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
 </Project>
