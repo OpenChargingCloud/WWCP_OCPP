@@ -1,0 +1,83 @@
+<Project>
+
+  <!--
+    Where this assembly came from, recorded while it is being built.
+
+    A launcher that reads git at startup describes the working tree as it is at
+    startup. This describes the tree the code was actually compiled from, which
+    is not the same thing: build at one commit, check out another, start without
+    rebuilding, and a launcher reports the commit that is checked out while the
+    running code is the one before it. A version in a bug report that looks
+    right and is wrong costs more than no version at all.
+
+    Both values are asked of git rather than written down here, so this file is
+    byte-identical in every repository that carries it and cannot name the wrong
+    one - including for a project that reaches it from a repository of its own,
+    further down, which has no such file yet.
+
+    rev-parse rather than describe, for two reasons. describe answers with a tag
+    once a repository has any, and what is wanted here is a commit. And its
+    dirty marker only sees tracked files: an SDK project compiles every .cs in
+    its directory, so a source file that was never added to git is in the build
+    while describe still calls the tree clean. That is the one case this stamp
+    exists to catch, so the marker is taken from status instead, which sees it.
+
+    The status lines are counted as items and never expanded into a condition.
+    A file name holding a quote would otherwise take the condition apart, and a
+    build that breaks over somebody's file name is a poor way to learn that.
+
+    Without git - a source archive, a build machine with no client - the Execs
+    fail, ContinueOnError keeps the build going, and the stamp reads "unknown".
+    A missing provenance is not a reason to be unable to build.
+  -->
+
+  <Target Name="StampGitProvenance"
+          BeforeTargets="GetAssemblyAttributes">
+
+    <Exec Command="git -C &quot;$(MSBuildProjectDirectory)&quot; rev-parse --show-toplevel"
+          ConsoleToMSBuild="true"
+          StandardOutputImportance="low"
+          StandardErrorImportance="low"
+          ContinueOnError="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_GitToplevel" />
+    </Exec>
+
+    <Exec Command="git -C &quot;$(MSBuildProjectDirectory)&quot; rev-parse HEAD"
+          ConsoleToMSBuild="true"
+          StandardOutputImportance="low"
+          StandardErrorImportance="low"
+          ContinueOnError="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_GitHead" />
+    </Exec>
+
+    <Exec Command="git -C &quot;$(MSBuildProjectDirectory)&quot; status --porcelain"
+          ConsoleToMSBuild="true"
+          StandardOutputImportance="low"
+          StandardErrorImportance="low"
+          ContinueOnError="true">
+      <Output TaskParameter="ConsoleOutput" ItemName="_GitStatusLine" />
+    </Exec>
+
+    <PropertyGroup>
+      <_GitChangedFiles>@(_GitStatusLine->Count())</_GitChangedFiles>
+      <_GitRepository Condition="'$(_GitToplevel)' != ''">$([System.IO.Path]::GetFileName($(_GitToplevel.Trim())))</_GitRepository>
+      <_GitRepository Condition="'$(_GitRepository)' == ''">unknown</_GitRepository>
+      <_GitCommit     Condition="'$(_GitHead)' != ''">$(_GitHead.Trim())</_GitCommit>
+      <_GitCommit     Condition="'$(_GitCommit)' != '' and '$(_GitChangedFiles)' != '0'">$(_GitCommit)-dirty</_GitCommit>
+      <_GitCommit     Condition="'$(_GitCommit)' == ''">unknown</_GitCommit>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>GitRepository</_Parameter1>
+        <_Parameter2>$(_GitRepository)</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>GitCommit</_Parameter1>
+        <_Parameter2>$(_GitCommit)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+
+  </Target>
+
+</Project>
