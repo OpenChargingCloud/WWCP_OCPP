@@ -69,4 +69,38 @@
     <StylesheetCompiler>$(NodeToolsRoot)compileSASS.mjs</StylesheetCompiler>
   </PropertyGroup>
 
+  <!--
+    "npm ci" when what it installs has changed, and not otherwise.
+
+    The first attempt asked only whether node_modules existed, and that was
+    wrong in the one case that was certain to happen: a machine that had
+    already built with the TypeScript compiler had the directory, so when
+    package.json gained sass the install was skipped and the build died with
+
+      [ERR_MODULE_NOT_FOUND]: Cannot find package 'sass'
+
+    on a tree where package-lock.json plainly named it. Reported from a Linux
+    machine within the hour, and reproducible here by deleting one package out
+    of node_modules.
+
+    So the lock file is the input and a stamp inside node_modules is the
+    output, which is what MSBuild's own up-to-date check is for: touch the
+    lock, the install runs; leave it alone and it does not, whatever else is
+    in the directory.
+
+    Two projects building in parallel on a tree that has never installed could
+    both start "npm ci" in this directory. The window is the first build only,
+    and npm ci is atomic enough about its own directory that the loser
+    reinstalls rather than corrupts, so this is left as it is rather than
+    wrapped in a lock MSBuild has no primitive for.
+  -->
+
+  <Target Name="RestoreNodeTools"
+          Condition="'$(DesignTimeBuild)' != 'true'"
+          Inputs="$(NodeToolsRoot)package-lock.json"
+          Outputs="$(NodeToolsRoot)node_modules/.npm-ci-stamp">
+    <Exec Command="npm ci" WorkingDirectory="$(NodeToolsRoot)" />
+    <Touch Files="$(NodeToolsRoot)node_modules/.npm-ci-stamp" AlwaysCreate="true" />
+  </Target>
+
 </Project>

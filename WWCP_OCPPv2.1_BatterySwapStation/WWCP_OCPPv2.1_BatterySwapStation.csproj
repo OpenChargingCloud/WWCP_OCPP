@@ -36,8 +36,7 @@
        step here: this project has a tsconfig.json it has never compiled as
        part of a build, and turning that on now would rewrite files nobody
        asked about. -->
-  <Target Name="CompileWebAssets" BeforeTargets="PreBuildEvent" Condition="'$(DesignTimeBuild)' != 'true'">
-    <Exec Command="npm ci" WorkingDirectory="$(NodeToolsRoot)" Condition="!Exists('$(NodeToolsRoot)node_modules')" />
+  <Target Name="CompileWebAssets" BeforeTargets="PreBuildEvent" DependsOnTargets="RestoreNodeTools" Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec Command="node &quot;$(StylesheetCompiler)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 

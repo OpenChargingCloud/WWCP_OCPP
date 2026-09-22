@@ -54,8 +54,7 @@
   <!-- The compilers come with the repository rather than from whichever
        machine is building; Directory.Build.targets at the repository root
        says why, and package.json beside it pins their versions. -->
-  <Target Name="CompileWebAssets" BeforeTargets="PreBuildEvent" Condition="'$(DesignTimeBuild)' != 'true'">
-    <Exec Command="npm ci" WorkingDirectory="$(NodeToolsRoot)" Condition="!Exists('$(NodeToolsRoot)node_modules')" />
+  <Target Name="CompileWebAssets" BeforeTargets="PreBuildEvent" DependsOnTargets="RestoreNodeTools" Condition="'$(DesignTimeBuild)' != 'true'">
     <Exec Command="node &quot;$(TypeScriptCompiler)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
     <Exec Command="node &quot;$(StylesheetCompiler)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
