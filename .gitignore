@@ -191,3 +191,9 @@ WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/css/events
 !WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/js/*.js
 !WWCP_OCPPv2.1_TimeServer/HTTPAPI/WebAPI/HTTPRoot/js/*.js.map
 
+
+# The TypeScript compiler these projects build their HTTPRoot scripts with.
+# Brought by package.json rather than installed globally, so that every
+# machine compiles with the same version and a build does not depend on what
+# somebody once ran "npm install -g" for.
+node_modules/

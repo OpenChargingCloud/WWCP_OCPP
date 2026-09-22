@@ -1,0 +1,45 @@
+<Project>
+
+  <!--
+    Where the TypeScript compiler comes from.
+
+    The projects that build HTTPRoot scripts used to run a bare "tsc", which
+    means the one installed globally on whichever machine is building. That is
+    wrong twice over.
+
+    It is not there. A fresh Debian with Node.js but no "npm install -g
+    typescript" stops the build with
+
+      error MSB3073: The command "tsc" exited with code 127
+
+    which is the shell saying "no such command" dressed as an MSBuild error,
+    arriving after a dozen projects have already reported success.
+
+    And where it is there, it is whatever version that machine happens to
+    have. The emitted .js files are checked in, so the version decides their
+    bytes. Measured against date.format.js: 5.7.3, 5.8.3 and 5.9.3 reproduce
+    what this repository had committed, while 6.0.3 prefixes "use strict" to
+    it. WWCP_Core's committed output is the other way round - it came from a
+    6.x compiler - so both repositories pin 6.0.3, and the one file that
+    disagreed here was regenerated once and committed. It is a type
+    declaration file whose entire emit is four comment lines, so the line it
+    gained runs nothing.
+
+    A build that changed nothing must leave the working tree clean, and since
+    the build stamp that is doubly true: a tree git calls dirty is a build
+    stamped "-dirty", and a marker nobody believes is worse than no marker.
+    .gitattributes beside this file finishes that job - the compiler writes
+    exactly the bytes that are committed, and core.autocrlf must not rewrite
+    them on the way out.
+
+    Only the projects that already ran tsc use this. Several others carry a
+    tsconfig.json without ever having compiled it as part of a build, and
+    turning that on now would rewrite files nobody asked about.
+  -->
+
+  <PropertyGroup>
+    <TypeScriptRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)'))</TypeScriptRoot>
+    <TypeScriptCompiler>$(TypeScriptRoot)node_modules/typescript/bin/tsc</TypeScriptCompiler>
+  </PropertyGroup>
+
+</Project>

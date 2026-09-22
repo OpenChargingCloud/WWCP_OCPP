@@ -1,0 +1,7 @@
+# Emitted by tsc, which writes exactly these bytes - including the five CRs
+# the source carries. With core.autocrlf=true a checkout would rewrite every
+# other line ending to CRLF, so the compiler output would never match what
+# git expects and these two files would stand as modified after every build,
+# with an empty diff. Left alone in both directions, the round trip is exact.
+WWCP_OCPPv2.1/NetworkingNode/HTTPAPI/HTTPRoot/libs/date.format.js      -text
+WWCP_OCPPv2.1/NetworkingNode/HTTPAPI/HTTPRoot/libs/date.format.js.map  -text

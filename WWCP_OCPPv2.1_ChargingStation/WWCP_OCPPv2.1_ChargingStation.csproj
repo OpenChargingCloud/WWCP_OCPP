@@ -46,8 +46,12 @@
     <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="tsc" />
+  <!-- The compiler comes with the repository rather than from whichever
+       machine is building; Directory.Build.targets at the repository root
+       says why, and package.json beside it pins the version. -->
+  <Target Name="CompileTypeScript" BeforeTargets="PreBuildEvent" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec Command="npm ci" WorkingDirectory="$(TypeScriptRoot)" Condition="!Exists('$(TypeScriptRoot)node_modules')" />
+    <Exec Command="node &quot;$(TypeScriptCompiler)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
 </Project>

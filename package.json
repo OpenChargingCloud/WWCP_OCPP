@@ -1,0 +1,9 @@
+{
+  "name": "wwcp-ocpp-httproot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The TypeScript compiler the OCPP projects build their HTTPRoot scripts with. Here rather than installed globally: a bare 'tsc' in a PreBuild target fails on any machine that never ran 'npm install -g typescript', and where it does exist it is whatever version that machine happens to have - which decides the bytes of the .js files this repository has checked in. Pinned exactly, and to the same version as WWCP_Core, whose committed output only 6.x reproduces. Directory.Build.targets beside this has the measurements.",
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}
