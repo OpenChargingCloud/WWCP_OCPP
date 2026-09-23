@@ -3877,8 +3877,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 // The charging station answers first and sends its follow-up message after that,
-                // on its own. Counting it means waiting for it rather than racing it.
-                await Task.Delay(500);
+                // on its own. Counting it means waiting for it rather than racing it - and waiting
+                // until it has arrived, not for a fixed time: half a second was usually enough and
+                // now and then was not, on a loaded runner and on a quiet machine alike. Ten
+                // seconds is the ceiling, not the expectation; a follow-up that never comes still
+                // fails below, with the counts that say so.
+                async Task FollowUpExchanged(Int32 Exchanges)
+                {
+                    var giveUp = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+                    while (DateTime.UtcNow < giveUp &&
+                          (csms1WebSocketJSONRequestsReceived.            Count < Exchanges ||
+                           csms1WebSocketJSONResponsesSent.               Count < Exchanges ||
+                           chargingStation1WebSocketJSONResponsesReceived.Count < Exchanges))
+                    {
+                        await Task.Delay(20);
+                    }
+                }
+
+                await FollowUpExchanged(1);
 
                 Assert.Multiple(() => {
 
@@ -3915,6 +3931,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                  TransactionId:   startResponse.TransactionId.Value,
                                                  CustomData:      null
                                              );
+
+                    // As after the start: the charging station answers first and sends its
+                    // follow-up message after that, on its own.
+                    await FollowUpExchanged(2);
 
                     Assert.Multiple(() => {
 
