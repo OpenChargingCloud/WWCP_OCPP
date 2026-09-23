@@ -88,19 +88,26 @@
     lock, the install runs; leave it alone and it does not, whatever else is
     in the directory.
 
-    Two projects building in parallel on a tree that has never installed could
-    both start "npm ci" in this directory. The window is the first build only,
-    and npm ci is atomic enough about its own directory that the loser
-    reinstalls rather than corrupts, so this is left as it is rather than
-    wrapped in a lock MSBuild has no primitive for.
+    And once, not once per project. This used to say that two projects
+    starting "npm ci" here at the same moment was a first-build-only window in
+    which the loser merely reinstalls. It was not: npm ci begins by deleting
+    node_modules, so the loser's install pulled the compiler out from under the
+    winner's tsc, which failed with "Cannot find name 'document'" against a
+    tsconfig that lists DOM - and on Windows the two installs fought over open
+    files and died with EPERM. The window is every build in which an install is
+    due, which is every CI runner. restoreNodeTools.mjs beside this does the
+    install under a lock and asks again once it holds it, so the first project
+    installs and the others wait and find nothing left to do.
+
+    Inputs and Outputs stay, as the cheap first question: a build with nothing
+    to install does not start Node for it at all.
   -->
 
   <Target Name="RestoreNodeTools"
           Condition="'$(DesignTimeBuild)' != 'true'"
           Inputs="$(NodeToolsRoot)package-lock.json"
           Outputs="$(NodeToolsRoot)node_modules/.npm-ci-stamp">
-    <Exec Command="npm ci" WorkingDirectory="$(NodeToolsRoot)" />
-    <Touch Files="$(NodeToolsRoot)node_modules/.npm-ci-stamp" AlwaysCreate="true" />
+    <Exec Command="node &quot;$(NodeToolsRoot)restoreNodeTools.mjs&quot;" WorkingDirectory="$(NodeToolsRoot)" />
   </Target>
 
 </Project>
