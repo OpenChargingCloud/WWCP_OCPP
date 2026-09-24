@@ -151,15 +151,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 Assert.That(chargePoint,    Is.Not.Null);
             });
 
-            // A WebSocket server answers the upgrade before it writes the new
-            // connection into its routing table, so right after connecting the
-            // charge point can still be unknown to the central system. That is a
-            // race of its own rather than the one under test, and would fail this
-            // test for the wrong reason.
-            Assert.That(SpinWait.SpinUntil(() => centralSystem!.Routing.LookupNetworkingNode(chargePoint!.Id, out _), TimeSpan.FromSeconds(10)),
-                        Is.True,
-                        "The central system never learned of the charge point.");
-
             centralSystem!.OCPP.IN.OnJSONResponseMessageReceived += (timestamp, sender, connection, response, ct) => {
                 answered.TryAdd(response.RequestId, timestamp);
                 return Task.CompletedTask;

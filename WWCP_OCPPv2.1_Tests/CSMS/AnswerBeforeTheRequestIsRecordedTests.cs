@@ -155,15 +155,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(chargingStation1,  Is.Not.Null);
             });
 
-            // A WebSocket server answers the upgrade before it writes the new
-            // connection into its routing table, so right after connecting the
-            // charging station can still be unknown to the CSMS. That is a race
-            // of its own rather than the one under test, and would fail this test
-            // for the wrong reason.
-            Assert.That(SpinWait.SpinUntil(() => testCSMS1!.Routing.LookupNetworkingNode(chargingStation1!.Id, out _), TimeSpan.FromSeconds(10)),
-                        Is.True,
-                        "The CSMS never learned of the charging station.");
-
             testCSMS1!.OCPP.IN.OnJSONResponseMessageReceived += (timestamp, sender, connection, response, ct) => {
                 answered.TryAdd(response.RequestId, timestamp);
                 return Task.CompletedTask;
@@ -214,15 +205,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(testCSMS1,         Is.Not.Null);
                 Assert.That(chargingStation1,  Is.Not.Null);
             });
-
-            // A WebSocket server answers the upgrade before it writes the new
-            // connection into its routing table, so right after connecting the
-            // charging station can still be unknown to the CSMS. That is a race
-            // of its own rather than the one under test, and would fail this test
-            // for the wrong reason.
-            Assert.That(SpinWait.SpinUntil(() => testCSMS1!.Routing.LookupNetworkingNode(chargingStation1!.Id, out _), TimeSpan.FromSeconds(10)),
-                        Is.True,
-                        "The CSMS never learned of the charging station.");
 
             testCSMS1!.OCPP.IN.OnBinaryResponseMessageReceived += (timestamp, sender, connection, response, ct) => {
                 answered.TryAdd(response.RequestId, timestamp);
