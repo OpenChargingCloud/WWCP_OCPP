@@ -1114,22 +1114,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                                      Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
+            #region 1. Store 'in-flight' request...
+
+            // Before the request is sent, not after: its answer can arrive before
+            // SendJSONRequest has returned. A peer on the same machine answers within
+            // microseconds, the continuation after the await may be scheduled much
+            // later than that, and an answer that finds no request here is dropped
+            // as unknown - leaving the request to wait out its whole timeout for an
+            // answer it has already been given.
+            requests.TryAdd(JSONRequestMessage.RequestId,
+                            SendRequestState.FromJSONRequest(
+                                Now,
+                                JSONRequestMessage.Destination,
+                                JSONRequestMessage.RequestTimeout,
+                                JSONRequestMessage
+                            ));
+
+            #endregion
+
             var sentMessageResult = await SendJSONRequest(JSONRequestMessage, SentMessageResultDelegate);
+
+            // Not sent, so nothing is going to answer it.
+            if (sentMessageResult.Result != SentMessageResults.Success)
+                requests.TryRemove(JSONRequestMessage.RequestId, out _);
 
             if (sentMessageResult.Result == SentMessageResults.Success)
             {
-
-                #region 1. Store 'in-flight' request...
-
-                requests.TryAdd(JSONRequestMessage.RequestId,
-                                SendRequestState.FromJSONRequest(
-                                    Now,
-                                    JSONRequestMessage.Destination,
-                                    JSONRequestMessage.RequestTimeout,
-                                    JSONRequestMessage
-                                ));
-
-                #endregion
 
                 #region 2. Wait for response... or timeout!
 
@@ -1413,22 +1423,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                                                        Action<SentMessageResult>?  SentMessageResultDelegate   = null)
         {
 
+            #region (internal) 1. Store 'in-flight' request...
+
+            // Before the request is sent, not after: its answer can arrive before
+            // SendBinaryRequest has returned. A peer on the same machine answers within
+            // microseconds, the continuation after the await may be scheduled much
+            // later than that, and an answer that finds no request here is dropped
+            // as unknown - leaving the request to wait out its whole timeout for an
+            // answer it has already been given.
+            requests.TryAdd(BinaryRequestMessage.RequestId,
+                            SendRequestState.FromBinaryRequest(
+                                Now,
+                                BinaryRequestMessage.Destination,
+                                BinaryRequestMessage.RequestTimeout,
+                                BinaryRequestMessage
+                            ));
+
+            #endregion
+
             var sentMessageResult = await SendBinaryRequest(BinaryRequestMessage, SentMessageResultDelegate);
+
+            // Not sent, so nothing is going to answer it.
+            if (sentMessageResult.Result != SentMessageResults.Success)
+                requests.TryRemove(BinaryRequestMessage.RequestId, out _);
 
             if (sentMessageResult.Result == SentMessageResults.Success)
             {
-
-                #region (internal) 1. Store 'in-flight' request...
-
-                requests.TryAdd(BinaryRequestMessage.RequestId,
-                                SendRequestState.FromBinaryRequest(
-                                    Now,
-                                    BinaryRequestMessage.Destination,
-                                    BinaryRequestMessage.RequestTimeout,
-                                    BinaryRequestMessage
-                                ));
-
-                #endregion
 
                 #region (internal) 2. Wait for response... or timeout!
 
