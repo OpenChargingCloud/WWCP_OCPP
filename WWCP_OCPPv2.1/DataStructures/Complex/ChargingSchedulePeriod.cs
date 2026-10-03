@@ -529,14 +529,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region PhaseToUse                [optional]
 
+                // A number from 1 to 3, as ToJSON() writes it.
                 if (JSON.ParseOptional("phaseToUse",
                                        "electrical phase to use",
-                                       PhasesToUseExtensions.TryParse,
-                                       out PhasesToUse? PhaseToUse,
+                                       out Byte? phaseToUseNumber,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
+                }
+
+                var PhaseToUse = phaseToUseNumber.HasValue
+                                     ? PhasesToUseExtensions.TryParse(phaseToUseNumber.Value)
+                                     : null;
+
+                if (phaseToUseNumber.HasValue && !PhaseToUse.HasValue)
+                {
+                    ErrorResponse = "The given electrical phase to use '" + phaseToUseNumber.Value + "' is not valid!";
+                    return false;
                 }
 
                 #endregion

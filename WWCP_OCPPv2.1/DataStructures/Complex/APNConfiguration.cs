@@ -291,8 +291,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region OnlyPreferredNetwork    [optional]
 
-                if (JSON.ParseOptional("preferredNetwork",
-                                       "APN authentication method",
+                if (JSON.ParseOptional("useOnlyPreferredNetwork",
+                                       "use only preferred network",
                                        out Boolean? OnlyPreferredNetwork,
                                        out ErrorResponse))
                 {
