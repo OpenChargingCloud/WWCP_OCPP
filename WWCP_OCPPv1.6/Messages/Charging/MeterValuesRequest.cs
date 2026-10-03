@@ -564,17 +564,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region TransactionId    [optional]
 
-                if (!JSON.ParseOptional("transactionId",
-                                        "transaction identification",
-                                        Transaction_Id.TryParse,
-                                        out Transaction_Id? TransactionId,
-                                        out ErrorResponse))
-                {
+                JSON.ParseOptional("transactionId",
+                                   "transaction identification",
+                                   Transaction_Id.TryParse,
+                                   out Transaction_Id? TransactionId,
+                                   out ErrorResponse);
 
-                    if (ErrorResponse is not null)
-                        return false;
-
-                }
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 

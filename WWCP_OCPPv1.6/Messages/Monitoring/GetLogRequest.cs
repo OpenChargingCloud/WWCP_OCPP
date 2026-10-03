@@ -364,27 +364,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region Retries         [optional]
 
-                if (!JSON.ParseOptional("retries",
-                                        "retries",
-                                        out Byte? Retries,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("retries",
+                                   "retries",
+                                   out Byte? Retries,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region RetryInterval   [optional]
 
-                if (!JSON.ParseOptional("retryInterval",
-                                        "retry interval",
-                                        out TimeSpan? RetryInterval,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("retryInterval",
+                                   "retry interval",
+                                   out TimeSpan? RetryInterval,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 

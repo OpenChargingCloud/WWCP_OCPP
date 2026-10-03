@@ -425,53 +425,49 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region Timestamp          [optional]
 
-                if (!JSON.ParseOptional("timestamp",
-                                        "timestamp",
-                                        out DateTime? Timestamp,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("timestamp",
+                                   "timestamp",
+                                   out DateTime? Timestamp,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region Info               [optional]
 
-                if (!JSON.ParseOptional("info",
-                                        "info",
-                                        out String? Info,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("info",
+                                   "info",
+                                   out String? Info,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region VendorId           [optional]
 
-                if (!JSON.ParseOptional("vendorId",
-                                        "vendor identification",
-                                        out String? VendorId,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("vendorId",
+                                   "vendor identification",
+                                   out String? VendorId,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 
                 #region VendorErrorCode    [optional]
 
-                if (!JSON.ParseOptional("vendorErrorCode",
-                                        "vendor error code",
-                                        out String? VendorErrorCode,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("vendorErrorCode",
+                                   "vendor error code",
+                                   out String? VendorErrorCode,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 

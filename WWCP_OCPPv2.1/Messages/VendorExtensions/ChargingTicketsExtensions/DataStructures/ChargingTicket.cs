@@ -567,15 +567,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse ProviderURL                 [optional]
 
-                if (!JSON.ParseOptional("providerURL",
-                                        "provider URL",
-                                        URL.TryParse,
-                                        out URL? ProviderURL,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("providerURL",
+                                   "provider URL",
+                                   URL.TryParse,
+                                   out URL? ProviderURL,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 

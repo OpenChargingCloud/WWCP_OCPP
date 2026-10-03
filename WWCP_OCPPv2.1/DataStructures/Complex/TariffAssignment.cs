@@ -200,15 +200,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse EVSEIds       [optional]
 
-                if (!JSON.ParseOptionalHashSet("evseIds",
-                                               "EVSE identifications",
-                                               EVSE_Id.TryParse,
-                                               out HashSet<EVSE_Id> EVSEIds,
-                                               out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptionalHashSet("evseIds",
+                                          "EVSE identifications",
+                                          EVSE_Id.TryParse,
+                                          out HashSet<EVSE_Id> EVSEIds,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 

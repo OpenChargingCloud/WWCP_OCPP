@@ -209,15 +209,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse StepSize      [optional]
 
-                if (!JSON.ParseOptional("stepSize",
-                                        "price components",
-                                        WattHour.TryParse,
-                                        out WattHour? StepSize,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("stepSize",
+                                   "price components",
+                                   WattHour.TryParse,
+                                   out WattHour? StepSize,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 

@@ -208,14 +208,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse StepSize       [optional]
 
-                if (!JSON.ParseOptional("stepSize",
-                                        "price components",
-                                        out UInt32? StepSizeUInt32,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("stepSize",
+                                   "price components",
+                                   out UInt32? StepSizeUInt32,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 var StepSize = StepSizeUInt32.HasValue
                                   ? new TimeSpan?(TimeSpan.FromSeconds(StepSizeUInt32.Value))

@@ -240,14 +240,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region InstallTimestamp      [optional]
 
-                if (!JSON.ParseOptional("installDateTime",
-                                        "install timestamp",
-                                        out DateTime? InstallTimestamp,
-                                        out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
+                JSON.ParseOptional("installDateTime",
+                                   "install timestamp",
+                                   out DateTime? InstallTimestamp,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
 
                 #endregion
 

@@ -285,13 +285,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region LogRequestId    [optional]
 
-                if (!JSON.ParseOptional("requestId",
-                                        "request identification",
-                                        out Int32? LogRequestId,
-                                        out ErrorResponse))
-                {
+                JSON.ParseOptional("requestId",
+                                   "request identification",
+                                   out Int32? LogRequestId,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
                     return false;
-                }
 
                 #endregion
 
