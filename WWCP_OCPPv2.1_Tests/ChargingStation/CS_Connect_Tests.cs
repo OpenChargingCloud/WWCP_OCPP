@@ -216,12 +216,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             if (testWebSocketServer01 is not null)
             {
 
-                testCSMS01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
+                // The station's own identity as its username, the one of its URL: OCPP 2.1
+                // Part 2, A00.FR.204. A username of another networking node is refused.
+                testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation1.Id, "1234abcd");
 
                 var response1 = chargingStation1.ConnectOCPPWebSocketClient(
                                     NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                     RemoteURL:                URL.Parse("http://127.0.0.1:" + testWebSocketServer01.IPPort.ToString() + "/" + chargingStation1.Id),
-                                    HTTPAuthentication:       HTTPBasicAuthentication.Create("test01", "1234abcd"),
+                                    HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation1.Id.ToString(), "1234abcd"),
                                     DisableWebSocketPings:    true
                                 ).Result;
 
