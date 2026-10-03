@@ -241,14 +241,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     // Sec-WebSocket-Protocol:  ocpp2.0.1
                     // Sec-WebSocket-Version:   13
 
-                    ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
+                    Assert.That(response1.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
                     // Against the constant, not a copy of it: the name has moved once already
                     // and this assertion was the last place still expecting the old one.
-                    ClassicAssert.AreEqual(NetworkingNode.AOCPPNetworkingNode.DefaultHTTPServiceName,           response1.Server);
-                    ClassicAssert.AreEqual(ConnectionType.Upgrade, response1.Connection);
-                    ClassicAssert.AreEqual("websocket",                                                          response1.Upgrade);
+                    Assert.That(response1.Server, Is.EqualTo(NetworkingNode.AOCPPNetworkingNode.DefaultHTTPServiceName));
+                    Assert.That(response1.Connection, Is.EqualTo(ConnectionType.Upgrade));
+                    Assert.That(response1.Upgrade, Is.EqualTo("websocket"));
                     ClassicAssert.IsTrue  (response1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
-                    ClassicAssert.AreEqual("13",                                                                 response1.SecWebSocketVersion);
+                    Assert.That(response1.SecWebSocketVersion, Is.EqualTo("13"));
 
                 }
 
@@ -294,6 +294,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             if (testCSMS01 is not null)
                 await testCSMS01.Stop();
 
+            if (testWebSocketServer01 is not null)
+                await testWebSocketServer01.DisposeAsync();
+
             testCSMS01               = null;
             testWebSocketServer01    = null;
 
@@ -328,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation1      is not null)
             {
 
-                ClassicAssert.AreEqual("GraphDefined OEM #1",  chargingStation1.VendorName);
+                Assert.That(chargingStation1.VendorName, Is.EqualTo("GraphDefined OEM #1"));
 
             }
 

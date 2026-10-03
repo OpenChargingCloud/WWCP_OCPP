@@ -65,9 +65,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 // Without metadata: an array, files by name, a directory as a single property
                 // holding its own array.
-                ClassicAssert.AreEqual(
-                    @"[""file1"",""file2"",{""dir1"":[""file1_1"",""file1_2"",{""dir1_1"":[""file1_1_1"",""file1_1_2""]}]},""file3""]",
-                    jsonOut1.ToString(Newtonsoft.Json.Formatting.None)
+                Assert.That(
+                    jsonOut1.ToString(Newtonsoft.Json.Formatting.None),
+                    Is.EqualTo(@"[""file1"",""file2"",{""dir1"":[""file1_1"",""file1_2"",{""dir1_1"":[""file1_1_1"",""file1_1_2""]}]},""file3""]")
                 );
 
                 // With metadata: the shape of the input, with each file described instead of
@@ -76,23 +76,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var withMetadata = jsonOut2 as JObject;
                 ClassicAssert.IsNotNull(withMetadata);
 
-                CollectionAssert.AreEqual(
-                    new[] { "file1", "file2", "dir1", "file3" },
-                    withMetadata!.Properties().Select(property => property.Name).ToArray()
+                Assert.That(
+                    withMetadata!.Properties().Select(property => property.Name).ToArray(),
+                    Is.EqualTo(new[] { "file1", "file2", "dir1", "file3" }).AsCollection
                 );
 
-                ClassicAssert.AreEqual("FILE",  withMetadata["file1"]?["type"]?.Value<String>());
+                Assert.That(withMetadata["file1"]?["type"]?.Value<String>(), Is.EqualTo("FILE"));
                 ClassicAssert.IsNull  (         withMetadata["dir1" ]?["type"]);
 
-                CollectionAssert.AreEqual(
-                    new[] { "file1_1", "file1_2", "dir1_1" },
-                    (withMetadata["dir1"] as JObject)!.Properties().Select(property => property.Name).ToArray()
+                Assert.That(
+                    (withMetadata["dir1"] as JObject)!.Properties().Select(property => property.Name).ToArray(),
+                    Is.EqualTo(new[] { "file1_1", "file1_2", "dir1_1" }).AsCollection
                 );
 
                 // The tree view draws the same tree, one line per entry, the last entry of each
                 // level closing it off.
-                CollectionAssert.AreEqual(
-                    new[] {
+                Assert.That(
+                    textOut2.ToArray(),
+                    Is.EqualTo(new[] {
                         "├── file1",
                         "├── file2",
                         "├── dir1",
@@ -102,8 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                         "│       ├── file1_1_1",
                         "│       └── file1_1_2",
                         "└── file3"
-                    },
-                    textOut2.ToArray()
+                    }).AsCollection
                 );
 
             }

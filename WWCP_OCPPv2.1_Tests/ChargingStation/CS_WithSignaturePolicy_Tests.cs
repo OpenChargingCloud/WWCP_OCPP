@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation3        is not null)
             {
 
-                ClassicAssert.AreEqual("GraphDefined OEM #1",  chargingStation1.VendorName);
-                ClassicAssert.AreEqual("GraphDefined OEM #2",  chargingStation2.VendorName);
-                ClassicAssert.AreEqual("GraphDefined OEM #3",  chargingStation3.VendorName);
+                Assert.That(chargingStation1.VendorName, Is.EqualTo("GraphDefined OEM #1"));
+                Assert.That(chargingStation2.VendorName, Is.EqualTo("GraphDefined OEM #2"));
+                Assert.That(chargingStation3.VendorName, Is.EqualTo("GraphDefined OEM #3"));
 
             }
 
@@ -128,13 +128,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                          CustomData:   null
                                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,                          response.Result.ResultCode);
-                ClassicAssert.AreEqual(RegistrationStatus.Accepted,             response.Status);
-                ClassicAssert.AreEqual(1,                                       response.Signatures.Count());
-                ClassicAssert.AreEqual(VerificationStatus.ValidSignature,       response.Signatures.First().Status);
-                ClassicAssert.AreEqual("csms001",                               response.Signatures.First().Name);
-                ClassicAssert.AreEqual("Just a backend test!",                  response.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now2.ToISO8601(),                        response.Signatures.First().Timestamp?.  ToISO8601());
+                Assert.That(response.Result.ResultCode, Is.EqualTo(ResultCode.OK));
+                Assert.That(response.Status, Is.EqualTo(RegistrationStatus.Accepted));
+                Assert.That(response.Signatures.Count(), Is.EqualTo(1));
+                Assert.That(response.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
+                Assert.That(response.Signatures.First().Name, Is.EqualTo("csms001"));
+                Assert.That(response.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a backend test!"));
+                Assert.That(response.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(now2.ToISO8601()));
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
 
@@ -142,31 +142,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 if (chargingStation is not null)
                 {
 
-                    ClassicAssert.AreEqual(chargingStation1.Model,              chargingStation.Model);
-                    ClassicAssert.AreEqual(chargingStation1.VendorName,         chargingStation.VendorName);
-                    ClassicAssert.AreEqual(chargingStation1.SerialNumber,       chargingStation.SerialNumber);
-                    ClassicAssert.AreEqual(chargingStation1.FirmwareVersion,    chargingStation.FirmwareVersion);
+                    Assert.That(chargingStation.Model, Is.EqualTo(chargingStation1.Model));
+                    Assert.That(chargingStation.VendorName, Is.EqualTo(chargingStation1.VendorName));
+                    Assert.That(chargingStation.SerialNumber, Is.EqualTo(chargingStation1.SerialNumber));
+                    Assert.That(chargingStation.FirmwareVersion, Is.EqualTo(chargingStation1.FirmwareVersion));
 
                     var modem = chargingStation.Modem;
 
                     ClassicAssert.IsNotNull(modem);
                     if (modem is not null)
                     {
-                        ClassicAssert.AreEqual(chargingStation1.Modem!.ICCID,   modem.ICCID);
-                        ClassicAssert.AreEqual(chargingStation1.Modem!.IMSI,    modem.IMSI);
+                        Assert.That(modem.ICCID, Is.EqualTo(chargingStation1.Modem!.ICCID));
+                        Assert.That(modem.IMSI, Is.EqualTo(chargingStation1.Modem!.IMSI));
                     }
 
                 }
 
 
-                ClassicAssert.AreEqual(1,                                       bootNotificationRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().NetworkPath.Source);
-                ClassicAssert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
-                ClassicAssert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
-                ClassicAssert.AreEqual(VerificationStatus.ValidSignature,             bootNotificationRequests.First().Signatures.First().Status);
-                ClassicAssert.AreEqual("cs001",                                 bootNotificationRequests.First().Signatures.First().Name);
-                ClassicAssert.AreEqual("Just a charging station test!",         bootNotificationRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToISO8601(),                        bootNotificationRequests.First().Signatures.First().Timestamp?.  ToISO8601());
+                Assert.That(bootNotificationRequests.Count, Is.EqualTo(1));
+                Assert.That(bootNotificationRequests.First().NetworkPath.Source, Is.EqualTo(chargingStation1.Id));
+                Assert.That(bootNotificationRequests.First().Reason, Is.EqualTo(reason));
+                Assert.That(bootNotificationRequests.First().Signatures.Count(), Is.EqualTo(1));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Name, Is.EqualTo("cs001"));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Description?.FirstText(), Is.EqualTo("Just a charging station test!"));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(now1.ToISO8601()));
 
             }
 

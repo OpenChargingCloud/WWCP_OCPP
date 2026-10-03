@@ -342,6 +342,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
             localController1         = null;
             localController2         = null;
 
+            if (lcOCPPWebSocketServer1 is not null)
+                await lcOCPPWebSocketServer1.DisposeAsync();
+
+            if (lcOCPPWebSocketServer2 is not null)
+                await lcOCPPWebSocketServer2.DisposeAsync();
+
             lcOCPPWebSocketServer1   = null;
             lcOCPPWebSocketServer2   = null;
 

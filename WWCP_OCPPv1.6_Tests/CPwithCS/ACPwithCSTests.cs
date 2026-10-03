@@ -227,6 +227,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
             if (centralSystem is not null)
                 await centralSystem.Shutdown();
 
+            if (centralSystemWSS is not null)
+                await centralSystemWSS.DisposeAsync();
+
             centralSystem     = null;
             centralSystemWSS  = null;
 

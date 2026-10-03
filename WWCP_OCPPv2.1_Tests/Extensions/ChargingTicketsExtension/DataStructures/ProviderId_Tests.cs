@@ -88,11 +88,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             if (providerId is not null)
             {
-                ClassicAssert.AreEqual("DE",     providerId.Value.CountryCode.Alpha2Code);
+                Assert.That(providerId.Value.CountryCode.Alpha2Code, Is.EqualTo("DE"));
                 ClassicAssert.IsNull  (          providerId.Value.Separator);
-                ClassicAssert.AreEqual("GDF",    providerId.Value.Suffix);
-                ClassicAssert.AreEqual("DEGDF",  providerId.Value.ToString());
-                ClassicAssert.AreEqual(5,        providerId.Value.Length);
+                Assert.That(providerId.Value.Suffix, Is.EqualTo("GDF"));
+                Assert.That(providerId.Value.ToString(), Is.EqualTo("DEGDF"));
+                Assert.That(providerId.Value.Length, Is.EqualTo(5));
             }
 
         }
@@ -114,11 +114,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             if (providerId is not null)
             {
-                ClassicAssert.AreEqual("DE",      providerId.Value.CountryCode.Alpha2Code);
-                ClassicAssert.AreEqual('-',       providerId.Value.Separator);
-                ClassicAssert.AreEqual("GDF",     providerId.Value.Suffix);
-                ClassicAssert.AreEqual("DE-GDF",  providerId.Value.ToString());
-                ClassicAssert.AreEqual(6,         providerId.Value.Length);
+                Assert.That(providerId.Value.CountryCode.Alpha2Code, Is.EqualTo("DE"));
+                Assert.That(providerId.Value.Separator, Is.EqualTo('-'));
+                Assert.That(providerId.Value.Suffix, Is.EqualTo("GDF"));
+                Assert.That(providerId.Value.ToString(), Is.EqualTo("DE-GDF"));
+                Assert.That(providerId.Value.Length, Is.EqualTo(6));
             }
 
         }
@@ -140,11 +140,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             if (providerId is not null)
             {
-                ClassicAssert.AreEqual("DE",      providerId.Value.CountryCode.Alpha2Code);
-                ClassicAssert.AreEqual('*',       providerId.Value.Separator);
-                ClassicAssert.AreEqual("GDF",     providerId.Value.Suffix);
-                ClassicAssert.AreEqual("DE*GDF",  providerId.Value.ToString());
-                ClassicAssert.AreEqual(6,         providerId.Value.Length);
+                Assert.That(providerId.Value.CountryCode.Alpha2Code, Is.EqualTo("DE"));
+                Assert.That(providerId.Value.Separator, Is.EqualTo('*'));
+                Assert.That(providerId.Value.Suffix, Is.EqualTo("GDF"));
+                Assert.That(providerId.Value.ToString(), Is.EqualTo("DE*GDF"));
+                Assert.That(providerId.Value.Length, Is.EqualTo(6));
             }
 
         }
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId1 = Provider_Id.TryParse("DE-GDF");
             var operatorId2 = Provider_Id.TryParse("DE-GDF");
 
-            ClassicAssert.AreEqual(operatorId1,       operatorId2);
+            Assert.That(operatorId2, Is.EqualTo(operatorId1));
             ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
             ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
 
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId1 = Provider_Id.TryParse("DEGDF");
             var operatorId2 = Provider_Id.TryParse("DE-GDF");
 
-            ClassicAssert.AreEqual(operatorId1,       operatorId2);
+            Assert.That(operatorId2, Is.EqualTo(operatorId1));
             ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
             ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
 
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId1 = Provider_Id.TryParse("DEGDF");
             var operatorId2 = Provider_Id.TryParse("DEGDF");
 
-            ClassicAssert.AreEqual(operatorId1,       operatorId2);
+            Assert.That(operatorId2, Is.EqualTo(operatorId1));
             ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
             ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
 

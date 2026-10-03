@@ -173,6 +173,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
             if (testCSMS01 is not null)
                 await testCSMS01.Stop();
 
+            if (testBackendWebSockets01 is not null)
+                await testBackendWebSockets01.DisposeAsync();
+
             testCSMS01               = null;
             testBackendWebSockets01  = null;
 

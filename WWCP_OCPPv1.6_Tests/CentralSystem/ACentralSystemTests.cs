@@ -102,6 +102,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
             if (testCentralSystem01 is not null)
                 await testCentralSystem01.Shutdown();
 
+            if (testBackendWebSockets01 is not null)
+                await testBackendWebSockets01.DisposeAsync();
+
             testCentralSystem01      = null;
             testBackendWebSockets01  = null;
 

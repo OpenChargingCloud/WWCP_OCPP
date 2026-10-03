@@ -170,15 +170,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                 CustomData:      null
                                             );
 
-                ClassicAssert.AreEqual(ResultCode.OK,                 response.Result.ResultCode);
-                ClassicAssert.AreEqual(ResetStatus.Accepted,          response.Status);
+                Assert.That(response.Result.ResultCode, Is.EqualTo(ResultCode.OK));
+                Assert.That(response.Status, Is.EqualTo(ResetStatus.Accepted));
 
 
-                ClassicAssert.AreEqual(1,                             resetRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,           resetRequests.First().DestinationId);
-                ClassicAssert.AreEqual(resetType,                     resetRequests.First().ResetType);
-                ClassicAssert.AreEqual(1,                             resetRequests.First().Signatures.Count());
-                ClassicAssert.AreEqual(VerificationStatus.ValidSignature,   resetRequests.First().Signatures.First().Status);
+                Assert.That(resetRequests.Count, Is.EqualTo(1));
+                Assert.That(resetRequests.First().DestinationId, Is.EqualTo(chargingStation1.Id));
+                Assert.That(resetRequests.First().ResetType, Is.EqualTo(resetType));
+                Assert.That(resetRequests.First().Signatures.Count(), Is.EqualTo(1));
+                Assert.That(resetRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 //ClassicAssert.AreEqual("ahzf",                        resetRequests.First().Signatures.First().Name);
                 //ClassicAssert.AreEqual("Just a test!",                resetRequests.First().Signatures.First().Description?.FirstText());
                 //ClassicAssert.AreEqual(now.ToISO8601(),               resetRequests.First().Signatures.First().Timestamp?.  ToISO8601());

@@ -89,14 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             if (evseId is not null)
             {
 
-                ClassicAssert.AreEqual("DE",              evseId.Value.OperatorId.CountryCode.Alpha2Code);
+                Assert.That(evseId.Value.OperatorId.CountryCode.Alpha2Code, Is.EqualTo("DE"));
                 ClassicAssert.IsNull  (                   evseId.Value.OperatorId.Separator);
-                ClassicAssert.AreEqual("GEF",             evseId.Value.OperatorId.Suffix);
+                Assert.That(evseId.Value.OperatorId.Suffix, Is.EqualTo("GEF"));
 
                 ClassicAssert.IsNull  (                   evseId.Value.Separator);
-                ClassicAssert.AreEqual("12345678",        evseId.Value.Suffix);
-                ClassicAssert.AreEqual("DEGEFE12345678",  evseId.Value.ToString());
-                ClassicAssert.AreEqual(14,                evseId.Value.Length);
+                Assert.That(evseId.Value.Suffix, Is.EqualTo("12345678"));
+                Assert.That(evseId.Value.ToString(), Is.EqualTo("DEGEFE12345678"));
+                Assert.That(evseId.Value.Length, Is.EqualTo(14));
 
             }
 
@@ -120,14 +120,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             if (evseId is not null)
             {
 
-                ClassicAssert.AreEqual("DE",                  evseId.Value.OperatorId.CountryCode.Alpha2Code);
-                ClassicAssert.AreEqual('*',                   evseId.Value.OperatorId.Separator);
-                ClassicAssert.AreEqual("GEF",                 evseId.Value.OperatorId.Suffix);
+                Assert.That(evseId.Value.OperatorId.CountryCode.Alpha2Code, Is.EqualTo("DE"));
+                Assert.That(evseId.Value.OperatorId.Separator, Is.EqualTo('*'));
+                Assert.That(evseId.Value.OperatorId.Suffix, Is.EqualTo("GEF"));
 
-                ClassicAssert.AreEqual('*',                   evseId.Value.Separator);
-                ClassicAssert.AreEqual("12345678*1",          evseId.Value.Suffix);
-                ClassicAssert.AreEqual("DE*GEF*E12345678*1",  evseId.Value.ToString());
-                ClassicAssert.AreEqual(18,                    evseId.Value.Length);
+                Assert.That(evseId.Value.Separator, Is.EqualTo('*'));
+                Assert.That(evseId.Value.Suffix, Is.EqualTo("12345678*1"));
+                Assert.That(evseId.Value.ToString(), Is.EqualTo("DE*GEF*E12345678*1"));
+                Assert.That(evseId.Value.Length, Is.EqualTo(18));
 
             }
 

@@ -895,6 +895,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             testCSMS2               = null;
             testCSMS3               = null;
 
+            if (testBackendWebSockets1 is not null)
+                await testBackendWebSockets1.DisposeAsync();
+
+            if (testBackendWebSockets2 is not null)
+                await testBackendWebSockets2.DisposeAsync();
+
+            if (testBackendWebSockets3 is not null)
+                await testBackendWebSockets3.DisposeAsync();
+
+            if (dnsClient is not null)
+                await dnsClient.DisposeAsync();
+
             testBackendWebSockets1  = null;
             testBackendWebSockets2  = null;
             testBackendWebSockets3  = null;

@@ -54,9 +54,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3        is not null)
             {
 
-                ClassicAssert.AreEqual("GraphDefined OEM #1",  chargePoint1.ChargePointVendor);
-                ClassicAssert.AreEqual("GraphDefined OEM #2",  chargePoint2.ChargePointVendor);
-                ClassicAssert.AreEqual("GraphDefined OEM #3",  chargePoint3.ChargePointVendor);
+                Assert.That(chargePoint1.ChargePointVendor, Is.EqualTo("GraphDefined OEM #1"));
+                Assert.That(chargePoint2.ChargePointVendor, Is.EqualTo("GraphDefined OEM #2"));
+                Assert.That(chargePoint3.ChargePointVendor, Is.EqualTo("GraphDefined OEM #3"));
 
             }
 

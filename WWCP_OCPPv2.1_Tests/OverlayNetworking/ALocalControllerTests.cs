@@ -171,12 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
                         // Sec-WebSocket-Protocol:  ocpp2.0.1
                         // Sec-WebSocket-Version:   13
 
-                        ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response.HTTPStatusCode);
-                        ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response.Server);
-                        ClassicAssert.AreEqual(ConnectionType.Upgrade, response.Connection);
-                        ClassicAssert.AreEqual("websocket",                                                          response.Upgrade);
+                        Assert.That(response.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
+                        Assert.That(response.Server, Is.EqualTo($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API"));
+                        Assert.That(response.Connection, Is.EqualTo(ConnectionType.Upgrade));
+                        Assert.That(response.Upgrade, Is.EqualTo("websocket"));
                         ClassicAssert.IsTrue  (response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
-                        ClassicAssert.AreEqual("13",                                                                 response.SecWebSocketVersion);
+                        Assert.That(response.SecWebSocketVersion, Is.EqualTo("13"));
                     }
 
 
@@ -221,6 +221,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
         {
 
             await base.ShutdownEachTest();
+
+            if (lcOCPPWebSocketServer01 is not null)
+                await lcOCPPWebSocketServer01.DisposeAsync();
+
+            if (lcOCPPWebSocketServer02 is not null)
+                await lcOCPPWebSocketServer02.DisposeAsync();
+
+            if (lcOCPPWebSocketServer03 is not null)
+                await lcOCPPWebSocketServer03.DisposeAsync();
 
             localController1 = null;
             localController2 = null;

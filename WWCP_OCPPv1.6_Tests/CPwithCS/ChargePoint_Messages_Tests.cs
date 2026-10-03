@@ -766,7 +766,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
                     Assert.That(response.Result.ResultCode,                           Is.EqualTo(ResultCode.OK));
                     Assert.That(response.IdTagInfo.Status,                            Is.EqualTo(AuthorizationStatus.Accepted));
-                    Assert.That(response.TransactionId,                               Is.Not.Null);
+                    Assert.That(response.TransactionId.IsNullOrEmpty,                 Is.False);
 
                     Assert.That(startTransactionRequests.Count,                       Is.EqualTo(1));
                     var startTransactionRequest = startTransactionRequests.First();

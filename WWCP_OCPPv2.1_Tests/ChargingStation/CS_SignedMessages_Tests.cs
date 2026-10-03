@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation3        is not null)
             {
 
-                ClassicAssert.AreEqual("GraphDefined OEM #1",  chargingStation1.VendorName);
-                ClassicAssert.AreEqual("GraphDefined OEM #2",  chargingStation2.VendorName);
-                ClassicAssert.AreEqual("GraphDefined OEM #3",  chargingStation3.VendorName);
+                Assert.That(chargingStation1.VendorName, Is.EqualTo("GraphDefined OEM #1"));
+                Assert.That(chargingStation2.VendorName, Is.EqualTo("GraphDefined OEM #2"));
+                Assert.That(chargingStation3.VendorName, Is.EqualTo("GraphDefined OEM #3"));
 
             }
 
@@ -124,24 +124,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                          CustomData:   null
                                                      );
 
-                ClassicAssert.AreEqual(ResultCode.OK,                          response1.Result.ResultCode);
-                ClassicAssert.AreEqual(RegistrationStatus.Accepted,             response1.Status);
+                Assert.That(response1.Result.ResultCode, Is.EqualTo(ResultCode.OK));
+                Assert.That(response1.Status, Is.EqualTo(RegistrationStatus.Accepted));
 
 
-                ClassicAssert.AreEqual(1,                                       bootNotificationRequests.Count);
+                Assert.That(bootNotificationRequests.Count, Is.EqualTo(1));
 
                 // A BootNotification travels from the station to the CSMS, so the station is
                 // its source, not its destination. A standard-mode message carries no
                 // destination at all, and the receiving server fills in NetworkingNode_Id.CSMS.
-                ClassicAssert.AreEqual(NetworkingNode_Id.CSMS,                  bootNotificationRequests.First().DestinationId);
-                ClassicAssert.AreEqual(1,                                       bootNotificationRequests.First().NetworkPath.Length);
-                ClassicAssert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().NetworkPath.Source);
-                ClassicAssert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
-                ClassicAssert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
-                ClassicAssert.AreEqual(VerificationStatus.ValidSignature,       bootNotificationRequests.First().Signatures.First().Status);
-                ClassicAssert.AreEqual("ahzf",                                  bootNotificationRequests.First().Signatures.First().Name);
-                ClassicAssert.AreEqual("Just a test!",                          bootNotificationRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now.ToISO8601(),                         bootNotificationRequests.First().Signatures.First().Timestamp?.  ToISO8601());
+                Assert.That(bootNotificationRequests.First().DestinationId, Is.EqualTo(NetworkingNode_Id.CSMS));
+                Assert.That(bootNotificationRequests.First().NetworkPath.Length, Is.EqualTo(1));
+                Assert.That(bootNotificationRequests.First().NetworkPath.Source, Is.EqualTo(chargingStation1.Id));
+                Assert.That(bootNotificationRequests.First().Reason, Is.EqualTo(reason));
+                Assert.That(bootNotificationRequests.First().Signatures.Count(), Is.EqualTo(1));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Name, Is.EqualTo("ahzf"));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Description?.FirstText(), Is.EqualTo("Just a test!"));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(now.ToISO8601()));
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
 
@@ -149,18 +149,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 if (chargingStation is not null)
                 {
 
-                    ClassicAssert.AreEqual(chargingStation1.Model,              chargingStation.Model);
-                    ClassicAssert.AreEqual(chargingStation1.VendorName,         chargingStation.VendorName);
-                    ClassicAssert.AreEqual(chargingStation1.SerialNumber,       chargingStation.SerialNumber);
-                    ClassicAssert.AreEqual(chargingStation1.FirmwareVersion,    chargingStation.FirmwareVersion);
+                    Assert.That(chargingStation.Model, Is.EqualTo(chargingStation1.Model));
+                    Assert.That(chargingStation.VendorName, Is.EqualTo(chargingStation1.VendorName));
+                    Assert.That(chargingStation.SerialNumber, Is.EqualTo(chargingStation1.SerialNumber));
+                    Assert.That(chargingStation.FirmwareVersion, Is.EqualTo(chargingStation1.FirmwareVersion));
 
                     var modem = chargingStation.Modem;
 
                     ClassicAssert.IsNotNull(modem);
                     if (modem is not null)
                     {
-                        ClassicAssert.AreEqual(chargingStation1.Modem!.ICCID,   modem.ICCID);
-                        ClassicAssert.AreEqual(chargingStation1.Modem!.IMSI,    modem.IMSI);
+                        Assert.That(modem.ICCID, Is.EqualTo(chargingStation1.Modem!.ICCID));
+                        Assert.That(modem.IMSI, Is.EqualTo(chargingStation1.Modem!.IMSI));
                     }
 
                 }

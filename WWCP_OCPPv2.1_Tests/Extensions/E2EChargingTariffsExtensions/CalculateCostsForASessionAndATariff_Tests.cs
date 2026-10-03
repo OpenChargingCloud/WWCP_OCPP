@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                      };
 
             ClassicAssert.IsNotNull(transactionEvents);
-            ClassicAssert.AreEqual (2, transactionEvents.Length);
+            Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
 
@@ -346,16 +346,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
-                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
+                    Assert.That(cdr.TotalTime.TotalMinutes, Is.EqualTo(39M), "Total time");
+                    Assert.That(cdr.BilledTime.TotalMinutes, Is.EqualTo(0M), "Billed time");
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
+                    Assert.That(cdr.TotalChargingTime.TotalMinutes, Is.EqualTo(39M), "Total charging time");
 
-                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
-                    ClassicAssert.AreEqual(0M,       cdr.BilledEnergy.     Value,          "Billed energy");
+                    Assert.That(cdr.TotalEnergy.Value, Is.EqualTo(9999M), "Total energy");
+                    Assert.That(cdr.BilledEnergy.Value, Is.EqualTo(0M), "Billed energy");
 
-                    ClassicAssert.AreEqual(42.00M,   cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(48.30M,   cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
+                    Assert.That(cdr.TotalCost.ExcludingTaxes, Is.EqualTo(42.00M), "Total cost excl. VAT");
+                    Assert.That(cdr.TotalCost.IncludingTaxes, Is.EqualTo(48.30M), "Total cost incl. VAT");
 
                 }
 
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                      };
 
             ClassicAssert.IsNotNull(transactionEvents);
-            ClassicAssert.AreEqual (2, transactionEvents.Length);
+            Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
 
@@ -632,21 +632,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39M,        cdr.TotalTime.             TotalMinutes,   "Total time");
-                    ClassicAssert.AreEqual(45M,        cdr.BilledTime.            TotalMinutes,   "Billed time");
+                    Assert.That(cdr.TotalTime.TotalMinutes, Is.EqualTo(39M), "Total time");
+                    Assert.That(cdr.BilledTime.TotalMinutes, Is.EqualTo(45M), "Billed time");
 
-                    ClassicAssert.AreEqual(39M,        cdr.TotalChargingTime.     TotalMinutes,   "Total charging time");
-                    ClassicAssert.AreEqual(45M,        cdr.BilledChargingTime.    TotalMinutes,   "Billed charging time");
-                    ClassicAssert.AreEqual(292.50M,    cdr.BilledChargingTimeCost.ExcludingTaxes,   "Billed charging time cost excl. VAT");
-                    ClassicAssert.AreEqual(348.075M,   cdr.BilledChargingTimeCost.IncludingTaxes,   "Billed charging time cost incl. VAT");
+                    Assert.That(cdr.TotalChargingTime.TotalMinutes, Is.EqualTo(39M), "Total charging time");
+                    Assert.That(cdr.BilledChargingTime.TotalMinutes, Is.EqualTo(45M), "Billed charging time");
+                    Assert.That(cdr.BilledChargingTimeCost.ExcludingTaxes, Is.EqualTo(292.50M), "Billed charging time cost excl. VAT");
+                    Assert.That(cdr.BilledChargingTimeCost.IncludingTaxes, Is.EqualTo(348.075M), "Billed charging time cost incl. VAT");
 
-                    ClassicAssert.AreEqual(9999M,      cdr.TotalEnergy.           Value,          "Total energy");
-                    ClassicAssert.AreEqual(0M,         cdr.BilledEnergy.          Value,          "Billed energy");
-                    ClassicAssert.AreEqual(0M,         cdr.BilledEnergyCost.      ExcludingTaxes,   "Billed energy cost excl. VAT");
-                    ClassicAssert.AreEqual(0M,         cdr.BilledEnergyCost.      IncludingTaxes,   "Billed energy cost incl. VAT");
+                    Assert.That(cdr.TotalEnergy.Value, Is.EqualTo(9999M), "Total energy");
+                    Assert.That(cdr.BilledEnergy.Value, Is.EqualTo(0M), "Billed energy");
+                    Assert.That(cdr.BilledEnergyCost.ExcludingTaxes, Is.EqualTo(0M), "Billed energy cost excl. VAT");
+                    Assert.That(cdr.BilledEnergyCost.IncludingTaxes, Is.EqualTo(0M), "Billed energy cost incl. VAT");
 
-                    ClassicAssert.AreEqual(292.50M,    cdr.TotalCost.             ExcludingTaxes,   "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(348.075M,   cdr.TotalCost.             IncludingTaxes,   "Total cost incl. VAT");
+                    Assert.That(cdr.TotalCost.ExcludingTaxes, Is.EqualTo(292.50M), "Total cost excl. VAT");
+                    Assert.That(cdr.TotalCost.IncludingTaxes, Is.EqualTo(348.075M), "Total cost incl. VAT");
 
                 }
 
@@ -891,7 +891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                      };
 
             ClassicAssert.IsNotNull(transactionEvents);
-            ClassicAssert.AreEqual (2, transactionEvents.Length);
+            Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
 
@@ -922,16 +922,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
-                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
+                    Assert.That(cdr.TotalTime.TotalMinutes, Is.EqualTo(39M), "Total time");
+                    Assert.That(cdr.BilledTime.TotalMinutes, Is.EqualTo(0M), "Billed time");
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
+                    Assert.That(cdr.TotalChargingTime.TotalMinutes, Is.EqualTo(39M), "Total charging time");
 
-                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
-                    ClassicAssert.AreEqual(10000M,   cdr.BilledEnergy.     Value,          "Billed energy");
+                    Assert.That(cdr.TotalEnergy.Value, Is.EqualTo(9999M), "Total energy");
+                    Assert.That(cdr.BilledEnergy.Value, Is.EqualTo(10000M), "Billed energy");
 
-                    ClassicAssert.AreEqual(5.1M,     cdr.TotalCost.ExcludingTaxes,           "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(6.069M,   cdr.TotalCost.IncludingTaxes,           "Total cost incl. VAT");
+                    Assert.That(cdr.TotalCost.ExcludingTaxes, Is.EqualTo(5.1M), "Total cost excl. VAT");
+                    Assert.That(cdr.TotalCost.IncludingTaxes, Is.EqualTo(6.069M), "Total cost incl. VAT");
 
                 }
 
@@ -1232,7 +1232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                      };
 
             ClassicAssert.IsNotNull(transactionEvents);
-            ClassicAssert.AreEqual (2, transactionEvents.Length);
+            Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
 
@@ -1263,16 +1263,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
-                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
+                    Assert.That(cdr.TotalTime.TotalMinutes, Is.EqualTo(39M), "Total time");
+                    Assert.That(cdr.BilledTime.TotalMinutes, Is.EqualTo(0M), "Billed time");
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
+                    Assert.That(cdr.TotalChargingTime.TotalMinutes, Is.EqualTo(39M), "Total charging time");
 
-                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
-                    ClassicAssert.AreEqual(10000M,   cdr.BilledEnergy.     Value,          "Billed energy");
+                    Assert.That(cdr.TotalEnergy.Value, Is.EqualTo(9999M), "Total energy");
+                    Assert.That(cdr.BilledEnergy.Value, Is.EqualTo(10000M), "Billed energy");
 
-                    ClassicAssert.AreEqual(4.00M,    cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(4.40M,    cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
+                    Assert.That(cdr.TotalCost.ExcludingTaxes, Is.EqualTo(4.00M), "Total cost excl. VAT");
+                    Assert.That(cdr.TotalCost.IncludingTaxes, Is.EqualTo(4.40M), "Total cost incl. VAT");
 
                 }
 
@@ -1547,7 +1547,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                      };
 
             ClassicAssert.IsNotNull(transactionEvents);
-            ClassicAssert.AreEqual (2, transactionEvents.Length);
+            Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
 
@@ -1578,16 +1578,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
-                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
+                    Assert.That(cdr.TotalTime.TotalMinutes, Is.EqualTo(39M), "Total time");
+                    Assert.That(cdr.BilledTime.TotalMinutes, Is.EqualTo(0M), "Billed time");
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
+                    Assert.That(cdr.TotalChargingTime.TotalMinutes, Is.EqualTo(39M), "Total charging time");
 
-                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
-                    ClassicAssert.AreEqual(0M,       cdr.BilledEnergy.     Value,          "Billed energy");
+                    Assert.That(cdr.TotalEnergy.Value, Is.EqualTo(9999M), "Total energy");
+                    Assert.That(cdr.BilledEnergy.Value, Is.EqualTo(0M), "Billed energy");
 
-                    ClassicAssert.AreEqual(2.50M,    cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(2.875M,   cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
+                    Assert.That(cdr.TotalCost.ExcludingTaxes, Is.EqualTo(2.50M), "Total cost excl. VAT");
+                    Assert.That(cdr.TotalCost.IncludingTaxes, Is.EqualTo(2.875M), "Total cost incl. VAT");
 
                 }
 
@@ -1858,7 +1858,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                      };
 
             ClassicAssert.IsNotNull(transactionEvents);
-            ClassicAssert.AreEqual (2, transactionEvents.Length);
+            Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
 
@@ -1889,16 +1889,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 if (cdr is not null)
                 {
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
-                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
+                    Assert.That(cdr.TotalTime.TotalMinutes, Is.EqualTo(39M), "Total time");
+                    Assert.That(cdr.BilledTime.TotalMinutes, Is.EqualTo(0M), "Billed time");
 
-                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
+                    Assert.That(cdr.TotalChargingTime.TotalMinutes, Is.EqualTo(39M), "Total charging time");
 
-                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
-                    ClassicAssert.AreEqual(10000M,   cdr.BilledEnergy.     Value,          "Billed energy");
+                    Assert.That(cdr.TotalEnergy.Value, Is.EqualTo(9999M), "Total energy");
+                    Assert.That(cdr.BilledEnergy.Value, Is.EqualTo(10000M), "Billed energy");
 
-                    ClassicAssert.AreEqual(4.00M,    cdr.TotalCost.ExcludingTaxes,         "Total cost excl. VAT");
-                    ClassicAssert.AreEqual(4.40M,    cdr.TotalCost.IncludingTaxes,         "Total cost incl. VAT");
+                    Assert.That(cdr.TotalCost.ExcludingTaxes, Is.EqualTo(4.00M), "Total cost excl. VAT");
+                    Assert.That(cdr.TotalCost.IncludingTaxes, Is.EqualTo(4.40M), "Total cost incl. VAT");
 
                 }
 

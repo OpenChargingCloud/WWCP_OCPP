@@ -249,10 +249,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     // Sec-WebSocket-Protocol:  ocpp1.6
                     // Sec-WebSocket-Version:   13
 
-                    ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,  response1.HTTPStatusCode);
-                    ClassicAssert.AreEqual("upgrade",                          response1.Connection?.ToString().ToLower());
-                    ClassicAssert.AreEqual("websocket",                        response1.Upgrade);
-                    ClassicAssert.AreEqual("ocpp1.6",                          response1.SecWebSocketProtocol);
+                    Assert.That(response1.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
+                    Assert.That(response1.Connection?.ToString().ToLower(), Is.EqualTo("upgrade"));
+                    Assert.That(response1.Upgrade, Is.EqualTo("websocket"));
+                    Assert.That(response1.SecWebSocketProtocol, Is.EqualTo("ocpp1.6"));
 
                 }
 

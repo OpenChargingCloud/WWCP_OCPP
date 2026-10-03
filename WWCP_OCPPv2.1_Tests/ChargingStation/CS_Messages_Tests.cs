@@ -2143,47 +2143,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var clientCloseMessage = chargingStation1.ClientCloseMessage;
 
-                ClassicAssert.AreEqual (ResultCode.OK,                                                  response.Result.ResultCode);
+                Assert.That(response.Result.ResultCode, Is.EqualTo(ResultCode.OK));
 
-                ClassicAssert.AreEqual (1,                                                               meterValuesRequests.Count);
-                ClassicAssert.AreEqual (evseId,                                                          meterValuesRequests.First().EVSEId);
+                Assert.That(meterValuesRequests.Count, Is.EqualTo(1));
+                Assert.That(meterValuesRequests.First().EVSEId, Is.EqualTo(evseId));
 
-                ClassicAssert.AreEqual (meterValues.Length,                                              meterValuesRequests.First().MeterValues.Count());
+                Assert.That(meterValuesRequests.First().MeterValues.Count(), Is.EqualTo(meterValues.Length));
                 ClassicAssert.IsTrue   (meterValues.ElementAt(0).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
                 ClassicAssert.IsTrue   (meterValues.ElementAt(1).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
 
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.Count(),                  meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.Count());
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.Count(),                  meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.Count());
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.Count(), Is.EqualTo(meterValues.ElementAt(0).SampledValues.Count()));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.Count(), Is.EqualTo(meterValues.ElementAt(1).SampledValues.Count()));
 
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Value,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Value);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Value,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Value);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Value,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Value);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Value,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Value);
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Value, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Value));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Value, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Value));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Value, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Value));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Value, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Value));
 
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Context,     meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Context);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Context,     meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Context);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Context,     meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Context);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Context,     meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Context);
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Context, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Context));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Context, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Context));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Context, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Context));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Context, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Context));
 
                 //ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Format,      meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Format);
                 //ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Format,      meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Format);
                 //ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Format,      meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Format);
                 //ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Format,      meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Format);
 
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand);
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand));
 
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Phase,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Phase);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Phase,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Phase);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Phase,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Phase);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Phase,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Phase);
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Phase, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Phase));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Phase, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Phase));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Phase, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Phase));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Phase, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Phase));
 
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).MeasurementLocation,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).MeasurementLocation);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).MeasurementLocation,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).MeasurementLocation);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).MeasurementLocation,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).MeasurementLocation);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).MeasurementLocation,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).MeasurementLocation);
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).MeasurementLocation, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).MeasurementLocation));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).MeasurementLocation, Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).MeasurementLocation));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).MeasurementLocation, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).MeasurementLocation));
+                Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).MeasurementLocation, Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).MeasurementLocation));
 
                 //ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Unit);
                 //ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Unit);
@@ -2908,24 +2908,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.That(response.ChargingScheduleUpdate,  Is.Not.Null);
 
                 //ToDo: Find a way to set the correct data type of the ChargingRateUnits!
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 1),   response.ChargingScheduleUpdate.Limit);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 2),   response.ChargingScheduleUpdate.Limit_L2);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 3),   response.ChargingScheduleUpdate.Limit_L3);
+                Assert.That(response.ChargingScheduleUpdate.Limit, Is.EqualTo(ChargingRateValue.Parse(1)));
+                Assert.That(response.ChargingScheduleUpdate.Limit_L2, Is.EqualTo(ChargingRateValue.Parse(2)));
+                Assert.That(response.ChargingScheduleUpdate.Limit_L3, Is.EqualTo(ChargingRateValue.Parse(3)));
 
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(-4),   response.ChargingScheduleUpdate.DischargeLimit);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(-5),   response.ChargingScheduleUpdate.DischargeLimit_L2);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(-6),   response.ChargingScheduleUpdate.DischargeLimit_L3);
+                Assert.That(response.ChargingScheduleUpdate.DischargeLimit, Is.EqualTo(ChargingRateValue.Parse(-4)));
+                Assert.That(response.ChargingScheduleUpdate.DischargeLimit_L2, Is.EqualTo(ChargingRateValue.Parse(-5)));
+                Assert.That(response.ChargingScheduleUpdate.DischargeLimit_L3, Is.EqualTo(ChargingRateValue.Parse(-6)));
 
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 7),   response.ChargingScheduleUpdate.Setpoint);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 8),   response.ChargingScheduleUpdate.Setpoint_L2);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse( 9),   response.ChargingScheduleUpdate.Setpoint_L3);
+                Assert.That(response.ChargingScheduleUpdate.Setpoint, Is.EqualTo(ChargingRateValue.Parse(7)));
+                Assert.That(response.ChargingScheduleUpdate.Setpoint_L2, Is.EqualTo(ChargingRateValue.Parse(8)));
+                Assert.That(response.ChargingScheduleUpdate.Setpoint_L3, Is.EqualTo(ChargingRateValue.Parse(9)));
 
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(10),   response.ChargingScheduleUpdate.SetpointReactive);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(11),   response.ChargingScheduleUpdate.SetpointReactive_L2);
-                ClassicAssert.AreEqual(ChargingRateValue.Parse(12),   response.ChargingScheduleUpdate.SetpointReactive_L3);
+                Assert.That(response.ChargingScheduleUpdate.SetpointReactive, Is.EqualTo(ChargingRateValue.Parse(10)));
+                Assert.That(response.ChargingScheduleUpdate.SetpointReactive_L2, Is.EqualTo(ChargingRateValue.Parse(11)));
+                Assert.That(response.ChargingScheduleUpdate.SetpointReactive_L3, Is.EqualTo(ChargingRateValue.Parse(12)));
 
 
-                ClassicAssert.AreEqual(1,                                                        pullDynamicScheduleUpdateRequests.Count);
+                Assert.That(pullDynamicScheduleUpdateRequests.Count, Is.EqualTo(1));
 
 
                 Assert.Multiple(() => {

@@ -197,29 +197,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 #region Verify the response
 
-                ClassicAssert.AreEqual(ResultCode.OK,                            response.Result.ResultCode);
-                ClassicAssert.AreEqual(SetDefaultE2EChargingTariffStatus.Accepted,   response.Status);
+                Assert.That(response.Result.ResultCode, Is.EqualTo(ResultCode.OK));
+                Assert.That(response.Status, Is.EqualTo(SetDefaultE2EChargingTariffStatus.Accepted));
 
                 #endregion
 
                 #region Verify the request at the charging station
 
-                ClassicAssert.AreEqual(1,                                         setDefaultChargingTariffRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,                       setDefaultChargingTariffRequests.First().DestinationId);
+                Assert.That(setDefaultChargingTariffRequests.Count, Is.EqualTo(1));
+                Assert.That(setDefaultChargingTariffRequests.First().DestinationId, Is.EqualTo(chargingStation1.Id));
 
-                ClassicAssert.AreEqual((object)chargingTariff.Id,                         setDefaultChargingTariffRequests.First().ChargingTariff.Id);
-                ClassicAssert.AreEqual(1,                                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Id, Is.EqualTo((object)chargingTariff.Id));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count(), Is.EqualTo(1));
                 ClassicAssert.IsTrue  (                                           setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
-                ClassicAssert.AreEqual(VerificationStatus.ValidSignature,         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status);
-                ClassicAssert.AreEqual("emp1",                                    setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name);
-                ClassicAssert.AreEqual("Just a signed charging tariff!",          setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(timeReference.ToISO8601(),                 setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.  ToISO8601());
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(timeReference.ToISO8601()));
 
-                ClassicAssert.AreEqual(1,                                         setDefaultChargingTariffRequests.First().Signatures.Count());
-                ClassicAssert.AreEqual(VerificationStatus.ValidSignature,         setDefaultChargingTariffRequests.First().Signatures.First().Status);
-                ClassicAssert.AreEqual("csms001",                                 setDefaultChargingTariffRequests.First().Signatures.First().Name);
-                ClassicAssert.AreEqual("Just a backend test request!",            setDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText());
-                ClassicAssert.AreEqual(now1.ToISO8601(),                          setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.  ToISO8601());
+                Assert.That(setDefaultChargingTariffRequests.First().Signatures.Count(), Is.EqualTo(1));
+                Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
+                Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Name, Is.EqualTo("csms001"));
+                Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText(), Is.EqualTo("Just a backend test request!"));
+                Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(now1.ToISO8601()));
 
                 #endregion
 

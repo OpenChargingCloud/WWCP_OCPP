@@ -101,10 +101,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
             if (parsedBinaryDataTransferRequest is not null)
             {
 
-                ClassicAssert.AreEqual (vendorId,              parsedBinaryDataTransferRequest.VendorId);
-                ClassicAssert.AreEqual (messageId,             parsedBinaryDataTransferRequest.MessageId);
-                ClassicAssert.AreEqual (data.ToUTF8String(),   parsedBinaryDataTransferRequest.Data?.ToUTF8String());
-                ClassicAssert.AreEqual (1,                     parsedBinaryDataTransferRequest.Signatures.Count());
+                Assert.That(parsedBinaryDataTransferRequest.VendorId, Is.EqualTo(vendorId));
+                Assert.That(parsedBinaryDataTransferRequest.MessageId, Is.EqualTo(messageId));
+                Assert.That(parsedBinaryDataTransferRequest.Data?.ToUTF8String(), Is.EqualTo(data.ToUTF8String()));
+                Assert.That(parsedBinaryDataTransferRequest.Signatures.Count(), Is.EqualTo(1));
 
                 var verifed = parsedBinaryDataTransferRequest.Verify(parsedBinaryDataTransferRequest.ToBinary(
                                                                          CustomBinaryDataTransferRequestSerializer:   null,
