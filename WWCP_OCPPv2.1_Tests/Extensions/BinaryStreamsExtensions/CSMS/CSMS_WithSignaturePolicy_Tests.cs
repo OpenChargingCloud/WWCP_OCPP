@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task SendBinaryData_Test1()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -161,10 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                                          );
 
-                ClassicAssert.IsNotNull(chargingTariff);
+                Assert.That(chargingTariff, Is.Not.Null);
 
 
-                ClassicAssert.IsTrue   (chargingTariff.Sign(providerKeyPair,
+                Assert.That(chargingTariff.Sign(providerKeyPair,
                                                      out var eerr,
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
@@ -182,9 +182,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                      //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
                                                      //testCSMS01.OCPP.CustomSignatureSerializer,
                                                      //testCSMS01.OCPP.CustomCustomDataSerializer
-                                                     ));
+                                                     ), Is.True);
 
-                ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
+                Assert.That(chargingTariff.Signatures.Any(), Is.True);
 
                 #endregion
 
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Id, Is.EqualTo((object)chargingTariff.Id));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count(), Is.EqualTo(1));
-                ClassicAssert.IsTrue  (                                           setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr), Is.True);
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));

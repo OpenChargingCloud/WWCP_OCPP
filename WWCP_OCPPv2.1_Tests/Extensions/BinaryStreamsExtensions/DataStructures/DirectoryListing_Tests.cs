@@ -47,10 +47,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
             var jsonIn = JObject.Parse(@"{ ""file1"": null, ""file2"": null, ""dir1"": { ""file1_1"": null, ""file1_2"": null, ""dir1_1"": { ""file1_1_1"": null, ""file1_1_2"": null }}, ""file3"": null }");
 
-            ClassicAssert.IsTrue(DirectoryListing.TryParse(jsonIn, out var directoryListing, out var errorResponse));
+            Assert.That(DirectoryListing.TryParse(jsonIn, out var directoryListing, out var errorResponse), Is.True);
 
-            ClassicAssert.IsNotNull(directoryListing);
-            ClassicAssert.IsNull   (errorResponse);
+            Assert.That(directoryListing, Is.Not.Null);
+            Assert.That(errorResponse, Is.Null);
 
             if (directoryListing is not null)
             {
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 // null. The sizes are not asserted: AddFile hands every file a hard coded
                 // Size of 23, so they say nothing about the file.
                 var withMetadata = jsonOut2 as JObject;
-                ClassicAssert.IsNotNull(withMetadata);
+                Assert.That(withMetadata, Is.Not.Null);
 
                 Assert.That(
                     withMetadata!.Properties().Select(property => property.Name).ToArray(),
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 );
 
                 Assert.That(withMetadata["file1"]?["type"]?.Value<String>(), Is.EqualTo("FILE"));
-                ClassicAssert.IsNull  (         withMetadata["dir1" ]?["type"]);
+                Assert.That(withMetadata["dir1"]?["type"], Is.Null);
 
                 Assert.That(
                     (withMetadata["dir1"] as JObject)!.Properties().Select(property => property.Name).ToArray(),

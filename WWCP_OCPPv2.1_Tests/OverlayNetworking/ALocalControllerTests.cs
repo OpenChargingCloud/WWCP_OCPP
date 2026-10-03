@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
 
                                    );
 
-                ClassicAssert.IsNotNull(localController1);
+                Assert.That(localController1, Is.Not.Null);
 
 
                 lcOCPPWebSocketServer01 = localController1.AttachWebSocketServer(
@@ -141,13 +141,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
                                               AutoStart:               true
                                           );
 
-                ClassicAssert.IsNotNull(lcOCPPWebSocketServer01);
+                Assert.That(lcOCPPWebSocketServer01, Is.Not.Null);
 
 
                 if (testBackendWebSockets1 is not null)
                 {
 
-                    testCSMS1.AddOrUpdateHTTPBasicAuth(localController1.Id, "1234abcd");
+                    testCSMS1!.AddOrUpdateHTTPBasicAuth(localController1.Id, "1234abcd");
 
                     var response = localController1.ConnectOCPPWebSocketClient(
                                        NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
                                        NetworkingMode:           NetworkingMode.OverlayNetwork
                                    ).Result;
 
-                    ClassicAssert.IsNotNull(response);
+                    Assert.That(response, Is.Not.Null);
 
                     if (response is not null)
                     {
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking
                         Assert.That(response.Server, Is.EqualTo($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API"));
                         Assert.That(response.Connection, Is.EqualTo(ConnectionType.Upgrade));
                         Assert.That(response.Upgrade, Is.EqualTo("websocket"));
-                        ClassicAssert.IsTrue  (response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
+                        Assert.That(response.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId), Is.True);
                         Assert.That(response.SecWebSocketVersion, Is.EqualTo("13"));
                     }
 

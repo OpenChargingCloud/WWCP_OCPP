@@ -80,11 +80,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public async Task SetDefaultE2EChargingTariffRequest_Test1()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -190,10 +190,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          );
 
-                ClassicAssert.IsNotNull(chargingTariff);
+                Assert.That(chargingTariff, Is.Not.Null);
 
 
-                ClassicAssert.IsTrue   (chargingTariff.Sign(providerKeyPair,
+                Assert.That(chargingTariff.Sign(providerKeyPair,
                                                      out var eerr,
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
@@ -211,9 +211,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
                                                      //testCSMS01.OCPP.CustomSignatureSerializer,
                                                      //testCSMS01.OCPP.CustomCustomDataSerializer
-                                                     ));
+                                                     ), Is.True);
 
-                ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
+                Assert.That(chargingTariff.Signatures.Any(), Is.True);
 
                 #endregion
 
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Id, Is.EqualTo((object)chargingTariff.Id));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count(), Is.EqualTo(1));
-                ClassicAssert.IsTrue  (                                           setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr), Is.True);
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
@@ -268,11 +268,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public async Task GetDefaultChargingTariffRequest_Test1()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -367,11 +367,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public async Task SetGetRemoveGet_DefaultChargingTariffRequest_1EVSE_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -517,10 +517,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                        );
 
-                ClassicAssert.IsNotNull(chargingTariff);
+                Assert.That(chargingTariff, Is.Not.Null);
 
 
-                ClassicAssert.IsTrue   (chargingTariff.Sign(providerKeyPair,
+                Assert.That(chargingTariff.Sign(providerKeyPair,
                                                      out var eerr,
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
@@ -538,9 +538,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
                                                      //testCSMS01.OCPP.CustomSignatureSerializer,
                                                      //testCSMS01.OCPP.CustomCustomDataSerializer
-                                                     ));
+                                                     ), Is.True);
 
-                ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
+                Assert.That(chargingTariff.Signatures.Any(), Is.True);
 
                 #endregion
 
@@ -570,7 +570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 // Verify the signature of the charging tariff
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Id, Is.EqualTo((object)chargingTariff.Id));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count(), Is.EqualTo(1));
-                ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr), Is.True);
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
@@ -704,11 +704,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public async Task SetGetRemoveGet_DefaultChargingTariffRequest_2EVSEs_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -854,10 +854,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                        );
 
-                ClassicAssert.IsNotNull(chargingTariff);
+                Assert.That(chargingTariff, Is.Not.Null);
 
 
-                ClassicAssert.IsTrue   (chargingTariff.Sign(providerKeyPair,
+                Assert.That(chargingTariff.Sign(providerKeyPair,
                                                      out var eerr,
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
@@ -875,9 +875,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
                                                      //testCSMS01.OCPP.CustomSignatureSerializer,
                                                      //testCSMS01.OCPP.CustomCustomDataSerializer
-                                                     ));
+                                                     ), Is.True);
 
-                ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
+                Assert.That(chargingTariff.Signatures.Any(), Is.True);
 
                 #endregion
 
@@ -907,7 +907,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 // Verify the signature of the charging tariff
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Id, Is.EqualTo((object)chargingTariff.Id));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count(), Is.EqualTo(1));
-                ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr), Is.True);
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
@@ -1041,11 +1041,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public async Task SetGetRemoveGet_DefaultChargingTariffRequestForEVSE_2EVSEs_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -1191,10 +1191,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                        );
 
-                ClassicAssert.IsNotNull(chargingTariff);
+                Assert.That(chargingTariff, Is.Not.Null);
 
 
-                ClassicAssert.IsTrue   (chargingTariff.Sign(providerKeyPair,
+                Assert.That(chargingTariff.Sign(providerKeyPair,
                                                      out var eerr,
                                                      "emp1",
                                                      I18NString.Create("Just a signed charging tariff!"),
@@ -1212,9 +1212,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                      //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
                                                      //testCSMS01.OCPP.CustomSignatureSerializer,
                                                      //testCSMS01.OCPP.CustomCustomDataSerializer
-                                                     ));
+                                                     ), Is.True);
 
-                ClassicAssert.IsTrue   (chargingTariff.Signatures.Any());
+                Assert.That(chargingTariff.Signatures.Any(), Is.True);
 
                 #endregion
 
@@ -1247,7 +1247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 // Verify the signature of the charging tariff
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Id, Is.EqualTo((object)chargingTariff.Id));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count(), Is.EqualTo(1));
-                ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr), Is.True);
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
@@ -1381,11 +1381,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
         public async Task SetGetRemoveGet_TwoDefaultChargingTariffRequestsForTwoEVSEs_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -1531,10 +1531,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                        );
 
-                ClassicAssert.IsNotNull(chargingTariff1);
+                Assert.That(chargingTariff1, Is.Not.Null);
 
 
-                ClassicAssert.IsTrue   (chargingTariff1.Sign(providerKeyPair,
+                Assert.That(chargingTariff1.Sign(providerKeyPair,
                                                              out var eerr,
                                                              "emp1",
                                                              I18NString.Create("Just a signed charging tariff!"),
@@ -1552,9 +1552,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                              //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
                                                              //testCSMS01.OCPP.CustomSignatureSerializer,
                                                              //testCSMS01.OCPP.CustomCustomDataSerializer
-                                                             ));
+                                                             ), Is.True);
 
-                ClassicAssert.IsTrue   (chargingTariff1.Signatures.Any());
+                Assert.That(chargingTariff1.Signatures.Any(), Is.True);
 
                 #endregion
 
@@ -1613,10 +1613,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                        );
 
-                ClassicAssert.IsNotNull(chargingTariff2);
+                Assert.That(chargingTariff2, Is.Not.Null);
 
 
-                ClassicAssert.IsTrue   (chargingTariff2.Sign(providerKeyPair,
+                Assert.That(chargingTariff2.Sign(providerKeyPair,
                                                              out var eerr2,
                                                              "emp1",
                                                              I18NString.Create("Just a signed charging tariff!"),
@@ -1634,9 +1634,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                                              //testCSMS01.OCPP.CustomAdditionalInfoSerializer,
                                                              //testCSMS01.OCPP.CustomSignatureSerializer,
                                                              //testCSMS01.OCPP.CustomCustomDataSerializer
-                                                             ));
+                                                             ), Is.True);
 
-                ClassicAssert.IsTrue   (chargingTariff2.Signatures.Any());
+                Assert.That(chargingTariff2.Signatures.Any(), Is.True);
 
                 #endregion
 
@@ -1667,7 +1667,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 // Verify the signature of the charging tariff
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Id, Is.EqualTo((object)chargingTariff1.Id));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count(), Is.EqualTo(1));
-                ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Verify(out var errr), Is.True);
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
@@ -1710,7 +1710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 // Verify the signature of the charging tariff
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Id, Is.EqualTo((object)chargingTariff2.Id));
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.Count(), Is.EqualTo(1));
-                ClassicAssert.IsTrue  (                                                   setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Verify(out var errr2));
+                Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Verify(out var errr2), Is.True);
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));

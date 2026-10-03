@@ -84,12 +84,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var operatorId = CSOOperator_Id.TryParse("DEGEF");
 
-            ClassicAssert.IsNotNull(operatorId);
+            Assert.That(operatorId, Is.Not.Null);
 
             if (operatorId is not null)
             {
                 Assert.That(operatorId.Value.CountryCode.Alpha2Code, Is.EqualTo("DE"));
-                ClassicAssert.IsNull  (          operatorId.Value.Separator);
+                Assert.That(operatorId.Value.Separator, Is.Null);
                 Assert.That(operatorId.Value.Suffix, Is.EqualTo("GEF"));
                 Assert.That(operatorId.Value.ToString(), Is.EqualTo("DEGEF"));
                 Assert.That(operatorId.Value.Length, Is.EqualTo(5));
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var operatorId = CSOOperator_Id.TryParse("DE*GEF");
 
-            ClassicAssert.IsNotNull(operatorId);
+            Assert.That(operatorId, Is.Not.Null);
 
             if (operatorId is not null)
             {
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId = CSOOperator_Id.TryParse(null);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
-            ClassicAssert.IsNull(operatorId);
+            Assert.That(operatorId, Is.Null);
 
         }
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var operatorId = CSOOperator_Id.TryParse("");
 
-            ClassicAssert.IsNull(operatorId);
+            Assert.That(operatorId, Is.Null);
 
         }
 
@@ -176,8 +176,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId2 = CSOOperator_Id.TryParse("DE*GEF");
 
             Assert.That(operatorId2, Is.EqualTo(operatorId1));
-            ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
-            ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
+            Assert.That(operatorId1.Equals(operatorId2), Is.True);
+            Assert.That(operatorId1 == operatorId2, Is.True);
 
         }
 
@@ -196,8 +196,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId2 = CSOOperator_Id.TryParse("DE*GEF");
 
             Assert.That(operatorId2, Is.EqualTo(operatorId1));
-            ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
-            ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
+            Assert.That(operatorId1.Equals(operatorId2), Is.True);
+            Assert.That(operatorId1 == operatorId2, Is.True);
 
         }
 
@@ -216,8 +216,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId2 = CSOOperator_Id.TryParse("DEGEF");
 
             Assert.That(operatorId2, Is.EqualTo(operatorId1));
-            ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
-            ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
+            Assert.That(operatorId1.Equals(operatorId2), Is.True);
+            Assert.That(operatorId1 == operatorId2, Is.True);
 
         }
 

@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                     Assert.That(response.Connection,                                                      Is.EqualTo(ConnectionType.Upgrade));
                     Assert.That(response.Upgrade,                                                         Is.EqualTo("websocket"));
-                    Assert.That(response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId),   Is.True);
+                    Assert.That(response.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId),   Is.True);
                     Assert.That(response.SecWebSocketVersion,                                             Is.EqualTo("13"));
 
                 }
@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                     Assert.That(response.Connection,                                                      Is.EqualTo(ConnectionType.Upgrade));
                     Assert.That(response.Upgrade,                                                         Is.EqualTo("websocket"));
-                    Assert.That(response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId),   Is.True);
+                    Assert.That(response.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId),   Is.True);
                     Assert.That(response.SecWebSocketVersion,                                             Is.EqualTo("13"));
 
                 }
@@ -742,7 +742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                     Assert.That(response.Connection,                                                      Is.EqualTo(ConnectionType.Upgrade));
                     Assert.That(response.Upgrade,                                                         Is.EqualTo("websocket"));
-                    Assert.That(response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId),   Is.True);
+                    Assert.That(response.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId),   Is.True);
                     Assert.That(response.SecWebSocketVersion,                                             Is.EqualTo("13"));
 
                 }

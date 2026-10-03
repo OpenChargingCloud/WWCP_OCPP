@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                         Assert.That(response.Server,                                                          Is.EqualTo($"GraphDefined OCPP {Version.String} WebSocket Server"));
                         Assert.That(response.Connection,                                                      Is.EqualTo(ConnectionType.Upgrade));
                         Assert.That(response.Upgrade,                                                         Is.EqualTo("websocket"));
-                        Assert.That(response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId),   Is.True);
+                        Assert.That(response.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId),   Is.True);
                         Assert.That(response.SecWebSocketVersion,                                             Is.EqualTo("13"));
 
                     }

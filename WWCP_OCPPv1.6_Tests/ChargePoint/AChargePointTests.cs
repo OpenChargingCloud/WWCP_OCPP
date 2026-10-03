@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                             );
 
-            ClassicAssert.IsNotNull(chargePoint1);
+            Assert.That(chargePoint1, Is.Not.Null);
 
             chargePoint2  = new TestChargePointNode(
 
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                             );
 
-            ClassicAssert.IsNotNull(chargePoint2);
+            Assert.That(chargePoint2, Is.Not.Null);
 
             chargePoint3  = new TestChargePointNode(
 
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                             );
 
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.That(chargePoint3, Is.Not.Null);
 
             if (testBackendWebSockets01 is not null)
             {
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                     HTTPAuthentication:  HTTPBasicAuthentication.Create(chargePoint1.Id.ToString(), "1234abcd")
                                 ).Result;
 
-                ClassicAssert.IsNotNull(response1);
+                Assert.That(response1, Is.Not.Null);
 
                 if (response1 is not null)
                 {

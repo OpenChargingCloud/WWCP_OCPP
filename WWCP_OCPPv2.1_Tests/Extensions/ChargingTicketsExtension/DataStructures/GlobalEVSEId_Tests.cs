@@ -84,16 +84,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var evseId = GlobalEVSE_Id.TryParse("DEGEFE12345678");
 
-            ClassicAssert.IsNotNull(evseId);
+            Assert.That(evseId, Is.Not.Null);
 
             if (evseId is not null)
             {
 
                 Assert.That(evseId.Value.OperatorId.CountryCode.Alpha2Code, Is.EqualTo("DE"));
-                ClassicAssert.IsNull  (                   evseId.Value.OperatorId.Separator);
+                Assert.That(evseId.Value.OperatorId.Separator, Is.Null);
                 Assert.That(evseId.Value.OperatorId.Suffix, Is.EqualTo("GEF"));
 
-                ClassicAssert.IsNull  (                   evseId.Value.Separator);
+                Assert.That(evseId.Value.Separator, Is.Null);
                 Assert.That(evseId.Value.Suffix, Is.EqualTo("12345678"));
                 Assert.That(evseId.Value.ToString(), Is.EqualTo("DEGEFE12345678"));
                 Assert.That(evseId.Value.Length, Is.EqualTo(14));
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var evseId = GlobalEVSE_Id.TryParse("DE*GEF*E12345678*1");
 
-            ClassicAssert.IsNotNull(evseId);
+            Assert.That(evseId, Is.Not.Null);
 
             if (evseId is not null)
             {
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId = CSOOperator_Id.TryParse(null);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
-            ClassicAssert.IsNull(operatorId);
+            Assert.That(operatorId, Is.Null);
 
         }
 
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var operatorId = CSOOperator_Id.TryParse("");
 
-            ClassicAssert.IsNull(operatorId);
+            Assert.That(operatorId, Is.Null);
 
         }
 

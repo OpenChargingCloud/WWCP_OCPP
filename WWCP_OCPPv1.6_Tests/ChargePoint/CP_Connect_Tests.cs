@@ -41,11 +41,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public void ChargePoint_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.That(testCentralSystem01, Is.Not.Null);
+            Assert.That(testBackendWebSockets01, Is.Not.Null);
+            Assert.That(chargePoint1, Is.Not.Null);
+            Assert.That(chargePoint2, Is.Not.Null);
+            Assert.That(chargePoint3, Is.Not.Null);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&

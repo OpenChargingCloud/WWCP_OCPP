@@ -52,11 +52,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task AddSignaturePolicy_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -133,11 +133,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task Reset_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&

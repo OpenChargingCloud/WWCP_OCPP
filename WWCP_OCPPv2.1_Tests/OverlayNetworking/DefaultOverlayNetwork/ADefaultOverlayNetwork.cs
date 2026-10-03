@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             Assert.That(connectionSetupResponse1.Server, Is.EqualTo($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API"));
             Assert.That(connectionSetupResponse1.Connection, Is.EqualTo(ConnectionType.Upgrade));
             Assert.That(connectionSetupResponse1.Upgrade, Is.EqualTo("websocket"));
-            ClassicAssert.IsTrue  (connectionSetupResponse1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
+            Assert.That(connectionSetupResponse1.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId), Is.True);
             Assert.That(connectionSetupResponse1.SecWebSocketVersion, Is.EqualTo("13"));
 
             #endregion
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             Assert.That(connectionSetupResponse2.Server, Is.EqualTo($"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API"));
             Assert.That(connectionSetupResponse2.Connection, Is.EqualTo(ConnectionType.Upgrade));
             Assert.That(connectionSetupResponse2.Upgrade, Is.EqualTo("websocket"));
-            ClassicAssert.IsTrue  (connectionSetupResponse2.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
+            Assert.That(connectionSetupResponse2.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId), Is.True);
             Assert.That(connectionSetupResponse2.SecWebSocketVersion, Is.EqualTo("13"));
 
             #endregion

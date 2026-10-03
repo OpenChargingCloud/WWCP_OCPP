@@ -49,11 +49,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public void ChargingStation_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -81,11 +81,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendBootNotifications_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS1);
-            ClassicAssert.IsNotNull(testBackendWebSockets1);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.That(testCSMS1, Is.Not.Null);
+            Assert.That(testBackendWebSockets1, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+            Assert.That(chargingStation2, Is.Not.Null);
+            Assert.That(chargingStation3, Is.Not.Null);
 
             if (testCSMS1              is not null &&
                 testBackendWebSockets1 is not null &&
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
 
-                ClassicAssert.IsNotNull(chargingStation);
+                Assert.That(chargingStation, Is.Not.Null);
                 if (chargingStation is not null)
                 {
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                     var modem = chargingStation.Modem;
 
-                    ClassicAssert.IsNotNull(modem);
+                    Assert.That(modem, Is.Not.Null);
                     if (modem is not null)
                     {
                         Assert.That(modem.ICCID, Is.EqualTo(chargingStation1.Modem!.ICCID));

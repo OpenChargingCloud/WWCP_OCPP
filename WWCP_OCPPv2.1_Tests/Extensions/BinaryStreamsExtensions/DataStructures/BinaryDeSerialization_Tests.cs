@@ -76,13 +76,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                  Timestamp:     Timestamp.Now
                                              );
 
-            ClassicAssert.IsTrue(signSuccess);
-            ClassicAssert.IsNull(errorResponse1);
+            Assert.That(signSuccess, Is.True);
+            Assert.That(errorResponse1, Is.Null);
 
 
             var serializedRequest          = binaryDataTransferRequest.ToBinary();
 
-            ClassicAssert.IsNotNull(serializedRequest);
+            Assert.That(serializedRequest, Is.Not.Null);
 
 
             var success                    = BinaryDataTransferRequest.TryParse(
@@ -94,9 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                  out var errorResponse2
                                              );
 
-            ClassicAssert.IsTrue   (success);
-            ClassicAssert.IsNull   (errorResponse2);
-            ClassicAssert.IsNotNull(parsedBinaryDataTransferRequest);
+            Assert.That(success, Is.True);
+            Assert.That(errorResponse2, Is.Null);
+            Assert.That(parsedBinaryDataTransferRequest, Is.Not.Null);
 
             if (parsedBinaryDataTransferRequest is not null)
             {
@@ -113,8 +113,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                                      out var errorResponse3,
                                                                      VerificationRuleActions.VerifyAll);
 
-                ClassicAssert.IsTrue(verifed);
-                ClassicAssert.IsNull(errorResponse3);
+                Assert.That(verifed, Is.True);
+                Assert.That(errorResponse3, Is.Null);
 
             }
 

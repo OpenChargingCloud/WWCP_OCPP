@@ -2149,8 +2149,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.That(meterValuesRequests.First().EVSEId, Is.EqualTo(evseId));
 
                 Assert.That(meterValuesRequests.First().MeterValues.Count(), Is.EqualTo(meterValues.Length));
-                ClassicAssert.IsTrue   (meterValues.ElementAt(0).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
-                ClassicAssert.IsTrue   (meterValues.ElementAt(1).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
+                Assert.That(meterValues.ElementAt(0).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2), Is.True);
+                Assert.That(meterValues.ElementAt(1).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2), Is.True);
 
                 Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.Count(), Is.EqualTo(meterValues.ElementAt(0).SampledValues.Count()));
                 Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.Count(), Is.EqualTo(meterValues.ElementAt(1).SampledValues.Count()));

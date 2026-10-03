@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
                                                            )
                               );
 
-            ClassicAssert.IsNotNull(testCSMS01);
+            Assert.That(testCSMS01, Is.Not.Null);
 
             testBackendWebSockets01  = testCSMS01.AttachWebSocketServer(
                                            TCPPort:                 null,   // Random port!
@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.GermanCalibrationLaw
                                            AutoStart:               true
                                        );
 
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            Assert.That(testBackendWebSockets01, Is.Not.Null);
 
 
             csms1WebSocketJSONMessagesReceived          = [];

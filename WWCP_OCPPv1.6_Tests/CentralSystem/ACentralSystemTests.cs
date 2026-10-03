@@ -77,14 +77,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                      )
                                        );
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
+            Assert.That(testCentralSystem01, Is.Not.Null);
 
                                        // Will use a random TCP port!
             testBackendWebSockets01  = testCentralSystem01.AttachWebSocketServer(
                                            AutoStart:  true
                                        );
 
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            Assert.That(testBackendWebSockets01, Is.Not.Null);
 
             testCentralSystem01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
             testCentralSystem01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("GD001"),  "1234abcd");

@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                            )
                               );
 
-            ClassicAssert.IsNotNull(testCSMS01);
+            Assert.That(testCSMS01, Is.Not.Null);
 
             testWebSocketServer01  = testCSMS01.AttachWebSocketServer(
                                          TCPPort:                 null,   // Random port!
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                          AutoStart:               true
                                      );
 
-            ClassicAssert.IsNotNull(testWebSocketServer01);
+            Assert.That(testWebSocketServer01, Is.Not.Null);
 
 
             csmsWebSocketTextMessagesReceived          = new ConcurrentList<LogJSONRequest>();
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                     DNSClient:                testCSMS01!.DNSClient
                                 );
 
-            ClassicAssert.IsNotNull(chargingStation1);
+            Assert.That(chargingStation1, Is.Not.Null);
 
 
             if (testWebSocketServer01 is not null)
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                     DisableWebSocketPings:    true
                                 ).Result;
 
-                ClassicAssert.IsNotNull(response1);
+                Assert.That(response1, Is.Not.Null);
 
                 if (response1 is not null)
                 {
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     Assert.That(response1.Server, Is.EqualTo(NetworkingNode.AOCPPNetworkingNode.DefaultHTTPServiceName));
                     Assert.That(response1.Connection, Is.EqualTo(ConnectionType.Upgrade));
                     Assert.That(response1.Upgrade, Is.EqualTo("websocket"));
-                    ClassicAssert.IsTrue  (response1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
+                    Assert.That(response1.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId), Is.True);
                     Assert.That(response1.SecWebSocketVersion, Is.EqualTo("13"));
 
                 }
@@ -316,9 +316,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public void ChargingStation_Init_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testWebSocketServer01);
-            ClassicAssert.IsNotNull(chargingStation1);
+            Assert.That(testCSMS01, Is.Not.Null);
+            Assert.That(testWebSocketServer01, Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
 
 
             // One station, because that is what this fixture is about: SetupCSMS brings up a

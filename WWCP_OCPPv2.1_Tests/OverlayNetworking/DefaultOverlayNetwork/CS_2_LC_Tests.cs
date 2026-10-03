@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                         if (chargingStation2.Modem is not null &&
                             localController.Modem is not null)
                         {
-                            Assert.That(chargingStation2.Modem.ICCID,   Is.EqualTo(chargingStation.Modem.ICCID));
+                            Assert.That(chargingStation2.Modem.ICCID,   Is.EqualTo(chargingStation.Modem!.ICCID));
                             Assert.That(chargingStation2.Modem.IMSI,    Is.EqualTo(chargingStation.Modem.IMSI));
                         }
 

@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            ClassicAssert.IsNotNull(chargingTariff);
+            Assert.That(chargingTariff, Is.Not.Null);
 
             #endregion
 
@@ -150,8 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            ClassicAssert.IsNotNull(chargingStationId);
-            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            Assert.That(chargingStationId.IsNullOrEmpty, Is.False);
 
             #endregion
 
@@ -163,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(evse);
+            Assert.That(evse, Is.Not.Null);
 
             #endregion
 
@@ -176,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(idToken);
+            Assert.That(idToken, Is.Not.Null);
 
             #endregion
 
@@ -314,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            ClassicAssert.IsNotNull(transactionEvents);
+            Assert.That(transactionEvents, Is.Not.Null);
             Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
@@ -324,24 +323,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                ClassicAssert.IsTrue(CDR.CalculateCosts(
+                Assert.That(CDR.CalculateCosts(
 
-                                  ProviderId:            Provider_Id.   Parse ("DE-GDF"),
-                                  ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
-                                  CSOOperatorId:         CSOOperator_Id.Parse ("DE*GEF"),
-                                  EVSEId:                GlobalEVSE_Id. Parse ("DE*GEF*E12345678*1"),
-                                  MeterValues:           transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
-                                  ChargingTariff:        chargingTariff,
+                                  ProviderId: Provider_Id.Parse("DE-GDF"),
+                                  ProviderName: DisplayTexts.Create("GraphDefined EMP"),
+                                  CSOOperatorId: CSOOperator_Id.Parse("DE*GEF"),
+                                  EVSEId: GlobalEVSE_Id.Parse("DE*GEF*E12345678*1"),
+                                  MeterValues: transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
+                                  ChargingTariff: chargingTariff,
 
-                                  CDR:                   out var cdr,
-                                  ErrorResponse:         out var errorString,
+                                  CDR: out var cdr,
+                                  ErrorResponse: out var errorString,
 
-                                  Measurand:             Measurand.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocation.Outlet
+                                  Measurand: Measurand.Current_Import_Offered,
+                                  MeasurementLocation: MeasurementLocation.Outlet
 
                               ),
+                              Is.True,
                               errorString);
-                ClassicAssert.IsNotNull(cdr);
+                Assert.That(cdr, Is.Not.Null);
 
                 if (cdr is not null)
                 {
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            ClassicAssert.IsNotNull(chargingTariff);
+            Assert.That(chargingTariff, Is.Not.Null);
 
             #endregion
 
@@ -436,8 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            ClassicAssert.IsNotNull(chargingStationId);
-            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            Assert.That(chargingStationId.IsNullOrEmpty, Is.False);
 
             #endregion
 
@@ -449,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(evse);
+            Assert.That(evse, Is.Not.Null);
 
             #endregion
 
@@ -462,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(idToken);
+            Assert.That(idToken, Is.Not.Null);
 
             #endregion
 
@@ -600,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            ClassicAssert.IsNotNull(transactionEvents);
+            Assert.That(transactionEvents, Is.Not.Null);
             Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
@@ -610,24 +609,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                ClassicAssert.IsTrue(CDR.CalculateCosts(
+                Assert.That(CDR.CalculateCosts(
 
-                                  ProviderId:            Provider_Id.   Parse ("DE-GDF"),
-                                  ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
-                                  CSOOperatorId:         CSOOperator_Id.Parse ("DE*GEF"),
-                                  EVSEId:                GlobalEVSE_Id. Parse ("DE*GEF*E12345678*1"),
-                                  MeterValues:           transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
-                                  ChargingTariff:        chargingTariff,
+                                  ProviderId: Provider_Id.Parse("DE-GDF"),
+                                  ProviderName: DisplayTexts.Create("GraphDefined EMP"),
+                                  CSOOperatorId: CSOOperator_Id.Parse("DE*GEF"),
+                                  EVSEId: GlobalEVSE_Id.Parse("DE*GEF*E12345678*1"),
+                                  MeterValues: transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
+                                  ChargingTariff: chargingTariff,
 
-                                  CDR:                   out var cdr,
-                                  ErrorResponse:         out var errorString,
+                                  CDR: out var cdr,
+                                  ErrorResponse: out var errorString,
 
-                                  Measurand:             Measurand.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocation.Outlet
+                                  Measurand: Measurand.Current_Import_Offered,
+                                  MeasurementLocation: MeasurementLocation.Outlet
 
                               ),
+                              Is.True,
                               errorString);
-                ClassicAssert.IsNotNull(cdr);
+                Assert.That(cdr, Is.Not.Null);
 
                 if (cdr is not null)
                 {
@@ -718,7 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            ClassicAssert.IsNotNull(chargingTariff);
+            Assert.That(chargingTariff, Is.Not.Null);
 
             #endregion
 
@@ -726,8 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            ClassicAssert.IsNotNull(chargingStationId);
-            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            Assert.That(chargingStationId.IsNullOrEmpty, Is.False);
 
             #endregion
 
@@ -739,7 +738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(evse);
+            Assert.That(evse, Is.Not.Null);
 
             #endregion
 
@@ -752,7 +751,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(idToken);
+            Assert.That(idToken, Is.Not.Null);
 
             #endregion
 
@@ -890,7 +889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            ClassicAssert.IsNotNull(transactionEvents);
+            Assert.That(transactionEvents, Is.Not.Null);
             Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
@@ -900,24 +899,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                ClassicAssert.IsTrue(CDR.CalculateCosts(
+                Assert.That(CDR.CalculateCosts(
 
-                                  ProviderId:            Provider_Id.   Parse ("DE-GDF"),
-                                  ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
-                                  CSOOperatorId:         CSOOperator_Id.Parse ("DE*GEF"),
-                                  EVSEId:                GlobalEVSE_Id. Parse ("DE*GEF*E12345678*1"),
-                                  MeterValues:           transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
-                                  ChargingTariff:        chargingTariff,
+                                  ProviderId: Provider_Id.Parse("DE-GDF"),
+                                  ProviderName: DisplayTexts.Create("GraphDefined EMP"),
+                                  CSOOperatorId: CSOOperator_Id.Parse("DE*GEF"),
+                                  EVSEId: GlobalEVSE_Id.Parse("DE*GEF*E12345678*1"),
+                                  MeterValues: transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
+                                  ChargingTariff: chargingTariff,
 
-                                  CDR:                   out var cdr,
-                                  ErrorResponse:         out var errorString,
+                                  CDR: out var cdr,
+                                  ErrorResponse: out var errorString,
 
-                                  Measurand:             Measurand.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocation.Outlet
+                                  Measurand: Measurand.Current_Import_Offered,
+                                  MeasurementLocation: MeasurementLocation.Outlet
 
                               ),
+                              Is.True,
                               errorString);
-                ClassicAssert.IsNotNull(cdr);
+                Assert.That(cdr, Is.Not.Null);
 
                 if (cdr is not null)
                 {
@@ -1059,7 +1059,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            ClassicAssert.IsNotNull(chargingTariff);
+            Assert.That(chargingTariff, Is.Not.Null);
 
             #endregion
 
@@ -1067,8 +1067,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            ClassicAssert.IsNotNull(chargingStationId);
-            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            Assert.That(chargingStationId.IsNullOrEmpty, Is.False);
 
             #endregion
 
@@ -1080,7 +1079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(evse);
+            Assert.That(evse, Is.Not.Null);
 
             #endregion
 
@@ -1093,7 +1092,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(idToken);
+            Assert.That(idToken, Is.Not.Null);
 
             #endregion
 
@@ -1231,7 +1230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            ClassicAssert.IsNotNull(transactionEvents);
+            Assert.That(transactionEvents, Is.Not.Null);
             Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
@@ -1241,24 +1240,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                ClassicAssert.IsTrue(CDR.CalculateCosts(
+                Assert.That(CDR.CalculateCosts(
 
-                                  ProviderId:            Provider_Id.   Parse ("DE-GDF"),
-                                  ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
-                                  CSOOperatorId:         CSOOperator_Id.Parse ("DE*GEF"),
-                                  EVSEId:                GlobalEVSE_Id. Parse ("DE*GEF*E12345678*1"),
-                                  MeterValues:           transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
-                                  ChargingTariff:        chargingTariff,
+                                  ProviderId: Provider_Id.Parse("DE-GDF"),
+                                  ProviderName: DisplayTexts.Create("GraphDefined EMP"),
+                                  CSOOperatorId: CSOOperator_Id.Parse("DE*GEF"),
+                                  EVSEId: GlobalEVSE_Id.Parse("DE*GEF*E12345678*1"),
+                                  MeterValues: transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
+                                  ChargingTariff: chargingTariff,
 
-                                  CDR:                   out var cdr,
-                                  ErrorResponse:         out var errorString,
+                                  CDR: out var cdr,
+                                  ErrorResponse: out var errorString,
 
-                                  Measurand:             Measurand.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocation.Outlet
+                                  Measurand: Measurand.Current_Import_Offered,
+                                  MeasurementLocation: MeasurementLocation.Outlet
 
                               ),
+                              Is.True,
                               errorString);
-                ClassicAssert.IsNotNull(cdr);
+                Assert.That(cdr, Is.Not.Null);
 
                 if (cdr is not null)
                 {
@@ -1374,7 +1374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            ClassicAssert.IsNotNull(chargingTariff);
+            Assert.That(chargingTariff, Is.Not.Null);
 
             #endregion
 
@@ -1382,8 +1382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            ClassicAssert.IsNotNull(chargingStationId);
-            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            Assert.That(chargingStationId.IsNullOrEmpty, Is.False);
 
             #endregion
 
@@ -1395,7 +1394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(evse);
+            Assert.That(evse, Is.Not.Null);
 
             #endregion
 
@@ -1408,7 +1407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(idToken);
+            Assert.That(idToken, Is.Not.Null);
 
             #endregion
 
@@ -1546,7 +1545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            ClassicAssert.IsNotNull(transactionEvents);
+            Assert.That(transactionEvents, Is.Not.Null);
             Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
@@ -1556,24 +1555,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                ClassicAssert.IsTrue(CDR.CalculateCosts(
+                Assert.That(CDR.CalculateCosts(
 
-                                  ProviderId:            Provider_Id.   Parse ("DE-GDF"),
-                                  ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
-                                  CSOOperatorId:         CSOOperator_Id.Parse ("DE*GEF"),
-                                  EVSEId:                GlobalEVSE_Id. Parse ("DE*GEF*E12345678*1"),
-                                  MeterValues:           transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
-                                  ChargingTariff:        chargingTariff,
+                                  ProviderId: Provider_Id.Parse("DE-GDF"),
+                                  ProviderName: DisplayTexts.Create("GraphDefined EMP"),
+                                  CSOOperatorId: CSOOperator_Id.Parse("DE*GEF"),
+                                  EVSEId: GlobalEVSE_Id.Parse("DE*GEF*E12345678*1"),
+                                  MeterValues: transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
+                                  ChargingTariff: chargingTariff,
 
-                                  CDR:                   out var cdr,
-                                  ErrorResponse:         out var errorString,
+                                  CDR: out var cdr,
+                                  ErrorResponse: out var errorString,
 
-                                  Measurand:             Measurand.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocation.Outlet
+                                  Measurand: Measurand.Current_Import_Offered,
+                                  MeasurementLocation: MeasurementLocation.Outlet
 
                               ),
+                              Is.True,
                               errorString);
-                ClassicAssert.IsNotNull(cdr);
+                Assert.That(cdr, Is.Not.Null);
 
                 if (cdr is not null)
                 {
@@ -1685,7 +1685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            ClassicAssert.IsNotNull(chargingTariff);
+            Assert.That(chargingTariff, Is.Not.Null);
 
             #endregion
 
@@ -1693,8 +1693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            ClassicAssert.IsNotNull(chargingStationId);
-            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            Assert.That(chargingStationId.IsNullOrEmpty, Is.False);
 
             #endregion
 
@@ -1706,7 +1705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(evse);
+            Assert.That(evse, Is.Not.Null);
 
             #endregion
 
@@ -1719,7 +1718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            ClassicAssert.IsNotNull(idToken);
+            Assert.That(idToken, Is.Not.Null);
 
             #endregion
 
@@ -1857,7 +1856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            ClassicAssert.IsNotNull(transactionEvents);
+            Assert.That(transactionEvents, Is.Not.Null);
             Assert.That(transactionEvents.Length, Is.EqualTo(2));
 
             #endregion
@@ -1867,24 +1866,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                ClassicAssert.IsTrue(CDR.CalculateCosts(
+                Assert.That(CDR.CalculateCosts(
 
-                                  ProviderId:            Provider_Id.   Parse ("DE-GDF"),
-                                  ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
-                                  CSOOperatorId:         CSOOperator_Id.Parse ("DE*GEF"),
-                                  EVSEId:                GlobalEVSE_Id. Parse ("DE*GEF*E12345678*1"),
-                                  MeterValues:           transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
-                                  ChargingTariff:        chargingTariff,
+                                  ProviderId: Provider_Id.Parse("DE-GDF"),
+                                  ProviderName: DisplayTexts.Create("GraphDefined EMP"),
+                                  CSOOperatorId: CSOOperator_Id.Parse("DE*GEF"),
+                                  EVSEId: GlobalEVSE_Id.Parse("DE*GEF*E12345678*1"),
+                                  MeterValues: transactionEvents.SelectMany(transactionEvent => transactionEvent.MeterValues),
+                                  ChargingTariff: chargingTariff,
 
-                                  CDR:                   out var cdr,
-                                  ErrorResponse:         out var errorString,
+                                  CDR: out var cdr,
+                                  ErrorResponse: out var errorString,
 
-                                  Measurand:             Measurand.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocation.Outlet
+                                  Measurand: Measurand.Current_Import_Offered,
+                                  MeasurementLocation: MeasurementLocation.Outlet
 
                               ),
+                              Is.True,
                               errorString);
-                ClassicAssert.IsNotNull(cdr);
+                Assert.That(cdr, Is.Not.Null);
 
                 if (cdr is not null)
                 {
