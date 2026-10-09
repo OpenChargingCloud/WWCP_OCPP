@@ -751,7 +751,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 var connectorId     = Connector_Id.Parse(1);
                 var idToken         = IdToken.NewRandom();
                 var startTimestamp  = Timestamp.Now;
-                var meterStart      = 1234UL;
+                var meterStart      = WattHour.FromWh(1234);
                 var reservationId   = Reservation_Id.NewRandom;
 
                 var response        = await chargePoint.SendStartTransactionNotification(
@@ -883,7 +883,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
                 var transactionId    = Transaction_Id.NewRandom;
                 var stopTimestamp    = Timestamp.Now;
-                var meterStop        = RandomExtensions.RandomUInt64();
+                var meterStop        = WattHour.FromWh(RandomExtensions.RandomUInt32());
                 var idToken          = IdToken.NewRandom();
                 var reason           = Reasons.EVDisconnected;
 

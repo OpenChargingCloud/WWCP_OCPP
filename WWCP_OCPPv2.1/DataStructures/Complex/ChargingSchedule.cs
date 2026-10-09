@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The power tolerance when following the EVPowerProfile.
         /// </summary>
-        public Decimal?                             PowerTolerance             { get; }
+        public Watt?                                PowerTolerance             { get; }
 
         /// <summary>
         /// The enumeration of charging schedule periods defining the maximum power or current usage over time.
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 PriceLevelSchedule?                  PriceLevelSchedule      = null,
                                 UInt32?                              SignatureId             = null,
                                 String?                              DigestValue             = null,
-                                Decimal?                             PowerTolerance          = null,
+                                Watt?                                PowerTolerance          = null,
                                 CustomData?                          CustomData              = null)
 
             : base(CustomData)
@@ -582,8 +582,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #region PowerTolerance             [optional]
 
                 if (JSON.ParseOptional("powerTolerance",
-                                       "price level schedule",
-                                       out Decimal? PowerTolerance,
+                                       "power tolerance",
+                                       out Watt? PowerTolerance,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -610,13 +610,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 ChargingSchedule = new ChargingSchedule(
                                        Id,
                                        ChargingRateUnit,
-                                       ChargingSchedulePeriods,
+                                       // Its numbers are written without a unit, in its chargingRateUnit.
+                                       ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.WithUnit(ChargingRateUnit)),
                                        StartSchedule,
                                        Duration,
-                                       MinChargingRate,
+                                       MinChargingRate?.WithUnit(ChargingRateUnit),
                                        UseLocalTime,
                                        RandomizedDelay,
-                                       LimitBeyondSoC,
+                                       LimitBeyondSoC?.WithUnit(ChargingRateUnit),
                                        SalesTariff,
                                        AbsolutePriceSchedule,
                                        PriceLevelSchedule,
@@ -763,7 +764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            PowerTolerance.HasValue
-                               ? new JProperty("powerTolerance",           PowerTolerance.Value)
+                               ? new JProperty("powerTolerance",           PowerTolerance.Value.Value)
                                : null,
 
                                  new JProperty("chargingSchedulePeriod",   new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer,

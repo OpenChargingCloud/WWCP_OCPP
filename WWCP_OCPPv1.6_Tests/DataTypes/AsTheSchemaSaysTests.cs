@@ -23,6 +23,8 @@ using NUnit.Framework;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
@@ -86,15 +88,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.DataTypes
         /// <summary>
         /// The sample is read, and what is written from it is the sample.
         /// </summary>
+        /// <param name="Read">What has to be true of what was read - for a value that a round trip alone would not catch.</param>
         private static void ReadAndWrittenAsTheSchemaSays<T>(String           Sample,
                                                              Parser<T>        TryParse,
-                                                             Func<T, JObject> ToJSON)
+                                                             Func<T, JObject> ToJSON,
+                                                             Action<T>?       Read   = null)
         {
 
             var sample = JObject.Parse(Sample);
 
             Assert.That(TryParse(sample, out var value, out var errorResponse), Is.True,
                         $"The sample in the schema's shape was not read: {errorResponse}");
+
+            Read?.Invoke(value!);
 
             var written = ToJSON(value!);
 
@@ -177,6 +183,119 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.DataTypes
                    (JObject json, out CS.SendLocalListRequest? value, out String? errorResponse) => CS.SendLocalListRequest.TryParse(json, requestId, destination, NetworkPath.Empty, out value, out errorResponse),
                    value => value.ToJSON()
                );
+
+        #endregion
+
+        #region StartTransactionRequest / StopTransactionRequest - meter values in Wh
+
+        [Test]
+        public void StartTransactionRequest()
+
+            => ReadAndWrittenAsTheSchemaSays<CP.StartTransactionRequest>(
+                   """
+                   {
+                       "connectorId":   1,
+                       "idTag":         "AABBCCDD",
+                       "meterStart":    1234,
+                       "reservationId": 7,
+                       "timestamp":     "2026-10-09T12:00:00Z"
+                   }
+                   """,
+                   (JObject json, out CP.StartTransactionRequest? value, out String? errorResponse) => CP.StartTransactionRequest.TryParse(json, requestId, destination, NetworkPath.Empty, out value, out errorResponse),
+                   value => value.ToJSON(),
+                   value => Assert.That(value.MeterStart, Is.EqualTo(WattHour.FromWh(1234)))
+               );
+
+        [Test]
+        public void StopTransactionRequest()
+
+            => ReadAndWrittenAsTheSchemaSays<CP.StopTransactionRequest>(
+                   """
+                   {
+                       "transactionId": 42,
+                       "meterStop":     5678,
+                       "timestamp":     "2026-10-09T13:00:00Z"
+                   }
+                   """,
+                   (JObject json, out CP.StopTransactionRequest? value, out String? errorResponse) => CP.StopTransactionRequest.TryParse(json, requestId, destination, NetworkPath.Empty, out value, out errorResponse),
+                   value => value.ToJSON(),
+                   value => Assert.That(value.MeterStop, Is.EqualTo(WattHour.FromWh(5678)))
+               );
+
+        #endregion
+
+        #region ChargingSchedule - its numbers in its chargingRateUnit
+
+        [Test]
+        public void ChargingSchedule_InAmperes()
+
+            => ReadAndWrittenAsTheSchemaSays<ChargingSchedule>(
+                   """
+                   {
+                       "chargingRateUnit":       "A",
+                       "chargingSchedulePeriod": [ { "startPeriod": 0, "limit": 16.5, "numberPhases": 3 }, { "startPeriod": 900, "limit": 6 } ],
+                       "duration":               3600,
+                       "minChargingRate":        6.5
+                   }
+                   """,
+                   OCPPv1_6.ChargingSchedule.TryParse,
+                   value => value.ToJSON(),
+                   value => {
+                       Assert.That(value.ChargingSchedulePeriods.Select(period => period.Limit.Unit), Is.All.EqualTo(ChargingRateUnits.Amperes));
+                       Assert.That(value.ChargingSchedulePeriods.First().Limit.Value,                 Is.EqualTo(16.5M));
+                       Assert.That(value.MinChargingRate?.Unit,                                       Is.EqualTo(ChargingRateUnits.Amperes));
+                   }
+               );
+
+        [Test]
+        public void ChargingSchedule_InWatts()
+
+            => ReadAndWrittenAsTheSchemaSays<ChargingSchedule>(
+                   """
+                   {
+                       "chargingRateUnit":       "W",
+                       "chargingSchedulePeriod": [ { "startPeriod": 0, "limit": 11000 } ]
+                   }
+                   """,
+                   OCPPv1_6.ChargingSchedule.TryParse,
+                   value => value.ToJSON(),
+                   value => Assert.That(value.ChargingSchedulePeriods.Single().Limit.Unit, Is.EqualTo(ChargingRateUnits.Watts))
+               );
+
+        /// <summary>
+        /// SOAP: a decimal limit is written and read in the invariant culture,
+        /// not in the culture of the machine - on a German one 16.5 was "16,5".
+        /// </summary>
+        [Test]
+        public void ChargingSchedule_AsXML_InAGermanCulture()
+        {
+
+            var culture = CultureInfo.CurrentCulture;
+
+            try
+            {
+
+                CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+
+                Assert.That(OCPPv1_6.ChargingSchedule.TryParse(JObject.Parse("""{ "chargingRateUnit": "A", "chargingSchedulePeriod": [ { "startPeriod": 0, "limit": 16.5 } ], "minChargingRate": 6.5 }"""),
+                                                               out var schedule, out var errorResponse), Is.True, errorResponse);
+
+                var xml = schedule!.ToXML();
+
+                Assert.That(xml.ToString(), Does.Contain(">16.5<").And.Contain(">6.5<"));
+
+                var again = OCPPv1_6.ChargingSchedule.Parse(xml);
+
+                Assert.That(again.ChargingSchedulePeriods.Single().Limit.Value, Is.EqualTo(16.5M));
+                Assert.That(again.MinChargingRate?.Value,                       Is.EqualTo(6.5M));
+
+            }
+            finally
+            {
+                CultureInfo.CurrentCulture = culture;
+            }
+
+        }
 
         #endregion
 

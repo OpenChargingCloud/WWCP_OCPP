@@ -263,6 +263,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region WithUnit(ChargingRateUnit)
+
+        /// <summary>
+        /// This limit in the given unit, the chargingRateUnit of its schedule.
+        /// </summary>
+        /// <param name="ChargingRateUnit">The chargingRateUnit of the schedule (Watt or Ampere).</param>
+        public LimitAtSoC WithUnit(ChargingRateUnits ChargingRateUnit)
+
+            => new (
+                   SoC,
+                   Limit.WithUnit(ChargingRateUnit),
+                   CustomData
+               );
+
+        #endregion
+
 
         #region Operator overloading
 

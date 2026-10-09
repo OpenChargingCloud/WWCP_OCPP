@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                              Connector_Id             ConnectorId,
                                              IdToken                  IdTag,
                                              DateTimeOffset           StartTimestamp,
-                                             UInt64                   MeterStart,
+                                             WattHour                 MeterStart,
                                              Reservation_Id?          ReservationId         = null,
                                              SourceRouting?           Destination           = null,
 
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             SendStopTransactionNotification(this IChargePointNode     ChargePoint,
                                             Transaction_Id            TransactionId,
                                             DateTimeOffset            StopTimestamp,
-                                            UInt64                    MeterStop,
+                                            WattHour                  MeterStop,
                                             IdToken?                  IdTag                 = null,
                                             Reasons?                  Reason                = null,
                                             IEnumerable<MeterValue>?  TransactionData       = null,

@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional power baseline value that is used on top of all values of
         /// the V2X Frequency-Watt and V2X Signal-Watt curve.
         /// </summary>
-        public Decimal?                         V2XBaseline               { get; }
+        public Watt?                            V2XBaseline               { get; }
 
         /// <summary>
         /// The optional power frequency curve used, but not required, when operationMode = LocalFrequency.
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       Boolean?                          PreconditioningRequest   = null,
                                       Boolean?                          EVSESleep                = null,
                                       OperationMode?                    OperationMode            = null,
-                                      Decimal?                          V2XBaseline              = null,
+                                      Watt?                             V2XBaseline              = null,
                                       IEnumerable<V2XFreqWattEntry>?    V2XFreqWattCurve         = null,
                                       IEnumerable<V2XSignalWattEntry>?  V2XSignalWattCurve       = null,
 
@@ -756,7 +756,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("v2xBaseline",
                                        "V2X baseline",
-                                       out Decimal? V2XBaseline,
+                                       out Watt? V2XBaseline,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -954,7 +954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            V2XBaseline.           HasValue
-                               ? new JProperty("v2xBaseline",              V2XBaseline.           Value)
+                               ? new JProperty("v2xBaseline",              V2XBaseline.           Value.Value)
                                : null,
 
                            V2XFreqWattCurve.      Any()
@@ -979,6 +979,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+        #region WithUnit(ChargingRateUnit)
+
+        /// <summary>
+        /// This period with its limits and setpoints in the given unit: they are
+        /// written as plain numbers, in the chargingRateUnit of their schedule.
+        /// </summary>
+        /// <param name="ChargingRateUnit">The chargingRateUnit of the schedule (Watt or Ampere).</param>
+        public ChargingSchedulePeriod WithUnit(ChargingRateUnits ChargingRateUnit)
+
+            => new (
+                   StartPeriod,
+                   NumberOfPhases,
+                   PhaseToUse,
+
+                   Limit?.              WithUnit(ChargingRateUnit),
+                   Limit_L2?.           WithUnit(ChargingRateUnit),
+                   Limit_L3?.           WithUnit(ChargingRateUnit),
+
+                   DischargeLimit?.     WithUnit(ChargingRateUnit),
+                   DischargeLimit_L2?.  WithUnit(ChargingRateUnit),
+                   DischargeLimit_L3?.  WithUnit(ChargingRateUnit),
+
+                   Setpoint?.           WithUnit(ChargingRateUnit),
+                   Setpoint_L2?.        WithUnit(ChargingRateUnit),
+                   Setpoint_L3?.        WithUnit(ChargingRateUnit),
+
+                   SetpointReactive?.   WithUnit(ChargingRateUnit),
+                   SetpointReactive_L2?.WithUnit(ChargingRateUnit),
+                   SetpointReactive_L3?.WithUnit(ChargingRateUnit),
+
+                   PreconditioningRequest,
+                   EVSESleep,
+                   OperationMode,
+                   V2XBaseline,
+                   V2XFreqWattCurve,
+                   V2XSignalWattCurve,
+
+                   CustomData
+               );
 
         #endregion
 

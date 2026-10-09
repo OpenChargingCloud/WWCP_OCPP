@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Globalization;
+
 using System.Xml.Linq;
 using System.Diagnostics.CodeAnalysis;
 
@@ -67,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// be used by a local smart charging algorithm to optimize the power allocation
         /// for in the case a charging process is inefficient at lower charging rates.
         /// </summary>
-        public Decimal?                             MinChargingRate            { get; }
+        public ChargingRateValue?                   MinChargingRate            { get; }
 
         #endregion
 
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
                                 TimeSpan?                            Duration          = null,
                                 DateTimeOffset?                      StartSchedule     = null,
-                                Decimal?                             MinChargingRate   = null)
+                                ChargingRateValue?                   MinChargingRate   = null)
         {
 
             #region Initial checks
@@ -96,10 +98,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
             this.ChargingRateUnit         = ChargingRateUnit;
-            this.ChargingSchedulePeriods  = ChargingSchedulePeriods;
+            // Its numbers are written without a unit, in its chargingRateUnit.
+            this.ChargingSchedulePeriods  = ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.WithUnit(ChargingRateUnit)).ToArray();
             this.Duration                 = Duration;
             this.StartSchedule            = StartSchedule;
-            this.MinChargingRate          = MinChargingRate;
+            this.MinChargingRate          = MinChargingRate?.WithUnit(ChargingRateUnit);
 
         }
 
@@ -274,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                DateTime.Parse),
 
                                        XML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "minChargingRate",
-                                                               Decimal.Parse)
+                                                               text => ChargingRateValue.Parse(Decimal.Parse(text, CultureInfo.InvariantCulture)))
 
                                    );
 
@@ -386,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("minChargingRate",
                                        "min charging rate",
-                                       out Decimal? MinChargingRate,
+                                       out Decimal? MinChargingRateNumber,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -401,7 +404,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                        ChargingSchedulePeriods,
                                        Duration,
                                        StartSchedule,
-                                       MinChargingRate
+                                       MinChargingRateNumber.HasValue
+                                           ? ChargingRateValue.Parse(MinChargingRateNumber.Value)
+                                           : null
                                    );
 
                 if (CustomChargingScheduleParser is not null)
@@ -445,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    ChargingSchedulePeriods.Select(value => value.ToXML()),
 
                    MinChargingRate.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "minChargingRate",  MinChargingRate.Value.ToString("0.#"))
+                       ? new XElement(OCPPNS.OCPPv1_6_CP + "minChargingRate",  MinChargingRate.Value.Value.ToString("0.#", CultureInfo.InvariantCulture))
                        : null
 
                );
@@ -478,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                  new JProperty("chargingSchedulePeriod",   ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer))),
 
                            MinChargingRate.HasValue
-                               ? new JProperty("minChargingRate",          MinChargingRate.Value.ToString("0.#"))
+                               ? new JProperty("minChargingRate",          Math.Round(MinChargingRate.Value.Value, 1))
                                : null
 
                        );

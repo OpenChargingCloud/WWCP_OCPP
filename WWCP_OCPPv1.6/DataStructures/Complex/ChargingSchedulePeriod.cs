@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Globalization;
+
 using System.Xml.Linq;
 using System.Diagnostics.CodeAnalysis;
 
@@ -45,10 +47,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public TimeSpan  StartPeriod     { get; }
 
         /// <summary>
-        /// Power limit during the schedule period in Amperes.
+        /// The charging rate limit during the schedule period, in the chargingRateUnit of its schedule.
         /// </summary>
         [Mandatory]
-        public Decimal   Limit           { get; }
+        public ChargingRateValue  Limit  { get; }
 
         /// <summary>
         /// The number of phases that can be used for charging.
@@ -64,10 +66,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new charging schedule period.
         /// </summary>
         /// <param name="StartPeriod">The start of the period relative to the start of the charging schedule. This value also defines the stop time of the previous period.</param>
-        /// <param name="Limit">Power limit during the schedule period in Amperes.</param>
+        /// <param name="Limit">The charging rate limit during the schedule period, in the chargingRateUnit of its schedule.</param>
         /// <param name="NumberPhases">The number of phases that can be used for charging.</param>
         public ChargingSchedulePeriod(TimeSpan  StartPeriod,
-                                      Decimal   Limit,
+                                      ChargingRateValue  Limit,
                                       Byte?     NumberPhases   = null)
         {
 
@@ -203,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                          UInt32.Parse)),
 
                                              XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "limit",
-                                                                    Decimal.Parse),
+                                                                    text => ChargingRateValue.Parse(Decimal.Parse(text, CultureInfo.InvariantCulture))),
 
                                              XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "numberPhases",
                                                                     Byte.Parse)
@@ -279,8 +281,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #region Limit           [mandatory]
 
                 if (!JSON.ParseMandatory("limit",
-                                         "power limit",
-                                         out Decimal Limit,
+                                         "charging rate limit",
+                                         out Decimal LimitNumber,
                                          out ErrorResponse))
                 {
                     return false;
@@ -304,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 ChargingSchedulePeriod = new ChargingSchedulePeriod(
                                              StartPeriod,
-                                             Limit,
+                                             ChargingRateValue.Parse(LimitNumber),
                                              NumberPhases
                                          );
 
@@ -339,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => new (XName ?? OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
 
                    new XElement(OCPPNS.OCPPv1_6_CP + "startPeriod",   (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "limit",         Limit.ToString("0.#")),
+                   new XElement(OCPPNS.OCPPv1_6_CP + "limit",         Limit.Value.ToString("0.#", CultureInfo.InvariantCulture)),
                    new XElement(OCPPNS.OCPPv1_6_CP + "numberPhases",  NumberPhases)
 
                );
@@ -358,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var json = JSONObject.Create(
 
                                  new JProperty("startPeriod",    (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
-                                 new JProperty("limit",          Math.Round(Limit, 1)),
+                                 new JProperty("limit",          Math.Round(Limit.Value, 1)),
 
                            NumberPhases.HasValue
                                ? new JProperty("numberPhases",   NumberPhases)
@@ -371,6 +373,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        : json;
 
         }
+
+        #endregion
+
+
+        #region WithUnit(ChargingRateUnit)
+
+        /// <summary>
+        /// This period with its limit in the given unit: it is written as a plain
+        /// number, in the chargingRateUnit of its schedule.
+        /// </summary>
+        /// <param name="ChargingRateUnit">The chargingRateUnit of the schedule (Watt or Ampere).</param>
+        public ChargingSchedulePeriod WithUnit(ChargingRateUnits ChargingRateUnit)
+
+            => new (
+                   StartPeriod,
+                   Limit.WithUnit(ChargingRateUnit),
+                   NumberPhases
+               );
 
         #endregion
 
@@ -463,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             => String.Concat(StartPeriod,
                              " / ",
-                             " with ", Limit, " Ampere",
+                             " with ", Limit,
 
                              NumberPhases.HasValue
                                  ? ", " + NumberPhases + " phases"

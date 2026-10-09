@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// The energy meter value in Wh for the connector at start
         /// of the transaction.
         /// </summary>
-        public UInt64           MeterStart        { get; }
+        public WattHour         MeterStart        { get; }
 
         /// <summary>
         /// An optional identification of the reservation that will
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        Connector_Id             ConnectorId,
                                        IdToken                  IdTag,
                                        DateTimeOffset           StartTimestamp,
-                                       UInt64                   MeterStart,
+                                       WattHour                 MeterStart,
                                        Reservation_Id?          ReservationId         = null,
 
                                        IEnumerable<KeyPair>?    SignKeys              = null,
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                      DateTime.Parse),
 
                                               XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "meterStart",
-                                                                     UInt64.Parse),
+                                                                     text => WattHour.FromWh(UInt64.Parse(text))),
 
                                               XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "reservationId",
                                                                      Reservation_Id.Parse),
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.ParseMandatory("meterStart",
                                          "meter start",
-                                         out UInt64 MeterStart,
+                                         out WattHour MeterStart,
                                          out ErrorResponse))
                 {
                     return false;
@@ -560,7 +560,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    new XElement(OCPPNS.OCPPv1_6_CS + "connectorId",          ConnectorId),
                    new XElement(OCPPNS.OCPPv1_6_CS + "idTag",                IdTag.ToString()),
                    new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",            StartTimestamp.ToISO8601()),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "meterStart",           MeterStart),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "meterStart",           (UInt64) Math.Round(MeterStart.Value)),
 
                    ReservationId.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "reservationId",  ReservationId.Value)
@@ -588,10 +588,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                  new JProperty("connectorId",     ConnectorId.        Value),
                                  new JProperty("idTag",           IdTag.              ToString()),
                                  new JProperty("timestamp",       StartTimestamp.     ToISO8601()),
-                                 new JProperty("meterStart",      MeterStart),
+                                 new JProperty("meterStart",      (UInt64) Math.Round(MeterStart.Value)),
 
                            ReservationId.HasValue
-                               ? new JProperty("reservationId",   ReservationId.Value.ToString())
+                               ? new JProperty("reservationId",   ReservationId.Value.Value)
                                : null,
 
                            Signatures.Any()

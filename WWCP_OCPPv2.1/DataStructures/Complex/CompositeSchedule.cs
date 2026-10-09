@@ -267,11 +267,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region ChargingSchedulePeriods    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("chargingSchedulePeriod",
-                                                "charging schedule periods",
-                                                ChargingSchedulePeriod.TryParse,
-                                                out HashSet<ChargingSchedulePeriod> ChargingSchedulePeriods,
-                                                out ErrorResponse))
+                // In their order: a schedule is the order of its periods.
+                if (!JSON.ParseMandatoryList("chargingSchedulePeriod",
+                                             "charging schedule periods",
+                                             ChargingSchedulePeriod.TryParse,
+                                             out List<ChargingSchedulePeriod> ChargingSchedulePeriods,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -298,7 +299,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         Duration,
                                         ScheduleStart,
                                         ChargingRateUnit,
-                                        ChargingSchedulePeriods,
+                                        // Its numbers are written without a unit, in its chargingRateUnit.
+                                        ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.WithUnit(ChargingRateUnit)),
                                         CustomData
                                     );
 

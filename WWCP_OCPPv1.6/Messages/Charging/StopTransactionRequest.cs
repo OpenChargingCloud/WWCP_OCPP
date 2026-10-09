@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// The energy meter value in Wh for the connector at end of the
         /// charging transaction.
         /// </summary>
-        public UInt64                   MeterStop          { get; }
+        public WattHour                 MeterStop          { get; }
 
         /// <summary>
         /// An optional identifier which requested to stop the charging. It is
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public StopTransactionRequest(SourceRouting             Destination,
                                       Transaction_Id            TransactionId,
                                       DateTimeOffset            StopTimestamp,
-                                      UInt64                    MeterStop,
+                                      WattHour                  MeterStop,
                                       IdToken?                  IdTag                 = null,
                                       Reasons?                  Reason                = null,
                                       IEnumerable<MeterValue>?  TransactionData       = null,
@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                     DateTime.Parse),
 
                                              XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "meterStop",
-                                                                    UInt64.Parse),
+                                                                    text => WattHour.FromWh(UInt64.Parse(text))),
 
                                              XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "idTag",
                                                                     IdToken.Parse),
@@ -635,7 +635,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.ParseMandatory("meterStop",
                                          "meter stop",
-                                         out UInt64 MeterStop,
+                                         out WattHour MeterStop,
                                          out ErrorResponse))
                 {
                     return false;
@@ -772,7 +772,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        : null,
 
                    new XElement(OCPPNS.OCPPv1_6_CS + "timestamp",       StopTimestamp.ToISO8601()),
-                   new XElement(OCPPNS.OCPPv1_6_CS + "meterStop",       MeterStop),
+                   new XElement(OCPPNS.OCPPv1_6_CS + "meterStop",       (UInt64) Math.Round(MeterStop.Value)),
 
                    Reason.HasValue
                        ? new XElement(OCPPNS.OCPPv1_6_CS + "reason",    Reason.Value.AsText())
@@ -807,7 +807,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                  new JProperty("transactionId",     TransactionId.Value),
                                  new JProperty("timestamp",         StopTimestamp.ToISO8601()),
-                                 new JProperty("meterStop",         MeterStop),
+                                 new JProperty("meterStop",         (UInt64) Math.Round(MeterStop.Value)),
 
                            IdTag.HasValue
                                ? new JProperty("idTag",             IdTag.Value.  ToString())
