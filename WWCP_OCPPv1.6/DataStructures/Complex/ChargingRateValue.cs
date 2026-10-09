@@ -17,7 +17,11 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
+
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -29,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// </summary>
     public readonly struct ChargingRateValue : IEquatable<ChargingRateValue>,
                                                IComparable<ChargingRateValue>,
-                                               IComparable
+                                               IComparable,
+                                               ICBORSerializable<ChargingRateValue>
     {
 
         #region Properties
@@ -458,6 +463,85 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    Value,
                    Unit
                );
+
+        #endregion
+
+        #region ToCBOR(CustomChargingRateValueSerializer = null)
+
+        /// <summary>
+        /// The CBOR representation of this charging rate value: a metrological
+        /// value in W or A, or a plain number while its unit is not known.
+        /// </summary>
+        /// <param name="CustomChargingRateValueSerializer">A delegate to serialize custom charging rate values.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingRateValue>? CustomChargingRateValueSerializer = null)
+        {
+
+            var cbor = Unit switch {
+                           ChargingRateUnits.Watts    => Watt.  FromW(Value).AsMetrologicalValue().ToCBOR(),
+                           ChargingRateUnits.Amperes  => Ampere.FromA(Value).AsMetrologicalValue().ToCBOR(),
+                           _                          => CBORValue.FromDecimal(Value)
+                       };
+
+            return CustomChargingRateValueSerializer is not null
+                       ? CustomChargingRateValueSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(CBOR, out ChargingRateValue, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR value as a charging rate value: a
+        /// metrological value in W or A, or a plain number of an unknown unit.
+        /// </summary>
+        /// <param name="CBOR">A CBOR value.</param>
+        /// <param name="ChargingRateValue">The charging rate value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CBORValue                         CBOR,
+                                       out ChargingRateValue             ChargingRateValue,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ChargingRateValue  = default;
+            ErrorResponse      = null;
+
+            if (CBOR.HasTag(CBORTag.MetrologicalValue))
+            {
+
+                if (!MetrologicalValue.TryParse(CBOR, out var metrologicalValue, out ErrorResponse))
+                    return false;
+
+                if (metrologicalValue.TryToWatt(out var watt))
+                {
+                    ChargingRateValue = ParseWatts(watt.Value);
+                    return true;
+                }
+
+                if (metrologicalValue.TryToAmpere(out var ampere))
+                {
+                    ChargingRateValue = ParseAmperes(ampere.Value);
+                    return true;
+                }
+
+                ErrorResponse = $"The charging rate value '{metrologicalValue}' is neither in W nor in A!";
+                return false;
+
+            }
+
+            try
+            {
+                ChargingRateValue = Parse(CBOR.AsDecimal());
+                return true;
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = "Invalid charging rate value: " + e.Message;
+                return false;
+            }
+
+        }
 
         #endregion
 

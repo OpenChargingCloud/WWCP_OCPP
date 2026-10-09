@@ -299,6 +299,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.DataTypes
 
         #endregion
 
+        #region ChargingRateValue as CBOR
+
+        /// <summary>
+        /// In CBOR a charging rate value is a metrological value in its unit.
+        /// </summary>
+        [Test]
+        public void ChargingRateValue_AsCBOR_IsAMetrologicalValue()
+        {
+
+            var cbor = ChargingRateValue.ParseAmperes(32).ToCBOR();
+
+            Assert.That(cbor.HasTag(CBORTag.MetrologicalValue), Is.True);
+
+            Assert.That(ChargingRateValue.TryParse(CBORValue.Parse(cbor.ToByteArray()), out var again, out var errorResponse), Is.True, errorResponse);
+            Assert.That(again.Unit,  Is.EqualTo(ChargingRateUnits.Amperes));
+            Assert.That(again.Value, Is.EqualTo(32));
+
+        }
+
+        #endregion
+
         #region NotifyWebPaymentStartedRequest (DataTransfer extension)
 
         [Test]
