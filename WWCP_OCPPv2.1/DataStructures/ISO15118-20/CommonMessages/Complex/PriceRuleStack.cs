@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -31,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The price rule stack.
     /// </summary>
-    public class PriceRuleStack : IEquatable<PriceRuleStack>
+    public class PriceRuleStack : ACustomData,
+                                  IEquatable<PriceRuleStack>
     {
 
         #region Properties
@@ -57,7 +60,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="Duration">A duration.</param>
         /// <param name="PriceRules">An enumeration of price rules [max 8].</param>
         public PriceRuleStack(TimeSpan                Duration,
-                              IEnumerable<PriceRule>  PriceRules)
+                              IEnumerable<PriceRule>  PriceRules,
+                              CustomData?             CustomData = null)
+
+            : base(CustomData)
+
         {
 
             if (!PriceRules.Any())
@@ -194,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region PriceRules    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("priceRules",
+                if (!JSON.ParseMandatoryHashSet("priceRule",
                                                 "price rules",
                                                 PriceRule.TryParse,
                                                 out HashSet<PriceRule> PriceRules,
@@ -206,9 +213,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 PriceRuleStack = new PriceRuleStack(
                                      Duration,
-                                     PriceRules
+                                     PriceRules,
+                                     CustomData
                                  );
 
                 if (CustomPriceRuleStackParser is not null)
@@ -244,7 +267,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                            new JProperty("duration",     (UInt64) Math.Round(Duration.TotalSeconds, 0)),
 
-                           new JProperty("priceRules",   new JArray(PriceRules.Select(priceRule => priceRule.ToJSON(CustomPriceRuleSerializer))))
+                           new JProperty("priceRule",    new JArray(PriceRules.Select(priceRule => priceRule.ToJSON(CustomPriceRuleSerializer)))),
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
+                               : null
 
                        );
 
@@ -330,7 +357,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                Duration.Equals(PriceRuleStack.Duration) &&
 
                PriceRules.Count().Equals(PriceRuleStack.PriceRules.Count()) &&
-               PriceRules.All(priceRule => PriceRuleStack.PriceRules.Contains(priceRule));
+               PriceRules.All(priceRule => PriceRuleStack.PriceRules.Contains(priceRule)) &&
+
+               base.Equals(PriceRuleStack);
 
         #endregion
 

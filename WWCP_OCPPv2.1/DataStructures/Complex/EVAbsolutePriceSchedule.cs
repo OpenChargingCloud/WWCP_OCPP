@@ -256,8 +256,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region EVAbsolutePriceScheduleEntries    [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("evPriceRuleStack",
-                                             "EV price rule stack",
+                if (!JSON.ParseMandatoryJSON("evAbsolutePriceScheduleEntries",
+                                             "EV absolute price schedule entries",
                                              EVAbsolutePriceScheduleEntry.TryParse,
                                              out IEnumerable<EVAbsolutePriceScheduleEntry>? EVAbsolutePriceScheduleEntries,
                                              out ErrorResponse))

@@ -1145,8 +1145,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("allowedEnergyTransfer",   new JArray(AllowedEnergyTransfers.Select(allowedEnergyTransfer => allowedEnergyTransfer.ToString())))
                                : null,
 
+                           // It was read and never written.
+                           Tariff is not null
+                               ? new JProperty("tariff",                  Tariff.                     ToJSON(CustomMessageContentSerializer: CustomMessageContentSerializer,
+                                                                                                             CustomCustomDataSerializer:     CustomCustomDataSerializer))
+                               : null,
+
+                           // Under the key it is read from: it was written as "transactionLimits".
                            TransactionLimits is not null
-                               ? new JProperty("transactionLimits",       TransactionLimits.          ToJSON(CustomTransactionLimitsSerializer,
+                               ? new JProperty("transactionLimit",        TransactionLimits.          ToJSON(CustomTransactionLimitsSerializer,
                                                                                                              CustomCustomDataSerializer))
                                : null,
 

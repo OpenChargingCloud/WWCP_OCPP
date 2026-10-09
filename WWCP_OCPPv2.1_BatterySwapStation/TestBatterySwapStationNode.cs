@@ -518,7 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                                             TariffId:    Tariff_Id.New(),
                                                             TariffKind:  TariffKind.DefaultTariff,
                                                             EVSEIds:     [ EVSE_Id.Parse(1), EVSE_Id.Parse(2)],
-                                                            IdTokens:    [IdToken.NewRandomRFID4(), IdToken.NewRandomRFID7() ]
+                                                            IdTokens:    [ IdToken.NewRandomRFID4().Value, IdToken.NewRandomRFID7().Value ]
                                                         )
                                                     ],
                                StatusInfo:          null,

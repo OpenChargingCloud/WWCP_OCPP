@@ -263,9 +263,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Type               [optional]
+                #region Instance           [optional]
 
-                var Instance = JSON.GetString("type");
+                // Written as "instance"; "type" is still read from older peers.
+                var Instance = JSON.GetString("instance") ?? JSON.GetString("type");
 
                 #endregion
 
@@ -393,6 +394,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            Instance is not null
                                ? new JProperty("instance",    Instance)
+                               : null,
+
+                           Attributes is not null
+                               ? new JProperty("attributes",        Attributes.     ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
+                               : null,
+
+                           Characteristics is not null
+                               ? new JProperty("characteristics",   Characteristics.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
+                               : null,
+
+                           Monitorings is not null
+                               ? new JProperty("monitorings",       Monitorings.    ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
+                               : null,
+
+                           Description is not null && Description.IsNotNullOrEmpty()
+                               ? new JProperty("description",       Description.    ToJSON())
                                : null,
 
                            CustomData is not null

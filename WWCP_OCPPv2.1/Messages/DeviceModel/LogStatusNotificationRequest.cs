@@ -68,6 +68,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         [Optional]
         public Int32?           LogRequestId    { get; }
 
+        /// <summary>
+        /// The optional element providing more information about the status.
+        /// </summary>
+        [Optional]
+        public StatusInfo?      StatusInfo    { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -88,6 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="StatusInfo">The optional element providing more information about the status.</param>
         public LogStatusNotificationRequest(SourceRouting            Destination,
                                             UploadLogStatus          Status,
                                             Int32?                   LogRquestId           = null,
@@ -104,7 +111,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             EventTracking_Id?        EventTrackingId       = null,
                                             NetworkPath?             NetworkPath           = null,
                                             SerializationFormats?    SerializationFormat   = null,
-                                            CancellationToken        CancellationToken     = default)
+                                            CancellationToken        CancellationToken     = default,
+                                            StatusInfo?              StatusInfo            = null)
 
             : base(Destination,
                    nameof(LogStatusNotificationRequest)[..^7],
@@ -125,6 +133,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
+            this.StatusInfo = StatusInfo;
+
             this.Status        = Status;
             this.LogRequestId  = LogRquestId;
 
@@ -132,6 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
                 hashCode = this.Status.       GetHashCode()       * 5 ^
                           (this.LogRequestId?.GetHashCode() ?? 0) * 3 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 31 ^
                            base.              GetHashCode();
             }
 
@@ -328,6 +339,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region StatusInfo           [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "statusInfo",
+                                           OCPPv2_1.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -373,7 +398,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    RequestTimestamp,
                                                    RequestTimeout,
                                                    EventTrackingId,
-                                                   NetworkPath
+                                                   NetworkPath,
+                                                   StatusInfo: StatusInfo
 
                                                );
 
@@ -419,6 +445,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            LogRequestId.HasValue
                                ? new JProperty("requestId",    LogRequestId.Value)
+                               : null,
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
@@ -515,6 +545,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             ((!LogRequestId.HasValue && !LogStatusNotificationRequest.LogRequestId.HasValue) ||
               (LogRequestId.HasValue &&  LogStatusNotificationRequest.LogRequestId.HasValue && LogRequestId.Value.Equals(LogStatusNotificationRequest.LogRequestId.Value))) &&
+
+               ((StatusInfo is null && LogStatusNotificationRequest.StatusInfo is null) ||
+                (StatusInfo is not null && StatusInfo.Equals(LogStatusNotificationRequest.StatusInfo))) &&
 
                base.GenericEquals(LogStatusNotificationRequest);
 

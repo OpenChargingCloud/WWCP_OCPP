@@ -227,8 +227,10 @@ namespace cloud.charging.open.protocols.OCPP
 
                 #region Parse OpenSourceLicense         [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("openSourceLicense",
-                                             "legal status",
+                // Written as "open_source_license" like every other key here;
+                // "openSourceLicense" is still read from older peers.
+                if (!JSON.ParseMandatoryJSON(JSON.ContainsKey("open_source_license") ? "open_source_license" : "openSourceLicense",
+                                             "open source license",
                                              org.GraphDefined.Vanaheimr.Hermod.OpenSourceLicense.TryParse,
                                              out OpenSourceLicense? OpenSourceLicense,
                                              out ErrorResponse))
@@ -349,7 +351,15 @@ namespace cloud.charging.open.protocols.OCPP
 
                                  new JProperty("name",                    Name),
                                  new JProperty("version",                 Version),
-                                 new JProperty("open_source_license",     OpenSourceLicense.   ToString()),
+                                 // As an object, the way it is read back; Hermod's own
+                                 // ToJSON() writes "@id" where its parser reads "id".
+                                 new JProperty("open_source_license",     JSONObject.Create(
+                                                                                    new JProperty("id",            OpenSourceLicense.Id.ToString()),
+                                                                              OpenSourceLicense.Description.IsNotNullOrEmpty()
+                                                                                  ? new JProperty("description",   OpenSourceLicense.Description.ToJSON())
+                                                                                  : null,
+                                                                                    new JProperty("URLs",          new JArray(OpenSourceLicense.URLs.Select(url => url.ToString())))
+                                                                          )),
                                  new JProperty("vendor",                  Vendor),
 
                            Logo.                HasValue

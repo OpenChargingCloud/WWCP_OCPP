@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -54,7 +56,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The stack level.
         /// </summary>
         [Optional]
-        public UInt32?     Stack    { get; }
+        public UInt32?      Stack         { get; }
+
+        /// <summary>
+        /// An optional custom data object allowing to store any kind of
+        /// customer specific data.
+        /// </summary>
+        [Optional]
+        public CustomData?  CustomData    { get; }
 
         #endregion
 
@@ -66,22 +75,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Type">The type of this tax, e.g. "VAT", "State", "Federal".</param>
         /// <param name="Tax">The tax percentage.</param>
         /// <param name="Stack">The optional stack level for this type of tax.</param>
-        public TaxRate(TaxType     Type,
-                       Percentage  Tax,
-                       UInt32?     Stack = null)
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        public TaxRate(TaxType      Type,
+                       Percentage   Tax,
+                       UInt32?      Stack        = null,
+                       CustomData?  CustomData   = null)
         {
 
-            this.Type   = Type;
-            this.Tax    = Tax;
-            this.Stack  = Stack;
+            this.Type        = Type;
+            this.Tax         = Tax;
+            this.Stack       = Stack;
+            this.CustomData  = CustomData;
 
             unchecked
             {
 
-                hashCode = this.Type.  GetHashCode()       * 7 ^
-                           this.Tax.   GetHashCode()       * 5 ^
-                          (this.Stack?.GetHashCode() ?? 0) * 3 ^
-                           base.       GetHashCode();
+                hashCode = this.Type.       GetHashCode()       * 7 ^
+                           this.Tax.        GetHashCode()       * 5 ^
+                          (this.Stack?.     GetHashCode() ?? 0) * 3 ^
+                          (this.CustomData?.GetHashCode() ?? 0);
 
             }
 
@@ -236,11 +248,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 TaxRate = new TaxRate(
                               Type,
                               Tax,
-                              Stack
+                              Stack,
+                              CustomData
                           );
 
 
@@ -277,7 +304,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("tax",     Tax.  Value),
 
                            Stack.HasValue
-                               ? new JProperty("stack",   Stack.Value)
+                               ? new JProperty("stack",        Stack.Value)
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -300,7 +331,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    Type.Clone(),
                    Tax,
-                   Stack
+                   Stack,
+                   CustomData
                );
 
         #endregion
@@ -531,7 +563,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                Tax.  Equals(TaxRate.Tax)  &&
 
             ((!Stack.HasValue && !TaxRate.Stack.HasValue) ||
-              (Stack.HasValue &&  TaxRate.Stack.HasValue && Stack.Value == TaxRate.Stack.Value));
+              (Stack.HasValue &&  TaxRate.Stack.HasValue && Stack.Value == TaxRate.Stack.Value)) &&
+
+            ((CustomData is null && TaxRate.CustomData is null) ||
+             (CustomData is not null && CustomData.Equals(TaxRate.CustomData)));
 
         #endregion
 

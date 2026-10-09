@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("duration",                  (UInt32) Math.Round(Duration.TotalSeconds, 0)),
                                  new JProperty("scheduleStart",             ScheduleStart.   ToISO8601()),
                                  new JProperty("chargingRateUnit",          ChargingRateUnit.AsText()),
-                                 new JProperty("compositeSchedulePeriod",   new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer)))),
+                                 new JProperty("chargingSchedulePeriod",    new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer)))),
 
                            CustomData is not null
                                ? new JProperty("customData",                CustomData.      ToJSON(CustomCustomDataSerializer))

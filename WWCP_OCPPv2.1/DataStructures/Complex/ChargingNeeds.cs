@@ -524,6 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomEVAbsolutePriceScheduleEntrySerializer">A delegate to serialize custom charging limits.</param>
         /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomDERChargingParametersSerializer">A delegate to serialize custom DER charging parameters.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingNeeds>?                 CustomChargingNeedsSerializer                  = null,
                               CustomJObjectSerializerDelegate<ACChargingParameters>?          CustomACChargingParametersSerializer           = null,
                               CustomJObjectSerializerDelegate<DCChargingParameters>?          CustomDCChargingParametersSerializer           = null,
@@ -534,14 +535,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?       CustomEVAbsolutePriceScheduleSerializer        = null,
                               CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?  CustomEVAbsolutePriceScheduleEntrySerializer   = null,
                               CustomJObjectSerializerDelegate<EVPriceRule>?                   CustomEVPriceRuleSerializer                    = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null,
+                              CustomJObjectSerializerDelegate<DERChargingParameters>?         CustomDERChargingParametersSerializer          = null)
         {
 
             var json = JSONObject.Create(
 
                                  new JProperty("requestedEnergyTransfer",   RequestedEnergyTransferMode.ToString()),
 
-                           DepartureTime.HasValue
+                           // Written where there are any - it was written where a
+                           // departure time was given, and as an empty array then.
+                           AvailableEnergyTransferModes.Any()
                                ? new JProperty("availableEnergyTransfer",   new JArray(AvailableEnergyTransferModes.Select(availableEnergyTransferMode => availableEnergyTransferMode.ToString())))
                                : null,
 
@@ -573,6 +577,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            V2XChargingParameters is not null
                                ? new JProperty("v2xChargingParameters",     V2XChargingParameters.      ToJSON(CustomV2XChargingParametersSerializer,
+                                                                                                               CustomCustomDataSerializer))
+                               : null,
+
+                           // It was read and never written.
+                           DERChargingParameters is not null
+                               ? new JProperty("derChargingParameters",     DERChargingParameters.      ToJSON(CustomDERChargingParametersSerializer,
                                                                                                                CustomCustomDataSerializer))
                                : null,
 

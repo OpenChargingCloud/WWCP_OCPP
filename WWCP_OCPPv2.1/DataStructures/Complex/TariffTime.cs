@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -31,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A TariffTime tariff element.
     /// </summary>
-    public class TariffTime : IEquatable<TariffTime>
+    public class TariffTime : ACustomData,
+                              IEquatable<TariffTime>
     {
 
         #region Properties
@@ -60,7 +63,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Prices">An enumeration of tariff prices and conditions.</param>
         /// <param name="TaxRates">An optional enumeration of applicable tax percentages for this tariff dimension.</param>
         public TariffTime(IEnumerable<TariffTimePrice>  Prices,
-                          IEnumerable<TaxRate>?         TaxRates   = null)
+                          IEnumerable<TaxRate>?         TaxRates   = null,
+                          CustomData?                   CustomData = null)
+
+            : base(CustomData)
+
         {
 
             if (!Prices.Any())
@@ -73,7 +80,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 hashCode = this.Prices.  CalcHashCode() * 3 ^
-                           this.TaxRates.CalcHashCode();
+                           this.TaxRates.CalcHashCode() ^
+                           base.GetHashCode();
 
             }
 
@@ -216,9 +224,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 TariffTime = new TariffTime(
                                  Prices,
-                                 TaxRates
+                                 TaxRates,
+                                 CustomData
                              );
 
 
@@ -262,6 +286,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            TaxRates.Any()
                                ? new JProperty("taxRates",  new JArray(TaxRates.Select(taxRate         => taxRate.        ToJSON(CustomTaxRateSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -283,7 +311,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (
                    Prices.  Select(tariffTimePrice => tariffTimePrice.Clone()),
-                   TaxRates.Select(taxRate         => taxRate.        Clone())
+                   TaxRates.Select(taxRate         => taxRate.        Clone()),
+                   CustomData
                );
 
         #endregion
@@ -363,7 +392,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                TaxRates.Count().Equals(TariffTime.TaxRates.Count()) &&
 
                Prices.  All(tariffTimePrice => TariffTime.Prices.  Contains(tariffTimePrice)) &&
-               TaxRates.All(taxRate         => TariffTime.TaxRates.Contains(taxRate));
+               TaxRates.All(taxRate         => TariffTime.TaxRates.Contains(taxRate)) &&
+
+               base.Equals(TariffTime);
 
         #endregion
 

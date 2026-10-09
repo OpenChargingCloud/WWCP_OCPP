@@ -520,6 +520,14 @@ namespace cloud.charging.open.protocols.OCPP
                                ? new JProperty("@context",                    JSONLDContext)
                                : null,
 
+                           Name is not null && Name.IsNotNullOrEmpty()
+                               ? new JProperty("name",                        Name.ToJSON())
+                               : null,
+
+                           SerialNumber is not null
+                               ? new JProperty("serialNumber",                SerialNumber)
+                               : null,
+
                            Model is not null
                                ? new JProperty("model",                       Model)
                                : null,

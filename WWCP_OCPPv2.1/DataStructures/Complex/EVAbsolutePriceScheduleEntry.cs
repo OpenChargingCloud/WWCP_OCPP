@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region EVPriceRules    [optional]
 
-                if (!JSON.ParseMandatoryHashSet("evPriceRules",
+                if (!JSON.ParseMandatoryHashSet("evPriceRule",
                                                 "EV price rules",
                                                 EVPriceRule.TryParse,
                                                 out HashSet<EVPriceRule> EVPriceRules,
@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("duration",       (UInt64) Math.Round(Duration.TotalSeconds, 0)),
-                                 new JProperty("evPriceRules",   new JArray(EVPriceRules.Select(evPriceRule => evPriceRule.ToJSON(CustomEVPriceRuleSerializer)))),
+                                 new JProperty("evPriceRule",    new JArray(EVPriceRules.Select(evPriceRule => evPriceRule.ToJSON(CustomEVPriceRuleSerializer)))),
 
                            CustomData is not null
                                ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))

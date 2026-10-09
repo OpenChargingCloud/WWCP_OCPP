@@ -854,8 +854,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region EVSupportedDERControls                    [optional]
 
-                if (JSON.ParseOptionalHashSet("evOverExcitedMaxDischargePower",
-                                              "EV over excited max discharge power",
+                // Its own key: it was read from "evOverExcitedMaxDischargePower",
+                // which is a number - so every one with that power was refused,
+                // and the supported controls were never read.
+                if (JSON.ParseOptionalHashSet("evSupportedDERControl",
+                                              "EV supported DER controls",
                                               DERControlType.TryParse,
                                               out HashSet<DERControlType> EVSupportedDERControls,
                                               out ErrorResponse))

@@ -201,7 +201,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("power",
                                          "common power or power on phase L1",
-                                         Watt.TryParseKW,
+                                         // In W, as every power in OCPP 2.1 - it was read and written in kW.
+                                         Watt.TryParse,
                                          out Watt Power,
                                          out ErrorResponse))
                 {
@@ -265,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("duration",     (UInt64) Math.Round(Duration.TotalSeconds, 0)),
 
-                                 new JProperty("power",        Power.kW),
+                                 new JProperty("power",        Power.Value),
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))

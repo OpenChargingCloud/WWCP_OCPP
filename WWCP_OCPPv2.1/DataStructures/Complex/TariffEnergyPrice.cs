@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -31,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The prices within a TariffEnergy tariff element.
     /// </summary>
-    public class TariffEnergyPrice
+    public class TariffEnergyPrice : ACustomData
     {
 
         #region Properties
@@ -73,7 +75,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Conditions">Optional tariff conditions.</param>
         public TariffEnergyPrice(Decimal            PriceKWh,
                                  WattHour?          StepSize     = null,
-                                 TariffConditions?  Conditions   = null)
+                                 TariffConditions?  Conditions   = null,
+                                 CustomData?        CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.PriceKWh    = PriceKWh;
@@ -85,7 +91,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 hashCode = this.PriceKWh.   GetHashCode()       * 5 ^
                           (this.StepSize?.  GetHashCode() ?? 0) * 3 ^
-                          (this.Conditions?.GetHashCode() ?? 0);
+                          (this.Conditions?.GetHashCode() ?? 0) ^
+                          base.GetHashCode();
 
             }
 
@@ -235,10 +242,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 TariffEnergyPrice = new TariffEnergyPrice(
                                         PriceKWh,
                                         StepSize,
-                                        Conditions
+                                        Conditions,
+                                        CustomData
                                     );
 
 
@@ -275,12 +298,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("priceKwh",     PriceKWh),
 
-                           StepSize.HasValue
-                               ? new JProperty("stepSize",     Convert.ToInt32(StepSize.Value.Value))
-                               : null,
+                           // No "stepSize": OCPP 2.1 Edition 2 has none, and a peer
+                           // that validates against its schema refuses the object.
+                           // It is still read, from those that send one.
 
                            Conditions is not null
                                ? new JProperty("conditions",   Conditions.ToJSON(CustomTariffConditionsSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -303,7 +330,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    PriceKWh,
                    StepSize,
-                   Conditions?.Clone()
+                   Conditions?.Clone(),
+                   CustomData
                );
 
         #endregion
@@ -385,7 +413,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
               (StepSize.HasValue      &&  TariffEnergyPrice.StepSize.HasValue      && StepSize.Value.Equals(TariffEnergyPrice.StepSize.Value))) &&
 
              ((Conditions is     null &&  TariffEnergyPrice.Conditions is     null) ||
-              (Conditions is not null &&  TariffEnergyPrice.Conditions is not null && Conditions.    Equals(TariffEnergyPrice.Conditions)));
+              (Conditions is not null &&  TariffEnergyPrice.Conditions is not null && Conditions.    Equals(TariffEnergyPrice.Conditions))) &&
+
+               base.Equals(TariffEnergyPrice);
 
         #endregion
 

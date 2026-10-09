@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -39,16 +41,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// Price/Cost excluding Taxes.
+        /// Price/Cost excluding taxes, or null where only the price including
+        /// taxes is known.
         /// </summary>
-        [Mandatory]
-        public Decimal               ExcludingTaxes    { get; }
+        /// <remarks>
+        /// Each of the two may be absent in OCPP 2.1, as long as the other is
+        /// there; both were required here, and a price with only one of them
+        /// was refused.
+        /// </remarks>
+        [Optional]
+        public Decimal?              ExcludingTaxes    { get; }
 
         /// <summary>
-        /// Price/Cost including Taxes.
+        /// Price/Cost including taxes, or null where only the price excluding
+        /// taxes is known.
         /// </summary>
-        [Mandatory]
-        public Decimal               IncludingTaxes    { get; }
+        [Optional]
+        public Decimal?              IncludingTaxes    { get; }
 
         /// <summary>
         /// The optional tax percentages that were used to calculate inclTax from exclTax(for displaying/printing on invoices).
@@ -56,6 +65,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Optional]
         public IEnumerable<TaxRate>  TaxRates          { get; }
+
+        /// <summary>
+        /// An optional custom data object allowing to store any kind of
+        /// customer specific data.
+        /// </summary>
+        [Optional]
+        public CustomData?           CustomData        { get; }
 
         #endregion
 
@@ -66,22 +82,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="ExcludingTaxes">Price/Cost excluding taxes.</param>
         /// <param name="IncludingTaxes">Price/Cost including taxes.</param>
-        /// <param name="TaxRates"></param>
-        public Price(Decimal                ExcludingTaxes,
-                     Decimal                IncludingTaxes,
-                     IEnumerable<TaxRate>?  TaxRates   = null)
+        /// <param name="TaxRates">The optional tax percentages that were used to calculate inclTax from exclTax.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        public Price(Decimal?               ExcludingTaxes,
+                     Decimal?               IncludingTaxes,
+                     IEnumerable<TaxRate>?  TaxRates     = null,
+                     CustomData?            CustomData   = null)
         {
 
             this.ExcludingTaxes  = ExcludingTaxes;
             this.IncludingTaxes  = IncludingTaxes;
             this.TaxRates        = TaxRates?.Distinct() ?? [];
+            this.CustomData      = CustomData;
 
             unchecked
             {
 
-                hashCode = this.ExcludingTaxes.GetHashCode() * 5 ^
-                           this.IncludingTaxes.GetHashCode() * 3 ^
-                           this.TaxRates.      CalcHashCode();
+                hashCode = (this.ExcludingTaxes?.GetHashCode() ?? 0) * 7 ^
+                           (this.IncludingTaxes?.GetHashCode() ?? 0) * 5 ^
+                            this.TaxRates.       CalcHashCode()      * 3 ^
+                           (this.CustomData?.    GetHashCode() ?? 0);
 
             }
 
@@ -196,33 +216,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                #region Parse ExcludingTaxes    [mandatory]
+                #region Parse ExcludingTaxes    [optional]
 
-                if (!JSON.ParseMandatory("exclTax",
-                                         "price excluding Taxes",
-                                         out Decimal ExcludingTaxes,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("exclTax",
+                                       "price excluding taxes",
+                                       out Decimal? ExcludingTaxes,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region Parse IncludingTaxes    [mandatory]
+                #region Parse IncludingTaxes    [optional]
 
-                if (!JSON.ParseMandatory("inclTax",
-                                         "price including Taxes",
-                                         out Decimal IncludingTaxes,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("inclTax",
+                                       "price including taxes",
+                                       out Decimal? IncludingTaxes,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
+
+                if (!ExcludingTaxes.HasValue && !IncludingTaxes.HasValue)
+                {
+                    ErrorResponse = "At least one of 'exclTax' and 'inclTax' must be present!";
+                    return false;
+                }
 
                 #region Parse TaxRates          [optional]
 
-                if (JSON.ParseOptionalHashSet("taxRate",
+                // "taxRates", as the schema has it - it was "taxRate".
+                if (JSON.ParseOptionalHashSet("taxRates",
                                               "tax rates",
                                               TaxRate.TryParse,
                                               out HashSet<TaxRate> TaxRates,
@@ -234,11 +263,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse CustomData        [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 Price = new Price(
                             ExcludingTaxes,
                             IncludingTaxes,
-                            TaxRates
+                            TaxRates,
+                            CustomData
                         );
 
 
@@ -273,11 +317,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("exclTax",  ExcludingTaxes),
-                                 new JProperty("inclTax",  IncludingTaxes),
+                           ExcludingTaxes.HasValue
+                               ? new JProperty("exclTax",      ExcludingTaxes.Value)
+                               : null,
+
+                           IncludingTaxes.HasValue
+                               ? new JProperty("inclTax",      IncludingTaxes.Value)
+                               : null,
 
                            TaxRates.Any()
-                               ? new JProperty("taxRate",  new JArray(TaxRates.Select(taxRate => taxRate.ToJSON(CustomTaxRateSerializer))))
+                               ? new JProperty("taxRates",     new JArray(TaxRates.Select(taxRate => taxRate.ToJSON(CustomTaxRateSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -300,7 +353,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    ExcludingTaxes,
                    IncludingTaxes,
-                   TaxRates.Select(taxRate => taxRate.Clone())
+                   TaxRates.Select(taxRate => taxRate.Clone()),
+                   CustomData
                );
 
         #endregion
@@ -476,10 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Int32 CompareTo(Price Price)
         {
 
-            var c = ExcludingTaxes.  CompareTo(Price.ExcludingTaxes);
+            var c = Nullable.Compare(ExcludingTaxes, Price.ExcludingTaxes);
 
             if (c == 0)
-                c = IncludingTaxes.  CompareTo(Price.IncludingTaxes);
+                c = Nullable.Compare(IncludingTaxes, Price.IncludingTaxes);
 
             if (c == 0)
                 c = TaxRates.Count().CompareTo(Price.TaxRates.Count());
@@ -515,11 +569,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Price">A price to compare with.</param>
         public Boolean Equals(Price Price)
 
-            => ExcludingTaxes.  Equals(Price.ExcludingTaxes) &&
-               IncludingTaxes.  Equals(Price.IncludingTaxes) &&
+            => Nullable.Equals(ExcludingTaxes, Price.ExcludingTaxes) &&
+               Nullable.Equals(IncludingTaxes, Price.IncludingTaxes) &&
 
                TaxRates.Count().Equals(Price.TaxRates.Count()) &&
-               TaxRates.All(taxRate => Price.TaxRates.Contains(taxRate));
+               TaxRates.All(taxRate => Price.TaxRates.Contains(taxRate)) &&
+
+             ((CustomData is null && Price.CustomData is null) ||
+              (CustomData is not null && CustomData.Equals(Price.CustomData)));
 
         #endregion
 
@@ -544,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{ExcludingTaxes} excl. taxes, {IncludingTaxes} incl. taxes, {TaxRates.Count()} tax rates";
+            => $"{ExcludingTaxes?.ToString() ?? "-"} excl. taxes, {IncludingTaxes?.ToString() ?? "-"} incl. taxes, {TaxRates.Count()} tax rates";
 
         #endregion
 

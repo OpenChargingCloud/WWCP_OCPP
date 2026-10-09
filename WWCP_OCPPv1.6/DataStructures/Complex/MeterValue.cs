@@ -392,16 +392,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #endregion
 
-                #region SampledValues    [optional]
+                #region SampledValues    [mandatory]
 
-                if (JSON.ParseOptionalJSON("sampledValue",
-                                           "sampled values",
-                                           SampledValue.TryParse,
-                                           out IEnumerable<SampledValue> SampledValues,
-                                           out ErrorResponse))
+                // Required in OCPP 1.6. Read as optional, a meter value without
+                // one was refused all the same - by the constructor's exception,
+                // whose message said nothing about what was missing.
+                if (!JSON.ParseMandatoryJSON("sampledValue",
+                                             "sampled values",
+                                             SampledValue.TryParse,
+                                             out IEnumerable<SampledValue> SampledValues,
+                                             out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion

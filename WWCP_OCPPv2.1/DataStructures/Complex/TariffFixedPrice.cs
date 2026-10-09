@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -31,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The prices within a TariffFixed tariff element.
     /// </summary>
-    public class TariffFixedPrice
+    public class TariffFixedPrice : ACustomData
     {
 
         #region Properties
@@ -58,7 +60,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceFixed">A fixed price (excl. tax) for this TariffFixedPrice.</param>
         /// <param name="Conditions">Optional tariff conditions.</param>
         public TariffFixedPrice(Decimal            PriceFixed,
-                                TariffConditions?  Conditions   = null)
+                                TariffConditions?  Conditions   = null,
+                                CustomData?        CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.PriceFixed  = PriceFixed;
@@ -68,7 +74,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 hashCode = this.PriceFixed. GetHashCode() * 3 ^
-                          (this.Conditions?.GetHashCode() ?? 0);
+                          (this.Conditions?.GetHashCode() ?? 0) ^
+                          base.GetHashCode();
 
             }
 
@@ -205,9 +212,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 TariffFixedPrice = new TariffFixedPrice(
                                        PriceFixed,
-                                       Conditions
+                                       Conditions,
+                                       CustomData
                                    );
 
 
@@ -246,6 +269,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            Conditions is not null
                                ? new JProperty("conditions",   Conditions.ToJSON(CustomTariffConditionsSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -267,7 +294,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (
                    PriceFixed,
-                   Conditions?.Clone()
+                   Conditions?.Clone(),
+                   CustomData
                );
 
         #endregion
@@ -346,7 +374,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                PriceFixed.Equals(TariffFixedPrice.PriceFixed) &&
 
              ((Conditions is     null && TariffFixedPrice.Conditions is     null) ||
-              (Conditions is not null && TariffFixedPrice.Conditions is not null && Conditions.Equals(TariffFixedPrice.Conditions)));
+              (Conditions is not null && TariffFixedPrice.Conditions is not null && Conditions.Equals(TariffFixedPrice.Conditions))) &&
+
+               base.Equals(TariffFixedPrice);
 
         #endregion
 

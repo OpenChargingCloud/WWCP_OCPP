@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 
 #endregion
@@ -33,7 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The tax rule.
     /// </summary>
-    public class TaxRule : IEquatable<TaxRule>
+    public class TaxRule : ACustomData,
+                           IEquatable<TaxRule>
     {
 
         #region Properties
@@ -108,7 +111,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                        Boolean         AppliesToOverstayFee,
                        Boolean         AppliesToMinimumMaximumCost,
                        String?         TaxRuleName          = null,
-                       Boolean?        TaxIncludedInPrice   = null)
+                       Boolean?        TaxIncludedInPrice   = null,
+                       CustomData?     CustomData           = null)
+
+            : base(CustomData)
 
         {
 
@@ -356,6 +362,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 TaxRule = new TaxRule(
                               TaxRuleId,
                               TaxRate,
@@ -364,7 +385,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                               AppliesToOverstayFee,
                               AppliesToMinimumMaximumCost,
                               TaxRuleName,
-                              TaxIncludedInPrice
+                              TaxIncludedInPrice,
+                              CustomData
                           );
 
                 if (CustomTaxRuleParser is not null)
@@ -397,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                                  new JProperty("taxRuleID",                     TaxRuleId.        ToString()),
+                                  new JProperty("taxRuleID",                     TaxRuleId.        Value),
                                   new JProperty("taxRate",                       TaxRate.          ToJSON()),
                                   new JProperty("appliesToEnergyFee",            AppliesToEnergyFee),
                                   new JProperty("appliesToParkingFee",           AppliesToParkingFee),
@@ -410,7 +432,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                            TaxIncludedInPrice.HasValue
                                 ? new JProperty("taxIncludedInPrice",            TaxIncludedInPrice.Value)
-                                : null
+                                : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
+                               : null
 
                        );
 
@@ -504,7 +530,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
               (TaxRuleName        is not null &&  TaxRule.TaxRuleName        is not null && TaxRuleName.             Equals(TaxRule.TaxRuleName))) &&
 
             ((!TaxIncludedInPrice.HasValue    && !TaxRule.TaxIncludedInPrice.HasValue) ||
-              (TaxIncludedInPrice.HasValue    &&  TaxRule.TaxIncludedInPrice.HasValue    && TaxIncludedInPrice.Value.Equals(TaxRule.TaxIncludedInPrice.Value)));
+              (TaxIncludedInPrice.HasValue    &&  TaxRule.TaxIncludedInPrice.HasValue    && TaxIncludedInPrice.Value.Equals(TaxRule.TaxIncludedInPrice.Value))) &&
+
+               base.Equals(TaxRule);
 
         #endregion
 

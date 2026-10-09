@@ -355,10 +355,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// multi-language string.
         /// </summary>
         /// <param name="MessageContent">The message text.</param>
+        /// <remarks>
+        /// The message content is kept as it is: its format, its custom data,
+        /// and its language - or the lack of one. It used to be replaced by a
+        /// UTF8 text in English where it named no language, so that a message
+        /// read and written again came out with a language nobody had said and
+        /// in a format it may not have had.
+        /// </remarks>
         public MessageContents Set(MessageContent MessageContent)
+        {
 
-            => Set(MessageContent.Language ?? Language_Id.EN,
-                   MessageContent.Content);
+            var results = messageContents.Where(messageContent => messageContent.Language == MessageContent.Language).ToArray();
+
+            foreach (var result in results)
+                messageContents.Remove(result);
+
+            messageContents.Add(MessageContent);
+
+            GenerateHashCode();
+
+            return this;
+
+        }
 
         #endregion
 
@@ -373,8 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             foreach (var MessageContent in MessageContents)
-                Set(MessageContent.Language ?? Language_Id.EN,
-                    MessageContent.Content);
+                Set(MessageContent);
 
             GenerateHashCode();
 

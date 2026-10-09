@@ -64,6 +64,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         [Optional]
         public IEnumerable<Tariff_Id>  TariffIds     { get; }
 
+        /// <summary>
+        /// The optional EVSE identification to clear the tariffs of; all EVSEs where absent.
+        /// </summary>
+        [Optional]
+        public EVSE_Id?         EVSEId    { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -83,6 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EVSEId">The optional EVSE identification to clear the tariffs of; all EVSEs where absent.</param>
         public ClearTariffsRequest(SourceRouting            Destination,
                                    IEnumerable<Tariff_Id>?  TariffIds             = null,
 
@@ -98,7 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                    EventTracking_Id?        EventTrackingId       = null,
                                    NetworkPath?             NetworkPath           = null,
                                    SerializationFormats?    SerializationFormat   = null,
-                                   CancellationToken        CancellationToken     = default)
+                                   CancellationToken        CancellationToken     = default,
+                                   EVSE_Id?                 EVSEId                = null)
 
             : base(Destination,
                    nameof(ClearTariffsRequest)[..^7],
@@ -119,11 +127,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
+            this.EVSEId = EVSEId;
+
             this.TariffIds = TariffIds?.Distinct() ?? [];
 
             unchecked
             {
                 hashCode = this.TariffIds.CalcHashCode() * 3 ^
+                          (this.EVSEId?.GetHashCode() ?? 0) * 31 ^
                            base.          GetHashCode();
             }
 
@@ -276,6 +287,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region EVSEId               [optional]
+
+                if (JSON.ParseOptional("evseId",
+                                       "evseId",
+                                       EVSE_Id.TryParse,
+                                       out EVSE_Id? EVSEId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures    [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -320,7 +345,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           RequestTimestamp,
                                           RequestTimeout,
                                           EventTrackingId,
-                                          NetworkPath
+                                          NetworkPath,
+                                          EVSEId: EVSEId
 
                                       );
 
@@ -366,6 +392,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("tariffIds",    new JArray(TariffIds. Select(tariffId  => tariffId. ToString())))
                                : null,
 
+
+                           EVSEId.HasValue
+                               ? new JProperty("evseId",   EVSEId.Value.Value)
+                               : null,
 
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -459,6 +489,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                TariffIds.Count(). Equals(ClearTariffsRequest.TariffIds.Count()) &&
                TariffIds.All(tariffId => ClearTariffsRequest.TariffIds.Contains(tariffId)) &&
+
+               Nullable.Equals(EVSEId, ClearTariffsRequest.EVSEId) &&
 
                base.GenericEquals(ClearTariffsRequest);
 

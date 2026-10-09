@@ -673,9 +673,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
 
             SendCertificateSigningRequest(this ILocalControllerNode     LocalController,
 
-                                          Int32                         SignCertificateRequestId,
+                                          Int32?                        SignCertificateRequestId,
                                           String                        CSR,
                                           CertificateSigningUse?        CertificateType       = null,
+                                          CertificateHashData?          HashRootCertificate   = null,
 
                                           CustomData?                   CustomData            = null,
 
@@ -702,6 +703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            SignCertificateRequestId,
                            CSR,
                            CertificateType,
+                           HashRootCertificate,
 
                            SignKeys,
                            SignInfos,
@@ -3049,6 +3051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                                   SourceRouting                 Destination,
                                   OCPP.CertificateChain         CertificateChain,
                                   CertificateSigningUse?        CertificateType       = null,
+                                  Int32?                        SignCertificateRequestId   = null,
 
                                   CustomData?                   CustomData            = null,
 
@@ -3071,6 +3074,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LC
                            Destination,
                            CertificateChain,
                            CertificateType,
+                           SignCertificateRequestId,
 
                            SignKeys,
                            SignInfos,

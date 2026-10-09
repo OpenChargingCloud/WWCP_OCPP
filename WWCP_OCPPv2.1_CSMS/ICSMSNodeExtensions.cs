@@ -1192,6 +1192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   SourceRouting            Destination,
                                   OCPP.CertificateChain    CertificateChain,
                                   CertificateSigningUse?   CertificateType       = null,
+                                  Int32?                   SignCertificateRequestId   = null,
 
                                   IEnumerable<KeyPair>?    SignKeys              = null,
                                   IEnumerable<SignInfo>?   SignInfos             = null,
@@ -1212,6 +1213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            Destination,
                            CertificateChain,
                            CertificateType,
+                           SignCertificateRequestId,
 
                            SignKeys,
                            SignInfos,

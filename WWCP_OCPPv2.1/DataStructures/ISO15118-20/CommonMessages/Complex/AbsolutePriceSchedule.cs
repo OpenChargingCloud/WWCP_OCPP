@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 
 #endregion
@@ -128,11 +129,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                                      RationalNumber?                          MaximumCost                  = null,
                                      IEnumerable<TaxRule>?                    TaxRules                     = null,
                                      OverstayRuleList?                        OverstayRules                = null,
-                                     IEnumerable<AdditionalSelectedService>?  AdditionalSelectedServices   = null)
+                                     IEnumerable<AdditionalSelectedService>?  AdditionalSelectedServices   = null,
+                                     CustomData?                              CustomData                   = null)
 
             : base(Id,
                    TimeAnchor,
-                   Description)
+                   Description,
+                   CustomData)
 
         {
 
@@ -484,6 +487,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
+                #region CustomData                    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 AbsolutePriceSchedule = new AbsolutePriceSchedule(
 
                                             Id,
@@ -498,7 +516,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                                             MaximumCost,
                                             TaxRules,
                                             OverstayRules,
-                                            AdditionalSelectedServices
+                                            AdditionalSelectedServices,
+                                            CustomData
 
                                         );
 
@@ -543,7 +562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                                 new JProperty("priceScheduleID",             Id.               ToString()),
+                                 new JProperty("priceScheduleID",             Id.               Value),
                                  new JProperty("timeAnchor",                  TimeAnchor.       ToISO8601()),
                                  new JProperty("currency",                    Currency.ISOCode),
                                  new JProperty("language",                    Language.         ToString()),
@@ -574,6 +593,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                            AdditionalSelectedServices.Any()
                                ? new JProperty("additionalSelectedServices",  new JArray(AdditionalSelectedServices.Select(additionalSelectedService => additionalSelectedService.ToJSON(CustomAdditionalServiceSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",                  CustomData.ToJSON())
                                : null
 
                        );

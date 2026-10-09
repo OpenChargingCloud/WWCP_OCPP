@@ -226,16 +226,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Format        [optional]
+                #region Format        [mandatory]
 
-                if (JSON.ParseOptional("format",
-                                       "message format",
-                                       MessageFormat.TryParse,
-                                       out MessageFormat? Format,
-                                       out ErrorResponse))
+                // Required by the schema, and it was read as optional.
+                if (!JSON.ParseMandatory("format",
+                                         "message format",
+                                         MessageFormat.TryParse,
+                                         out MessageFormat Format,
+                                         out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion

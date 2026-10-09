@@ -133,15 +133,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            if (!MonitoringCriteria.Any())
-                throw new ArgumentException("The given enumeration of criteria for components for which a monitoring report is requested must not be empty!",
-                                            nameof(MonitoringCriteria));
-
-            if (!ComponentVariables.Any())
-                throw new ArgumentException("The given enumeration of components and variables for which a monitoring report is requested must not be empty!",
-                                            nameof(ComponentVariables));
-
-
+            // Either may be empty: both are optional in OCPP 2.1, and a request
+            // with neither asks for every monitor there is.
             this.GetMonitoringReportRequestId  = GetMonitoringReportRequestId;
             this.MonitoringCriteria            = MonitoringCriteria.Distinct();
             this.ComponentVariables            = ComponentVariables.Distinct();
@@ -413,28 +406,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region MonitoringCriterions            [mandatory]
+                #region MonitoringCriterions            [optional]
 
-                if (!JSON.ParseMandatoryHashSet("monitoringCriteria",
-                                                "monitoring criteria",
-                                                MonitoringCriteriaExtensions.TryParse,
-                                                out HashSet<MonitoringCriterion> MonitoringCriterions,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("monitoringCriteria",
+                                              "monitoring criteria",
+                                              MonitoringCriteriaExtensions.TryParse,
+                                              out HashSet<MonitoringCriterion> MonitoringCriterions,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region ComponentVariables              [mandatory]
+                #region ComponentVariables              [optional]
 
-                if (!JSON.ParseMandatoryHashSet("componentVariable",
-                                                "component variables",
-                                                ComponentVariable.TryParse,
-                                                out HashSet<ComponentVariable> ComponentVariables,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("componentVariable",
+                                              "component variables",
+                                              ComponentVariable.TryParse,
+                                              out HashSet<ComponentVariable> ComponentVariables,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -537,13 +532,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  new JProperty("requestId",            GetMonitoringReportRequestId),
 
-                                 new JProperty("monitoringCriteria",   new JArray(MonitoringCriteria.Select(monitoringCriterium => monitoringCriterium.AsText()))),
+                           MonitoringCriteria.Any()
+                               ? new JProperty("monitoringCriteria",   new JArray(MonitoringCriteria.Select(monitoringCriterium => monitoringCriterium.AsText())))
+                               : null,
 
-                                 new JProperty("componentVariable",    new JArray(ComponentVariables.Select(componentVariable   => componentVariable.  ToJSON(CustomComponentVariableSerializer,
-                                                                                                                                                              CustomComponentSerializer,
-                                                                                                                                                              CustomEVSESerializer,
-                                                                                                                                                              CustomVariableSerializer,
-                                                                                                                                                              CustomCustomDataSerializer)))),
+                           ComponentVariables.Any()
+                               ? new JProperty("componentVariable",    new JArray(ComponentVariables.Select(componentVariable   => componentVariable.  ToJSON(CustomComponentVariableSerializer,
+                                                                                                                                                                CustomComponentSerializer,
+                                                                                                                                                                CustomEVSESerializer,
+                                                                                                                                                                CustomVariableSerializer,
+                                                                                                                                                                CustomCustomDataSerializer))))
+                               : null,
 
                            Signatures.Any()
                                ? new JProperty("signatures",           new JArray(Signatures.        Select(signature           => signature.          ToJSON(CustomSignatureSerializer,

@@ -330,8 +330,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region WithSHA512FileHashes    [optional]
 
-                if (JSON.ParseOptional("withSHA256FileHashes",
-                                       "with SHA256 file hashes",
+                if (JSON.ParseOptional("withSHA512FileHashes",
+                                       "with SHA512 file hashes",
                                        out Boolean? WithSHA512FileHashes,
                                        out ErrorResponse))
                 {

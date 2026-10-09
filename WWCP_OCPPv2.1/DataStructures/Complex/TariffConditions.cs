@@ -21,7 +21,11 @@ using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
+using System.Globalization;
+
 using org.GraphDefined.Vanaheimr.Illias;
+
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -31,7 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// Tariff conditions.
     /// </summary>
-    public class TariffConditions : IEquatable<TariffConditions>
+    public class TariffConditions : ACustomData,
+                                    IEquatable<TariffConditions>
     {
 
         #region Properties
@@ -236,7 +241,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 TimeSpan?                MinChargingTime   = null,
                                 TimeSpan?                MaxChargingTime   = null,
                                 TimeSpan?                MinIdleTime       = null,
-                                TimeSpan?                MaxIdleTime       = null)
+                                TimeSpan?                MaxIdleTime       = null,
+
+                                CustomData?              CustomData        = null)
+
+            : base(CustomData)
 
         {
 
@@ -286,7 +295,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            (this.MinChargingTime?.   GetHashCode() ?? 0) *  7 ^
                            (this.MaxChargingTime?.   GetHashCode() ?? 0) *  5 ^
                            (this.MinIdleTime?.       GetHashCode() ?? 0) *  3 ^
-                            this.MaxIdleTime?.       GetHashCode() ?? 0;
+                           (this.MaxIdleTime?.       GetHashCode() ?? 0)      ^
+                            base.                    GetHashCode();
 
             }
 
@@ -496,9 +506,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse ValidFrom          [optional]
 
+                // RFC 3339 full-date, whatever culture this machine is in.
                 if (JSON.ParseOptional("validFromDate",
                                        "not before",
-                                       (s) => DateOnly.Parse(s),
+                                       (s) => DateOnly.ParseExact(s, "yyyy-MM-dd", CultureInfo.InvariantCulture),
                                        out DateOnly? ValidFrom,
                                        out ErrorResponse))
                 {
@@ -512,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("validToDate",
                                        "not after",
-                                       (s) => DateOnly.Parse(s),
+                                       (s) => DateOnly.ParseExact(s, "yyyy-MM-dd", CultureInfo.InvariantCulture),
                                        out DateOnly? ValidTo,
                                        out ErrorResponse))
                 {
@@ -525,9 +536,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse DaysOfWeek         [optional]
 
-                // "day_of_week": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"]
+                // "dayOfWeek": [ "Monday", "Tuesday", ... ] - it was read as "daysOfWeek".
 
-                if (JSON.ParseOptionalEnums("daysOfWeek",
+                if (JSON.ParseOptionalEnums("dayOfWeek",
                                             "days of week",
                                             out HashSet<DayOfWeek> DaysOfWeek,
                                             out ErrorResponse))
@@ -540,9 +551,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse StartTimeOfDay     [optional]
 
-                if (JSON.ParseOptional("startTime",
-                                       "start time",
-                                       (s) => TimeOnly.Parse(s),
+                // "startTimeOfDay" and "endTimeOfDay", as RFC 3339 hour and
+                // minute - they were read as "startTime" and "endTime", in
+                // whatever format this machine's culture takes.
+                if (JSON.ParseOptional("startTimeOfDay",
+                                       "start time of day",
+                                       (s) => TimeOfDay(s),
                                        out TimeOnly? StartTimeOfDay,
                                        out ErrorResponse))
                 {
@@ -554,9 +568,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse EndTimeOfDay       [optional]
 
-                if (JSON.ParseOptional("endTime",
-                                       "end time",
-                                       (s) => TimeOnly.Parse(s),
+                if (JSON.ParseOptional("endTimeOfDay",
+                                       "end time of day",
+                                       (s) => TimeOfDay(s),
                                        out TimeOnly? EndTimeOfDay,
                                        out ErrorResponse))
                 {
@@ -763,6 +777,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse CustomData         [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 TariffConditions  = (ValidFrom.         HasValue  ||
                                      ValidTo.           HasValue  ||
@@ -785,7 +813,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      MinChargingTime.   HasValue  ||
                                      MaxChargingTime.   HasValue  ||
                                      MinIdleTime.       HasValue  ||
-                                     MaxIdleTime.       HasValue)
+                                     MaxIdleTime.       HasValue  ||
+                                     CustomData         is not null)
 
                                          ? new TariffConditions(
 
@@ -810,8 +839,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                MinChargingTime,
                                                MaxChargingTime,
                                                MinIdleTime,
-                                               MaxIdleTime
-
+                                               MaxIdleTime,
+                                               CustomData
                                            )
 
                                          : null;
@@ -848,29 +877,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                            ValidFrom.         HasValue
-                               ? new JProperty("validFromDate",     ValidFrom.      Value.ToString("yyyy-MM-dd"))
+                               ? new JProperty("validFromDate",     ValidFrom.      Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
                                : null,
 
                            ValidTo.           HasValue
-                               ? new JProperty("validToDate",       ValidTo.        Value.ToString("yyyy-MM-dd"))
+                               ? new JProperty("validToDate",       ValidTo.        Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
                                : null,
 
 
+                           // "Monday" as the schema's enumeration has it, not "monday".
                            DaysOfWeek.Any()
-                               ? new JProperty("dayOfWeek",         new JArray(DaysOfWeek.Select(day => day.AsString())))
+                               ? new JProperty("dayOfWeek",         new JArray(DaysOfWeek.Select(day => day.ToString())))
                                : null,
 
                            StartTimeOfDay.    HasValue
-                               ? new JProperty("startTime",         StartTimeOfDay. Value.ToString("HH:mm:ss"))
+                               ? new JProperty("startTimeOfDay",    StartTimeOfDay. Value.ToString("HH:mm", CultureInfo.InvariantCulture))
                                : null,
 
                            EndTimeOfDay.      HasValue
-                               ? new JProperty("endTime",           EndTimeOfDay.   Value.ToString("HH:mm:ss"))
+                               ? new JProperty("endTimeOfDay",      EndTimeOfDay.   Value.ToString("HH:mm", CultureInfo.InvariantCulture))
                                : null,
 
 
+                           // As text - the enum itself was written as its number.
                            EVSEKind.          HasValue
-                               ? new JProperty("evseKind",          EVSEKind.       Value)
+                               ? new JProperty("evseKind",          EVSEKind.       Value.AsText())
                                : null,
 
 
@@ -899,28 +930,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
 
+                           // Whole seconds, as the schema's integers.
                            MinTime.           HasValue
-                               ? new JProperty("minTime",           MinTime.        Value.TotalSeconds)
+                               ? new JProperty("minTime",           (Int64) Math.Round(MinTime.        Value.TotalSeconds))
                                : null,
 
                            MaxTime.           HasValue
-                               ? new JProperty("maxTime",           MaxTime.        Value.TotalSeconds)
+                               ? new JProperty("maxTime",           (Int64) Math.Round(MaxTime.        Value.TotalSeconds))
                                : null,
 
                            MinChargingTime.   HasValue
-                               ? new JProperty("minChargingTime",   MinChargingTime.Value.TotalSeconds)
+                               ? new JProperty("minChargingTime",   (Int64) Math.Round(MinChargingTime.Value.TotalSeconds))
                                : null,
 
                            MaxChargingTime.   HasValue
-                               ? new JProperty("maxChargingTime",   MaxChargingTime.Value.TotalSeconds)
+                               ? new JProperty("maxChargingTime",   (Int64) Math.Round(MaxChargingTime.Value.TotalSeconds))
                                : null,
 
                            MinIdleTime.       HasValue
-                               ? new JProperty("minIdleTime",       MinIdleTime.    Value.TotalSeconds)
+                               ? new JProperty("minIdleTime",       (Int64) Math.Round(MinIdleTime.    Value.TotalSeconds))
                                : null,
 
                            MaxIdleTime.       HasValue
-                               ? new JProperty("maxIdleTime",       MaxIdleTime.    Value.TotalSeconds)
+                               ? new JProperty("maxIdleTime",       (Int64) Math.Round(MaxIdleTime.    Value.TotalSeconds))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",        CustomData.     ToJSON())
                                : null
 
                        );
@@ -966,9 +1002,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    MinChargingTime,
                    MaxChargingTime,
                    MinIdleTime,
-                   MaxIdleTime
+                   MaxIdleTime,
+
+                   CustomData
 
                );
+
+        #endregion
+
+        #region (private static) TimeOfDay(Text)
+
+        /// <summary>
+        /// A time of day as RFC 3339 writes one: "HH:mm", 24 hours, leading
+        /// zeros - and, read as it was written here before, "HH:mm:ss".
+        /// </summary>
+        /// <param name="Text">The text of a time of day.</param>
+        private static TimeOnly TimeOfDay(String Text)
+
+            => TimeOnly.ParseExact(Text.Trim(),
+                                   [ "HH:mm", "HH:mm:ss" ],
+                                   CultureInfo.InvariantCulture);
 
         #endregion
 
@@ -1096,7 +1149,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
               (MinIdleTime.       HasValue &&  TariffConditions.MinIdleTime.       HasValue && MinIdleTime.       Value.Equals(TariffConditions.MinIdleTime.       Value))) &&
 
             ((!MaxIdleTime.       HasValue && !TariffConditions.MaxIdleTime.       HasValue) ||
-              (MaxIdleTime.       HasValue &&  TariffConditions.MaxIdleTime.       HasValue && MaxIdleTime.       Value.Equals(TariffConditions.MaxIdleTime.       Value)));
+              (MaxIdleTime.       HasValue &&  TariffConditions.MaxIdleTime.       HasValue && MaxIdleTime.       Value.Equals(TariffConditions.MaxIdleTime.       Value))) &&
+
+               base.Equals(TariffConditions);
 
         #endregion
 

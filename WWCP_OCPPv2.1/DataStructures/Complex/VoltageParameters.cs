@@ -48,8 +48,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// If the present voltage is above this threshold for more than the time defined by _hv10MinMeanValue_, the EV must trip.
         /// This value is mandatory if _hv10MinMeanTripDelay_ is set.
         /// </summary>
-        [Mandatory]
-        public Decimal                HighVoltage_10Min_MeanValue        { get; }
+        [Optional]
+        public Decimal?               HighVoltage_10Min_MeanValue        { get; }
 
         /// <summary>
         /// 10-Minute Mean High Voltage Trip Delay
@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// After this time, the EV must trip (disconnect).
         /// This value is mandatory if OverVoltageMeanValue10min is set.
         /// </summary>
-        [Mandatory]
-        public TimeSpan               HighVoltage_10Min_MeanTripDelay    { get; }
+        [Optional]
+        public TimeSpan?              HighVoltage_10Min_MeanTripDelay    { get; }
 
         /// <summary>
         /// The optional power during cessation.
@@ -78,10 +78,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="HighVoltage_10Min_MeanTripDelay">10-Minute Mean High Voltage Trip Delay</param>
         /// <param name="PowerDuringCessation">The optional power during cessation.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param></param>
-        public VoltageParameters(Decimal                HighVoltage_10Min_MeanValue,
-                                 TimeSpan               HighVoltage_10Min_MeanTripDelay,
-                                 PowerDuringCessation?  PowerDuringCessation,
-                                 CustomData?            CustomData   = null)
+        public VoltageParameters(Decimal?               HighVoltage_10Min_MeanValue       = null,
+                                 TimeSpan?              HighVoltage_10Min_MeanTripDelay   = null,
+                                 PowerDuringCessation?  PowerDuringCessation              = null,
+                                 CustomData?            CustomData                        = null)
 
             : base(CustomData)
 
@@ -94,8 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = this.HighVoltage_10Min_MeanValue.    GetHashCode()       * 7 ^
-                           this.HighVoltage_10Min_MeanTripDelay.GetHashCode()       * 5 ^
+                hashCode = (this.HighVoltage_10Min_MeanValue?.    GetHashCode() ?? 0) * 7 ^
+                           (this.HighVoltage_10Min_MeanTripDelay?.GetHashCode() ?? 0) * 5 ^
                           (this.PowerDuringCessation?.          GetHashCode() ?? 0) * 3 ^
                            base.                                GetHashCode();
 
@@ -196,27 +196,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 VoltageParameters = default;
 
-                #region HighVoltage_10Min_MeanValue        [mandatory]
+                // Both optional in OCPP 2.1 - and the trip delay was read from
+                // "hv10MinMeanValue", the mean value itself, as whole seconds.
 
-                if (!JSON.ParseMandatory("hv10MinMeanValue",
-                                         "HighVoltage_10Min_MeanValue",
-                                         out Decimal HighVoltage_10Min_MeanValue,
-                                         out ErrorResponse))
+                #region HighVoltage_10Min_MeanValue        [optional]
+
+                if (JSON.ParseOptional("hv10MinMeanValue",
+                                       "10-minute mean high voltage value",
+                                       out Decimal? HighVoltage_10Min_MeanValue,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region HighVoltage_10Min_MeanTripDelay    [mandatory]
+                #region HighVoltage_10Min_MeanTripDelay    [optional]
 
-                if (!JSON.ParseMandatory("hv10MinMeanValue",
-                                         "HighVoltage_10Min_MeanValue",
-                                         out TimeSpan HighVoltage_10Min_MeanTripDelay,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("hv10MinMeanTripDelay",
+                                       "10-minute mean high voltage trip delay",
+                                       out Decimal? HighVoltage_10Min_MeanTripDelaySeconds,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
+
+                var HighVoltage_10Min_MeanTripDelay = HighVoltage_10Min_MeanTripDelaySeconds.HasValue
+                                                          ? TimeSpan.FromSeconds((Double) HighVoltage_10Min_MeanTripDelaySeconds.Value)
+                                                          : (TimeSpan?) null;
 
                 #endregion
 
@@ -288,8 +297,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("hv10MinMeanValue",       HighVoltage_10Min_MeanValue),
-                                 new JProperty("hv10MinMeanTripDelay",   HighVoltage_10Min_MeanTripDelay),
+                           HighVoltage_10Min_MeanValue.HasValue
+                               ? new JProperty("hv10MinMeanValue",       HighVoltage_10Min_MeanValue.Value)
+                               : null,
+
+                           // In seconds - the TimeSpan itself was written, as "00:00:30".
+                           HighVoltage_10Min_MeanTripDelay.HasValue
+                               ? new JProperty("hv10MinMeanTripDelay",   (Decimal) HighVoltage_10Min_MeanTripDelay.Value.TotalSeconds)
+                               : null,
 
                            PowerDuringCessation.HasValue
                                ? new JProperty("powerDuringCessation",   PowerDuringCessation.Value.ToString())
@@ -381,8 +396,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => VoltageParameters is not null &&
 
-               HighVoltage_10Min_MeanValue.    Equals(VoltageParameters.HighVoltage_10Min_MeanValue)     &&
-               HighVoltage_10Min_MeanTripDelay.Equals(VoltageParameters.HighVoltage_10Min_MeanTripDelay) &&
+               Nullable.Equals(HighVoltage_10Min_MeanValue,     VoltageParameters.HighVoltage_10Min_MeanValue)     &&
+               Nullable.Equals(HighVoltage_10Min_MeanTripDelay, VoltageParameters.HighVoltage_10Min_MeanTripDelay) &&
 
              ((!PowerDuringCessation.HasValue && !VoltageParameters.PowerDuringCessation.HasValue) ||
                 PowerDuringCessation.HasValue &&  VoltageParameters.PowerDuringCessation.HasValue && PowerDuringCessation.Value.Equals(VoltageParameters.PowerDuringCessation.Value)) &&
@@ -414,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   $"HighVoltage_10Min_MeanValue: {HighVoltage_10Min_MeanValue}, {Math.Round(HighVoltage_10Min_MeanTripDelay.TotalSeconds, 2)} seconds",
+                   $"HighVoltage_10Min_MeanValue: {HighVoltage_10Min_MeanValue?.ToString() ?? "-"}, {(HighVoltage_10Min_MeanTripDelay.HasValue ? Math.Round(HighVoltage_10Min_MeanTripDelay.Value.TotalSeconds, 2).ToString() : "-")} seconds",
 
                    PowerDuringCessation.HasValue
                        ? $", power during cessation: {PowerDuringCessation}"

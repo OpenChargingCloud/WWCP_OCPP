@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("timeAnchor",             TimeAnchor.ToISO8601()),
-                                 new JProperty("powerScheduleEntries",   new JArray(EVPowerScheduleEntries.Select(evPowerScheduleEntry => evPowerScheduleEntry.ToJSON(CustomEVPowerScheduleEntrySerializer,
+                                 new JProperty("evPowerScheduleEntries", new JArray(EVPowerScheduleEntries.Select(evPowerScheduleEntry => evPowerScheduleEntry.ToJSON(CustomEVPowerScheduleEntrySerializer,
                                                                                                                                                                       CustomCustomDataSerializer)))),
  
                            CustomData is not null

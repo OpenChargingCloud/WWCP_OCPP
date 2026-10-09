@@ -135,10 +135,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            if (!MessageInfos.Any())
-                throw new ArgumentException("The given enumeration of display messages must not be empty!",
-                                            nameof(MessageInfos));
-
+            // May be empty: "messageInfo" is optional in OCPP 2.1 - a station
+            // with no display messages to report sends none.
             this.NotifyDisplayMessagesRequestId  = NotifyDisplayMessagesRequestId;
             this.MessageInfos                    = MessageInfos.Distinct();
             this.ToBeContinued                   = ToBeContinued;
@@ -474,15 +472,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region MessageInfos                      [mandatory]
+                #region MessageInfos                      [optional]
 
-                if (!JSON.ParseMandatoryHashSet("messageInfo",
-                                                "message infos",
-                                                MessageInfo.TryParse,
-                                                out HashSet<MessageInfo> MessageInfos,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("messageInfo",
+                                              "message infos",
+                                              MessageInfo.TryParse,
+                                              out HashSet<MessageInfo> MessageInfos,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -597,11 +596,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                                  new JProperty("requestId",     NotifyDisplayMessagesRequestId),
-                                 new JProperty("messageInfo",   new JArray(MessageInfos.Select(messageInfo => messageInfo.ToJSON(CustomMessageInfoSerializer,
-                                                                                                                                 CustomMessageContentSerializer,
-                                                                                                                                 CustomComponentSerializer,
-                                                                                                                                 CustomEVSESerializer,
-                                                                                                                                 CustomCustomDataSerializer)))),
+                           MessageInfos.Any()
+                               ? new JProperty("messageInfo",   new JArray(MessageInfos.Select(messageInfo => messageInfo.ToJSON(CustomMessageInfoSerializer,
+                                                                                                                                   CustomMessageContentSerializer,
+                                                                                                                                   CustomComponentSerializer,
+                                                                                                                                   CustomEVSESerializer,
+                                                                                                                                   CustomCustomDataSerializer))))
+                               : null,
 
                            ToBeContinued.HasValue
                                ? new JProperty("tbc",           ToBeContinued)

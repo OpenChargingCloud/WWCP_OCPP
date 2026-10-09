@@ -782,9 +782,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             SendCertificateSigningRequest(this IChargingStationNode  ChargingStation,
 
-                                          Int32                      SignCertificateRequestId,
+                                          Int32?                     SignCertificateRequestId,
                                           String                     CSR,
                                           CertificateSigningUse?     CertificateType       = null,
+                                          CertificateHashData?       HashRootCertificate   = null,
 
                                           CustomData?                CustomData            = null,
 
@@ -810,6 +811,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            SignCertificateRequestId,
                            CSR,
                            CertificateType,
+                           HashRootCertificate,
 
                            SignKeys,
                            SignInfos,

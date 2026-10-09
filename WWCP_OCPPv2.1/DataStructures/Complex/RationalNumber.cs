@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,8 +35,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// </summary>
     /// <param name="Value">The value.</param>
     /// <param name="Exponent">The exponent.</param>
-    public class RationalNumber(Int32 Value,
-                                Int32 Exponent) : IEquatable<RationalNumber>
+    /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+    public class RationalNumber(Int32        Value,
+                                Int32        Exponent,
+                                CustomData?  CustomData   = null) : ACustomData(CustomData),
+                                                                    IEquatable<RationalNumber>
     {
 
         #region Properties
@@ -148,10 +153,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region CustomData  [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 RationalNumber = new RationalNumber(
                                      Value,
-                                     Exponent
+                                     Exponent,
+                                     CustomData
                                  );
 
                 return true;
@@ -173,11 +193,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public JObject ToJSON()
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CustomData>? CustomCustomDataSerializer = null)
 
-            => new (
-                   new JProperty("value",     Value),
-                   new JProperty("exponent",  Exponent)
+            => JSONObject.Create(
+
+                         new JProperty("value",        Value),
+                         new JProperty("exponent",     Exponent),
+
+                   CustomData is not null
+                       ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                       : null
+
                );
 
         #endregion
@@ -191,7 +218,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (
                    Value,
-                   Exponent
+                   Exponent,
+                   CustomData
                );
 
         #endregion

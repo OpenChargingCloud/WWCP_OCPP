@@ -471,15 +471,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region LocalAuthorizationList    [mandatory]
+                #region LocalAuthorizationList    [optional]
 
-                if (!JSON.ParseMandatoryJSON("localAuthorizationList",
-                                             "local authorization list",
-                                             AuthorizationData.TryParse,
-                                             out IEnumerable<AuthorizationData> LocalAuthorizationList,
-                                             out ErrorResponse))
+                if (JSON.ParseOptionalJSON("localAuthorizationList",
+                                           "local authorization list",
+                                           AuthorizationData.TryParse,
+                                           out IEnumerable<AuthorizationData> LocalAuthorizationList,
+                                           out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion

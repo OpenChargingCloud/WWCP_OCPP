@@ -57,17 +57,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The SignCertificate request identification.
+        /// The PEM encoded RFC 2986 certificate signing request (CSR)
+        /// [max 5500].
         /// </summary>
         [Mandatory]
         public String                  CSR                         { get; }
 
         /// <summary>
-        /// The PEM encoded RFC 2986 certificate signing request (CSR)
-        /// [max 5500].
+        /// The optional identification of this SignCertificate request, which
+        /// the CertificateSigned request answering it carries.
         /// </summary>
-        [Mandatory]
-        public Int32                   SignCertificateRequestId    { get; }
+        /// <remarks>
+        /// Optional in OCPP 2.1, and it was never read: every SignCertificate
+        /// request received came out with the identification 1.
+        /// </remarks>
+        [Optional]
+        public Int32?                  SignCertificateRequestId    { get; }
 
         /// <summary>
         /// Whether the certificate is to be used for both the 15118 connection (if implemented)
@@ -75,6 +80,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         [Optional]
         public CertificateSigningUse?  CertificateType             { get; }
+
+        /// <summary>
+        /// The optional hash of the root certificate the charging station wants
+        /// the new certificate to be issued under.
+        /// </summary>
+        [Optional]
+        public CertificateHashData?    HashRootCertificate         { get; }
 
         #endregion
 
@@ -87,7 +99,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="SignCertificateRequestId">A SignCertificate request identification.</param>
         /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
         /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
-        /// 
+        /// <param name="HashRootCertificate">The optional hash of the root certificate the new certificate is to be issued under.</param>
+        ///
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
@@ -98,9 +111,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SignCertificateRequest(SourceRouting            Destination,
-                                      Int32                    SignCertificateRequestId,
+                                      Int32?                   SignCertificateRequestId,
                                       String                   CSR,
                                       CertificateSigningUse?   CertificateType       = null,
+                                      CertificateHashData?     HashRootCertificate   = null,
 
                                       IEnumerable<KeyPair>?    SignKeys              = null,
                                       IEnumerable<SignInfo>?   SignInfos             = null,
@@ -138,14 +152,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.CSR                       = CSR;
             this.SignCertificateRequestId  = SignCertificateRequestId;
             this.CertificateType           = CertificateType;
+            this.HashRootCertificate       = HashRootCertificate;
 
             unchecked
             {
 
-                hashCode = this.CSR.                     GetHashCode()       * 7 ^
-                           this.SignCertificateRequestId.GetHashCode()       * 5 ^
-                          (this.CertificateType?.        GetHashCode() ?? 0) * 3 ^
-                           base.                         GetHashCode();
+                hashCode =  this.CSR.                      GetHashCode()       * 11 ^
+                           (this.SignCertificateRequestId?.GetHashCode() ?? 0) *  7 ^
+                           (this.CertificateType?.         GetHashCode() ?? 0) *  5 ^
+                           (this.HashRootCertificate?.     GetHashCode() ?? 0) *  3 ^
+                            base.                          GetHashCode();
 
             }
 
@@ -339,17 +355,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SignCertificateRequest = null;
 
-                #region SignCertificateRequestId    [mandatory]  // FixMe!!!
+                #region SignCertificateRequestId    [optional]
 
-                //ToDo: In OCPP v2.0.1 is does not exist!
+                // Optional, as OCPP 2.1 has it - and OCPP 2.0.1, which has none.
+                if (JSON.ParseOptional("requestId",
+                                       "SignCertificate request identification",
+                                       out Int32? SignCertificateRequestId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
-                //    if (!JSON.ParseMandatory("requestId",
-                //                             "SignCertificate request identification",
-                //                             out Int32 SignCertificateRequestId,
-                //                             out ErrorResponse))
-                //    {
-                //        return false;
-                //    }
+                #endregion
+
+                #region HashRootCertificate         [optional]
+
+                if (JSON.ParseOptionalJSON("hashRootCertificate",
+                                           "hash of the root certificate",
+                                           CertificateHashData.TryParse,
+                                           out CertificateHashData? HashRootCertificate,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
@@ -370,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 if (JSON.ParseOptional("certificateType",
                                        "certificate type",
                                        CertificateSigningUse.TryParse,
-                                       out CertificateSigningUse CertificateType,
+                                       out CertificateSigningUse? CertificateType,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -411,9 +441,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 SignCertificateRequest = new SignCertificateRequest(
 
                                              Destination,
-                                             1, //SignCertificateRequestId,
+                                             SignCertificateRequestId,
                                              CSR,
                                              CertificateType,
+                                             HashRootCertificate,
 
                                              null,
                                              null,
@@ -467,11 +498,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("@context",          DefaultJSONLDContext. ToString())
                                : null,
 
-                                 new JProperty("csr",               CSR),
-                                 new JProperty("requestId",         SignCertificateRequestId),
+                                 new JProperty("csr",                   CSR),
+
+                           SignCertificateRequestId.HasValue
+                               ? new JProperty("requestId",             SignCertificateRequestId.Value)
+                               : null,
 
                            CertificateType.HasValue
-                               ? new JProperty("certificateType",   CertificateType.Value.ToString())
+                               ? new JProperty("certificateType",       CertificateType.Value.ToString())
+                               : null,
+
+                           HashRootCertificate is not null
+                               ? new JProperty("hashRootCertificate",   HashRootCertificate.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
@@ -566,7 +604,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => SignCertificateRequest is not null &&
 
                CSR.                     Equals(SignCertificateRequest.CSR)                      &&
-               SignCertificateRequestId.Equals(SignCertificateRequest.SignCertificateRequestId) &&
+               Nullable.Equals(SignCertificateRequestId, SignCertificateRequest.SignCertificateRequestId) &&
+               Nullable.Equals(CertificateType,          SignCertificateRequest.CertificateType)          &&
+
+             ((HashRootCertificate is null && SignCertificateRequest.HashRootCertificate is null) ||
+              (HashRootCertificate is not null && HashRootCertificate.Equals(SignCertificateRequest.HashRootCertificate))) &&
 
                base.GenericEquals(SignCertificateRequest);
 

@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -31,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The overstay rule list.
     /// </summary>
-    public class OverstayRuleList : IEquatable<OverstayRuleList>
+    public class OverstayRuleList : ACustomData,
+                                    IEquatable<OverstayRuleList>
     {
 
         #region Properties
@@ -67,7 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="OverstayPowerThreshold">An overstay power threshold.</param>
         public OverstayRuleList(IEnumerable<OverstayRule>  OverstayRules,
                                 TimeSpan?                  OverstayTimeThreshold    = null,
-                                RationalNumber?            OverstayPowerThreshold   = null)
+                                RationalNumber?            OverstayPowerThreshold   = null,
+                                CustomData?                CustomData               = null)
+
+            : base(CustomData)
+
         {
 
             this.OverstayRules           = OverstayRules.Distinct();
@@ -230,10 +237,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 OverstayRuleList = new OverstayRuleList(
                                        OverstayRules,
                                        OverstayTimeThreshold,
-                                       OverstayPowerThreshold
+                                       OverstayPowerThreshold,
+                                       CustomData
                                    );
 
                 if (CustomOverstayRuleListParser is not null)
@@ -275,6 +298,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                            OverstayPowerThreshold is not null
                                ? new JProperty("overstayPowerThreshold",   OverstayPowerThreshold.ToJSON())
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -364,7 +391,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
               (OverstayTimeThreshold. HasValue    &&  OverstayRuleList.OverstayTimeThreshold. HasValue    && OverstayTimeThreshold.Value.Equals(OverstayRuleList.OverstayTimeThreshold.Value))) &&
 
              ((OverstayPowerThreshold is     null &&  OverstayRuleList.OverstayPowerThreshold is     null) ||
-              (OverstayPowerThreshold is not null &&  OverstayRuleList.OverstayPowerThreshold is not null && OverstayPowerThreshold.     Equals(OverstayRuleList.OverstayPowerThreshold)));
+              (OverstayPowerThreshold is not null &&  OverstayRuleList.OverstayPowerThreshold is not null && OverstayPowerThreshold.     Equals(OverstayRuleList.OverstayPowerThreshold))) &&
+
+               base.Equals(OverstayRuleList);
 
         #endregion
 

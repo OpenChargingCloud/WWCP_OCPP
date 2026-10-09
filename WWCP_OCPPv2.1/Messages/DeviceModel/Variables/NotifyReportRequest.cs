@@ -154,10 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            if (!ReportData.Any())
-                throw new ArgumentException("The given enumeration of report data must not be empty!",
-                                            nameof(ReportData));
-
+            // May be empty: "reportData" is optional in OCPP 2.1.
             this.NotifyReportRequestId  = NotifyReportRequestId;
             this.SequenceNumber         = SequenceNumber;
             this.GeneratedAt            = GeneratedAt;
@@ -587,15 +584,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ReportData               [mandatory]
+                #region ReportData               [optional]
 
-                if (!JSON.ParseMandatoryHashSet("reportData",
-                                                "report data",
-                                                OCPPv2_1.ReportData.TryParse,
-                                                out HashSet<ReportData> ReportData,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("reportData",
+                                              "report data",
+                                              OCPPv2_1.ReportData.TryParse,
+                                              out HashSet<ReportData> ReportData,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -719,13 +717,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("seqNo",         SequenceNumber),
                                  new JProperty("generatedAt",   GeneratedAt.          ToISO8601()),
 
-                                 new JProperty("reportData",    new JArray(ReportData.Select(reportData => reportData.ToJSON(CustomReportDataSerializer,
-                                                                                                                             CustomComponentSerializer,
-                                                                                                                             CustomEVSESerializer,
-                                                                                                                             CustomVariableSerializer,
-                                                                                                                             CustomVariableAttributeSerializer,
-                                                                                                                             CustomVariableCharacteristicsSerializer,
-                                                                                                                             CustomCustomDataSerializer)))),
+                           ReportData.Any()
+                               ? new JProperty("reportData",    new JArray(ReportData.Select(reportData => reportData.ToJSON(CustomReportDataSerializer,
+                                                                                                                               CustomComponentSerializer,
+                                                                                                                               CustomEVSESerializer,
+                                                                                                                               CustomVariableSerializer,
+                                                                                                                               CustomVariableAttributeSerializer,
+                                                                                                                               CustomVariableCharacteristicsSerializer,
+                                                                                                                               CustomCustomDataSerializer))))
+                               : null,
 
                            ToBeContinued.HasValue
                                ? new JProperty("tbc",           ToBeContinued.Value)

@@ -19,6 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 
 #endregion
@@ -29,7 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The abstract price schedule.
     /// </summary>
-    public abstract class APriceSchedule : IEquatable<APriceSchedule>
+    public abstract class APriceSchedule : ACustomData,
+                                           IEquatable<APriceSchedule>
     {
 
         #region Properties
@@ -62,9 +64,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="Id">An unique identification of the price schedule.</param>
         /// <param name="TimeAnchor">A time anchor of the price schedule.</param>
         /// <param name="Description">An optional description of the price schedule.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public APriceSchedule(PriceSchedule_Id  Id,
                               DateTimeOffset    TimeAnchor,
-                              String?           Description   = null)
+                              String?           Description   = null,
+                              CustomData?       CustomData    = null)
+
+            : base(CustomData)
+
         {
 
             this.Id           = Id;
@@ -159,7 +166,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                TimeAnchor.     Equals(PriceSchedule.TimeAnchor)      &&
                Id.Equals(PriceSchedule.Id) &&
 
-               String.Equals(Description, PriceSchedule.Description);
+               String.Equals(Description, PriceSchedule.Description) &&
+
+               base.Equals(PriceSchedule);
 
         #endregion
 

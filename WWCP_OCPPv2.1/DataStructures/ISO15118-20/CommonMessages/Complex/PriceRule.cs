@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -31,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The price rule.
     /// </summary>
-    public class PriceRule : IEquatable<PriceRule>
+    public class PriceRule : ACustomData,
+                             IEquatable<PriceRule>
     {
 
         #region Properties
@@ -90,7 +93,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                          RationalNumber?    ParkingFee                      = null,
                          TimeSpan?          ParkingFeePeriod                = null,
                          UInt16?            CarbonDioxideEmission           = null,
-                         PercentageDouble?  RenewableGenerationPercentage   = null)
+                         PercentageDouble?  RenewableGenerationPercentage   = null,
+                         CustomData?        CustomData                      = null)
+
+            : base(CustomData)
+
         {
 
             this.PowerRangeStart                = PowerRangeStart;
@@ -269,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region ParkingFeePeriod                 [optional]
 
-                if (JSON.ParseOptional("ParkingFeePeriod",
+                if (JSON.ParseOptional("parkingFeePeriod",
                                        "parking fee period",
                                        out TimeSpan? ParkingFeePeriod,
                                        out ErrorResponse))
@@ -307,13 +314,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 PriceRule = new PriceRule(
                                 PowerRangeStart,
                                 EnergyFee,
                                 ParkingFee,
                                 ParkingFeePeriod,
                                 CarbonDioxideEmission,
-                                RenewableGenerationPercentage
+                                RenewableGenerationPercentage,
+                                CustomData
                             );
 
                 if (CustomPriceRuleParser is not null)
@@ -362,6 +385,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                            RenewableGenerationPercentage.HasValue
                                ? new JProperty("renewableGenerationPercentage",   RenewableGenerationPercentage.Value.Value)
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -458,7 +485,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
               (CarbonDioxideEmission.        HasValue &&  PriceRule.CarbonDioxideEmission.        HasValue && CarbonDioxideEmission.        Value.Equals(PriceRule.CarbonDioxideEmission.Value))) &&
 
             ((!RenewableGenerationPercentage.HasValue && !PriceRule.RenewableGenerationPercentage.HasValue) ||
-              (RenewableGenerationPercentage.HasValue &&  PriceRule.RenewableGenerationPercentage.HasValue && RenewableGenerationPercentage.Value.Equals(PriceRule.RenewableGenerationPercentage.Value)));
+              (RenewableGenerationPercentage.HasValue &&  PriceRule.RenewableGenerationPercentage.HasValue && RenewableGenerationPercentage.Value.Equals(PriceRule.RenewableGenerationPercentage.Value))) &&
+
+               base.Equals(PriceRule);
 
         #endregion
 

@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                  new JProperty("remoteLocation",   RemoteLocation.       ToString()),
 
                            OldestTimestamp.HasValue
-                               ? new JProperty("remoteLocation",   OldestTimestamp.Value.ToISO8601())
+                               ? new JProperty("oldestTimestamp",  OldestTimestamp.Value.ToISO8601())
                                : null,
 
                            LatestTimestamp.HasValue

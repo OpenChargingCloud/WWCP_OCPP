@@ -34,7 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The result of a ClearTariffs request.
     /// </summary>
-    public class ClearTariffsResult : IEquatable<ClearTariffsResult>,
+    public class ClearTariffsResult : ACustomData,
+                                      IEquatable<ClearTariffsResult>,
                                       IComparable<ClearTariffsResult>,
                                       IComparable
     {
@@ -72,7 +73,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StatusInfo">An optional element providing more information about the ClearTariffs status.</param>
         public ClearTariffsResult(TariffClearStatus  Status,
                                   Tariff_Id?         TariffId     = null,
-                                  StatusInfo?        StatusInfo   = null)
+                                  StatusInfo?        StatusInfo   = null,
+                                  CustomData?        CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.Status      = Status;
@@ -84,7 +89,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 hashCode = this.Status.     GetHashCode()       * 5 ^
                           (this.TariffId?.  GetHashCode() ?? 0) * 3 ^
-                          (this.StatusInfo?.GetHashCode() ?? 0);
+                          (this.StatusInfo?.GetHashCode() ?? 0) ^
+                          base.GetHashCode();
 
             }
 
@@ -242,10 +248,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 ClearTariffsResult = new ClearTariffsResult(
                                          Status,
                                          TariffId,
-                                         StatusInfo
+                                         StatusInfo,
+                                         CustomData
                                      );
 
 
@@ -291,6 +313,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.    ToJSON(CustomStatusInfoSerializer,
                                                                                      CustomCustomDataSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -313,7 +339,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    Status,
                    TariffId?.  Clone(),
-                   StatusInfo?.Clone()
+                   StatusInfo?.Clone(),
+                   CustomData
                );
 
         #endregion
@@ -501,7 +528,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
               (TariffId.  HasValue    &&  ClearTariffsResult.TariffId.  HasValue    && TariffId.  Equals(ClearTariffsResult.TariffId))) &&
 
              ((StatusInfo is     null &&  ClearTariffsResult.StatusInfo is     null) ||
-              (StatusInfo is not null &&  ClearTariffsResult.StatusInfo is not null && StatusInfo.Equals(ClearTariffsResult.StatusInfo)));
+              (StatusInfo is not null &&  ClearTariffsResult.StatusInfo is not null && StatusInfo.Equals(ClearTariffsResult.StatusInfo))) &&
+
+               base.Equals(ClearTariffsResult);
 
         #endregion
 

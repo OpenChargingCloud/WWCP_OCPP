@@ -506,13 +506,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("transactionLimit",        TransactionLimits.     ToJSON())
                                : null,
 
-                           PreconditioningStatus is not null
-                               ? new JProperty("preconditioningStatus",   PreconditioningStatus. ToString())
-                               : null,
-
-                           EVSESleep is not null
-                               ? new JProperty("evseSleep",               EVSESleep.       Value)
-                               : null,
 
                            TariffId.HasValue
                                ? new JProperty("tariffId",                TariffId.        Value.ToString())

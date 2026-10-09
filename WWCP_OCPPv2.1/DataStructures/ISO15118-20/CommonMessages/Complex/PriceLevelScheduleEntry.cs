@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -31,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The price level schedule entry.
     /// </summary>
-    public class PriceLevelScheduleEntry : IEquatable<PriceLevelScheduleEntry>
+    public class PriceLevelScheduleEntry : ACustomData,
+                                           IEquatable<PriceLevelScheduleEntry>
     {
 
         #region Properties
@@ -59,8 +62,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// </summary>
         /// <param name="Duration">The duration of the given price level schedule entry..</param>
         /// <param name="PriceLevel">The price level of this price level schedule entry (referring to NumberOfPriceLevels).</param>
-        public PriceLevelScheduleEntry(TimeSpan  Duration,
-                                       Byte      PriceLevel)
+        public PriceLevelScheduleEntry(TimeSpan     Duration,
+                                       Byte         PriceLevel,
+                                       CustomData?  CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.Duration    = Duration;
@@ -198,9 +205,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 PriceLevelScheduleEntry = new PriceLevelScheduleEntry(
                                               Duration,
-                                              PriceLevel
+                                              PriceLevel,
+                                              CustomData
                                           );
 
                 if (CustomPriceLevelScheduleEntryParser is not null)
@@ -234,7 +257,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                            new JProperty("duration",     (UInt64) Math.Round(Duration.TotalSeconds, 0)),
 
-                           new JProperty("priceLevel",   PriceLevel)
+                           new JProperty("priceLevel",   PriceLevel),
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
+                               : null
 
                        );
 
@@ -318,7 +345,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             => PriceLevelScheduleEntry is not null &&
 
                Duration.  Equals(PriceLevelScheduleEntry.Duration) &&
-               PriceLevel.Equals(PriceLevelScheduleEntry.PriceLevel);
+               PriceLevel.Equals(PriceLevelScheduleEntry.PriceLevel) &&
+
+               base.Equals(PriceLevelScheduleEntry);
 
         #endregion
 

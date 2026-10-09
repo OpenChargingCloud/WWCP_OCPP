@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 using System;
 
@@ -70,11 +71,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                                   DateTimeOffset                        TimeAnchor,
                                   Byte                                  NumberOfPriceLevels,
                                   IEnumerable<PriceLevelScheduleEntry>  PriceLevelScheduleEntries,
-                                  String?                               Description   = null)
+                                  String?                               Description   = null,
+                                  CustomData?                           CustomData    = null)
 
             : base(Id,
                    TimeAnchor,
-                   Description)
+                   Description,
+                   CustomData)
 
         {
 
@@ -267,7 +270,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region Description                  [optional]
 
-                var Description = JSON.GetString("description");
+                // As it is written - it was read as "description".
+                var Description = JSON.GetString("priceScheduleDescription");
+
+                #endregion
+
+                #region CustomData                   [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
@@ -277,7 +295,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                                          TimeAnchor,
                                          NumberOfPriceLevels,
                                          PriceLevelScheduleEntries,
-                                         Description
+                                         Description,
+                                         CustomData
                                      );
 
                 if (CustomPriceLevelScheduleParser is not null)
@@ -311,13 +330,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
 
-                                 new JProperty("priceScheduleId",             Id.             ToString()),
+                                 new JProperty("priceScheduleId",             Id.             Value),
                                  new JProperty("timeAnchor",                  TimeAnchor.     ToISO8601()),
                                  new JProperty("numberOfPriceLevels",         NumberOfPriceLevels),
                                  new JProperty("priceLevelScheduleEntries",   new JArray(PriceLevelScheduleEntries.Select(priceLevelScheduleEntry => priceLevelScheduleEntry.ToJSON(CustomPriceLevelScheduleEntrySerializer)))),
 
                            Description.IsNotNullOrEmpty()
                                ? new JProperty("priceScheduleDescription",    Description)
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",                  CustomData.ToJSON())
                                : null
 
                        );

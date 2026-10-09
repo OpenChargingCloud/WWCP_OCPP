@@ -34,7 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// Shows assignments of tariffs to EVSEs or IdTokens.
     /// </summary>
-    public class TariffAssignment : IEquatable<TariffAssignment>,
+    public class TariffAssignment : ACustomData,
+                                    IEquatable<TariffAssignment>,
                                     IComparable<TariffAssignment>,
                                     IComparable
     {
@@ -60,10 +61,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public IEnumerable<EVSE_Id>  EVSEIds       { get; }
 
         /// <summary>
-        /// The optional enumeration of IdTokens this tariff applies to.
+        /// The optional enumeration of IdTokens this tariff applies to - the
+        /// values of the tokens, as OCPP 2.1 has them here: strings, and not
+        /// IdToken objects, which is what was read and written.
         /// </summary>
         [Optional]
-        public IEnumerable<IdToken>  IdTokens      { get; }
+        public IEnumerable<String>   IdTokens      { get; }
+
+        /// <summary>
+        /// The optional date and time when this tariff becomes active.
+        /// </summary>
+        [Optional]
+        public DateTimeOffset?       ValidFrom     { get; }
 
         #endregion
 
@@ -75,25 +84,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TariffId">The tariff identification.</param>
         /// <param name="TariffKind">The tariff kind (user|default).</param>
         /// <param name="EVSEIds">An optional enumeration of EVSE identifications this tariff applies to.</param>
-        /// <param name="IdTokens">An optional enumeration of IdTokens this tariff applies to.</param>
+        /// <param name="IdTokens">An optional enumeration of the values of the IdTokens this tariff applies to.</param>
+        /// <param name="ValidFrom">The optional date and time when this tariff becomes active.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public TariffAssignment(Tariff_Id              TariffId,
                                 TariffKind             TariffKind,
-                                IEnumerable<EVSE_Id>?  EVSEIds    = null,
-                                IEnumerable<IdToken>?  IdTokens   = null)
+                                IEnumerable<EVSE_Id>?  EVSEIds      = null,
+                                IEnumerable<String>?   IdTokens     = null,
+                                DateTimeOffset?        ValidFrom    = null,
+                                CustomData?            CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.TariffId    = TariffId;
             this.TariffKind  = TariffKind;
             this.EVSEIds     = EVSEIds?. Distinct() ?? [];
             this.IdTokens    = IdTokens?.Distinct() ?? [];
+            this.ValidFrom   = ValidFrom;
 
             unchecked
             {
 
-                hashCode = this.TariffId.  GetHashCode()  * 7 ^
-                           this.TariffKind.GetHashCode()  * 5 ^
-                           this.EVSEIds.   CalcHashCode() * 3 ^
-                           this.IdTokens.  CalcHashCode();
+                hashCode = this.TariffId.  GetHashCode()        * 11 ^
+                           this.TariffKind.GetHashCode()        *  7 ^
+                           this.EVSEIds.   CalcHashCode()       *  5 ^
+                           this.IdTokens.  CalcHashCode()       *  3 ^
+                          (this.ValidFrom?.GetHashCode() ?? 0)       ^
+                           base.           GetHashCode();
 
             }
 
@@ -213,11 +232,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse IdTokens      [optional]
 
-                if (JSON.ParseOptionalHashSet("idTokens",
-                                              "identification tokens",
-                                              IdToken.TryParse,
-                                              out HashSet<IdToken> IdTokens,
-                                              out ErrorResponse))
+                // An array of strings - it was read as IdToken objects, and
+                // anything in the schema's shape was refused.
+                var IdTokens = new HashSet<String>();
+
+                if (JSON.TryGetValue("idTokens", out var idTokensJSON) && idTokensJSON.Type != JTokenType.Null)
+                {
+
+                    if (idTokensJSON is not JArray idTokensArray)
+                    {
+                        ErrorResponse = "The given 'idTokens' are not an array of strings!";
+                        return false;
+                    }
+
+                    foreach (var idToken in idTokensArray)
+                    {
+
+                        if (idToken.Type != JTokenType.String || String.IsNullOrEmpty(idToken.Value<String>()))
+                        {
+                            ErrorResponse = $"The given IdToken '{idToken}' is not a string!";
+                            return false;
+                        }
+
+                        IdTokens.Add(idToken.Value<String>()!);
+
+                    }
+
+                }
+
+                #endregion
+
+                #region Parse ValidFrom     [optional]
+
+                if (JSON.ParseOptional("validFrom",
+                                       "valid from",
+                                       out DateTimeOffset? ValidFrom,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -230,7 +294,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        TariffId,
                                        TariffKind,
                                        EVSEIds,
-                                       IdTokens
+                                       IdTokens,
+                                       ValidFrom,
+                                       CustomData
                                    );
 
 
@@ -272,14 +338,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("tariffId",     TariffId.  ToString()),
                                  new JProperty("tariffKind",   TariffKind.ToString()),
 
+                           // Numbers, as the schema has them; they were written as strings.
                            EVSEIds.Any()
-                               ? new JProperty("evseIds",      new JArray(EVSEIds. Select(evseId  => evseId. ToString())))
+                               ? new JProperty("evseIds",      new JArray(EVSEIds. Select(evseId  => evseId.Value)))
                                : null,
 
                            IdTokens.Any()
-                               ? new JProperty("idTokens",     new JArray(IdTokens.Select(idToken => idToken.ToJSON(CustomIdTokenSerializer,
-                                                                                                                    CustomAdditionalInfoSerializer,
-                                                                                                                    CustomCustomDataSerializer))))
+                               ? new JProperty("idTokens",     new JArray(IdTokens))
+                               : null,
+
+                           ValidFrom.HasValue
+                               ? new JProperty("validFrom",    ValidFrom.Value.ToISO8601())
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -303,7 +376,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    TariffId.  Clone(),
                    TariffKind.Clone(),
                    EVSEIds.   Select(evseId  => evseId. Clone()),
-                   IdTokens.  Select(idToken => idToken.Clone())
+                   IdTokens.  ToArray(),
+                   ValidFrom,
+                   CustomData
                );
 
         #endregion
@@ -479,13 +554,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (c == 0)
             {
 
-                var a =                  IdTokens.OrderBy(idToken => idToken).ToArray();
-                var b = TariffAssignment.IdTokens.OrderBy(idToken => idToken).ToArray();
+                var a =                  IdTokens.OrderBy(idToken => idToken, StringComparer.Ordinal).ToArray();
+                var b = TariffAssignment.IdTokens.OrderBy(idToken => idToken, StringComparer.Ordinal).ToArray();
 
                 for (var i = 0; i < a.Length; i++)
                 {
 
-                    c = a[i].CompareTo(b[i]);
+                    c = String.CompareOrdinal(a[i], b[i]);
 
                     if (c != 0)
                         return c;
@@ -534,7 +609,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                EVSEIds.All(TariffAssignment.EVSEIds.Contains) &&
 
                IdTokens.Count().Equals(TariffAssignment.IdTokens.Count()) &&
-               IdTokens.All(TariffAssignment.IdTokens.Contains);
+               IdTokens.All(TariffAssignment.IdTokens.Contains) &&
+
+               Nullable.Equals(ValidFrom, TariffAssignment.ValidFrom) &&
+
+               base.Equals(TariffAssignment);
 
         #endregion
 

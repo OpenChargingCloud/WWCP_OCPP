@@ -376,8 +376,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Display           [optional]
 
-                if (JSON.ParseOptionalJSON("customData",
-                                           "custom data",
+                // It was read from "customData" - which also made any message
+                // with custom data unreadable, because that is not a component.
+                if (JSON.ParseOptionalJSON("display",
+                                           "display",
                                            Component.TryParse,
                                            out Component? Display,
                                            out ErrorResponse))

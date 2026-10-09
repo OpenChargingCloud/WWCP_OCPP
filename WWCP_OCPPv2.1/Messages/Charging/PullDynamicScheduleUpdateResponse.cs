@@ -72,6 +72,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         [Optional]
         public ChargingScheduleUpdate?  ChargingScheduleUpdate    { get; }
 
+        /// <summary>
+        /// An optional element providing more information about the status.
+        /// </summary>
+        [Optional]
+        public StatusInfo?      StatusInfo    { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -113,7 +119,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  CustomData?                       CustomData               = null,
 
                                                  SerializationFormats?             SerializationFormat      = null,
-                                                 CancellationToken                 CancellationToken        = default)
+                                                 CancellationToken                 CancellationToken        = default,
+                                                 StatusInfo?                       StatusInfo               = null)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -133,6 +140,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
+            this.StatusInfo = StatusInfo;
+
             this.Status                  = Status;
             this.ChargingScheduleUpdate  = ChargingScheduleUpdate;
 
@@ -141,6 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 hashCode =  this.Status.                 GetHashCode()       * 5 ^
                            (this.ChargingScheduleUpdate?.GetHashCode() ?? 0) * 3 ^
+                           (this.StatusInfo?.GetHashCode() ?? 0) * 31 ^
                             base.                        GetHashCode();
 
             }
@@ -385,6 +395,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
+                #region StatusInfo           [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "statusInfo",
+                                           OCPPv2_1.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures                [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -431,7 +455,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         null,
                                                         Signatures,
 
-                                                        CustomData
+                                                        CustomData,
+                                                        StatusInfo: StatusInfo
 
                                                     );
 
@@ -481,6 +506,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                                  CustomCustomDataSerializer))
                                : null,
 
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
+                               : null,
 
                            Signatures.Any()
                                ? new JProperty("signatures",       new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -681,6 +710,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
              ((ChargingScheduleUpdate is     null && PullDynamicScheduleUpdateResponse.ChargingScheduleUpdate is     null) ||
               (ChargingScheduleUpdate is not null && PullDynamicScheduleUpdateResponse.ChargingScheduleUpdate is not null && ChargingScheduleUpdate.Equals(PullDynamicScheduleUpdateResponse.ChargingScheduleUpdate))) &&
+
+               ((StatusInfo is null && PullDynamicScheduleUpdateResponse.StatusInfo is null) ||
+                (StatusInfo is not null && StatusInfo.Equals(PullDynamicScheduleUpdateResponse.StatusInfo))) &&
 
                base.GenericEquals(PullDynamicScheduleUpdateResponse);
 

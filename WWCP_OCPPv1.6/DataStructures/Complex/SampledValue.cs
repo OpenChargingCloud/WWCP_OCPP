@@ -446,12 +446,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (JSON.ParseOptional("context",
                                        "context",
                                        ReadingContextExtensions.Parse,
-                                       out ReadingContexts Context,
+                                       out ReadingContexts contextValue,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
+
+                ReadingContexts? Context = JSON.ContainsKey("context") ? contextValue : null;
 
                 #endregion
 
@@ -460,12 +462,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (JSON.ParseOptional("format",
                                        "format",
                                        ValueFormatExtensions.Parse,
-                                       out ValueFormats Format,
+                                       out ValueFormats formatValue,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
+
+                ValueFormats? Format = JSON.ContainsKey("format") ? formatValue : null;
 
                 #endregion
 
@@ -474,12 +478,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (JSON.ParseOptional("measurand",
                                        "measurand",
                                        MeasurandExtensions.Parse,
-                                       out Measurands Measurand,
+                                       out Measurands measurandValue,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
+
+                Measurands? Measurand = JSON.ContainsKey("measurand") ? measurandValue : null;
 
                 #endregion
 
@@ -502,12 +508,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (JSON.ParseOptional("location",
                                        "location",
                                        LocationExtensions.Parse,
-                                       out Locations Location,
+                                       out Locations locationValue,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
+
+                Locations? Location = JSON.ContainsKey("location") ? locationValue : null;
 
                 #endregion
 
@@ -516,12 +524,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (JSON.ParseOptional("unit",
                                        "unit",
                                        UnitsOfMeasureExtensions.Parse,
-                                       out UnitsOfMeasure Unit,
+                                       out UnitsOfMeasure unitValue,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
+
+                UnitsOfMeasure? Unit = JSON.ContainsKey("unit") ? unitValue : null;
 
                 #endregion
 

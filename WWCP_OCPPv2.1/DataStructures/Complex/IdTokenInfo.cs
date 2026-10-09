@@ -383,10 +383,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         return false;
                 }
 
-                var personalMessages = PersonalMessageExtra ?? MessageContents.Empty;
+                // The personal message first, because it is the one written
+                // back as "personalMessage"; the extra ones in other languages
+                // after it.
+                var personalMessages = MessageContents.Empty;
 
                 if (PersonalMessage is not null)
                     personalMessages.Set(PersonalMessage);
+
+                foreach (var extra in PersonalMessageExtra ?? MessageContents.Empty)
+                    if (extra.Language != PersonalMessage?.Language)
+                        personalMessages.Set(extra);
 
                 #endregion
 
@@ -487,11 +494,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                           CustomCustomDataSerializer))
                                : null,
 
-                           // OCPP v2.1 allows only a single language!
-                           PersonalMessage.Count > 0
-                               ? new JProperty("personalMessages",       new JArray(PersonalMessage.Select(messageContent => messageContent.ToJSON(CustomMessageContentSerializer,
-                                                                                                                                                   CustomCustomDataSerializer))))
-                               : null,
+                           // OCPP 2.1 has a single personal message here. A
+                           // "personalMessages" array was written beside it, which
+                           // a peer that validates against the schema refuses.
 
                            CustomData is not null
                                ? new JProperty("customData",             CustomData.               ToJSON(CustomCustomDataSerializer))

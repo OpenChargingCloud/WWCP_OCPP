@@ -659,16 +659,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var totalCost             = totalFixedCost + totalReservationCost + totalChargingTimeCost + totalEnergyCost + totalParkingCost;
 
+            // A price may give only one of its two values. A limit without the
+            // value leaves the cost as it is; a cost without it stays unknown.
+            static Decimal? AtLeast(Decimal? Cost, Decimal? Limit) => Cost.HasValue && Limit.HasValue ? Math.Max(Cost.Value, Limit.Value) : Cost;
+            static Decimal? AtMost (Decimal? Cost, Decimal? Limit) => Cost.HasValue && Limit.HasValue ? Math.Min(Cost.Value, Limit.Value) : Cost;
+
             if (ChargingTariff.MinCost.HasValue)
                 totalCost = new Price(
-                                Math.Max(totalCost.ExcludingTaxes, ChargingTariff.MinCost.Value.ExcludingTaxes),
-                                Math.Max(totalCost.IncludingTaxes, ChargingTariff.MinCost.Value.IncludingTaxes)
+                                AtLeast(totalCost.ExcludingTaxes, ChargingTariff.MinCost.Value.ExcludingTaxes),
+                                AtLeast(totalCost.IncludingTaxes, ChargingTariff.MinCost.Value.IncludingTaxes)
                             );
 
             if (ChargingTariff.MaxCost.HasValue)
                 totalCost = new Price(
-                                Math.Min(totalCost.ExcludingTaxes, ChargingTariff.MaxCost.Value.ExcludingTaxes),
-                                Math.Min(totalCost.IncludingTaxes, ChargingTariff.MaxCost.Value.IncludingTaxes)
+                                AtMost(totalCost.ExcludingTaxes, ChargingTariff.MaxCost.Value.ExcludingTaxes),
+                                AtMost(totalCost.IncludingTaxes, ChargingTariff.MaxCost.Value.IncludingTaxes)
                             );
 
             #endregion

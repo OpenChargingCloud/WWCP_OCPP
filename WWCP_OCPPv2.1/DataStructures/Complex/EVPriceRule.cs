@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region EnergyFee          [mandatory]
 
-                if (!JSON.ParseMandatory("EnergyFee",
+                if (!JSON.ParseMandatory("energyFee",
                                          "energy fee",
                                          out Decimal EnergyFee,
                                          out ErrorResponse))
@@ -196,9 +196,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region PowerRangeStart    [mandatory]
 
-                if (!JSON.ParseMandatory("PowerRangeStart",
+                // In W, as every power in OCPP 2.1 - it was read and written in kW.
+                if (!JSON.ParseMandatory("powerRangeStart",
                                          "power range start",
-                                         Watt.TryParseKW,
+                                         Watt.TryParse,
                                          out Watt PowerRangeStart,
                                          out ErrorResponse))
                 {
@@ -261,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("energyFee",         EnergyFee),
-                                 new JProperty("powerRangeStart",   PowerRangeStart.kW),
+                                 new JProperty("powerRangeStart",   PowerRangeStart.Value),
 
                            CustomData is not null
                                ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))

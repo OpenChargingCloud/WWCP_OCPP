@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("startPeriod",          StartPeriod.     TotalSeconds),
 
                            ChargingTariffId.HasValue
-                               ? new JProperty("chargingPeriodId",     ChargingTariffId.ToString())
+                               ? new JProperty("tariffId",             ChargingTariffId.ToString())
                                : null,
 
                            Costs.           Any()

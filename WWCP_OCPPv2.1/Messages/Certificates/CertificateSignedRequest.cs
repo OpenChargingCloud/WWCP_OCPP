@@ -81,7 +81,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Charging Station connection are implemented.
         /// </summary>
         [Optional]
-        public CertificateSigningUse?  CertificateType     { get; }
+        public CertificateSigningUse?  CertificateType             { get; }
+
+        /// <summary>
+        /// The optional identification of the SignCertificate request this
+        /// certificate was signed for.
+        /// </summary>
+        /// <remarks>
+        /// OCPP 2.1 has it, and it was neither read nor written: a charging
+        /// station could not tell which of its requests a certificate answers.
+        /// </remarks>
+        [Optional]
+        public Int32?                  SignCertificateRequestId    { get; }
 
         #endregion
 
@@ -93,7 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
         /// <param name="CertificateType">The certificate/key usage.</param>
-        /// 
+        /// <param name="SignCertificateRequestId">The optional identification of the SignCertificate request this certificate was signed for.</param>
+        ///
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         /// 
@@ -106,7 +118,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public CertificateSignedRequest(SourceRouting            Destination,
                                         OCPP.CertificateChain    CertificateChain,
-                                        CertificateSigningUse?   CertificateType       = null,
+                                        CertificateSigningUse?   CertificateType            = null,
+                                        Int32?                   SignCertificateRequestId   = null,
 
                                         IEnumerable<KeyPair>?    SignKeys              = null,
                                         IEnumerable<SignInfo>?   SignInfos             = null,
@@ -141,14 +154,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.CertificateChain  = CertificateChain;
-            this.CertificateType   = CertificateType;
+            this.CertificateChain          = CertificateChain;
+            this.CertificateType           = CertificateType;
+            this.SignCertificateRequestId  = SignCertificateRequestId;
 
             unchecked
             {
-                hashCode = this.CertificateChain.GetHashCode()       * 5 ^
-                          (this.CertificateType?.GetHashCode() ?? 0) * 3 ^
-                           base.                 GetHashCode();
+                hashCode = this.CertificateChain.          GetHashCode()       * 7 ^
+                          (this.CertificateType?.          GetHashCode() ?? 0) * 5 ^
+                          (this.SignCertificateRequestId?. GetHashCode() ?? 0) * 3 ^
+                           base.                           GetHashCode();
             }
 
         }
@@ -324,6 +339,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region SignCertificateRequestId    [optional]
+
+                if (JSON.ParseOptional("requestId",
+                                       "SignCertificate request identification",
+                                       out Int32? SignCertificateRequestId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -358,6 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                Destination,
                                                CertificateChain,
                                                CertificateType,
+                                               SignCertificateRequestId,
 
                                                null,
                                                null,
@@ -415,6 +444,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            CertificateType.HasValue
                                ? new JProperty("certificateType",    CertificateType.Value.ToString())
+                               : null,
+
+                           SignCertificateRequestId.HasValue
+                               ? new JProperty("requestId",          SignCertificateRequestId.Value)
                                : null,
 
                            Signatures.Any()
@@ -511,6 +544,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ((!CertificateType.HasValue && !CertificateSignedRequest.CertificateType.HasValue) ||
                CertificateType.HasValue &&  CertificateSignedRequest.CertificateType.HasValue && CertificateType.Value.Equals(CertificateSignedRequest.CertificateType.Value)) &&
+
+               Nullable.Equals(SignCertificateRequestId, CertificateSignedRequest.SignCertificateRequestId) &&
 
                base.     GenericEquals(CertificateSignedRequest);
 

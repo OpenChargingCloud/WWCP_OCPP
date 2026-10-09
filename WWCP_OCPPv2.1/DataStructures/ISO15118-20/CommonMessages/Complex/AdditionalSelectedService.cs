@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -31,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// An additional selected service.
     /// </summary>
-    public class AdditionalSelectedService : IEquatable<AdditionalSelectedService>
+    public class AdditionalSelectedService : ACustomData,
+                                             IEquatable<AdditionalSelectedService>
     {
 
         #region Properties
@@ -58,7 +61,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="Name">The name of the additional service.</param>
         /// <param name="Fee">The fee of the additional service.</param>
         public AdditionalSelectedService(String          Name,
-                                         RationalNumber  Fee)
+                                         RationalNumber  Fee,
+                                         CustomData?     CustomData = null)
+
+            : base(CustomData)
+
         {
 
             this.Name  = Name;
@@ -68,7 +75,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             {
 
                 hashCode = this.Name.GetHashCode() * 5 ^
-                           this.Fee. GetHashCode() * 3;
+                           this.Fee. GetHashCode() * 3 ^
+                           base.GetHashCode();
 
             }
 
@@ -195,9 +203,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 AdditionalService = new AdditionalSelectedService(
                                         Name,
-                                        Fee
+                                        Fee,
+                                        CustomData
                                     );
 
                 if (CustomAdditionalServiceParser is not null)
@@ -229,7 +253,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
             var json = JSONObject.Create(
                            new JProperty("serviceName",  Name),
-                           new JProperty("serviceFee",   Fee.ToJSON())
+                           new JProperty("serviceFee",   Fee.ToJSON()),
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
+                               : null
+
                        );
 
             return CustomAdditionalServiceSerializer is not null
@@ -312,7 +341,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             => AdditionalService is not null &&
 
                Name.Equals(AdditionalService.Name) &&
-               Fee. Equals(AdditionalService.Fee);
+               Fee. Equals(AdditionalService.Fee) &&
+
+               base.Equals(AdditionalService);
 
         #endregion
 

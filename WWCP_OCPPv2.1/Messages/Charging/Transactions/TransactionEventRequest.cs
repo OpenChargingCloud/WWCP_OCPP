@@ -136,6 +136,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public PreconditioningStatus?   PreconditioningStatus    { get; }
 
+        /// <summary>
+        /// True when the EVSE electronics are in sleep mode for this transaction (default: false).
+        /// </summary>
+        [Optional]
+        public Boolean?         EVSESleep    { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -168,6 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EVSESleep">True when the EVSE electronics are in sleep mode for this transaction (default: false).</param>
         public TransactionEventRequest(SourceRouting             Destination,
                                        TransactionEvents         EventType,
                                        DateTimeOffset            Timestamp,
@@ -196,7 +203,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        EventTracking_Id?         EventTrackingId         = null,
                                        NetworkPath?              NetworkPath             = null,
                                        SerializationFormats?     SerializationFormat     = null,
-                                       CancellationToken         CancellationToken       = default)
+                                       CancellationToken         CancellationToken       = default,
+                                       Boolean?                  EVSESleep               = null)
 
             : base(Destination,
                    nameof(TransactionEventRequest)[..^7],
@@ -216,6 +224,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    CancellationToken)
 
         {
+
+            this.EVSESleep = EVSESleep;
 
             this.EventType              = EventType;
             this.Timestamp              = Timestamp;
@@ -249,6 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                           (this.EVSE?.                 GetHashCode() ?? 0) *  7 ^
                           (this.PreconditioningStatus?.GetHashCode() ?? 0) *  5 ^
                            this.MeterValues.           CalcHashCode()      *  3 ^
+                          (this.EVSESleep?.GetHashCode() ?? 0) * 31 ^
                            base.                       GetHashCode();
 
             }
@@ -1392,6 +1403,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
+                #region EVSESleep            [optional]
+
+                if (JSON.ParseOptional("evseSleep",
+                                       "evseSleep",
+                                       out Boolean? EVSESleep,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures               [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -1450,7 +1474,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               RequestTimestamp,
                                               RequestTimeout,
                                               EventTrackingId,
-                                              NetworkPath
+                                              NetworkPath,
+                                              EVSESleep: EVSESleep
 
                                           );
 
@@ -1552,6 +1577,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            PreconditioningStatus.HasValue
                                ? new JProperty("preconditioningStatus",   PreconditioningStatus.Value.ToString())
+                               : null,
+
+                           EVSESleep.HasValue
+                               ? new JProperty("evseSleep",   EVSESleep.Value)
                                : null,
 
                            Signatures.Any()
@@ -1671,6 +1700,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                MeterValues.Count().Equals(TransactionEventRequest.MeterValues.Count()) &&
                MeterValues.All(energyTransferMode => TransactionEventRequest.MeterValues.Contains(energyTransferMode)) &&
+
+               Nullable.Equals(EVSESleep, TransactionEventRequest.EVSESleep) &&
 
                base.    GenericEquals(TransactionEventRequest);
 

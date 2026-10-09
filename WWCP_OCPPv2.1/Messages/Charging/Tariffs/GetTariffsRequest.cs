@@ -253,16 +253,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetTariffsRequest = null;
 
-                #region EVSEId        [optional]
+                #region EVSEId        [mandatory]
 
-                if (JSON.ParseOptional("evseId",
-                                       "EVSE identification",
-                                       EVSE_Id.TryParse,
-                                       out EVSE_Id? EVSEId,
-                                       out ErrorResponse))
+                // Required in OCPP 2.1 - 0 for every EVSE - and it was read as
+                // optional.
+                if (!JSON.ParseMandatory("evseId",
+                                         "EVSE identification",
+                                         EVSE_Id.TryParse,
+                                         out EVSE_Id EVSEId,
+                                         out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
@@ -353,9 +354,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("@context",     DefaultJSONLDContext.ToString())
                                : null,
 
-                           EVSEId.HasValue
-                               ? new JProperty("evseId",       EVSEId.        Value.Value)
-                               : null,
+                           // Always: the schema requires it, and no EVSE is all of them, 0.
+                                 new JProperty("evseId",       EVSEId?.Value ?? 0),
 
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,

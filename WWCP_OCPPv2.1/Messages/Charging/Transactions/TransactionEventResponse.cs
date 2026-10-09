@@ -100,6 +100,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         [Optional]
         public MessageContent?     UpdatedPersonalMessage    { get; }
 
+        /// <summary>
+        /// Up to four additional personal messages in other languages or formats.
+        /// </summary>
+        [Optional]
+        public IEnumerable<MessageContent>  UpdatedPersonalMessageExtra    { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -145,7 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         CustomData?              CustomData               = null,
 
                                         SerializationFormats?    SerializationFormat      = null,
-                                        CancellationToken        CancellationToken        = default)
+                                        CancellationToken        CancellationToken        = default,
+                                        IEnumerable<MessageContent>?  UpdatedPersonalMessageExtra  = null)
 
             : base(Request,
                    Result ?? Result.OK(),
@@ -170,6 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.IdTokenInfo             = IdTokenInfo;
             this.TransactionLimits       = TransactionLimits;
             this.UpdatedPersonalMessage  = UpdatedPersonalMessage;
+            this.UpdatedPersonalMessageExtra = UpdatedPersonalMessageExtra?.Distinct() ?? [];
 
             unchecked
             {
@@ -179,6 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            (this.IdTokenInfo?.           GetHashCode() ?? 0) *  7 ^
                            (this.TransactionLimits?.     GetHashCode() ?? 0) *  5 ^
                            (this.UpdatedPersonalMessage?.GetHashCode() ?? 0) *  3 ^
+                            this.UpdatedPersonalMessageExtra.CalcHashCode() * 17 ^
                             base.                        GetHashCode();
 
             }
@@ -591,6 +600,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region UpdatedPersonalMessageExtra    [optional]
+
+                if (JSON.ParseOptionalHashSet("updatedPersonalMessageExtra",
+                                              "updated personal message extra",
+                                              MessageContent.TryParse,
+                                              out HashSet<MessageContent> UpdatedPersonalMessageExtra,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures                [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -639,7 +662,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                null,
                                                Signatures,
 
-                                               CustomData
+                                               CustomData,
+
+                                               UpdatedPersonalMessageExtra: UpdatedPersonalMessageExtra
 
                                            );
 
@@ -710,6 +735,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            UpdatedPersonalMessage is not null
                                ? new JProperty("updatedPersonalMessage",   UpdatedPersonalMessage.ToJSON(CustomMessageContentSerializer,
                                                                                                          CustomCustomDataSerializer))
+                               : null,
+
+                           UpdatedPersonalMessageExtra.Any()
+                               ? new JProperty("updatedPersonalMessageExtra",   new JArray(UpdatedPersonalMessageExtra.Select(messageContent => messageContent.ToJSON(CustomMessageContentSerializer,
+                                                                                                                                                                  CustomCustomDataSerializer))))
                                : null,
 
                            TransactionLimits is not null
@@ -924,6 +954,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
              ((UpdatedPersonalMessage is     null &&  TransactionEventResponse.UpdatedPersonalMessage is     null) ||
                UpdatedPersonalMessage is not null &&  TransactionEventResponse.UpdatedPersonalMessage is not null && UpdatedPersonalMessage.Equals(TransactionEventResponse.UpdatedPersonalMessage)) &&
+
+               UpdatedPersonalMessageExtra.ToHashSet().SetEquals(TransactionEventResponse.UpdatedPersonalMessageExtra) &&
 
                base.GenericEquals(TransactionEventResponse);
 

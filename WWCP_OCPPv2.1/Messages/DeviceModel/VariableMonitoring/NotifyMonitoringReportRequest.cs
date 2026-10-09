@@ -154,10 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            if (!MonitoringData.Any())
-                throw new ArgumentException("The given enumeration of monitoring data must not be empty!",
-                                            nameof(MonitoringData));
-
+            // May be empty: "monitor" is optional in OCPP 2.1.
             this.NotifyMonitoringReportRequestId  = NotifyMonitoringReportRequestId;
             this.SequenceNumber                   = SequenceNumber;
             this.GeneratedAt                      = GeneratedAt;
@@ -535,15 +532,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region MonitoringData                     [mandatory]
+                #region MonitoringData                     [optional]
 
-                if (!JSON.ParseMandatoryHashSet("monitor",
-                                                "monitoring data",
-                                                OCPPv2_1.MonitoringData.TryParse,
-                                                out HashSet<MonitoringData> MonitoringData,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("monitor",
+                                              "monitoring data",
+                                              OCPPv2_1.MonitoringData.TryParse,
+                                              out HashSet<MonitoringData> MonitoringData,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -665,12 +663,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("seqNo",         SequenceNumber),
                                  new JProperty("generatedAt",   GeneratedAt.                    ToISO8601()),
 
-                                 new JProperty("monitor",       new JArray(MonitoringData.Select(monitoringData => monitoringData.ToJSON(CustomMonitoringDataSerializer,
-                                                                                                                                         CustomComponentSerializer,
-                                                                                                                                         CustomEVSESerializer,
-                                                                                                                                         CustomVariableSerializer,
-                                                                                                                                         CustomVariableMonitoringSerializer,
-                                                                                                                                         CustomCustomDataSerializer)))),
+                           MonitoringData.Any()
+                               ? new JProperty("monitor",       new JArray(MonitoringData.Select(monitoringData => monitoringData.ToJSON(CustomMonitoringDataSerializer,
+                                                                                                                                           CustomComponentSerializer,
+                                                                                                                                           CustomEVSESerializer,
+                                                                                                                                           CustomVariableSerializer,
+                                                                                                                                           CustomVariableMonitoringSerializer,
+                                                                                                                                           CustomCustomDataSerializer))))
+                               : null,
 
                            ToBeContinued.HasValue
                                ? new JProperty("tbc",           ToBeContinued.Value)

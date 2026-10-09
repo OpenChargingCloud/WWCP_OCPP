@@ -203,8 +203,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse URLs        [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("text",
-                                                "text",
+                // Written as "urls"; "text" is still read from older peers.
+                if (!JSON.ParseMandatoryHashSet(JSON.ContainsKey("urls") ? "urls" : "text",
+                                                "image URLs",
                                                 URL.TryParse,
                                                 out HashSet<URL> URLs,
                                                 out ErrorResponse))

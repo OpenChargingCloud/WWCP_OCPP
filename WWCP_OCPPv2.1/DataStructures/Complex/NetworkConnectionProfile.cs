@@ -39,10 +39,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The OCPP version to be used.
+        /// The optional OCPP version to be used.
         /// </summary>
-        [Mandatory]
-        public OCPPVersion         Version              { get; }
+        /// <remarks>
+        /// Optional in OCPP 2.1, and it was required here: a profile without
+        /// one, which the schema allows, was refused.
+        /// </remarks>
+        [Optional]
+        public OCPPVersion?        Version              { get; }
+
+        /// <summary>
+        /// The optional identity (security profile 1 and 2 only) the charging
+        /// station uses at the CSMS, when it differs from the one it is
+        /// configured with.
+        /// </summary>
+        [Optional]
+        public String?             Identity             { get; }
+
+        /// <summary>
+        /// The optional basic authentication password (security profile 1 and
+        /// 2 only) for this connection.
+        /// </summary>
+        [Optional]
+        public String?             BasicAuthPassword    { get; }
 
         /// <summary>
         /// The OCPP transport protocol to be used.
@@ -103,22 +122,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="NetworkInterface">The network interface to use when connecting to the central service (CSMS).</param>
         /// <param name="VPNConfiguration">An optional VPN configuration to use when connecting to the central service (CSMS).</param>
         /// <param name="APNConfiguration">An optional APN configuration to use when connecting to the central service (CSMS).</param>
+        /// <param name="Identity">The optional identity (security profile 1 and 2 only) the charging station uses at the CSMS.</param>
+        /// <param name="BasicAuthPassword">The optional basic authentication password (security profile 1 and 2 only).</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public NetworkConnectionProfile(OCPPVersion         Version,
+        public NetworkConnectionProfile(OCPPVersion?        Version,
                                         TransportProtocols  Transport,
                                         URL                 CentralServiceURL,
                                         TimeSpan            MessageTimeout,
                                         SecurityProfiles    SecurityProfile,
                                         NetworkInterface    NetworkInterface,
-                                        VPNConfiguration?   VPNConfiguration   = null,
-                                        APNConfiguration?   APNConfiguration   = null,
-                                        CustomData?         CustomData         = null)
+                                        VPNConfiguration?   VPNConfiguration    = null,
+                                        APNConfiguration?   APNConfiguration    = null,
+                                        String?             Identity            = null,
+                                        String?             BasicAuthPassword   = null,
+                                        CustomData?         CustomData          = null)
 
             : base(CustomData)
 
         {
 
             this.Version            = Version;
+            this.Identity           = Identity;
+            this.BasicAuthPassword  = BasicAuthPassword;
             this.Transport          = Transport;
             this.CentralServiceURL  = CentralServiceURL;
             this.MessageTimeout     = MessageTimeout;
@@ -249,16 +274,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 NetworkConnectionProfile = default;
 
-                #region Version              [mandatory]
+                #region Version              [optional]
 
-                if (!JSON.ParseMandatory("ocppVersion",
-                                         "OCPP version",
-                                         OCPPVersion.TryParse,
-                                         out OCPPVersion Version,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("ocppVersion",
+                                       "OCPP version",
+                                       OCPPVersion.TryParse,
+                                       out OCPPVersion? Version,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
+
+                #endregion
+
+                #region Identity             [optional]
+
+                var Identity           = JSON.GetString("identity");
+
+                #endregion
+
+                #region BasicAuthPassword    [optional]
+
+                var BasicAuthPassword  = JSON.GetString("basicAuthPassword");
 
                 #endregion
 
@@ -378,6 +416,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                NetworkInterface,
                                                VPNConfiguration,
                                                APNConfiguration,
+                                               Identity,
+                                               BasicAuthPassword,
                                                CustomData
                                            );
 
@@ -416,7 +456,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("ocppVersion",       Version.          ToString()),
+                           Version.HasValue
+                               ? new JProperty("ocppVersion",       Version.Value.    ToString())
+                               : null,
+
                                  new JProperty("ocppTransport",     Transport.        AsText()),
                                  new JProperty("ocppCsmsUrl",       CentralServiceURL.ToString()),
                                  new JProperty("messageTimeout",    (UInt32) Math.Round(MessageTimeout.TotalSeconds, 0)),
@@ -431,6 +474,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            APNConfiguration is not null
                                ? new JProperty("apn",               APNConfiguration. ToJSON(CustomAPNConfigurationSerializer,
                                                                                              CustomCustomDataSerializer))
+                               : null,
+
+                           Identity is not null
+                               ? new JProperty("identity",          Identity)
+                               : null,
+
+                           BasicAuthPassword is not null
+                               ? new JProperty("basicAuthPassword", BasicAuthPassword)
                                : null,
 
                            CustomData is not null
@@ -518,7 +569,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => NetworkConnectionProfile is not null &&
 
-               Version.          Equals(NetworkConnectionProfile.Version)           &&
+               Nullable.Equals(Version, NetworkConnectionProfile.Version)           &&
+               String.Equals(Identity,          NetworkConnectionProfile.Identity,          StringComparison.Ordinal) &&
+               String.Equals(BasicAuthPassword, NetworkConnectionProfile.BasicAuthPassword, StringComparison.Ordinal) &&
                Transport.        Equals(NetworkConnectionProfile.Transport)         &&
                CentralServiceURL.Equals(NetworkConnectionProfile.CentralServiceURL) &&
                MessageTimeout.   Equals(NetworkConnectionProfile.MessageTimeout)    &&
@@ -547,7 +600,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return Version.          GetHashCode()       * 23 ^
+                return (Version?.         GetHashCode() ?? 0) * 23 ^
+                      (Identity?.         GetHashCode() ?? 0) * 31 ^
                        Transport.        GetHashCode()       * 19 ^
                        CentralServiceURL.GetHashCode()       * 17 ^
                        MessageTimeout.   GetHashCode()       * 13 ^
@@ -573,7 +627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => String.Concat(
 
                    CentralServiceURL,
-                   " (", Version.        ToString(),
+                   " (", Version?.       ToString() ?? "any OCPP version",
                    ", ", SecurityProfile.AsText(),
                    ") ",
 

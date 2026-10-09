@@ -78,6 +78,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         [Optional]
         public IEnumerable<URL>       DownloadLocations                             { get; }
 
+        /// <summary>
+        /// The optional element providing more information about the status.
+        /// </summary>
+        [Optional]
+        public StatusInfo?      StatusInfo    { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -99,6 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="StatusInfo">The optional element providing more information about the status.</param>
         public PublishFirmwareStatusNotificationRequest(SourceRouting            Destination,
                                                         PublishFirmwareStatus    Status,
                                                         Int32?                   PublishFirmwareStatusNotificationRequestId,
@@ -116,7 +123,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                         EventTracking_Id?        EventTrackingId       = null,
                                                         NetworkPath?             NetworkPath           = null,
                                                         SerializationFormats?    SerializationFormat   = null,
-                                                        CancellationToken        CancellationToken     = default)
+                                                        CancellationToken        CancellationToken     = default,
+                                                        StatusInfo?              StatusInfo            = null)
 
             : base(Destination,
                    nameof(PublishFirmwareStatusNotificationRequest)[..^7],
@@ -137,6 +145,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
+            this.StatusInfo = StatusInfo;
+
             this.Status                                      = Status;
             this.PublishFirmwareStatusNotificationRequestId  = PublishFirmwareStatusNotificationRequestId;
             this.DownloadLocations                           = DownloadLocations?.Distinct() ?? Array.Empty<URL>();
@@ -147,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 hashCode = this.Status.                                     GetHashCode()       * 7 ^
                           (this.PublishFirmwareStatusNotificationRequestId?.GetHashCode() ?? 0) * 5 ^
                            this.DownloadLocations.                          CalcHashCode()      * 3 ^
+                          (this.StatusInfo?.GetHashCode() ?? 0) * 31 ^
                            base.                                            GetHashCode();
 
             }
@@ -371,6 +382,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region StatusInfo           [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "statusInfo",
+                                           OCPPv2_1.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures                                    [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -417,7 +442,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                RequestTimestamp,
                                                                RequestTimeout,
                                                                EventTrackingId,
-                                                               NetworkPath
+                                                               NetworkPath,
+                                                               StatusInfo: StatusInfo
 
                                                            );
 
@@ -467,6 +493,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            DownloadLocations.Any()
                                ? new JProperty("location",     new JArray(DownloadLocations.Select(downloadLocation => downloadLocation.ToString())))
+                               : null,
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
@@ -564,6 +594,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                DownloadLocations.Count().Equals(PublishFirmwareStatusNotificationRequest.DownloadLocations.Count())     &&
                DownloadLocations.All(data => PublishFirmwareStatusNotificationRequest.DownloadLocations.Contains(data)) &&
+
+               ((StatusInfo is null && PublishFirmwareStatusNotificationRequest.StatusInfo is null) ||
+                (StatusInfo is not null && StatusInfo.Equals(PublishFirmwareStatusNotificationRequest.StatusInfo))) &&
 
                base.GenericEquals(PublishFirmwareStatusNotificationRequest);
 

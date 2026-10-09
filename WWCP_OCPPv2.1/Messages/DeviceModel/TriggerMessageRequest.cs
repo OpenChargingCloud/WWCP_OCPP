@@ -452,6 +452,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                                  CustomCustomDataSerializer))
                                : null,
 
+                           // It was read and never written.
+                           CustomTrigger is not null
+                               ? new JProperty("customTrigger",      CustomTrigger)
+                               : null,
+
                            Signatures.Any()
                                ? new JProperty("signatures",         new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                                 CustomCustomDataSerializer))))

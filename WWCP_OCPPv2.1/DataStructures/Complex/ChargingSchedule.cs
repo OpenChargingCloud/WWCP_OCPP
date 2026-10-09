@@ -497,8 +497,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region LimitBeyondSoC             [optional]
 
-                if (JSON.ParseOptionalJSON("limitBeyondSoC",
-                                           "limit beyond state-of-charge",
+                // "limitAtSoC", as OCPP 2.1 Edition 2 names it - read and
+                // written as "limitBeyondSoC".
+                if (JSON.ParseOptionalJSON("limitAtSoC",
+                                           "limit at state-of-charge",
                                            OCPPv2_1.LimitAtSoC.TryParse,
                                            out LimitAtSoC? LimitBeyondSoC,
                                            out ErrorResponse))
@@ -724,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            LimitAtSoC is not null
-                               ? new JProperty("limitBeyondSoC",           LimitAtSoC.       ToJSON(CustomLimitAtSoCSerializer,
+                               ? new JProperty("limitAtSoC",               LimitAtSoC.       ToJSON(CustomLimitAtSoCSerializer,
                                                                                                         CustomCustomDataSerializer))
                                : null,
 

@@ -553,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse ChargingTariffs             [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("chargingTariffs",
+                if (!JSON.ParseMandatoryHashSet(JSON.ContainsKey("tariffs") ? "tariffs" : "chargingTariffs",
                                                 "charging tariffs",
                                                 Tariff.TryParse,
                                                 out HashSet<Tariff> ChargingTariffs,
@@ -673,7 +673,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse ValidEVSEs                  [optional]
 
-                if (JSON.ParseOptionalHashSet("validEVSEs",
+                if (JSON.ParseOptionalHashSet(JSON.ContainsKey("validEVSEIds") ? "validEVSEIds" : "validEVSEs",
                                               "valid EVSE identifications",
                                               GlobalEVSE_Id.TryParse,
                                               out HashSet<GlobalEVSE_Id> ValidEVSEs,
@@ -715,7 +715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse InvalidEVSEs                [optional]
 
-                if (JSON.ParseOptionalHashSet("invalidEVSEs",
+                if (JSON.ParseOptionalHashSet(JSON.ContainsKey("invalidEVSEIds") ? "invalidEVSEIds" : "invalidEVSEs",
                                               "invalid EVSE identifications",
                                               GlobalEVSE_Id.TryParse,
                                               out HashSet<GlobalEVSE_Id> InvalidEVSEs,
@@ -728,26 +728,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                #region Parse EVSEKind                    [mandatory]
+                #region Parse EVSEKind                    [optional]
 
-                if (!JSON.ParseMandatory("EVSEKind",
-                                         "EVSE kind",
-                                         EVSEKindsExtensions.TryParse,
-                                         out EVSEKinds EVSEKind,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional(JSON.ContainsKey("evseKind") ? "evseKind" : "EVSEKind",
+                                       "EVSE kind",
+                                       EVSEKindsExtensions.TryParse,
+                                       out EVSEKinds? EVSEKind,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
                 #region Parse MaxKWh                      [optional]
 
-                if (JSON.ParseOptional("maxKWh",
-                                       "max KWh",
+                if (JSON.ParseOptional(JSON.ContainsKey("maxEnergy") ? "maxEnergy" : "maxKWh",
+                                       "max energy",
                                        out WattHour? MaxKWh,
                                        out ErrorResponse,
-                                       Multiplicator: 1000))
+                                       Multiplicator: JSON.ContainsKey("maxEnergy") ? 0 : 3))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -757,11 +758,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse MaxKW                       [optional]
 
-                if (JSON.ParseOptional("MaxKW",
-                                       "max KW",
+                if (JSON.ParseOptional(JSON.ContainsKey("maxPower") ? "maxPower" : "MaxKW",
+                                       "max power",
                                        out Watt? MaxKW,
                                        out ErrorResponse,
-                                       Multiplicator: 1000))
+                                       Multiplicator: JSON.ContainsKey("maxPower") ? 0 : 3))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -771,11 +772,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse MaxCurrent                  [optional]
 
-                if (JSON.ParseOptional("MaxCurrent",
+                if (JSON.ParseOptional(JSON.ContainsKey("maxCurrent") ? "maxCurrent" : "MaxCurrent",
                                        "max current",
                                        out Ampere? MaxCurrent,
-                                       out ErrorResponse,
-                                       Multiplicator: 1000))
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -787,12 +787,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxDuration",
                                        "max duration",
-                                       out TimeSpan? MaxDuration,
+                                       out Decimal? MaxDurationSeconds,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
+
+                TimeSpan? MaxDuration = MaxDurationSeconds.HasValue
+                                            ? TimeSpan.FromSeconds((Double) MaxDurationSeconds.Value)
+                                            : null;
 
                 #endregion
 
@@ -826,7 +830,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse MultipleSessions            [mandatory]
 
-                if (!JSON.ParseMandatory("multipleSessions",
+                if (!JSON.ParseMandatory(JSON.ContainsKey("multiUsage") ? "multiUsage" : "multipleSessions",
                                          "multiple sessions",
                                          ChargingTicketMultipleSessionsExtensions.TryParse,
                                          out ChargingTicketMultipleSessions MultipleSessions,
@@ -865,7 +869,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse MeterValueSignatureMode     [mandatory]
 
-                if (!JSON.ParseMandatory("MeterValueSignatureMode",
+                if (!JSON.ParseMandatory(JSON.ContainsKey("meterValueSignatures") ? "meterValueSignatures" : "MeterValueSignatureMode",
                                          "meter value signature mode",
                                          ChargingTicketMeterValueSignatureModesExtensions.TryParse,
                                          out ChargingTicketMeterValueSignatureModes MeterValueSignatureMode,
@@ -878,7 +882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse E2ECommunicationSecurity    [mandatory]
 
-                if (!JSON.ParseMandatory("evDriverCommunication",
+                if (!JSON.ParseMandatory(JSON.ContainsKey("e2eCommunicationSecurity") ? "e2eCommunicationSecurity" : "evDriverCommunication",
                                          "ev driver communication",
                                          ChargingTicketEVDriverCommunicationsExtensions.TryParse,
                                          out ChargingTicketE2ECommunicationSecurity E2ECommunicationSecurity,
@@ -1025,7 +1029,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("id",                         Id.                      ToString()),
 
-                                 new JProperty("providerId",                                          ProviderId),
+                                 new JProperty("providerId",                 ProviderId.              ToString()),
                                  new JProperty("providerName",               ProviderName.            ToJSON()),
 
                            ProviderURL.HasValue
@@ -1057,7 +1061,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("created",                    Created.                 ToISO8601()),
                                  new JProperty("notBefore",                  NotBefore.               ToISO8601()),
-                                 new JProperty("notAftere",                  NotAfter.                ToISO8601()),
+                                 new JProperty("notAfter",                   NotAfter.                ToISO8601()),
 
                            ValidOperators.         Any()
                                ? new JProperty("validOperators",             new JArray(ValidOperators.         Select(operatorId        => operatorId.       ToString())))
@@ -1105,7 +1109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            MaxDuration.HasValue
-                               ? new JProperty("maxDuration",                MaxDuration.       Value.TotalMinutes)
+                               ? new JProperty("maxDuration",                (Decimal) MaxDuration.Value.TotalSeconds)
                                : null,
 
                            MaxPrice.HasValue

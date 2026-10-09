@@ -224,9 +224,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 NotifyWebPaymentStartedRequest = null;
 
+                // ToJSON() writes a DataTransfer, which carries the fields in
+                // its "data"; a bare object of the fields is still read.
+                var data = JSON["data"] as JObject ?? JSON;
+
                 #region EVSEId        [mandatory]
 
-                if (!JSON.ParseMandatory("evseId",
+                if (!data.ParseMandatory("evseId",
                                          "EVSE identification",
                                          OCPPv2_1.EVSE_Id.TryParse,
                                          out OCPPv2_1.EVSE_Id evseId,
@@ -239,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #region Timeout       [mandatory]
 
-                if (!JSON.ParseMandatory("timeout",
+                if (!data.ParseMandatory("timeout",
                                          "timeout",
                                          out TimeSpan timeout,
                                          out ErrorResponse))

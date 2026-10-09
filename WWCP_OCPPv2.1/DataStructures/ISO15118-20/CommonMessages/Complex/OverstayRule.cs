@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 
 #endregion
@@ -33,7 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// <summary>
     /// The overstay rule.
     /// </summary>
-    public class OverstayRule : IEquatable<OverstayRule>
+    public class OverstayRule : ACustomData,
+                                IEquatable<OverstayRule>
     {
 
         #region Properties
@@ -76,7 +79,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         public OverstayRule(TimeSpan        StartTime,
                             TimeSpan        Period,
                             RationalNumber  Fee,
-                            String?         Description   = null)
+                            String?         Description   = null,
+                            CustomData?     CustomData    = null)
+
+            : base(CustomData)
+
         {
 
             this.StartTime    = StartTime;
@@ -245,11 +252,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 #endregion
 
 
+                #region Parse CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 OverstayRule = new OverstayRule(
                                    StartTime,
                                    Period,
                                    Fee,
-                                   Description
+                                   Description,
+                                   CustomData
                                );
 
                 if (CustomOverstayRuleParser is not null)
@@ -282,11 +305,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             var json = JSONObject.Create(
 
                                  new JProperty("startTime",    (UInt32) Math.Round(StartTime.TotalSeconds, 0)),
-                                 new JProperty("period",       (UInt32) Math.Round(Period.   TotalSeconds, 0)),
-                                 new JProperty("fee",          Fee.ToJSON()),
+                                 new JProperty("overstayFeePeriod",         (UInt32) Math.Round(Period.   TotalSeconds, 0)),
+                                 new JProperty("overstayFee",               Fee.ToJSON()),
 
                            Description.IsNotNullOrEmpty()
-                               ? new JProperty("description",  Description)
+                               ? new JProperty("overstayRuleDescription",   Description)
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON())
                                : null
 
                        );
@@ -374,7 +401,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                Period.   Equals(OverstayRule.Period)    &&
                Fee.      Equals(OverstayRule.Fee)       &&
 
-               String.   Equals(Description, OverstayRule.Description);
+               String.   Equals(Description, OverstayRule.Description) &&
+
+               base.Equals(OverstayRule);
 
         #endregion
 

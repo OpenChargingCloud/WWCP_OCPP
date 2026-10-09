@@ -156,16 +156,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UnitsOfMeasure = default;
 
-                #region Unit          [mandatory]
+                #region Unit          [optional]
 
-                if (!JSON.ParseMandatory("unit",
-                                         "unit measure",
-                                         UnitOfMeasure.TryParse,
-                                         out UnitOfMeasure Unit,
-                                         out ErrorResponse))
+                // Optional in OCPP 2.1, "Wh" where it is absent. It was required.
+                if (JSON.ParseOptional("unit",
+                                       "unit measure",
+                                       UnitOfMeasure.TryParse,
+                                       out UnitOfMeasure Unit,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
+                else
+                    Unit = UnitOfMeasure.Wh;
 
                 #endregion
 

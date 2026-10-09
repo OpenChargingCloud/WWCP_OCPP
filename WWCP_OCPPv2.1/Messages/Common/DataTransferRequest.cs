@@ -109,7 +109,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    EventTracking_Id?        EventTrackingId       = null,
                                    NetworkPath?             NetworkPath           = null,
                                    SerializationFormats?    SerializationFormat   = null,
-                                   CancellationToken        CancellationToken     = default)
+                                   CancellationToken        CancellationToken     = default,
+                                   CustomData?              CustomData            = null)
 
             : base(Destination,
                    nameof(DataTransferRequest)[..^7],
@@ -118,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    SignInfos,
                    Signatures,
 
-                   null,
+                   CustomData,
 
                    RequestId,
                    RequestTimestamp,
@@ -322,6 +323,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 DataTransferRequest = new DataTransferRequest(
 
                                           Destination,
@@ -337,7 +352,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           RequestTimestamp,
                                           RequestTimeout,
                                           EventTrackingId,
-                                          NetworkPath
+                                          NetworkPath,
+                                          CustomData: CustomData
 
                                       );
 
@@ -608,7 +624,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    EventTracking_Id?        EventTrackingId       = null,
                                    NetworkPath?             NetworkPath           = null,
                                    SerializationFormats?    SerializationFormat   = null,
-                                   CancellationToken        CancellationToken     = default)
+                                   CancellationToken        CancellationToken     = default,
+                                   CustomData?              CustomData            = null)
 
             : base(Destination,
                    nameof(DataTransferRequest)[..^7],
@@ -617,7 +634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    SignInfos,
                    Signatures,
 
-                   null,
+                   CustomData,
 
                    RequestId,
                    RequestTimestamp,
@@ -821,6 +838,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 DataTransferRequest = new DataTransferRequest(
 
                                           Destination,
@@ -836,7 +867,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           RequestTimestamp,
                                           RequestTimeout,
                                           EventTrackingId,
-                                          NetworkPath
+                                          NetworkPath,
+                                          CustomData: CustomData
 
                                       );
 

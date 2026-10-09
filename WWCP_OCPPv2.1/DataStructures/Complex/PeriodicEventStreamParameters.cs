@@ -42,13 +42,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The number of items to be sent together in stream.
         /// </summary>
-        [Mandatory]
-        public UInt32     MaxItems    { get; }
+        [Optional]
+        public UInt32?    MaxItems    { get; }
 
         /// <summary>
         /// The optional time after which stream data is sent.
         /// </summary>
-        [Mandatory]
+        [Optional]
         public TimeSpan?  MaxTime     { get; }
 
         #endregion
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MaxItems">The number of items to be sent together in stream.</param>
         /// <param name="MaxTime">The optional time after which stream data is sent.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public PeriodicEventStreamParameters(UInt32       MaxItems,
+        public PeriodicEventStreamParameters(UInt32?      MaxItems,
                                              TimeSpan?    MaxTime,
                                              CustomData?  CustomData   = null)
 
@@ -164,14 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 PeriodicEventStreamParameters = default;
 
-                #region MaxItems      [mandatory]
+                #region MaxItems      [optional]
 
-                if (!JSON.ParseMandatory("values",
-                                         "values (max items)",
-                                         out UInt32 MaxItems,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("values",
+                                       "values (max items)",
+                                       out UInt32? MaxItems,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -241,7 +242,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("values",       MaxItems),
+                           MaxItems.HasValue
+                               ? new JProperty("values",       MaxItems.Value)
+                               : null,
 
                            MaxTime.HasValue
                                ? new JProperty("interval",     (UInt32) MaxTime.Value.TotalSeconds)
@@ -332,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => PeriodicEventStreamParameters is not null &&
 
-               MaxItems.Equals(PeriodicEventStreamParameters.MaxItems) &&
+               Nullable.Equals(MaxItems, PeriodicEventStreamParameters.MaxItems) &&
 
             ((!MaxTime.HasValue && !PeriodicEventStreamParameters.MaxTime.HasValue) ||
                MaxTime.HasValue &&  PeriodicEventStreamParameters.MaxTime.HasValue && MaxTime.Value.Equals(PeriodicEventStreamParameters.MaxTime.Value)) &&
@@ -353,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return MaxItems.GetHashCode()       * 5 ^
+                return (MaxItems?.GetHashCode() ?? 0) * 5 ^
                       (MaxTime?.GetHashCode() ?? 0) * 3 ^
                        base.    GetHashCode(); ;
 
@@ -371,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   $"{MaxItems} items",
+                   $"{MaxItems?.ToString() ?? "-"} items",
 
                    MaxTime.HasValue
                        ? $", {MaxTime.Value.TotalSeconds} seconds"

@@ -41,33 +41,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// High value for return to normal operation after a grid event, in absolute value.
-        /// This value adopts the same unit as defined by yUnit
+        /// The optional high value for return to normal operation after a grid
+        /// event, in absolute value. This value adopts the same unit as defined
+        /// by yUnit.
         /// </summary>
-        [Mandatory]
-        public Decimal   High        { get; }
+        [Optional]
+        public Decimal?   High        { get; }
 
         /// <summary>
-        /// Low value for return to normal operation after a grid event, in absolute value.
-        /// This value adopts the same unit as defined by yUnit.
+        /// The optional low value for return to normal operation after a grid
+        /// event, in absolute value. This value adopts the same unit as defined
+        /// by yUnit.
         /// </summary>
-        [Mandatory]
-        public Decimal   Low         { get; }
+        [Optional]
+        public Decimal?   Low         { get; }
 
         /// <summary>
-        /// Delay in seconds, once grid parameter within Low and High,
-        /// for the EV to return to normal operation after a grid event.
+        /// The optional delay, once grid parameter within Low and High, for the
+        /// EV to return to normal operation after a grid event.
         /// </summary>
-        [Mandatory]
-        public TimeSpan  Delay       { get; }
+        [Optional]
+        public TimeSpan?  Delay       { get; }
 
         /// <summary>
-        /// The data value of the Y-axis (dependent) variable, depending on the DER unit of the curve.
-        /// If _y_ is power factor, then a positive value means DER is absorbing reactive power (under-excited),
-        /// a negative value when DER is injecting reactive power (over-excited).
+        /// The optional default rate of change (ramp rate %/s) for the EV to
+        /// return to normal operation after a grid event.
         /// </summary>
-        [Mandatory]
-        public Decimal   Gradient    { get; }
+        [Optional]
+        public Decimal?   Gradient    { get; }
 
         #endregion
 
@@ -76,15 +77,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new hysteresis.
         /// </summary>
-        /// <param name="High">High value for return to normal operation after a grid event, in absolute value.</param>
-        /// <param name="Low">Low value for return to normal operation after a grid event, in absolute value.</param>
-        /// <param name="Delay">Delay in seconds, once grid parameter within Low and High, for the EV to return to normal operation after a grid event.</param>
-        /// <param name="Gradient">The data value of the Y-axis (dependent) variable, depending on the DER unit of the curve.</param>
-        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param></param>
-        public Hysteresis(Decimal      High,
-                          Decimal      Low,
-                          TimeSpan     Delay,
-                          Decimal      Gradient,
+        /// <param name="High">The optional high value for return to normal operation after a grid event, in absolute value.</param>
+        /// <param name="Low">The optional low value for return to normal operation after a grid event, in absolute value.</param>
+        /// <param name="Delay">The optional delay, once grid parameter within Low and High, for the EV to return to normal operation after a grid event.</param>
+        /// <param name="Gradient">The optional default rate of change (ramp rate %/s) for the EV to return to normal operation after a grid event.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        public Hysteresis(Decimal?     High         = null,
+                          Decimal?     Low          = null,
+                          TimeSpan?    Delay        = null,
+                          Decimal?     Gradient     = null,
                           CustomData?  CustomData   = null)
 
             : base(CustomData)
@@ -99,11 +100,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = this.High.    GetHashCode() * 11 ^
-                           this.Low.     GetHashCode() *  7 ^
-                           this.Delay.   GetHashCode() *  5 ^
-                           this.Gradient.GetHashCode() *  3 ^
-                           base.         GetHashCode();
+                hashCode = (this.High?.    GetHashCode() ?? 0) * 11 ^
+                           (this.Low?.     GetHashCode() ?? 0) *  7 ^
+                           (this.Delay?.   GetHashCode() ?? 0) *  5 ^
+                           (this.Gradient?.GetHashCode() ?? 0) *  3 ^
+                           base.           GetHashCode();
 
             }
 
@@ -209,50 +210,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 Hysteresis = default;
 
-                #region High          [mandatory]
+                // The schema's names, and every one of them optional: these
+                // were read as "high", "low", "delay" and "gradient", and
+                // required.
 
-                if (!JSON.ParseMandatory("high",
-                                         "high",
-                                         out Decimal High,
-                                         out ErrorResponse))
+                #region High          [optional]
+
+                if (JSON.ParseOptional("hysteresisHigh",
+                                       "hysteresis high",
+                                       out Decimal? High,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region Low           [mandatory]
+                #region Low           [optional]
 
-                if (!JSON.ParseMandatory("low",
-                                         "low",
-                                         out Decimal Low,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("hysteresisLow",
+                                       "hysteresis low",
+                                       out Decimal? Low,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region Delay         [mandatory]
+                #region Delay         [optional]
 
-                if (!JSON.ParseMandatory("delay",
-                                         "delay",
-                                         out TimeSpan Delay,
-                                         out ErrorResponse))
+                // A number of seconds, and not only a whole one.
+                if (JSON.ParseOptional("hysteresisDelay",
+                                       "hysteresis delay",
+                                       out Decimal? DelaySeconds,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
+
+                var Delay = DelaySeconds.HasValue
+                                ? TimeSpan.FromSeconds((Double) DelaySeconds.Value)
+                                : (TimeSpan?) null;
 
                 #endregion
 
-                #region Gradient      [mandatory]
+                #region Gradient      [optional]
 
-                if (!JSON.ParseMandatory("gradient",
-                                         "gradient",
-                                         out Decimal Gradient,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("hysteresisGradient",
+                                       "hysteresis gradient",
+                                       out Decimal? Gradient,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -312,10 +326,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("high",         High),
-                                 new JProperty("low",          Low),
-                                 new JProperty("delay",        Delay.TotalSeconds),
-                                 new JProperty("gradient",     Gradient),
+                           High.HasValue
+                               ? new JProperty("hysteresisHigh",       High.    Value)
+                               : null,
+
+                           Low.HasValue
+                               ? new JProperty("hysteresisLow",        Low.     Value)
+                               : null,
+
+                           Delay.HasValue
+                               ? new JProperty("hysteresisDelay",      (Decimal) Delay.Value.TotalSeconds)
+                               : null,
+
+                           Gradient.HasValue
+                               ? new JProperty("hysteresisGradient",   Gradient.Value)
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
@@ -402,10 +427,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => Hysteresis is not null &&
 
-               High.    Equals(Hysteresis.High)     &&
-               Low.     Equals(Hysteresis.Low)      &&
-               Delay.   Equals(Hysteresis.Delay)    &&
-               Gradient.Equals(Hysteresis.Gradient) &&
+               Nullable.Equals(High,      Hysteresis.High)     &&
+               Nullable.Equals(Low,       Hysteresis.Low)      &&
+               Nullable.Equals(Delay,     Hysteresis.Delay)    &&
+               Nullable.Equals(Gradient,  Hysteresis.Gradient) &&
 
                base.Equals(Hysteresis);
 
@@ -432,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{High} <--( {Delay.TotalSeconds} sec. / { Gradient } )--> {Low}";
+            => $"{High?.ToString() ?? "-"} <--( {Delay?.TotalSeconds.ToString() ?? "-"} sec. / {Gradient?.ToString() ?? "-"} )--> {Low?.ToString() ?? "-"}";
 
         #endregion
 

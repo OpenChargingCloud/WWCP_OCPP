@@ -253,11 +253,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region VariableCharacteristics    [optional]
 
-                if (JSON.ParseMandatoryJSON("variableCharacteristics",
-                                            "variable characteristics",
-                                            OCPPv2_1.VariableCharacteristics.TryParse,
-                                            out VariableCharacteristics? VariableCharacteristics,
-                                            out ErrorResponse))
+                if (JSON.ParseOptionalJSON("variableCharacteristics",
+                                           "variable characteristics",
+                                           OCPPv2_1.VariableCharacteristics.TryParse,
+                                           out VariableCharacteristics? VariableCharacteristics,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

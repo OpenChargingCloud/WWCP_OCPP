@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.WWCP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -31,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A stream data element.
     /// </summary>
-    public class StreamDataElement : IEquatable<StreamDataElement>,
+    public class StreamDataElement : ACustomData,
+                                     IEquatable<StreamDataElement>,
                                      IComparable<StreamDataElement>,
                                      IComparable
     {
@@ -60,8 +63,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="TimeOffset">The offset relative to _basetime_ of this message. _basetime_ + _t_ is timestamp of recorded value.</param>
         /// <param name="Values">The reported value(s).</param>
-        public StreamDataElement(TimeSpan  TimeOffset,
-                                 String    Values)
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        public StreamDataElement(TimeSpan     TimeOffset,
+                                 String       Values,
+                                 CustomData?  CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.TimeOffset  = TimeOffset;
@@ -163,13 +171,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region TimeOffset    [mandatory]
 
+                // A number of seconds, and not only a whole one: read as a
+                // TimeSpan it was taken as an unsigned integer, and 1.5 came
+                // out as 2.
                 if (!JSON.ParseMandatory("t",
-                                         "timestamp",
-                                         out TimeSpan Timestamp,
+                                         "time offset",
+                                         out Decimal TimeOffsetSeconds,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var Timestamp = TimeSpan.FromSeconds((Double) TimeOffsetSeconds);
 
                 #endregion
 
@@ -185,10 +198,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           WWCP.CustomData.TryParse,
+                                           out CustomData? CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 StreamDataElement = new StreamDataElement(
                                         Timestamp,
-                                        Values
+                                        Values,
+                                        CustomData
                                     );
 
                 if (CustomStreamDataElementParser is not null)
@@ -215,12 +243,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomStreamDataElementSerializer">A delegate to serialize custom stream data elements.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StreamDataElement>? CustomStreamDataElementSerializer   = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StreamDataElement>?  CustomStreamDataElementSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("t",   TimeOffset.TotalSeconds),
-                           new JProperty("v",   Values)
+
+                                 new JProperty("t",            (Decimal) TimeOffset.TotalSeconds),
+                                 new JProperty("v",            Values),
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
+
                        );
 
             return CustomStreamDataElementSerializer is not null
