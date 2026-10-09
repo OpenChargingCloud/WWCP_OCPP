@@ -80,6 +80,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     TriggerMessageStatus = TriggerMessageStatus.Rejected;
                     return true;
 
+                case "NotImplemented":
+                    TriggerMessageStatus = TriggerMessageStatus.NotImplemented;
+                    return true;
+
                 default:
                     TriggerMessageStatus = TriggerMessageStatus.NotImplemented;
                     return false;

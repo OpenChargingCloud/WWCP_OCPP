@@ -545,7 +545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("vatNumber",    VATNumber),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",       EVSEId.        Value.ToString())
+                               ? new JProperty("evseId",       EVSEId.        Value.Value)
                                : null,
 
                            Company is not null

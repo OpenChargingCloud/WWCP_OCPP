@@ -88,6 +88,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     PaymentStatus = PaymentStatus.Failed;
                     return true;
 
+                // The specification's spelling; the one written before is still read.
+                case "Canceled":
+                    PaymentStatus = PaymentStatus.Cancelled;
+                    return true;
+
                 default:
                     PaymentStatus = PaymentStatus.Unknown;
                     return false;
@@ -108,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => PaymentStatus switch {
                    PaymentStatus.Settled    => "Settled",
-                   PaymentStatus.Cancelled  => "Cancelled",
+                   PaymentStatus.Cancelled  => "Canceled",
                    PaymentStatus.Rejected   => "Rejected",
                    PaymentStatus.Failed     => "Failed",
                    _                        => "Unknown"

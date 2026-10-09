@@ -58,9 +58,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data
 
         /// <summary>
-        /// The numeric value of the transaction identification.
+        /// The text of the DER control identification - the specification's
+        /// identifierString of up to 36 characters, e.g. a UUID.
         /// </summary>
-        public readonly UInt64 Value;
+        public readonly String Value;
 
         #endregion
 
@@ -70,31 +71,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public readonly Boolean IsNullOrEmpty
-            => Value == 0;
+            => Value.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
         public readonly Boolean IsNotNullOrEmpty
-            => Value != 0;
+            => Value.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the DER control identification.
         /// </summary>
         public readonly UInt64 Length
-            => (UInt64) Value.ToString().Length;
+            => (UInt64) (Value?.Length ?? 0);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new DER control identification based on the given number.
+        /// Create a new DER control identification based on the given text.
         /// </summary>
-        /// <param name="Number">A numeric representation of a DER control identification.</param>
-        private DERControl_Id(UInt64 Number)
+        /// <param name="Text">The text of a DER control identification.</param>
+        private DERControl_Id(String Text)
         {
-            this.Value = Number;
+            this.Value = Text;
         }
 
         #endregion
@@ -107,9 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public static DERControl_Id NewRandom
 
-#pragma warning disable SCS0005 // Weak random number generator.
-            => new ((UInt64) Random.Shared.Next(Int32.MaxValue));
-#pragma warning restore SCS0005 // Weak random number generator.
+            => new (Guid.NewGuid().ToString());
 
         #endregion
 
@@ -140,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Number">A numeric representation of a DER control identification.</param>
         public static DERControl_Id Parse(UInt64 Number)
 
-            => new (Number);
+            => new (Number.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
         #endregion
 
@@ -190,12 +189,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(String Text, out DERControl_Id DERControlId)
         {
 
+            // Any identifierString of up to 36 characters - not only a number.
             Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty() &&
-                UInt64.TryParse(Text, out var number))
+                Text.Length <= 36)
             {
-                DERControlId = new DERControl_Id(number);
+                DERControlId = new DERControl_Id(Text);
                 return true;
             }
 
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(UInt64 Number, out DERControl_Id DERControlId)
         {
 
-            DERControlId = new DERControl_Id(Number);
+            DERControlId = new DERControl_Id(Number.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
             return true;
 
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DERControlId">A DER control identification to compare with.</param>
         public Int32 CompareTo(DERControl_Id DERControlId)
 
-            => Value.CompareTo(DERControlId.Value);
+            => String.Compare(Value, DERControlId.Value, StringComparison.Ordinal);
 
         #endregion
 
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DERControlId">A DER control identification to compare with.</param>
         public Boolean Equals(DERControl_Id DERControlId)
 
-            => Value.Equals(DERControlId.Value);
+            => String.Equals(Value, DERControlId.Value, StringComparison.Ordinal);
 
         #endregion
 
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override Int32 GetHashCode()
 
-            => Value.GetHashCode();
+            => Value?.GetHashCode() ?? 0;
 
         #endregion
 
@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => Value.ToString();
+            => Value ?? "";
 
         #endregion
 

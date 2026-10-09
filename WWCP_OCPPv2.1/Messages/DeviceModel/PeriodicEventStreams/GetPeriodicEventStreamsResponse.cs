@@ -413,11 +413,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetPeriodicEventStreamResponseSerializer">A delegate to serialize custom open periodic event stream responses.</param>
+        /// <param name="CustomConstantStreamDataSerializer">A delegate to serialize the constant parts of periodic event streams.</param>
+        /// <param name="CustomPeriodicEventStreamParametersSerializer">A delegate to serialize periodic event stream parameters.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(Boolean                                                            IncludeJSONLDContext                             = false,
                               CustomJObjectSerializerDelegate<GetPeriodicEventStreamsResponse>?  CustomGetPeriodicEventStreamResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<ConstantStreamData>?               CustomConstantStreamDataSerializer               = null,
+                              CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?    CustomPeriodicEventStreamParametersSerializer    = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                       CustomStatusInfoSerializer                       = null,
                               CustomJObjectSerializerDelegate<Signature>?                        CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                       = null)
@@ -427,6 +431,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            IncludeJSONLDContext
                                ? new JProperty("@context",      DefaultJSONLDContext.ToString())
+                               : null,
+
+                           ConstantStreamData.Any()
+                               ? new JProperty("constantStreamData",   new JArray(ConstantStreamData.Select(constantStreamData => constantStreamData.ToJSON(CustomConstantStreamDataSerializer,
+                                                                                                                                                         CustomPeriodicEventStreamParametersSerializer,
+                                                                                                                                                         CustomCustomDataSerializer))))
                                : null,
 
                            Status.HasValue

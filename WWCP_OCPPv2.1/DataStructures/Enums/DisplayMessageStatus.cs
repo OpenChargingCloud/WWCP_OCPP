@@ -96,6 +96,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     DisplayMessageStatus = DisplayMessageStatus.UnknownTransaction;
                     return true;
 
+                case "LanguageNotSupported":
+                    DisplayMessageStatus = DisplayMessageStatus.LanguageNotSupported;
+                    return true;
+
                 default:
                     DisplayMessageStatus = DisplayMessageStatus.Unknown;
                     return false;
@@ -117,6 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    DisplayMessageStatus.NotSupportedPriority       => "NotSupportedPriority",
                    DisplayMessageStatus.NotSupportedState          => "NotSupportedState",
                    DisplayMessageStatus.UnknownTransaction         => "UnknownTransaction",
+                   DisplayMessageStatus.LanguageNotSupported       => "LanguageNotSupported",
                    _                                               => "Unknown"
                };
 
@@ -164,7 +169,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The given transaction identification is not known or not ongoing.
         /// </summary>
-        UnknownTransaction
+        UnknownTransaction,
+
+        /// <summary>
+        /// The language of the message is not supported.
+        /// </summary>
+        LanguageNotSupported
 
     }
 

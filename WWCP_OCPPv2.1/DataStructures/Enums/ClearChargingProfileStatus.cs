@@ -76,6 +76,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ClearChargingProfileStatus = ClearChargingProfileStatus.Accepted;
                     return true;
 
+                // A value of the specification: no profile matched.
+                case "Unknown":
+                    ClearChargingProfileStatus = ClearChargingProfileStatus.Unknown;
+                    return true;
+
                 default:
                     ClearChargingProfileStatus = ClearChargingProfileStatus.Unknown;
                     return false;

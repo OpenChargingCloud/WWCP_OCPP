@@ -84,6 +84,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     UnlockStatus = UnlockStatus.NotSupported;
                     return true;
 
+                case "OngoingAuthorizedTransaction":
+                    UnlockStatus = UnlockStatus.OngoingAuthorizedTransaction;
+                    return true;
+
+                case "UnknownConnector":
+                    UnlockStatus = UnlockStatus.UnknownConnector;
+                    return true;
+
                 default:
                     UnlockStatus = UnlockStatus.Unknown;
                     return false;
@@ -99,10 +107,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this UnlockStatus UnlockStatus)
 
             => UnlockStatus switch {
-                   UnlockStatus.Unlocked      => "Unlocked",
-                   UnlockStatus.UnlockFailed  => "UnlockFailed",
-                   UnlockStatus.NotSupported  => "NotSupported",
-                   _                          => "Unknown"
+                   UnlockStatus.Unlocked                      => "Unlocked",
+                   UnlockStatus.UnlockFailed                  => "UnlockFailed",
+                   UnlockStatus.NotSupported                  => "NotSupported",
+                   UnlockStatus.OngoingAuthorizedTransaction  => "OngoingAuthorizedTransaction",
+                   UnlockStatus.UnknownConnector              => "UnknownConnector",
+                   _                                          => "Unknown"
                };
 
         #endregion
@@ -139,7 +149,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Charge point has no connector lock.
         /// </summary>
-        NotSupported
+        NotSupported,
+
+        /// <summary>
+        /// The connector is unknown.
+        /// </summary>
+        UnknownConnector
 
     }
 

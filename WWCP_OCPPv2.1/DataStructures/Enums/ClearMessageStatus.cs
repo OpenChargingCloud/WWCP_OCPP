@@ -80,6 +80,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ClearMessageStatus = ClearMessageStatus.Rejected;
                     return true;
 
+                // A value of the specification: no message of the identification.
+                case "Unknown":
+                    ClearMessageStatus = ClearMessageStatus.Unknown;
+                    return true;
+
                 default:
                     ClearMessageStatus = ClearMessageStatus.Unknown;
                     return false;

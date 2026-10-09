@@ -76,6 +76,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     GetDisplayMessagesStatus = GetDisplayMessagesStatus.Accepted;
                     return true;
 
+                // A value of the specification: no message matched.
+                case "Unknown":
+                    GetDisplayMessagesStatus = GetDisplayMessagesStatus.Unknown;
+                    return true;
+
                 default:
                     GetDisplayMessagesStatus = GetDisplayMessagesStatus.Unknown;
                     return false;

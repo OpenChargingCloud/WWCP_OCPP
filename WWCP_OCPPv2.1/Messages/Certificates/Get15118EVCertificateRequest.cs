@@ -490,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("exiRequest",                         EXIRequest.                            ToString()),
 
                            MaximumContractCertificateChains.HasValue
-                               ? new JProperty("maximumContractCertificateChains",   MaximumContractCertificateChains.Value.ToString())
+                               ? new JProperty("maximumContractCertificateChains",   MaximumContractCertificateChains.Value)
                                : null,
 
                            PrioritizedEMAIds.Any()

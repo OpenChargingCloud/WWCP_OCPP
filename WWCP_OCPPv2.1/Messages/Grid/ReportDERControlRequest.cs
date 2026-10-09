@@ -64,52 +64,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public Int32                  GetDERControlRequestId       { get; }
 
         /// <summary>
-        /// The optional curve of the Distributed Energy Resource (DER) control.
+        /// The reported curves of the Distributed Energy Resource (DER) controls - "curve".
         /// </summary>
         [Optional]
-        public DERCurve?              Curve                        { get; }
+        public IEnumerable<DERControlReport<DERCurve>>              Curves    { get; }
 
         /// <summary>
-        /// The optional enter service of the Distributed Energy Resource (DER) control.
+        /// The reported enter services of the Distributed Energy Resource (DER) controls - "enterService".
         /// </summary>
         [Optional]
-        public DEREnterService?       EnterService                 { get; }
+        public IEnumerable<DERControlReport<DEREnterService>>       EnterServices    { get; }
 
         /// <summary>
-        /// The optional fixed power factor absorb of the Distributed Energy Resource (DER) control.
+        /// The reported fixed power factors absorbing of the Distributed Energy Resource (DER) controls - "fixedPFAbsorb".
         /// </summary>
         [Optional]
-        public DERFixedPowerFactor?   FixedPowerFactorAbsorbing    { get; }
+        public IEnumerable<DERControlReport<DERFixedPowerFactor>>   FixedPowerFactorsAbsorbing    { get; }
 
         /// <summary>
-        /// The optional fixed power factor inject of the Distributed Energy Resource (DER) control.
+        /// The reported fixed power factors injecting of the Distributed Energy Resource (DER) controls - "fixedPFInject".
         /// </summary>
         [Optional]
-        public DERFixedPowerFactor?   FixedPowerFactorInjecting    { get; }
+        public IEnumerable<DERControlReport<DERFixedPowerFactor>>   FixedPowerFactorsInjecting    { get; }
 
         /// <summary>
-        /// The optional fixed var of the Distributed Energy Resource (DER) control.
+        /// The reported fixed vars of the Distributed Energy Resource (DER) controls - "fixedVar".
         /// </summary>
         [Optional]
-        public DERFixedVAR?           FixedVAR                  { get; }
+        public IEnumerable<DERControlReport<DERFixedVAR>>           FixedVARs    { get; }
 
         /// <summary>
-        /// The optional frequency droop of the Distributed Energy Resource (DER) control.
+        /// The reported frequency droops of the Distributed Energy Resource (DER) controls - "freqDroop".
         /// </summary>
         [Optional]
-        public DERFrequencyDroop?     FrequencyDroop            { get; }
+        public IEnumerable<DERControlReport<DERFrequencyDroop>>     FrequencyDroops    { get; }
 
         /// <summary>
-        /// The optional gradient of the Distributed Energy Resource (DER) control.
+        /// The reported gradients of the Distributed Energy Resource (DER) controls - "gradient".
         /// </summary>
         [Optional]
-        public DERGradient?           Gradient                  { get; }
+        public IEnumerable<DERControlReport<DERGradient>>           Gradients    { get; }
 
         /// <summary>
-        /// The optional limit max discharge of the Distributed Energy Resource (DER) control.
+        /// The reported limits of the maximum discharge of the Distributed Energy Resource (DER) controls - "limitMaxDischarge".
         /// </summary>
         [Optional]
-        public DERLimitMaxDischarge?  LimitMaxDischarge         { get; }
+        public IEnumerable<DERControlReport<DERLimitMaxDischarge>>  LimitMaxDischarges    { get; }
 
         /// <summary>
         /// The optional "to be continued" indicator whether another part of the DER control report follows.
@@ -127,14 +127,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="GetDERControlRequestId">The requestId requestId of the correlated GetDERControlRequest.</param>
-        /// <param name="Curve">The optional curve of the Distributed Energy Resource (DER) control.</param>
-        /// <param name="EnterService">The optional enter service of the Distributed Energy Resource (DER) control.</param>
-        /// <param name="FixedPowerFactorAbsorbing">The optional fixed power factor absorb of the Distributed Energy Resource (DER) control.</param>
-        /// <param name="FixedPowerFactorInjecting">The optional fixed power factor inject of the Distributed Energy Resource (DER) control.</param>
-        /// <param name="FixedVAR">The optional fixed var of the Distributed Energy Resource (DER) control.</param>
-        /// <param name="FrequencyDroop">The optional frequency droop of the Distributed Energy Resource (DER) control.</param>
-        /// <param name="Gradient">The optional gradient of the Distributed Energy Resource (DER) control.</param>
-        /// <param name="LimitMaxDischarge">The optional limit max discharge of the Distributed Energy Resource (DER) control.</param>
+        /// <param name="Curves">The reported curves of the DER controls.</param>
+        /// <param name="EnterServices">The reported enter services of the DER controls.</param>
+        /// <param name="FixedPowerFactorsAbsorbing">The reported fixed power factors absorbing of the DER controls.</param>
+        /// <param name="FixedPowerFactorsInjecting">The reported fixed power factors injecting of the DER controls.</param>
+        /// <param name="FixedVARs">The reported fixed vars of the DER controls.</param>
+        /// <param name="FrequencyDroops">The reported frequency droops of the DER controls.</param>
+        /// <param name="Gradients">The reported gradients of the DER controls.</param>
+        /// <param name="LimitMaxDischarges">The reported limits of the maximum discharge of the DER controls.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the DER control report follows.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -148,15 +148,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ReportDERControlRequest(SourceRouting            Destination,
                                        Int32                    GetDERControlRequestId,
-                                       DERCurve?                Curve                       = null,
-                                       DEREnterService?         EnterService                = null,
-                                       DERFixedPowerFactor?     FixedPowerFactorAbsorbing   = null,
-                                       DERFixedPowerFactor?     FixedPowerFactorInjecting   = null,
-                                       DERFixedVAR?             FixedVAR                    = null,
-                                       DERFrequencyDroop?       FrequencyDroop              = null,
-                                       DERGradient?             Gradient                    = null,
-                                       DERLimitMaxDischarge?    LimitMaxDischarge           = null,
-                                       Boolean?                 ToBeContinued               = null,
+                                       IEnumerable<DERControlReport<DERCurve>>?              Curves                     = null,
+                                       IEnumerable<DERControlReport<DEREnterService>>?       EnterServices              = null,
+                                       IEnumerable<DERControlReport<DERFixedPowerFactor>>?   FixedPowerFactorsAbsorbing = null,
+                                       IEnumerable<DERControlReport<DERFixedPowerFactor>>?   FixedPowerFactorsInjecting = null,
+                                       IEnumerable<DERControlReport<DERFixedVAR>>?           FixedVARs                  = null,
+                                       IEnumerable<DERControlReport<DERFrequencyDroop>>?     FrequencyDroops            = null,
+                                       IEnumerable<DERControlReport<DERGradient>>?           Gradients                  = null,
+                                       IEnumerable<DERControlReport<DERLimitMaxDischarge>>?  LimitMaxDischarges         = null,
+                                       Boolean?                                              ToBeContinued              = null,
 
                                        IEnumerable<KeyPair>?    SignKeys                    = null,
                                        IEnumerable<SignInfo>?   SignInfos                   = null,
@@ -192,28 +192,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             this.GetDERControlRequestId     = GetDERControlRequestId;
-            this.Curve                      = Curve;
-            this.EnterService               = EnterService;
-            this.FixedPowerFactorAbsorbing  = FixedPowerFactorAbsorbing;
-            this.FixedPowerFactorInjecting  = FixedPowerFactorInjecting;
-            this.FixedVAR                   = FixedVAR;
-            this.FrequencyDroop             = FrequencyDroop;
-            this.Gradient                   = Gradient;
-            this.LimitMaxDischarge          = LimitMaxDischarge;
+            this.Curves                     = Curves?.ToArray() ?? [];
+            this.EnterServices              = EnterServices?.ToArray() ?? [];
+            this.FixedPowerFactorsAbsorbing = FixedPowerFactorsAbsorbing?.ToArray() ?? [];
+            this.FixedPowerFactorsInjecting = FixedPowerFactorsInjecting?.ToArray() ?? [];
+            this.FixedVARs                  = FixedVARs?.ToArray() ?? [];
+            this.FrequencyDroops            = FrequencyDroops?.ToArray() ?? [];
+            this.Gradients                  = Gradients?.ToArray() ?? [];
+            this.LimitMaxDischarges         = LimitMaxDischarges?.ToArray() ?? [];
             this.ToBeContinued              = ToBeContinued;
 
             unchecked
             {
 
                 hashCode = this.GetDERControlRequestId.    GetHashCode()       * 31 ^
-                          (this.Curve?.                    GetHashCode() ?? 0) * 29 ^
-                          (this.EnterService?.             GetHashCode() ?? 0) * 23 ^
-                          (this.FixedPowerFactorAbsorbing?.GetHashCode() ?? 0) * 19 ^
-                          (this.FixedPowerFactorInjecting?.GetHashCode() ?? 0) * 17 ^
-                          (this.FixedVAR?.                 GetHashCode() ?? 0) * 13 ^
-                          (this.FrequencyDroop?.           GetHashCode() ?? 0) * 11 ^
-                          (this.Gradient?.                 GetHashCode() ?? 0) *  7 ^
-                          (this.LimitMaxDischarge?.        GetHashCode() ?? 0) *  5 ^
+                           this.Curves.CalcHashCode() * 29 ^
+                           this.EnterServices.CalcHashCode() * 23 ^
+                           this.FixedPowerFactorsAbsorbing.CalcHashCode() * 19 ^
+                           this.FixedPowerFactorsInjecting.CalcHashCode() * 17 ^
+                           this.FixedVARs.CalcHashCode() * 13 ^
+                           this.FrequencyDroops.CalcHashCode() * 11 ^
+                           this.Gradients.CalcHashCode() * 7 ^
+                           this.LimitMaxDischarges.CalcHashCode() * 5 ^
                           (this.ToBeContinued?.            GetHashCode() ?? 0) *  3 ^
                            base.                           GetHashCode();
 
@@ -1072,114 +1072,114 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Curve                        [optional]
+                #region Curves                       [optional]
 
-                if (JSON.ParseOptionalJSON("curve",
-                                           "curve",
-                                           DERCurve.TryParse,
-                                           out DERCurve? Curve,
-                                           out ErrorResponse))
+                if (!DERControlReport<DERCurve>.TryParseList(JSON,
+                                                    "curve",
+                                                    "curve",
+                                                    DERCurve.TryParse,
+                                                    out var Curves,
+                                                    out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region EnterService                 [optional]
+                #region EnterServices                [optional]
 
-                if (JSON.ParseOptionalJSON("enterService",
-                                           "enter service",
-                                           DEREnterService.TryParse,
-                                           out DEREnterService? EnterService,
-                                           out ErrorResponse))
+                if (!DERControlReport<DEREnterService>.TryParseList(JSON,
+                                                    "enterService",
+                                                    "enterService",
+                                                    DEREnterService.TryParse,
+                                                    out var EnterServices,
+                                                    out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region FixedPowerFactorAbsorbing    [optional]
+                #region FixedPowerFactorsAbsorbing   [optional]
 
-                if (JSON.ParseOptionalJSON("fixedPFAbsorb",
-                                           "fixed power factor absorbing",
-                                           DERFixedPowerFactor.TryParse,
-                                           out DERFixedPowerFactor? FixedPowerFactorAbsorbing,
-                                           out ErrorResponse))
+                if (!DERControlReport<DERFixedPowerFactor>.TryParseList(JSON,
+                                                    "fixedPFAbsorb",
+                                                    "fixedPF",
+                                                    DERFixedPowerFactor.TryParse,
+                                                    out var FixedPowerFactorsAbsorbing,
+                                                    out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region FixedPowerFactorInjecting    [optional]
+                #region FixedPowerFactorsInjecting   [optional]
 
-                if (JSON.ParseOptionalJSON("fixedPFInject",
-                                           "fixed power factor injecting",
-                                           DERFixedPowerFactor.TryParse,
-                                           out DERFixedPowerFactor? FixedPowerFactorInjecting,
-                                           out ErrorResponse))
+                if (!DERControlReport<DERFixedPowerFactor>.TryParseList(JSON,
+                                                    "fixedPFInject",
+                                                    "fixedPF",
+                                                    DERFixedPowerFactor.TryParse,
+                                                    out var FixedPowerFactorsInjecting,
+                                                    out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region FixedVAR                     [optional]
+                #region FixedVARs                    [optional]
 
-                if (JSON.ParseOptionalJSON("fixedVar",
-                                           "fixed VAR",
-                                           DERFixedVAR.TryParse,
-                                           out DERFixedVAR? FixedVAR,
-                                           out ErrorResponse))
+                if (!DERControlReport<DERFixedVAR>.TryParseList(JSON,
+                                                    "fixedVar",
+                                                    "fixedVar",
+                                                    DERFixedVAR.TryParse,
+                                                    out var FixedVARs,
+                                                    out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region FrequencyDroop               [optional]
+                #region FrequencyDroops              [optional]
 
-                if (JSON.ParseOptionalJSON("freqDroop",
-                                           "frequency droop",
-                                           DERFrequencyDroop.TryParse,
-                                           out DERFrequencyDroop? FrequencyDroop,
-                                           out ErrorResponse))
+                if (!DERControlReport<DERFrequencyDroop>.TryParseList(JSON,
+                                                    "freqDroop",
+                                                    "freqDroop",
+                                                    DERFrequencyDroop.TryParse,
+                                                    out var FrequencyDroops,
+                                                    out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region Gradient                     [optional]
+                #region Gradients                    [optional]
 
-                if (JSON.ParseOptionalJSON("gradient",
-                                           "gradient",
-                                           DERGradient.TryParse,
-                                           out DERGradient? Gradient,
-                                           out ErrorResponse))
+                if (!DERControlReport<DERGradient>.TryParseList(JSON,
+                                                    "gradient",
+                                                    "gradient",
+                                                    DERGradient.TryParse,
+                                                    out var Gradients,
+                                                    out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
 
-                #region LimitMaxDischarge            [optional]
+                #region LimitMaxDischarges           [optional]
 
-                if (JSON.ParseOptionalJSON("limitMaxDischarge",
-                                           "limit max discharge",
-                                           DERLimitMaxDischarge.TryParse,
-                                           out DERLimitMaxDischarge? LimitMaxDischarge,
-                                           out ErrorResponse))
+                if (!DERControlReport<DERLimitMaxDischarge>.TryParseList(JSON,
+                                                    "limitMaxDischarge",
+                                                    "limitMaxDischarge",
+                                                    DERLimitMaxDischarge.TryParse,
+                                                    out var LimitMaxDischarges,
+                                                    out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
@@ -1231,14 +1231,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                               Destination,
                                               GetDERControlRequestId,
-                                              Curve,
-                                              EnterService,
-                                              FixedPowerFactorAbsorbing,
-                                              FixedPowerFactorInjecting,
-                                              FixedVAR,
-                                              FrequencyDroop,
-                                              Gradient,
-                                              LimitMaxDischarge,
+                                              Curves,
+                                              EnterServices,
+                                              FixedPowerFactorsAbsorbing,
+                                              FixedPowerFactorsInjecting,
+                                              FixedVARs,
+                                              FrequencyDroops,
+                                              Gradients,
+                                              LimitMaxDischarges,
                                               ToBeContinued,
 
                                               null,
@@ -1317,53 +1317,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  new JProperty("requestId",           GetDERControlRequestId),
 
-                           Curve                     is not null
-                               ? new JProperty("curve",               Curve.                    ToJSON(CustomDERCurveSerializer,
-                                                                                                       CustomDERCurvePointSerializer,
-                                                                                                       CustomHysteresisSerializer,
-                                                                                                       CustomReactivePowerParametersSerializer,
-                                                                                                       CustomVoltageParametersSerializer,
-                                                                                                       CustomCustomDataSerializer))
+                           Curves.Any()
+                               ? new JProperty("curve",               new JArray(Curves.Select(report => report.ToJSON("curve", control => control.ToJSON(CustomDERCurveSerializer, CustomDERCurvePointSerializer, CustomHysteresisSerializer, CustomReactivePowerParametersSerializer, CustomVoltageParametersSerializer, CustomCustomDataSerializer), CustomCustomDataSerializer))))
                                : null,
 
-                           EnterService              is not null
-                               ? new JProperty("enterService",        EnterService.             ToJSON(CustomDEREnterServiceSerializer,
-                                                                                                       CustomCustomDataSerializer))
+                           EnterServices.Any()
+                               ? new JProperty("enterService",        new JArray(EnterServices.Select(report => report.ToJSON("enterService", control => control.ToJSON(CustomDEREnterServiceSerializer, CustomCustomDataSerializer), CustomCustomDataSerializer))))
                                : null,
 
-                           FixedPowerFactorAbsorbing is not null
-                               ? new JProperty("fixedPFAbsorb",       FixedPowerFactorAbsorbing.ToJSON(CustomFixedPowerFactorSerializer,
-                                                                                                       CustomCustomDataSerializer))
+                           FixedPowerFactorsAbsorbing.Any()
+                               ? new JProperty("fixedPFAbsorb",       new JArray(FixedPowerFactorsAbsorbing.Select(report => report.ToJSON("fixedPF", control => control.ToJSON(CustomFixedPowerFactorSerializer, CustomCustomDataSerializer), CustomCustomDataSerializer))))
                                : null,
 
-                           FixedPowerFactorInjecting is not null
-                               ? new JProperty("fixedPFInject",       FixedPowerFactorInjecting.ToJSON(CustomFixedPowerFactorSerializer,
-                                                                                                       CustomCustomDataSerializer))
+                           FixedPowerFactorsInjecting.Any()
+                               ? new JProperty("fixedPFInject",       new JArray(FixedPowerFactorsInjecting.Select(report => report.ToJSON("fixedPF", control => control.ToJSON(CustomFixedPowerFactorSerializer, CustomCustomDataSerializer), CustomCustomDataSerializer))))
                                : null,
 
-                           FixedVAR                  is not null
-                               ? new JProperty("fixedVar",            FixedVAR.                 ToJSON(CustomFixedVARSerializer,
-                                                                                                       CustomCustomDataSerializer))
+                           FixedVARs.Any()
+                               ? new JProperty("fixedVar",            new JArray(FixedVARs.Select(report => report.ToJSON("fixedVar", control => control.ToJSON(CustomFixedVARSerializer, CustomCustomDataSerializer), CustomCustomDataSerializer))))
                                : null,
 
-                           FrequencyDroop            is not null
-                               ? new JProperty("freqDroop",           FrequencyDroop.           ToJSON(CustomFrequencyDroopSerializer,
-                                                                                                       CustomCustomDataSerializer))
+                           FrequencyDroops.Any()
+                               ? new JProperty("freqDroop",           new JArray(FrequencyDroops.Select(report => report.ToJSON("freqDroop", control => control.ToJSON(CustomFrequencyDroopSerializer, CustomCustomDataSerializer), CustomCustomDataSerializer))))
                                : null,
 
-                           Gradient                  is not null
-                               ? new JProperty("gradient",            Gradient.                 ToJSON(CustomDERGradientSerializer,
-                                                                                                       CustomCustomDataSerializer))
+                           Gradients.Any()
+                               ? new JProperty("gradient",            new JArray(Gradients.Select(report => report.ToJSON("gradient", control => control.ToJSON(CustomDERGradientSerializer, CustomCustomDataSerializer), CustomCustomDataSerializer))))
                                : null,
 
-                           LimitMaxDischarge         is not null
-                               ? new JProperty("limitMaxDischarge",   LimitMaxDischarge.        ToJSON(CustomDERLimitMaxDischargeSerializer,
-                                                                                                       CustomDERCurveSerializer,
-                                                                                                       CustomDERCurvePointSerializer,
-                                                                                                       CustomHysteresisSerializer,
-                                                                                                       CustomReactivePowerParametersSerializer,
-                                                                                                       CustomVoltageParametersSerializer,
-                                                                                                       CustomCustomDataSerializer))
+                           LimitMaxDischarges.Any()
+                               ? new JProperty("limitMaxDischarge",   new JArray(LimitMaxDischarges.Select(report => report.ToJSON("limitMaxDischarge", control => control.ToJSON(CustomDERLimitMaxDischargeSerializer, CustomDERCurveSerializer, CustomDERCurvePointSerializer, CustomHysteresisSerializer, CustomReactivePowerParametersSerializer, CustomVoltageParametersSerializer, CustomCustomDataSerializer), CustomCustomDataSerializer))))
                                : null,
 
                            ToBeContinued.HasValue
@@ -1463,29 +1446,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                GetDERControlRequestId.Equals(ReportDERControlRequest.GetDERControlRequestId) &&
 
-             ((Curve                     is     null && ReportDERControlRequest.Curve                     is null) ||
-              (Curve                     is not null && ReportDERControlRequest.Curve                     is not null && Curve.                    Equals(ReportDERControlRequest.Curve)))                     &&
+               Curves.SequenceEqual(ReportDERControlRequest.Curves) &&
 
-             ((EnterService              is     null && ReportDERControlRequest.EnterService              is null) ||
-              (EnterService              is not null && ReportDERControlRequest.EnterService              is not null && EnterService.             Equals(ReportDERControlRequest.EnterService)))              &&
+               EnterServices.SequenceEqual(ReportDERControlRequest.EnterServices) &&
 
-             ((FixedPowerFactorAbsorbing is     null && ReportDERControlRequest.FixedPowerFactorAbsorbing is null) ||
-              (FixedPowerFactorAbsorbing is not null && ReportDERControlRequest.FixedPowerFactorAbsorbing is not null && FixedPowerFactorAbsorbing.Equals(ReportDERControlRequest.FixedPowerFactorAbsorbing))) &&
+               FixedPowerFactorsAbsorbing.SequenceEqual(ReportDERControlRequest.FixedPowerFactorsAbsorbing) &&
 
-             ((FixedPowerFactorInjecting is     null && ReportDERControlRequest.FixedPowerFactorInjecting is null) ||
-              (FixedPowerFactorInjecting is not null && ReportDERControlRequest.FixedPowerFactorInjecting is not null && FixedPowerFactorInjecting.Equals(ReportDERControlRequest.FixedPowerFactorInjecting))) &&
+               FixedPowerFactorsInjecting.SequenceEqual(ReportDERControlRequest.FixedPowerFactorsInjecting) &&
 
-             ((FixedVAR                  is     null && ReportDERControlRequest.FixedVAR                  is null) ||
-              (FixedVAR                  is not null && ReportDERControlRequest.FixedVAR                  is not null && FixedVAR.                 Equals(ReportDERControlRequest.FixedVAR)))                  &&
+               FixedVARs.SequenceEqual(ReportDERControlRequest.FixedVARs) &&
 
-             ((FrequencyDroop            is     null && ReportDERControlRequest.FrequencyDroop            is null) ||
-              (FrequencyDroop            is not null && ReportDERControlRequest.FrequencyDroop            is not null && FrequencyDroop.           Equals(ReportDERControlRequest.FrequencyDroop)))            &&
+               FrequencyDroops.SequenceEqual(ReportDERControlRequest.FrequencyDroops) &&
 
-             ((Gradient                  is     null && ReportDERControlRequest.Gradient                  is null) ||
-              (Gradient                  is not null && ReportDERControlRequest.Gradient                  is not null && Gradient.                 Equals(ReportDERControlRequest.Gradient)))                  &&
+               Gradients.SequenceEqual(ReportDERControlRequest.Gradients) &&
 
-             ((LimitMaxDischarge         is     null && ReportDERControlRequest.LimitMaxDischarge         is null) ||
-              (LimitMaxDischarge         is not null && ReportDERControlRequest.LimitMaxDischarge         is not null && LimitMaxDischarge.        Equals(ReportDERControlRequest.LimitMaxDischarge)))         &&
+               LimitMaxDischarges.SequenceEqual(ReportDERControlRequest.LimitMaxDischarges) &&
 
              ((ToBeContinued             is     null && ReportDERControlRequest.ToBeContinued             is null) ||
               (ToBeContinued             is not null && ReportDERControlRequest.ToBeContinued             is not null && ToBeContinued.            Equals(ReportDERControlRequest.ToBeContinued)))             &&
@@ -1525,36 +1500,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                              : " [end]: "
                        : " [end]: ",
 
-                   Curve is not null
-                       ? $", curve: '{Curve}'"
+                   Curves.Any()
+                       ? $", curves: {Curves.AggregateWith(", ")}"
                        : "",
 
-                   EnterService is not null
-                       ? $", enter service: '{EnterService}'"
+                   EnterServices.Any()
+                       ? $", enter services: {EnterServices.AggregateWith(", ")}"
                        : "",
 
-                   FixedPowerFactorAbsorbing is not null
-                       ? $", fixedPF absorbing: '{FixedPowerFactorAbsorbing}'"
+                   FixedPowerFactorsAbsorbing.Any()
+                       ? $", fixed power factors absorbing: {FixedPowerFactorsAbsorbing.AggregateWith(", ")}"
                        : "",
 
-                   FixedPowerFactorInjecting is not null
-                       ? $", fixedPF injecting: '{FixedPowerFactorInjecting}'"
+                   FixedPowerFactorsInjecting.Any()
+                       ? $", fixed power factors injecting: {FixedPowerFactorsInjecting.AggregateWith(", ")}"
                        : "",
 
-                   FixedVAR is not null
-                       ? $", fixed VAR: '{FixedVAR}'"
+                   FixedVARs.Any()
+                       ? $", fixed vars: {FixedVARs.AggregateWith(", ")}"
                        : "",
 
-                   FrequencyDroop is not null
-                       ? $", frequency droop: '{FrequencyDroop}'"
+                   FrequencyDroops.Any()
+                       ? $", frequency droops: {FrequencyDroops.AggregateWith(", ")}"
                        : "",
 
-                   Gradient is not null
-                       ? $", gradient: '{Gradient}'"
+                   Gradients.Any()
+                       ? $", gradients: {Gradients.AggregateWith(", ")}"
                        : "",
 
-                   LimitMaxDischarge is not null
-                       ? $", limit max discharge: '{LimitMaxDischarge}'"
+                   LimitMaxDischarges.Any()
+                       ? $", limits of the maximum discharge: {LimitMaxDischarges.AggregateWith(", ")}"
                        : ""
 
                 );

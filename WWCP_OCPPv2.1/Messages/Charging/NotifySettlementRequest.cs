@@ -665,7 +665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                                  new JProperty("pspRef",             PaymentReference.    ToString()),
-                                 new JProperty("status",             PaymentStatus.       ToString()),
+                                 new JProperty("status",             PaymentStatus.       AsText()),
                                  new JProperty("settlementAmount",   SettlementAmount),
                                  new JProperty("settlementTime",     SettlementTimestamp.ToISO8601()),
 

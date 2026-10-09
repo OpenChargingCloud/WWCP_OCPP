@@ -82,6 +82,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public EVSEKinds?              EVSEKind           { get; }
 
+        /// <summary>
+        /// The optional payment brand the (ad hoc) fixed price applies to, e.g. for
+        /// a surcharge of a brand - the additional identification token of the
+        /// type "PaymentBrand".
+        /// </summary>
+        [Optional]
+        public String?                 PaymentBrand       { get; }
+
+        /// <summary>
+        /// The optional kind of (ad hoc) payment the fixed price applies to, e.g.
+        /// CC or Debit - the additional identification token of the type
+        /// "PaymentRecognition".
+        /// </summary>
+        [Optional]
+        public String?                 PaymentRecognition { get; }
+
 
         /// <summary>
         /// The minimum consumed energy in kWh, for example 20, valid from this amount of energy
@@ -223,6 +239,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MaxChargingTime">A maximum duration in seconds the charging MUST last (exclusive).</param>
         /// <param name="MinIdleTime">A minimum duration in seconds the idle period (i.e. not charging) MUST last (inclusive).</param>
         /// <param name="MaxIdleTime">A maximum duration in seconds the idle period (i.e. not charging) MUST last (exclusive).</param>
+        /// <param name="PaymentBrand">The optional payment brand a fixed price applies to.</param>
+        /// <param name="PaymentRecognition">The optional kind of payment a fixed price applies to.</param>
         public TariffConditions(DateOnly?                ValidFrom         = null,  // startDate, local time
                                 DateOnly?                ValidTo           = null,  // endDate,   local time
 
@@ -245,6 +263,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 TimeSpan?                MaxChargingTime   = null,
                                 TimeSpan?                MinIdleTime       = null,
                                 TimeSpan?                MaxIdleTime       = null,
+
+                                String?                  PaymentBrand         = null,
+                                String?                  PaymentRecognition   = null,
 
                                 CustomData?              CustomData        = null)
 
@@ -274,10 +295,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.MinIdleTime         = MinIdleTime;
             this.MaxIdleTime         = MaxIdleTime;
 
+            this.PaymentBrand        = PaymentBrand;
+            this.PaymentRecognition  = PaymentRecognition;
+
             unchecked
             {
 
-                hashCode = (this.ValidFrom?.         GetHashCode() ?? 0) * 61 ^
+                hashCode = (this.PaymentBrand?.      GetHashCode() ?? 0) * 71 ^
+                           (this.PaymentRecognition?.GetHashCode() ?? 0) * 67 ^
+
+                           (this.ValidFrom?.         GetHashCode() ?? 0) * 61 ^
                            (this.ValidTo?.           GetHashCode() ?? 0) * 59 ^
 
                             this.DaysOfWeek.         CalcHashCode()      * 53 ^
@@ -598,6 +625,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse PaymentBrand       [optional]
+
+                var PaymentBrand        = JSON["paymentBrand"]?.      Value<String>();
+
+                #endregion
+
+                #region Parse PaymentRecognition [optional]
+
+                var PaymentRecognition  = JSON["paymentRecognition"]?.Value<String>();
+
+                #endregion
+
 
                 #region Parse MinEnergy          [optional]
 
@@ -803,6 +842,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      EndTimeOfDay.      HasValue  ||
 
                                      EVSEKind.          HasValue  ||
+                                     PaymentBrand       is not null ||
+                                     PaymentRecognition is not null ||
 
                                      MinEnergy.         HasValue  ||
                                      MaxEnergy.         HasValue  ||
@@ -843,6 +884,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                MaxChargingTime,
                                                MinIdleTime,
                                                MaxIdleTime,
+                                               PaymentBrand,
+                                               PaymentRecognition,
                                                CustomData
                                            )
 
@@ -905,6 +948,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            // As text - the enum itself was written as its number.
                            EVSEKind.          HasValue
                                ? new JProperty("evseKind",          EVSEKind.       Value.AsText())
+                               : null,
+
+                           PaymentBrand       is not null
+                               ? new JProperty("paymentBrand",       PaymentBrand)
+                               : null,
+
+                           PaymentRecognition is not null
+                               ? new JProperty("paymentRecognition", PaymentRecognition)
                                : null,
 
 
@@ -1120,6 +1171,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (ErrorResponse is not null)
                     return false;
 
+                CBOR.ParseOptionalText("paymentBrand",
+                                       "payment brand",
+                                       out var PaymentBrand,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("paymentRecognition",
+                                       "payment recognition",
+                                       out var PaymentRecognition,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
                 CBOR.ParseOptionalValue("minEnergy",
                                         "minimum energy",
                                         OCPPCBORExtensions.TryParseWattHour,
@@ -1256,6 +1323,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        MaxChargingTime,
                                        MinIdleTime,
                                        MaxIdleTime,
+                                       PaymentBrand,
+                                       PaymentRecognition,
                                        CustomData
                                    );
 
@@ -1312,6 +1381,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            ("startTimeOfDay",          OCPPCBORExtensions.Text(StartTimeOfDay?.ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture))),
                            ("endTimeOfDay",            OCPPCBORExtensions.Text(EndTimeOfDay?.  ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture))),
                            ("evseKind",                OCPPCBORExtensions.Text(EVSEKind?.AsText())),
+                           ("paymentBrand",            OCPPCBORExtensions.Text(PaymentBrand)),
+                           ("paymentRecognition",      OCPPCBORExtensions.Text(PaymentRecognition)),
                            ("minEnergy",               MinEnergy?.      ToCBOR()),
                            ("maxEnergy",               MaxEnergy?.      ToCBOR()),
                            ("minCurrent",              MinCurrent?.     ToCBOR()),
@@ -1365,6 +1436,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    MaxChargingTime,
                    MinIdleTime,
                    MaxIdleTime,
+
+                   PaymentBrand,
+                   PaymentRecognition,
 
                    CustomData
 
@@ -1475,6 +1549,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             ((!EVSEKind.          HasValue && !TariffConditions.EVSEKind.          HasValue) ||
               (EVSEKind.          HasValue &&  TariffConditions.EVSEKind.          HasValue && EVSEKind.          Value.Equals(TariffConditions.EVSEKind.          Value))) &&
+
+              String.Equals(PaymentBrand,       TariffConditions.PaymentBrand,       StringComparison.Ordinal) &&
+              String.Equals(PaymentRecognition, TariffConditions.PaymentRecognition, StringComparison.Ordinal) &&
 
             ((!MinEnergy.         HasValue && !TariffConditions.MinEnergy.         HasValue) ||
               (MinEnergy.         HasValue &&  TariffConditions.MinEnergy.         HasValue && MinEnergy.         Value.Equals(TariffConditions.MinEnergy.         Value))) &&

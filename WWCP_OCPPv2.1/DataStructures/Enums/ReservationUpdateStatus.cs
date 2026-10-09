@@ -80,6 +80,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ReservationUpdateStatus = ReservationUpdateStatus.Removed;
                     return true;
 
+                case "NoTransaction":
+                    ReservationUpdateStatus = ReservationUpdateStatus.NoTransaction;
+                    return true;
+
                 default:
                     ReservationUpdateStatus = ReservationUpdateStatus.Unknown;
                     return false;
@@ -95,9 +99,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this ReservationUpdateStatus ReservationUpdateStatus)
 
             => ReservationUpdateStatus switch {
-                   ReservationUpdateStatus.Expired  => "Expired",
-                   ReservationUpdateStatus.Removed  => "Removed",
-                   _                                => "Unknown"
+                   ReservationUpdateStatus.Expired        => "Expired",
+                   ReservationUpdateStatus.Removed        => "Removed",
+                   ReservationUpdateStatus.NoTransaction  => "NoTransaction",
+                   _                                      => "Unknown"
                };
 
         #endregion
