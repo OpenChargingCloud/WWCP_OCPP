@@ -29,6 +29,14 @@
     Without git - a source archive, a build machine with no client - the Execs
     fail, ContinueOnError keeps the build going, and the stamp reads "unknown".
     A missing provenance is not a reason to be unable to build.
+
+    What a git that failed said is never taken for an answer. ConsoleToMSBuild
+    collects the error stream together with the output, so a repository
+    without a commit yet - or a source archive on a machine that does have git
+    - once stamped "fatal: ambiguous argument 'HEAD' ..." as the commit and
+    "fatal: not a git repository ..." as the repository. Each answer now counts
+    only with exit code 0. A status that could not be asked marks the commit
+    dirty, because a clean tree is exactly what it could not confirm.
   -->
 
   <Target Name="StampGitProvenance"
@@ -40,6 +48,7 @@
           StandardErrorImportance="low"
           ContinueOnError="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="_GitToplevel" />
+      <Output TaskParameter="ExitCode"      PropertyName="_GitToplevelExitCode" />
     </Exec>
 
     <Exec Command="git -C &quot;$(MSBuildProjectDirectory)&quot; rev-parse HEAD"
@@ -48,6 +57,7 @@
           StandardErrorImportance="low"
           ContinueOnError="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="_GitHead" />
+      <Output TaskParameter="ExitCode"      PropertyName="_GitHeadExitCode" />
     </Exec>
 
     <Exec Command="git -C &quot;$(MSBuildProjectDirectory)&quot; status --porcelain"
@@ -56,14 +66,15 @@
           StandardErrorImportance="low"
           ContinueOnError="true">
       <Output TaskParameter="ConsoleOutput" ItemName="_GitStatusLine" />
+      <Output TaskParameter="ExitCode"      PropertyName="_GitStatusExitCode" />
     </Exec>
 
     <PropertyGroup>
       <_GitChangedFiles>@(_GitStatusLine->Count())</_GitChangedFiles>
-      <_GitRepository Condition="'$(_GitToplevel)' != ''">$([System.IO.Path]::GetFileName($(_GitToplevel.Trim())))</_GitRepository>
+      <_GitRepository Condition="'$(_GitToplevelExitCode)' == '0' and '$(_GitToplevel)' != ''">$([System.IO.Path]::GetFileName($(_GitToplevel.Trim())))</_GitRepository>
       <_GitRepository Condition="'$(_GitRepository)' == ''">unknown</_GitRepository>
-      <_GitCommit     Condition="'$(_GitHead)' != ''">$(_GitHead.Trim())</_GitCommit>
-      <_GitCommit     Condition="'$(_GitCommit)' != '' and '$(_GitChangedFiles)' != '0'">$(_GitCommit)-dirty</_GitCommit>
+      <_GitCommit     Condition="'$(_GitHeadExitCode)' == '0' and '$(_GitHead)' != ''">$(_GitHead.Trim())</_GitCommit>
+      <_GitCommit     Condition="'$(_GitCommit)' != '' and ('$(_GitStatusExitCode)' != '0' or '$(_GitChangedFiles)' != '0')">$(_GitCommit)-dirty</_GitCommit>
       <_GitCommit     Condition="'$(_GitCommit)' == ''">unknown</_GitCommit>
     </PropertyGroup>
 
