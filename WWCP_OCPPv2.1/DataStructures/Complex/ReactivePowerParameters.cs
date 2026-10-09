@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("vRef",                         VRef),
+                                 new JProperty("vRef",                         VRef.Value),
                                  new JProperty("autonomousVRefEnable",         AutonomousVRefEnable),
 
                            AutonomousVRefTimeConstant.HasValue

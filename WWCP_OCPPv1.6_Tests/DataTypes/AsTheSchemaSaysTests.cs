@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.DataTypes
 
             Assert.That(cbor.HasTag(CBORTag.MetrologicalValue), Is.True);
 
-            Assert.That(ChargingRateValue.TryParse(CBORValue.Parse(cbor.ToByteArray()), out var again, out var errorResponse), Is.True, errorResponse);
+            Assert.That(ChargingRateValue.TryParseCBOR(CBORValue.Parse(cbor.ToByteArray()), out var again, out var errorResponse), Is.True, errorResponse);
             Assert.That(again.Unit,  Is.EqualTo(ChargingRateUnits.Amperes));
             Assert.That(again.Value, Is.EqualTo(32));
 

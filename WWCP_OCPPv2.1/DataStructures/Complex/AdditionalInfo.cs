@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// and the type of authorization to support multiple forms of identifiers.
     /// </summary>
     public class AdditionalInfo : ACustomData,
+                                  ICBORSerializable<AdditionalInfo>,
                                   IEquatable<AdditionalInfo>
     {
 
@@ -267,6 +270,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomAdditionalInfoSerializer is not null
                        ? CustomAdditionalInfoSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out AdditionalInfo, out ErrorResponse, CustomAdditionalInfoParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an additional information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AdditionalInfo">The additional information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out AdditionalInfo?  AdditionalInfo,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out AdditionalInfo,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an additional information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AdditionalInfo">The additional information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAdditionalInfoParser">An optional delegate to read custom additional information.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out AdditionalInfo?           AdditionalInfo,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<AdditionalInfo>?  CustomAdditionalInfoParser)
+        {
+
+            try
+            {
+
+                AdditionalInfo = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an additional information is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("additionalIdToken",
+                                             "additional identification token",
+                                             out var AdditionalIdToken,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("type",
+                                             "type of the additional identification token",
+                                             out var Type,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (CBOR.ParseOptional("customData",
+                                       "custom data",
+                                       OCPPCBORExtensions.TryParseCustomData,
+                                       out CustomData? CustomData,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+
+                AdditionalInfo = new AdditionalInfo(
+                                     AdditionalIdToken,
+                                     Type,
+                                     CustomData
+                                 );
+
+                if (CustomAdditionalInfoParser is not null)
+                    AdditionalInfo = CustomAdditionalInfoParser(CBOR,
+                                                AdditionalInfo);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AdditionalInfo  = default;
+                ErrorResponse  = "The given CBOR representation of an additional information is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<AdditionalInfo>.TryParse(CBOR, out AdditionalInfo, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an additional information - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<AdditionalInfo>.TryParse(CBORValue                         CBOR,
+                                                                out AdditionalInfo                  Value,
+                                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAdditionalInfoSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this additional information: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AdditionalInfo>? CustomAdditionalInfoSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("additionalIdToken",  CBORValue.FromText(AdditionalIdToken)),
+                           ("type",               CBORValue.FromText(Type)),
+                           ("customData",  CustomData?.ToCBOR())
+                       );
+
+            return CustomAdditionalInfoSerializer is not null
+                       ? CustomAdditionalInfoSerializer(this, cbor)
+                       : cbor;
 
         }
 

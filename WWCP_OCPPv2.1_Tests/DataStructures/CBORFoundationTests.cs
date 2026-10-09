@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                 var cbor = value.ToCBOR();
 
                 Assert.That(cbor.HasTag(CBORTag.MetrologicalValue), Is.True);
-                Assert.That(ChargingRateValue.TryParse(Read(cbor), out var again, out var errorResponse), Is.True, errorResponse);
+                Assert.That(ChargingRateValue.TryParseCBOR(Read(cbor), out var again, out var errorResponse), Is.True, errorResponse);
                 Assert.That(again.Unit,  Is.EqualTo(value.Unit));
                 Assert.That(again.Value, Is.EqualTo(value.Value));
 
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
             Assert.That(cbor.HasTag(CBORTag.MetrologicalValue), Is.False);
 
-            Assert.That(ChargingRateValue.TryParse(Read(cbor), out var again, out var errorResponse), Is.True, errorResponse);
+            Assert.That(ChargingRateValue.TryParseCBOR(Read(cbor), out var again, out var errorResponse), Is.True, errorResponse);
             Assert.That(again.Unit,  Is.EqualTo(ChargingRateUnits.Unknown));
             Assert.That(again.Value, Is.EqualTo(7.5M));
 
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ChargingRateValue_InVolts_IsRefused()
         {
-            Assert.That(ChargingRateValue.TryParse(Volt.FromV(230).AsMetrologicalValue().ToCBOR(), out _, out var errorResponse), Is.False);
+            Assert.That(ChargingRateValue.TryParseCBOR(Volt.FromV(230).AsMetrologicalValue().ToCBOR(), out _, out var errorResponse), Is.False);
             Assert.That(errorResponse, Does.Contain("neither in W nor in A"));
         }
 

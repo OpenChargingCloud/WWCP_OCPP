@@ -74,6 +74,40 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
+        #region Text(Text), UInt(Number), Int(Number), Number(Number), Flag(Value)
+
+        /// <summary>
+        /// The given text, or nothing - for an optional value of a map.
+        /// </summary>
+        public static CBORValue? Text(String? Text)
+            => Text is not null ? (CBORValue?) CBORValue.FromText(Text) : null;
+
+        /// <summary>
+        /// The given unsigned number, or nothing - for an optional value of a map.
+        /// </summary>
+        public static CBORValue? UInt(UInt64? Number)
+            => Number.HasValue ? (CBORValue?) CBORValue.FromUInt64(Number.Value) : null;
+
+        /// <summary>
+        /// The given signed number, or nothing - for an optional value of a map.
+        /// </summary>
+        public static CBORValue? Int(Int64? Number)
+            => Number.HasValue ? (CBORValue?) CBORValue.FromInt64(Number.Value) : null;
+
+        /// <summary>
+        /// The given decimal number, or nothing - for an optional value of a map.
+        /// </summary>
+        public static CBORValue? Number(Decimal? Number)
+            => Number.HasValue ? (CBORValue?) CBORValue.FromDecimal(Number.Value) : null;
+
+        /// <summary>
+        /// The given boolean, or nothing - for an optional value of a map.
+        /// </summary>
+        public static CBORValue? Flag(Boolean? Value)
+            => Value.HasValue ? (CBORValue?) CBORValue.FromBoolean(Value.Value) : null;
+
+        #endregion
+
         #region Array(Values, ToCBOR)
 
         /// <summary>
@@ -270,6 +304,148 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
+        #region Metrology:  ToCBOR(Watt, WattHour, Ampere, Volt, VoltAmpere, VoltAmpereReactive, Hertz, Siemens, Celsius)
+
+        public static CBORValue ToCBOR(this Watt               Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this WattHour           Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this Ampere             Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this Volt               Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this VoltAmpere         Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this VoltAmpereReactive Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this Hertz              Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this Siemens            Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this Celsius            Value) => Value.AsMetrologicalValue().ToCBOR();
+
+        #endregion
+
+        #region Percentages: ToCBOR(Percentage...), TryParsePercentage...(CBOR, out Value, out ErrorResponse)
+
+        /// <summary>
+        /// The given percentage as a metrological value in %.
+        /// </summary>
+        public static CBORValue ToCBOR(this Percentage       Value) => new MetrologicalValue(Value.Value,           UnitOfMeasure.Percent).ToCBOR();
+
+        /// <summary>
+        /// The given percentage as a metrological value in %.
+        /// </summary>
+        public static CBORValue ToCBOR(this PercentageByte   Value) => new MetrologicalValue(Value.Value,           UnitOfMeasure.Percent).ToCBOR();
+
+        /// <summary>
+        /// The given percentage as a metrological value in %.
+        /// </summary>
+        public static CBORValue ToCBOR(this PercentageDouble Value) => new MetrologicalValue((Decimal) Value.Value, UnitOfMeasure.Percent).ToCBOR();
+
+
+        /// <summary>
+        /// Try to read the given CBOR value as a number of percent: a metrological value in %.
+        /// </summary>
+        private static Boolean TryParsePercent(CBORValue                         CBOR,
+                                               out Decimal                       Percent,
+                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Percent = default;
+
+            if (!MetrologicalValue.TryParse(CBOR, out var metrologicalValue, out ErrorResponse))
+                return false;
+
+            if (!metrologicalValue.TryToBaseUnit(out var baseValue) ||
+                 baseValue.Unit != UnitOfMeasure.Percent)
+            {
+                ErrorResponse = $"The value '{metrologicalValue}' is not in %!";
+                return false;
+            }
+
+            Percent = baseValue.Value;
+            return true;
+
+        }
+
+        public static Boolean TryParsePercentage(CBORValue CBOR, out Percentage Value, [NotNullWhen(false)] out String? ErrorResponse)
+        {
+
+            Value = default;
+
+            if (!TryParsePercent(CBOR, out var percent, out ErrorResponse))
+                return false;
+
+            if (!Percentage.TryParse(percent, out Value))
+            {
+                ErrorResponse = $"Invalid percentage '{percent}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        public static Boolean TryParsePercentageByte(CBORValue CBOR, out PercentageByte Value, [NotNullWhen(false)] out String? ErrorResponse)
+        {
+
+            Value = default;
+
+            if (!TryParsePercent(CBOR, out var percent, out ErrorResponse))
+                return false;
+
+            if (percent != Math.Truncate(percent) || percent < Byte.MinValue || percent > Byte.MaxValue ||
+                !PercentageByte.TryParse((Byte) percent, out Value))
+            {
+                ErrorResponse = $"Invalid percentage '{percent}': a whole number of percent is expected!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        public static Boolean TryParsePercentageDouble(CBORValue CBOR, out PercentageDouble Value, [NotNullWhen(false)] out String? ErrorResponse)
+        {
+
+            Value = default;
+
+            if (!TryParsePercent(CBOR, out var percent, out ErrorResponse))
+                return false;
+
+            if (!PercentageDouble.TryParse((Double) percent, out Value))
+            {
+                ErrorResponse = $"Invalid percentage '{percent}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region Mandatory values: ParseMandatoryValue<T>(CBOR, PropertyName, PropertyDescription, TryParse, out Value, out ErrorResponse)
+
+        /// <summary>
+        /// Parse the given mandatory property with a parser of a value type.
+        /// </summary>
+        /// <param name="CBOR">A CBOR map.</param>
+        /// <param name="PropertyName">The text key of the property.</param>
+        /// <param name="PropertyDescription">A description of the property.</param>
+        /// <param name="TryParse">How to read the property.</param>
+        /// <param name="Value">The value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean ParseMandatoryValue<T>(this CBORValue                    CBOR,
+                                                     String                            PropertyName,
+                                                     String                            PropertyDescription,
+                                                     TryCBORStructParser<T>            TryParse,
+                                                     out T                             Value,
+                                                     [NotNullWhen(false)] out String?  ErrorResponse)
+
+            where T : struct
+
+            => CBOR.ParseMandatory(PropertyName,
+                                   PropertyDescription,
+                                   (CBORValue property, out T parsed, out String? errorResponse) => TryParse(property, out parsed, out errorResponse),
+                                   out Value,
+                                   out ErrorResponse);
+
+        #endregion
+
         #region Optional values: ParseOptionalValue<T>(CBOR, PropertyName, PropertyDescription, TryParse, out Value, out ErrorResponse)
 
         /// <summary>
@@ -306,6 +482,106 @@ namespace cloud.charging.open.protocols.OCPP
             }
 
             Value = parsedValue;
+            return true;
+
+        }
+
+        #endregion
+
+        #region Lists: ParseMandatoryList<T>(...), ParseOptionalList<T>(...)
+
+        /// <summary>
+        /// Read every item of the given array with the given parser.
+        /// </summary>
+        private static Boolean TryParseList<T>(IReadOnlyList<CBORValue>          Items,
+                                               String                            PropertyName,
+                                               TryCBORParser<T>                  TryParse,
+                                               out List<T>                       Values,
+                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Values         = new List<T>(Items.Count);
+            ErrorResponse  = null;
+
+            for (var i = 0; i < Items.Count; i++)
+            {
+
+                if (!TryParse(Items[i], out var value, out var errorResponse))
+                {
+                    ErrorResponse = $"CBOR property '{PropertyName}', item {i}: {errorResponse}";
+                    return false;
+                }
+
+                Values.Add(value!);
+
+            }
+
+            return true;
+
+        }
+
+
+        /// <summary>
+        /// Parse the given mandatory array property, every item with the given parser.
+        /// </summary>
+        /// <param name="CBOR">A CBOR map.</param>
+        /// <param name="PropertyName">The text key of the property.</param>
+        /// <param name="PropertyDescription">A description of the property.</param>
+        /// <param name="TryParse">How to read each item.</param>
+        /// <param name="Values">The items read.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean ParseMandatoryList<T>(this CBORValue                    CBOR,
+                                                    String                            PropertyName,
+                                                    String                            PropertyDescription,
+                                                    TryCBORParser<T>                  TryParse,
+                                                    out List<T>                       Values,
+                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Values = [];
+
+            if (!CBOR.ParseMandatoryArray(PropertyName, PropertyDescription, out var items, out ErrorResponse))
+                return false;
+
+            return TryParseList(items, PropertyName, TryParse, out Values, out ErrorResponse);
+
+        }
+
+
+        /// <summary>
+        /// Parse the given optional array property, every item with the given parser.
+        /// </summary>
+        /// <param name="CBOR">A CBOR map.</param>
+        /// <param name="PropertyName">The text key of the property.</param>
+        /// <param name="PropertyDescription">A description of the property.</param>
+        /// <param name="TryParse">How to read each item.</param>
+        /// <param name="Values">The items read - none when the property is not there.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <returns>Whether the property is there - an error response tells whether it was read.</returns>
+        public static Boolean ParseOptionalList<T>(this CBORValue    CBOR,
+                                                   String            PropertyName,
+                                                   String            PropertyDescription,
+                                                   TryCBORParser<T>  TryParse,
+                                                   out List<T>       Values,
+                                                   out String?       ErrorResponse)
+        {
+
+            Values         = [];
+            ErrorResponse  = null;
+
+            if (CBOR.Kind != CBORValueKind.Map)
+            {
+                ErrorResponse = "The given CBOR value is not a map!";
+                return true;
+            }
+
+            if (!CBOR.TryGetValue(CBORValue.FromText(PropertyName), out _))
+                return false;
+
+            if (!CBOR.ParseMandatoryArray(PropertyName, PropertyDescription, out var items, out ErrorResponse))
+                return true;
+
+            TryParseList(items, PropertyName, TryParse, out Values, out ErrorResponse);
             return true;
 
         }

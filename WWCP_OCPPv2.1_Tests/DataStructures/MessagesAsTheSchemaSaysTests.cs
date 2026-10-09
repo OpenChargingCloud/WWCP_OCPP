@@ -513,6 +513,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
+        #region GetExecutingEnvironmentResponse (extension)
+
+        /// <summary>
+        /// Its restart URL was handed to the JSON as a URL, which Newtonsoft
+        /// cannot write: ToJSON() threw whenever there was one.
+        /// </summary>
+        [Test]
+        public void GetExecutingEnvironmentResponse_WithARestartURL()
+        {
+
+            var response = new OCPPv2_1.CS.GetExecutingEnvironmentResponse(
+                               new OCPPv2_1.CSMS.GetExecutingEnvironmentRequest(destination),
+                               GenericStatus.Accepted,
+                               ProcessId:   4711,
+                               RestartURL:  org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse("https://example.org/restart")
+                           );
+
+            Assert.That(response.ToJSON()["restartURL"]?.Value<String>(), Is.EqualTo("https://example.org/restart"));
+
+        }
+
+        #endregion
+
         #region ChargingTicket (extension)
 
         [Test]

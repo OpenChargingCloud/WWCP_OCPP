@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            RestartURL.HasValue
-                               ? new JProperty("restartURL",      RestartURL.Value)
+                               ? new JProperty("restartURL",      RestartURL.Value.ToString())
                                : null,
 
                            RestartSecret.IsNotNullOrEmpty()

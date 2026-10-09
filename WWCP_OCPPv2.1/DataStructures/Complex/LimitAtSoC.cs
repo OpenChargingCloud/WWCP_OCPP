@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A limit at a state-of-charge.
     /// </summary>
     public class LimitAtSoC : ACustomData,
+                              ICBORSerializable<LimitAtSoC>,
                               IEquatable<LimitAtSoC>
     {
 
@@ -279,6 +282,142 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out LimitAtSoC, out ErrorResponse, CustomLimitAtSoCParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a limit at a state of charge.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="LimitAtSoC">The limit at a state of charge.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out LimitAtSoC?  LimitAtSoC,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out LimitAtSoC,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a limit at a state of charge.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="LimitAtSoC">The limit at a state of charge.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomLimitAtSoCParser">An optional delegate to read custom limit at a state of charges.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out LimitAtSoC?           LimitAtSoC,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<LimitAtSoC>?  CustomLimitAtSoCParser)
+        {
+
+            try
+            {
+
+                LimitAtSoC = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a limit at a state of charge is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("soc",
+                                              "state of charge",
+                                              OCPPCBORExtensions.TryParsePercentageByte,
+                                              out PercentageByte StateOfCharge,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("limit",
+                                              "charging rate limit",
+                                              ChargingRateValue.TryParseCBOR,
+                                              out ChargingRateValue Limit,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                LimitAtSoC = new LimitAtSoC(
+                                 StateOfCharge,
+                                 Limit,
+                                 CustomData
+                             );
+
+                if (CustomLimitAtSoCParser is not null)
+                    LimitAtSoC = CustomLimitAtSoCParser(CBOR,
+                                            LimitAtSoC);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                LimitAtSoC  = default;
+                ErrorResponse  = "The given CBOR representation of a limit at a state of charge is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<LimitAtSoC>.TryParse(CBOR, out LimitAtSoC, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a limit at a state of charge - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<LimitAtSoC>.TryParse(CBORValue                         CBOR,
+                                                            out LimitAtSoC                  Value,
+                                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomLimitAtSoCSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this limit at a state of charge: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomLimitAtSoCSerializer">A delegate to serialize custom limit at a state of charges.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<LimitAtSoC>? CustomLimitAtSoCSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("soc",         SoC.  ToCBOR()),
+                           ("limit",       Limit.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomLimitAtSoCSerializer is not null
+                       ? CustomLimitAtSoCSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

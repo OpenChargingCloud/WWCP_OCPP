@@ -23,6 +23,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -32,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A V2X Frequency-Watt entry.
     /// </summary>
     public class V2XFreqWattEntry : ACustomData,
+                                    ICBORSerializable<V2XFreqWattEntry>,
                                     IEquatable<V2XFreqWattEntry>
     {
 
@@ -238,6 +243,142 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out V2XFreqWattEntry, out ErrorResponse, CustomV2XFreqWattEntryParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X frequency-watt entry.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="V2XFreqWattEntry">The V2X frequency-watt entry.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out V2XFreqWattEntry?  V2XFreqWattEntry,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out V2XFreqWattEntry,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X frequency-watt entry.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="V2XFreqWattEntry">The V2X frequency-watt entry.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomV2XFreqWattEntryParser">An optional delegate to read custom V2X frequency-watt entrys.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out V2XFreqWattEntry?           V2XFreqWattEntry,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<V2XFreqWattEntry>?  CustomV2XFreqWattEntryParser)
+        {
+
+            try
+            {
+
+                V2XFreqWattEntry = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a V2X frequency-watt entry is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("frequency",
+                                              "frequency",
+                                              OCPPCBORExtensions.TryParseHertz,
+                                              out Hertz Frequency,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("power",
+                                              "power",
+                                              OCPPCBORExtensions.TryParseWatt,
+                                              out Watt Power,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                V2XFreqWattEntry = new V2XFreqWattEntry(
+                                       Frequency,
+                                       Power,
+                                       CustomData
+                                   );
+
+                if (CustomV2XFreqWattEntryParser is not null)
+                    V2XFreqWattEntry = CustomV2XFreqWattEntryParser(CBOR,
+                                                  V2XFreqWattEntry);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                V2XFreqWattEntry  = default;
+                ErrorResponse  = "The given CBOR representation of a V2X frequency-watt entry is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<V2XFreqWattEntry>.TryParse(CBOR, out V2XFreqWattEntry, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X frequency-watt entry - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<V2XFreqWattEntry>.TryParse(CBORValue                         CBOR,
+                                                                  out V2XFreqWattEntry                  Value,
+                                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomV2XFreqWattEntrySerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this V2X frequency-watt entry: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X frequency-watt entrys.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<V2XFreqWattEntry>? CustomV2XFreqWattEntrySerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("frequency",   Frequency.ToCBOR()),
+                           ("power",       Power.    ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomV2XFreqWattEntrySerializer is not null
+                       ? CustomV2XFreqWattEntrySerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

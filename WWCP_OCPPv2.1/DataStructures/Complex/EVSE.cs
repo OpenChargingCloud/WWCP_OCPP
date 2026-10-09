@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A electric vehicle supply equipment (EVSE).
     /// </summary>
     public class EVSE : ACustomData,
+                        ICBORSerializable<EVSE>,
                         IEquatable<EVSE>
     {
 
@@ -272,6 +275,161 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomEVSESerializer is not null
                        ? CustomEVSESerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out EVSE, out ErrorResponse, CustomEVSEParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EVSE.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVSE">The EVSE.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out EVSE?  EVSE,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out EVSE,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EVSE.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVSE">The EVSE.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomEVSEParser">An optional delegate to read custom EVSEs.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out EVSE?           EVSE,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<EVSE>?  CustomEVSEParser)
+        {
+
+            try
+            {
+
+                EVSE = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an EVSE is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "EVSE identification",
+                                               out var evseIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (evseIdNumber > UInt16.MaxValue || !EVSE_Id.TryParse((UInt16) evseIdNumber, out var EVSEId))
+                {
+                    ErrorResponse = $"Invalid EVSE identification '{evseIdNumber}'!";
+                    return false;
+                }
+
+                Connector_Id? ConnectorId = null;
+
+                if (CBOR.ParseOptionalUInt64("connectorId",
+                                             "connector identification",
+                                             out var connectorIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (connectorIdNumber is not UInt64 number || number > Byte.MaxValue || !Connector_Id.TryParse((Byte) number, out var connectorId))
+                    {
+                        ErrorResponse = $"Invalid connector identification '{connectorIdNumber}'!";
+                        return false;
+                    }
+
+                    ConnectorId = connectorId;
+
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+                if (CBOR.ParseOptional("customData",
+                                       "custom data",
+                                       OCPPCBORExtensions.TryParseCustomData,
+                                       out CustomData? CustomData,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+
+                EVSE = new EVSE(
+                           EVSEId,
+                           ConnectorId,
+                           CustomData
+                       );
+
+                if (CustomEVSEParser is not null)
+                    EVSE = CustomEVSEParser(CBOR,
+                                      EVSE);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                EVSE  = default;
+                ErrorResponse  = "The given CBOR representation of an EVSE is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<EVSE>.TryParse(CBOR, out EVSE, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EVSE - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<EVSE>.TryParse(CBORValue                         CBOR,
+                                                      out EVSE                  Value,
+                                                      [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomEVSESerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this EVSE: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<EVSE>? CustomEVSESerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",           CBORValue.FromUInt64(Id.Value)),
+                           ("connectorId",  OCPPCBORExtensions.UInt(ConnectorId?.Value)),
+                           ("customData",  CustomData?.ToCBOR())
+                       );
+
+            return CustomEVSESerializer is not null
+                       ? CustomEVSESerializer(this, cbor)
+                       : cbor;
 
         }
 

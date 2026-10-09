@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A message to be displayed at a charging station.
     /// </summary>
     public class MessageContent : ACustomData,
+                                  ICBORSerializable<MessageContent>,
                                   IEquatable<MessageContent>
     {
 
@@ -309,6 +312,171 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomMessageContentSerializer is not null
                        ? CustomMessageContentSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out MessageContent, out ErrorResponse, CustomMessageContentParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a message content.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MessageContent">The message content.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out MessageContent?  MessageContent,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out MessageContent,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a message content.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MessageContent">The message content.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMessageContentParser">An optional delegate to read custom message contents.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out MessageContent?           MessageContent,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<MessageContent>?  CustomMessageContentParser)
+        {
+
+            try
+            {
+
+                MessageContent = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a message content is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("content",
+                                             "message content",
+                                             out var Content,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("format",
+                                             "message format",
+                                             out var formatText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!MessageFormat.TryParse(formatText, out var Format))
+                {
+                    ErrorResponse = $"Invalid message format '{formatText}'!";
+                    return false;
+                }
+
+                Language_Id? Language = null;
+
+                if (CBOR.ParseOptionalText("language",
+                                           "message language",
+                                           out var languageText,
+                                           out ErrorResponse))
+                {
+
+                    if (!Language_Id.TryParse(languageText!, out var language))
+                    {
+                        ErrorResponse = $"Invalid message language '{languageText}'!";
+                        return false;
+                    }
+
+                    Language = language;
+
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+                if (CBOR.ParseOptional("customData",
+                                       "custom data",
+                                       OCPPCBORExtensions.TryParseCustomData,
+                                       out CustomData? CustomData,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+
+                MessageContent = new MessageContent(
+                                     Content,
+                                     Language,
+                                     Format,
+                                     CustomData
+                                 );
+
+                if (CustomMessageContentParser is not null)
+                    MessageContent = CustomMessageContentParser(CBOR,
+                                                MessageContent);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                MessageContent  = default;
+                ErrorResponse  = "The given CBOR representation of a message content is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<MessageContent>.TryParse(CBOR, out MessageContent, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a message content - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<MessageContent>.TryParse(CBORValue                         CBOR,
+                                                                out MessageContent                  Value,
+                                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomMessageContentSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this message content: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<MessageContent>? CustomMessageContentSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("content",   CBORValue.FromText(Content)),
+                           ("format",    CBORValue.FromText(Format.ToString())),
+                           ("language",  OCPPCBORExtensions.Text(Language?.ToString())),
+                           ("customData",  CustomData?.ToCBOR())
+                       );
+
+            return CustomMessageContentSerializer is not null
+                       ? CustomMessageContentSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An element providing more information about the status.
     /// </summary>
     public class StatusInfo : ACustomData,
+                              ICBORSerializable<StatusInfo>,
                               IEquatable<StatusInfo>
     {
 
@@ -275,6 +278,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomStatusInfoSerializer is not null
                        ? CustomStatusInfoSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out StatusInfo, out ErrorResponse, CustomStatusInfoParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a status information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="StatusInfo">The status information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out StatusInfo?  StatusInfo,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out StatusInfo,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a status information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="StatusInfo">The status information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStatusInfoParser">An optional delegate to read custom status information.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out StatusInfo?           StatusInfo,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<StatusInfo>?  CustomStatusInfoParser)
+        {
+
+            try
+            {
+
+                StatusInfo = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a status information is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("reasonCode",
+                                             "reason code",
+                                             out var ReasonCode,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("additionalInfo",
+                                       "additional information",
+                                       out var AdditionalInfo,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (CBOR.ParseOptional("customData",
+                                       "custom data",
+                                       OCPPCBORExtensions.TryParseCustomData,
+                                       out CustomData? CustomData,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+
+                StatusInfo = new StatusInfo(
+                                 ReasonCode.     Trim(),
+                                 AdditionalInfo?.Trim(),
+                                 CustomData
+                             );
+
+                if (CustomStatusInfoParser is not null)
+                    StatusInfo = CustomStatusInfoParser(CBOR,
+                                            StatusInfo);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                StatusInfo  = default;
+                ErrorResponse  = "The given CBOR representation of a status information is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<StatusInfo>.TryParse(CBOR, out StatusInfo, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a status information - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<StatusInfo>.TryParse(CBORValue                         CBOR,
+                                                            out StatusInfo                  Value,
+                                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomStatusInfoSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this status information: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize custom status information.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<StatusInfo>? CustomStatusInfoSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("reasonCode",      CBORValue.FromText(ReasonCode)),
+                           ("additionalInfo",  OCPPCBORExtensions.Text(AdditionalInfo)),
+                           ("customData",  CustomData?.ToCBOR())
+                       );
+
+            return CustomStatusInfoSerializer is not null
+                       ? CustomStatusInfoSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A component.
     /// </summary>
     public class Component : ACustomData,
+                             ICBORSerializable<Component>,
                              IEquatable<Component>
     {
 
@@ -319,6 +322,157 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomComponentSerializer is not null
                        ? CustomComponentSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out Component, out ErrorResponse, CustomComponentParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a component.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Component">The component.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Component?  Component,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Component,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a component.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Component">The component.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomComponentParser">An optional delegate to read custom components.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Component?           Component,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Component>?  CustomComponentParser)
+        {
+
+            try
+            {
+
+                Component = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a component is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("name",
+                                             "component name",
+                                             out var Name,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("instance",
+                                       "component instance",
+                                       out var Instance,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (CBOR.ParseOptional("evse",
+                                       "EVSE",
+                                       OCPPv2_1.EVSE.TryParseCBOR,
+                                       out EVSE? EVSE,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+                if (CBOR.ParseOptional("customData",
+                                       "custom data",
+                                       OCPPCBORExtensions.TryParseCustomData,
+                                       out CustomData? CustomData,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+
+                Component = new Component(
+                                Name,
+                                Instance,
+                                EVSE,
+                                CustomData
+                            );
+
+                if (CustomComponentParser is not null)
+                    Component = CustomComponentParser(CBOR,
+                                           Component);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Component  = default;
+                ErrorResponse  = "The given CBOR representation of a component is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Component>.TryParse(CBOR, out Component, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a component - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Component>.TryParse(CBORValue                         CBOR,
+                                                           out Component                  Value,
+                                                           [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomComponentSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this component: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Component>? CustomComponentSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("name",      CBORValue.FromText(Name)),
+                           ("instance",  OCPPCBORExtensions.Text(Instance)),
+                           ("evse",      EVSE?.ToCBOR()),
+                           ("customData",  CustomData?.ToCBOR())
+                       );
+
+            return CustomComponentSerializer is not null
+                       ? CustomComponentSerializer(this, cbor)
+                       : cbor;
 
         }
 

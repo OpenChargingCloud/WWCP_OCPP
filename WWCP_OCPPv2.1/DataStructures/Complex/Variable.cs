@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A variable.
     /// </summary>
     public class Variable : ACustomData,
+                            ICBORSerializable<Variable>,
                             IEquatable<Variable>
     {
 
@@ -279,6 +282,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomVariableSerializer is not null
                        ? CustomVariableSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out Variable, out ErrorResponse, CustomVariableParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Variable">The variable.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Variable?  Variable,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Variable,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Variable">The variable.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomVariableParser">An optional delegate to read custom variables.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Variable?           Variable,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Variable>?  CustomVariableParser)
+        {
+
+            try
+            {
+
+                Variable = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a variable is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("name",
+                                             "variable name",
+                                             out var Name,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("instance",
+                                       "variable instance",
+                                       out var Instance,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (CBOR.ParseOptional("customData",
+                                       "custom data",
+                                       OCPPCBORExtensions.TryParseCustomData,
+                                       out CustomData? CustomData,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+
+                Variable = new Variable(
+                               Name,
+                               Instance,
+                               CustomData
+                           );
+
+                if (CustomVariableParser is not null)
+                    Variable = CustomVariableParser(CBOR,
+                                          Variable);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Variable  = default;
+                ErrorResponse  = "The given CBOR representation of a variable is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Variable>.TryParse(CBOR, out Variable, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Variable>.TryParse(CBORValue                         CBOR,
+                                                          out Variable                  Value,
+                                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomVariableSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this variable: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Variable>? CustomVariableSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("name",      CBORValue.FromText(Name)),
+                           ("instance",  OCPPCBORExtensions.Text(Instance)),
+                           ("customData",  CustomData?.ToCBOR())
+                       );
+
+            return CustomVariableSerializer is not null
+                       ? CustomVariableSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -23,6 +23,8 @@ using NUnit.Framework;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
@@ -112,6 +114,91 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
             Assert.That(JToken.DeepEquals(Normalized(written), Normalized(sample)), Is.True,
                         $"Written:  {Normalized(written).ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
                         $"Expected: {Normalized(sample). ToString(Newtonsoft.Json.Formatting.None)}");
+
+        }
+
+        #endregion
+
+        #region (internal static) ReadAndWrittenAsTheSchemaSaysAndAsCBOR(Sample, TryParse, ToJSON, Read = null, KeysInCBOR = null)
+
+        /// <summary>
+        /// The sample is read and written as the schema says - and what was read
+        /// is written as CBOR and read back from its bytes as the same: written
+        /// as JSON again it is the sample, and its maps have the keys of the
+        /// sample's objects.
+        /// </summary>
+        /// <param name="Sample">A JSON object in the shape the schema gives it, with every property it has.</param>
+        /// <param name="TryParse">The JSON parser.</param>
+        /// <param name="ToJSON">The JSON serializer.</param>
+        /// <param name="Read">What has to be true of what was read.</param>
+        /// <param name="KeysInCBOR">A key of the JSON objects that is another one in CBOR - one whose suffix names a unit there.</param>
+        internal static void ReadAndWrittenAsTheSchemaSaysAndAsCBOR<T>(String                       Sample,
+                                                                      Parser<T>                    TryParse,
+                                                                      Func<T, JObject>             ToJSON,
+                                                                      Action<T>?                   Read         = null,
+                                                                      IDictionary<String, String>? KeysInCBOR   = null)
+
+            where T : ICBORSerializable<T>
+
+        {
+
+            ReadAndWrittenAsTheSchemaSays(Sample, TryParse, ToJSON, Read);
+
+            var sample = JObject.Parse(Sample);
+            TryParse(sample, out var value, out _);
+
+            var bytes  = value!.ToCBOR().ToByteArray();
+            var cbor   = CBORValue.Parse(bytes);
+
+            Assert.That(T.TryParse(cbor, out var fromCBOR, out var errorResponse), Is.True,
+                        $"What was written as CBOR was not read: {errorResponse}{Environment.NewLine}{cbor.ToDiagnosticString()}");
+
+            Read?.Invoke(fromCBOR);
+
+            var written = ToJSON(fromCBOR);
+
+            Assert.That(JToken.DeepEquals(Normalized(written), Normalized(sample)), Is.True,
+                        $"Read from CBOR: {Normalized(written).ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
+                        $"Expected:       {Normalized(sample). ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
+                        $"CBOR:           {cbor.ToDiagnosticString()}");
+
+            SameKeys(sample, CBORJSON.ToJSON(cbor), "", KeysInCBOR ?? new Dictionary<String, String>());
+
+        }
+
+        /// <summary>
+        /// The keys of every object of the JSON are the keys of every map of the
+        /// CBOR, but for those that name a unit in JSON.
+        /// </summary>
+        private static void SameKeys(JToken JSON, JToken CBOR, String Path, IDictionary<String, String> KeysInCBOR)
+        {
+
+            if (JSON is JObject jsonObject)
+            {
+
+                // A metrological value is one value in CBOR, whatever it is in JSON.
+                if (CBOR is not JObject cborObject)
+                    return;
+
+                var expected = jsonObject.Properties().Select(property => KeysInCBOR.TryGetValue(property.Name, out var key) ? key : property.Name).OrderBy(key => key, StringComparer.Ordinal).ToArray();
+                var actual   = cborObject.Properties().Select(property => property.Name).OrderBy(key => key, StringComparer.Ordinal).ToArray();
+
+                Assert.That(actual, Is.EqualTo(expected), $"The keys of the map at '{Path}'");
+
+                foreach (var property in jsonObject.Properties())
+                    SameKeys(property.Value,
+                             cborObject[KeysInCBOR.TryGetValue(property.Name, out var key) ? key : property.Name]!,
+                             $"{Path}/{property.Name}",
+                             KeysInCBOR);
+
+            }
+
+            else if (JSON is JArray jsonArray && CBOR is JArray cborArray)
+            {
+                Assert.That(cborArray.Count, Is.EqualTo(jsonArray.Count), $"The items of the array at '{Path}'");
+                for (var i = 0; i < jsonArray.Count; i++)
+                    SameKeys(jsonArray[i], cborArray[i], $"{Path}[{i}]", KeysInCBOR);
+            }
 
         }
 
@@ -660,6 +747,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                    }
                    """,
                    ISO15118_20.CommonMessages.AbsolutePriceSchedule.TryParse,
+                   value => value.ToJSON()
+               );
+
+        #endregion
+
+        #region DEREnterService, ReactivePowerParameters - values Newtonsoft cannot write as they are
+
+        /// <summary>
+        /// Its voltages and frequencies were handed to the JSON as Volt and
+        /// Hertz, which Newtonsoft cannot write: ToJSON() threw.
+        /// </summary>
+        [Test]
+        public void DEREnterService()
+
+            => ReadAndWrittenAsTheSchemaSays<DEREnterService>(
+                   $$"""
+                   {
+                       "priority":    1,
+                       "highVoltage": 253,
+                       "lowVoltage":  207,
+                       "highFreq":    50.2,
+                       "lowFreq":     49.8,
+                       "delay":       30,
+                       "randomDelay": 10,
+                       "rampRate":    60,
+                       "customData":  {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.DEREnterService.TryParse,
+                   value => value.ToJSON()
+               );
+
+        /// <summary>
+        /// Its reference voltage was handed to the JSON as a Percentage: ToJSON() threw.
+        /// </summary>
+        [Test]
+        public void ReactivePowerParameters()
+
+            => ReadAndWrittenAsTheSchemaSays<ReactivePowerParameters>(
+                   $$"""
+                   {
+                       "vRef":                       100,
+                       "autonomousVRefEnable":       true,
+                       "autonomousVRefTimeConstant": 300,
+                       "customData":                 {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.ReactivePowerParameters.TryParse,
+                   value => value.ToJSON()
+               );
+
+        /// <summary>
+        /// Its operation mode was handed to the JSON as an OperationMode: ToJSON() threw.
+        /// </summary>
+        [Test]
+        public void ChargingSchedulePeriod_WithAnOperationMode()
+
+            => ReadAndWrittenAsTheSchemaSays<ChargingSchedulePeriod>(
+                   """{ "startPeriod": 0, "limit": 11000, "operationMode": "CentralSetpoint", "setpoint": 7400 }""",
+                   OCPPv2_1.ChargingSchedulePeriod.TryParse,
                    value => value.ToJSON()
                );
 

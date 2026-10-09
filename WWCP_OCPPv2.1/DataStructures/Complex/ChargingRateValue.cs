@@ -490,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(CBOR, out ChargingRateValue, out ErrorResponse)
+        #region (static) TryParseCBOR(CBOR, out ChargingRateValue, out ErrorResponse)
 
         /// <summary>
         /// Try to read the given CBOR value as a charging rate value: a
@@ -499,9 +499,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CBOR">A CBOR value.</param>
         /// <param name="ChargingRateValue">The charging rate value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CBORValue                         CBOR,
-                                       out ChargingRateValue             ChargingRateValue,
-                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        public static Boolean TryParseCBOR(CBORValue                         CBOR,
+                                           out ChargingRateValue             ChargingRateValue,
+                                           [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             ChargingRateValue  = default;
@@ -542,6 +542,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
         }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingRateValue>.TryParse(CBOR, out ChargingRateValue, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR value as a charging rate value - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the text one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingRateValue>.TryParse(CBORValue                         CBOR,
+                                                                    out ChargingRateValue             Value,
+                                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+
+            => TryParseCBOR(CBOR, out Value, out ErrorResponse);
 
         #endregion
 

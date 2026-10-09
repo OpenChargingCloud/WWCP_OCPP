@@ -23,6 +23,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -32,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A V2X Signal-Watt entry.
     /// </summary>
     public class V2XSignalWattEntry : ACustomData,
+                                      ICBORSerializable<V2XSignalWattEntry>,
                                       IEquatable<V2XSignalWattEntry>
     {
 
@@ -238,6 +243,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out V2XSignalWattEntry, out ErrorResponse, CustomV2XSignalWattEntryParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X signal-watt entry.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="V2XSignalWattEntry">The V2X signal-watt entry.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out V2XSignalWattEntry?  V2XSignalWattEntry,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out V2XSignalWattEntry,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X signal-watt entry.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="V2XSignalWattEntry">The V2X signal-watt entry.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomV2XSignalWattEntryParser">An optional delegate to read custom V2X signal-watt entrys.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out V2XSignalWattEntry?           V2XSignalWattEntry,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<V2XSignalWattEntry>?  CustomV2XSignalWattEntryParser)
+        {
+
+            try
+            {
+
+                V2XSignalWattEntry = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a V2X signal-watt entry is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("signal",
+                                                "signal",
+                                                out var Signal,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("power",
+                                              "power",
+                                              OCPPCBORExtensions.TryParseWatt,
+                                              out Watt Power,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                V2XSignalWattEntry = new V2XSignalWattEntry(
+                                         Signal,
+                                         Power,
+                                         CustomData
+                                     );
+
+                if (CustomV2XSignalWattEntryParser is not null)
+                    V2XSignalWattEntry = CustomV2XSignalWattEntryParser(CBOR,
+                                                    V2XSignalWattEntry);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                V2XSignalWattEntry  = default;
+                ErrorResponse  = "The given CBOR representation of a V2X signal-watt entry is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<V2XSignalWattEntry>.TryParse(CBOR, out V2XSignalWattEntry, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X signal-watt entry - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<V2XSignalWattEntry>.TryParse(CBORValue                         CBOR,
+                                                                    out V2XSignalWattEntry                  Value,
+                                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomV2XSignalWattEntrySerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this V2X signal-watt entry: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomV2XSignalWattEntrySerializer">A delegate to serialize custom V2X signal-watt entrys.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<V2XSignalWattEntry>? CustomV2XSignalWattEntrySerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signal",      CBORValue.FromDecimal(Signal)),
+                           ("power",       Power.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomV2XSignalWattEntrySerializer is not null
+                       ? CustomV2XSignalWattEntrySerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

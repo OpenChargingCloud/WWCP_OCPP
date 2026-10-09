@@ -425,10 +425,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("priority",      Priority),
-                                 new JProperty("highVoltage",   HighVoltage),
-                                 new JProperty("lowVoltage",    LowVoltage),
-                                 new JProperty("highFreq",      HighFrequency),
-                                 new JProperty("lowFreq",       LowFrequency),
+                                 new JProperty("highVoltage",   HighVoltage.  Value),
+                                 new JProperty("lowVoltage",    LowVoltage.   Value),
+                                 new JProperty("highFreq",      HighFrequency.Value),
+                                 new JProperty("lowFreq",       LowFrequency. Value),
 
                            Delay.HasValue
                                ? new JProperty("delay",         Delay.      Value.TotalSeconds)
