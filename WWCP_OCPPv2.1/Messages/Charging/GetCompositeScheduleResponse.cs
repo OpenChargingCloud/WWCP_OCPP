@@ -703,6 +703,158 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetCompositeScheduleResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetCompositeSchedule response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetCompositeScheduleResponse">The GetCompositeSchedule response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to read custom GetCompositeSchedule responses.</param>
+        public static Boolean TryParseCBOR(GetCompositeScheduleRequest                              Request,
+                                           CBORValue                                                CBOR,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out GetCompositeScheduleResponse?   GetCompositeScheduleResponse,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          ResponseTimestamp                          = null,
+                                           CustomCBORParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetCompositeScheduleResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetCompositeSchedule response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "GetCompositeSchedule status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid GetCompositeSchedule status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("schedule",
+                                   "charging schedule",
+                                   OCPPv2_1.CompositeSchedule.TryParseCBOR,
+                                   out CompositeSchedule? Schedule,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetCompositeScheduleResponse = new GetCompositeScheduleResponse(
+
+                                                   Request,
+                                                   Status,
+                                                   Schedule,
+                                                   StatusInfo,
+
+                                                   null,
+                                                   ResponseTimestamp,
+
+                                                   Destination,
+                                                   NetworkPath,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData
+
+                                               );
+
+                if (CustomGetCompositeScheduleResponseParser is not null)
+                    GetCompositeScheduleResponse = CustomGetCompositeScheduleResponseParser(CBOR,
+                                                                                           GetCompositeScheduleResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetCompositeScheduleResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetCompositeSchedule response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetCompositeScheduleResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetCompositeSchedule response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetCompositeScheduleResponseSerializer">A delegate to serialize custom GetCompositeSchedule responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetCompositeScheduleResponse>? CustomGetCompositeScheduleResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("schedule",                  Schedule?.ToCBOR()),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetCompositeScheduleResponseSerializer is not null
+                       ? CustomGetCompositeScheduleResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

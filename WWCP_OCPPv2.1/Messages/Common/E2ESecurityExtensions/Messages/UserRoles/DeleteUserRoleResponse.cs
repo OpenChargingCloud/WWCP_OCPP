@@ -241,30 +241,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region CurrentTime    [mandatory]
-
-                if (!JSON.ParseMandatory("currentTime",
-                                         "current time",
-                                         out DateTime CurrentTime,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Interval       [mandatory]
-
-                if (!JSON.ParseMandatory("interval",
-                                         "heartbeat interval",
-                                         out TimeSpan Interval,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
                 #region StatusInfo     [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
@@ -384,6 +360,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return CustomDeleteUserRoleResponseSerializer is not null
                        ? CustomDeleteUserRoleResponseSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(Request, CBOR, ..., out DeleteUserRoleResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DeleteUserRole response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="DeleteUserRoleResponse">The DeleteUserRole response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomDeleteUserRoleResponseParser">A delegate to read custom DeleteUserRole responses.</param>
+        public static Boolean TryParseCBOR(DeleteUserRoleRequest                              Request,
+                                           CBORValue                                          CBOR,
+                                           SourceRouting                                      Destination,
+                                           NetworkPath                                        NetworkPath,
+                                           [NotNullWhen(true)]  out DeleteUserRoleResponse?   DeleteUserRoleResponse,
+                                           [NotNullWhen(false)] out String?                   ErrorResponse,
+                                           DateTimeOffset?                                    ResponseTimestamp                    = null,
+                                           CustomCBORParserDelegate<DeleteUserRoleResponse>?  CustomDeleteUserRoleResponseParser   = null)
+        {
+
+            try
+            {
+
+                DeleteUserRoleResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DeleteUserRole response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "registration status",
+                                             out var RegistrationStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericStatusExtensions.TryParse(RegistrationStatusText, out var RegistrationStatus))
+                {
+                    ErrorResponse = $"Invalid registration status '{RegistrationStatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                DeleteUserRoleResponse = new DeleteUserRoleResponse(
+
+                                             Request,
+                                             RegistrationStatus,
+                                             StatusInfo,
+
+                                             null,
+                                             ResponseTimestamp,
+
+                                             Destination,
+                                             NetworkPath,
+
+                                             null,
+                                             null,
+                                             Signatures,
+
+                                             CustomData
+
+                                         );
+
+                if (CustomDeleteUserRoleResponseParser is not null)
+                    DeleteUserRoleResponse = CustomDeleteUserRoleResponseParser(CBOR,
+                                                                               DeleteUserRoleResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DeleteUserRoleResponse = null;
+                ErrorResponse = "The given CBOR representation of a DeleteUserRole response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDeleteUserRoleResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DeleteUserRole response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDeleteUserRoleResponseSerializer">A delegate to serialize custom DeleteUserRole responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DeleteUserRoleResponse>? CustomDeleteUserRoleResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomDeleteUserRoleResponseSerializer is not null
+                       ? CustomDeleteUserRoleResponseSerializer(this, cbor)
+                       : cbor;
 
         }
 

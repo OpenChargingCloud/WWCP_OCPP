@@ -468,6 +468,203 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out ListDirectoryRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ListDirectory request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ListDirectoryRequest">The ListDirectory request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomListDirectoryRequestParser">A delegate to read custom ListDirectory requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                        CBOR,
+                                           Request_Id                                       RequestId,
+                                           SourceRouting                                    Destination,
+                                           NetworkPath                                      NetworkPath,
+                                           [NotNullWhen(true)]  out ListDirectoryRequest?   ListDirectoryRequest,
+                                           [NotNullWhen(false)] out String?                 ErrorResponse,
+                                           DateTimeOffset?                                  RequestTimestamp                   = null,
+                                           TimeSpan?                                        RequestTimeout                     = null,
+                                           EventTracking_Id?                                EventTrackingId                    = null,
+                                           CustomCBORParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser   = null)
+        {
+
+            try
+            {
+
+                ListDirectoryRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ListDirectory request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("directoryPath",
+                                             "absolute directory path",
+                                             out var DirectoryPathText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.FilePath.TryParse(DirectoryPathText, out var DirectoryPath))
+                {
+                    ErrorResponse = $"Invalid absolute directory path '{DirectoryPathText}'!";
+                    return false;
+                }
+
+                ListDirectoryFormat? Format = null;
+
+                if (CBOR.ParseOptionalText("format",
+                                           "response format",
+                                           out var FormatText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.ListDirectoryFormat.TryParse(FormatText!, out var FormatValue))
+                    {
+                        ErrorResponse = $"Invalid response format '{FormatText}'!";
+                        return false;
+                    }
+
+                    Format = FormatValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("withFileSizes",
+                                       "with file sizes",
+                                       out var WithFileSizes,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("withFileDates",
+                                       "with file dates",
+                                       out var WithFileDates,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("withSHA256FileHashes",
+                                       "with SHA256 file hashes",
+                                       out var WithSHA256FileHashes,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("withSHA512FileHashes",
+                                       "with SHA512 file hashes",
+                                       out var WithSHA512FileHashes,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ListDirectoryRequest = new ListDirectoryRequest(
+
+                                           Destination,
+                                           DirectoryPath,
+                                           Format,
+                                           WithFileSizes,
+                                           WithFileDates,
+                                           WithSHA256FileHashes,
+                                           WithSHA512FileHashes,
+
+                                           null,
+                                           null,
+                                           Signatures,
+
+                                           CustomData,
+
+                                           RequestId,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
+                                           NetworkPath
+
+                                       );
+
+                if (CustomListDirectoryRequestParser is not null)
+                    ListDirectoryRequest = CustomListDirectoryRequestParser(CBOR,
+                                                                           ListDirectoryRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ListDirectoryRequest = null;
+                ErrorResponse = "The given CBOR representation of a ListDirectory request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomListDirectoryRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ListDirectory request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomListDirectoryRequestSerializer">A delegate to serialize custom ListDirectory requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ListDirectoryRequest>? CustomListDirectoryRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("directoryPath",             CBORValue.FromText(DirectoryPath.ToString())),
+                           ("format",                    CBORValue.FromText(Format.ToString())),
+                           ("withFileSizes",             CBORValue.FromBoolean(WithFileSizes)),
+                           ("withFileDates",             CBORValue.FromBoolean(WithFileDates)),
+                           ("withSHA256FileHashes",      CBORValue.FromBoolean(WithSHA256FileHashes)),
+                           ("withSHA512FileHashes",      CBORValue.FromBoolean(WithSHA512FileHashes)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomListDirectoryRequestSerializer is not null
+                       ? CustomListDirectoryRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

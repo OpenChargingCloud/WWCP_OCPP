@@ -417,6 +417,124 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out UpdateSignaturePolicyRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an UpdateSignaturePolicy request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="UpdateSignaturePolicyRequest">The UpdateSignaturePolicy request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUpdateSignaturePolicyRequestParser">A delegate to read custom UpdateSignaturePolicy requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                CBOR,
+                                           Request_Id                                               RequestId,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out UpdateSignaturePolicyRequest?   UpdateSignaturePolicyRequest,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          RequestTimestamp                           = null,
+                                           TimeSpan?                                                RequestTimeout                             = null,
+                                           EventTracking_Id?                                        EventTrackingId                            = null,
+                                           CustomCBORParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser   = null)
+        {
+
+            try
+            {
+
+                UpdateSignaturePolicyRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an UpdateSignaturePolicy request is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                UpdateSignaturePolicyRequest = new UpdateSignaturePolicyRequest(
+
+                                                   Destination,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData,
+
+                                                   RequestId,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
+                                                   NetworkPath
+
+                                               );
+
+                if (CustomUpdateSignaturePolicyRequestParser is not null)
+                    UpdateSignaturePolicyRequest = CustomUpdateSignaturePolicyRequestParser(CBOR,
+                                                                                           UpdateSignaturePolicyRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                UpdateSignaturePolicyRequest = null;
+                ErrorResponse = "The given CBOR representation of an UpdateSignaturePolicy request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomUpdateSignaturePolicyRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this UpdateSignaturePolicy request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomUpdateSignaturePolicyRequestSerializer">A delegate to serialize custom UpdateSignaturePolicy requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<UpdateSignaturePolicyRequest>? CustomUpdateSignaturePolicyRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomUpdateSignaturePolicyRequestSerializer is not null
+                       ? CustomUpdateSignaturePolicyRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

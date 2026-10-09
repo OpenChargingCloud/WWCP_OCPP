@@ -27,6 +27,8 @@ using cloud.charging.open.protocols.WWCP;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -337,6 +339,116 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             return CustomClosePeriodicEventStreamResponseSerializer is not null
                        ? CustomClosePeriodicEventStreamResponseSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(Request, CBOR, ..., out ClosePeriodicEventStreamResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ClosePeriodicEventStream response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ClosePeriodicEventStreamResponse">The ClosePeriodicEventStream response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomClosePeriodicEventStreamResponseParser">A delegate to read custom ClosePeriodicEventStream responses.</param>
+        public static Boolean TryParseCBOR(ClosePeriodicEventStreamRequest                              Request,
+                                           CBORValue                                                    CBOR,
+                                           [NotNullWhen(true)]  out ClosePeriodicEventStreamResponse?   ClosePeriodicEventStreamResponse,
+                                           [NotNullWhen(false)] out String?                             ErrorResponse,
+                                           CustomCBORParserDelegate<ClosePeriodicEventStreamResponse>?  CustomClosePeriodicEventStreamResponseParser   = null)
+        {
+
+            try
+            {
+
+                ClosePeriodicEventStreamResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ClosePeriodicEventStream response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ClosePeriodicEventStreamResponse = new ClosePeriodicEventStreamResponse(
+                                                       Request,
+                                                       StatusInfo,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       Signatures,
+                                                       CustomData
+                                                   );
+
+                if (CustomClosePeriodicEventStreamResponseParser is not null)
+                    ClosePeriodicEventStreamResponse = CustomClosePeriodicEventStreamResponseParser(CBOR,
+                                                                                                   ClosePeriodicEventStreamResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClosePeriodicEventStreamResponse = null;
+                ErrorResponse = "The given CBOR representation of a ClosePeriodicEventStream response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClosePeriodicEventStreamResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ClosePeriodicEventStream response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClosePeriodicEventStreamResponseSerializer">A delegate to serialize custom ClosePeriodicEventStream responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClosePeriodicEventStreamResponse>? CustomClosePeriodicEventStreamResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomClosePeriodicEventStreamResponseSerializer is not null
+                       ? CustomClosePeriodicEventStreamResponseSerializer(this, cbor)
+                       : cbor;
 
         }
 

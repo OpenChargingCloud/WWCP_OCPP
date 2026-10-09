@@ -329,6 +329,120 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out PublishFirmwareStatusNotificationResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a PublishFirmwareStatusNotification response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="PublishFirmwareStatusNotificationResponse">The PublishFirmwareStatusNotification response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomPublishFirmwareStatusNotificationResponseParser">A delegate to read custom PublishFirmwareStatusNotification responses.</param>
+        public static Boolean TryParseCBOR(PublishFirmwareStatusNotificationRequest                              Request,
+                                           CBORValue                                                             CBOR,
+                                           SourceRouting                                                         Destination,
+                                           NetworkPath                                                           NetworkPath,
+                                           [NotNullWhen(true)]  out PublishFirmwareStatusNotificationResponse?   PublishFirmwareStatusNotificationResponse,
+                                           [NotNullWhen(false)] out String?                                      ErrorResponse,
+                                           DateTimeOffset?                                                       ResponseTimestamp                                       = null,
+                                           CustomCBORParserDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseParser   = null)
+        {
+
+            try
+            {
+
+                PublishFirmwareStatusNotificationResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a PublishFirmwareStatusNotification response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                PublishFirmwareStatusNotificationResponse = new PublishFirmwareStatusNotificationResponse(
+
+                                                                Request,
+
+                                                                null,
+                                                                ResponseTimestamp,
+
+                                                                Destination,
+                                                                NetworkPath,
+
+                                                                null,
+                                                                null,
+                                                                Signatures,
+
+                                                                CustomData
+
+                                                            );
+
+                if (CustomPublishFirmwareStatusNotificationResponseParser is not null)
+                    PublishFirmwareStatusNotificationResponse = CustomPublishFirmwareStatusNotificationResponseParser(CBOR,
+                                                                                                                     PublishFirmwareStatusNotificationResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                PublishFirmwareStatusNotificationResponse = null;
+                ErrorResponse = "The given CBOR representation of a PublishFirmwareStatusNotification response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomPublishFirmwareStatusNotificationResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this PublishFirmwareStatusNotification response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomPublishFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom PublishFirmwareStatusNotification responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<PublishFirmwareStatusNotificationResponse>? CustomPublishFirmwareStatusNotificationResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomPublishFirmwareStatusNotificationResponseSerializer is not null
+                       ? CustomPublishFirmwareStatusNotificationResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

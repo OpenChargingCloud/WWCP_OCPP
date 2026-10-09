@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         /// The keys of every object of the JSON are the keys of every map of the
         /// CBOR, but for those that name a unit in JSON.
         /// </summary>
-        private static void SameKeys(JToken JSON, CBORValue CBOR, String Path, IDictionary<String, String> KeysInCBOR)
+        internal static void SameKeys(JToken JSON, CBORValue CBOR, String Path, IDictionary<String, String> KeysInCBOR)
         {
 
             if (JSON is JObject jsonObject)

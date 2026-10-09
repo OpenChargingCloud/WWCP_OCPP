@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -414,6 +416,136 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             return CustomAdjustPeriodicEventStreamResponseSerializer is not null
                        ? CustomAdjustPeriodicEventStreamResponseSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(Request, CBOR, ..., out AdjustPeriodicEventStreamResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an AdjustPeriodicEventStream response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AdjustPeriodicEventStreamResponse">The AdjustPeriodicEventStream response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAdjustPeriodicEventStreamResponseParser">A delegate to read custom AdjustPeriodicEventStream responses.</param>
+        public static Boolean TryParseCBOR(AdjustPeriodicEventStreamRequest                              Request,
+                                           CBORValue                                                     CBOR,
+                                           [NotNullWhen(true)]  out AdjustPeriodicEventStreamResponse?   AdjustPeriodicEventStreamResponse,
+                                           [NotNullWhen(false)] out String?                              ErrorResponse,
+                                           CustomCBORParserDelegate<AdjustPeriodicEventStreamResponse>?  CustomAdjustPeriodicEventStreamResponseParser   = null)
+        {
+
+            try
+            {
+
+                AdjustPeriodicEventStreamResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an AdjustPeriodicEventStream response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "response status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid response status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                AdjustPeriodicEventStreamResponse = new AdjustPeriodicEventStreamResponse(
+
+                                                          Request,
+                                                          Status,
+                                                          StatusInfo,
+                                                          null,
+
+                                                          null,
+                                                          null,
+                                                          Signatures,
+
+                                                          CustomData
+
+                                                      );
+
+                if (CustomAdjustPeriodicEventStreamResponseParser is not null)
+                    AdjustPeriodicEventStreamResponse = CustomAdjustPeriodicEventStreamResponseParser(CBOR,
+                                                                                                     AdjustPeriodicEventStreamResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AdjustPeriodicEventStreamResponse = null;
+                ErrorResponse = "The given CBOR representation of an AdjustPeriodicEventStream response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAdjustPeriodicEventStreamResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this AdjustPeriodicEventStream response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAdjustPeriodicEventStreamResponseSerializer">A delegate to serialize custom AdjustPeriodicEventStream responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AdjustPeriodicEventStreamResponse>? CustomAdjustPeriodicEventStreamResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomAdjustPeriodicEventStreamResponseSerializer is not null
+                       ? CustomAdjustPeriodicEventStreamResponseSerializer(this, cbor)
+                       : cbor;
 
         }
 

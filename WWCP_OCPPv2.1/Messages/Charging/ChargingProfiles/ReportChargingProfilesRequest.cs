@@ -1513,6 +1513,195 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out ReportChargingProfilesRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ReportChargingProfiles request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ReportChargingProfilesRequest">The ReportChargingProfiles request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReportChargingProfilesRequestParser">A delegate to read custom ReportChargingProfiles requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                 CBOR,
+                                           Request_Id                                                RequestId,
+                                           SourceRouting                                             Destination,
+                                           NetworkPath                                               NetworkPath,
+                                           [NotNullWhen(true)]  out ReportChargingProfilesRequest?   ReportChargingProfilesRequest,
+                                           [NotNullWhen(false)] out String?                          ErrorResponse,
+                                           DateTimeOffset?                                           RequestTimestamp                            = null,
+                                           TimeSpan?                                                 RequestTimeout                              = null,
+                                           EventTracking_Id?                                         EventTrackingId                             = null,
+                                           CustomCBORParserDelegate<ReportChargingProfilesRequest>?  CustomReportChargingProfilesRequestParser   = null)
+        {
+
+            try
+            {
+
+                ReportChargingProfilesRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ReportChargingProfiles request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("requestId",
+                                               "ReportChargingProfiles request identification",
+                                               out var ReportChargingProfilesRequestIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (ReportChargingProfilesRequestIdNumber < Int32.MinValue || ReportChargingProfilesRequestIdNumber > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid ReportChargingProfiles request identification '{ReportChargingProfilesRequestIdNumber}'!";
+                    return false;
+                }
+
+                var ReportChargingProfilesRequestId = (Int32) ReportChargingProfilesRequestIdNumber;
+
+                if (!CBOR.ParseMandatoryText("chargingLimitSource",
+                                             "charging limit source",
+                                             out var ChargingLimitSourceText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.ChargingLimitSource.TryParse(ChargingLimitSourceText, out var ChargingLimitSource))
+                {
+                    ErrorResponse = $"Invalid charging limit source '{ChargingLimitSourceText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("evseId",
+                                               "evse identification",
+                                               out var EVSEIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (EVSEIdNumber > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) EVSEIdNumber, out var EVSEId))
+                {
+                    ErrorResponse = $"Invalid evse identification '{EVSEIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<ChargingProfile>("chargingProfile",
+                                               "charging profiles",
+                                               OCPPv2_1.ChargingProfile.TryParseCBOR,
+                                               out var ChargingProfiles,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalBoolean("tbc",
+                                       "to be continued",
+                                       out var ToBeContinued,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ReportChargingProfilesRequest = new ReportChargingProfilesRequest(
+
+                                                    Destination,
+                                                    ReportChargingProfilesRequestId,
+                                                    ChargingLimitSource,
+                                                    EVSEId,
+                                                    ChargingProfiles,
+                                                    ToBeContinued,
+
+                                                    null,
+                                                    null,
+                                                    Signatures,
+
+                                                    CustomData,
+
+                                                    RequestId,
+                                                    RequestTimestamp,
+                                                    RequestTimeout,
+                                                    EventTrackingId,
+                                                    NetworkPath
+
+                                                );
+
+                if (CustomReportChargingProfilesRequestParser is not null)
+                    ReportChargingProfilesRequest = CustomReportChargingProfilesRequestParser(CBOR,
+                                                                                             ReportChargingProfilesRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ReportChargingProfilesRequest = null;
+                ErrorResponse = "The given CBOR representation of a ReportChargingProfiles request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomReportChargingProfilesRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ReportChargingProfiles request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomReportChargingProfilesRequestSerializer">A delegate to serialize custom ReportChargingProfiles requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ReportChargingProfilesRequest>? CustomReportChargingProfilesRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestId",                 CBORValue.FromInt64(ReportChargingProfilesRequestId)),
+                           ("chargingLimitSource",       CBORValue.FromText(ChargingLimitSource.ToString())),
+                           ("evseId",                    CBORValue.FromUInt64(EVSEId.Value)),
+                           ("chargingProfile",           OCPPCBORExtensions.Array(ChargingProfiles, x => x.ToCBOR())),
+                           ("tbc",                       OCPPCBORExtensions.Flag(ToBeContinued)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomReportChargingProfilesRequestSerializer is not null
+                       ? CustomReportChargingProfilesRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

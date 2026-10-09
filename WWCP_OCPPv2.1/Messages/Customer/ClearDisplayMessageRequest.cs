@@ -367,6 +367,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out ClearDisplayMessageRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ClearDisplayMessage request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ClearDisplayMessageRequest">The ClearDisplayMessage request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomClearDisplayMessageRequestParser">A delegate to read custom ClearDisplayMessage requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                              CBOR,
+                                           Request_Id                                             RequestId,
+                                           SourceRouting                                          Destination,
+                                           NetworkPath                                            NetworkPath,
+                                           [NotNullWhen(true)]  out ClearDisplayMessageRequest?   ClearDisplayMessageRequest,
+                                           [NotNullWhen(false)] out String?                       ErrorResponse,
+                                           DateTimeOffset?                                        RequestTimestamp                         = null,
+                                           TimeSpan?                                              RequestTimeout                           = null,
+                                           EventTracking_Id?                                      EventTrackingId                          = null,
+                                           CustomCBORParserDelegate<ClearDisplayMessageRequest>?  CustomClearDisplayMessageRequestParser   = null)
+        {
+
+            try
+            {
+
+                ClearDisplayMessageRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ClearDisplayMessage request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "display message identification",
+                                               out var DisplayMessageIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (DisplayMessageIdNumber > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.DisplayMessage_Id.TryParse((UInt64) DisplayMessageIdNumber, out var DisplayMessageId))
+                {
+                    ErrorResponse = $"Invalid display message identification '{DisplayMessageIdNumber}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ClearDisplayMessageRequest = new ClearDisplayMessageRequest(
+
+                                                 Destination,
+                                                 DisplayMessageId,
+
+                                                 null,
+                                                 null,
+                                                 Signatures,
+
+                                                 CustomData,
+
+                                                 RequestId,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
+                                                 NetworkPath
+
+                                             );
+
+                if (CustomClearDisplayMessageRequestParser is not null)
+                    ClearDisplayMessageRequest = CustomClearDisplayMessageRequestParser(CBOR,
+                                                                                       ClearDisplayMessageRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClearDisplayMessageRequest = null;
+                ErrorResponse = "The given CBOR representation of a ClearDisplayMessage request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClearDisplayMessageRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ClearDisplayMessage request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClearDisplayMessageRequestSerializer">A delegate to serialize custom ClearDisplayMessage requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClearDisplayMessageRequest>? CustomClearDisplayMessageRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                        CBORValue.FromUInt64(DisplayMessageId.Value)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomClearDisplayMessageRequestSerializer is not null
+                       ? CustomClearDisplayMessageRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

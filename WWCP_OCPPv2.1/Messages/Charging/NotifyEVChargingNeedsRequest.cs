@@ -1188,6 +1188,185 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NotifyEVChargingNeedsRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyEVChargingNeeds request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyEVChargingNeedsRequest">The NotifyEVChargingNeeds request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyEVChargingNeedsRequestParser">A delegate to read custom NotifyEVChargingNeeds requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                CBOR,
+                                           Request_Id                                               RequestId,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyEVChargingNeedsRequest?   NotifyEVChargingNeedsRequest,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          RequestTimestamp                           = null,
+                                           TimeSpan?                                                RequestTimeout                             = null,
+                                           EventTracking_Id?                                        EventTrackingId                            = null,
+                                           CustomCBORParserDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestParser   = null)
+        {
+
+            try
+            {
+
+                NotifyEVChargingNeedsRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyEVChargingNeeds request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("evseId",
+                                               "EVSE identification",
+                                               out var EVSEIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (EVSEIdNumber > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) EVSEIdNumber, out var EVSEId))
+                {
+                    ErrorResponse = $"Invalid EVSE identification '{EVSEIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("chargingNeeds",
+                                         "charging needs",
+                                         OCPPv2_1.ChargingNeeds.TryParseCBOR,
+                                         out ChargingNeeds? ChargingNeeds,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("timestamp",
+                                        "received timestamp",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ReceivedTimestamp,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                UInt16? MaxScheduleTuples = null;
+
+                if (CBOR.ParseOptionalUInt64("maxScheduleTuples",
+                                             "max schedule tuples",
+                                             out var MaxScheduleTuplesNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (MaxScheduleTuplesNumber is not UInt64 MaxScheduleTuplesValue || MaxScheduleTuplesValue < UInt16.MinValue || MaxScheduleTuplesValue > UInt16.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid max schedule tuples '{MaxScheduleTuplesNumber}'!";
+                        return false;
+                    }
+
+                    MaxScheduleTuples = (UInt16) MaxScheduleTuplesValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyEVChargingNeedsRequest = new NotifyEVChargingNeedsRequest(
+
+                                                   Destination,
+                                                   EVSEId,
+                                                   ChargingNeeds,
+                                                   ReceivedTimestamp,
+                                                   MaxScheduleTuples,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData,
+
+                                                   RequestId,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
+                                                   NetworkPath
+
+                                               );
+
+                if (CustomNotifyEVChargingNeedsRequestParser is not null)
+                    NotifyEVChargingNeedsRequest = CustomNotifyEVChargingNeedsRequestParser(CBOR,
+                                                                                           NotifyEVChargingNeedsRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyEVChargingNeedsRequest = null;
+                ErrorResponse = "The given CBOR representation of a NotifyEVChargingNeeds request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyEVChargingNeedsRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyEVChargingNeeds request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyEVChargingNeedsRequestSerializer">A delegate to serialize custom NotifyEVChargingNeeds requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyEVChargingNeedsRequest>? CustomNotifyEVChargingNeedsRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evseId",                    CBORValue.FromUInt64(EVSEId.Value)),
+                           ("chargingNeeds",             ChargingNeeds.ToCBOR()),
+                           ("timestamp",                 ReceivedTimestamp?.ToCBOR()),
+                           ("maxScheduleTuples",         OCPPCBORExtensions.UInt(MaxScheduleTuples)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyEVChargingNeedsRequestSerializer is not null
+                       ? CustomNotifyEVChargingNeedsRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

@@ -667,6 +667,174 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NotifyEventRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyEvent request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyEventRequest">The NotifyEvent request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyEventRequestParser">A delegate to read custom NotifyEvent requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                      CBOR,
+                                           Request_Id                                     RequestId,
+                                           SourceRouting                                  Destination,
+                                           NetworkPath                                    NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyEventRequest?   NotifyEventRequest,
+                                           [NotNullWhen(false)] out String?               ErrorResponse,
+                                           DateTimeOffset?                                RequestTimestamp                 = null,
+                                           TimeSpan?                                      RequestTimeout                   = null,
+                                           EventTracking_Id?                              EventTrackingId                  = null,
+                                           CustomCBORParserDelegate<NotifyEventRequest>?  CustomNotifyEventRequestParser   = null)
+        {
+
+            try
+            {
+
+                NotifyEventRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyEvent request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("generatedAt",
+                                              "generated at",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset GeneratedAt,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("seqNo",
+                                               "sequence number",
+                                               out var SequenceNumberNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (SequenceNumberNumber < UInt32.MinValue || SequenceNumberNumber > UInt32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid sequence number '{SequenceNumberNumber}'!";
+                    return false;
+                }
+
+                var SequenceNumber = (UInt32) SequenceNumberNumber;
+
+                if (!CBOR.ParseMandatoryList<EventData>("eventData",
+                                               "event data",
+                                               OCPPv2_1.EventData.TryParseCBOR,
+                                               out var EventData,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalBoolean("tbc",
+                                       "to be continued",
+                                       out var ToBeContinued,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyEventRequest = new NotifyEventRequest(
+
+                                         Destination,
+                                         GeneratedAt,
+                                         SequenceNumber,
+                                         EventData,
+                                         ToBeContinued,
+
+                                         null,
+                                         null,
+                                         Signatures,
+
+                                         CustomData,
+
+                                         RequestId,
+                                         RequestTimestamp,
+                                         RequestTimeout,
+                                         EventTrackingId,
+                                         NetworkPath
+
+                                     );
+
+                if (CustomNotifyEventRequestParser is not null)
+                    NotifyEventRequest = CustomNotifyEventRequestParser(CBOR,
+                                                                       NotifyEventRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyEventRequest = null;
+                ErrorResponse = "The given CBOR representation of a NotifyEvent request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyEventRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyEvent request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyEventRequestSerializer">A delegate to serialize custom NotifyEvent requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyEventRequest>? CustomNotifyEventRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("generatedAt",               GeneratedAt.ToCBOR()),
+                           ("seqNo",                     CBORValue.FromUInt64(SequenceNumber)),
+                           ("eventData",                 OCPPCBORExtensions.Array(EventData, x => x.ToCBOR())),
+                           ("tbc",                       OCPPCBORExtensions.Flag(ToBeContinued)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyEventRequestSerializer is not null
+                       ? CustomNotifyEventRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

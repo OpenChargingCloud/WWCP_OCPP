@@ -465,26 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                         CustomCustomDataSerializer))
                                : null,
 
-                           //ChargingTariffs.Any()
-                           //    ? new JProperty("chargingTariffs",     new JArray (ChargingTariffs.  Select(chargingTariff => chargingTariff.ToJSON(CustomChargingTariffSerializer,
-                           //                                                                                                                        CustomPriceSerializer,
-                           //                                                                                                                        CustomTariffElementSerializer,
-                           //                                                                                                                        CustomPriceComponentSerializer,
-                           //                                                                                                                        CustomTaxRateSerializer,
-                           //                                                                                                                        CustomTariffRestrictionsSerializer,
-                           //                                                                                                                        CustomEnergyMixSerializer,
-                           //                                                                                                                        CustomEnergySourceSerializer,
-                           //                                                                                                                        CustomEnvironmentalImpactSerializer,
-                           //                                                                                                                        CustomIdTokenSerializer,
-                           //                                                                                                                        CustomAdditionalInfoSerializer,
-                           //                                                                                                                        CustomSignatureSerializer,
-                           //                                                                                                                        CustomCustomDataSerializer))))
-                           //    : null,
-
-                           //ChargingTariffMap.Any()
-                           //    ? new JProperty("chargingTariffMap",   new JObject(ChargingTariffMap.Select(kvp => new JProperty(kvp.Key.ToString(),
-                           //                                                                                       new JArray   (kvp.Value.Select(evseId => evseId.ToString()))))))
-                           //    : null,
+                           // No tariffs yet: the class has none of the properties its parser reads.
 
                            Signatures.Any()
                                ? new JProperty("signatures",          new JArray (Signatures.       Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -500,6 +481,160 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             return CustomGetUserChargingTariffResponseSerializer is not null
                        ? CustomGetUserChargingTariffResponseSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetUserChargingTariffResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetUserChargingTariff response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetUserChargingTariffResponse">The GetUserChargingTariff response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetUserChargingTariffResponseParser">A delegate to read custom GetUserChargingTariff responses.</param>
+        public static Boolean TryParseCBOR(CS.GetUserChargingTariffRequest                           Request,
+                                           CBORValue                                                 CBOR,
+                                           SourceRouting                                             Destination,
+                                           NetworkPath                                               NetworkPath,
+                                           [NotNullWhen(true)]  out GetUserChargingTariffResponse?   GetUserChargingTariffResponse,
+                                           [NotNullWhen(false)] out String?                          ErrorResponse,
+                                           DateTimeOffset?                                           ResponseTimestamp                           = null,
+                                           CustomCBORParserDelegate<GetUserChargingTariffResponse>?  CustomGetUserChargingTariffResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetUserChargingTariffResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetUserChargingTariff response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "get user charging tariff status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid get user charging tariff status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Tariff>("chargingTariffs",
+                                               "charging tariffs",
+                                               OCPPv2_1.Tariff.TryParseCBOR,
+                                               out var ChargingTariffs,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                JObject? ChargingTariffMapJSON = CBOR.TryGetValue(CBORValue.FromText("chargingTariffMap"), out var ChargingTariffMapJSONCBOR)
+                                  ? CBORJSON.ToJSON(ChargingTariffMapJSONCBOR) as JObject
+                                  : null;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetUserChargingTariffResponse = new GetUserChargingTariffResponse(
+
+                                                    Request,
+                                                    Status,
+                                                    StatusInfo,
+
+                                                    null,
+                                                    ResponseTimestamp,
+
+                                                Destination,
+                                                    NetworkPath,
+
+                                                    null,
+                                                    null,
+                                                    Signatures,
+
+                                                    CustomData
+
+                                                );
+
+                if (CustomGetUserChargingTariffResponseParser is not null)
+                    GetUserChargingTariffResponse = CustomGetUserChargingTariffResponseParser(CBOR,
+                                                                                             GetUserChargingTariffResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetUserChargingTariffResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetUserChargingTariff response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetUserChargingTariffResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetUserChargingTariff response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetUserChargingTariffResponseSerializer">A delegate to serialize custom GetUserChargingTariff responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetUserChargingTariffResponse>? CustomGetUserChargingTariffResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetUserChargingTariffResponseSerializer is not null
+                       ? CustomGetUserChargingTariffResponseSerializer(this, cbor)
+                       : cbor;
 
         }
 

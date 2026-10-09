@@ -540,6 +540,194 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NotifyDERAlarmRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyDERAlarm request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyDERAlarmRequest">The NotifyDERAlarm request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyDERAlarmRequestParser">A delegate to read custom NotifyDERAlarm requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                         CBOR,
+                                           Request_Id                                        RequestId,
+                                           SourceRouting                                     Destination,
+                                           NetworkPath                                       NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyDERAlarmRequest?   NotifyDERAlarmRequest,
+                                           [NotNullWhen(false)] out String?                  ErrorResponse,
+                                           DateTimeOffset?                                   RequestTimestamp                    = null,
+                                           TimeSpan?                                         RequestTimeout                      = null,
+                                           EventTracking_Id?                                 EventTrackingId                     = null,
+                                           CustomCBORParserDelegate<NotifyDERAlarmRequest>?  CustomNotifyDERAlarmRequestParser   = null)
+        {
+
+            try
+            {
+
+                NotifyDERAlarmRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyDERAlarm request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("controlType",
+                                             "control type",
+                                             out var ControlTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.DERControlType.TryParse(ControlTypeText, out var ControlType))
+                {
+                    ErrorResponse = $"Invalid control type '{ControlTypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timestamp",
+                                              "alarm timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset Timestamp,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                GridEventFaultType? GridEventFaultType = null;
+
+                if (CBOR.ParseOptionalText("gridEventFault",
+                                           "grid event fault type",
+                                           out var GridEventFaultTypeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.GridEventFaultType.TryParse(GridEventFaultTypeText!, out var GridEventFaultTypeValue))
+                    {
+                        ErrorResponse = $"Invalid grid event fault type '{GridEventFaultTypeText}'!";
+                        return false;
+                    }
+
+                    GridEventFaultType = GridEventFaultTypeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("alarmEnded",
+                                       "alarm ended",
+                                       out var AlarmEnded,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("extraInfo",
+                                       "extraInfo",
+                                       out var ExtraInfo,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyDERAlarmRequest = new NotifyDERAlarmRequest(
+
+                                            Destination,
+                                            ControlType,
+                                            Timestamp,
+                                            GridEventFaultType,
+                                            AlarmEnded,
+                                            ExtraInfo,
+
+                                            null,
+                                            null,
+                                            Signatures,
+
+                                            CustomData,
+
+                                            RequestId,
+                                            RequestTimestamp,
+                                            RequestTimeout,
+                                            EventTrackingId,
+                                            NetworkPath
+
+                                        );
+
+                if (CustomNotifyDERAlarmRequestParser is not null)
+                    NotifyDERAlarmRequest = CustomNotifyDERAlarmRequestParser(CBOR,
+                                                                             NotifyDERAlarmRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyDERAlarmRequest = null;
+                ErrorResponse = "The given CBOR representation of a NotifyDERAlarm request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyDERAlarmRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyDERAlarm request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyDERAlarmRequestSerializer">A delegate to serialize custom NotifyDERAlarm requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyDERAlarmRequest>? CustomNotifyDERAlarmRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("controlType",               CBORValue.FromText(ControlType.ToString())),
+                           ("timestamp",                 Timestamp.ToCBOR()),
+                           ("gridEventFault",            OCPPCBORExtensions.Text(GridEventFaultType?.ToString())),
+                           ("alarmEnded",                OCPPCBORExtensions.Flag(AlarmEnded)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR()),
+                           ("extraInfo",                 OCPPCBORExtensions.Text(ExtraInfo))
+                       );
+
+            return CustomNotifyDERAlarmRequestSerializer is not null
+                       ? CustomNotifyDERAlarmRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

@@ -362,6 +362,130 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetLocalListVersionResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetLocalListVersion response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetLocalListVersionResponse">The GetLocalListVersion response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetLocalListVersionResponseParser">A delegate to read custom GetLocalListVersion responses.</param>
+        public static Boolean TryParseCBOR(GetLocalListVersionRequest                              Request,
+                                           CBORValue                                               CBOR,
+                                           SourceRouting                                           Destination,
+                                           NetworkPath                                             NetworkPath,
+                                           [NotNullWhen(true)]  out GetLocalListVersionResponse?   GetLocalListVersionResponse,
+                                           [NotNullWhen(false)] out String?                        ErrorResponse,
+                                           DateTimeOffset?                                         ResponseTimestamp                         = null,
+                                           CustomCBORParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetLocalListVersionResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetLocalListVersion response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("versionNumber",
+                                       "availability status",
+                                       out var VersionNumber,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetLocalListVersionResponse = new GetLocalListVersionResponse(
+
+                                                  Request,
+                                                  VersionNumber,
+
+                                                  null,
+                                                  ResponseTimestamp,
+
+                                                  Destination,
+                                                  NetworkPath,
+
+                                                  null,
+                                                  null,
+                                                  Signatures,
+
+                                                  CustomData
+
+                                              );
+
+                if (CustomGetLocalListVersionResponseParser is not null)
+                    GetLocalListVersionResponse = CustomGetLocalListVersionResponseParser(CBOR,
+                                                                                         GetLocalListVersionResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetLocalListVersionResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetLocalListVersion response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetLocalListVersionResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetLocalListVersion response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetLocalListVersionResponseSerializer">A delegate to serialize custom GetLocalListVersion responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetLocalListVersionResponse>? CustomGetLocalListVersionResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("versionNumber",             CBORValue.FromUInt64(VersionNumber)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetLocalListVersionResponseSerializer is not null
+                       ? CustomGetLocalListVersionResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

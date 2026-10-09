@@ -578,6 +578,191 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out VATNumberValidationResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a VATNumberValidation response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="VATNumberValidationResponse">The VATNumberValidation response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomVATNumberValidationResponseParser">A delegate to read custom VATNumberValidation responses.</param>
+        public static Boolean TryParseCBOR(VATNumberValidationRequest                              Request,
+                                           CBORValue                                               CBOR,
+                                           SourceRouting                                           Destination,
+                                           NetworkPath                                             NetworkPath,
+                                           [NotNullWhen(true)]  out VATNumberValidationResponse?   VATNumberValidationResponse,
+                                           [NotNullWhen(false)] out String?                        ErrorResponse,
+                                           DateTimeOffset?                                         ResponseTimestamp                         = null,
+                                           CustomCBORParserDelegate<VATNumberValidationResponse>?  CustomVATNumberValidationResponseParser   = null)
+        {
+
+            try
+            {
+
+                VATNumberValidationResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a VATNumberValidation response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "genereic status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid genereic status '{StatusText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("vatNumber",
+                                       "VAT number",
+                                       out var VATNumber,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                EVSE_Id? EVSEId = null;
+
+                if (CBOR.ParseOptionalUInt64("evseId",
+                                             "EVSE identification",
+                                             out var EVSEIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (EVSEIdNumber is not UInt64 EVSEIdValue || EVSEIdValue > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) EVSEIdValue, out var EVSEIdId))
+                    {
+                        ErrorResponse = $"Invalid EVSE identification '{EVSEIdNumber}'!";
+                        return false;
+                    }
+
+                    EVSEId = EVSEIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("company",
+                                   "VAT company contact",
+                                   OCPPv2_1.Contact.TryParseCBOR,
+                                   out Contact? Company,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                VATNumberValidationResponse = new VATNumberValidationResponse(
+
+                                                  Request,
+                                                  Status,
+                                                  VATNumber,
+                                                  EVSEId,
+                                                  Company,
+                                                  StatusInfo,
+
+                                                  null,
+                                                  ResponseTimestamp,
+
+                                                  Destination,
+                                                  NetworkPath,
+
+                                                  null,
+                                                  null,
+                                                  Signatures,
+
+                                                  CustomData
+
+                                              );
+
+                if (CustomVATNumberValidationResponseParser is not null)
+                    VATNumberValidationResponse = CustomVATNumberValidationResponseParser(CBOR,
+                                                                                         VATNumberValidationResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                VATNumberValidationResponse = null;
+                ErrorResponse = "The given CBOR representation of a VATNumberValidation response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomVATNumberValidationResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this VATNumberValidation response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomVATNumberValidationResponseSerializer">A delegate to serialize custom VATNumberValidation responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<VATNumberValidationResponse>? CustomVATNumberValidationResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("vatNumber",                 CBORValue.FromText(VATNumber)),
+                           ("evseId",                    OCPPCBORExtensions.UInt(EVSEId?.Value)),
+                           ("company",                   Company?.ToCBOR()),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomVATNumberValidationResponseSerializer is not null
+                       ? CustomVATNumberValidationResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

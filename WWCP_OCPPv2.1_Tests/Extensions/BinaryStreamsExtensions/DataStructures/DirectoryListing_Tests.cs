@@ -59,35 +59,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var jsonOut2 = directoryListing.ToJSON(IncludeMetadata: true);
                 var textOut2 = directoryListing.ToTreeView();
 
-                // A listing has two output shapes on purpose, and neither is the input shape.
-                // The test used to compare the compact one against the input and could not
-                // have passed. Both are checked here instead.
-
-                // Without metadata: an array, files by name, a directory as a single property
-                // holding its own array.
+                // Without metadata the listing is written as it is read: a file is null,
+                // a directory an object of its own entries. It wrote an array before,
+                // which its own parser refused.
                 Assert.That(
                     jsonOut1.ToString(Newtonsoft.Json.Formatting.None),
-                    Is.EqualTo(@"[""file1"",""file2"",{""dir1"":[""file1_1"",""file1_2"",{""dir1_1"":[""file1_1_1"",""file1_1_2""]}]},""file3""]")
+                    Is.EqualTo(jsonIn.ToString(Newtonsoft.Json.Formatting.None))
                 );
 
-                // With metadata: the shape of the input, with each file described instead of
-                // null. The sizes are not asserted: AddFile hands every file a hard coded
-                // Size of 23, so they say nothing about the file.
-                var withMetadata = jsonOut2 as JObject;
-                Assert.That(withMetadata, Is.Not.Null);
+                // With metadata: each file described instead of null - and read back as
+                // a file, not as a directory.
+                Assert.That(jsonOut2["file1"]?["type"]?.Value<String>(), Is.EqualTo("FILE"));
+                Assert.That(jsonOut2["dir1"]?["type"],                  Is.Null);
 
-                Assert.That(
-                    withMetadata!.Properties().Select(property => property.Name).ToArray(),
-                    Is.EqualTo(new[] { "file1", "file2", "dir1", "file3" }).AsCollection
-                );
+                Assert.That(DirectoryListing.TryParse(jsonOut2, out var withMetadata, out errorResponse), Is.True, errorResponse);
+                Assert.That(withMetadata,                Is.EqualTo(directoryListing));
+                Assert.That(withMetadata!.Files,         Is.EqualTo(new[] { "file1", "file2", "file3" }).AsCollection);
+                Assert.That(withMetadata. Directories,   Is.EqualTo(new[] { "dir1" }).AsCollection);
 
-                Assert.That(withMetadata["file1"]?["type"]?.Value<String>(), Is.EqualTo("FILE"));
-                Assert.That(withMetadata["dir1"]?["type"], Is.Null);
-
-                Assert.That(
-                    (withMetadata["dir1"] as JObject)!.Properties().Select(property => property.Name).ToArray(),
-                    Is.EqualTo(new[] { "file1_1", "file1_2", "dir1_1" }).AsCollection
-                );
+                // And as CBOR.
+                Assert.That(DirectoryListing.TryParseCBOR(directoryListing.ToCBOR(), out var fromCBOR, out errorResponse), Is.True, errorResponse);
+                Assert.That(fromCBOR, Is.EqualTo(directoryListing));
 
                 // The tree view draws the same tree, one line per entry, the last entry of each
                 // level closing it off.

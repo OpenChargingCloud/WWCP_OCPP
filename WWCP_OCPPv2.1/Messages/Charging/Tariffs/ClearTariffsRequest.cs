@@ -416,6 +416,164 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out ClearTariffsRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ClearTariffs request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ClearTariffsRequest">The ClearTariffs request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomClearTariffsRequestParser">A delegate to read custom ClearTariffs requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                       CBOR,
+                                           Request_Id                                      RequestId,
+                                           SourceRouting                                   Destination,
+                                           NetworkPath                                     NetworkPath,
+                                           [NotNullWhen(true)]  out ClearTariffsRequest?   ClearTariffsRequest,
+                                           [NotNullWhen(false)] out String?                ErrorResponse,
+                                           DateTimeOffset?                                 RequestTimestamp                  = null,
+                                           TimeSpan?                                       RequestTimeout                    = null,
+                                           EventTracking_Id?                               EventTrackingId                   = null,
+                                           CustomCBORParserDelegate<ClearTariffsRequest>?  CustomClearTariffsRequestParser   = null)
+        {
+
+            try
+            {
+
+                ClearTariffsRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ClearTariffs request is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Tariff_Id>("tariffIds",
+                                               "tariff identifications",
+                                               (CBORValue item, out Tariff_Id value, out String? errorResponse) => {
+                                                   value         = default;
+                                                   errorResponse = item.Kind == CBORValueKind.TextString && Tariff_Id.TryParse(item.AsText(), out value)
+                                                                       ? null
+                                                                       : $"Invalid tariff identification '{item}'!";
+                                                   return errorResponse is null;
+                                               },
+                                               out var TariffIds,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                EVSE_Id? EVSEId = null;
+
+                if (CBOR.ParseOptionalUInt64("evseId",
+                                             "evseId",
+                                             out var EVSEIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (EVSEIdNumber is not UInt64 EVSEIdValue || EVSEIdValue > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) EVSEIdValue, out var EVSEIdId))
+                    {
+                        ErrorResponse = $"Invalid evseId '{EVSEIdNumber}'!";
+                        return false;
+                    }
+
+                    EVSEId = EVSEIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ClearTariffsRequest = new ClearTariffsRequest(
+
+                                          Destination,
+                                          TariffIds,
+
+                                          null,
+                                          null,
+                                          Signatures,
+
+                                          CustomData,
+
+                                          RequestId,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
+                                          NetworkPath,
+                                          EVSEId: EVSEId
+
+                                      );
+
+                if (CustomClearTariffsRequestParser is not null)
+                    ClearTariffsRequest = CustomClearTariffsRequestParser(CBOR,
+                                                                         ClearTariffsRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClearTariffsRequest = null;
+                ErrorResponse = "The given CBOR representation of a ClearTariffs request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClearTariffsRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ClearTariffs request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClearTariffsRequestSerializer">A delegate to serialize custom ClearTariffs requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClearTariffsRequest>? CustomClearTariffsRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("tariffIds",                 OCPPCBORExtensions.Array(TariffIds, x => CBORValue.FromText(x.ToString()))),
+                           ("evseId",                    OCPPCBORExtensions.UInt(EVSEId?.Value)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomClearTariffsRequestSerializer is not null
+                       ? CustomClearTariffsRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

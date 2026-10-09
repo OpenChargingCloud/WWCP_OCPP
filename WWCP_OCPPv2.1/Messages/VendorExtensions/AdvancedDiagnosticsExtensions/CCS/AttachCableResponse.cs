@@ -367,6 +367,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out AttachCableResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an AttachCable response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="AttachCableResponse">The AttachCable response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomAttachCableResponseParser">A delegate to read custom AttachCable responses.</param>
+        public static Boolean TryParseCBOR(AttachCableRequest                              Request,
+                                           CBORValue                                       CBOR,
+                                           SourceRouting                                   Destination,
+                                           NetworkPath                                     NetworkPath,
+                                           [NotNullWhen(true)]  out AttachCableResponse?   AttachCableResponse,
+                                           [NotNullWhen(false)] out String?                ErrorResponse,
+                                           DateTimeOffset?                                 ResponseTimestamp                 = null,
+                                           CustomCBORParserDelegate<AttachCableResponse>?  CustomAttachCableResponseParser   = null)
+        {
+
+            try
+            {
+
+                AttachCableResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an AttachCable response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "generic status",
+                                             out var statusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericStatusExtensions.TryParse(statusText, out var status))
+                {
+                    ErrorResponse = $"Invalid generic status '{statusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? statusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                AttachCableResponse = new AttachCableResponse(
+
+                                          Request,
+                                          status,
+                                          statusInfo,
+
+                                          null,
+                                          ResponseTimestamp,
+
+                                          Destination,
+                                          NetworkPath,
+
+                                          null,
+                                          null,
+                                          Signatures,
+
+                                          CustomData
+
+                                      );
+
+                if (CustomAttachCableResponseParser is not null)
+                    AttachCableResponse = CustomAttachCableResponseParser(CBOR,
+                                                                         AttachCableResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AttachCableResponse = null;
+                ErrorResponse = "The given CBOR representation of an AttachCable response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAttachCableResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this AttachCable response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAttachCableResponseSerializer">A delegate to serialize custom AttachCable responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AttachCableResponse>? CustomAttachCableResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomAttachCableResponseSerializer is not null
+                       ? CustomAttachCableResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

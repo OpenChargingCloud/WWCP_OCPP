@@ -399,6 +399,151 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out AFRRSignalRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an AFRRSignal request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="AFRRSignalRequest">The AFRRSignal request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAFRRSignalRequestParser">A delegate to read custom AFRRSignal requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                     CBOR,
+                                           Request_Id                                    RequestId,
+                                           SourceRouting                                 Destination,
+                                           NetworkPath                                   NetworkPath,
+                                           [NotNullWhen(true)]  out AFRRSignalRequest?   AFRRSignalRequest,
+                                           [NotNullWhen(false)] out String?              ErrorResponse,
+                                           DateTimeOffset?                               RequestTimestamp                = null,
+                                           TimeSpan?                                     RequestTimeout                  = null,
+                                           EventTracking_Id?                             EventTrackingId                 = null,
+                                           CustomCBORParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser   = null)
+        {
+
+            try
+            {
+
+                AFRRSignalRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an AFRRSignal request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timestamp",
+                                              "activation timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset ActivationTimestamp,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("signal",
+                                             "AFRRSignal",
+                                             out var SignalText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.AFRR_Signal.TryParse(SignalText, out var Signal))
+                {
+                    ErrorResponse = $"Invalid AFRRSignal '{SignalText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                AFRRSignalRequest = new AFRRSignalRequest(
+
+                                        Destination,
+                                        ActivationTimestamp,
+                                        Signal,
+
+                                        null,
+                                        null,
+                                        Signatures,
+
+                                        CustomData,
+
+                                        RequestId,
+                                        RequestTimestamp,
+                                        RequestTimeout,
+                                        EventTrackingId,
+                                        NetworkPath
+
+                                    );
+
+                if (CustomAFRRSignalRequestParser is not null)
+                    AFRRSignalRequest = CustomAFRRSignalRequestParser(CBOR,
+                                                                     AFRRSignalRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AFRRSignalRequest = null;
+                ErrorResponse = "The given CBOR representation of an AFRRSignal request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAFRRSignalRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this AFRRSignal request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAFRRSignalRequestSerializer">A delegate to serialize custom AFRRSignal requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AFRRSignalRequest>? CustomAFRRSignalRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("timestamp",                 ActivationTimestamp.ToCBOR()),
+                           ("signal",                    CBORValue.FromText(Signal.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomAFRRSignalRequestSerializer is not null
+                       ? CustomAFRRSignalRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

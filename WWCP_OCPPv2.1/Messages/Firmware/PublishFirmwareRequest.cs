@@ -504,6 +504,202 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out PublishFirmwareRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a PublishFirmware request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="PublishFirmwareRequest">The PublishFirmware request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomPublishFirmwareRequestParser">A delegate to read custom PublishFirmware requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                          CBOR,
+                                           Request_Id                                         RequestId,
+                                           SourceRouting                                      Destination,
+                                           NetworkPath                                        NetworkPath,
+                                           [NotNullWhen(true)]  out PublishFirmwareRequest?   PublishFirmwareRequest,
+                                           [NotNullWhen(false)] out String?                   ErrorResponse,
+                                           DateTimeOffset?                                    RequestTimestamp                     = null,
+                                           TimeSpan?                                          RequestTimeout                       = null,
+                                           EventTracking_Id?                                  EventTrackingId                      = null,
+                                           CustomCBORParserDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestParser   = null)
+        {
+
+            try
+            {
+
+                PublishFirmwareRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a PublishFirmware request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("requestId",
+                                               "request identification",
+                                               out var PublishFirmwareRequestIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PublishFirmwareRequestIdNumber < Int32.MinValue || PublishFirmwareRequestIdNumber > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid request identification '{PublishFirmwareRequestIdNumber}'!";
+                    return false;
+                }
+
+                var PublishFirmwareRequestId = (Int32) PublishFirmwareRequestIdNumber;
+
+                if (!CBOR.ParseMandatoryText("location",
+                                             "firmware location",
+                                             out var DownloadLocationText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(DownloadLocationText, out var DownloadLocation))
+                {
+                    ErrorResponse = $"Invalid firmware location '{DownloadLocationText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("checksum",
+                                       "firmware checksum",
+                                       out var MD5Checksum,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                Byte? Retries = null;
+
+                if (CBOR.ParseOptionalUInt64("retries",
+                                             "retries",
+                                             out var RetriesNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (RetriesNumber is not UInt64 RetriesValue || RetriesValue < Byte.MinValue || RetriesValue > Byte.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid retries '{RetriesNumber}'!";
+                        return false;
+                    }
+
+                    Retries = (Byte) RetriesValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("retryInterval",
+                                        "retry interval",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? RetryInterval,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                PublishFirmwareRequest = new PublishFirmwareRequest(
+
+                                             Destination,
+                                             PublishFirmwareRequestId,
+                                             DownloadLocation,
+                                             MD5Checksum,
+                                             Retries,
+                                             RetryInterval,
+
+                                             null,
+                                             null,
+                                             Signatures,
+
+                                             CustomData,
+
+                                             RequestId,
+                                             RequestTimestamp,
+                                             RequestTimeout,
+                                             EventTrackingId,
+                                             NetworkPath
+
+                                         );
+
+                if (CustomPublishFirmwareRequestParser is not null)
+                    PublishFirmwareRequest = CustomPublishFirmwareRequestParser(CBOR,
+                                                                               PublishFirmwareRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                PublishFirmwareRequest = null;
+                ErrorResponse = "The given CBOR representation of a PublishFirmware request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomPublishFirmwareRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this PublishFirmware request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomPublishFirmwareRequestSerializer">A delegate to serialize custom PublishFirmware requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<PublishFirmwareRequest>? CustomPublishFirmwareRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestId",                 CBORValue.FromInt64(PublishFirmwareRequestId)),
+                           ("location",                  CBORValue.FromText(DownloadLocation.ToString())),
+                           ("checksum",                  CBORValue.FromText(MD5Checksum)),
+                           ("retries",                   OCPPCBORExtensions.UInt(Retries)),
+                           ("retryInterval",             RetryInterval?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomPublishFirmwareRequestSerializer is not null
+                       ? CustomPublishFirmwareRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

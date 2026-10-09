@@ -472,6 +472,170 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out RequestStartTransactionResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a RequestStartTransaction response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="RequestStartTransactionResponse">The RequestStartTransaction response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomRequestStartTransactionResponseParser">A delegate to read custom RequestStartTransaction responses.</param>
+        public static Boolean TryParseCBOR(RequestStartTransactionRequest                              Request,
+                                           CBORValue                                                   CBOR,
+                                           SourceRouting                                               Destination,
+                                           NetworkPath                                                 NetworkPath,
+                                           [NotNullWhen(true)]  out RequestStartTransactionResponse?   RequestStartTransactionResponse,
+                                           [NotNullWhen(false)] out String?                            ErrorResponse,
+                                           DateTimeOffset?                                             ResponseTimestamp                             = null,
+                                           CustomCBORParserDelegate<RequestStartTransactionResponse>?  CustomRequestStartTransactionResponseParser   = null)
+        {
+
+            try
+            {
+
+                RequestStartTransactionResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a RequestStartTransaction response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "request start stop status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.RequestStartStopStatus.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid request start stop status '{StatusText}'!";
+                    return false;
+                }
+
+                Transaction_Id? TransactionId = null;
+
+                if (CBOR.ParseOptionalText("transactionId",
+                                           "transaction identification",
+                                           out var TransactionIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
+                    {
+                        ErrorResponse = $"Invalid transaction identification '{TransactionIdText}'!";
+                        return false;
+                    }
+
+                    TransactionId = TransactionIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                RequestStartTransactionResponse = new RequestStartTransactionResponse(
+
+                                                      Request,
+                                                      Status,
+                                                      TransactionId,
+                                                      StatusInfo,
+
+                                                      null,
+                                                      ResponseTimestamp,
+
+                                                      Destination,
+                                                      NetworkPath,
+
+                                                      null,
+                                                      null,
+                                                      Signatures,
+
+                                                      CustomData
+
+                                                  );
+
+                if (CustomRequestStartTransactionResponseParser is not null)
+                    RequestStartTransactionResponse = CustomRequestStartTransactionResponseParser(CBOR,
+                                                                                                 RequestStartTransactionResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                RequestStartTransactionResponse = null;
+                ErrorResponse = "The given CBOR representation of a RequestStartTransaction response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomRequestStartTransactionResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this RequestStartTransaction response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomRequestStartTransactionResponseSerializer">A delegate to serialize custom RequestStartTransaction responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<RequestStartTransactionResponse>? CustomRequestStartTransactionResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("transactionId",             OCPPCBORExtensions.Text(TransactionId?.ToString())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomRequestStartTransactionResponseSerializer is not null
+                       ? CustomRequestStartTransactionResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

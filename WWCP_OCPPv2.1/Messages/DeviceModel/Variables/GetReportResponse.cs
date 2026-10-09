@@ -436,6 +436,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetReportResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetReport response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetReportResponse">The GetReport response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetReportResponseParser">A delegate to read custom GetReport responses.</param>
+        public static Boolean TryParseCBOR(GetReportRequest                              Request,
+                                           CBORValue                                     CBOR,
+                                           SourceRouting                                 Destination,
+                                           NetworkPath                                   NetworkPath,
+                                           [NotNullWhen(true)]  out GetReportResponse?   GetReportResponse,
+                                           [NotNullWhen(false)] out String?              ErrorResponse,
+                                           DateTimeOffset?                               ResponseTimestamp               = null,
+                                           CustomCBORParserDelegate<GetReportResponse>?  CustomGetReportResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetReportResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetReport response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "GetReport status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericDeviceModelStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid GetReport status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetReportResponse = new GetReportResponse(
+
+                                        Request,
+                                        Status,
+                                        StatusInfo,
+
+                                        null,
+                                        ResponseTimestamp,
+
+                                        Destination,
+                                        NetworkPath,
+
+                                        null,
+                                        null,
+                                        Signatures,
+
+                                        CustomData
+
+                                    );
+
+                if (CustomGetReportResponseParser is not null)
+                    GetReportResponse = CustomGetReportResponseParser(CBOR,
+                                                                     GetReportResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetReportResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetReport response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetReportResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetReport response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetReportResponseSerializer">A delegate to serialize custom GetReport responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetReportResponse>? CustomGetReportResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetReportResponseSerializer is not null
+                       ? CustomGetReportResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

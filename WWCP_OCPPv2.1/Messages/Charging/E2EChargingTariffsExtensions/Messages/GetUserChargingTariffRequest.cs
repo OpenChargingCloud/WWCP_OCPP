@@ -349,6 +349,129 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out GetUserChargingTariffRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetUserChargingTariff request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetUserChargingTariffRequest">The GetUserChargingTariff request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomGetUserChargingTariffRequestParser">A delegate to read custom GetUserChargingTariff requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                CBOR,
+                                           Request_Id                                               RequestId,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           out GetUserChargingTariffRequest?                        GetUserChargingTariffRequest,
+                                           out String?                                              ErrorResponse,
+                                           CustomCBORParserDelegate<GetUserChargingTariffRequest>?  CustomGetUserChargingTariffRequestParser)
+        {
+
+            try
+            {
+
+                GetUserChargingTariffRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetUserChargingTariff request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("idToken",
+                                         "identification token",
+                                         OCPPv2_1.IdToken.TryParseCBOR,
+                                         out IdToken? IdToken,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetUserChargingTariffRequest = new GetUserChargingTariffRequest(
+
+                                                   Destination,
+                                                   IdToken,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData,
+
+                                                   RequestId,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   NetworkPath
+
+                                               );
+
+                if (CustomGetUserChargingTariffRequestParser is not null)
+                    GetUserChargingTariffRequest = CustomGetUserChargingTariffRequestParser(CBOR,
+                                                                                           GetUserChargingTariffRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetUserChargingTariffRequest = null;
+                ErrorResponse = "The given CBOR representation of a GetUserChargingTariff request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetUserChargingTariffRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetUserChargingTariff request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetUserChargingTariffRequestSerializer">A delegate to serialize custom GetUserChargingTariff requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetUserChargingTariffRequest>? CustomGetUserChargingTariffRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("idToken",                   IdToken.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetUserChargingTariffRequestSerializer is not null
+                       ? CustomGetUserChargingTariffRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

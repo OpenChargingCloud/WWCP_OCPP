@@ -516,6 +516,212 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out Get15118EVCertificateRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a Get15118EVCertificate request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="Get15118EVCertificateRequest">The Get15118EVCertificate request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to read custom Get15118EVCertificate requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                CBOR,
+                                           Request_Id                                               RequestId,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out Get15118EVCertificateRequest?   Get15118EVCertificateRequest,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          RequestTimestamp                           = null,
+                                           TimeSpan?                                                RequestTimeout                             = null,
+                                           EventTracking_Id?                                        EventTrackingId                            = null,
+                                           CustomCBORParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser   = null)
+        {
+
+            try
+            {
+
+                Get15118EVCertificateRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a Get15118EVCertificate request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("iso15118SchemaVersion",
+                                             "ISO 15118 schema version",
+                                             out var ISO15118SchemaVersionText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.ISO15118SchemaVersion.TryParse(ISO15118SchemaVersionText, out var ISO15118SchemaVersion))
+                {
+                    ErrorResponse = $"Invalid ISO 15118 schema version '{ISO15118SchemaVersionText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("action",
+                                             "certificate action",
+                                             out var CertificateActionText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CertificateActionExtensions.TryParse(CertificateActionText, out var CertificateAction))
+                {
+                    ErrorResponse = $"Invalid certificate action '{CertificateActionText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("exiRequest",
+                                             "EXI request",
+                                             out var EXIRequestText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.EXIData.TryParse(EXIRequestText, out var EXIRequest))
+                {
+                    ErrorResponse = $"Invalid EXI request '{EXIRequestText}'!";
+                    return false;
+                }
+
+                UInt32? MaximumContractCertificateChains = null;
+
+                if (CBOR.ParseOptionalUInt64("maximumContractCertificateChains",
+                                             "custom data",
+                                             out var MaximumContractCertificateChainsNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (MaximumContractCertificateChainsNumber is not UInt64 MaximumContractCertificateChainsValue || MaximumContractCertificateChainsValue < UInt32.MinValue || MaximumContractCertificateChainsValue > UInt32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid custom data '{MaximumContractCertificateChainsNumber}'!";
+                        return false;
+                    }
+
+                    MaximumContractCertificateChains = (UInt32) MaximumContractCertificateChainsValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<EMA_Id>("prioritizedEMAIDs",
+                                               "prioritized eMA Ids",
+                                               (CBORValue item, out EMA_Id value, out String? errorResponse) => {
+                                                   value         = default;
+                                                   errorResponse = item.Kind == CBORValueKind.TextString && EMA_Id.TryParse(item.AsText(), out value)
+                                                                       ? null
+                                                                       : $"Invalid prioritized eMA Id '{item}'!";
+                                                   return errorResponse is null;
+                                               },
+                                               out var PrioritizedEMAIDs,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                Get15118EVCertificateRequest = new Get15118EVCertificateRequest(
+
+                                                   Destination,
+                                                   ISO15118SchemaVersion,
+                                                   CertificateAction,
+                                                   EXIRequest,
+                                                   MaximumContractCertificateChains,
+                                                   PrioritizedEMAIDs,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData,
+
+                                                   RequestId,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
+                                                   NetworkPath
+
+                                               );
+
+                if (CustomGet15118EVCertificateRequestParser is not null)
+                    Get15118EVCertificateRequest = CustomGet15118EVCertificateRequestParser(CBOR,
+                                                                                           Get15118EVCertificateRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Get15118EVCertificateRequest = null;
+                ErrorResponse = "The given CBOR representation of a Get15118EVCertificate request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGet15118EVCertificateRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this Get15118EVCertificate request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGet15118EVCertificateRequestSerializer">A delegate to serialize custom Get15118EVCertificate requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Get15118EVCertificateRequest>? CustomGet15118EVCertificateRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("iso15118SchemaVersion",     CBORValue.FromText(ISO15118SchemaVersion.ToString())),
+                           ("action",                    CBORValue.FromText(CertificateAction.AsText())),
+                           ("exiRequest",                CBORValue.FromText(EXIRequest.ToString())),
+                           ("maximumContractCertificateChains", OCPPCBORExtensions.UInt(MaximumContractCertificateChains)),
+                           ("prioritizedEMAIDs",         OCPPCBORExtensions.Array(PrioritizedEMAIds, x => CBORValue.FromText(x.ToString()))),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGet15118EVCertificateRequestSerializer is not null
+                       ? CustomGet15118EVCertificateRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

@@ -438,6 +438,146 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out NotifyEVChargingNeedsResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyEVChargingNeeds response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyEVChargingNeedsResponse">The NotifyEVChargingNeeds response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomNotifyEVChargingNeedsResponseParser">A delegate to read custom NotifyEVChargingNeeds responses.</param>
+        public static Boolean TryParseCBOR(NotifyEVChargingNeedsRequest                              Request,
+                                           CBORValue                                                 CBOR,
+                                           SourceRouting                                             Destination,
+                                           NetworkPath                                               NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyEVChargingNeedsResponse?   NotifyEVChargingNeedsResponse,
+                                           [NotNullWhen(false)] out String?                          ErrorResponse,
+                                           DateTimeOffset?                                           ResponseTimestamp                           = null,
+                                           CustomCBORParserDelegate<NotifyEVChargingNeedsResponse>?  CustomNotifyEVChargingNeedsResponseParser   = null)
+        {
+
+            try
+            {
+
+                NotifyEVChargingNeedsResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyEVChargingNeeds response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "NotifyEVChargingNeeds status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!NotifyEVChargingNeedsStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid NotifyEVChargingNeeds status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyEVChargingNeedsResponse = new NotifyEVChargingNeedsResponse(
+
+                                                    Request,
+                                                    Status,
+                                                    StatusInfo,
+                                                    null,
+                                                    ResponseTimestamp,
+
+                                                    Destination,
+                                                    NetworkPath,
+
+                                                    null,
+                                                    null,
+                                                    Signatures,
+
+                                                    CustomData
+
+                                                );
+
+                if (CustomNotifyEVChargingNeedsResponseParser is not null)
+                    NotifyEVChargingNeedsResponse = CustomNotifyEVChargingNeedsResponseParser(CBOR,
+                                                                                             NotifyEVChargingNeedsResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyEVChargingNeedsResponse = null;
+                ErrorResponse = "The given CBOR representation of a NotifyEVChargingNeeds response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyEVChargingNeedsResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyEVChargingNeeds response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyEVChargingNeedsResponseSerializer">A delegate to serialize custom NotifyEVChargingNeeds responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyEVChargingNeedsResponse>? CustomNotifyEVChargingNeedsResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyEVChargingNeedsResponseSerializer is not null
+                       ? CustomNotifyEVChargingNeedsResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

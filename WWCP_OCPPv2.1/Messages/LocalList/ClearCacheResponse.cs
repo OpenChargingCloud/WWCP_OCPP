@@ -434,6 +434,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out ClearCacheResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ClearCache response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ClearCacheResponse">The ClearCache response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomClearCacheResponseParser">A delegate to read custom ClearCache responses.</param>
+        public static Boolean TryParseCBOR(ClearCacheRequest                              Request,
+                                           CBORValue                                      CBOR,
+                                           SourceRouting                                  Destination,
+                                           NetworkPath                                    NetworkPath,
+                                           [NotNullWhen(true)]  out ClearCacheResponse?   ClearCacheResponse,
+                                           [NotNullWhen(false)] out String?               ErrorResponse,
+                                           DateTimeOffset?                                ResponseTimestamp                = null,
+                                           CustomCBORParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
+        {
+
+            try
+            {
+
+                ClearCacheResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ClearCache response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "ClearCache status",
+                                             out var ClearCacheStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!ClearCacheStatusExtensions.TryParse(ClearCacheStatusText, out var ClearCacheStatus))
+                {
+                    ErrorResponse = $"Invalid ClearCache status '{ClearCacheStatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ClearCacheResponse = new ClearCacheResponse(
+
+                                         Request,
+                                         ClearCacheStatus,
+                                         StatusInfo,
+
+                                         null,
+                                         ResponseTimestamp,
+
+                                         Destination,
+                                         NetworkPath,
+
+                                         null,
+                                         null,
+                                         Signatures,
+
+                                         CustomData
+
+                                     );
+
+                if (CustomClearCacheResponseParser is not null)
+                    ClearCacheResponse = CustomClearCacheResponseParser(CBOR,
+                                                                       ClearCacheResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClearCacheResponse = null;
+                ErrorResponse = "The given CBOR representation of a ClearCache response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClearCacheResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ClearCache response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClearCacheResponseSerializer">A delegate to serialize custom ClearCache responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClearCacheResponse>? CustomClearCacheResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomClearCacheResponseSerializer is not null
+                       ? CustomClearCacheResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

@@ -23,6 +23,8 @@ using NUnit.Framework;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -49,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         private static readonly SourceRouting  destination  = SourceRouting.CSMS;
 
         public static IEnumerable<String> Messages
-            => MessageSamples.FromTheSchemas.Keys;
+            => MessageSamples.All.Keys;
 
         public static IEnumerable<String> EnumVariants
             => MessageSamples.EnumVariants.Keys;
@@ -108,6 +110,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         /// a network path and a request as their types ask.
         /// </summary>
         internal static Object Read(String Name, JObject JSON)
+
+            => Read(Name, JSON, "TryParse", typeof(JObject));
+
+        /// <summary>
+        /// The message of the given name, read from the given CBOR - a response
+        /// with the request its own JSON sample is.
+        /// </summary>
+        internal static Object ReadCBOR(String Name, CBORValue CBOR)
+
+            => Read(Name, CBOR, "TryParseCBOR", typeof(CBORValue));
+
+        private static Object Read(String Name, Object Input, String MethodName, Type InputType)
         {
 
             var type    = TypeOf(Name);
@@ -116,15 +130,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                               : null;
 
             var tryParse = type.GetMethods(BindingFlags.Public | BindingFlags.Static).
-                                Where  (method => method.Name == "TryParse" &&
-                                                  method.GetParameters().Any(parameter => parameter.ParameterType == typeof(JObject)) &&
+                                Where  (method => method.Name == MethodName &&
+                                                  method.GetParameters().Any(parameter => parameter.ParameterType == InputType) &&
                                                   method.GetParameters().Any(parameter => parameter.IsOut && parameter.ParameterType.GetElementType() == type) &&
                                                   (request is null || method.GetParameters().Any(parameter => parameter.ParameterType == request.GetType()))).
                                 OrderBy(method => method.GetParameters().Length).
-                                First();
+                                FirstOrDefault();
 
-            var parameters = tryParse.GetParameters();
-            var arguments  = parameters.Select(parameter => parameter.ParameterType == typeof(JObject)       ? JSON
+            Assert.That(tryParse, Is.Not.Null, $"The {Name} has no {MethodName}");
+
+            var parameters = tryParse!.GetParameters();
+            var arguments  = parameters.Select(parameter => parameter.ParameterType == InputType             ? Input
                                                           : parameter.ParameterType == typeof(Request_Id)    ? requestId
                                                           : parameter.ParameterType == typeof(SourceRouting) ? destination
                                                           : parameter.ParameterType == typeof(NetworkPath)   ? NetworkPath.Empty
@@ -148,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         /// </summary>
         internal static String SampleOf(String Name)
         {
-            Assert.That(MessageSamples.FromTheSchemas.TryGetValue(Name, out var sample), Is.True, $"No sample of the {Name}");
+            Assert.That(MessageSamples.All.TryGetValue(Name, out var sample), Is.True, $"No sample of the {Name}");
             return sample!;
         }
 
@@ -185,12 +201,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void ReadAndWrittenAsTheSchemaSays(String Name)
         {
 
-            var sample  = JObject.Parse(MessageSamples.FromTheSchemas[Name]);
+            var sample  = JObject.Parse(MessageSamples.All[Name]);
             var written = Write(Read(Name, sample));
 
             Assert.That(JToken.DeepEquals(Normalized(written), Normalized(sample)), Is.True,
                         $"Written:  {Normalized(written).ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
                         $"Expected: {Normalized(sample). ToString(Newtonsoft.Json.Formatting.None)}");
+
+        }
+
+        #endregion
+
+        #region ReadAndWrittenAsCBOR(Name)
+
+        /// <summary>
+        /// What is read from the sample is written as CBOR and read back from its
+        /// bytes as the same: written as JSON again it is the sample, and the
+        /// maps of the CBOR have the keys of the objects of the sample.
+        /// </summary>
+        [TestCaseSource(nameof(Messages))]
+        public void ReadAndWrittenAsCBOR(String Name)
+        {
+
+            var sample  = JObject.Parse(MessageSamples.All[Name]);
+            var message = Read(Name, sample);
+
+            var toCBOR  = message.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance).
+                              Where (method => method.Name == "ToCBOR" &&
+                                               method.ReturnType == typeof(CBORValue) &&
+                                               method.GetParameters().All(parameter => parameter.HasDefaultValue)).
+                              FirstOrDefault();
+
+            Assert.That(toCBOR, Is.Not.Null, $"The {Name} has no ToCBOR");
+
+            var cbor    = CBORValue.Parse(((CBORValue) Invoke(toCBOR!, message).Result!).ToByteArray());
+            var written = Write(ReadCBOR(Name, cbor));
+
+            Assert.That(JToken.DeepEquals(Normalized(written), Normalized(sample)), Is.True,
+                        $"Read from CBOR: {Normalized(written).ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
+                        $"Expected:       {Normalized(sample). ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
+                        $"CBOR:           {cbor.ToDiagnosticString()}");
+
+            SameKeys(sample, cbor, "", new Dictionary<String, String> { { "priceKwh", "price" }, { "priceMinute", "price" } });
 
         }
 

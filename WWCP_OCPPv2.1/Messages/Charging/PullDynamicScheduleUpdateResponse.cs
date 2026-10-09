@@ -530,6 +530,159 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out PullDynamicScheduleUpdateResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a PullDynamicScheduleUpdate response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="PullDynamicScheduleUpdateResponse">The PullDynamicScheduleUpdate response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomPullDynamicScheduleUpdateResponseParser">A delegate to read custom PullDynamicScheduleUpdate responses.</param>
+        public static Boolean TryParseCBOR(PullDynamicScheduleUpdateRequest                              Request,
+                                           CBORValue                                                     CBOR,
+                                           SourceRouting                                                 Destination,
+                                           NetworkPath                                                   NetworkPath,
+                                           [NotNullWhen(true)]  out PullDynamicScheduleUpdateResponse?   PullDynamicScheduleUpdateResponse,
+                                           [NotNullWhen(false)] out String?                              ErrorResponse,
+                                           DateTimeOffset?                                               ResponseTimestamp                               = null,
+                                           CustomCBORParserDelegate<PullDynamicScheduleUpdateResponse>?  CustomPullDynamicScheduleUpdateResponseParser   = null)
+        {
+
+            try
+            {
+
+                PullDynamicScheduleUpdateResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a PullDynamicScheduleUpdate response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "charging profile status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!ChargingProfileStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid charging profile status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("scheduleUpdate",
+                                   "charging schedule update",
+                                   OCPPv2_1.ChargingScheduleUpdate.TryParseCBOR,
+                                   out ChargingScheduleUpdate? ChargingScheduleUpdate,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("statusInfo",
+                                   "statusInfo",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                PullDynamicScheduleUpdateResponse = new PullDynamicScheduleUpdateResponse(
+
+                                                        Request,
+
+                                                        Status,
+                                                        ChargingScheduleUpdate,
+
+                                                        null,
+                                                        ResponseTimestamp,
+
+                                                        Destination,
+                                                        NetworkPath,
+
+                                                        null,
+                                                        null,
+                                                        Signatures,
+
+                                                        CustomData,
+                                                        StatusInfo: StatusInfo
+
+                                                    );
+
+                if (CustomPullDynamicScheduleUpdateResponseParser is not null)
+                    PullDynamicScheduleUpdateResponse = CustomPullDynamicScheduleUpdateResponseParser(CBOR,
+                                                                                                     PullDynamicScheduleUpdateResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                PullDynamicScheduleUpdateResponse = null;
+                ErrorResponse = "The given CBOR representation of a PullDynamicScheduleUpdate response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomPullDynamicScheduleUpdateResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this PullDynamicScheduleUpdate response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomPullDynamicScheduleUpdateResponseSerializer">A delegate to serialize custom PullDynamicScheduleUpdate responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<PullDynamicScheduleUpdateResponse>? CustomPullDynamicScheduleUpdateResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("scheduleUpdate",            ChargingScheduleUpdate?.ToCBOR()),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomPullDynamicScheduleUpdateResponseSerializer is not null
+                       ? CustomPullDynamicScheduleUpdateResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

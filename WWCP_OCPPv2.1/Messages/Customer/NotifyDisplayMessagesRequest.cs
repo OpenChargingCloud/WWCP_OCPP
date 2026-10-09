@@ -625,6 +625,163 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NotifyDisplayMessagesRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyDisplayMessages request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyDisplayMessagesRequest">The NotifyDisplayMessages request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to read custom NotifyDisplayMessages requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                CBOR,
+                                           Request_Id                                               RequestId,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyDisplayMessagesRequest?   NotifyDisplayMessagesRequest,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          RequestTimestamp                           = null,
+                                           TimeSpan?                                                RequestTimeout                             = null,
+                                           EventTracking_Id?                                        EventTrackingId                            = null,
+                                           CustomCBORParserDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestParser   = null)
+        {
+
+            try
+            {
+
+                NotifyDisplayMessagesRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyDisplayMessages request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("requestId",
+                                               "NotifyDisplayMessages request identification",
+                                               out var NotifyDisplayMessagesRequestIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (NotifyDisplayMessagesRequestIdNumber < Int32.MinValue || NotifyDisplayMessagesRequestIdNumber > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid NotifyDisplayMessages request identification '{NotifyDisplayMessagesRequestIdNumber}'!";
+                    return false;
+                }
+
+                var NotifyDisplayMessagesRequestId = (Int32) NotifyDisplayMessagesRequestIdNumber;
+
+                CBOR.ParseOptionalList<MessageInfo>("messageInfo",
+                                               "message infos",
+                                               OCPPv2_1.MessageInfo.TryParseCBOR,
+                                               out var MessageInfos,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("tbc",
+                                       "to be continued",
+                                       out var ToBeContinued,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyDisplayMessagesRequest = new NotifyDisplayMessagesRequest(
+
+                                                   Destination,
+                                                   NotifyDisplayMessagesRequestId,
+                                                   MessageInfos,
+                                                   ToBeContinued,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData,
+
+                                                   RequestId,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
+                                                   NetworkPath
+
+                                               );
+
+                if (CustomNotifyDisplayMessagesRequestParser is not null)
+                    NotifyDisplayMessagesRequest = CustomNotifyDisplayMessagesRequestParser(CBOR,
+                                                                                           NotifyDisplayMessagesRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyDisplayMessagesRequest = null;
+                ErrorResponse = "The given CBOR representation of a NotifyDisplayMessages request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyDisplayMessagesRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyDisplayMessages request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyDisplayMessagesRequestSerializer">A delegate to serialize custom NotifyDisplayMessages requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyDisplayMessagesRequest>? CustomNotifyDisplayMessagesRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestId",                 CBORValue.FromInt64(NotifyDisplayMessagesRequestId)),
+                           ("messageInfo",               OCPPCBORExtensions.Array(MessageInfos, x => x.ToCBOR())),
+                           ("tbc",                       OCPPCBORExtensions.Flag(ToBeContinued)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyDisplayMessagesRequestSerializer is not null
+                       ? CustomNotifyDisplayMessagesRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

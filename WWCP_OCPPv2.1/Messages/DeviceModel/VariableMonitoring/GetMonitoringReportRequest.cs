@@ -563,6 +563,170 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out GetMonitoringReportRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetMonitoringReport request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetMonitoringReportRequest">The GetMonitoringReport request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetMonitoringReportRequestParser">A delegate to read custom GetMonitoringReport requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                              CBOR,
+                                           Request_Id                                             RequestId,
+                                           SourceRouting                                          Destination,
+                                           NetworkPath                                            NetworkPath,
+                                           [NotNullWhen(true)]  out GetMonitoringReportRequest?   GetMonitoringReportRequest,
+                                           [NotNullWhen(false)] out String?                       ErrorResponse,
+                                           DateTimeOffset?                                        RequestTimestamp                         = null,
+                                           TimeSpan?                                              RequestTimeout                           = null,
+                                           EventTracking_Id?                                      EventTrackingId                          = null,
+                                           CustomCBORParserDelegate<GetMonitoringReportRequest>?  CustomGetMonitoringReportRequestParser   = null)
+        {
+
+            try
+            {
+
+                GetMonitoringReportRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetMonitoringReport request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("requestId",
+                                               "GetMonitoringReport request identification",
+                                               out var GetMonitoringReportRequestIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (GetMonitoringReportRequestIdNumber < Int32.MinValue || GetMonitoringReportRequestIdNumber > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid GetMonitoringReport request identification '{GetMonitoringReportRequestIdNumber}'!";
+                    return false;
+                }
+
+                var GetMonitoringReportRequestId = (Int32) GetMonitoringReportRequestIdNumber;
+
+                CBOR.ParseOptionalList<MonitoringCriterion>("monitoringCriteria",
+                                               "monitoring criteria",
+                                               (CBORValue item, out MonitoringCriterion value, out String? errorResponse) => {
+                                                   value         = default;
+                                                   errorResponse = item.Kind == CBORValueKind.TextString && MonitoringCriteriaExtensions.TryParse(item.AsText(), out value)
+                                                                       ? null
+                                                                       : $"Invalid monitoring criteria '{item}'!";
+                                                   return errorResponse is null;
+                                               },
+                                               out var MonitoringCriterions,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<ComponentVariable>("componentVariable",
+                                               "component variables",
+                                               OCPPv2_1.ComponentVariable.TryParseCBOR,
+                                               out var ComponentVariables,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetMonitoringReportRequest = new GetMonitoringReportRequest(
+
+                                                 Destination,
+                                                 GetMonitoringReportRequestId,
+                                                 MonitoringCriterions,
+                                                 ComponentVariables,
+
+                                                 null,
+                                                 null,
+                                                 Signatures,
+
+                                                 CustomData,
+
+                                                 RequestId,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
+                                                 NetworkPath
+
+                                             );
+
+                if (CustomGetMonitoringReportRequestParser is not null)
+                    GetMonitoringReportRequest = CustomGetMonitoringReportRequestParser(CBOR,
+                                                                                       GetMonitoringReportRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetMonitoringReportRequest = null;
+                ErrorResponse = "The given CBOR representation of a GetMonitoringReport request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetMonitoringReportRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetMonitoringReport request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetMonitoringReportRequestSerializer">A delegate to serialize custom GetMonitoringReport requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetMonitoringReportRequest>? CustomGetMonitoringReportRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestId",                 CBORValue.FromInt64(GetMonitoringReportRequestId)),
+                           ("monitoringCriteria",        OCPPCBORExtensions.Array(MonitoringCriteria, x => CBORValue.FromText(x.AsText()))),
+                           ("componentVariable",         OCPPCBORExtensions.Array(ComponentVariables, x => x.ToCBOR())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetMonitoringReportRequestSerializer is not null
+                       ? CustomGetMonitoringReportRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

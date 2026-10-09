@@ -1176,6 +1176,193 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out AuthorizeResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an Authorize response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="AuthorizeResponse">The Authorize response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomAuthorizeResponseParser">A delegate to read custom Authorize responses.</param>
+        public static Boolean TryParseCBOR(AuthorizeRequest                              Request,
+                                           CBORValue                                     CBOR,
+                                           SourceRouting                                 Destination,
+                                           NetworkPath                                   NetworkPath,
+                                           [NotNullWhen(true)]  out AuthorizeResponse?   AuthorizeResponse,
+                                           [NotNullWhen(false)] out String?              ErrorResponse,
+                                           DateTimeOffset?                               ResponseTimestamp               = null,
+                                           CustomCBORParserDelegate<AuthorizeResponse>?  CustomAuthorizeResponseParser   = null)
+        {
+
+            try
+            {
+
+                AuthorizeResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an Authorize response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("idTokenInfo",
+                                         "identification tag information",
+                                         OCPPv2_1.IdTokenInfo.TryParseCBOR,
+                                         out IdTokenInfo? IdTokenInfo,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                AuthorizeCertificateStatus? CertificateStatus = null;
+
+                if (CBOR.ParseOptionalText("certificateStatus",
+                                           "certificate status",
+                                           out var CertificateStatusText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.AuthorizeCertificateStatus.TryParse(CertificateStatusText!, out var CertificateStatusValue))
+                    {
+                        ErrorResponse = $"Invalid certificate status '{CertificateStatusText}'!";
+                        return false;
+                    }
+
+                    CertificateStatus = CertificateStatusValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<EnergyTransferMode>("allowedEnergyTransfer",
+                                               "allowed energy transfer",
+                                               (CBORValue item, out EnergyTransferMode value, out String? errorResponse) => {
+                                                   value         = default;
+                                                   errorResponse = item.Kind == CBORValueKind.TextString && EnergyTransferMode.TryParse(item.AsText(), out value)
+                                                                       ? null
+                                                                       : $"Invalid allowed energy transfer '{item}'!";
+                                                   return errorResponse is null;
+                                               },
+                                               out var AllowedEnergyTransfers,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("tariff",
+                                   "charging tariff",
+                                   OCPPv2_1.Tariff.TryParseCBOR,
+                                   out Tariff? Tariff,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("transactionLimit",
+                                   "transaction limits",
+                                   OCPPv2_1.TransactionLimits.TryParseCBOR,
+                                   out TransactionLimits? TransactionLimits,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                AuthorizeResponse = new AuthorizeResponse(
+
+                                        Request,
+                                        IdTokenInfo,
+                                        CertificateStatus,
+                                        AllowedEnergyTransfers,
+                                        Tariff,
+                                        TransactionLimits,
+
+                                        null,
+                                        ResponseTimestamp,
+
+                                        Destination,
+                                        NetworkPath,
+
+                                        null,
+                                        null,
+                                        Signatures,
+
+                                        CustomData
+
+                                    );
+
+                if (CustomAuthorizeResponseParser is not null)
+                    AuthorizeResponse = CustomAuthorizeResponseParser(CBOR,
+                                                                     AuthorizeResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AuthorizeResponse = null;
+                ErrorResponse = "The given CBOR representation of an Authorize response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAuthorizeResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this Authorize response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAuthorizeResponseSerializer">A delegate to serialize custom Authorize responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AuthorizeResponse>? CustomAuthorizeResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("idTokenInfo",               IdTokenInfo.ToCBOR()),
+                           ("certificateStatus",         OCPPCBORExtensions.Text(CertificateStatus?.ToString())),
+                           ("allowedEnergyTransfer",     OCPPCBORExtensions.Array(AllowedEnergyTransfers, x => CBORValue.FromText(x.ToString()))),
+                           ("tariff",                    Tariff?.ToCBOR()),
+                           ("transactionLimit",          TransactionLimits?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomAuthorizeResponseSerializer is not null
+                       ? CustomAuthorizeResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

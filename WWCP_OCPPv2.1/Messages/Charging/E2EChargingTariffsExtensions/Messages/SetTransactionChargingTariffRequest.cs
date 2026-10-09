@@ -406,6 +406,145 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SetTransactionChargingTariffRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetTransactionChargingTariff request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetTransactionChargingTariffRequest">The SetTransactionChargingTariff request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSetTransactionChargingTariffRequestParser">A delegate to read custom SetTransactionChargingTariff requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                       CBOR,
+                                           Request_Id                                                      RequestId,
+                                           SourceRouting                                                   Destination,
+                                           NetworkPath                                                     NetworkPath,
+                                           out SetTransactionChargingTariffRequest?                        SetTransactionChargingTariffRequest,
+                                           out String?                                                     ErrorResponse,
+                                           CustomCBORParserDelegate<SetTransactionChargingTariffRequest>?  CustomSetTransactionChargingTariffRequestParser)
+        {
+
+            try
+            {
+
+                SetTransactionChargingTariffRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetTransactionChargingTariff request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("transactionId",
+                                             "transaction identification",
+                                             out var TransactionIdText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.Transaction_Id.TryParse(TransactionIdText, out var TransactionId))
+                {
+                    ErrorResponse = $"Invalid transaction identification '{TransactionIdText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("chargingTariff",
+                                         "charging tariff",
+                                         OCPPv2_1.Tariff.TryParseCBOR,
+                                         out Tariff? ChargingTariff,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetTransactionChargingTariffRequest = new SetTransactionChargingTariffRequest(
+
+                                                          Destination,
+                                                          TransactionId,
+                                                          ChargingTariff,
+
+                                                          null,
+                                                          null,
+                                                          Signatures,
+
+                                                          CustomData,
+
+                                                          RequestId,
+                                                          null,
+                                                          null,
+                                                          null,
+                                                          NetworkPath
+
+                                                      );
+
+                if (CustomSetTransactionChargingTariffRequestParser is not null)
+                    SetTransactionChargingTariffRequest = CustomSetTransactionChargingTariffRequestParser(CBOR,
+                                                                                                         SetTransactionChargingTariffRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetTransactionChargingTariffRequest = null;
+                ErrorResponse = "The given CBOR representation of a SetTransactionChargingTariff request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetTransactionChargingTariffRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetTransactionChargingTariff request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetTransactionChargingTariffRequestSerializer">A delegate to serialize custom SetTransactionChargingTariff requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetTransactionChargingTariffRequest>? CustomSetTransactionChargingTariffRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("transactionId",             CBORValue.FromText(TransactionId.ToString())),
+                           ("chargingTariff",            ChargingTariff.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetTransactionChargingTariffRequestSerializer is not null
+                       ? CustomSetTransactionChargingTariffRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

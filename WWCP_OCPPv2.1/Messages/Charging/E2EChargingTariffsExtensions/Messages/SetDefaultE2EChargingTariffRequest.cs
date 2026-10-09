@@ -374,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                          )),
 
                            EVSEIds.Any()
-                               ? new JProperty("evseIds",          new JArray(EVSEIds.   Select(evseId    => evseId.   ToString())))
+                               ? new JProperty("evseIds",          new JArray(EVSEIds.   Select(evseId    => evseId.   Value)))
                                : null,
 
                            Signatures.Any()
@@ -391,6 +391,152 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             return CustomSetDefaultE2EChargingTariffRequestSerializer is not null
                        ? CustomSetDefaultE2EChargingTariffRequestSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out SetDefaultE2EChargingTariffRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetDefaultE2EChargingTariff request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetDefaultE2EChargingTariffRequest">The SetDefaultE2EChargingTariff request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetDefaultE2EChargingTariffRequestParser">A delegate to read custom SetDefaultE2EChargingTariff requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                      CBOR,
+                                           Request_Id                                                     RequestId,
+                                           SourceRouting                                                  Destination,
+                                           NetworkPath                                                    NetworkPath,
+                                           [NotNullWhen(true)]  out SetDefaultE2EChargingTariffRequest?   SetDefaultE2EChargingTariffRequest,
+                                           [NotNullWhen(false)] out String?                               ErrorResponse,
+                                           DateTimeOffset?                                                RequestTimestamp                                 = null,
+                                           TimeSpan?                                                      RequestTimeout                                   = null,
+                                           EventTracking_Id?                                              EventTrackingId                                  = null,
+                                           CustomCBORParserDelegate<SetDefaultE2EChargingTariffRequest>?  CustomSetDefaultE2EChargingTariffRequestParser   = null)
+        {
+
+            try
+            {
+
+                SetDefaultE2EChargingTariffRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetDefaultE2EChargingTariff request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("chargingTariff",
+                                         "charging tariff",
+                                         OCPPv2_1.Tariff.TryParseCBOR,
+                                         out Tariff? ChargingTariff,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<EVSE_Id>("evseIds",
+                                               "EVSE identifications",
+                                               (CBORValue item, out EVSE_Id value, out String? errorResponse) => {
+                                                   value         = default;
+                                                   errorResponse = item.Kind == CBORValueKind.UnsignedInteger && item.AsUInt64() <= UInt16.MaxValue && global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) item.AsUInt64(), out value)
+                                                                       ? null
+                                                                       : $"Invalid EVSE identification '{item}'!";
+                                                   return errorResponse is null;
+                                               },
+                                               out var EVSEIds,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetDefaultE2EChargingTariffRequest = new SetDefaultE2EChargingTariffRequest(
+
+                                                         Destination,
+                                                         ChargingTariff,
+                                                         EVSEIds,
+
+                                                         null,
+                                                         null,
+                                                         Signatures,
+
+                                                         CustomData,
+
+                                                         RequestId,
+                                                         RequestTimestamp,
+                                                         RequestTimeout,
+                                                         EventTrackingId,
+                                                         NetworkPath
+
+                                                     );
+
+                if (CustomSetDefaultE2EChargingTariffRequestParser is not null)
+                    SetDefaultE2EChargingTariffRequest = CustomSetDefaultE2EChargingTariffRequestParser(CBOR,
+                                                                                                       SetDefaultE2EChargingTariffRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetDefaultE2EChargingTariffRequest = null;
+                ErrorResponse = "The given CBOR representation of a SetDefaultE2EChargingTariff request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetDefaultE2EChargingTariffRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetDefaultE2EChargingTariff request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetDefaultE2EChargingTariffRequestSerializer">A delegate to serialize custom SetDefaultE2EChargingTariff requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetDefaultE2EChargingTariffRequest>? CustomSetDefaultE2EChargingTariffRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("chargingTariff",            ChargingTariff.ToCBOR()),
+                           ("evseIds",                   OCPPCBORExtensions.Array(EVSEIds, x => CBORValue.FromUInt64(x.Value))),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetDefaultE2EChargingTariffRequestSerializer is not null
+                       ? CustomSetDefaultE2EChargingTariffRequestSerializer(this, cbor)
+                       : cbor;
 
         }
 

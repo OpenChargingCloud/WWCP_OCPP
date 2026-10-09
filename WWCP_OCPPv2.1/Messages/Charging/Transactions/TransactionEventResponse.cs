@@ -766,6 +766,198 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out TransactionEventResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a TransactionEvent response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="TransactionEventResponse">The TransactionEvent response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomTransactionEventResponseParser">A delegate to read custom TransactionEvent responses.</param>
+        public static Boolean TryParseCBOR(TransactionEventRequest                              Request,
+                                           CBORValue                                            CBOR,
+                                           SourceRouting                                        Destination,
+                                           NetworkPath                                          NetworkPath,
+                                           [NotNullWhen(true)]  out TransactionEventResponse?   TransactionEventResponse,
+                                           [NotNullWhen(false)] out String?                     ErrorResponse,
+                                           DateTimeOffset?                                      ResponseTimestamp                      = null,
+                                           CustomCBORParserDelegate<TransactionEventResponse>?  CustomTransactionEventResponseParser   = null)
+        {
+
+            try
+            {
+
+                TransactionEventResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a TransactionEvent response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalDecimal("totalCost",
+                                       "total cost",
+                                       out var TotalCost,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Int16? ChargingPriority = null;
+
+                if (CBOR.ParseOptionalInt64("chargingPriority",
+                                             "charging priority",
+                                             out var ChargingPriorityNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (ChargingPriorityNumber is not Int64 ChargingPriorityValue || ChargingPriorityValue < Int16.MinValue || ChargingPriorityValue > Int16.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid charging priority '{ChargingPriorityNumber}'!";
+                        return false;
+                    }
+
+                    ChargingPriority = (Int16) ChargingPriorityValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("idTokenInfo",
+                                   "identification token information",
+                                   OCPPv2_1.IdTokenInfo.TryParseCBOR,
+                                   out IdTokenInfo? IdTokenInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("transactionLimit",
+                                   "transaction limits",
+                                   OCPPv2_1.TransactionLimits.TryParseCBOR,
+                                   out TransactionLimits? TransactionLimits,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("updatedPersonalMessage",
+                                   "updated personal message",
+                                   OCPPv2_1.MessageContent.TryParseCBOR,
+                                   out MessageContent? UpdatedPersonalMessage,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<MessageContent>("updatedPersonalMessageExtra",
+                                               "updated personal message extra",
+                                               OCPPv2_1.MessageContent.TryParseCBOR,
+                                               out var UpdatedPersonalMessageExtra,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                TransactionEventResponse = new TransactionEventResponse(
+
+                                               Request,
+                                               TotalCost,
+                                               ChargingPriority,
+                                               IdTokenInfo,
+                                               TransactionLimits,
+                                               UpdatedPersonalMessage,
+
+                                               null,
+                                               ResponseTimestamp,
+
+                                               Destination,
+                                               NetworkPath,
+
+                                               null,
+                                               null,
+                                               Signatures,
+
+                                               CustomData,
+
+                                               UpdatedPersonalMessageExtra: UpdatedPersonalMessageExtra
+
+                                           );
+
+                if (CustomTransactionEventResponseParser is not null)
+                    TransactionEventResponse = CustomTransactionEventResponseParser(CBOR,
+                                                                                   TransactionEventResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TransactionEventResponse = null;
+                ErrorResponse = "The given CBOR representation of a TransactionEvent response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTransactionEventResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this TransactionEvent response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTransactionEventResponseSerializer">A delegate to serialize custom TransactionEvent responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TransactionEventResponse>? CustomTransactionEventResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("totalCost",                 OCPPCBORExtensions.Number(TotalCost)),
+                           ("chargingPriority",          OCPPCBORExtensions.Int(ChargingPriority)),
+                           ("idTokenInfo",               IdTokenInfo?.ToCBOR()),
+                           ("transactionLimit",          TransactionLimits?.ToCBOR()),
+                           ("updatedPersonalMessage",    UpdatedPersonalMessage?.ToCBOR()),
+                           ("updatedPersonalMessageExtra", OCPPCBORExtensions.Array(UpdatedPersonalMessageExtra, x => x.ToCBOR())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomTransactionEventResponseSerializer is not null
+                       ? CustomTransactionEventResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

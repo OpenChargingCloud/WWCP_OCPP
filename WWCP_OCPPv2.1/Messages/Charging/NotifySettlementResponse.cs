@@ -401,6 +401,165 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out NotifySettlementResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifySettlement response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifySettlementResponse">The NotifySettlement response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomNotifySettlementResponseParser">A delegate to read custom NotifySettlement responses.</param>
+        public static Boolean TryParseCBOR(NotifySettlementRequest                              Request,
+                                           CBORValue                                            CBOR,
+                                           SourceRouting                                        Destination,
+                                           NetworkPath                                          NetworkPath,
+                                           [NotNullWhen(true)]  out NotifySettlementResponse?   NotifySettlementResponse,
+                                           [NotNullWhen(false)] out String?                     ErrorResponse,
+                                           DateTimeOffset?                                      ResponseTimestamp                      = null,
+                                           CustomCBORParserDelegate<NotifySettlementResponse>?  CustomNotifySettlementResponseParser   = null)
+        {
+
+            try
+            {
+
+                NotifySettlementResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifySettlement response is not a map!";
+                    return false;
+                }
+
+                ReceiptId? ReceiptId = null;
+
+                if (CBOR.ParseOptionalText("receiptId",
+                                           "receipt identification",
+                                           out var ReceiptIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.ReceiptId.TryParse(ReceiptIdText!, out var ReceiptIdValue))
+                    {
+                        ErrorResponse = $"Invalid receipt identification '{ReceiptIdText}'!";
+                        return false;
+                    }
+
+                    ReceiptId = ReceiptIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                URL? ReceiptURL = null;
+
+                if (CBOR.ParseOptionalText("receiptUrl",
+                                           "receipt URL",
+                                           out var ReceiptURLText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(ReceiptURLText!, out var ReceiptURLValue))
+                    {
+                        ErrorResponse = $"Invalid receipt URL '{ReceiptURLText}'!";
+                        return false;
+                    }
+
+                    ReceiptURL = ReceiptURLValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifySettlementResponse = new NotifySettlementResponse(
+
+                                               Request,
+                                               ReceiptId,
+                                               ReceiptURL,
+                                               null,
+                                               ResponseTimestamp,
+
+                                               Destination,
+                                               NetworkPath,
+
+                                               null,
+                                               null,
+                                               Signatures,
+
+                                               CustomData
+
+                                           );
+
+                if (CustomNotifySettlementResponseParser is not null)
+                    NotifySettlementResponse = CustomNotifySettlementResponseParser(CBOR,
+                                                                                   NotifySettlementResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifySettlementResponse = null;
+                ErrorResponse = "The given CBOR representation of a NotifySettlement response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifySettlementResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifySettlement response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifySettlementResponseSerializer">A delegate to serialize custom NotifySettlement responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifySettlementResponse>? CustomNotifySettlementResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("receiptId",                 OCPPCBORExtensions.Text(ReceiptId?.ToString())),
+                           ("receiptUrl",                OCPPCBORExtensions.Text(ReceiptURL?.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifySettlementResponseSerializer is not null
+                       ? CustomNotifySettlementResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

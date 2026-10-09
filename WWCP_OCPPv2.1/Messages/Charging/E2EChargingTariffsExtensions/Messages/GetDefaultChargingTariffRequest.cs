@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var json = JSONObject.Create(
 
                            EVSEIds.Any()
-                               ? new JProperty("evseIds",      new JArray(EVSEIds.   Select(evseId    => evseId.   ToString())))
+                               ? new JProperty("evseIds",      new JArray(EVSEIds.   Select(evseId    => evseId.   Value)))
                                : null,
 
                            Signatures.Any()
@@ -326,6 +326,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             return CustomGetDefaultChargingTariffRequestSerializer is not null
                        ? CustomGetDefaultChargingTariffRequestSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out GetDefaultChargingTariffRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetDefaultChargingTariff request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetDefaultChargingTariffRequest">The GetDefaultChargingTariff request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetDefaultChargingTariffRequestParser">A delegate to read custom GetDefaultChargingTariff requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                   CBOR,
+                                           Request_Id                                                  RequestId,
+                                           SourceRouting                                               Destination,
+                                           NetworkPath                                                 NetworkPath,
+                                           [NotNullWhen(true)]  out GetDefaultChargingTariffRequest?   GetDefaultChargingTariffRequest,
+                                           [NotNullWhen(false)] out String?                            ErrorResponse,
+                                           DateTimeOffset?                                             RequestTimestamp                              = null,
+                                           TimeSpan?                                                   RequestTimeout                                = null,
+                                           EventTracking_Id?                                           EventTrackingId                               = null,
+                                           CustomCBORParserDelegate<GetDefaultChargingTariffRequest>?  CustomGetDefaultChargingTariffRequestParser   = null)
+        {
+
+            try
+            {
+
+                GetDefaultChargingTariffRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetDefaultChargingTariff request is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<EVSE_Id>("evseIds",
+                                               "EVSE identifications",
+                                               (CBORValue item, out EVSE_Id value, out String? errorResponse) => {
+                                                   value         = default;
+                                                   errorResponse = item.Kind == CBORValueKind.UnsignedInteger && item.AsUInt64() <= UInt16.MaxValue && global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) item.AsUInt64(), out value)
+                                                                       ? null
+                                                                       : $"Invalid EVSE identification '{item}'!";
+                                                   return errorResponse is null;
+                                               },
+                                               out var EVSEIds,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetDefaultChargingTariffRequest = new GetDefaultChargingTariffRequest(
+
+                                                      Destination,
+                                                      EVSEIds,
+
+                                                      null,
+                                                      null,
+                                                      Signatures,
+
+                                                      CustomData,
+
+                                                      RequestId,
+                                                      RequestTimestamp,
+                                                      RequestTimeout,
+                                                      EventTrackingId,
+                                                      NetworkPath
+
+                                                  );
+
+                if (CustomGetDefaultChargingTariffRequestParser is not null)
+                    GetDefaultChargingTariffRequest = CustomGetDefaultChargingTariffRequestParser(CBOR,
+                                                                                                 GetDefaultChargingTariffRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetDefaultChargingTariffRequest = null;
+                ErrorResponse = "The given CBOR representation of a GetDefaultChargingTariff request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetDefaultChargingTariffRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetDefaultChargingTariff request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetDefaultChargingTariffRequestSerializer">A delegate to serialize custom GetDefaultChargingTariff requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetDefaultChargingTariffRequest>? CustomGetDefaultChargingTariffRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evseIds",                   OCPPCBORExtensions.Array(EVSEIds, x => CBORValue.FromUInt64(x.Value))),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetDefaultChargingTariffRequestSerializer is not null
+                       ? CustomGetDefaultChargingTariffRequestSerializer(this, cbor)
+                       : cbor;
 
         }
 

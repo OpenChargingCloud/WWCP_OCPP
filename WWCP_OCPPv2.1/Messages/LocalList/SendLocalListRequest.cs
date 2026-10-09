@@ -654,6 +654,161 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SendLocalListRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SendLocalList request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SendLocalListRequest">The SendLocalList request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSendLocalListRequestParser">A delegate to read custom SendLocalList requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                        CBOR,
+                                           Request_Id                                       RequestId,
+                                           SourceRouting                                    Destination,
+                                           NetworkPath                                      NetworkPath,
+                                           [NotNullWhen(true)]  out SendLocalListRequest?   SendLocalListRequest,
+                                           [NotNullWhen(false)] out String?                 ErrorResponse,
+                                           DateTimeOffset?                                  RequestTimestamp                   = null,
+                                           TimeSpan?                                        RequestTimeout                     = null,
+                                           EventTracking_Id?                                EventTrackingId                    = null,
+                                           CustomCBORParserDelegate<SendLocalListRequest>?  CustomSendLocalListRequestParser   = null)
+        {
+
+            try
+            {
+
+                SendLocalListRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SendLocalList request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("versionNumber",
+                                       "list version number",
+                                       out var VersionNumber,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("updateType",
+                                             "update type",
+                                             out var UpdateTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!UpdateTypesExtensions.TryParse(UpdateTypeText, out var UpdateType))
+                {
+                    ErrorResponse = $"Invalid update type '{UpdateTypeText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<AuthorizationData>("localAuthorizationList",
+                                               "local authorization list",
+                                               OCPPv2_1.AuthorizationData.TryParseCBOR,
+                                               out var LocalAuthorizationList,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SendLocalListRequest = new SendLocalListRequest(
+
+                                           Destination,
+                                           VersionNumber,
+                                           UpdateType,
+                                           LocalAuthorizationList,
+
+                                           null,
+                                           null,
+                                           Signatures,
+
+                                           CustomData,
+
+                                           RequestId,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
+                                           NetworkPath
+
+                                       );
+
+                if (CustomSendLocalListRequestParser is not null)
+                    SendLocalListRequest = CustomSendLocalListRequestParser(CBOR,
+                                                                           SendLocalListRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SendLocalListRequest = null;
+                ErrorResponse = "The given CBOR representation of a SendLocalList request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSendLocalListRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SendLocalList request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSendLocalListRequestSerializer">A delegate to serialize custom SendLocalList requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SendLocalListRequest>? CustomSendLocalListRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("versionNumber",             CBORValue.FromUInt64(VersionNumber)),
+                           ("updateType",                CBORValue.FromText(UpdateType.AsText())),
+                           ("localAuthorizationList",    OCPPCBORExtensions.Array(LocalAuthorizationList, x => x.ToCBOR())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSendLocalListRequestSerializer is not null
+                       ? CustomSendLocalListRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

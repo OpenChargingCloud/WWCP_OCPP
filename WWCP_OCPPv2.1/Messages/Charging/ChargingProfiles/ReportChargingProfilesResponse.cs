@@ -330,6 +330,119 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out ReportChargingProfilesResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ReportChargingProfiles response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ReportChargingProfilesResponse">The ReportChargingProfiles response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomReportChargingProfilesResponseParser">A delegate to read custom ReportChargingProfiles responses.</param>
+        public static Boolean TryParseCBOR(ReportChargingProfilesRequest                              Request,
+                                           CBORValue                                                  CBOR,
+                                           SourceRouting                                              Destination,
+                                           NetworkPath                                                NetworkPath,
+                                           [NotNullWhen(true)]  out ReportChargingProfilesResponse?   ReportChargingProfilesResponse,
+                                           [NotNullWhen(false)] out String?                           ErrorResponse,
+                                           DateTimeOffset?                                            ResponseTimestamp                            = null,
+                                           CustomCBORParserDelegate<ReportChargingProfilesResponse>?  CustomReportChargingProfilesResponseParser   = null)
+        {
+
+            try
+            {
+
+                ReportChargingProfilesResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ReportChargingProfiles response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ReportChargingProfilesResponse = new ReportChargingProfilesResponse(
+
+                                                     Request,
+                                                     null,
+                                                     ResponseTimestamp,
+
+                                                     Destination,
+                                                     NetworkPath,
+
+                                                     null,
+                                                     null,
+                                                     Signatures,
+
+                                                     CustomData
+
+                                                 );
+
+                if (CustomReportChargingProfilesResponseParser is not null)
+                    ReportChargingProfilesResponse = CustomReportChargingProfilesResponseParser(CBOR,
+                                                                                               ReportChargingProfilesResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ReportChargingProfilesResponse = null;
+                ErrorResponse = "The given CBOR representation of a ReportChargingProfiles response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomReportChargingProfilesResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ReportChargingProfiles response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomReportChargingProfilesResponseSerializer">A delegate to serialize custom ReportChargingProfiles responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ReportChargingProfilesResponse>? CustomReportChargingProfilesResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomReportChargingProfilesResponseSerializer is not null
+                       ? CustomReportChargingProfilesResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

@@ -384,6 +384,163 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out SendFileResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SendFile response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SendFileResponse">The SendFile response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomSendFileResponseParser">A delegate to read custom SendFile responses.</param>
+        public static Boolean TryParseCBOR(SendFileRequest                              Request,
+                                           CBORValue                                    CBOR,
+                                           SourceRouting                                Destination,
+                                           NetworkPath                                  NetworkPath,
+                                           [NotNullWhen(true)]  out SendFileResponse?   SendFileResponse,
+                                           [NotNullWhen(false)] out String?             ErrorResponse,
+                                           DateTimeOffset?                              ResponseTimestamp              = null,
+                                           CustomCBORParserDelegate<SendFileResponse>?  CustomSendFileResponseParser   = null)
+        {
+
+            try
+            {
+
+                SendFileResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SendFile response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("fileName",
+                                             "file name with absolute path",
+                                             out var FileNameText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.FilePath.TryParse(FileNameText, out var FileName))
+                {
+                    ErrorResponse = $"Invalid file name with absolute path '{FileNameText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "response status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.SendFileStatus.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid response status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SendFileResponse = new SendFileResponse(
+
+                                       Request,
+                                       FileName,
+                                       Status,
+                                       StatusInfo,
+
+                                       null,
+                                       ResponseTimestamp,
+
+                                       Destination,
+                                       NetworkPath,
+
+                                       null,
+                                       null,
+                                       Signatures,
+
+                                       CustomData
+
+                                   );
+
+                if (CustomSendFileResponseParser is not null)
+                    SendFileResponse = CustomSendFileResponseParser(CBOR,
+                                                                   SendFileResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SendFileResponse = null;
+                ErrorResponse = "The given CBOR representation of a SendFile response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSendFileResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SendFile response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSendFileResponseSerializer">A delegate to serialize custom SendFile responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SendFileResponse>? CustomSendFileResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("fileName",                  CBORValue.FromText(FileName.ToString())),
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSendFileResponseSerializer is not null
+                       ? CustomSendFileResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

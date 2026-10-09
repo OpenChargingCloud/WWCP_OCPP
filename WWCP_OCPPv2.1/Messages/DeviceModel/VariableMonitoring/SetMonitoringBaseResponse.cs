@@ -436,6 +436,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out SetMonitoringBaseResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetMonitoringBase response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetMonitoringBaseResponse">The SetMonitoringBase response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to read custom SetMonitoringBase responses.</param>
+        public static Boolean TryParseCBOR(SetMonitoringBaseRequest                              Request,
+                                           CBORValue                                             CBOR,
+                                           SourceRouting                                         Destination,
+                                           NetworkPath                                           NetworkPath,
+                                           [NotNullWhen(true)]  out SetMonitoringBaseResponse?   SetMonitoringBaseResponse,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           DateTimeOffset?                                       ResponseTimestamp                       = null,
+                                           CustomCBORParserDelegate<SetMonitoringBaseResponse>?  CustomSetMonitoringBaseResponseParser   = null)
+        {
+
+            try
+            {
+
+                SetMonitoringBaseResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetMonitoringBase response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "display message status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericDeviceModelStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid display message status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetMonitoringBaseResponse = new SetMonitoringBaseResponse(
+
+                                                Request,
+                                                Status,
+                                                StatusInfo,
+
+                                                null,
+                                                ResponseTimestamp,
+
+                                                Destination,
+                                                NetworkPath,
+
+                                                null,
+                                                null,
+                                                Signatures,
+
+                                                CustomData
+
+                                            );
+
+                if (CustomSetMonitoringBaseResponseParser is not null)
+                    SetMonitoringBaseResponse = CustomSetMonitoringBaseResponseParser(CBOR,
+                                                                                     SetMonitoringBaseResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetMonitoringBaseResponse = null;
+                ErrorResponse = "The given CBOR representation of a SetMonitoringBase response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetMonitoringBaseResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetMonitoringBase response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetMonitoringBaseResponseSerializer">A delegate to serialize custom SetMonitoringBase responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetMonitoringBaseResponse>? CustomSetMonitoringBaseResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetMonitoringBaseResponseSerializer is not null
+                       ? CustomSetMonitoringBaseResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

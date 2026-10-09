@@ -474,6 +474,131 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetCertificateChainStatusResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetCertificateChainStatus response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetCertificateChainStatusResponse">The GetCertificateChainStatus response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetCertificateChainStatusResponseParser">A delegate to read custom GetCertificateChainStatus responses.</param>
+        public static Boolean TryParseCBOR(GetCertificateChainStatusRequest                              Request,
+                                           CBORValue                                                     CBOR,
+                                           SourceRouting                                                 Destination,
+                                           NetworkPath                                                   NetworkPath,
+                                           [NotNullWhen(true)]  out GetCertificateChainStatusResponse?   GetCertificateChainStatusResponse,
+                                           [NotNullWhen(false)] out String?                              ErrorResponse,
+                                           DateTimeOffset?                                               ResponseTimestamp                               = null,
+                                           CustomCBORParserDelegate<GetCertificateChainStatusResponse>?  CustomGetCertificateChainStatusResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetCertificateChainStatusResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetCertificateChainStatus response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<CertificateStatusInfo>("certificateStatus",
+                                               "GetCertificateChainStatus",
+                                               OCPPv2_1.CertificateStatusInfo.TryParseCBOR,
+                                               out var CertificateStatus,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetCertificateChainStatusResponse = new GetCertificateChainStatusResponse(
+
+                                                        Request,
+                                                        CertificateStatus,
+
+                                                        null,
+                                                        ResponseTimestamp,
+
+                                                        Destination,
+                                                        NetworkPath,
+
+                                                        null,
+                                                        null,
+                                                        Signatures,
+
+                                                        CustomData
+
+                                                    );
+
+                if (CustomGetCertificateChainStatusResponseParser is not null)
+                    GetCertificateChainStatusResponse = CustomGetCertificateChainStatusResponseParser(CBOR,
+                                                                                                     GetCertificateChainStatusResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetCertificateChainStatusResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetCertificateChainStatus response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetCertificateChainStatusResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetCertificateChainStatus response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetCertificateChainStatusResponseSerializer">A delegate to serialize custom GetCertificateChainStatus responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetCertificateChainStatusResponse>? CustomGetCertificateChainStatusResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("certificateStatus",         OCPPCBORExtensions.Array(CertificateStatus, x => x.ToCBOR())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetCertificateChainStatusResponseSerializer is not null
+                       ? CustomGetCertificateChainStatusResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

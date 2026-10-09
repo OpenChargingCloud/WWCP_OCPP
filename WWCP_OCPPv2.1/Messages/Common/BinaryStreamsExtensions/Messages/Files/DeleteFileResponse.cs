@@ -385,6 +385,162 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out DeleteFileResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DeleteFile response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="DeleteFileResponse">The DeleteFile response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomDeleteFileResponseParser">A delegate to read custom DeleteFile responses.</param>
+        public static Boolean TryParseCBOR(DeleteFileRequest                              Request,
+                                           CBORValue                                      CBOR,
+                                           SourceRouting                                  Destination,
+                                           NetworkPath                                    NetworkPath,
+                                           [NotNullWhen(true)]  out DeleteFileResponse?   DeleteFileResponse,
+                                           [NotNullWhen(false)] out String?               ErrorResponse,
+                                           DateTimeOffset?                                ResponseTimestamp                = null,
+                                           CustomCBORParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser   = null)
+        {
+
+            try
+            {
+
+                DeleteFileResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DeleteFile response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("fileName",
+                                             "file name with absolute path",
+                                             out var FileNameText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.FilePath.TryParse(FileNameText, out var FileName))
+                {
+                    ErrorResponse = $"Invalid file name with absolute path '{FileNameText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "response status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.DeleteFileStatus.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid response status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                DeleteFileResponse = new DeleteFileResponse(
+
+                                         Request,
+                                         FileName,
+                                         Status,
+                                         StatusInfo,
+                                         null,
+                                         ResponseTimestamp,
+
+                                         Destination,
+                                         NetworkPath,
+
+                                         null,
+                                         null,
+                                         Signatures,
+
+                                         CustomData
+
+                                     );
+
+                if (CustomDeleteFileResponseParser is not null)
+                    DeleteFileResponse = CustomDeleteFileResponseParser(CBOR,
+                                                                       DeleteFileResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DeleteFileResponse = null;
+                ErrorResponse = "The given CBOR representation of a DeleteFile response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDeleteFileResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DeleteFile response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDeleteFileResponseSerializer">A delegate to serialize custom DeleteFile responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DeleteFileResponse>? CustomDeleteFileResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("fileName",                  CBORValue.FromText(FileName.ToString())),
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomDeleteFileResponseSerializer is not null
+                       ? CustomDeleteFileResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

@@ -568,6 +568,131 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out SetVariableMonitoringResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetVariableMonitoring response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetVariableMonitoringResponse">The SetVariableMonitoring response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to read custom SetVariableMonitoring responses.</param>
+        public static Boolean TryParseCBOR(SetVariableMonitoringRequest                              Request,
+                                           CBORValue                                                 CBOR,
+                                           SourceRouting                                             Destination,
+                                           NetworkPath                                               NetworkPath,
+                                           [NotNullWhen(true)]  out SetVariableMonitoringResponse?   SetVariableMonitoringResponse,
+                                           [NotNullWhen(false)] out String?                          ErrorResponse,
+                                           DateTimeOffset?                                           ResponseTimestamp                           = null,
+                                           CustomCBORParserDelegate<SetVariableMonitoringResponse>?  CustomSetVariableMonitoringResponseParser   = null)
+        {
+
+            try
+            {
+
+                SetVariableMonitoringResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetVariableMonitoring response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<SetMonitoringResult>("setMonitoringResult",
+                                               "set monitoring result results",
+                                               OCPPv2_1.SetMonitoringResult.TryParseCBOR,
+                                               out var SetMonitoringResults,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetVariableMonitoringResponse = new SetVariableMonitoringResponse(
+
+                                                    Request,
+                                                    SetMonitoringResults,
+
+                                                    null,
+                                                    ResponseTimestamp,
+
+                                                    Destination,
+                                                    NetworkPath,
+
+                                                    null,
+                                                    null,
+                                                    Signatures,
+
+                                                    CustomData
+
+                                                );
+
+                if (CustomSetVariableMonitoringResponseParser is not null)
+                    SetVariableMonitoringResponse = CustomSetVariableMonitoringResponseParser(CBOR,
+                                                                                             SetVariableMonitoringResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetVariableMonitoringResponse = null;
+                ErrorResponse = "The given CBOR representation of a SetVariableMonitoring response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetVariableMonitoringResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetVariableMonitoring response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetVariableMonitoringResponseSerializer">A delegate to serialize custom SetVariableMonitoring responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetVariableMonitoringResponse>? CustomSetVariableMonitoringResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("setMonitoringResult",       OCPPCBORExtensions.Array(SetMonitoringResults, x => x.ToCBOR())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetVariableMonitoringResponseSerializer is not null
+                       ? CustomSetVariableMonitoringResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

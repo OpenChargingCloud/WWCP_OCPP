@@ -1600,6 +1600,331 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out TransactionEventRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a TransactionEvent request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="TransactionEventRequest">The TransactionEvent request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomTransactionEventRequestParser">A delegate to read custom TransactionEvent requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                           CBOR,
+                                           Request_Id                                          RequestId,
+                                           SourceRouting                                       Destination,
+                                           NetworkPath                                         NetworkPath,
+                                           [NotNullWhen(true)]  out TransactionEventRequest?   TransactionEventRequest,
+                                           [NotNullWhen(false)] out String?                    ErrorResponse,
+                                           DateTimeOffset?                                     RequestTimestamp                      = null,
+                                           TimeSpan?                                           RequestTimeout                        = null,
+                                           EventTracking_Id?                                   EventTrackingId                       = null,
+                                           CustomCBORParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser   = null)
+        {
+
+            try
+            {
+
+                TransactionEventRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a TransactionEvent request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("eventType",
+                                             "event type",
+                                             out var EventTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!TransactionEventsExtensions.TryParse(EventTypeText, out var EventType))
+                {
+                    ErrorResponse = $"Invalid event type '{EventTypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timestamp",
+                                              "timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset Timestamp,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("triggerReason",
+                                             "trigger reason",
+                                             out var TriggerReasonText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.TriggerReason.TryParse(TriggerReasonText, out var TriggerReason))
+                {
+                    ErrorResponse = $"Invalid trigger reason '{TriggerReasonText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("seqNo",
+                                               "sequence number",
+                                               out var SequenceNumberNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (SequenceNumberNumber < UInt32.MinValue || SequenceNumberNumber > UInt32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid sequence number '{SequenceNumberNumber}'!";
+                    return false;
+                }
+
+                var SequenceNumber = (UInt32) SequenceNumberNumber;
+
+                if (!CBOR.ParseMandatory("transactionInfo",
+                                         "transaction info",
+                                         OCPPv2_1.Transaction.TryParseCBOR,
+                                         out Transaction? Transaction,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalBoolean("offline",
+                                       "offline",
+                                       out var Offline,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Byte? NumberOfPhasesUsed = null;
+
+                if (CBOR.ParseOptionalUInt64("numberOfPhasesUsed",
+                                             "number of phases used",
+                                             out var NumberOfPhasesUsedNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (NumberOfPhasesUsedNumber is not UInt64 NumberOfPhasesUsedValue || NumberOfPhasesUsedValue < Byte.MinValue || NumberOfPhasesUsedValue > Byte.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid number of phases used '{NumberOfPhasesUsedNumber}'!";
+                        return false;
+                    }
+
+                    NumberOfPhasesUsed = (Byte) NumberOfPhasesUsedValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("cableMaxCurrent",
+                                        "cable max current",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? CableMaxCurrent,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Reservation_Id? ReservationId = null;
+
+                if (CBOR.ParseOptionalUInt64("reservationId",
+                                             "reservation identification",
+                                             out var ReservationIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (ReservationIdNumber is not UInt64 ReservationIdValue || ReservationIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.Reservation_Id.TryParse((UInt64) ReservationIdValue, out var ReservationIdId))
+                    {
+                        ErrorResponse = $"Invalid reservation identification '{ReservationIdNumber}'!";
+                        return false;
+                    }
+
+                    ReservationId = ReservationIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("idToken",
+                                   "identification token",
+                                   OCPPv2_1.IdToken.TryParseCBOR,
+                                   out IdToken? IdToken,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("evse",
+                                   "EVSE",
+                                   OCPPv2_1.EVSE.TryParseCBOR,
+                                   out EVSE? EVSE,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<MeterValue>("meterValue",
+                                               "meter values",
+                                               OCPPv2_1.MeterValue.TryParseCBOR,
+                                               out var MeterValues,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                PreconditioningStatus? PreconditioningStatus = null;
+
+                if (CBOR.ParseOptionalText("preconditioningStatus",
+                                           "preconditioning status",
+                                           out var PreconditioningStatusText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.PreconditioningStatus.TryParse(PreconditioningStatusText!, out var PreconditioningStatusValue))
+                    {
+                        ErrorResponse = $"Invalid preconditioning status '{PreconditioningStatusText}'!";
+                        return false;
+                    }
+
+                    PreconditioningStatus = PreconditioningStatusValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("evseSleep",
+                                       "evseSleep",
+                                       out var EVSESleep,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                TransactionEventRequest = new TransactionEventRequest(
+
+                                              Destination,
+
+                                              EventType,
+                                              Timestamp,
+                                              TriggerReason,
+                                              SequenceNumber,
+                                              Transaction,
+
+                                              Offline,
+                                              NumberOfPhasesUsed,
+                                              CableMaxCurrent,
+                                              ReservationId,
+                                              IdToken,
+                                              EVSE,
+                                              MeterValues,
+                                              PreconditioningStatus,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData,
+
+                                              RequestId,
+                                              RequestTimestamp,
+                                              RequestTimeout,
+                                              EventTrackingId,
+                                              NetworkPath,
+                                              EVSESleep: EVSESleep
+
+                                          );
+
+                if (CustomTransactionEventRequestParser is not null)
+                    TransactionEventRequest = CustomTransactionEventRequestParser(CBOR,
+                                                                                 TransactionEventRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TransactionEventRequest = null;
+                ErrorResponse = "The given CBOR representation of a TransactionEvent request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTransactionEventRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this TransactionEvent request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTransactionEventRequestSerializer">A delegate to serialize custom TransactionEvent requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TransactionEventRequest>? CustomTransactionEventRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("eventType",                 CBORValue.FromText(EventType.AsText())),
+                           ("timestamp",                 Timestamp.ToCBOR()),
+                           ("triggerReason",             CBORValue.FromText(TriggerReason.ToString())),
+                           ("seqNo",                     CBORValue.FromUInt64(SequenceNumber)),
+                           ("transactionInfo",           TransactionInfo.ToCBOR()),
+                           ("offline",                   OCPPCBORExtensions.Flag(Offline)),
+                           ("numberOfPhasesUsed",        OCPPCBORExtensions.UInt(NumberOfPhasesUsed)),
+                           ("cableMaxCurrent",           CableMaxCurrent?.ToCBOR()),
+                           ("reservationId",             OCPPCBORExtensions.UInt(ReservationId?.Value)),
+                           ("idToken",                   IdToken?.ToCBOR()),
+                           ("evse",                      EVSE?.ToCBOR()),
+                           ("meterValue",                OCPPCBORExtensions.Array(MeterValues, x => x.ToCBOR())),
+                           ("preconditioningStatus",     OCPPCBORExtensions.Text(PreconditioningStatus?.ToString())),
+                           ("evseSleep",                 OCPPCBORExtensions.Flag(EVSESleep)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomTransactionEventRequestSerializer is not null
+                       ? CustomTransactionEventRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

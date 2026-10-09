@@ -389,6 +389,181 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NotifyCRLRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyCRL request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyCRLRequest">The NotifyCRL request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyCRLRequestParser">A delegate to read custom NotifyCRL requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                    CBOR,
+                                           Request_Id                                   RequestId,
+                                           SourceRouting                                Destination,
+                                           NetworkPath                                  NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyCRLRequest?   NotifyCRLRequest,
+                                           [NotNullWhen(false)] out String?             ErrorResponse,
+                                           DateTimeOffset?                              RequestTimestamp               = null,
+                                           TimeSpan?                                    RequestTimeout                 = null,
+                                           EventTracking_Id?                            EventTrackingId                = null,
+                                           CustomCBORParserDelegate<NotifyCRLRequest>?  CustomNotifyCRLRequestParser   = null)
+        {
+
+            try
+            {
+
+                NotifyCRLRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyCRL request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("requestId",
+                                               "NotifyCRL request identification",
+                                               out var NotifyCRLRequestIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (NotifyCRLRequestIdNumber < Int32.MinValue || NotifyCRLRequestIdNumber > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid NotifyCRL request identification '{NotifyCRLRequestIdNumber}'!";
+                    return false;
+                }
+
+                var NotifyCRLRequestId = (Int32) NotifyCRLRequestIdNumber;
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "certificate revocation list availability",
+                                             out var AvailabilityText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!NotifyCRLStatusExtensions.TryParse(AvailabilityText, out var Availability))
+                {
+                    ErrorResponse = $"Invalid certificate revocation list availability '{AvailabilityText}'!";
+                    return false;
+                }
+
+                URL? Location = null;
+
+                if (CBOR.ParseOptionalText("location",
+                                           "certificate revocation list location",
+                                           out var LocationText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(LocationText!, out var LocationValue))
+                    {
+                        ErrorResponse = $"Invalid certificate revocation list location '{LocationText}'!";
+                        return false;
+                    }
+
+                    Location = LocationValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyCRLRequest = new NotifyCRLRequest(
+
+                                       Destination,
+                                       NotifyCRLRequestId,
+                                       Availability,
+                                       Location,
+
+                                       null,
+                                       null,
+                                       Signatures,
+
+                                       CustomData,
+
+                                       RequestId,
+                                       RequestTimestamp,
+                                       RequestTimeout,
+                                       EventTrackingId,
+                                       NetworkPath
+
+                                   );
+
+                if (CustomNotifyCRLRequestParser is not null)
+                    NotifyCRLRequest = CustomNotifyCRLRequestParser(CBOR,
+                                                                   NotifyCRLRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyCRLRequest = null;
+                ErrorResponse = "The given CBOR representation of a NotifyCRL request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyCRLRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyCRL request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyCRLRequestSerializer">A delegate to serialize custom NotifyCRL requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyCRLRequest>? CustomNotifyCRLRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestId",                 CBORValue.FromInt64(NotifyCRLRequestId)),
+                           ("status",                    CBORValue.FromText(Availability.AsText())),
+                           ("location",                  OCPPCBORExtensions.Text(Location?.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyCRLRequestSerializer is not null
+                       ? CustomNotifyCRLRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

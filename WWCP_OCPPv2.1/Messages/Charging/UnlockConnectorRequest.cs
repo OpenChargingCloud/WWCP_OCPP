@@ -394,6 +394,156 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out UnlockConnectorRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an UnlockConnector request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="UnlockConnectorRequest">The UnlockConnector request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomUnlockConnectorRequestParser">A delegate to read custom UnlockConnector requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                          CBOR,
+                                           Request_Id                                         RequestId,
+                                           SourceRouting                                      Destination,
+                                           NetworkPath                                        NetworkPath,
+                                           [NotNullWhen(true)]  out UnlockConnectorRequest?   UnlockConnectorRequest,
+                                           [NotNullWhen(false)] out String?                   ErrorResponse,
+                                           DateTimeOffset?                                    RequestTimestamp                     = null,
+                                           TimeSpan?                                          RequestTimeout                       = null,
+                                           EventTracking_Id?                                  EventTrackingId                      = null,
+                                           CustomCBORParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser   = null)
+        {
+
+            try
+            {
+
+                UnlockConnectorRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an UnlockConnector request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("evseId",
+                                               "EVSE identification",
+                                               out var EVSEIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (EVSEIdNumber > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) EVSEIdNumber, out var EVSEId))
+                {
+                    ErrorResponse = $"Invalid EVSE identification '{EVSEIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("connectorId",
+                                               "connector identification",
+                                               out var ConnectorIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (ConnectorIdNumber > Byte.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.Connector_Id.TryParse((Byte) ConnectorIdNumber, out var ConnectorId))
+                {
+                    ErrorResponse = $"Invalid connector identification '{ConnectorIdNumber}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                UnlockConnectorRequest = new UnlockConnectorRequest(
+
+                                             Destination,
+                                             EVSEId,
+                                             ConnectorId,
+
+                                             null,
+                                             null,
+                                             Signatures,
+
+                                             CustomData,
+
+                                             RequestId,
+                                             RequestTimestamp,
+                                             RequestTimeout,
+                                             EventTrackingId,
+                                             NetworkPath
+
+                                         );
+
+                if (CustomUnlockConnectorRequestParser is not null)
+                    UnlockConnectorRequest = CustomUnlockConnectorRequestParser(CBOR,
+                                                                               UnlockConnectorRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                UnlockConnectorRequest = null;
+                ErrorResponse = "The given CBOR representation of an UnlockConnector request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomUnlockConnectorRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this UnlockConnector request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomUnlockConnectorRequestSerializer">A delegate to serialize custom UnlockConnector requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<UnlockConnectorRequest>? CustomUnlockConnectorRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evseId",                    CBORValue.FromUInt64(EVSEId.Value)),
+                           ("connectorId",               CBORValue.FromUInt64(ConnectorId.Value)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomUnlockConnectorRequestSerializer is not null
+                       ? CustomUnlockConnectorRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

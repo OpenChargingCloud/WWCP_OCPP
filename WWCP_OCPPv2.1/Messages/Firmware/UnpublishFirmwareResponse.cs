@@ -364,6 +364,136 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out UnpublishFirmwareResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an UnpublishFirmware response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="UnpublishFirmwareResponse">The UnpublishFirmware response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to read custom UnpublishFirmware responses.</param>
+        public static Boolean TryParseCBOR(UnpublishFirmwareRequest                              Request,
+                                           CBORValue                                             CBOR,
+                                           SourceRouting                                         Destination,
+                                           NetworkPath                                           NetworkPath,
+                                           [NotNullWhen(true)]  out UnpublishFirmwareResponse?   UnpublishFirmwareResponse,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           DateTimeOffset?                                       ResponseTimestamp                       = null,
+                                           CustomCBORParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null)
+        {
+
+            try
+            {
+
+                UnpublishFirmwareResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an UnpublishFirmware response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "UnpublishFirmware status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!UnpublishFirmwareStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid UnpublishFirmware status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                UnpublishFirmwareResponse = new UnpublishFirmwareResponse(
+
+                                                Request,
+                                                Status,
+
+                                                null,
+                                                ResponseTimestamp,
+
+                                                Destination,
+                                                NetworkPath,
+
+                                                null,
+                                                null,
+                                                Signatures,
+
+                                                CustomData
+
+                                            );
+
+                if (CustomUnpublishFirmwareResponseParser is not null)
+                    UnpublishFirmwareResponse = CustomUnpublishFirmwareResponseParser(CBOR,
+                                                                                     UnpublishFirmwareResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                UnpublishFirmwareResponse = null;
+                ErrorResponse = "The given CBOR representation of an UnpublishFirmware response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomUnpublishFirmwareResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this UnpublishFirmware response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomUnpublishFirmwareResponseSerializer">A delegate to serialize custom UnpublishFirmware responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<UnpublishFirmwareResponse>? CustomUnpublishFirmwareResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomUnpublishFirmwareResponseSerializer is not null
+                       ? CustomUnpublishFirmwareResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

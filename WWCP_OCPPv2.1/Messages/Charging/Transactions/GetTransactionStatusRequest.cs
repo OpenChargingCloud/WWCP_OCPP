@@ -367,6 +367,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out GetTransactionStatusRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetTransactionStatus request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetTransactionStatusRequest">The GetTransactionStatus request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetTransactionStatusRequestParser">A delegate to read custom GetTransactionStatus requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                               CBOR,
+                                           Request_Id                                              RequestId,
+                                           SourceRouting                                           Destination,
+                                           NetworkPath                                             NetworkPath,
+                                           [NotNullWhen(true)]  out GetTransactionStatusRequest?   GetTransactionStatusRequest,
+                                           [NotNullWhen(false)] out String?                        ErrorResponse,
+                                           DateTimeOffset?                                         RequestTimestamp                          = null,
+                                           TimeSpan?                                               RequestTimeout                            = null,
+                                           EventTracking_Id?                                       EventTrackingId                           = null,
+                                           CustomCBORParserDelegate<GetTransactionStatusRequest>?  CustomGetTransactionStatusRequestParser   = null)
+        {
+
+            try
+            {
+
+                GetTransactionStatusRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetTransactionStatus request is not a map!";
+                    return false;
+                }
+
+                Transaction_Id? TransactionId = null;
+
+                if (CBOR.ParseOptionalText("transactionId",
+                                           "transaction identification",
+                                           out var TransactionIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
+                    {
+                        ErrorResponse = $"Invalid transaction identification '{TransactionIdText}'!";
+                        return false;
+                    }
+
+                    TransactionId = TransactionIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetTransactionStatusRequest = new GetTransactionStatusRequest(
+
+                                                  Destination,
+                                                  TransactionId,
+
+                                                  null,
+                                                  null,
+                                                  Signatures,
+
+                                                  CustomData,
+
+                                                  RequestId,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId,
+                                                  NetworkPath
+
+                                              );
+
+                if (CustomGetTransactionStatusRequestParser is not null)
+                    GetTransactionStatusRequest = CustomGetTransactionStatusRequestParser(CBOR,
+                                                                                         GetTransactionStatusRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetTransactionStatusRequest = null;
+                ErrorResponse = "The given CBOR representation of a GetTransactionStatus request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetTransactionStatusRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetTransactionStatus request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetTransactionStatusRequestSerializer">A delegate to serialize custom GetTransactionStatus requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetTransactionStatusRequest>? CustomGetTransactionStatusRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("transactionId",             OCPPCBORExtensions.Text(TransactionId?.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetTransactionStatusRequestSerializer is not null
+                       ? CustomGetTransactionStatusRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

@@ -435,6 +435,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out DeleteCertificateResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DeleteCertificate response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="DeleteCertificateResponse">The DeleteCertificate response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomDeleteCertificateResponseParser">A delegate to read custom DeleteCertificate responses.</param>
+        public static Boolean TryParseCBOR(DeleteCertificateRequest                              Request,
+                                           CBORValue                                             CBOR,
+                                           SourceRouting                                         Destination,
+                                           NetworkPath                                           NetworkPath,
+                                           [NotNullWhen(true)]  out DeleteCertificateResponse?   DeleteCertificateResponse,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           DateTimeOffset?                                       ResponseTimestamp                       = null,
+                                           CustomCBORParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null)
+        {
+
+            try
+            {
+
+                DeleteCertificateResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DeleteCertificate response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "DeleteCertificate status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.DeleteCertificateStatus.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid DeleteCertificate status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                DeleteCertificateResponse = new DeleteCertificateResponse(
+
+                                                Request,
+                                                Status,
+                                                StatusInfo,
+
+                                                null,
+                                                ResponseTimestamp,
+
+                                                Destination,
+                                                NetworkPath,
+
+                                                null,
+                                                null,
+                                                Signatures,
+
+                                                CustomData
+
+                                            );
+
+                if (CustomDeleteCertificateResponseParser is not null)
+                    DeleteCertificateResponse = CustomDeleteCertificateResponseParser(CBOR,
+                                                                                     DeleteCertificateResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DeleteCertificateResponse = null;
+                ErrorResponse = "The given CBOR representation of a DeleteCertificate response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDeleteCertificateResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DeleteCertificate response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDeleteCertificateResponseSerializer">A delegate to serialize custom DeleteCertificate responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DeleteCertificateResponse>? CustomDeleteCertificateResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomDeleteCertificateResponseSerializer is not null
+                       ? CustomDeleteCertificateResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

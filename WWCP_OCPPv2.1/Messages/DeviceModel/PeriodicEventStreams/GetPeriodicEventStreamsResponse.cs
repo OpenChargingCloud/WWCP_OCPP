@@ -26,6 +26,8 @@ using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using System.Diagnostics.CodeAnalysis;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -462,6 +464,150 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             return CustomGetPeriodicEventStreamResponseSerializer is not null
                        ? CustomGetPeriodicEventStreamResponseSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetPeriodicEventStreamsResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetPeriodicEventStreams response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="GetPeriodicEventStreamResponse"></param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomGetPeriodicEventStreamResponseParser">A delegate to read custom GetPeriodicEventStreams responses.</param>
+        public static Boolean TryParseCBOR(GetPeriodicEventStreamsRequest                              Request,
+                                           CBORValue                                                   CBOR,
+                                           [NotNullWhen(true)]  out GetPeriodicEventStreamsResponse?   GetPeriodicEventStreamResponse,
+                                           [NotNullWhen(false)] out String?                            ErrorResponse,
+                                           CustomCBORParserDelegate<GetPeriodicEventStreamsResponse>?  CustomGetPeriodicEventStreamResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetPeriodicEventStreamResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetPeriodicEventStreams response is not a map!";
+                    return false;
+                }
+
+                GenericStatus? Status = null;
+
+                if (CBOR.ParseOptionalText("status",
+                                           "response status",
+                                           out var StatusText,
+                                           out ErrorResponse))
+                {
+
+                    if (!GenericStatusExtensions.TryParse(StatusText!, out var StatusValue))
+                    {
+                        ErrorResponse = $"Invalid response status '{StatusText}'!";
+                        return false;
+                    }
+
+                    Status = StatusValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<ConstantStreamData>("constantStreamData",
+                                               "status info",
+                                               OCPPv2_1.ConstantStreamData.TryParseCBOR,
+                                               out var ConstantStreamData,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetPeriodicEventStreamResponse = new GetPeriodicEventStreamsResponse(
+                                                     Request,
+                                                     Status,
+                                                     StatusInfo,
+                                                     ConstantStreamData,
+                                                     null,
+                                                     null,
+                                                     null,
+                                                     Signatures,
+                                                     CustomData
+                                                 );
+
+                if (CustomGetPeriodicEventStreamResponseParser is not null)
+                    GetPeriodicEventStreamResponse = CustomGetPeriodicEventStreamResponseParser(CBOR,
+                                                                                               GetPeriodicEventStreamResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetPeriodicEventStreamResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetPeriodicEventStreams response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetPeriodicEventStreamsResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetPeriodicEventStreams response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetPeriodicEventStreamsResponseSerializer">A delegate to serialize custom GetPeriodicEventStreams responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetPeriodicEventStreamsResponse>? CustomGetPeriodicEventStreamsResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    OCPPCBORExtensions.Text(Status?.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("constantStreamData",        OCPPCBORExtensions.Array(ConstantStreamData, x => x.ToCBOR())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetPeriodicEventStreamsResponseSerializer is not null
+                       ? CustomGetPeriodicEventStreamsResponseSerializer(this, cbor)
+                       : cbor;
 
         }
 

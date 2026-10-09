@@ -390,6 +390,184 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out DeleteFileRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DeleteFile request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="DeleteFileRequest">The DeleteFile request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDeleteFileRequestParser">A delegate to read custom DeleteFile requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                     CBOR,
+                                           Request_Id                                    RequestId,
+                                           SourceRouting                                 Destination,
+                                           NetworkPath                                   NetworkPath,
+                                           [NotNullWhen(true)]  out DeleteFileRequest?   DeleteFileRequest,
+                                           [NotNullWhen(false)] out String?              ErrorResponse,
+                                           DateTimeOffset?                               RequestTimestamp                = null,
+                                           TimeSpan?                                     RequestTimeout                  = null,
+                                           EventTracking_Id?                             EventTrackingId                 = null,
+                                           CustomCBORParserDelegate<DeleteFileRequest>?  CustomDeleteFileRequestParser   = null)
+        {
+
+            try
+            {
+
+                DeleteFileRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DeleteFile request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("fileName",
+                                             "filename with absolute path",
+                                             out var FileNameText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.FilePath.TryParse(FileNameText, out var FileName))
+                {
+                    ErrorResponse = $"Invalid filename with absolute path '{FileNameText}'!";
+                    return false;
+                }
+
+                // BASE64 in JSON, the bytes in CBOR.
+                var FileSHA256 = Array.Empty<Byte>();
+
+                if (CBOR.TryGetValue(CBORValue.FromText("fileSHA256"), out var fileSHA256CBOR))
+                {
+
+                    if      (fileSHA256CBOR.Kind == CBORValueKind.ByteString)
+                        FileSHA256 = fileSHA256CBOR.AsBytes();
+
+                    else if (fileSHA256CBOR.Kind == CBORValueKind.TextString)
+                        FileSHA256 = fileSHA256CBOR.AsText().FromBASE64();
+
+                    else
+                    {
+                        ErrorResponse = "Invalid fileSHA256!";
+                        return false;
+                    }
+
+                }
+
+                // BASE64 in JSON, the bytes in CBOR.
+                var FileSHA512 = Array.Empty<Byte>();
+
+                if (CBOR.TryGetValue(CBORValue.FromText("fileSHA512"), out var fileSHA512CBOR))
+                {
+
+                    if      (fileSHA512CBOR.Kind == CBORValueKind.ByteString)
+                        FileSHA512 = fileSHA512CBOR.AsBytes();
+
+                    else if (fileSHA512CBOR.Kind == CBORValueKind.TextString)
+                        FileSHA512 = fileSHA512CBOR.AsText().FromBASE64();
+
+                    else
+                    {
+                        ErrorResponse = "Invalid fileSHA512!";
+                        return false;
+                    }
+
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                DeleteFileRequest = new DeleteFileRequest(
+
+                                        Destination,
+                                        FileName,
+                                        FileSHA256,
+                                        FileSHA512,
+
+                                        null,
+                                        null,
+                                        Signatures,
+
+                                        CustomData,
+
+                                        RequestId,
+                                        RequestTimestamp,
+                                        RequestTimeout,
+                                        EventTrackingId,
+                                        NetworkPath
+
+                                    );
+
+                if (CustomDeleteFileRequestParser is not null)
+                    DeleteFileRequest = CustomDeleteFileRequestParser(CBOR,
+                                                                     DeleteFileRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DeleteFileRequest = null;
+                ErrorResponse = "The given CBOR representation of a DeleteFile request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDeleteFileRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DeleteFile request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDeleteFileRequestSerializer">A delegate to serialize custom DeleteFile requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DeleteFileRequest>? CustomDeleteFileRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("fileName",                  CBORValue.FromText(FileName.ToString())),
+                           ("fileSHA256",                FileSHA256.Length > 0 ? (CBORValue?) CBORValue.FromBytes(FileSHA256) : null),
+                           ("fileSHA512",                FileSHA512.Length > 0 ? (CBORValue?) CBORValue.FromBytes(FileSHA512) : null),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomDeleteFileRequestSerializer is not null
+                       ? CustomDeleteFileRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

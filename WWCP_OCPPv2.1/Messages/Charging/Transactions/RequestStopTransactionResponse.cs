@@ -434,6 +434,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out RequestStopTransactionResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a RequestStopTransaction response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="RequestStopTransactionResponse">The RequestStopTransaction response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomRequestStopTransactionResponseParser">A delegate to read custom RequestStopTransaction responses.</param>
+        public static Boolean TryParseCBOR(RequestStopTransactionRequest                              Request,
+                                           CBORValue                                                  CBOR,
+                                           SourceRouting                                              Destination,
+                                           NetworkPath                                                NetworkPath,
+                                           [NotNullWhen(true)]  out RequestStopTransactionResponse?   RequestStopTransactionResponse,
+                                           [NotNullWhen(false)] out String?                           ErrorResponse,
+                                           DateTimeOffset?                                            ResponseTimestamp                            = null,
+                                           CustomCBORParserDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseParser   = null)
+        {
+
+            try
+            {
+
+                RequestStopTransactionResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a RequestStopTransaction response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "request start stop status",
+                                             out var RequestStartStopStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.RequestStartStopStatus.TryParse(RequestStartStopStatusText, out var RequestStartStopStatus))
+                {
+                    ErrorResponse = $"Invalid request start stop status '{RequestStartStopStatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                RequestStopTransactionResponse = new RequestStopTransactionResponse(
+
+                                                     Request,
+                                                     RequestStartStopStatus,
+                                                     StatusInfo,
+
+                                                     null,
+                                                     ResponseTimestamp,
+
+                                                     Destination,
+                                                     NetworkPath,
+
+                                                     null,
+                                                     null,
+                                                     Signatures,
+
+                                                     CustomData
+
+                                                 );
+
+                if (CustomRequestStopTransactionResponseParser is not null)
+                    RequestStopTransactionResponse = CustomRequestStopTransactionResponseParser(CBOR,
+                                                                                               RequestStopTransactionResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                RequestStopTransactionResponse = null;
+                ErrorResponse = "The given CBOR representation of a RequestStopTransaction response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomRequestStopTransactionResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this RequestStopTransaction response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomRequestStopTransactionResponseSerializer">A delegate to serialize custom RequestStopTransaction responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<RequestStopTransactionResponse>? CustomRequestStopTransactionResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomRequestStopTransactionResponseSerializer is not null
+                       ? CustomRequestStopTransactionResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

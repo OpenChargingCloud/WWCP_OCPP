@@ -323,6 +323,120 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out NotifyDERAlarmResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyDERAlarm response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyDERAlarmResponse">The NotifyDERAlarm response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomNotifyDERAlarmResponseParser">A delegate to read custom NotifyDERAlarm responses.</param>
+        public static Boolean TryParseCBOR(NotifyDERAlarmRequest                              Request,
+                                           CBORValue                                          CBOR,
+                                           SourceRouting                                      Destination,
+                                           NetworkPath                                        NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyDERAlarmResponse?   NotifyDERAlarmResponse,
+                                           [NotNullWhen(false)] out String?                   ErrorResponse,
+                                           DateTimeOffset?                                    ResponseTimestamp                    = null,
+                                           CustomCBORParserDelegate<NotifyDERAlarmResponse>?  CustomNotifyDERAlarmResponseParser   = null)
+        {
+
+            try
+            {
+
+                NotifyDERAlarmResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyDERAlarm response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyDERAlarmResponse = new NotifyDERAlarmResponse(
+
+                                            Request,
+
+                                            null,
+                                            ResponseTimestamp,
+
+                                            Destination,
+                                            NetworkPath,
+
+                                            null,
+                                            null,
+                                            Signatures,
+
+                                            CustomData
+
+                                        );
+
+                if (CustomNotifyDERAlarmResponseParser is not null)
+                    NotifyDERAlarmResponse = CustomNotifyDERAlarmResponseParser(CBOR,
+                                                                               NotifyDERAlarmResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyDERAlarmResponse = null;
+                ErrorResponse = "The given CBOR representation of a NotifyDERAlarm response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyDERAlarmResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyDERAlarm response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyDERAlarmResponseSerializer">A delegate to serialize custom NotifyDERAlarm responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyDERAlarmResponse>? CustomNotifyDERAlarmResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyDERAlarmResponseSerializer is not null
+                       ? CustomNotifyDERAlarmResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

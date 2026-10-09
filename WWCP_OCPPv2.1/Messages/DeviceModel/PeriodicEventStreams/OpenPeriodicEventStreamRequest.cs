@@ -432,6 +432,129 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out OpenPeriodicEventStreamRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an OpenPeriodicEventStream request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="OpenPeriodicEventStreamRequest">The OpenPeriodicEventStream request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomOpenPeriodicEventStreamRequestParser">A delegate to read custom OpenPeriodicEventStream requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                  CBOR,
+                                           Request_Id                                                 RequestId,
+                                           SourceRouting                                              Destination,
+                                           NetworkPath                                                NetworkPath,
+                                           [NotNullWhen(true)]  out OpenPeriodicEventStreamRequest?   OpenPeriodicEventStreamRequest,
+                                           [NotNullWhen(false)] out String?                           ErrorResponse,
+                                           CustomCBORParserDelegate<OpenPeriodicEventStreamRequest>?  CustomOpenPeriodicEventStreamRequestParser)
+        {
+
+            try
+            {
+
+                OpenPeriodicEventStreamRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an OpenPeriodicEventStream request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("constantStreamData",
+                                         "constant stream data",
+                                         OCPPv2_1.ConstantStreamData.TryParseCBOR,
+                                         out ConstantStreamData? ConstantStreamData,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                OpenPeriodicEventStreamRequest = new OpenPeriodicEventStreamRequest(
+
+                                                     Destination,
+                                                     ConstantStreamData,
+
+                                                     null,
+                                                     null,
+                                                     Signatures,
+
+                                                     CustomData,
+
+                                                     RequestId,
+                                                     null,
+                                                     null,
+                                                     null,
+                                                     NetworkPath
+
+                                                 );
+
+                if (CustomOpenPeriodicEventStreamRequestParser is not null)
+                    OpenPeriodicEventStreamRequest = CustomOpenPeriodicEventStreamRequestParser(CBOR,
+                                                                                               OpenPeriodicEventStreamRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                OpenPeriodicEventStreamRequest = null;
+                ErrorResponse = "The given CBOR representation of an OpenPeriodicEventStream request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomOpenPeriodicEventStreamRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this OpenPeriodicEventStream request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomOpenPeriodicEventStreamRequestSerializer">A delegate to serialize custom OpenPeriodicEventStream requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<OpenPeriodicEventStreamRequest>? CustomOpenPeriodicEventStreamRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("constantStreamData",        ConstantStreamData.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomOpenPeriodicEventStreamRequestSerializer is not null
+                       ? CustomOpenPeriodicEventStreamRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

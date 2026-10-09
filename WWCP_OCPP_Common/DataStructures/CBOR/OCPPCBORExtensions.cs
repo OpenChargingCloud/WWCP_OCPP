@@ -302,6 +302,9 @@ namespace cloud.charging.open.protocols.OCPP
         public static Boolean TryParseCelsius           (CBORValue CBOR, out Celsius            Value, [NotNullWhen(false)] out String? ErrorResponse)
             => TryParseMetrological(CBOR, MetrologyCBORExtensions.TryToCelsius,            "°C",   out Value, out ErrorResponse);
 
+        public static Boolean TryParseOhm               (CBORValue CBOR, out Ohm                Value, [NotNullWhen(false)] out String? ErrorResponse)
+            => TryParseMetrological(CBOR, MetrologyCBORExtensions.TryToOhm,                "Ω",    out Value, out ErrorResponse);
+
         #endregion
 
         #region Metrology:  ToCBOR(Watt, WattHour, Ampere, Volt, VoltAmpere, VoltAmpereReactive, Hertz, Siemens, Celsius)
@@ -315,6 +318,7 @@ namespace cloud.charging.open.protocols.OCPP
         public static CBORValue ToCBOR(this Hertz              Value) => Value.AsMetrologicalValue().ToCBOR();
         public static CBORValue ToCBOR(this Siemens            Value) => Value.AsMetrologicalValue().ToCBOR();
         public static CBORValue ToCBOR(this Celsius            Value) => Value.AsMetrologicalValue().ToCBOR();
+        public static CBORValue ToCBOR(this Ohm                Value) => Value.AsMetrologicalValue().ToCBOR();
 
         #endregion
 

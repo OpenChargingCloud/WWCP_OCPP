@@ -1161,6 +1161,254 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SetDERControlRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetDERControl request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetDERControlRequest">The SetDERControl request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetDERControlRequestParser">A delegate to read custom SetDERControl requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                        CBOR,
+                                           Request_Id                                       RequestId,
+                                           SourceRouting                                    Destination,
+                                           NetworkPath                                      NetworkPath,
+                                           [NotNullWhen(true)]  out SetDERControlRequest?   SetDERControlRequest,
+                                           [NotNullWhen(false)] out String?                 ErrorResponse,
+                                           DateTimeOffset?                                  RequestTimestamp                   = null,
+                                           TimeSpan?                                        RequestTimeout                     = null,
+                                           EventTracking_Id?                                EventTrackingId                    = null,
+                                           CustomCBORParserDelegate<SetDERControlRequest>?  CustomSetDERControlRequestParser   = null)
+        {
+
+            try
+            {
+
+                SetDERControlRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetDERControl request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBoolean("isDefault",
+                                       "is default",
+                                       out var IsDefault,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("controlId",
+                                             "control identification",
+                                             out var ControlIdText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.DERControl_Id.TryParse(ControlIdText, out var ControlId))
+                {
+                    ErrorResponse = $"Invalid control identification '{ControlIdText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("controlType",
+                                             "control type",
+                                             out var ControlTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.DERControlType.TryParse(ControlTypeText, out var ControlType))
+                {
+                    ErrorResponse = $"Invalid control type '{ControlTypeText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("curve",
+                                   "curve",
+                                   OCPPv2_1.DERCurve.TryParseCBOR,
+                                   out DERCurve? Curve,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("enterService",
+                                   "enter service",
+                                   OCPPv2_1.DEREnterService.TryParseCBOR,
+                                   out DEREnterService? EnterService,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("fixedPFAbsorb",
+                                   "fixed power factor absorbing",
+                                   OCPPv2_1.DERFixedPowerFactor.TryParseCBOR,
+                                   out DERFixedPowerFactor? FixedPowerFactorAbsorbing,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("fixedPFInject",
+                                   "fixed power factor injecting",
+                                   OCPPv2_1.DERFixedPowerFactor.TryParseCBOR,
+                                   out DERFixedPowerFactor? FixedPowerFactorInjecting,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("fixedVar",
+                                   "fixed VAR",
+                                   OCPPv2_1.DERFixedVAR.TryParseCBOR,
+                                   out DERFixedVAR? FixedVAR,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("freqDroop",
+                                   "frequency droop",
+                                   OCPPv2_1.DERFrequencyDroop.TryParseCBOR,
+                                   out DERFrequencyDroop? FrequencyDroop,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("gradient",
+                                   "gradient",
+                                   OCPPv2_1.DERGradient.TryParseCBOR,
+                                   out DERGradient? Gradient,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("limitMaxDischarge",
+                                   "limit max discharge",
+                                   OCPPv2_1.DERLimitMaxDischarge.TryParseCBOR,
+                                   out DERLimitMaxDischarge? LimitMaxDischarge,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetDERControlRequest = new SetDERControlRequest(
+
+                                           Destination,
+                                           IsDefault,
+                                           ControlId,
+                                           ControlType,
+                                           Curve,
+                                           EnterService,
+                                           FixedPowerFactorAbsorbing,
+                                           FixedPowerFactorInjecting,
+                                           FixedVAR,
+                                           FrequencyDroop,
+                                           Gradient,
+                                           LimitMaxDischarge,
+
+                                           null,
+                                           null,
+                                           Signatures,
+
+                                           CustomData,
+
+                                           RequestId,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
+                                           NetworkPath
+
+                                       );
+
+                if (CustomSetDERControlRequestParser is not null)
+                    SetDERControlRequest = CustomSetDERControlRequestParser(CBOR,
+                                                                           SetDERControlRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetDERControlRequest = null;
+                ErrorResponse = "The given CBOR representation of a SetDERControl request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetDERControlRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetDERControl request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetDERControlRequestSerializer">A delegate to serialize custom SetDERControl requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetDERControlRequest>? CustomSetDERControlRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("isDefault",                 CBORValue.FromBoolean(IsDefault)),
+                           ("controlId",                 CBORValue.FromText(ControlId.ToString())),
+                           ("controlType",               OCPPCBORExtensions.Text(ControlType?.ToString())),
+                           ("curve",                     Curve?.ToCBOR()),
+                           ("enterService",              EnterService?.ToCBOR()),
+                           ("fixedPFAbsorb",             FixedPowerFactorAbsorbing?.ToCBOR()),
+                           ("fixedPFInject",             FixedPowerFactorInjecting?.ToCBOR()),
+                           ("fixedVar",                  FixedVAR?.ToCBOR()),
+                           ("freqDroop",                 FrequencyDroop?.ToCBOR()),
+                           ("gradient",                  Gradient?.ToCBOR()),
+                           ("limitMaxDischarge",         LimitMaxDischarge?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetDERControlRequestSerializer is not null
+                       ? CustomSetDERControlRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

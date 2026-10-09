@@ -427,6 +427,161 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SecurityEventNotificationRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SecurityEventNotification request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SecurityEventNotificationRequest">The SecurityEventNotification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to read custom SecurityEventNotification requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                    CBOR,
+                                           Request_Id                                                   RequestId,
+                                           SourceRouting                                                Destination,
+                                           NetworkPath                                                  NetworkPath,
+                                           [NotNullWhen(true)]  out SecurityEventNotificationRequest?   SecurityEventNotificationRequest,
+                                           [NotNullWhen(false)] out String?                             ErrorResponse,
+                                           DateTimeOffset?                                              RequestTimestamp                               = null,
+                                           TimeSpan?                                                    RequestTimeout                                 = null,
+                                           EventTracking_Id?                                            EventTrackingId                                = null,
+                                           CustomCBORParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser   = null)
+        {
+
+            try
+            {
+
+                SecurityEventNotificationRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SecurityEventNotification request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("type",
+                                             "security event type",
+                                             out var TypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.SecurityEventType.TryParse(TypeText, out var Type))
+                {
+                    ErrorResponse = $"Invalid security event type '{TypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timestamp",
+                                              "timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset Timestamp,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("techInfo",
+                                       "techInfo",
+                                       out var TechInfo,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SecurityEventNotificationRequest = new SecurityEventNotificationRequest(
+
+                                                       Destination,
+                                                       Type,
+                                                       Timestamp,
+                                                       TechInfo,
+
+                                                       null,
+                                                       null,
+                                                       Signatures,
+
+                                                       CustomData,
+
+                                                       RequestId,
+                                                       RequestTimestamp,
+                                                       RequestTimeout,
+                                                       EventTrackingId,
+                                                       NetworkPath
+
+                                                   );
+
+                if (CustomSecurityEventNotificationRequestParser is not null)
+                    SecurityEventNotificationRequest = CustomSecurityEventNotificationRequestParser(CBOR,
+                                                                                                   SecurityEventNotificationRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SecurityEventNotificationRequest = null;
+                ErrorResponse = "The given CBOR representation of a SecurityEventNotification request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSecurityEventNotificationRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SecurityEventNotification request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSecurityEventNotificationRequestSerializer">A delegate to serialize custom SecurityEventNotification requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SecurityEventNotificationRequest>? CustomSecurityEventNotificationRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("type",                      CBORValue.FromText(Type.ToString())),
+                           ("timestamp",                 Timestamp.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR()),
+                           ("techInfo",                  OCPPCBORExtensions.Text(TechInfo))
+                       );
+
+            return CustomSecurityEventNotificationRequestSerializer is not null
+                       ? CustomSecurityEventNotificationRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

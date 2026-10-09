@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
     /// number, true for a boolean - and, where a parser checks more than the
     /// schema says, a value it takes.
     /// </summary>
-    internal static class MessageSamples
+    internal static partial class MessageSamples
     {
 
         public static readonly IReadOnlyDictionary<String, String> FromTheSchemas = new Dictionary<String, String> {

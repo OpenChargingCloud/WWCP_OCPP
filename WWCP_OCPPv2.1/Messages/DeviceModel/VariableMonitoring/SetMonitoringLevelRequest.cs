@@ -372,6 +372,144 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SetMonitoringLevelRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetMonitoringLevel request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetMonitoringLevelRequest">The SetMonitoringLevel request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to read custom SetMonitoringLevel requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                             CBOR,
+                                           Request_Id                                            RequestId,
+                                           SourceRouting                                         Destination,
+                                           NetworkPath                                           NetworkPath,
+                                           [NotNullWhen(true)]  out SetMonitoringLevelRequest?   SetMonitoringLevelRequest,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           DateTimeOffset?                                       RequestTimestamp                        = null,
+                                           TimeSpan?                                             RequestTimeout                          = null,
+                                           EventTracking_Id?                                     EventTrackingId                         = null,
+                                           CustomCBORParserDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestParser   = null)
+        {
+
+            try
+            {
+
+                SetMonitoringLevelRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetMonitoringLevel request is not a map!";
+                    return false;
+                }
+
+                // The schema's number 0-9.
+                if (!CBOR.ParseMandatoryUInt64("severity",
+                                               "severity",
+                                               out var severityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (severityNumber > Byte.MaxValue || !SeveritiesExtensions.TryParse((Byte) severityNumber, out var severity))
+                {
+                    ErrorResponse = $"Invalid severity '{severityNumber}'!";
+                    return false;
+                }
+
+                // As the constructor call of JSON has it.
+                Severities? Severity = severity;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetMonitoringLevelRequest = new SetMonitoringLevelRequest(
+
+                                                Destination,
+                                                Severity.Value,
+
+                                                null,
+                                                null,
+                                                Signatures,
+
+                                                CustomData,
+
+                                                RequestId,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
+                                                NetworkPath
+
+                                            );
+
+                if (CustomSetMonitoringLevelRequestParser is not null)
+                    SetMonitoringLevelRequest = CustomSetMonitoringLevelRequestParser(CBOR,
+                                                                                     SetMonitoringLevelRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetMonitoringLevelRequest = null;
+                ErrorResponse = "The given CBOR representation of a SetMonitoringLevel request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetMonitoringLevelRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetMonitoringLevel request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetMonitoringLevelRequestSerializer">A delegate to serialize custom SetMonitoringLevel requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetMonitoringLevelRequest>? CustomSetMonitoringLevelRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("severity",                  CBORValue.FromUInt64(Severity.AsNumber())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetMonitoringLevelRequestSerializer is not null
+                       ? CustomSetMonitoringLevelRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

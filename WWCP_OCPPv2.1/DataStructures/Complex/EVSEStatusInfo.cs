@@ -17,10 +17,13 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.WWCP;
 
 #endregion
@@ -312,6 +315,121 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+
+        #region (static) TryParseCBOR(CBOR, StatusParser, out EVSEStatusInfo, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of status information of an EVSE.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="StatusParser">How to read the status from its text.</param>
+        /// <param name="EVSEStatusInfo">The status information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                     CBOR,
+                                           TryParser<T>                                  StatusParser,
+                                           [NotNullWhen(true)]  out EVSEStatusInfo<T>?   EVSEStatusInfo,
+                                           [NotNullWhen(false)] out String?              ErrorResponse)
+        {
+
+            EVSEStatusInfo = null;
+
+            try
+            {
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of status information is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("evseId",
+                                               "EVSE identification",
+                                               out var evseIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (evseIdNumber > UInt16.MaxValue || !EVSE_Id.TryParse((UInt16) evseIdNumber, out var evseId))
+                {
+                    ErrorResponse = $"Invalid EVSE identification '{evseIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "status",
+                                             out var statusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!StatusParser(statusText, out var status))
+                {
+                    ErrorResponse = $"Invalid status '{statusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("reasonCode",
+                                       "reason code",
+                                       out var reasonCode,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("additionalInfo",
+                                       "additional information",
+                                       out var additionalInfo,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? customData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                EVSEStatusInfo  = new EVSEStatusInfo<T>(evseId, status, reasonCode, additionalInfo, customData);
+                ErrorResponse   = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                EVSEStatusInfo  = null;
+                ErrorResponse   = "The given CBOR representation of status information is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(StatusToText)
+
+        /// <summary>
+        /// Return the CBOR representation of this status information: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="StatusToText">How to write the status as its text.</param>
+        public CBORValue ToCBOR(Func<T, String> StatusToText)
+
+            => OCPPCBORExtensions.Map(
+                   ("evseId",          CBORValue.FromUInt64(EVSEId.Value)),
+                   ("status",          CBORValue.FromText(StatusToText(Status))),
+                   ("reasonCode",      OCPPCBORExtensions.Text(ReasonCode)),
+                   ("additionalInfo",  OCPPCBORExtensions.Text(AdditionalInfo)),
+                   ("customData",      CustomData?.ToCBOR())
+               );
 
         #endregion
 

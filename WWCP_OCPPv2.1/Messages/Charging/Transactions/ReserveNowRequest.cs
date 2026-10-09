@@ -600,6 +600,219 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out ReserveNowRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ReserveNow request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ReserveNowRequest">The ReserveNow request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomReserveNowRequestParser">A delegate to read custom ReserveNow requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                     CBOR,
+                                           Request_Id                                    RequestId,
+                                           SourceRouting                                 Destination,
+                                           NetworkPath                                   NetworkPath,
+                                           [NotNullWhen(true)]  out ReserveNowRequest?   ReserveNowRequest,
+                                           [NotNullWhen(false)] out String?              ErrorResponse,
+                                           DateTimeOffset?                               RequestTimestamp                = null,
+                                           TimeSpan?                                     RequestTimeout                  = null,
+                                           EventTracking_Id?                             EventTrackingId                 = null,
+                                           CustomCBORParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null)
+        {
+
+            try
+            {
+
+                ReserveNowRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ReserveNow request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "reservation identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (IdNumber > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.Reservation_Id.TryParse((UInt64) IdNumber, out var Id))
+                {
+                    ErrorResponse = $"Invalid reservation identification '{IdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("expiryDateTime",
+                                              "expiry timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset ExpiryDateTime,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("idToken",
+                                         "identification token",
+                                         OCPPv2_1.IdToken.TryParseCBOR,
+                                         out IdToken? IdToken,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                ConnectorType? ConnectorType = null;
+
+                if (CBOR.ParseOptionalText("connectorType",
+                                           "connector type",
+                                           out var ConnectorTypeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.ConnectorType.TryParse(ConnectorTypeText!, out var ConnectorTypeValue))
+                    {
+                        ErrorResponse = $"Invalid connector type '{ConnectorTypeText}'!";
+                        return false;
+                    }
+
+                    ConnectorType = ConnectorTypeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                EVSE_Id? EVSEId = null;
+
+                if (CBOR.ParseOptionalUInt64("evseId",
+                                             "evse identification",
+                                             out var EVSEIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (EVSEIdNumber is not UInt64 EVSEIdValue || EVSEIdValue > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) EVSEIdValue, out var EVSEIdId))
+                    {
+                        ErrorResponse = $"Invalid evse identification '{EVSEIdNumber}'!";
+                        return false;
+                    }
+
+                    EVSEId = EVSEIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("groupIdToken",
+                                   "group identification token",
+                                   OCPPv2_1.IdToken.TryParseCBOR,
+                                   out IdToken? GroupIdToken,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ReserveNowRequest = new ReserveNowRequest(
+
+                                        Destination,
+                                        Id,
+                                        ExpiryDateTime,
+                                        IdToken,
+                                        ConnectorType,
+                                        EVSEId,
+                                        GroupIdToken,
+
+                                        null,
+                                        null,
+                                        Signatures,
+
+                                        CustomData,
+
+                                        RequestId,
+                                        RequestTimestamp,
+                                        RequestTimeout,
+                                        EventTrackingId,
+                                        NetworkPath
+
+                                    );
+
+                if (CustomReserveNowRequestParser is not null)
+                    ReserveNowRequest = CustomReserveNowRequestParser(CBOR,
+                                                                     ReserveNowRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ReserveNowRequest = null;
+                ErrorResponse = "The given CBOR representation of a ReserveNow request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomReserveNowRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ReserveNow request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom ReserveNow requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ReserveNowRequest>? CustomReserveNowRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                        CBORValue.FromUInt64(Id.Value)),
+                           ("expiryDateTime",            ExpiryDate.ToCBOR()),
+                           ("idToken",                   IdToken.ToCBOR()),
+                           ("connectorType",             OCPPCBORExtensions.Text(ConnectorType?.ToString())),
+                           ("evseId",                    OCPPCBORExtensions.UInt(EVSEId?.Value)),
+                           ("groupIdToken",              GroupIdToken?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomReserveNowRequestSerializer is not null
+                       ? CustomReserveNowRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

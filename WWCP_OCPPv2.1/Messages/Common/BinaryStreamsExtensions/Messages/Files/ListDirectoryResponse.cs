@@ -262,7 +262,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 DirectoryListing? DirectoryListing = null;
 
-                var directoryListing = JSON["directoryListing"];
+                // Written as "listing" before.
+                var directoryListing = JSON["directoryListing"] ?? JSON["listing"];
 
                 if (directoryListing is not null)
                 {
@@ -376,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                  new JProperty("status",          Status.          ToString()),
 
                            DirectoryListing is not null
-                               ? new JProperty("listing",         DirectoryListing.ToJSON())
+                               ? new JProperty("directoryListing", DirectoryListing.ToJSON())
                                : null,
 
                            Signatures.Any()
@@ -393,6 +394,163 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return CustomListDirectoryResponseSerializer is not null
                        ? CustomListDirectoryResponseSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(Request, CBOR, ..., out ListDirectoryResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ListDirectory response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ListDirectoryResponse">The ListDirectory response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomListDirectoryResponseParser">A delegate to read custom ListDirectory responses.</param>
+        public static Boolean TryParseCBOR(ListDirectoryRequest                              Request,
+                                           CBORValue                                         CBOR,
+                                           SourceRouting                                     Destination,
+                                           NetworkPath                                       NetworkPath,
+                                           [NotNullWhen(true)]  out ListDirectoryResponse?   ListDirectoryResponse,
+                                           [NotNullWhen(false)] out String?                  ErrorResponse,
+                                           DateTimeOffset?                                   ResponseTimestamp                   = null,
+                                           CustomCBORParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser   = null)
+        {
+
+            try
+            {
+
+                ListDirectoryResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ListDirectory response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("directoryPath",
+                                             "directory name with absolute path",
+                                             out var DirectoryPathText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.FilePath.TryParse(DirectoryPathText, out var DirectoryPath))
+                {
+                    ErrorResponse = $"Invalid directory name with absolute path '{DirectoryPathText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "response status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.ListDirectoryStatus.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid response status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("directoryListing",
+                                   "directory listing",
+                                   OCPPv2_1.DirectoryListing.TryParseCBOR,
+                                   out DirectoryListing? DirectoryListing,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ListDirectoryResponse = new ListDirectoryResponse(
+
+                                            Request,
+                                            DirectoryPath,
+                                            Status,
+                                            DirectoryListing,
+
+                                            null,
+                                            ResponseTimestamp,
+
+                                            Destination,
+                                            NetworkPath,
+
+                                            null,
+                                            null,
+                                            Signatures,
+
+                                            CustomData
+
+                                        );
+
+                if (CustomListDirectoryResponseParser is not null)
+                    ListDirectoryResponse = CustomListDirectoryResponseParser(CBOR,
+                                                                             ListDirectoryResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ListDirectoryResponse = null;
+                ErrorResponse = "The given CBOR representation of a ListDirectory response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomListDirectoryResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ListDirectory response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomListDirectoryResponseSerializer">A delegate to serialize custom ListDirectory responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ListDirectoryResponse>? CustomListDirectoryResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("directoryPath",             CBORValue.FromText(DirectoryPath.ToString())),
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("directoryListing",          DirectoryListing?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomListDirectoryResponseSerializer is not null
+                       ? CustomListDirectoryResponseSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -712,6 +712,279 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NotifySettlementRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifySettlement request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifySettlementRequest">The NotifySettlement request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifySettlementRequestParser">A delegate to read custom NotifySettlement requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                           CBOR,
+                                           Request_Id                                          RequestId,
+                                           SourceRouting                                       Destination,
+                                           NetworkPath                                         NetworkPath,
+                                           [NotNullWhen(true)]  out NotifySettlementRequest?   NotifySettlementRequest,
+                                           [NotNullWhen(false)] out String?                    ErrorResponse,
+                                           DateTimeOffset?                                     RequestTimestamp                      = null,
+                                           TimeSpan?                                           RequestTimeout                        = null,
+                                           EventTracking_Id?                                   EventTrackingId                       = null,
+                                           CustomCBORParserDelegate<NotifySettlementRequest>?  CustomNotifySettlementRequestParser   = null)
+        {
+
+            try
+            {
+
+                NotifySettlementRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifySettlement request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("pspRef",
+                                             "payment reference identification",
+                                             out var PaymentReferenceText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.PaymentReference.TryParse(PaymentReferenceText, out var PaymentReference))
+                {
+                    ErrorResponse = $"Invalid payment reference identification '{PaymentReferenceText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "payment status",
+                                             out var PaymentStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!PaymentStatusExtensions.TryParse(PaymentStatusText, out var PaymentStatus))
+                {
+                    ErrorResponse = $"Invalid payment status '{PaymentStatusText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("settlementAmount",
+                                       "settlement amount",
+                                       out var SettlementAmount,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("settlementTime",
+                                              "settlement timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset SettlementTimestamp,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                Transaction_Id? TransactionId = null;
+
+                if (CBOR.ParseOptionalText("transactionId",
+                                           "transaction identification",
+                                           out var TransactionIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
+                    {
+                        ErrorResponse = $"Invalid transaction identification '{TransactionIdText}'!";
+                        return false;
+                    }
+
+                    TransactionId = TransactionIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ReceiptId? ReceiptId = null;
+
+                if (CBOR.ParseOptionalText("receiptId",
+                                           "receipt identification",
+                                           out var ReceiptIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.ReceiptId.TryParse(ReceiptIdText!, out var ReceiptIdValue))
+                    {
+                        ErrorResponse = $"Invalid receipt identification '{ReceiptIdText}'!";
+                        return false;
+                    }
+
+                    ReceiptId = ReceiptIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                URL? ReceiptURL = null;
+
+                if (CBOR.ParseOptionalText("receiptUrl",
+                                           "receipt URL",
+                                           out var ReceiptURLText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(ReceiptURLText!, out var ReceiptURLValue))
+                    {
+                        ErrorResponse = $"Invalid receipt URL '{ReceiptURLText}'!";
+                        return false;
+                    }
+
+                    ReceiptURL = ReceiptURLValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("vatCompany",
+                                   "VAT company contact",
+                                   OCPPv2_1.Contact.TryParseCBOR,
+                                   out Contact? VATCompany,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("statusInfo",
+                                       "statusInfo",
+                                       out var StatusInfo,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("vatNumber",
+                                       "vatNumber",
+                                       out var VATNumber,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifySettlementRequest = new NotifySettlementRequest(
+
+                                              Destination,
+
+                                              PaymentReference,
+                                              PaymentStatus,
+                                              SettlementAmount,
+                                              SettlementTimestamp,
+
+                                              TransactionId,
+                                              StatusInfo,
+                                              ReceiptId,
+                                              ReceiptURL,
+                                              VATCompany,
+                                              VATNumber,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData,
+
+                                              RequestId,
+                                              RequestTimestamp,
+                                              RequestTimeout,
+                                              EventTrackingId,
+                                              NetworkPath
+
+                                          );
+
+                if (CustomNotifySettlementRequestParser is not null)
+                    NotifySettlementRequest = CustomNotifySettlementRequestParser(CBOR,
+                                                                                 NotifySettlementRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifySettlementRequest = null;
+                ErrorResponse = "The given CBOR representation of a NotifySettlement request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifySettlementRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifySettlement request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifySettlementRequestSerializer">A delegate to serialize custom NotifySettlement requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifySettlementRequest>? CustomNotifySettlementRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("pspRef",                    CBORValue.FromText(PaymentReference.ToString())),
+                           ("status",                    CBORValue.FromText(PaymentStatus.AsText())),
+                           ("settlementAmount",          CBORValue.FromDecimal(SettlementAmount)),
+                           ("settlementTime",            SettlementTimestamp.ToCBOR()),
+                           ("transactionId",             OCPPCBORExtensions.Text(TransactionId?.ToString())),
+                           ("receiptId",                 OCPPCBORExtensions.Text(ReceiptId?.ToString())),
+                           ("receiptUrl",                OCPPCBORExtensions.Text(ReceiptURL?.ToString())),
+                           ("vatCompany",                VATCompany?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR()),
+                           ("statusInfo",                OCPPCBORExtensions.Text(StatusInfo)),
+                           ("vatNumber",                 OCPPCBORExtensions.Text(VATNumber))
+                       );
+
+            return CustomNotifySettlementRequestSerializer is not null
+                       ? CustomNotifySettlementRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

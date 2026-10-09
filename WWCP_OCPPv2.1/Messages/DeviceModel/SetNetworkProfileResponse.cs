@@ -435,6 +435,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out SetNetworkProfileResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetNetworkProfile response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetNetworkProfileResponse">The SetNetworkProfile response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to read custom SetNetworkProfile responses.</param>
+        public static Boolean TryParseCBOR(SetNetworkProfileRequest                              Request,
+                                           CBORValue                                             CBOR,
+                                           SourceRouting                                         Destination,
+                                           NetworkPath                                           NetworkPath,
+                                           [NotNullWhen(true)]  out SetNetworkProfileResponse?   SetNetworkProfileResponse,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           DateTimeOffset?                                       ResponseTimestamp                       = null,
+                                           CustomCBORParserDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseParser   = null)
+        {
+
+            try
+            {
+
+                SetNetworkProfileResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetNetworkProfile response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "SetNetworkProfile status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!SetNetworkProfileStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid SetNetworkProfile status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetNetworkProfileResponse = new SetNetworkProfileResponse(
+
+                                                Request,
+                                                Status,
+                                                StatusInfo,
+
+                                                null,
+                                                ResponseTimestamp,
+
+                                                Destination,
+                                                NetworkPath,
+
+                                                null,
+                                                null,
+                                                Signatures,
+
+                                                CustomData
+
+                                            );
+
+                if (CustomSetNetworkProfileResponseParser is not null)
+                    SetNetworkProfileResponse = CustomSetNetworkProfileResponseParser(CBOR,
+                                                                                     SetNetworkProfileResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetNetworkProfileResponse = null;
+                ErrorResponse = "The given CBOR representation of a SetNetworkProfile response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetNetworkProfileResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetNetworkProfile response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetNetworkProfileResponseSerializer">A delegate to serialize custom SetNetworkProfile responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetNetworkProfileResponse>? CustomSetNetworkProfileResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetNetworkProfileResponseSerializer is not null
+                       ? CustomSetNetworkProfileResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

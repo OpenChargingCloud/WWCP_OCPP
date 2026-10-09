@@ -501,6 +501,198 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out GetDERControlRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetDERControl request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetDERControlRequest">The GetDERControl request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetDERControlRequestParser">A delegate to read custom GetDERControl requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                        CBOR,
+                                           Request_Id                                       RequestId,
+                                           SourceRouting                                    Destination,
+                                           NetworkPath                                      NetworkPath,
+                                           [NotNullWhen(true)]  out GetDERControlRequest?   GetDERControlRequest,
+                                           [NotNullWhen(false)] out String?                 ErrorResponse,
+                                           DateTimeOffset?                                  RequestTimestamp                   = null,
+                                           TimeSpan?                                        RequestTimeout                     = null,
+                                           EventTracking_Id?                                EventTrackingId                    = null,
+                                           CustomCBORParserDelegate<GetDERControlRequest>?  CustomGetDERControlRequestParser   = null)
+        {
+
+            try
+            {
+
+                GetDERControlRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetDERControl request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("requestId",
+                                               "get DER control request identification",
+                                               out var GetDERControlRequestIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (GetDERControlRequestIdNumber < Int32.MinValue || GetDERControlRequestIdNumber > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid get DER control request identification '{GetDERControlRequestIdNumber}'!";
+                    return false;
+                }
+
+                var GetDERControlRequestId = (Int32) GetDERControlRequestIdNumber;
+
+                CBOR.ParseOptionalBoolean("isDefault",
+                                       "is default or scheduled DER controls",
+                                       out var IsDefault,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERControlType? ControlType = null;
+
+                if (CBOR.ParseOptionalText("controlType",
+                                           "control type",
+                                           out var ControlTypeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.DERControlType.TryParse(ControlTypeText!, out var ControlTypeValue))
+                    {
+                        ErrorResponse = $"Invalid control type '{ControlTypeText}'!";
+                        return false;
+                    }
+
+                    ControlType = ControlTypeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERControl_Id? ControlId = null;
+
+                if (CBOR.ParseOptionalText("controlId",
+                                           "control identification",
+                                           out var ControlIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv2_1.DERControl_Id.TryParse(ControlIdText!, out var ControlIdValue))
+                    {
+                        ErrorResponse = $"Invalid control identification '{ControlIdText}'!";
+                        return false;
+                    }
+
+                    ControlId = ControlIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetDERControlRequest = new GetDERControlRequest(
+
+                                           Destination,
+                                           GetDERControlRequestId,
+                                           IsDefault,
+                                           ControlType,
+                                           ControlId,
+
+                                           null,
+                                           null,
+                                           Signatures,
+
+                                           CustomData,
+
+                                           RequestId,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
+                                           NetworkPath
+
+                                       );
+
+                if (CustomGetDERControlRequestParser is not null)
+                    GetDERControlRequest = CustomGetDERControlRequestParser(CBOR,
+                                                                           GetDERControlRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetDERControlRequest = null;
+                ErrorResponse = "The given CBOR representation of a GetDERControl request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetDERControlRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetDERControl request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetDERControlRequestSerializer">A delegate to serialize custom GetDERControl requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetDERControlRequest>? CustomGetDERControlRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestId",                 CBORValue.FromInt64(GetDERControlRequestId)),
+                           ("isDefault",                 OCPPCBORExtensions.Flag(IsDefault)),
+                           ("controlType",               OCPPCBORExtensions.Text(ControlType?.ToString())),
+                           ("controlId",                 OCPPCBORExtensions.Text(ControlId?.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetDERControlRequestSerializer is not null
+                       ? CustomGetDERControlRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

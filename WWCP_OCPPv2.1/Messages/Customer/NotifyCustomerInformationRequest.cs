@@ -494,6 +494,191 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NotifyCustomerInformationRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyCustomerInformation request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyCustomerInformationRequest">The NotifyCustomerInformation request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to read custom NotifyCustomerInformation requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                    CBOR,
+                                           Request_Id                                                   RequestId,
+                                           SourceRouting                                                Destination,
+                                           NetworkPath                                                  NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyCustomerInformationRequest?   NotifyCustomerInformationRequest,
+                                           [NotNullWhen(false)] out String?                             ErrorResponse,
+                                           DateTimeOffset?                                              RequestTimestamp                               = null,
+                                           TimeSpan?                                                    RequestTimeout                                 = null,
+                                           EventTracking_Id?                                            EventTrackingId                                = null,
+                                           CustomCBORParserDelegate<NotifyCustomerInformationRequest>?  CustomNotifyCustomerInformationRequestParser   = null)
+        {
+
+            try
+            {
+
+                NotifyCustomerInformationRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyCustomerInformation request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("requestId",
+                                               "NotifyCustomerInformation request identification",
+                                               out var NotifyCustomerInformationRequestIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (NotifyCustomerInformationRequestIdNumber < Int32.MinValue || NotifyCustomerInformationRequestIdNumber > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid NotifyCustomerInformation request identification '{NotifyCustomerInformationRequestIdNumber}'!";
+                    return false;
+                }
+
+                var NotifyCustomerInformationRequestId = (Int32) NotifyCustomerInformationRequestIdNumber;
+
+                if (!CBOR.ParseMandatoryText("data",
+                                       "customer data",
+                                       out var Data,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("seqNo",
+                                               "sequence number",
+                                               out var SequenceNumberNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (SequenceNumberNumber < UInt32.MinValue || SequenceNumberNumber > UInt32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid sequence number '{SequenceNumberNumber}'!";
+                    return false;
+                }
+
+                var SequenceNumber = (UInt32) SequenceNumberNumber;
+
+                if (!CBOR.ParseMandatoryValue("generatedAt",
+                                              "generated at",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset GeneratedAt,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalBoolean("tbc",
+                                       "to be continued",
+                                       out var ToBeContinued,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyCustomerInformationRequest = new NotifyCustomerInformationRequest(
+
+                                                       Destination,
+                                                       NotifyCustomerInformationRequestId,
+                                                       Data,
+                                                       SequenceNumber,
+                                                       GeneratedAt,
+                                                       ToBeContinued,
+
+                                                       null,
+                                                       null,
+                                                       Signatures,
+
+                                                       CustomData,
+
+                                                       RequestId,
+                                                       RequestTimestamp,
+                                                       RequestTimeout,
+                                                       EventTrackingId,
+                                                       NetworkPath
+
+                                                   );
+
+                if (CustomNotifyCustomerInformationRequestParser is not null)
+                    NotifyCustomerInformationRequest = CustomNotifyCustomerInformationRequestParser(CBOR,
+                                                                                                   NotifyCustomerInformationRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyCustomerInformationRequest = null;
+                ErrorResponse = "The given CBOR representation of a NotifyCustomerInformation request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyCustomerInformationRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyCustomerInformation request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyCustomerInformationRequestSerializer">A delegate to serialize custom NotifyCustomerInformation requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyCustomerInformationRequest>? CustomNotifyCustomerInformationRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestId",                 CBORValue.FromInt64(NotifyCustomerInformationRequestId)),
+                           ("data",                      CBORValue.FromText(Data)),
+                           ("seqNo",                     CBORValue.FromUInt64(SequenceNumber)),
+                           ("generatedAt",               GeneratedAt.ToCBOR()),
+                           ("tbc",                       OCPPCBORExtensions.Flag(ToBeContinued)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyCustomerInformationRequestSerializer is not null
+                       ? CustomNotifyCustomerInformationRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

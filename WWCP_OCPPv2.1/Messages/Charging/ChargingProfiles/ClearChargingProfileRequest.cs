@@ -437,6 +437,158 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out ClearChargingProfileRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ClearChargingProfile request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ClearChargingProfileRequest">The ClearChargingProfile request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomClearChargingProfileRequestParser">A delegate to read custom ClearChargingProfile requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                               CBOR,
+                                           Request_Id                                              RequestId,
+                                           SourceRouting                                           Destination,
+                                           NetworkPath                                             NetworkPath,
+                                           [NotNullWhen(true)]  out ClearChargingProfileRequest?   ClearChargingProfileRequest,
+                                           [NotNullWhen(false)] out String?                        ErrorResponse,
+                                           DateTimeOffset?                                         RequestTimestamp                          = null,
+                                           TimeSpan?                                               RequestTimeout                            = null,
+                                           EventTracking_Id?                                       EventTrackingId                           = null,
+                                           CustomCBORParserDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestParser   = null)
+        {
+
+            try
+            {
+
+                ClearChargingProfileRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ClearChargingProfile request is not a map!";
+                    return false;
+                }
+
+                ChargingProfile_Id? ChargingProfileId = null;
+
+                if (CBOR.ParseOptionalUInt64("chargingProfileId",
+                                             "charging profile identification",
+                                             out var ChargingProfileIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (ChargingProfileIdNumber is not UInt64 ChargingProfileIdValue || ChargingProfileIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.ChargingProfile_Id.TryParse((UInt64) ChargingProfileIdValue, out var ChargingProfileIdId))
+                    {
+                        ErrorResponse = $"Invalid charging profile identification '{ChargingProfileIdNumber}'!";
+                        return false;
+                    }
+
+                    ChargingProfileId = ChargingProfileIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("chargingProfileCriteria",
+                                   "charging profile identification",
+                                   OCPPv2_1.ClearChargingProfile.TryParseCBOR,
+                                   out ClearChargingProfile? ChargingProfileCriteria,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ClearChargingProfileRequest = new ClearChargingProfileRequest(
+
+                                                  Destination,
+                                                  ChargingProfileId,
+                                                  ChargingProfileCriteria,
+
+                                                  null,
+                                                  null,
+                                                  Signatures,
+
+                                                  CustomData,
+
+                                                  RequestId,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId,
+                                                  NetworkPath
+
+                                              );
+
+                if (CustomClearChargingProfileRequestParser is not null)
+                    ClearChargingProfileRequest = CustomClearChargingProfileRequestParser(CBOR,
+                                                                                         ClearChargingProfileRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClearChargingProfileRequest = null;
+                ErrorResponse = "The given CBOR representation of a ClearChargingProfile request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClearChargingProfileRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ClearChargingProfile request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClearChargingProfileRequestSerializer">A delegate to serialize custom ClearChargingProfile requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClearChargingProfileRequest>? CustomClearChargingProfileRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("chargingProfileId",         OCPPCBORExtensions.UInt(ChargingProfileId?.Value)),
+                           ("chargingProfileCriteria",   ChargingProfileCriteria?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomClearChargingProfileRequestSerializer is not null
+                       ? CustomClearChargingProfileRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

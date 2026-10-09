@@ -417,6 +417,159 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out RemoveDefaultChargingTariffResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a RemoveDefaultChargingTariff response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="RemoveDefaultChargingTariffResponse">The RemoveDefaultChargingTariff response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomRemoveDefaultChargingTariffResponseParser">A delegate to read custom RemoveDefaultChargingTariff responses.</param>
+        public static Boolean TryParseCBOR(RemoveDefaultChargingTariffRequest                              Request,
+                                           CBORValue                                                       CBOR,
+                                           SourceRouting                                                   Destination,
+                                           NetworkPath                                                     NetworkPath,
+                                           [NotNullWhen(true)]  out RemoveDefaultChargingTariffResponse?   RemoveDefaultChargingTariffResponse,
+                                           [NotNullWhen(false)] out String?                                ErrorResponse,
+                                           DateTimeOffset?                                                 ResponseTimestamp                                 = null,
+                                           CustomCBORParserDelegate<RemoveDefaultChargingTariffResponse>?  CustomRemoveDefaultChargingTariffResponseParser   = null)
+        {
+
+            try
+            {
+
+                RemoveDefaultChargingTariffResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a RemoveDefaultChargingTariff response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "RemoveDefaultChargingTariff status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!RemoveDefaultChargingTariffStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid RemoveDefaultChargingTariff status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!CBOR.ParseMandatoryList<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>("evseStatusInfos",
+                                                     "EVSE status information",
+                                                     (CBORValue item, out EVSEStatusInfo<RemoveDefaultChargingTariffStatus>? evseStatusInfo, out String? errorResponse)
+                                                         => EVSEStatusInfo<RemoveDefaultChargingTariffStatus>.TryParseCBOR(item, RemoveDefaultChargingTariffStatusExtensions.TryParse, out evseStatusInfo, out errorResponse),
+                                                     out var EVSEStatusInfos,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                RemoveDefaultChargingTariffResponse = new RemoveDefaultChargingTariffResponse(
+
+                                                          Request,
+                                                          Status,
+                                                          StatusInfo,
+                                                          EVSEStatusInfos,
+
+                                                          null,
+                                                          ResponseTimestamp,
+
+                                                          Destination,
+                                                          NetworkPath,
+
+                                                          null,
+                                                          null,
+                                                          Signatures,
+
+                                                          CustomData
+
+                                                      );
+
+                if (CustomRemoveDefaultChargingTariffResponseParser is not null)
+                    RemoveDefaultChargingTariffResponse = CustomRemoveDefaultChargingTariffResponseParser(CBOR,
+                                                                                                         RemoveDefaultChargingTariffResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                RemoveDefaultChargingTariffResponse = null;
+                ErrorResponse = "The given CBOR representation of a RemoveDefaultChargingTariff response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomRemoveDefaultChargingTariffResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this RemoveDefaultChargingTariff response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomRemoveDefaultChargingTariffResponseSerializer">A delegate to serialize custom RemoveDefaultChargingTariff responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<RemoveDefaultChargingTariffResponse>? CustomRemoveDefaultChargingTariffResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("evseStatusInfos",           CBORValue.FromArray(EVSEStatusInfos.Select(evseStatusInfo => evseStatusInfo.ToCBOR(status => status.AsText())))),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomRemoveDefaultChargingTariffResponseSerializer is not null
+                       ? CustomRemoveDefaultChargingTariffResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

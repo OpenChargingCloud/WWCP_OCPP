@@ -435,6 +435,151 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out ChangeAvailabilityRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ChangeAvailability request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ChangeAvailabilityRequest">The ChangeAvailability request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomChangeAvailabilityRequestParser">A delegate to read custom ChangeAvailability requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                             CBOR,
+                                           Request_Id                                            RequestId,
+                                           SourceRouting                                         Destination,
+                                           NetworkPath                                           NetworkPath,
+                                           [NotNullWhen(true)]  out ChangeAvailabilityRequest?   ChangeAvailabilityRequest,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           DateTimeOffset?                                       RequestTimestamp                        = null,
+                                           TimeSpan?                                             RequestTimeout                          = null,
+                                           EventTracking_Id?                                     EventTrackingId                         = null,
+                                           CustomCBORParserDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestParser   = null)
+        {
+
+            try
+            {
+
+                ChangeAvailabilityRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ChangeAvailability request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("operationalStatus",
+                                             "operational status",
+                                             out var OperationalStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OperationalStatusExtensions.TryParse(OperationalStatusText, out var OperationalStatus))
+                {
+                    ErrorResponse = $"Invalid operational status '{OperationalStatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("evse",
+                                   "evse/connector identification",
+                                   OCPPv2_1.EVSE.TryParseCBOR,
+                                   out EVSE? EVSE,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ChangeAvailabilityRequest = new ChangeAvailabilityRequest(
+
+                                                Destination,
+                                                OperationalStatus,
+                                                EVSE,
+
+                                                null,
+                                                null,
+                                                Signatures,
+
+                                                CustomData,
+
+                                                RequestId,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
+                                                NetworkPath
+
+                                            );
+
+                if (CustomChangeAvailabilityRequestParser is not null)
+                    ChangeAvailabilityRequest = CustomChangeAvailabilityRequestParser(CBOR,
+                                                                                     ChangeAvailabilityRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChangeAvailabilityRequest = null;
+                ErrorResponse = "The given CBOR representation of a ChangeAvailability request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChangeAvailabilityRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ChangeAvailability request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChangeAvailabilityRequestSerializer">A delegate to serialize custom ChangeAvailability requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChangeAvailabilityRequest>? CustomChangeAvailabilityRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("operationalStatus",         CBORValue.FromText(OperationalStatus.AsText())),
+                           ("evse",                      EVSE?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomChangeAvailabilityRequestSerializer is not null
+                       ? CustomChangeAvailabilityRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

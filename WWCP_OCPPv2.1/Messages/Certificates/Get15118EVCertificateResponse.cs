@@ -498,6 +498,186 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out Get15118EVCertificateResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a Get15118EVCertificate response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="Get15118EVCertificateResponse">The Get15118EVCertificate response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGet15118EVCertificateResponseParser">A delegate to read custom Get15118EVCertificate responses.</param>
+        public static Boolean TryParseCBOR(CS.Get15118EVCertificateRequest                           Request,
+                                           CBORValue                                                 CBOR,
+                                           SourceRouting                                             Destination,
+                                           NetworkPath                                               NetworkPath,
+                                           [NotNullWhen(true)]  out Get15118EVCertificateResponse?   Get15118EVCertificateResponse,
+                                           [NotNullWhen(false)] out String?                          ErrorResponse,
+                                           DateTimeOffset?                                           ResponseTimestamp                           = null,
+                                           CustomCBORParserDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseParser   = null)
+        {
+
+            try
+            {
+
+                Get15118EVCertificateResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a Get15118EVCertificate response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "ISO 15118 EV certificate status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!ISO15118EVCertificateStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid ISO 15118 EV certificate status '{StatusText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("exiResponse",
+                                             "EXI response",
+                                             out var EXIRequestText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv2_1.EXIData.TryParse(EXIRequestText, out var EXIRequest))
+                {
+                    ErrorResponse = $"Invalid EXI response '{EXIRequestText}'!";
+                    return false;
+                }
+
+                UInt32? RemainingContracts = null;
+
+                if (CBOR.ParseOptionalUInt64("remainingContracts",
+                                             "remaining contracts",
+                                             out var RemainingContractsNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (RemainingContractsNumber is not UInt64 RemainingContractsValue || RemainingContractsValue < UInt32.MinValue || RemainingContractsValue > UInt32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid remaining contracts '{RemainingContractsNumber}'!";
+                        return false;
+                    }
+
+                    RemainingContracts = (UInt32) RemainingContractsValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                Get15118EVCertificateResponse = new Get15118EVCertificateResponse(
+
+                                                    Request,
+                                                    Status,
+                                                    EXIRequest,
+                                                    RemainingContracts,
+                                                    StatusInfo,
+
+                                                    null,
+                                                    ResponseTimestamp,
+
+                                                    Destination,
+                                                    NetworkPath,
+
+                                                    null,
+                                                    null,
+                                                    Signatures,
+
+                                                    CustomData
+
+                                                );
+
+                if (CustomGet15118EVCertificateResponseParser is not null)
+                    Get15118EVCertificateResponse = CustomGet15118EVCertificateResponseParser(CBOR,
+                                                                                             Get15118EVCertificateResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Get15118EVCertificateResponse = null;
+                ErrorResponse = "The given CBOR representation of a Get15118EVCertificate response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGet15118EVCertificateResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this Get15118EVCertificate response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGet15118EVCertificateResponseSerializer">A delegate to serialize custom Get15118EVCertificate responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Get15118EVCertificateResponse>? CustomGet15118EVCertificateResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("exiResponse",               CBORValue.FromText(EXIResponse.ToString())),
+                           ("remainingContracts",        OCPPCBORExtensions.UInt(RemainingContracts)),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGet15118EVCertificateResponseSerializer is not null
+                       ? CustomGet15118EVCertificateResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

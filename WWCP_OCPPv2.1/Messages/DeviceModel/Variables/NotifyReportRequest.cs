@@ -748,6 +748,192 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NotifyReportRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyReport request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyReportRequest">The NotifyReport request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyReportRequestParser">A delegate to read custom NotifyReport requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                       CBOR,
+                                           Request_Id                                      RequestId,
+                                           SourceRouting                                   Destination,
+                                           NetworkPath                                     NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyReportRequest?   NotifyReportRequest,
+                                           [NotNullWhen(false)] out String?                ErrorResponse,
+                                           DateTimeOffset?                                 RequestTimestamp                  = null,
+                                           TimeSpan?                                       RequestTimeout                    = null,
+                                           EventTracking_Id?                               EventTrackingId                   = null,
+                                           CustomCBORParserDelegate<NotifyReportRequest>?  CustomNotifyReportRequestParser   = null)
+        {
+
+            try
+            {
+
+                NotifyReportRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyReport request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("requestId",
+                                               "notify report request identification",
+                                               out var NotifyReportRequestIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (NotifyReportRequestIdNumber < Int32.MinValue || NotifyReportRequestIdNumber > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid notify report request identification '{NotifyReportRequestIdNumber}'!";
+                    return false;
+                }
+
+                var NotifyReportRequestId = (Int32) NotifyReportRequestIdNumber;
+
+                if (!CBOR.ParseMandatoryUInt64("seqNo",
+                                               "sequence number",
+                                               out var SequenceNumberNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (SequenceNumberNumber < UInt32.MinValue || SequenceNumberNumber > UInt32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid sequence number '{SequenceNumberNumber}'!";
+                    return false;
+                }
+
+                var SequenceNumber = (UInt32) SequenceNumberNumber;
+
+                if (!CBOR.ParseMandatoryValue("generatedAt",
+                                              "generated at",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset GeneratedAt,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<ReportData>("reportData",
+                                               "report data",
+                                               OCPPv2_1.ReportData.TryParseCBOR,
+                                               out var ReportData,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("tbc",
+                                       "to be continued",
+                                       out var ToBeContinued,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyReportRequest = new NotifyReportRequest(
+
+                                          Destination,
+                                          NotifyReportRequestId,
+                                          SequenceNumber,
+                                          GeneratedAt,
+                                          ReportData,
+                                          ToBeContinued,
+
+                                          null,
+                                          null,
+                                          Signatures,
+
+                                          CustomData,
+
+                                          RequestId,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
+                                          NetworkPath
+
+                                      );
+
+                if (CustomNotifyReportRequestParser is not null)
+                    NotifyReportRequest = CustomNotifyReportRequestParser(CBOR,
+                                                                         NotifyReportRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyReportRequest = null;
+                ErrorResponse = "The given CBOR representation of a NotifyReport request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyReportRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyReport request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyReportRequestSerializer">A delegate to serialize custom NotifyReport requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyReportRequest>? CustomNotifyReportRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestId",                 CBORValue.FromInt64(NotifyReportRequestId)),
+                           ("seqNo",                     CBORValue.FromUInt64(SequenceNumber)),
+                           ("generatedAt",               GeneratedAt.ToCBOR()),
+                           ("reportData",                OCPPCBORExtensions.Array(ReportData, x => x.ToCBOR())),
+                           ("tbc",                       OCPPCBORExtensions.Flag(ToBeContinued)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyReportRequestSerializer is not null
+                       ? CustomNotifyReportRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
