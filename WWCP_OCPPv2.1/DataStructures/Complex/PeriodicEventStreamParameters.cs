@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Periodic event stream parameters.
     /// </summary>
     public class PeriodicEventStreamParameters : ACustomData,
+                                                 ICBORSerializable<PeriodicEventStreamParameters>,
                                                  IEquatable<PeriodicEventStreamParameters>
     {
 
@@ -264,6 +267,153 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out PeriodicEventStreamParameters, out ErrorResponse, CustomPeriodicEventStreamParametersParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a periodic event stream parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="PeriodicEventStreamParameters">The periodic event stream parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out PeriodicEventStreamParameters?  PeriodicEventStreamParameters,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out PeriodicEventStreamParameters,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a periodic event stream parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="PeriodicEventStreamParameters">The periodic event stream parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomPeriodicEventStreamParametersParser">An optional delegate to read custom periodic event stream parameters.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out PeriodicEventStreamParameters?           PeriodicEventStreamParameters,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<PeriodicEventStreamParameters>?  CustomPeriodicEventStreamParametersParser)
+        {
+
+            try
+            {
+
+                PeriodicEventStreamParameters = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a periodic event stream parameters is not a map!";
+                    return false;
+                }
+
+                UInt32? MaxItems = null;
+
+                if (CBOR.ParseOptionalUInt64("values",
+                                             "values",
+                                             out var MaxItemsNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (MaxItemsNumber is not UInt64 MaxItemsValue || MaxItemsValue > UInt32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid values '{MaxItemsNumber}'!";
+                        return false;
+                    }
+
+                    MaxItems = (UInt32) MaxItemsValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("interval",
+                                        "interval",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MaxTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                PeriodicEventStreamParameters = new PeriodicEventStreamParameters(
+                                                    MaxItems,
+                                                    MaxTime,
+                                                    CustomData
+                                                );
+
+                if (CustomPeriodicEventStreamParametersParser is not null)
+                    PeriodicEventStreamParameters = CustomPeriodicEventStreamParametersParser(CBOR,
+                                                               PeriodicEventStreamParameters);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                PeriodicEventStreamParameters  = default;
+                ErrorResponse  = "The given CBOR representation of a periodic event stream parameters is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<PeriodicEventStreamParameters>.TryParse(CBOR, out PeriodicEventStreamParameters, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a periodic event stream parameters - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<PeriodicEventStreamParameters>.TryParse(CBORValue                         CBOR,
+                                                                               out PeriodicEventStreamParameters                  Value,
+                                                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomPeriodicEventStreamParametersSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this periodic event stream parameters: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomPeriodicEventStreamParametersSerializer">A delegate to serialize custom periodic event stream parameters.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<PeriodicEventStreamParameters>? CustomPeriodicEventStreamParametersSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("values",                  OCPPCBORExtensions.UInt(MaxItems)),
+                           ("interval",                MaxTime?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomPeriodicEventStreamParametersSerializer is not null
+                       ? CustomPeriodicEventStreamParametersSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

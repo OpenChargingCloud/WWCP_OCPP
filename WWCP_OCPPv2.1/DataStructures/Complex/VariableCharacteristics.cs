@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -36,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// and the type of authorization to support multiple forms of identifiers.
     /// </summary>
     public class VariableCharacteristics : ACustomData,
+                                           ICBORSerializable<VariableCharacteristics>,
                                            IEquatable<VariableCharacteristics>
     {
 
@@ -298,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
                 var Unit = unit.HasValue
-                               ? new UnitsOfMeasure(unit.Value, 1)
+                               ? new UnitsOfMeasure(unit.Value)
                                : null;
 
                 #endregion
@@ -356,7 +359,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         case JTokenType.String:
                         {
 
-                            var valueListString = JSON.GetString("valuesList");
+                            // The schema's comma separated list - an empty one has no values.
+                            var valuesListText = valuesListJSONToken.Value<String>() ?? "";
+
+                            if (valuesListText.Length > 0)
+                                foreach (var value in valuesListText.Split(','))
+                                    ValuesList.Add(value);
 
                         }
                         break;
@@ -470,6 +478,231 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomVariableCharacteristicsSerializer is not null
                        ? CustomVariableCharacteristicsSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out VariableCharacteristics, out ErrorResponse, CustomVariableCharacteristicsParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable characteristics.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VariableCharacteristics">The variable characteristics.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out VariableCharacteristics?  VariableCharacteristics,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out VariableCharacteristics,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable characteristics.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VariableCharacteristics">The variable characteristics.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomVariableCharacteristicsParser">An optional delegate to read custom variable characteristics.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out VariableCharacteristics?           VariableCharacteristics,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<VariableCharacteristics>?  CustomVariableCharacteristicsParser)
+        {
+
+            try
+            {
+
+                VariableCharacteristics = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a variable characteristics is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("dataType",
+                                             "data type",
+                                             out var DataTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!DataTypesExtensions.TryParse(DataTypeText, out var DataType))
+                {
+                    ErrorResponse = $"Invalid data type '{DataTypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBoolean("supportsMonitoring",
+                                                "supports monitoring",
+                                                out var SupportsMonitoring,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                UnitOfMeasure? unit = null;
+
+                if (CBOR.ParseOptionalText("unit",
+                                           "unit of measure",
+                                           out var unitText,
+                                           out ErrorResponse))
+                {
+
+                    if (!UnitOfMeasure.TryParse(unitText!, out var unitValue))
+                    {
+                        ErrorResponse = $"Invalid unit of measure '{unitText}'!";
+                        return false;
+                    }
+
+                    unit = unitValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                var Unit = unit.HasValue
+                               ? new UnitsOfMeasure(unit.Value)
+                               : null;
+
+                CBOR.ParseOptionalDecimal("minLimit",
+                                          "minimum limit",
+                                          out var MinLimit,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalDecimal("maxLimit",
+                                          "maximum limit",
+                                          out var MaxLimit,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                UInt32? MaxElements = null;
+
+                if (CBOR.ParseOptionalUInt64("maxElements",
+                                             "maximum elements",
+                                             out var MaxElementsNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (MaxElementsNumber is not UInt64 MaxElementsValue || MaxElementsValue > UInt32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid maximum elements '{MaxElementsNumber}'!";
+                        return false;
+                    }
+
+                    MaxElements = (UInt32) MaxElementsValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                // A comma separated text in JSON, an array of texts in CBOR.
+                CBOR.ParseOptionalList<String>("valuesList",
+                                               "values list",
+                                               (CBORValue item, out String? text, out String? errorResponse) => {
+                                                   text          = item.Kind == CBORValueKind.TextString ? item.AsText() : null;
+                                                   errorResponse = text is null ? "A value of the values list is a text!" : null;
+                                                   return text is not null;
+                                               },
+                                               out var ValuesList,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                VariableCharacteristics = new VariableCharacteristics(
+                                              DataType,
+                                              SupportsMonitoring,
+                                              Unit,
+                                              MinLimit,
+                                              MaxLimit,
+                                              MaxElements,
+                                              ValuesList,
+                                              CustomData
+                                          );
+
+                if (CustomVariableCharacteristicsParser is not null)
+                    VariableCharacteristics = CustomVariableCharacteristicsParser(CBOR,
+                                                         VariableCharacteristics);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                VariableCharacteristics  = default;
+                ErrorResponse  = "The given CBOR representation of a variable characteristics is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<VariableCharacteristics>.TryParse(CBOR, out VariableCharacteristics, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable characteristics - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<VariableCharacteristics>.TryParse(CBORValue                         CBOR,
+                                                                         out VariableCharacteristics                  Value,
+                                                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomVariableCharacteristicsSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this variable characteristics: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomVariableCharacteristicsSerializer">A delegate to serialize custom variable characteristics.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<VariableCharacteristics>? CustomVariableCharacteristicsSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("dataType",                CBORValue.FromText(DataType.AsText())),
+                           ("supportsMonitoring",      CBORValue.FromBoolean(SupportsMonitoring)),
+                           ("unit",                    OCPPCBORExtensions.Text(Unit?.Unit.ToString())),
+                           ("minLimit",                OCPPCBORExtensions.Number(MinLimit)),
+                           ("maxLimit",                OCPPCBORExtensions.Number(MaxLimit)),
+                           ("maxElements",             OCPPCBORExtensions.UInt(MaxElements)),
+                           ("valuesList",              OCPPCBORExtensions.Array(ValuesList, value => CBORValue.FromText(value))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomVariableCharacteristicsSerializer is not null
+                       ? CustomVariableCharacteristicsSerializer(this, cbor)
+                       : cbor;
 
         }
 

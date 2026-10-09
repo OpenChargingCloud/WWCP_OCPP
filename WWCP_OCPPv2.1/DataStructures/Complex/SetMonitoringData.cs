@@ -24,6 +24,10 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Set monitoring data.
     /// </summary>
     public class SetMonitoringData : ACustomData,
+                                     ICBORSerializable<SetMonitoringData>,
                                      IEquatable<SetMonitoringData>
     {
 
@@ -682,6 +687,227 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out SetMonitoringData, out ErrorResponse, CustomSetMonitoringDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set monitoring data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SetMonitoringData">The set monitoring data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out SetMonitoringData?  SetMonitoringData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out SetMonitoringData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set monitoring data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SetMonitoringData">The set monitoring data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSetMonitoringDataParser">An optional delegate to read custom set monitoring data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out SetMonitoringData?           SetMonitoringData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<SetMonitoringData>?  CustomSetMonitoringDataParser)
+        {
+
+            try
+            {
+
+                SetMonitoringData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a set monitoring data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("value",
+                                                "value",
+                                                out var Value,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("type",
+                                             "monitor type",
+                                             out var MonitorTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.MonitorType.TryParse(MonitorTypeText, out var MonitorType))
+                {
+                    ErrorResponse = $"Invalid monitor type '{MonitorTypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("severity",
+                                               "severity",
+                                               out var SeverityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (SeverityNumber > Byte.MaxValue || !SeveritiesExtensions.TryParse((Byte) SeverityNumber, out var Severity))
+                {
+                    ErrorResponse = $"Invalid severity '{SeverityNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("component",
+                                         "component",
+                                         OCPPv2_1.Component.TryParseCBOR,
+                                         out Component? Component,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("variable",
+                                         "variable",
+                                         OCPPv2_1.Variable.TryParseCBOR,
+                                         out Variable? Variable,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                VariableMonitoring_Id? VariableMonitoringId = null;
+
+                if (CBOR.ParseOptionalUInt64("id",
+                                             "variable monitoring identification",
+                                             out var VariableMonitoringIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (VariableMonitoringIdNumber is not UInt64 VariableMonitoringIdValue || VariableMonitoringIdValue > UInt64.MaxValue || !VariableMonitoring_Id.TryParse((UInt64) VariableMonitoringIdValue, out var VariableMonitoringIdId))
+                    {
+                        ErrorResponse = $"Invalid variable monitoring identification '{VariableMonitoringIdNumber}'!";
+                        return false;
+                    }
+
+                    VariableMonitoringId = VariableMonitoringIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("transaction",
+                                          "transaction",
+                                          out var Transaction,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("periodicEventStream",
+                                   "periodic event stream parameters",
+                                   OCPPv2_1.PeriodicEventStreamParameters.TryParseCBOR,
+                                   out PeriodicEventStreamParameters? PeriodicEventStreamParameters,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                SetMonitoringData = new SetMonitoringData(
+                                        Value,
+                                        MonitorType,
+                                        Severity,
+                                        Component,
+                                        Variable,
+                                        VariableMonitoringId,
+                                        Transaction,
+                                        PeriodicEventStreamParameters,
+                                        CustomData
+                                    );
+
+                if (CustomSetMonitoringDataParser is not null)
+                    SetMonitoringData = CustomSetMonitoringDataParser(CBOR,
+                                                   SetMonitoringData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetMonitoringData  = default;
+                ErrorResponse  = "The given CBOR representation of a set monitoring data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<SetMonitoringData>.TryParse(CBOR, out SetMonitoringData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set monitoring data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<SetMonitoringData>.TryParse(CBORValue                         CBOR,
+                                                                   out SetMonitoringData                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetMonitoringDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this set monitoring data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetMonitoringDataSerializer">A delegate to serialize custom set monitoring data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetMonitoringData>? CustomSetMonitoringDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("value",                   CBORValue.FromDecimal(Value)),
+                           ("type",                    CBORValue.FromText(MonitorType.ToString())),
+                           ("severity",                CBORValue.FromUInt64(Severity.AsNumber())),
+                           ("component",               Component.ToCBOR()),
+                           ("variable",                Variable. ToCBOR()),
+                           ("id",                      OCPPCBORExtensions.UInt(VariableMonitoringId?.Value)),
+                           ("transaction",             OCPPCBORExtensions.Flag(Transaction)),
+                           ("periodicEventStream",     PeriodicEventStreamParameters?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomSetMonitoringDataSerializer is not null
+                       ? CustomSetMonitoringDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

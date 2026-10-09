@@ -23,6 +23,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -32,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A charging transaction.
     /// </summary>
     public class Transaction : ACustomData,
+                               ICBORSerializable<Transaction>,
                                IEquatable<Transaction>
     {
 
@@ -526,6 +531,305 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out Transaction, out ErrorResponse, CustomTransactionParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a transaction.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Transaction">The transaction.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Transaction?  Transaction,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Transaction,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a transaction.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Transaction">The transaction.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTransactionParser">An optional delegate to read custom transactions.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Transaction?           Transaction,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Transaction>?  CustomTransactionParser)
+        {
+
+            try
+            {
+
+                Transaction = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a transaction is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("transactionId",
+                                             "transaction identification",
+                                             out var IdText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!Transaction_Id.TryParse(IdText, out var Id))
+                {
+                    ErrorResponse = $"Invalid transaction identification '{IdText}'!";
+                    return false;
+                }
+
+                ChargingStates? ChargingState = null;
+
+                if (CBOR.ParseOptionalText("chargingState",
+                                           "charging state",
+                                           out var ChargingStateText,
+                                           out ErrorResponse))
+                {
+
+                    if (!ChargingStatesExtensions.TryParse(ChargingStateText!, out var ChargingStateValue))
+                    {
+                        ErrorResponse = $"Invalid charging state '{ChargingStateText}'!";
+                        return false;
+                    }
+
+                    ChargingState = ChargingStateValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("timeSpentCharging",
+                                        "time spent charging",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? TimeSpentCharging,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                StopTransactionReason? StoppedReason = null;
+
+                if (CBOR.ParseOptionalText("stoppedReason",
+                                           "stopped reason",
+                                           out var StoppedReasonText,
+                                           out ErrorResponse))
+                {
+
+                    if (!StopTransactionReason.TryParse(StoppedReasonText!, out var StoppedReasonValue))
+                    {
+                        ErrorResponse = $"Invalid stopped reason '{StoppedReasonText}'!";
+                        return false;
+                    }
+
+                    StoppedReason = StoppedReasonValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                RemoteStart_Id? RemoteStartId = null;
+
+                if (CBOR.ParseOptionalUInt64("remoteStartId",
+                                             "remote start identification",
+                                             out var RemoteStartIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (RemoteStartIdNumber is not UInt64 RemoteStartIdValue || RemoteStartIdValue > UInt64.MaxValue || !RemoteStart_Id.TryParse((UInt64) RemoteStartIdValue, out var RemoteStartIdId))
+                    {
+                        ErrorResponse = $"Invalid remote start identification '{RemoteStartIdNumber}'!";
+                        return false;
+                    }
+
+                    RemoteStartId = RemoteStartIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                OperationMode? OperationMode = null;
+
+                if (CBOR.ParseOptionalText("operationMode",
+                                           "operation mode",
+                                           out var OperationModeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.OperationMode.TryParse(OperationModeText!, out var OperationModeValue))
+                    {
+                        ErrorResponse = $"Invalid operation mode '{OperationModeText}'!";
+                        return false;
+                    }
+
+                    OperationMode = OperationModeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("transactionLimit",
+                                   "transaction limits",
+                                   OCPPv2_1.TransactionLimits.TryParseCBOR,
+                                   out TransactionLimits? TransactionLimits,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                PreconditioningStatus? PreconditioningStatus = null;
+
+                if (CBOR.ParseOptionalText("preconditioningStatus",
+                                           "preconditioning status",
+                                           out var PreconditioningStatusText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.PreconditioningStatus.TryParse(PreconditioningStatusText!, out var PreconditioningStatusValue))
+                    {
+                        ErrorResponse = $"Invalid preconditioning status '{PreconditioningStatusText}'!";
+                        return false;
+                    }
+
+                    PreconditioningStatus = PreconditioningStatusValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("evseSleep",
+                                          "EVSE sleep",
+                                          out var EVSESleep,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Tariff_Id? TariffId = null;
+
+                if (CBOR.ParseOptionalText("tariffId",
+                                           "tariff identification",
+                                           out var TariffIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!Tariff_Id.TryParse(TariffIdText!, out var TariffIdValue))
+                    {
+                        ErrorResponse = $"Invalid tariff identification '{TariffIdText}'!";
+                        return false;
+                    }
+
+                    TariffId = TariffIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Transaction = new Transaction(
+                                  Id,
+                                  ChargingState,
+                                  TimeSpentCharging,
+                                  StoppedReason,
+                                  RemoteStartId,
+                                  OperationMode,
+                                  TransactionLimits,
+                                  PreconditioningStatus,
+                                  EVSESleep,
+                                  TariffId,
+                                  CustomData
+                              );
+
+                if (CustomTransactionParser is not null)
+                    Transaction = CustomTransactionParser(CBOR,
+                                             Transaction);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Transaction  = default;
+                ErrorResponse  = "The given CBOR representation of a transaction is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Transaction>.TryParse(CBOR, out Transaction, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a transaction - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Transaction>.TryParse(CBORValue                         CBOR,
+                                                             out Transaction                  Value,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTransactionSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this transaction: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTransactionSerializer">A delegate to serialize custom transactions.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Transaction>? CustomTransactionSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("transactionId",           CBORValue.FromText(Id.Value)),
+                           ("chargingState",           OCPPCBORExtensions.Text(ChargingState?.AsText())),
+                           ("timeSpentCharging",       TimeSpentCharging?.ToCBOR()),
+                           ("stoppedReason",           OCPPCBORExtensions.Text(StoppedReason?.ToString())),
+                           ("remoteStartId",           OCPPCBORExtensions.UInt(RemoteStartId?.Value)),
+                           ("operationMode",           OCPPCBORExtensions.Text(OperationMode?.ToString())),
+                           ("transactionLimit",        TransactionLimits?.ToCBOR()),
+                           ("preconditioningStatus",   OCPPCBORExtensions.Text(PreconditioningStatus?.ToString())),
+                           ("evseSleep",               OCPPCBORExtensions.Flag(EVSESleep)),
+                           ("tariffId",                OCPPCBORExtensions.Text(TariffId?.ToString())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTransactionSerializer is not null
+                       ? CustomTransactionSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

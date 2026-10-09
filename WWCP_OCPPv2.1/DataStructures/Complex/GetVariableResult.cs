@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A get variable result.
     /// </summary>
     public class GetVariableResult : ACustomData,
+                                     ICBORSerializable<GetVariableResult>,
                                      IEquatable<GetVariableResult>
     {
 
@@ -413,6 +416,201 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out GetVariableResult, out ErrorResponse, CustomGetVariableResultParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a get variable result.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="GetVariableResult">The get variable result.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out GetVariableResult?  GetVariableResult,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out GetVariableResult,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a get variable result.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="GetVariableResult">The get variable result.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomGetVariableResultParser">An optional delegate to read custom get variable results.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out GetVariableResult?           GetVariableResult,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<GetVariableResult>?  CustomGetVariableResultParser)
+        {
+
+            try
+            {
+
+                GetVariableResult = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a get variable result is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("attributeStatus",
+                                             "attribute status",
+                                             out var AttributeStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GetVariableStatusExtensions.TryParse(AttributeStatusText, out var AttributeStatus))
+                {
+                    ErrorResponse = $"Invalid attribute status '{AttributeStatusText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("component",
+                                         "component",
+                                         OCPPv2_1.Component.TryParseCBOR,
+                                         out Component? Component,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("variable",
+                                         "variable",
+                                         OCPPv2_1.Variable.TryParseCBOR,
+                                         out Variable? Variable,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("attributeValue",
+                                       "attribute value",
+                                       out var AttributeValue,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                AttributeTypes? AttributeType = null;
+
+                if (CBOR.ParseOptionalText("attributeType",
+                                           "attribute type",
+                                           out var AttributeTypeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!AttributeTypesExtensions.TryParse(AttributeTypeText!, out var AttributeTypeValue))
+                    {
+                        ErrorResponse = $"Invalid attribute type '{AttributeTypeText}'!";
+                        return false;
+                    }
+
+                    AttributeType = AttributeTypeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("attributeStatusInfo",
+                                   "attribute status information",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? AttributeStatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                GetVariableResult = new GetVariableResult(
+                                        AttributeStatus,
+                                        Component,
+                                        Variable,
+                                        AttributeValue,
+                                        AttributeType,
+                                        AttributeStatusInfo,
+                                        CustomData
+                                    );
+
+                if (CustomGetVariableResultParser is not null)
+                    GetVariableResult = CustomGetVariableResultParser(CBOR,
+                                                   GetVariableResult);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetVariableResult  = default;
+                ErrorResponse  = "The given CBOR representation of a get variable result is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<GetVariableResult>.TryParse(CBOR, out GetVariableResult, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a get variable result - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<GetVariableResult>.TryParse(CBORValue                         CBOR,
+                                                                   out GetVariableResult                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetVariableResultSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this get variable result: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetVariableResultSerializer">A delegate to serialize custom get variable results.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetVariableResult>? CustomGetVariableResultSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("attributeStatus",         CBORValue.FromText(AttributeStatus.AsText())),
+                           ("component",               Component.ToCBOR()),
+                           ("variable",                Variable. ToCBOR()),
+                           ("attributeValue",          OCPPCBORExtensions.Text(AttributeValue)),
+                           ("attributeType",           OCPPCBORExtensions.Text(AttributeType?.AsText())),
+                           ("attributeStatusInfo",     AttributeStatusInfo?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomGetVariableResultSerializer is not null
+                       ? CustomGetVariableResultSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

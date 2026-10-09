@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// The event data allows to report an event notification for a component-variable.
     /// </summary>
     public class EventData : ACustomData,
+                             ICBORSerializable<EventData>,
                              IEquatable<EventData>
     {
 
@@ -452,14 +455,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Severity                 [optional]
 
-                if (JSON.ParseOptional("severity",
-                                       "severity",
-                                       SeveritiesExtensions.TryParse,
-                                       out Severities? Severity,
-                                       out ErrorResponse))
+                // The schema's number 0-9; the text it was written as before is still read.
+                Severities? Severity = null;
+
+                if (JSON["severity"] is JToken severityToken)
                 {
-                    if (ErrorResponse is not null)
+
+                    if (!(severityToken.Type == JTokenType.Integer
+                              ? severityToken.Value<Int64>() is >= 0 and <= Byte.MaxValue && SeveritiesExtensions.TryParse((Byte) severityToken.Value<Int64>(), out var severity)
+                              : SeveritiesExtensions.TryParse(severityToken.Value<String>() ?? "", out severity)))
+                    {
+                        ErrorResponse = $"Invalid severity '{severityToken}'!";
                         return false;
+                    }
+
+                    Severity = severity;
+
                 }
 
                 #endregion
@@ -467,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #region Cause                    [optional]
 
                 if (JSON.ParseOptional("cause",
-                                       "custom data",
+                                       "cause",
                                        Event_Id.TryParse,
                                        out Event_Id? Cause,
                                        out ErrorResponse))
@@ -614,11 +625,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                            CustomCustomDataSerializer)),
 
                            Severity.HasValue
-                               ? new JProperty("severity",               Severity.            Value.AsText())
+                               ? new JProperty("severity",               Severity.            Value.AsNumber())
                                : null,
 
                            Cause is not null
-                               ? new JProperty("cause",                  Cause.               Value.ToString())
+                               ? new JProperty("cause",                  Cause.               Value.Value)
                                : null,
 
                            TechCode is not null
@@ -638,7 +649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            VariableMonitoringId is not null
-                               ? new JProperty("variableMonitoringId",   VariableMonitoringId.Value.ToString())
+                               ? new JProperty("variableMonitoringId",   VariableMonitoringId.Value.Value)
                                : null,
 
                            CustomData is not null
@@ -655,6 +666,332 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out EventData, out ErrorResponse, CustomEventDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an event data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EventData">The event data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out EventData?  EventData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out EventData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an event data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EventData">The event data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomEventDataParser">An optional delegate to read custom event data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out EventData?           EventData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<EventData>?  CustomEventDataParser)
+        {
+
+            try
+            {
+
+                EventData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an event data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("eventId",
+                                               "event identification",
+                                               out var EventIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (EventIdNumber > UInt64.MaxValue || !Event_Id.TryParse((UInt64) EventIdNumber, out var EventId))
+                {
+                    ErrorResponse = $"Invalid event identification '{EventIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timestamp",
+                                              "timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset Timestamp,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("trigger",
+                                             "event trigger",
+                                             out var TriggerText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!EventTriggersExtensions.TryParse(TriggerText, out var Trigger))
+                {
+                    ErrorResponse = $"Invalid event trigger '{TriggerText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("actualValue",
+                                             "actual value",
+                                             out var ActualValue,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("eventNotificationType",
+                                             "event notification type",
+                                             out var EventNotificationTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.EventNotificationType.TryParse(EventNotificationTypeText, out var EventNotificationType))
+                {
+                    ErrorResponse = $"Invalid event notification type '{EventNotificationTypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("component",
+                                         "component",
+                                         OCPPv2_1.Component.TryParseCBOR,
+                                         out Component? Component,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("variable",
+                                         "variable",
+                                         OCPPv2_1.Variable.TryParseCBOR,
+                                         out Variable? Variable,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                Severities? Severity = null;
+
+                if (CBOR.ParseOptionalUInt64("severity",
+                                             "severity",
+                                             out var severityNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (severityNumber is not UInt64 severityValue || severityValue > Byte.MaxValue || !SeveritiesExtensions.TryParse((Byte) severityValue, out var severity))
+                    {
+                        ErrorResponse = $"Invalid severity '{severityNumber}'!";
+                        return false;
+                    }
+
+                    Severity = severity;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Event_Id? Cause = null;
+
+                if (CBOR.ParseOptionalUInt64("cause",
+                                             "cause",
+                                             out var CauseNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (CauseNumber is not UInt64 CauseValue || CauseValue > UInt64.MaxValue || !Event_Id.TryParse((UInt64) CauseValue, out var CauseId))
+                    {
+                        ErrorResponse = $"Invalid cause '{CauseNumber}'!";
+                        return false;
+                    }
+
+                    Cause = CauseId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("techCode",
+                                       "technical code",
+                                       out var TechCode,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("techInfo",
+                                       "technical information",
+                                       out var TechInfo,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("cleared",
+                                          "cleared",
+                                          out var Cleared,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Transaction_Id? TransactionId = null;
+
+                if (CBOR.ParseOptionalText("transactionId",
+                                           "transaction identification",
+                                           out var TransactionIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
+                    {
+                        ErrorResponse = $"Invalid transaction identification '{TransactionIdText}'!";
+                        return false;
+                    }
+
+                    TransactionId = TransactionIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                VariableMonitoring_Id? VariableMonitoringId = null;
+
+                if (CBOR.ParseOptionalUInt64("variableMonitoringId",
+                                             "variable monitoring identification",
+                                             out var VariableMonitoringIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (VariableMonitoringIdNumber is not UInt64 VariableMonitoringIdValue || VariableMonitoringIdValue > UInt64.MaxValue || !VariableMonitoring_Id.TryParse((UInt64) VariableMonitoringIdValue, out var VariableMonitoringIdId))
+                    {
+                        ErrorResponse = $"Invalid variable monitoring identification '{VariableMonitoringIdNumber}'!";
+                        return false;
+                    }
+
+                    VariableMonitoringId = VariableMonitoringIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                EventData = new EventData(
+                                EventId,
+                                Timestamp,
+                                Trigger,
+                                ActualValue,
+                                EventNotificationType,
+                                Component,
+                                Variable,
+                                Severity,
+                                Cause,
+                                TechCode,
+                                TechInfo,
+                                Cleared,
+                                TransactionId,
+                                VariableMonitoringId,
+                                CustomData
+                            );
+
+                if (CustomEventDataParser is not null)
+                    EventData = CustomEventDataParser(CBOR,
+                                           EventData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                EventData  = default;
+                ErrorResponse  = "The given CBOR representation of an event data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<EventData>.TryParse(CBOR, out EventData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an event data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<EventData>.TryParse(CBORValue                         CBOR,
+                                                           out EventData                  Value,
+                                                           [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomEventDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this event data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomEventDataSerializer">A delegate to serialize custom event data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<EventData>? CustomEventDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("eventId",                 CBORValue.FromUInt64(EventId.Value)),
+                           ("timestamp",               Timestamp.ToCBOR()),
+                           ("trigger",                 CBORValue.FromText(Trigger.AsText())),
+                           ("actualValue",             CBORValue.FromText(ActualValue)),
+                           ("eventNotificationType",   CBORValue.FromText(EventNotificationType.ToString())),
+                           ("component",               Component.ToCBOR()),
+                           ("variable",                Variable. ToCBOR()),
+                           ("severity",                OCPPCBORExtensions.UInt(Severity?.AsNumber())),
+                           ("cause",                   OCPPCBORExtensions.UInt(Cause?.Value)),
+                           ("techCode",                OCPPCBORExtensions.Text(TechCode)),
+                           ("techInfo",                OCPPCBORExtensions.Text(TechInfo)),
+                           ("cleared",                 OCPPCBORExtensions.Flag(Cleared)),
+                           ("transactionId",           OCPPCBORExtensions.Text(TransactionId?.ToString())),
+                           ("variableMonitoringId",    OCPPCBORExtensions.UInt(VariableMonitoringId?.Value)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomEventDataSerializer is not null
+                       ? CustomEventDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

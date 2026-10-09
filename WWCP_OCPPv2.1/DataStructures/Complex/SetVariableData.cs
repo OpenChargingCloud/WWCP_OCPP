@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A data structure for setting variable data.
     /// </summary>
     public class SetVariableData : ACustomData,
+                                   ICBORSerializable<SetVariableData>,
                                    IEquatable<SetVariableData>
     {
 
@@ -370,6 +373,184 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out SetVariableData, out ErrorResponse, CustomSetVariableDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set variable data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SetVariableData">The set variable data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out SetVariableData?  SetVariableData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out SetVariableData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set variable data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SetVariableData">The set variable data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSetVariableDataParser">An optional delegate to read custom set variable data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out SetVariableData?           SetVariableData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<SetVariableData>?  CustomSetVariableDataParser)
+        {
+
+            try
+            {
+
+                SetVariableData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a set variable data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("component",
+                                         "component",
+                                         OCPPv2_1.Component.TryParseCBOR,
+                                         out Component? Component,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("variable",
+                                         "variable",
+                                         OCPPv2_1.Variable.TryParseCBOR,
+                                         out Variable? Variable,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("attributeValue",
+                                             "attribute value",
+                                             out var AttributeValue,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("oldAttributeValue",
+                                       "old attribute value",
+                                       out var OldAttributeValue,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                AttributeTypes? AttributeType = null;
+
+                if (CBOR.ParseOptionalText("attributeType",
+                                           "attribute type",
+                                           out var AttributeTypeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!AttributeTypesExtensions.TryParse(AttributeTypeText!, out var AttributeTypeValue))
+                    {
+                        ErrorResponse = $"Invalid attribute type '{AttributeTypeText}'!";
+                        return false;
+                    }
+
+                    AttributeType = AttributeTypeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                SetVariableData = new SetVariableData(
+                                      Component,
+                                      Variable,
+                                      AttributeValue,
+                                      OldAttributeValue,
+                                      AttributeType,
+                                      CustomData
+                                  );
+
+                if (CustomSetVariableDataParser is not null)
+                    SetVariableData = CustomSetVariableDataParser(CBOR,
+                                                 SetVariableData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetVariableData  = default;
+                ErrorResponse  = "The given CBOR representation of a set variable data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<SetVariableData>.TryParse(CBOR, out SetVariableData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set variable data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<SetVariableData>.TryParse(CBORValue                         CBOR,
+                                                                 out SetVariableData                  Value,
+                                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetVariableDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this set variable data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetVariableDataSerializer">A delegate to serialize custom set variable data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetVariableData>? CustomSetVariableDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("component",               Component.ToCBOR()),
+                           ("variable",                Variable. ToCBOR()),
+                           ("attributeValue",          CBORValue.FromText(AttributeValue)),
+                           ("oldAttributeValue",       OCPPCBORExtensions.Text(OldAttributeValue)),
+                           ("attributeType",           OCPPCBORExtensions.Text(AttributeType?.AsText())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomSetVariableDataSerializer is not null
+                       ? CustomSetVariableDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

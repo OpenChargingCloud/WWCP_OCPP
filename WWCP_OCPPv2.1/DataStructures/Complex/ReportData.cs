@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Report data.
     /// </summary>
     public class ReportData : ACustomData,
+                              ICBORSerializable<ReportData>,
                               IEquatable<ReportData>
     {
 
@@ -358,6 +361,163 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ReportData, out ErrorResponse, CustomReportDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a report data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ReportData">The report data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ReportData?  ReportData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ReportData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a report data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ReportData">The report data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomReportDataParser">An optional delegate to read custom report data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ReportData?           ReportData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ReportData>?  CustomReportDataParser)
+        {
+
+            try
+            {
+
+                ReportData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a report data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("component",
+                                         "component",
+                                         OCPPv2_1.Component.TryParseCBOR,
+                                         out Component? Component,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("variable",
+                                         "variable",
+                                         OCPPv2_1.Variable.TryParseCBOR,
+                                         out Variable? Variable,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<VariableAttribute>("variableAttribute",
+                                                     "variable attributes",
+                                                     OCPPv2_1.VariableAttribute.TryParseCBOR,
+                                                     out var VariableAttributes,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("variableCharacteristics",
+                                   "variable characteristics",
+                                   OCPPv2_1.VariableCharacteristics.TryParseCBOR,
+                                   out VariableCharacteristics? VariableCharacteristics,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ReportData = new ReportData(
+                                 Component,
+                                 Variable,
+                                 VariableAttributes,
+                                 VariableCharacteristics,
+                                 CustomData
+                             );
+
+                if (CustomReportDataParser is not null)
+                    ReportData = CustomReportDataParser(CBOR,
+                                            ReportData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ReportData  = default;
+                ErrorResponse  = "The given CBOR representation of a report data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ReportData>.TryParse(CBOR, out ReportData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a report data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ReportData>.TryParse(CBORValue                         CBOR,
+                                                            out ReportData                  Value,
+                                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomReportDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this report data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomReportDataSerializer">A delegate to serialize custom report data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ReportData>? CustomReportDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("component",               Component.ToCBOR()),
+                           ("variable",                Variable. ToCBOR()),
+                           ("variableAttribute",       CBORValue.FromArray(VariableAttributes.Select(variableAttribute => variableAttribute.ToCBOR()))),
+                           ("variableCharacteristics", VariableCharacteristics?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomReportDataSerializer is not null
+                       ? CustomReportDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

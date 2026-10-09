@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A variable monitoring.
     /// </summary>
     public class VariableMonitoring : ACustomData,
+                                      ICBORSerializable<VariableMonitoring>,
                                       IEquatable<VariableMonitoring>
     {
 
@@ -378,6 +381,203 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomVariableMonitoringSerializer is not null
                        ? CustomVariableMonitoringSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out VariableMonitoring, out ErrorResponse, CustomVariableMonitoringParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable monitoring.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VariableMonitoring">The variable monitoring.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out VariableMonitoring?  VariableMonitoring,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out VariableMonitoring,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable monitoring.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VariableMonitoring">The variable monitoring.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomVariableMonitoringParser">An optional delegate to read custom variable monitorings.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out VariableMonitoring?           VariableMonitoring,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<VariableMonitoring>?  CustomVariableMonitoringParser)
+        {
+
+            try
+            {
+
+                VariableMonitoring = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a variable monitoring is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "variable monitoring identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (IdNumber > UInt64.MaxValue || !VariableMonitoring_Id.TryParse((UInt64) IdNumber, out var Id))
+                {
+                    ErrorResponse = $"Invalid variable monitoring identification '{IdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBoolean("transaction",
+                                                "transaction",
+                                                out var Transaction,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("value",
+                                                "value",
+                                                out var Value,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("type",
+                                             "monitor type",
+                                             out var TypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!MonitorType.TryParse(TypeText, out var Type))
+                {
+                    ErrorResponse = $"Invalid monitor type '{TypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("severity",
+                                               "severity",
+                                               out var SeverityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (SeverityNumber > Byte.MaxValue || !SeveritiesExtensions.TryParse((Byte) SeverityNumber, out var Severity))
+                {
+                    ErrorResponse = $"Invalid severity '{SeverityNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("eventNotificationType",
+                                             "event notification type",
+                                             out var EventNotificationTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.EventNotificationType.TryParse(EventNotificationTypeText, out var EventNotificationType))
+                {
+                    ErrorResponse = $"Invalid event notification type '{EventNotificationTypeText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                VariableMonitoring = new VariableMonitoring(
+                                         Id,
+                                         Transaction,
+                                         Value,
+                                         Type,
+                                         Severity,
+                                         EventNotificationType,
+                                         CustomData
+                                     );
+
+                if (CustomVariableMonitoringParser is not null)
+                    VariableMonitoring = CustomVariableMonitoringParser(CBOR,
+                                                    VariableMonitoring);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                VariableMonitoring  = default;
+                ErrorResponse  = "The given CBOR representation of a variable monitoring is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<VariableMonitoring>.TryParse(CBOR, out VariableMonitoring, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable monitoring - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<VariableMonitoring>.TryParse(CBORValue                         CBOR,
+                                                                    out VariableMonitoring                  Value,
+                                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomVariableMonitoringSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this variable monitoring: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomVariableMonitoringSerializer">A delegate to serialize custom variable monitorings.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<VariableMonitoring>? CustomVariableMonitoringSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                      CBORValue.FromUInt64(Id.Value)),
+                           ("transaction",             CBORValue.FromBoolean(Transaction)),
+                           ("value",                   CBORValue.FromDecimal(Value)),
+                           ("type",                    CBORValue.FromText(Type.ToString())),
+                           ("severity",                CBORValue.FromUInt64(Severity.AsNumber())),
+                           ("eventNotificationType",   CBORValue.FromText(EventNotificationType.ToString())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomVariableMonitoringSerializer is not null
+                       ? CustomVariableMonitoringSerializer(this, cbor)
+                       : cbor;
 
         }
 

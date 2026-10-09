@@ -312,12 +312,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                        "timestamp":    "2026-10-09T12:00:00Z",
                        "sampledValue": [
                            { "value": 1234.5 },
-                           { "value": 11.04,  "measurand": "Power.Active.Import",   "unitOfMeasure": { "unit": "kW",  "multiplier": 0 } },
-                           { "value": 15.5,   "measurand": "Current.Import",        "unitOfMeasure": { "unit": "A",   "multiplier": 0 }, "phase": "L1" },
-                           { "value": 230,    "measurand": "Voltage",               "unitOfMeasure": { "unit": "V",   "multiplier": 0 }, "phase": "L1-N" },
+                           { "value": 11.04,  "measurand": "Power.Active.Import",   "unitOfMeasure": { "unit": "kW" } },
+                           { "value": 15.5,   "measurand": "Current.Import",        "unitOfMeasure": { "unit": "A" }, "phase": "L1" },
+                           { "value": 230,    "measurand": "Voltage",               "unitOfMeasure": { "unit": "V" }, "phase": "L1-N" },
                            { "value": 499,    "measurand": "Frequency",             "unitOfMeasure": { "unit": "Hz",  "multiplier": -1 } },
-                           { "value": 80,     "measurand": "SoC",                   "unitOfMeasure": { "unit": "Percent", "multiplier": 0 }, "location": "EV" },
-                           { "value": 3000,   "measurand": "RPM",                   "unitOfMeasure": { "unit": "RPM", "multiplier": 0 } },
+                           { "value": 80,     "measurand": "SoC",                   "unitOfMeasure": { "unit": "Percent" }, "location": "EV" },
+                           { "value": 3000,   "measurand": "RPM",                   "unitOfMeasure": { "unit": "RPM" } },
                            { "value": 12,     "context": "Sample.Periodic",         "unitOfMeasure": { "unit": "kWh", "multiplier": 3 } }
                        ],
                        "customData":   {{Custom}}
@@ -440,6 +440,184 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
             Assert.That(metrologicalValue.Unit == new UnitExpression(new UnitFactor(org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour, -1)), Is.True);
 
         }
+
+        #endregion
+
+        #region IdTokenInfo, Transaction
+
+        /// <summary>
+        /// Personal messages in more languages than the one JSON writes are all kept in CBOR.
+        /// </summary>
+        [Test]
+        public void IdTokenInfo_WithPersonalMessagesInTwoLanguages()
+        {
+
+            Assert.That(OCPPv2_1.IdTokenInfo.TryParse(JObject.Parse("""
+                                                                    {
+                                                                        "status":               "Accepted",
+                                                                        "personalMessage":      { "format": "UTF8", "language": "de", "content": "Hallo" },
+                                                                        "personalMessageExtra": [ { "format": "UTF8", "language": "en", "content": "Hello" } ]
+                                                                    }
+                                                                    """), out var idTokenInfo, out var errorResponse), Is.True, errorResponse);
+
+            Assert.That(OCPPv2_1.IdTokenInfo.TryParseCBOR(CBORValue.Parse(idTokenInfo!.ToCBOR().ToByteArray()), out var fromCBOR, out errorResponse), Is.True, errorResponse);
+            Assert.That(fromCBOR!.PersonalMessage.Select(message => message.Content), Is.EqualTo(new[] { "Hallo", "Hello" }));
+
+        }
+
+        [Test]
+        public void Transaction()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<Transaction>(
+                   $$"""
+                   {
+                       "transactionId":     "TX1",
+                       "chargingState":     "Charging",
+                       "timeSpentCharging": 600,
+                       "stoppedReason":     "Local",
+                       "remoteStartId":     42,
+                       "operationMode":     "ChargingOnly",
+                       "tariffId":          "T1",
+                       "transactionLimit":  { "maxCost": 12.5, "maxEnergy": 50000, "maxTime": 3600, "maxSoC": 80 },
+                       "customData":        {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.Transaction.TryParse,
+                   value => value.ToJSON()
+               );
+
+        #endregion
+
+        #region The device model
+
+        [Test]
+        public void ComponentVariable()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ComponentVariable>(
+                   $$"""{ "component": { "name": "OCPPCommCtrlr" }, "variable": { "name": "HeartbeatInterval" }, "customData": {{Custom}} }""",
+                   OCPPv2_1.ComponentVariable.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void VariableAttribute()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<VariableAttribute>(
+                   $$"""{ "type": "Target", "value": "300", "mutability": "ReadOnly", "persistent": true, "constant": true, "customData": {{Custom}} }""",
+                   OCPPv2_1.VariableAttribute.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void VariableMonitoring()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<VariableMonitoring>(
+                   $$"""{ "id": 9, "transaction": true, "value": 85.5, "type": "UpperThreshold", "severity": 3, "eventNotificationType": "CustomMonitor", "customData": {{Custom}} }""",
+                   OCPPv2_1.VariableMonitoring.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void SetVariableData()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<SetVariableData>(
+                   $$"""{ "attributeType": "Actual", "attributeValue": "300", "component": { "name": "OCPPCommCtrlr" }, "variable": { "name": "HeartbeatInterval" }, "customData": {{Custom}} }""",
+                   OCPPv2_1.SetVariableData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void SetVariableResult()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<SetVariableResult>(
+                   $$"""{ "attributeType": "Actual", "attributeStatus": "Rejected", "attributeStatusInfo": { "reasonCode": "ReadOnly" }, "component": { "name": "OCPPCommCtrlr" }, "variable": { "name": "HeartbeatInterval" }, "customData": {{Custom}} }""",
+                   OCPPv2_1.SetVariableResult.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void GetVariableData()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<GetVariableData>(
+                   $$"""{ "attributeType": "Actual", "component": { "name": "OCPPCommCtrlr" }, "variable": { "name": "HeartbeatInterval" }, "customData": {{Custom}} }""",
+                   OCPPv2_1.GetVariableData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void GetVariableResult()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<GetVariableResult>(
+                   $$"""{ "attributeStatus": "Accepted", "attributeType": "Actual", "attributeValue": "300", "attributeStatusInfo": { "reasonCode": "NoError" }, "component": { "name": "OCPPCommCtrlr" }, "variable": { "name": "HeartbeatInterval" }, "customData": {{Custom}} }""",
+                   OCPPv2_1.GetVariableResult.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void MonitoringData()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<MonitoringData>(
+                   $$"""
+                   {
+                       "component":          { "name": "Connector", "evse": { "id": 1, "connectorId": 1 } },
+                       "variable":           { "name": "Temperature" },
+                       "variableMonitoring": [ { "id": 9, "transaction": false, "value": 85.5, "type": "UpperThreshold", "severity": 3, "eventNotificationType": "CustomMonitor" } ],
+                       "customData":         {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.MonitoringData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void SetMonitoringData()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<SetMonitoringData>(
+                   $$"""
+                   {
+                       "id":                  9,
+                       "periodicEventStream": { "interval": 60, "values": 10, "customData": {{Custom}} },
+                       "transaction":         true,
+                       "value":               85.5,
+                       "type":                "PeriodicEventStream",
+                       "severity":            8,
+                       "component":           { "name": "Connector", "evse": { "id": 1, "connectorId": 1 } },
+                       "variable":            { "name": "Temperature" },
+                       "customData":          {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.SetMonitoringData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void SetMonitoringResult()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<SetMonitoringResult>(
+                   $$"""
+                   {
+                       "id":         9,
+                       "statusInfo": { "reasonCode": "NoError" },
+                       "status":     "Accepted",
+                       "type":       "UpperThreshold",
+                       "component":  { "name": "Connector", "evse": { "id": 1, "connectorId": 1 } },
+                       "variable":   { "name": "Temperature" },
+                       "severity":   3,
+                       "customData": {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.SetMonitoringResult.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void ClearMonitoringResult()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ClearMonitoringResult>(
+                   $$"""{ "status": "NotFound", "id": 9, "statusInfo": { "reasonCode": "UnknownMonitor" }, "customData": {{Custom}} }""",
+                   OCPPv2_1.ClearMonitoringResult.TryParse,
+                   value => value.ToJSON()
+               );
 
         #endregion
 

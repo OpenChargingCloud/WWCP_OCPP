@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Monitoring data.
     /// </summary>
     public class MonitoringData : ACustomData,
+                                  ICBORSerializable<MonitoringData>,
                                   IEquatable<MonitoringData>
     {
 
@@ -316,6 +319,152 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out MonitoringData, out ErrorResponse, CustomMonitoringDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a monitoring data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MonitoringData">The monitoring data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out MonitoringData?  MonitoringData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out MonitoringData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a monitoring data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MonitoringData">The monitoring data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMonitoringDataParser">An optional delegate to read custom monitoring data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out MonitoringData?           MonitoringData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<MonitoringData>?  CustomMonitoringDataParser)
+        {
+
+            try
+            {
+
+                MonitoringData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a monitoring data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("component",
+                                         "component",
+                                         OCPPv2_1.Component.TryParseCBOR,
+                                         out Component? Component,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("variable",
+                                         "variable",
+                                         OCPPv2_1.Variable.TryParseCBOR,
+                                         out Variable? Variable,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<VariableMonitoring>("variableMonitoring",
+                                                     "variable monitorings",
+                                                     OCPPv2_1.VariableMonitoring.TryParseCBOR,
+                                                     out var VariableMonitorings,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                MonitoringData = new MonitoringData(
+                                     Component,
+                                     Variable,
+                                     VariableMonitorings,
+                                     CustomData
+                                 );
+
+                if (CustomMonitoringDataParser is not null)
+                    MonitoringData = CustomMonitoringDataParser(CBOR,
+                                                MonitoringData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                MonitoringData  = default;
+                ErrorResponse  = "The given CBOR representation of a monitoring data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<MonitoringData>.TryParse(CBOR, out MonitoringData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a monitoring data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<MonitoringData>.TryParse(CBORValue                         CBOR,
+                                                                out MonitoringData                  Value,
+                                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomMonitoringDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this monitoring data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomMonitoringDataSerializer">A delegate to serialize custom monitoring data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<MonitoringData>? CustomMonitoringDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("component",               Component.ToCBOR()),
+                           ("variable",                Variable. ToCBOR()),
+                           ("variableMonitoring",      CBORValue.FromArray(VariableMonitorings.Select(variableMonitoring => variableMonitoring.ToCBOR()))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomMonitoringDataSerializer is not null
+                       ? CustomMonitoringDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

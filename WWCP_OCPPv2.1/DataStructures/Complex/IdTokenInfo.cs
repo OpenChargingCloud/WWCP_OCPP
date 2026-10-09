@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Status information about an identifier.
     /// </summary>
     public class IdTokenInfo : ACustomData,
+                               ICBORSerializable<IdTokenInfo>,
                                IEquatable<IdTokenInfo>
     {
 
@@ -507,6 +510,281 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomIdTokenInfoSerializer is not null
                        ? CustomIdTokenInfoSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out IdTokenInfo, out ErrorResponse, CustomIdTokenInfoParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an identification token information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="IdTokenInfo">The identification token information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out IdTokenInfo?  IdTokenInfo,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out IdTokenInfo,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an identification token information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="IdTokenInfo">The identification token information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomIdTokenInfoParser">An optional delegate to read custom identification token information.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out IdTokenInfo?           IdTokenInfo,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<IdTokenInfo>?  CustomIdTokenInfoParser)
+        {
+
+            try
+            {
+
+                IdTokenInfo = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an identification token information is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "authorization status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.AuthorizationStatus.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid authorization status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("cacheExpiryDateTime",
+                                        "cache expiry timestamp",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? CacheExpiryDateTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Int16? ChargingPriority = null;
+
+                if (CBOR.ParseOptionalInt64("chargingPriority",
+                                            "charging priority",
+                                            out var chargingPriorityNumber,
+                                            out ErrorResponse))
+                {
+
+                    if (chargingPriorityNumber is not Int64 chargingPriorityValue || chargingPriorityValue < Int16.MinValue || chargingPriorityValue > Int16.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid charging priority '{chargingPriorityNumber}'!";
+                        return false;
+                    }
+
+                    ChargingPriority = (Int16) chargingPriorityValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<EVSE_Id>("evseId",
+                                                "EVSE identifications",
+                                                (CBORValue item, out EVSE_Id evseId, out String? errorResponse) => {
+
+                                                    evseId        = default;
+                                                    errorResponse = null;
+
+                                                    if (item.Kind != CBORValueKind.UnsignedInteger || item.AsUInt64() > UInt16.MaxValue || !EVSE_Id.TryParse((UInt16) item.AsUInt64(), out evseId))
+                                                    {
+                                                        errorResponse = "An EVSE identification is a number!";
+                                                        return false;
+                                                    }
+
+                                                    return true;
+
+                                                },
+                                                out var ValidEVSEIds,
+                                                out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("groupIdToken",
+                                   "group identification token",
+                                   OCPPv2_1.IdToken.TryParseCBOR,
+                                   out IdToken? GroupIdToken,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Language_Id? Language1 = null;
+
+                if (CBOR.ParseOptionalText("language1",
+                                           "first preferred language",
+                                           out var Language1Text,
+                                           out ErrorResponse))
+                {
+
+                    if (!Language_Id.TryParse(Language1Text!, out var Language1Value))
+                    {
+                        ErrorResponse = $"Invalid first preferred language '{Language1Text}'!";
+                        return false;
+                    }
+
+                    Language1 = Language1Value;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Language_Id? Language2 = null;
+
+                if (CBOR.ParseOptionalText("language2",
+                                           "second preferred language",
+                                           out var Language2Text,
+                                           out ErrorResponse))
+                {
+
+                    if (!Language_Id.TryParse(Language2Text!, out var Language2Value))
+                    {
+                        ErrorResponse = $"Invalid second preferred language '{Language2Text}'!";
+                        return false;
+                    }
+
+                    Language2 = Language2Value;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("personalMessage",
+                                   "personal message",
+                                   OCPPv2_1.MessageContent.TryParseCBOR,
+                                   out MessageContent? PersonalMessage,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<MessageContent>("personalMessageExtra",
+                                               "extra personal messages",
+                                               OCPPv2_1.MessageContent.TryParseCBOR,
+                                               out var PersonalMessageExtra,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                // As in JSON: the first personal message, and those in other languages.
+                var personalMessages = MessageContents.Empty;
+
+                if (PersonalMessage is not null)
+                    personalMessages.Set(PersonalMessage);
+
+                foreach (var extra in PersonalMessageExtra)
+                    if (extra.Language != PersonalMessage?.Language)
+                        personalMessages.Set(extra);
+
+                IdTokenInfo = new IdTokenInfo(
+                                  Status,
+                                  CacheExpiryDateTime,
+                                  ChargingPriority,
+                                  ValidEVSEIds,
+                                  GroupIdToken,
+                                  Language1,
+                                  Language2,
+                                  personalMessages,
+                                  CustomData
+                              );
+
+                if (CustomIdTokenInfoParser is not null)
+                    IdTokenInfo = CustomIdTokenInfoParser(CBOR,
+                                             IdTokenInfo);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                IdTokenInfo  = default;
+                ErrorResponse  = "The given CBOR representation of an identification token information is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<IdTokenInfo>.TryParse(CBOR, out IdTokenInfo, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an identification token information - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<IdTokenInfo>.TryParse(CBORValue                         CBOR,
+                                                             out IdTokenInfo                  Value,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomIdTokenInfoSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this identification token information: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomIdTokenInfoSerializer">A delegate to serialize custom identification token information.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<IdTokenInfo>? CustomIdTokenInfoSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                  CBORValue.FromText(Status.ToString())),
+                           ("cacheExpiryDateTime",     CacheExpiryDateTime?.ToCBOR()),
+                           ("chargingPriority",        ChargingPriority != 0 ? (CBORValue?) CBORValue.FromInt64(ChargingPriority) : null),
+                           ("evseId",                  OCPPCBORExtensions.Array(ValidEVSEIds, evseId => CBORValue.FromUInt64(evseId.Value))),
+                           ("groupIdToken",            GroupIdToken?.ToCBOR()),
+                           ("language1",               OCPPCBORExtensions.Text(Language1?.ToString())),
+                           ("language2",               OCPPCBORExtensions.Text(Language2?.ToString())),
+                           ("personalMessage",         PersonalMessage.FirstOrDefault()?.ToCBOR()),
+                           ("personalMessageExtra",    OCPPCBORExtensions.Array(PersonalMessage.Skip(1), messageContent => messageContent.ToCBOR())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomIdTokenInfoSerializer is not null
+                       ? CustomIdTokenInfoSerializer(this, cbor)
+                       : cbor;
 
         }
 

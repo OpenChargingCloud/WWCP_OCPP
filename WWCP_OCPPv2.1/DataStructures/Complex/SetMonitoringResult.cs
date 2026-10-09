@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// The result of a set variable monitoring request.
     /// </summary>
     public class SetMonitoringResult : ACustomData,
+                                       ICBORSerializable<SetMonitoringResult>,
                                        IEquatable<SetMonitoringResult>
     {
 
@@ -439,6 +442,223 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out SetMonitoringResult, out ErrorResponse, CustomSetMonitoringResultParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set monitoring result.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SetMonitoringResult">The set monitoring result.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out SetMonitoringResult?  SetMonitoringResult,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out SetMonitoringResult,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set monitoring result.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SetMonitoringResult">The set monitoring result.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSetMonitoringResultParser">An optional delegate to read custom set monitoring results.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out SetMonitoringResult?           SetMonitoringResult,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<SetMonitoringResult>?  CustomSetMonitoringResultParser)
+        {
+
+            try
+            {
+
+                SetMonitoringResult = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a set monitoring result is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "set monitoring status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!SetMonitoringStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid set monitoring status '{StatusText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("type",
+                                             "monitor type",
+                                             out var MonitorTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.MonitorType.TryParse(MonitorTypeText, out var MonitorType))
+                {
+                    ErrorResponse = $"Invalid monitor type '{MonitorTypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("severity",
+                                               "severity",
+                                               out var SeverityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (SeverityNumber > Byte.MaxValue || !SeveritiesExtensions.TryParse((Byte) SeverityNumber, out var Severity))
+                {
+                    ErrorResponse = $"Invalid severity '{SeverityNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("component",
+                                         "component",
+                                         OCPPv2_1.Component.TryParseCBOR,
+                                         out Component? Component,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("variable",
+                                         "variable",
+                                         OCPPv2_1.Variable.TryParseCBOR,
+                                         out Variable? Variable,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                VariableMonitoring_Id? VariableMonitoringId = null;
+
+                if (CBOR.ParseOptionalUInt64("id",
+                                             "variable monitoring identification",
+                                             out var VariableMonitoringIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (VariableMonitoringIdNumber is not UInt64 VariableMonitoringIdValue || VariableMonitoringIdValue > UInt64.MaxValue || !VariableMonitoring_Id.TryParse((UInt64) VariableMonitoringIdValue, out var VariableMonitoringIdId))
+                    {
+                        ErrorResponse = $"Invalid variable monitoring identification '{VariableMonitoringIdNumber}'!";
+                        return false;
+                    }
+
+                    VariableMonitoringId = VariableMonitoringIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status information",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                SetMonitoringResult = new SetMonitoringResult(
+                                          Status,
+                                          MonitorType,
+                                          Severity,
+                                          Component,
+                                          Variable,
+                                          VariableMonitoringId,
+                                          StatusInfo,
+                                          CustomData
+                                      );
+
+                if (CustomSetMonitoringResultParser is not null)
+                    SetMonitoringResult = CustomSetMonitoringResultParser(CBOR,
+                                                     SetMonitoringResult);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetMonitoringResult  = default;
+                ErrorResponse  = "The given CBOR representation of a set monitoring result is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<SetMonitoringResult>.TryParse(CBOR, out SetMonitoringResult, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a set monitoring result - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<SetMonitoringResult>.TryParse(CBORValue                         CBOR,
+                                                                     out SetMonitoringResult                  Value,
+                                                                     [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetMonitoringResultSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this set monitoring result: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetMonitoringResultSerializer">A delegate to serialize custom set monitoring results.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetMonitoringResult>? CustomSetMonitoringResultSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                  CBORValue.FromText(Status.AsText())),
+                           ("type",                    CBORValue.FromText(MonitorType.ToString())),
+                           ("severity",                CBORValue.FromUInt64(Severity.AsNumber())),
+                           ("component",               Component.ToCBOR()),
+                           ("variable",                Variable. ToCBOR()),
+                           ("id",                      OCPPCBORExtensions.UInt(VariableMonitoringId?.Value)),
+                           ("statusInfo",              StatusInfo?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomSetMonitoringResultSerializer is not null
+                       ? CustomSetMonitoringResultSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

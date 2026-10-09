@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("unit",         Unit.      ToString()),
 
-                           Multiplier != 1
+                           Multiplier != 0
                                ? new JProperty("multiplier",   Multiplier)
                                : null,
 
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var cbor = OCPPCBORExtensions.Map(
                            ("unit",                    CBORValue.FromText(Unit.ToString())),
-                           ("multiplier",              CBORValue.FromInt64(Multiplier)),
+                           ("multiplier",              OCPPCBORExtensions.Int(Multiplier != 0 ? Multiplier : null)),
                            ("customData",              CustomData?.ToCBOR())
                        );
 
@@ -848,7 +848,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Unit}{(Multiplier != 1 ? $"*10^{Multiplier}" : "")}";
+            => $"{Unit}{(Multiplier != 0 ? $"*10^{Multiplier}" : "")}";
 
         #endregion
 

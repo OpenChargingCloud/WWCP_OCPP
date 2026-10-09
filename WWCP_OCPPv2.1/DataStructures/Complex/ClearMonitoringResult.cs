@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.WWCP;
 using System.Diagnostics.CodeAnalysis;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A clear monitoring result.
     /// </summary>
     public class ClearMonitoringResult : ACustomData,
+                                         ICBORSerializable<ClearMonitoringResult>,
                                          IEquatable<ClearMonitoringResult>
     {
 
@@ -301,6 +304,162 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ClearMonitoringResult, out ErrorResponse, CustomClearMonitoringResultParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear monitoring result.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ClearMonitoringResult">The clear monitoring result.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ClearMonitoringResult?  ClearMonitoringResult,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ClearMonitoringResult,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear monitoring result.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ClearMonitoringResult">The clear monitoring result.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomClearMonitoringResultParser">An optional delegate to read custom clear monitoring results.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ClearMonitoringResult?           ClearMonitoringResult,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ClearMonitoringResult>?  CustomClearMonitoringResultParser)
+        {
+
+            try
+            {
+
+                ClearMonitoringResult = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a clear monitoring result is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "clear monitoring status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!ClearMonitoringStatus.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid clear monitoring status '{StatusText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "variable monitoring identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (IdNumber > UInt64.MaxValue || !VariableMonitoring_Id.TryParse((UInt64) IdNumber, out var Id))
+                {
+                    ErrorResponse = $"Invalid variable monitoring identification '{IdNumber}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status information",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ClearMonitoringResult = new ClearMonitoringResult(
+                                            Status,
+                                            Id,
+                                            StatusInfo,
+                                            CustomData
+                                        );
+
+                if (CustomClearMonitoringResultParser is not null)
+                    ClearMonitoringResult = CustomClearMonitoringResultParser(CBOR,
+                                                       ClearMonitoringResult);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClearMonitoringResult  = default;
+                ErrorResponse  = "The given CBOR representation of a clear monitoring result is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ClearMonitoringResult>.TryParse(CBOR, out ClearMonitoringResult, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear monitoring result - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ClearMonitoringResult>.TryParse(CBORValue                         CBOR,
+                                                                       out ClearMonitoringResult                  Value,
+                                                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClearMonitoringResultSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this clear monitoring result: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClearMonitoringResultSerializer">A delegate to serialize custom clear monitoring results.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClearMonitoringResult>? CustomClearMonitoringResultSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                  CBORValue.FromText(Status.ToString())),
+                           ("id",                      CBORValue.FromUInt64(Id.Value)),
+                           ("statusInfo",              StatusInfo?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomClearMonitoringResultSerializer is not null
+                       ? CustomClearMonitoringResultSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

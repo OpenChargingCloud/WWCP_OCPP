@@ -873,7 +873,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void IdTokenInfo()
 
-            => ReadAndWrittenAsTheSchemaSays<IdTokenInfo>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<IdTokenInfo>(
                    $$"""
                    {
                        "status":              "Accepted",
@@ -894,7 +894,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ReportData()
 
-            => ReadAndWrittenAsTheSchemaSays<ReportData>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ReportData>(
                    $$"""
                    {
                        "component":         { "name": "OCPPCommCtrlr" },
@@ -925,6 +925,116 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                    """,
                    OCPPv2_1.NetworkConnectionProfile.TryParse,
                    value => value.ToJSON()
+               );
+
+        #endregion
+
+        #region A multiplier of 1, VariableCharacteristics, EventData, TransactionLimits
+
+        /// <summary>
+        /// A multiplier of 1 is 10 times the value: it is written. The one
+        /// left out is 0, the default the schema gives it.
+        /// </summary>
+        [Test]
+        public void UnitsOfMeasure_WithAMultiplierOf1()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<UnitsOfMeasure>(
+                   """{ "unit": "W", "multiplier": 1 }""",
+                   OCPPv2_1.UnitsOfMeasure.TryParse,
+                   value => value.ToJSON(),
+                   value => Assert.That(value.Multiplier, Is.EqualTo(1))
+               );
+
+        [Test]
+        public void UnitsOfMeasure_WithoutAMultiplier()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<UnitsOfMeasure>(
+                   """{ "unit": "W" }""",
+                   OCPPv2_1.UnitsOfMeasure.TryParse,
+                   value => value.ToJSON(),
+                   value => Assert.That(value.Multiplier, Is.EqualTo(0))
+               );
+
+        /// <summary>
+        /// The values list is one comma separated text, and the unit a unit
+        /// without a multiplier.
+        /// </summary>
+        [Test]
+        public void VariableCharacteristics()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<VariableCharacteristics>(
+                   $$"""
+                   {
+                       "unit":               "W",
+                       "dataType":           "OptionList",
+                       "minLimit":           0,
+                       "maxLimit":           11000,
+                       "maxElements":        3,
+                       "valuesList":         "Off,Eco,Boost",
+                       "supportsMonitoring": true,
+                       "customData":         {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.VariableCharacteristics.TryParse,
+                   value => value.ToJSON(),
+                   value => {
+                       Assert.That(value.Unit!.Multiplier, Is.EqualTo(0));
+                       Assert.That(value.ValuesList,       Is.EqualTo(new[] { "Off", "Eco", "Boost" }));
+                   }
+               );
+
+        /// <summary>
+        /// An empty values list is one without values.
+        /// </summary>
+        [Test]
+        public void VariableCharacteristics_WithAnEmptyValuesList()
+        {
+            Assert.That(OCPPv2_1.VariableCharacteristics.TryParse(JObject.Parse("""{ "dataType": "string", "supportsMonitoring": false, "valuesList": "" }"""), out var variableCharacteristics, out var errorResponse), Is.True, errorResponse);
+            Assert.That(variableCharacteristics!.ValuesList, Is.Empty);
+        }
+
+        /// <summary>
+        /// The severity, the cause and the identification of the monitor are numbers.
+        /// </summary>
+        [Test]
+        public void EventData()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<EventData>(
+                   $$"""
+                   {
+                       "eventId":               1,
+                       "timestamp":             "2026-10-09T12:00:00Z",
+                       "trigger":               "Alerting",
+                       "cause":                 7,
+                       "actualValue":           "85",
+                       "techCode":              "E42",
+                       "techInfo":              "Too hot",
+                       "cleared":               true,
+                       "transactionId":         "TX1",
+                       "component":             { "name": "Connector", "evse": { "id": 1, "connectorId": 1 } },
+                       "variableMonitoringId":  9,
+                       "eventNotificationType": "CustomMonitor",
+                       "variable":              { "name": "Temperature" },
+                       "severity":              3,
+                       "customData":            {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.EventData.TryParse,
+                   value => value.ToJSON(),
+                   value => Assert.That(value.Severity, Is.EqualTo(Severities.Critical))
+               );
+
+        /// <summary>
+        /// The maximum energy is in Wh.
+        /// </summary>
+        [Test]
+        public void TransactionLimits()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<TransactionLimits>(
+                   $$"""{ "maxCost": 12.5, "maxEnergy": 50000, "maxTime": 3600, "maxSoC": 80, "customData": {{Custom}} }""",
+                   OCPPv2_1.TransactionLimits.TryParse,
+                   value => value.ToJSON(),
+                   value => Assert.That(value.MaxEnergy?.Value, Is.EqualTo(50000M))
                );
 
         #endregion

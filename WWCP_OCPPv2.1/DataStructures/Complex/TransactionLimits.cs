@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Transaction limits.
     /// </summary>
     public class TransactionLimits : ACustomData,
+                                     ICBORSerializable<TransactionLimits>,
                                      IEquatable<TransactionLimits>
     {
 
@@ -231,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
                 var MaxEnergy = MaxEnergyNumber.HasValue
-                                  ? WattHour.TryFromKWh(MaxEnergyNumber.Value)
+                                  ? WattHour.TryFromWh(MaxEnergyNumber.Value)
                                   : null;
 
                 #endregion
@@ -239,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #region MaxTime       [optional]
 
                 if (JSON.ParseOptional("maxTime",
-                                       "maximum energy",
+                                       "maximum time",
                                        out TimeSpan? MaxTime,
                                        out ErrorResponse))
                 {
@@ -329,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            MaxTime.  HasValue
-                               ? new JProperty("maxTime",      MaxTime.  Value.TotalSeconds)
+                               ? new JProperty("maxTime",      (UInt32) Math.Round(MaxTime.Value.TotalSeconds, 0))
                                : null,
 
                            MaxSoC.   HasValue
@@ -350,6 +353,162 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out TransactionLimits, out ErrorResponse, CustomTransactionLimitsParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a transaction limits.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TransactionLimits">The transaction limits.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out TransactionLimits?  TransactionLimits,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TransactionLimits,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a transaction limits.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TransactionLimits">The transaction limits.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTransactionLimitsParser">An optional delegate to read custom transaction limits.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out TransactionLimits?           TransactionLimits,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TransactionLimits>?  CustomTransactionLimitsParser)
+        {
+
+            try
+            {
+
+                TransactionLimits = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a transaction limits is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalDecimal("maxCost",
+                                          "maximum cost",
+                                          out var MaxCost,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxEnergy",
+                                        "maximum energy",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? MaxEnergy,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxTime",
+                                        "maximum time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MaxTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxSoC",
+                                        "maximum state of charge",
+                                        OCPPCBORExtensions.TryParsePercentage,
+                                        out Percentage? MaxSoC,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TransactionLimits = new TransactionLimits(
+                                        MaxCost,
+                                        MaxEnergy,
+                                        MaxTime,
+                                        MaxSoC,
+                                        CustomData
+                                    );
+
+                if (CustomTransactionLimitsParser is not null)
+                    TransactionLimits = CustomTransactionLimitsParser(CBOR,
+                                                   TransactionLimits);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TransactionLimits  = default;
+                ErrorResponse  = "The given CBOR representation of a transaction limits is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TransactionLimits>.TryParse(CBOR, out TransactionLimits, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a transaction limits - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TransactionLimits>.TryParse(CBORValue                         CBOR,
+                                                                   out TransactionLimits                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTransactionLimitsSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this transaction limits: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTransactionLimitsSerializer">A delegate to serialize custom transaction limits.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TransactionLimits>? CustomTransactionLimitsSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("maxCost",                 OCPPCBORExtensions.Number(MaxCost)),
+                           ("maxEnergy",               MaxEnergy?.ToCBOR()),
+                           ("maxTime",                 MaxTime?.  ToCBOR()),
+                           ("maxSoC",                  MaxSoC?.   ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTransactionLimitsSerializer is not null
+                       ? CustomTransactionLimitsSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

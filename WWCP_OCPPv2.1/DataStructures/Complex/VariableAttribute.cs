@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Attribute data of a variable.
     /// </summary>
     public class VariableAttribute : ACustomData,
+                                     ICBORSerializable<VariableAttribute>,
                                      IEquatable<VariableAttribute>
     {
 
@@ -370,6 +373,195 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomVariableAttributeSerializer is not null
                        ? CustomVariableAttributeSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out VariableAttribute, out ErrorResponse, CustomVariableAttributeParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable attribute.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VariableAttribute">The variable attribute.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out VariableAttribute?  VariableAttribute,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out VariableAttribute,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable attribute.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VariableAttribute">The variable attribute.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomVariableAttributeParser">An optional delegate to read custom variable attributes.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out VariableAttribute?           VariableAttribute,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<VariableAttribute>?  CustomVariableAttributeParser)
+        {
+
+            try
+            {
+
+                VariableAttribute = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a variable attribute is not a map!";
+                    return false;
+                }
+
+                AttributeTypes? Type = null;
+
+                if (CBOR.ParseOptionalText("type",
+                                           "attribute type",
+                                           out var TypeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!AttributeTypesExtensions.TryParse(TypeText!, out var TypeValue))
+                    {
+                        ErrorResponse = $"Invalid attribute type '{TypeText}'!";
+                        return false;
+                    }
+
+                    Type = TypeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("value",
+                                       "value",
+                                       out var Value,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                MutabilityTypes? Mutability = null;
+
+                if (CBOR.ParseOptionalText("mutability",
+                                           "mutability",
+                                           out var MutabilityText,
+                                           out ErrorResponse))
+                {
+
+                    if (!MutabilityTypesExtensions.TryParse(MutabilityText!, out var MutabilityValue))
+                    {
+                        ErrorResponse = $"Invalid mutability '{MutabilityText}'!";
+                        return false;
+                    }
+
+                    Mutability = MutabilityValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("persistent",
+                                          "persistent",
+                                          out var Persistent,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("constant",
+                                          "constant",
+                                          out var Constant,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                VariableAttribute = new VariableAttribute(
+                                        Type,
+                                        Value,
+                                        Mutability,
+                                        Persistent,
+                                        Constant,
+                                        CustomData
+                                    );
+
+                if (CustomVariableAttributeParser is not null)
+                    VariableAttribute = CustomVariableAttributeParser(CBOR,
+                                                   VariableAttribute);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                VariableAttribute  = default;
+                ErrorResponse  = "The given CBOR representation of a variable attribute is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<VariableAttribute>.TryParse(CBOR, out VariableAttribute, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a variable attribute - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<VariableAttribute>.TryParse(CBORValue                         CBOR,
+                                                                   out VariableAttribute                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomVariableAttributeSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this variable attribute: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomVariableAttributeSerializer">A delegate to serialize custom variable attributes.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<VariableAttribute>? CustomVariableAttributeSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("type",                    OCPPCBORExtensions.Text(Type?.AsText())),
+                           ("value",                   OCPPCBORExtensions.Text(Value)),
+                           ("mutability",              Mutability != MutabilityTypes.ReadWrite ? (CBORValue?) CBORValue.FromText(Mutability.AsText()) : null),
+                           ("persistent",              Persistent ? (CBORValue?) CBORValue.FromBoolean(true) : null),
+                           ("constant",                Constant   ? (CBORValue?) CBORValue.FromBoolean(true) : null),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomVariableAttributeSerializer is not null
+                       ? CustomVariableAttributeSerializer(this, cbor)
+                       : cbor;
 
         }
 
