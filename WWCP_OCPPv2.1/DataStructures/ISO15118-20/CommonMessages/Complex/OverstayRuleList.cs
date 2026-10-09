@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// The overstay rule list.
     /// </summary>
     public class OverstayRuleList : ACustomData,
+                                    ICBORSerializable<OverstayRuleList>,
                                     IEquatable<OverstayRuleList>
     {
 
@@ -314,6 +317,152 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out OverstayRuleList, out ErrorResponse, CustomOverstayRuleListParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an overstay rule list.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="OverstayRuleList">The overstay rule list.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out OverstayRuleList?  OverstayRuleList,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out OverstayRuleList,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an overstay rule list.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="OverstayRuleList">The overstay rule list.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomOverstayRuleListParser">An optional delegate to read custom overstay rule lists.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out OverstayRuleList?           OverstayRuleList,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<OverstayRuleList>?  CustomOverstayRuleListParser)
+        {
+
+            try
+            {
+
+                OverstayRuleList = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an overstay rule list is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<OverstayRule>("overstayRule",
+                                                     "overstay rules",
+                                                     OverstayRule.TryParseCBOR,
+                                                     out var OverstayRules,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("overstayTimeThreshold",
+                                        "overstay time threshold",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? OverstayTimeThreshold,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("overstayPowerThreshold",
+                                   "overstay power threshold",
+                                   OCPPv2_1.RationalNumber.TryParseCBOR,
+                                   out RationalNumber? OverstayPowerThreshold,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                OverstayRuleList = new OverstayRuleList(
+                                       OverstayRules,
+                                       OverstayTimeThreshold,
+                                       OverstayPowerThreshold,
+                                       CustomData
+                                   );
+
+                if (CustomOverstayRuleListParser is not null)
+                    OverstayRuleList = CustomOverstayRuleListParser(CBOR,
+                                                  OverstayRuleList);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                OverstayRuleList  = default;
+                ErrorResponse  = "The given CBOR representation of an overstay rule list is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<OverstayRuleList>.TryParse(CBOR, out OverstayRuleList, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an overstay rule list - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<OverstayRuleList>.TryParse(CBORValue                         CBOR,
+                                                                  out OverstayRuleList                  Value,
+                                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomOverstayRuleListSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this overstay rule list: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomOverstayRuleListSerializer">A delegate to serialize custom overstay rule lists.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<OverstayRuleList>? CustomOverstayRuleListSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("overstayRule",            CBORValue.FromArray(OverstayRules.Select(overstayRule => overstayRule.ToCBOR()))),
+                           ("overstayTimeThreshold",   OverstayTimeThreshold?.ToCBOR()),
+                           ("overstayPowerThreshold",  OverstayPowerThreshold?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomOverstayRuleListSerializer is not null
+                       ? CustomOverstayRuleListSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

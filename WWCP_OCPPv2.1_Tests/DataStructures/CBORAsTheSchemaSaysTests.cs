@@ -197,6 +197,105 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
+        #region ChargingSchedule with a SalesTariff
+
+        [Test]
+        public void ChargingSchedule_WithASalesTariff()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingSchedule>(
+                   $$"""
+                   {
+                       "id":                     3,
+                       "startSchedule":          "2026-10-09T12:00:00.123Z",
+                       "duration":               7200,
+                       "chargingRateUnit":       "A",
+                       "minChargingRate":        6,
+                       "useLocalTime":           false,
+                       "randomizedDelay":        30,
+                       "signatureId":            12,
+                       "digestValue":            "AAEC",
+                       "powerTolerance":         200,
+                       "limitAtSoC":             { "soc": 90, "limit": 10 },
+                       "chargingSchedulePeriod": [ { "startPeriod": 0, "limit": 32 }, { "startPeriod": 3600, "limit": 16 } ],
+                       "salesTariff":            {
+                                                     "id":                     5,
+                                                     "salesTariffDescription": "Night",
+                                                     "numEPriceLevels":        2,
+                                                     "salesTariffEntry":       [ {
+                                                                                   "relativeTimeInterval": { "start": 0, "duration": 3600 },
+                                                                                   "ePriceLevel":          1,
+                                                                                   "consumptionCost":      [ { "startValue": 0, "cost": [ { "costKind": "CarbonDioxideEmission", "amount": 120, "amountMultiplier": -1 } ] } ]
+                                                                               },
+                                                                               { "relativeTimeInterval": { "start": 3600 } } ],
+                                                     "customData":             {{Custom}}
+                                                 },
+                       "customData":             {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.ChargingSchedule.TryParse,
+                   value => value.ToJSON(),
+                   value => {
+                       Assert.That(value.ChargingSchedulePeriods.Select(period => period.Limit?.Unit), Is.All.EqualTo(ChargingRateUnits.Amperes));
+                       Assert.That(value.LimitAtSoC?.Limit.Unit, Is.EqualTo(ChargingRateUnits.Amperes));
+                       Assert.That(value.MinChargingRate?.Unit,  Is.EqualTo(ChargingRateUnits.Amperes));
+                   }
+               );
+
+        #endregion
+
+        #region ChargingProfile, ChargingScheduleUpdate
+
+        [Test]
+        public void ChargingProfile()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingProfile>(
+                   $$"""
+                   {
+                       "id":                          100,
+                       "stackLevel":                  2,
+                       "chargingProfilePurpose":      "TxProfile",
+                       "chargingProfileKind":         "Recurring",
+                       "recurrencyKind":              "Daily",
+                       "validFrom":                   "2026-10-09T00:00:00Z",
+                       "validTo":                     "2026-12-31T23:59:59Z",
+                       "transactionId":               "TX-4711",
+                       "maxOfflineDuration":          600,
+                       "invalidAfterOfflineDuration": true,
+                       "dynUpdateInterval":           60,
+                       "dynUpdateTime":               "2026-10-09T12:30:00Z",
+                       "priceScheduleSignature":      "MEUCIQ",
+                       "chargingSchedule":            [ {
+                                                          "id":                     1,
+                                                          "chargingRateUnit":       "W",
+                                                          "chargingSchedulePeriod": [ { "startPeriod": 0, "limit": 11000, "operationMode": "ChargingOnly" } ]
+                                                      } ],
+                       "customData":                  {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.ChargingProfile.TryParse,
+                   value => value.ToJSON(),
+                   value => Assert.That(value.ChargingSchedules.Single().ChargingSchedulePeriods.Single().Limit?.Unit, Is.EqualTo(ChargingRateUnits.Watts))
+               );
+
+        [Test]
+        public void ChargingScheduleUpdate()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingScheduleUpdate>(
+                   $$"""
+                   {
+                       "limit":            16,  "limit_L2":            16,  "limit_L3":            10,
+                       "dischargeLimit":   -16, "dischargeLimit_L2":   -16, "dischargeLimit_L3":   -10,
+                       "setpoint":         8,   "setpoint_L2":         8,   "setpoint_L3":         6,
+                       "setpointReactive": 2,   "setpointReactive_L2": 2,   "setpointReactive_L3": 1,
+                       "customData":       {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.ChargingScheduleUpdate.TryParse,
+                   value => value.ToJSON()
+               );
+
+        #endregion
+
         #region Refused
 
         /// <summary>

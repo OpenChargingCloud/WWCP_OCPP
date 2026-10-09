@@ -27,6 +27,8 @@ using cloud.charging.open.protocols.WWCP;
 
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -36,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// The tax rule.
     /// </summary>
     public class TaxRule : ACustomData,
+                           ICBORSerializable<TaxRule>,
                            IEquatable<TaxRule>
     {
 
@@ -448,6 +451,206 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out TaxRule, out ErrorResponse, CustomTaxRuleParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tax rule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TaxRule">The tax rule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out TaxRule?  TaxRule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TaxRule,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tax rule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TaxRule">The tax rule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTaxRuleParser">An optional delegate to read custom tax rules.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out TaxRule?           TaxRule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TaxRule>?  CustomTaxRuleParser)
+        {
+
+            try
+            {
+
+                TaxRule = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tax rule is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("taxRuleID",
+                                               "tax rule identification",
+                                               out var TaxRuleIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (TaxRuleIdNumber > UInt32.MaxValue || !ISO15118_20.CommonTypes.TaxRule_Id.TryParse((UInt32) TaxRuleIdNumber, out var TaxRuleId))
+                {
+                    ErrorResponse = $"Invalid tax rule identification '{TaxRuleIdNumber}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("taxRuleName",
+                                       "tax rule name",
+                                       out var TaxRuleName,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!CBOR.ParseMandatory("taxRate",
+                                         "tax rate",
+                                         OCPPv2_1.RationalNumber.TryParseCBOR,
+                                         out RationalNumber? TaxRate,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalBoolean("taxIncludedInPrice",
+                                          "tax included in price",
+                                          out var TaxIncludedInPrice,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!CBOR.ParseMandatoryBoolean("appliesToEnergyFee",
+                                                "applies to the energy fee",
+                                                out var AppliesToEnergyFee,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBoolean("appliesToParkingFee",
+                                                "applies to the parking fee",
+                                                out var AppliesToParkingFee,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBoolean("appliesToOverstayFee",
+                                                "applies to the overstay fee",
+                                                out var AppliesToOverstayFee,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBoolean("appliesToMinimumMaximumCost",
+                                                "applies to the minimum and maximum cost",
+                                                out var AppliesToMinimumMaximumCost,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TaxRule = new TaxRule(
+                              TaxRuleId,
+                              TaxRate,
+                              AppliesToEnergyFee,
+                              AppliesToParkingFee,
+                              AppliesToOverstayFee,
+                              AppliesToMinimumMaximumCost,
+                              TaxRuleName,
+                              TaxIncludedInPrice,
+                              CustomData
+                          );
+
+                if (CustomTaxRuleParser is not null)
+                    TaxRule = CustomTaxRuleParser(CBOR,
+                                         TaxRule);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TaxRule  = default;
+                ErrorResponse  = "The given CBOR representation of a tax rule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TaxRule>.TryParse(CBOR, out TaxRule, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tax rule - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TaxRule>.TryParse(CBORValue                         CBOR,
+                                                         out TaxRule                  Value,
+                                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTaxRuleSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tax rule: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTaxRuleSerializer">A delegate to serialize custom tax rules.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TaxRule>? CustomTaxRuleSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("taxRuleID",                    CBORValue.FromUInt64(TaxRuleId.Value)),
+                           ("taxRuleName",                  OCPPCBORExtensions.Text(TaxRuleName)),
+                           ("taxRate",                      TaxRate.ToCBOR()),
+                           ("taxIncludedInPrice",           OCPPCBORExtensions.Flag(TaxIncludedInPrice)),
+                           ("appliesToEnergyFee",           CBORValue.FromBoolean(AppliesToEnergyFee)),
+                           ("appliesToParkingFee",          CBORValue.FromBoolean(AppliesToParkingFee)),
+                           ("appliesToOverstayFee",         CBORValue.FromBoolean(AppliesToOverstayFee)),
+                           ("appliesToMinimumMaximumCost",  CBORValue.FromBoolean(AppliesToMinimumMaximumCost)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTaxRuleSerializer is not null
+                       ? CustomTaxRuleSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A charging profile.
     /// </summary>
     public class ChargingProfile : ACustomData,
+                                   ICBORSerializable<ChargingProfile>,
                                    IEquatable<ChargingProfile>
     {
 
@@ -759,6 +762,317 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ChargingProfile, out ErrorResponse, CustomChargingProfileParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingProfile">The charging profile.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ChargingProfile?  ChargingProfile,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ChargingProfile,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingProfile">The charging profile.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingProfileParser">An optional delegate to read custom charging profiles.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ChargingProfile?           ChargingProfile,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ChargingProfile>?  CustomChargingProfileParser)
+        {
+
+            try
+            {
+
+                ChargingProfile = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a charging profile is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "charging profile identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (IdNumber > UInt64.MaxValue || !ChargingProfile_Id.TryParse((UInt64) IdNumber, out var Id))
+                {
+                    ErrorResponse = $"Invalid charging profile identification '{IdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("stackLevel",
+                                               "stack level",
+                                               out var StackLevelNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (StackLevelNumber > UInt32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid stack level '{StackLevelNumber}'!";
+                    return false;
+                }
+
+                var StackLevel = (UInt32) StackLevelNumber;
+
+                if (!CBOR.ParseMandatoryText("chargingProfilePurpose",
+                                             "charging profile purpose",
+                                             out var ChargingProfilePurposeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.ChargingProfilePurpose.TryParse(ChargingProfilePurposeText, out var ChargingProfilePurpose))
+                {
+                    ErrorResponse = $"Invalid charging profile purpose '{ChargingProfilePurposeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("chargingProfileKind",
+                                             "charging profile kind",
+                                             out var ChargingProfileKindText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!ChargingProfileKindsExtensions.TryParse(ChargingProfileKindText, out var ChargingProfileKind))
+                {
+                    ErrorResponse = $"Invalid charging profile kind '{ChargingProfileKindText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<ChargingSchedule>("chargingSchedule",
+                                                     "charging schedules",
+                                                     OCPPv2_1.ChargingSchedule.TryParseCBOR,
+                                                     out var ChargingSchedules,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                Transaction_Id? TransactionId = null;
+
+                if (CBOR.ParseOptionalText("transactionId",
+                                           "transaction identification",
+                                           out var TransactionIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
+                    {
+                        ErrorResponse = $"Invalid transaction identification '{TransactionIdText}'!";
+                        return false;
+                    }
+
+                    TransactionId = TransactionIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                RecurrencyKinds? RecurrencyKind = null;
+
+                if (CBOR.ParseOptionalText("recurrencyKind",
+                                           "recurrency kind",
+                                           out var RecurrencyKindText,
+                                           out ErrorResponse))
+                {
+
+                    if (!RecurrencyKindsExtensions.TryParse(RecurrencyKindText!, out var RecurrencyKindValue))
+                    {
+                        ErrorResponse = $"Invalid recurrency kind '{RecurrencyKindText}'!";
+                        return false;
+                    }
+
+                    RecurrencyKind = RecurrencyKindValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("validFrom",
+                                        "valid from",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ValidFrom,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("validTo",
+                                        "valid to",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ValidTo,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxOfflineDuration",
+                                        "maximum offline duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MaxOfflineDuration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("invalidAfterOfflineDuration",
+                                          "invalid after the offline duration",
+                                          out var InvalidAfterOfflineDuration,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("dynUpdateInterval",
+                                        "dynamic update interval",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? DynUpdateInterval,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("dynUpdateTime",
+                                        "dynamic update time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? DynUpdateTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("priceScheduleSignature",
+                                       "price schedule signature",
+                                       out var PriceScheduleSignature,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ChargingProfile = new ChargingProfile(
+                                      Id,
+                                      StackLevel,
+                                      ChargingProfilePurpose,
+                                      ChargingProfileKind,
+                                      ChargingSchedules,
+                                      TransactionId,
+                                      RecurrencyKind,
+                                      ValidFrom,
+                                      ValidTo,
+                                      MaxOfflineDuration,
+                                      InvalidAfterOfflineDuration,
+                                      DynUpdateInterval,
+                                      DynUpdateTime,
+                                      PriceScheduleSignature,
+                                      CustomData
+                                  );
+
+                if (CustomChargingProfileParser is not null)
+                    ChargingProfile = CustomChargingProfileParser(CBOR,
+                                                 ChargingProfile);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingProfile  = default;
+                ErrorResponse  = "The given CBOR representation of a charging profile is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingProfile>.TryParse(CBOR, out ChargingProfile, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingProfile>.TryParse(CBORValue                         CBOR,
+                                                                 out ChargingProfile                  Value,
+                                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChargingProfileSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this charging profile: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingProfile>? CustomChargingProfileSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                           CBORValue.FromUInt64(Id.Value)),
+                           ("stackLevel",                   CBORValue.FromUInt64(StackLevel)),
+                           ("chargingProfilePurpose",       CBORValue.FromText(ChargingProfilePurpose.ToString())),
+                           ("chargingProfileKind",          CBORValue.FromText(ChargingProfileKind.AsText())),
+                           ("chargingSchedule",             CBORValue.FromArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToCBOR()))),
+                           ("transactionId",                OCPPCBORExtensions.Text(TransactionId?.ToString())),
+                           ("recurrencyKind",               OCPPCBORExtensions.Text(RecurrencyKind?.AsText())),
+                           ("validFrom",                    ValidFrom?.ToCBOR()),
+                           ("validTo",                      ValidTo?.ToCBOR()),
+                           ("maxOfflineDuration",           MaxOfflineDuration?.ToCBOR()),
+                           ("invalidAfterOfflineDuration",  OCPPCBORExtensions.Flag(InvalidAfterOfflineDuration)),
+                           ("dynUpdateInterval",            DynUpdateInterval?.ToCBOR()),
+                           ("dynUpdateTime",                DynUpdateTime?.ToCBOR()),
+                           ("priceScheduleSignature",       OCPPCBORExtensions.Text(PriceScheduleSignature)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomChargingProfileSerializer is not null
+                       ? CustomChargingProfileSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                         $"Expected:       {Normalized(sample). ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
                         $"CBOR:           {cbor.ToDiagnosticString()}");
 
-            SameKeys(sample, CBORJSON.ToJSON(cbor), "", KeysInCBOR ?? new Dictionary<String, String>());
+            SameKeys(sample, cbor, "", KeysInCBOR ?? new Dictionary<String, String>());
 
         }
 
@@ -170,31 +170,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         /// The keys of every object of the JSON are the keys of every map of the
         /// CBOR, but for those that name a unit in JSON.
         /// </summary>
-        private static void SameKeys(JToken JSON, JToken CBOR, String Path, IDictionary<String, String> KeysInCBOR)
+        private static void SameKeys(JToken JSON, CBORValue CBOR, String Path, IDictionary<String, String> KeysInCBOR)
         {
 
             if (JSON is JObject jsonObject)
             {
 
-                // A metrological value is one value in CBOR, whatever it is in JSON.
-                if (CBOR is not JObject cborObject)
+                // A metrological value or a timestamp is one tagged value in CBOR, whatever it is in JSON.
+                if (CBOR.Kind != CBORValueKind.Map)
                     return;
 
                 var expected = jsonObject.Properties().Select(property => KeysInCBOR.TryGetValue(property.Name, out var key) ? key : property.Name).OrderBy(key => key, StringComparer.Ordinal).ToArray();
-                var actual   = cborObject.Properties().Select(property => property.Name).OrderBy(key => key, StringComparer.Ordinal).ToArray();
+                var actual   = CBOR.AsMap().Select(entry => entry.Key.AsText()).OrderBy(key => key, StringComparer.Ordinal).ToArray();
 
                 Assert.That(actual, Is.EqualTo(expected), $"The keys of the map at '{Path}'");
 
                 foreach (var property in jsonObject.Properties())
-                    SameKeys(property.Value,
-                             cborObject[KeysInCBOR.TryGetValue(property.Name, out var key) ? key : property.Name]!,
-                             $"{Path}/{property.Name}",
-                             KeysInCBOR);
+                    if (CBOR.TryGetValue(CBORValue.FromText(KeysInCBOR.TryGetValue(property.Name, out var key) ? key : property.Name), out var value))
+                        SameKeys(property.Value,
+                                 value,
+                                 $"{Path}/{property.Name}",
+                                 KeysInCBOR);
 
             }
 
-            else if (JSON is JArray jsonArray && CBOR is JArray cborArray)
+            else if (JSON is JArray jsonArray && CBOR.Kind == CBORValueKind.Array)
             {
+                var cborArray = CBOR.AsArray();
                 Assert.That(cborArray.Count, Is.EqualTo(jsonArray.Count), $"The items of the array at '{Path}'");
                 for (var i = 0; i < jsonArray.Count; i++)
                     SameKeys(jsonArray[i], cborArray[i], $"{Path}[{i}]", KeysInCBOR);
@@ -210,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void CompositeSchedule()
 
-            => ReadAndWrittenAsTheSchemaSays<CompositeSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<CompositeSchedule>(
                    $$"""
                    {
                        "evseId":                 1,
@@ -343,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void MessageContent()
 
-            => ReadAndWrittenAsTheSchemaSays<MessageContent>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<MessageContent>(
                    $$"""
                    { "format": "UTF8", "language": "de", "content": "Willkommen", "customData": {{Custom}} }
                    """,
@@ -390,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void RationalNumber()
 
-            => ReadAndWrittenAsTheSchemaSays<RationalNumber>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<RationalNumber>(
                    $$"""
                    { "exponent": -2, "value": 3900, "customData": {{Custom}} }
                    """,
@@ -412,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void StatusInfo()
 
-            => ReadAndWrittenAsTheSchemaSays<StatusInfo>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<StatusInfo>(
                    $$"""
                    { "reasonCode": "NoError", "additionalInfo": "fine", "customData": {{Custom}} }
                    """,
@@ -597,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ChargingSchedule()
 
-            => ReadAndWrittenAsTheSchemaSays<ChargingSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingSchedule>(
                    $$"""
                    {
                        "id":                     1,
@@ -655,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void PriceRule()
 
-            => ReadAndWrittenAsTheSchemaSays<ISO15118_20.CommonMessages.PriceRule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ISO15118_20.CommonMessages.PriceRule>(
                    $$"""
                    {
                        "parkingFeePeriod":              900,
@@ -674,7 +676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void PriceRuleStack()
 
-            => ReadAndWrittenAsTheSchemaSays<ISO15118_20.CommonMessages.PriceRuleStack>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ISO15118_20.CommonMessages.PriceRuleStack>(
                    $$"""
                    {
                        "duration":   3600,
@@ -689,7 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void PriceLevelSchedule()
 
-            => ReadAndWrittenAsTheSchemaSays<ISO15118_20.CommonMessages.PriceLevelSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ISO15118_20.CommonMessages.PriceLevelSchedule>(
                    $$"""
                    {
                        "priceLevelScheduleEntries": [ { "duration": 3600, "priceLevel": 2, "customData": {{Custom}} } ],
@@ -707,7 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void AbsolutePriceSchedule()
 
-            => ReadAndWrittenAsTheSchemaSays<ISO15118_20.CommonMessages.AbsolutePriceSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ISO15118_20.CommonMessages.AbsolutePriceSchedule>(
                    $$"""
                    {
                        "timeAnchor":                 "2026-10-09T12:00:00Z",
@@ -749,6 +751,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                    ISO15118_20.CommonMessages.AbsolutePriceSchedule.TryParse,
                    value => value.ToJSON()
                );
+
+        #endregion
+
+        #region UnitOfMeasure - the texts of the specification
+
+        /// <summary>
+        /// The units are written as the specification's "Standardized Units of
+        /// Measure" name them - W, A, V, VA, K, s - not Watts, Amperes, Voltage,
+        /// VoltAmpere, Kelvin and TimeSpan, which no other side understands.
+        /// </summary>
+        [TestCase("W")]
+        [TestCase("A")]
+        [TestCase("V")]
+        [TestCase("VA")]
+        [TestCase("K")]
+        [TestCase("s")]
+        [TestCase("Hz")]
+        [TestCase("kVAh")]
+        public void UnitsOfMeasure_AsTheSpecificationNamesThem(String Unit)
+
+            => ReadAndWrittenAsTheSchemaSays<UnitsOfMeasure>(
+                   $$"""{ "unit": "{{Unit}}", "multiplier": 3 }""",
+                   OCPPv2_1.UnitsOfMeasure.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void UnitOfMeasure_WritesTheTextsOfTheSpecification()
+        {
+            Assert.That(OCPPv2_1.UnitOfMeasure.Watts.     ToString(), Is.EqualTo("W"));
+            Assert.That(OCPPv2_1.UnitOfMeasure.Amperes.   ToString(), Is.EqualTo("A"));
+            Assert.That(OCPPv2_1.UnitOfMeasure.Voltage.   ToString(), Is.EqualTo("V"));
+            Assert.That(OCPPv2_1.UnitOfMeasure.VoltAmpere.ToString(), Is.EqualTo("VA"));
+            Assert.That(OCPPv2_1.UnitOfMeasure.Kelvin.    ToString(), Is.EqualTo("K"));
+            Assert.That(OCPPv2_1.UnitOfMeasure.TimeSpan.  ToString(), Is.EqualTo("s"));
+        }
+
+        /// <summary>
+        /// What WWCP_OCPP wrote before is still read as the unit it meant.
+        /// </summary>
+        [Test]
+        public void UnitOfMeasure_WrittenTheOldWay_IsStillRead()
+        {
+            Assert.That(OCPPv2_1.UnitOfMeasure.Parse("Watts"),   Is.EqualTo(OCPPv2_1.UnitOfMeasure.Watts));
+            Assert.That(OCPPv2_1.UnitOfMeasure.Parse("Amperes"), Is.EqualTo(OCPPv2_1.UnitOfMeasure.Amperes));
+            Assert.That(OCPPv2_1.UnitOfMeasure.Parse("TimeSpan"),Is.EqualTo(OCPPv2_1.UnitOfMeasure.TimeSpan));
+        }
 
         #endregion
 
@@ -804,7 +853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ChargingSchedulePeriod_WithAnOperationMode()
 
-            => ReadAndWrittenAsTheSchemaSays<ChargingSchedulePeriod>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingSchedulePeriod>(
                    """{ "startPeriod": 0, "limit": 11000, "operationMode": "CentralSetpoint", "setpoint": 7400 }""",
                    OCPPv2_1.ChargingSchedulePeriod.TryParse,
                    value => value.ToJSON()

@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -39,7 +41,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class RationalNumber(Int32        Value,
                                 Int32        Exponent,
                                 CustomData?  CustomData   = null) : ACustomData(CustomData),
-                                                                    IEquatable<RationalNumber>
+                                                                    IEquatable<RationalNumber>,
+                                                                    ICBORSerializable<RationalNumber>
     {
 
         #region Properties
@@ -206,6 +209,146 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : null
 
                );
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out RationalNumber, out ErrorResponse, CustomRationalNumberParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a rational number.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RationalNumber">The rational number.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out RationalNumber?  RationalNumber,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out RationalNumber,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a rational number.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RationalNumber">The rational number.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomRationalNumberParser">An optional delegate to read custom rational numbers.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out RationalNumber?           RationalNumber,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<RationalNumber>?  CustomRationalNumberParser)
+        {
+
+            try
+            {
+
+                RationalNumber = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a rational number is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("value",
+                                              "value",
+                                              out var value,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryInt64("exponent",
+                                              "exponent",
+                                              out var exponent,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (value    < Int32.MinValue || value    > Int32.MaxValue ||
+                    exponent < Int32.MinValue || exponent > Int32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid rational number {value}e{exponent}!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                RationalNumber = new RationalNumber(
+                                     (Int32) value,
+                                     (Int32) exponent,
+                                     CustomData
+                                 );
+
+                if (CustomRationalNumberParser is not null)
+                    RationalNumber = CustomRationalNumberParser(CBOR,
+                                                RationalNumber);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                RationalNumber  = default;
+                ErrorResponse  = "The given CBOR representation of a rational number is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<RationalNumber>.TryParse(CBOR, out RationalNumber, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a rational number - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<RationalNumber>.TryParse(CBORValue                         CBOR,
+                                                                out RationalNumber                  Value,
+                                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomRationalNumberSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this rational number: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomRationalNumberSerializer">A delegate to serialize custom rational numbers.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<RationalNumber>? CustomRationalNumberSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("value",                   CBORValue.FromInt64(Value)),
+                           ("exponent",                CBORValue.FromInt64(Exponent)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomRationalNumberSerializer is not null
+                       ? CustomRationalNumberSerializer(this, cbor)
+                       : cbor;
+
+        }
 
         #endregion
 

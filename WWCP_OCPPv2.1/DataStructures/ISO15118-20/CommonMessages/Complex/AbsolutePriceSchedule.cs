@@ -27,6 +27,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -36,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// The absolute price schedule.
     /// </summary>
     public class AbsolutePriceSchedule : APriceSchedule,
+                                         ICBORSerializable<AbsolutePriceSchedule>,
                                          IEquatable<AbsolutePriceSchedule>
     {
 
@@ -609,6 +612,270 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out AbsolutePriceSchedule, out ErrorResponse, CustomAbsolutePriceScheduleParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an absolute price schedule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AbsolutePriceSchedule">The absolute price schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out AbsolutePriceSchedule?  AbsolutePriceSchedule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out AbsolutePriceSchedule,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an absolute price schedule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AbsolutePriceSchedule">The absolute price schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAbsolutePriceScheduleParser">An optional delegate to read custom absolute price schedules.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out AbsolutePriceSchedule?           AbsolutePriceSchedule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<AbsolutePriceSchedule>?  CustomAbsolutePriceScheduleParser)
+        {
+
+            try
+            {
+
+                AbsolutePriceSchedule = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an absolute price schedule is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priceScheduleID",
+                                               "price schedule identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (IdNumber > UInt16.MaxValue || !PriceSchedule_Id.TryParse((UInt16) IdNumber, out var Id))
+                {
+                    ErrorResponse = $"Invalid price schedule identification '{IdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timeAnchor",
+                                              "time anchor",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset TimeAnchor,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("currency",
+                                             "currency",
+                                             out var currencyText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!org.GraphDefined.Vanaheimr.Illias.Currency.TryParse(currencyText, out var Currency))
+                {
+                    ErrorResponse = $"Invalid currency '{currencyText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("language",
+                                             "language",
+                                             out var LanguageText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.Language_Id.TryParse(LanguageText, out var Language))
+                {
+                    ErrorResponse = $"Invalid language '{LanguageText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("priceAlgorithm",
+                                             "price algorithm",
+                                             out var PriceAlgorithmIdText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!PriceAlgorithm_Id.TryParse(PriceAlgorithmIdText, out var PriceAlgorithmId))
+                {
+                    ErrorResponse = $"Invalid price algorithm '{PriceAlgorithmIdText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<PriceRuleStack>("priceRuleStacks",
+                                                     "price rule stacks",
+                                                     PriceRuleStack.TryParseCBOR,
+                                                     out var PriceRuleStacks,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("priceScheduleDescription",
+                                       "price schedule description",
+                                       out var Description,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("minimumCost",
+                                   "minimum cost",
+                                   OCPPv2_1.RationalNumber.TryParseCBOR,
+                                   out RationalNumber? MinimumCost,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("maximumCost",
+                                   "maximum cost",
+                                   OCPPv2_1.RationalNumber.TryParseCBOR,
+                                   out RationalNumber? MaximumCost,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<TaxRule>("taxRules",
+                                               "tax rules",
+                                               TaxRule.TryParseCBOR,
+                                               out var TaxRules,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("overstayRuleList",
+                                   "overstay rules",
+                                   OverstayRuleList.TryParseCBOR,
+                                   out OverstayRuleList? OverstayRules,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<AdditionalSelectedService>("additionalSelectedServices",
+                                               "additional selected services",
+                                               AdditionalSelectedService.TryParseCBOR,
+                                               out var AdditionalSelectedServices,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                AbsolutePriceSchedule = new AbsolutePriceSchedule(
+                                            Id,
+                                            TimeAnchor,
+                                            Currency,
+                                            Language,
+                                            PriceAlgorithmId,
+                                            PriceRuleStacks,
+                                            Description,
+                                            MinimumCost,
+                                            MaximumCost,
+                                            TaxRules,
+                                            OverstayRules,
+                                            AdditionalSelectedServices,
+                                            CustomData
+                                        );
+
+                if (CustomAbsolutePriceScheduleParser is not null)
+                    AbsolutePriceSchedule = CustomAbsolutePriceScheduleParser(CBOR,
+                                                       AbsolutePriceSchedule);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AbsolutePriceSchedule  = default;
+                ErrorResponse  = "The given CBOR representation of an absolute price schedule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<AbsolutePriceSchedule>.TryParse(CBOR, out AbsolutePriceSchedule, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an absolute price schedule - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<AbsolutePriceSchedule>.TryParse(CBORValue                         CBOR,
+                                                                       out AbsolutePriceSchedule                  Value,
+                                                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAbsolutePriceScheduleSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this absolute price schedule: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAbsolutePriceScheduleSerializer">A delegate to serialize custom absolute price schedules.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AbsolutePriceSchedule>? CustomAbsolutePriceScheduleSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("priceScheduleID",             CBORValue.FromUInt64(Id.Value)),
+                           ("timeAnchor",                  TimeAnchor.ToCBOR()),
+                           ("currency",                    CBORValue.FromText(Currency.ISOCode)),
+                           ("language",                    CBORValue.FromText(Language.ToString())),
+                           ("priceAlgorithm",              CBORValue.FromText(PriceAlgorithmId.ToString())),
+                           ("priceRuleStacks",             CBORValue.FromArray(PriceRuleStacks.Select(priceRuleStack => priceRuleStack.ToCBOR()))),
+                           ("priceScheduleDescription",    OCPPCBORExtensions.Text(Description)),
+                           ("minimumCost",                 MinimumCost?.ToCBOR()),
+                           ("maximumCost",                 MaximumCost?.ToCBOR()),
+                           ("taxRules",                    OCPPCBORExtensions.Array(TaxRules, taxRule => taxRule.ToCBOR())),
+                           ("overstayRuleList",            OverstayRules?.ToCBOR()),
+                           ("additionalSelectedServices",  OCPPCBORExtensions.Array(AdditionalSelectedServices, additionalSelectedService => additionalSelectedService.ToCBOR())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomAbsolutePriceScheduleSerializer is not null
+                       ? CustomAbsolutePriceScheduleSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

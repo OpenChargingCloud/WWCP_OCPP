@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Consumption cost(s).
     /// </summary>
     public class ConsumptionCost : ACustomData,
+                                   ICBORSerializable<ConsumptionCost>,
                                    IEquatable<ConsumptionCost>
     {
 
@@ -274,6 +277,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ConsumptionCost, out ErrorResponse, CustomConsumptionCostParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a consumption cost.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ConsumptionCost">The consumption cost.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ConsumptionCost?  ConsumptionCost,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ConsumptionCost,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a consumption cost.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ConsumptionCost">The consumption cost.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomConsumptionCostParser">An optional delegate to read custom consumption costs.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ConsumptionCost?           ConsumptionCost,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ConsumptionCost>?  CustomConsumptionCostParser)
+        {
+
+            try
+            {
+
+                ConsumptionCost = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a consumption cost is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("startValue",
+                                                "start value",
+                                                out var StartValue,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<Cost>("cost",
+                                                     "costs",
+                                                     OCPPv2_1.Cost.TryParseCBOR,
+                                                     out var Costs,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ConsumptionCost = new ConsumptionCost(
+                                      StartValue,
+                                      Costs,
+                                      CustomData
+                                  );
+
+                if (CustomConsumptionCostParser is not null)
+                    ConsumptionCost = CustomConsumptionCostParser(CBOR,
+                                                 ConsumptionCost);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ConsumptionCost  = default;
+                ErrorResponse  = "The given CBOR representation of a consumption cost is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ConsumptionCost>.TryParse(CBOR, out ConsumptionCost, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a consumption cost - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ConsumptionCost>.TryParse(CBORValue                         CBOR,
+                                                                 out ConsumptionCost                  Value,
+                                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomConsumptionCostSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this consumption cost: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomConsumptionCostSerializer">A delegate to serialize custom consumption costs.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ConsumptionCost>? CustomConsumptionCostSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("startValue",              CBORValue.FromDecimal(StartValue)),
+                           ("cost",                    CBORValue.FromArray(Costs.Select(cost => cost.ToCBOR()))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomConsumptionCostSerializer is not null
+                       ? CustomConsumptionCostSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Cost(s).
     /// </summary>
     public class Cost : ACustomData,
+                        ICBORSerializable<Cost>,
                         IEquatable<Cost>
     {
 
@@ -291,6 +294,177 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out Cost, out ErrorResponse, CustomCostParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a cost.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Cost">The cost.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Cost?  Cost,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Cost,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a cost.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Cost">The cost.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomCostParser">An optional delegate to read custom costs.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Cost?           Cost,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Cost>?  CustomCostParser)
+        {
+
+            try
+            {
+
+                Cost = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a cost is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("costKind",
+                                             "cost kind",
+                                             out var CostKindText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CostKindsExtensions.TryParse(CostKindText, out var CostKind))
+                {
+                    ErrorResponse = $"Invalid cost kind '{CostKindText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("amount",
+                                               "amount",
+                                               out var AmountNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (AmountNumber > UInt32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid amount '{AmountNumber}'!";
+                    return false;
+                }
+
+                var Amount = (UInt32) AmountNumber;
+
+
+                Int16? AmountMultiplier = null;
+
+                if (CBOR.ParseOptionalInt64("amountMultiplier",
+                                            "amount multiplier",
+                                            out var amountMultiplier,
+                                            out ErrorResponse))
+                {
+
+                    if (amountMultiplier is not Int64 multiplier || multiplier < -3 || multiplier > 3)
+                    {
+                        ErrorResponse = $"Invalid amount multiplier '{amountMultiplier}'!";
+                        return false;
+                    }
+
+                    AmountMultiplier = (Int16) multiplier;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Cost = new Cost(
+                           CostKind,
+                           Amount,
+                           AmountMultiplier,
+                           CustomData
+                       );
+
+                if (CustomCostParser is not null)
+                    Cost = CustomCostParser(CBOR,
+                                      Cost);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Cost  = default;
+                ErrorResponse  = "The given CBOR representation of a cost is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Cost>.TryParse(CBOR, out Cost, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a cost - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Cost>.TryParse(CBORValue                         CBOR,
+                                                      out Cost                  Value,
+                                                      [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomCostSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this cost: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Cost>? CustomCostSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("costKind",                CBORValue.FromText(CostKind.AsText())),
+                           ("amount",                  CBORValue.FromUInt64(Amount)),
+                           ("amountMultiplier",        OCPPCBORExtensions.Int(AmountMultiplier)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomCostSerializer is not null
+                       ? CustomCostSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

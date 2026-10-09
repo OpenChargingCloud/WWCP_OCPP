@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// An additional selected service.
     /// </summary>
     public class AdditionalSelectedService : ACustomData,
+                                             ICBORSerializable<AdditionalSelectedService>,
                                              IEquatable<AdditionalSelectedService>
     {
 
@@ -269,6 +272,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out AdditionalSelectedService, out ErrorResponse, CustomAdditionalSelectedServiceParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an additional selected service.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AdditionalSelectedService">The additional selected service.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out AdditionalSelectedService?  AdditionalSelectedService,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out AdditionalSelectedService,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an additional selected service.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AdditionalSelectedService">The additional selected service.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAdditionalSelectedServiceParser">An optional delegate to read custom additional selected services.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out AdditionalSelectedService?           AdditionalSelectedService,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<AdditionalSelectedService>?  CustomAdditionalSelectedServiceParser)
+        {
+
+            try
+            {
+
+                AdditionalSelectedService = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an additional selected service is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("serviceName",
+                                             "service name",
+                                             out var Name,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("serviceFee",
+                                         "service fee",
+                                         OCPPv2_1.RationalNumber.TryParseCBOR,
+                                         out RationalNumber? Fee,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                AdditionalSelectedService = new AdditionalSelectedService(
+                                                Name,
+                                                Fee,
+                                                CustomData
+                                            );
+
+                if (CustomAdditionalSelectedServiceParser is not null)
+                    AdditionalSelectedService = CustomAdditionalSelectedServiceParser(CBOR,
+                                                           AdditionalSelectedService);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AdditionalSelectedService  = default;
+                ErrorResponse  = "The given CBOR representation of an additional selected service is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<AdditionalSelectedService>.TryParse(CBOR, out AdditionalSelectedService, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an additional selected service - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<AdditionalSelectedService>.TryParse(CBORValue                         CBOR,
+                                                                           out AdditionalSelectedService                  Value,
+                                                                           [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAdditionalSelectedServiceSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this additional selected service: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAdditionalSelectedServiceSerializer">A delegate to serialize custom additional selected services.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AdditionalSelectedService>? CustomAdditionalSelectedServiceSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("serviceName",             CBORValue.FromText(Name)),
+                           ("serviceFee",              Fee.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomAdditionalSelectedServiceSerializer is not null
+                       ? CustomAdditionalSelectedServiceSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

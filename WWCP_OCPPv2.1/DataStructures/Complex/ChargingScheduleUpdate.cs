@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// The ChargingScheduleUpdate.
     /// </summary>
     public class ChargingScheduleUpdate : ACustomData,
+                                          ICBORSerializable<ChargingScheduleUpdate>,
                                           IEquatable<ChargingScheduleUpdate>
     {
 
@@ -753,6 +754,251 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ChargingScheduleUpdate, out ErrorResponse, CustomChargingScheduleUpdateParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging schedule update.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingScheduleUpdate">The charging schedule update.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ChargingScheduleUpdate?  ChargingScheduleUpdate,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ChargingScheduleUpdate,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging schedule update.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingScheduleUpdate">The charging schedule update.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingScheduleUpdateParser">An optional delegate to read custom charging schedule updates.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ChargingScheduleUpdate?           ChargingScheduleUpdate,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ChargingScheduleUpdate>?  CustomChargingScheduleUpdateParser)
+        {
+
+            try
+            {
+
+                ChargingScheduleUpdate = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a charging schedule update is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("limit",
+                                        "limit",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? Limit,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("limit_L2",
+                                        "limit_L2",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? Limit_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("limit_L3",
+                                        "limit_L3",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? Limit_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("dischargeLimit",
+                                        "dischargeLimit",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? DischargeLimit,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("dischargeLimit_L2",
+                                        "dischargeLimit_L2",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? DischargeLimit_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("dischargeLimit_L3",
+                                        "dischargeLimit_L3",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? DischargeLimit_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("setpoint",
+                                        "setpoint",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? Setpoint,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("setpoint_L2",
+                                        "setpoint_L2",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? Setpoint_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("setpoint_L3",
+                                        "setpoint_L3",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? Setpoint_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("setpointReactive",
+                                        "setpointReactive",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? SetpointReactive,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("setpointReactive_L2",
+                                        "setpointReactive_L2",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? SetpointReactive_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("setpointReactive_L3",
+                                        "setpointReactive_L3",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? SetpointReactive_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ChargingScheduleUpdate = new ChargingScheduleUpdate(
+                                             Limit,
+                                             Limit_L2,
+                                             Limit_L3,
+                                             DischargeLimit,
+                                             DischargeLimit_L2,
+                                             DischargeLimit_L3,
+                                             Setpoint,
+                                             Setpoint_L2,
+                                             Setpoint_L3,
+                                             SetpointReactive,
+                                             SetpointReactive_L2,
+                                             SetpointReactive_L3,
+                                             CustomData
+                                         );
+
+                if (CustomChargingScheduleUpdateParser is not null)
+                    ChargingScheduleUpdate = CustomChargingScheduleUpdateParser(CBOR,
+                                                        ChargingScheduleUpdate);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingScheduleUpdate  = default;
+                ErrorResponse  = "The given CBOR representation of a charging schedule update is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingScheduleUpdate>.TryParse(CBOR, out ChargingScheduleUpdate, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging schedule update - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingScheduleUpdate>.TryParse(CBORValue                         CBOR,
+                                                                        out ChargingScheduleUpdate                  Value,
+                                                                        [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChargingScheduleUpdateSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this charging schedule update: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChargingScheduleUpdateSerializer">A delegate to serialize custom charging schedule updates.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingScheduleUpdate>? CustomChargingScheduleUpdateSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("limit",                   Limit?.ToCBOR()),
+                           ("limit_L2",                Limit_L2?.ToCBOR()),
+                           ("limit_L3",                Limit_L3?.ToCBOR()),
+                           ("dischargeLimit",          DischargeLimit?.ToCBOR()),
+                           ("dischargeLimit_L2",       DischargeLimit_L2?.ToCBOR()),
+                           ("dischargeLimit_L3",       DischargeLimit_L3?.ToCBOR()),
+                           ("setpoint",                Setpoint?.ToCBOR()),
+                           ("setpoint_L2",             Setpoint_L2?.ToCBOR()),
+                           ("setpoint_L3",             Setpoint_L3?.ToCBOR()),
+                           ("setpointReactive",        SetpointReactive?.ToCBOR()),
+                           ("setpointReactive_L2",     SetpointReactive_L2?.ToCBOR()),
+                           ("setpointReactive_L3",     SetpointReactive_L3?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomChargingScheduleUpdateSerializer is not null
+                       ? CustomChargingScheduleUpdateSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

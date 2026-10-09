@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// The price rule.
     /// </summary>
     public class PriceRule : ACustomData,
+                             ICBORSerializable<PriceRule>,
                              IEquatable<PriceRule>
     {
 
@@ -401,6 +404,197 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out PriceRule, out ErrorResponse, CustomPriceRuleParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price rule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="PriceRule">The price rule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out PriceRule?  PriceRule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out PriceRule,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price rule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="PriceRule">The price rule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomPriceRuleParser">An optional delegate to read custom price rules.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out PriceRule?           PriceRule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<PriceRule>?  CustomPriceRuleParser)
+        {
+
+            try
+            {
+
+                PriceRule = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a price rule is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("powerRangeStart",
+                                         "power range start",
+                                         OCPPv2_1.RationalNumber.TryParseCBOR,
+                                         out RationalNumber? PowerRangeStart,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("energyFee",
+                                         "energy fee",
+                                         OCPPv2_1.RationalNumber.TryParseCBOR,
+                                         out RationalNumber? EnergyFee,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("parkingFee",
+                                   "parking fee",
+                                   OCPPv2_1.RationalNumber.TryParseCBOR,
+                                   out RationalNumber? ParkingFee,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("parkingFeePeriod",
+                                        "parking fee period",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? ParkingFeePeriod,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                UInt16? CarbonDioxideEmission = null;
+
+                if (CBOR.ParseOptionalUInt64("carbonDioxideEmission",
+                                             "carbon dioxide emission",
+                                             out var CarbonDioxideEmissionNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (CarbonDioxideEmissionNumber is not UInt64 CarbonDioxideEmissionValue || CarbonDioxideEmissionValue > UInt16.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid carbon dioxide emission '{CarbonDioxideEmissionNumber}'!";
+                        return false;
+                    }
+
+                    CarbonDioxideEmission = (UInt16) CarbonDioxideEmissionValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("renewableGenerationPercentage",
+                                        "renewable generation percentage",
+                                        OCPPCBORExtensions.TryParsePercentageDouble,
+                                        out PercentageDouble? RenewableGenerationPercentage,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                PriceRule = new PriceRule(
+                                PowerRangeStart,
+                                EnergyFee,
+                                ParkingFee,
+                                ParkingFeePeriod,
+                                CarbonDioxideEmission,
+                                RenewableGenerationPercentage,
+                                CustomData
+                            );
+
+                if (CustomPriceRuleParser is not null)
+                    PriceRule = CustomPriceRuleParser(CBOR,
+                                           PriceRule);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                PriceRule  = default;
+                ErrorResponse  = "The given CBOR representation of a price rule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<PriceRule>.TryParse(CBOR, out PriceRule, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price rule - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<PriceRule>.TryParse(CBORValue                         CBOR,
+                                                           out PriceRule                  Value,
+                                                           [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomPriceRuleSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this price rule: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomPriceRuleSerializer">A delegate to serialize custom price rules.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<PriceRule>? CustomPriceRuleSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("powerRangeStart",                PowerRangeStart.ToCBOR()),
+                           ("energyFee",                      EnergyFee.      ToCBOR()),
+                           ("parkingFee",                     ParkingFee?.    ToCBOR()),
+                           ("parkingFeePeriod",               ParkingFeePeriod?.ToCBOR()),
+                           ("carbonDioxideEmission",          OCPPCBORExtensions.UInt(CarbonDioxideEmission)),
+                           ("renewableGenerationPercentage",  RenewableGenerationPercentage?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomPriceRuleSerializer is not null
+                       ? CustomPriceRuleSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

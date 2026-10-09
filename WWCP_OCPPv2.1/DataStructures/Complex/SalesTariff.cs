@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A sales tariff.
     /// </summary>
     public class SalesTariff : ACustomData,
+                               ICBORSerializable<SalesTariff>,
                                IEquatable<SalesTariff>
     {
 
@@ -347,6 +350,179 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out SalesTariff, out ErrorResponse, CustomSalesTariffParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a sales tariff.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SalesTariff">The sales tariff.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out SalesTariff?  SalesTariff,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out SalesTariff,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a sales tariff.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SalesTariff">The sales tariff.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSalesTariffParser">An optional delegate to read custom sales tariffs.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out SalesTariff?           SalesTariff,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<SalesTariff>?  CustomSalesTariffParser)
+        {
+
+            try
+            {
+
+                SalesTariff = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a sales tariff is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "sales tariff identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (IdNumber > UInt64.MaxValue || !SalesTariff_Id.TryParse((UInt64) IdNumber, out var Id))
+                {
+                    ErrorResponse = $"Invalid sales tariff identification '{IdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<SalesTariffEntry>("salesTariffEntry",
+                                                     "sales tariff entries",
+                                                     OCPPv2_1.SalesTariffEntry.TryParseCBOR,
+                                                     out var SalesTariffEntries,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("salesTariffDescription",
+                                       "sales tariff description",
+                                       out var Description,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                UInt16? NumEPriceLevels = null;
+
+                if (CBOR.ParseOptionalUInt64("numEPriceLevels",
+                                             "number of price levels",
+                                             out var NumEPriceLevelsNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (NumEPriceLevelsNumber is not UInt64 NumEPriceLevelsValue || NumEPriceLevelsValue > UInt16.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid number of price levels '{NumEPriceLevelsNumber}'!";
+                        return false;
+                    }
+
+                    NumEPriceLevels = (UInt16) NumEPriceLevelsValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                SalesTariff = new SalesTariff(
+                                  Id,
+                                  SalesTariffEntries,
+                                  Description,
+                                  NumEPriceLevels,
+                                  CustomData
+                              );
+
+                if (CustomSalesTariffParser is not null)
+                    SalesTariff = CustomSalesTariffParser(CBOR,
+                                             SalesTariff);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SalesTariff  = default;
+                ErrorResponse  = "The given CBOR representation of a sales tariff is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<SalesTariff>.TryParse(CBOR, out SalesTariff, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a sales tariff - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<SalesTariff>.TryParse(CBORValue                         CBOR,
+                                                             out SalesTariff                  Value,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSalesTariffSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this sales tariff: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSalesTariffSerializer">A delegate to serialize custom sales tariffs.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SalesTariff>? CustomSalesTariffSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                      CBORValue.FromUInt64(Id.Value)),
+                           ("salesTariffEntry",        CBORValue.FromArray(SalesTariffEntries.Select(salesTariffEntry => salesTariffEntry.ToCBOR()))),
+                           ("salesTariffDescription",  OCPPCBORExtensions.Text(Description)),
+                           ("numEPriceLevels",         OCPPCBORExtensions.UInt(NumEPriceLevels)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomSalesTariffSerializer is not null
+                       ? CustomSalesTariffSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

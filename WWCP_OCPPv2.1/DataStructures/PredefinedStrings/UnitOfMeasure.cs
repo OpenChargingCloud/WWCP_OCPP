@@ -162,6 +162,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (Text.IsNotNullOrEmpty())
             {
 
+                // What WWCP_OCPP wrote before it wrote the texts of the
+                // specification, still read as the units it meant.
+                Text = Text switch {
+                           "Amperes"     => "A",
+                           "Voltage"     => "V",
+                           "Watts"       => "W",
+                           "VoltAmpere"  => "VA",
+                           "Kelvin"      => "K",
+                           "TimeSpan"    => "s",
+                           _             => Text
+                       };
+
                 if (!lookup.TryGetValue(Text, out UnitOfMeasure))
                     UnitOfMeasure = Register(Text);
 
@@ -195,106 +207,208 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 #pragma warning disable IDE1006 // Naming Styles
 
         /// <summary>
-        /// Celsius
+        /// A: Amperes (current).
         /// </summary>
-        public static UnitOfMeasure Celsius       { get; }
+        public static UnitOfMeasure Amperes                { get; }
+            = Register("A");
+
+        /// <summary>
+        /// ASU: Arbitrary Strength Unit (signal strength).
+        /// </summary>
+        public static UnitOfMeasure ASU                    { get; }
+            = Register("ASU");
+
+        /// <summary>
+        /// B: Bytes.
+        /// </summary>
+        public static UnitOfMeasure Bytes                  { get; }
+            = Register("B");
+
+        /// <summary>
+        /// Celsius: Degrees (temperature).
+        /// </summary>
+        public static UnitOfMeasure Celsius                { get; }
             = Register("Celsius");
 
         /// <summary>
-        /// Fahrenheit
+        /// dB: Decibel (for example signal strength).
         /// </summary>
-        public static UnitOfMeasure Fahrenheit    { get; }
+        public static UnitOfMeasure dB                     { get; }
+            = Register("dB");
+
+        /// <summary>
+        /// dBm: Power relative to 1 mW (10 log(P/1 mW)).
+        /// </summary>
+        public static UnitOfMeasure dBm                    { get; }
+            = Register("dBm");
+
+        /// <summary>
+        /// Deg: Degrees (angle/rotation).
+        /// </summary>
+        public static UnitOfMeasure Degrees                { get; }
+            = Register("Deg");
+
+        /// <summary>
+        /// Fahrenheit: Degrees (temperature).
+        /// </summary>
+        public static UnitOfMeasure Fahrenheit             { get; }
             = Register("Fahrenheit");
 
         /// <summary>
-        /// Wh
+        /// Hz: Hertz (frequency).
         /// </summary>
-        public static UnitOfMeasure Wh            { get; }
-            = Register("Wh");
+        public static UnitOfMeasure Hertz                  { get; }
+            = Register("Hz");
 
         /// <summary>
-        /// kWh
+        /// mHz: Millihertz (frequency).
         /// </summary>
-        public static UnitOfMeasure kWh           { get; }
-            = Register("kWh");
+        public static UnitOfMeasure MilliHertz             { get; }
+            = Register("mHz");
 
         /// <summary>
-        /// varh
+        /// K: Degrees Kelvin (temperature).
         /// </summary>
-        public static UnitOfMeasure varh          { get; }
-            = Register("varh");
+        public static UnitOfMeasure Kelvin                 { get; }
+            = Register("K");
 
         /// <summary>
-        /// kvarh
+        /// lx: Lux (light intensity).
         /// </summary>
-        public static UnitOfMeasure kvarh         { get; }
-            = Register("kvarh");
+        public static UnitOfMeasure Lux                    { get; }
+            = Register("lx");
 
         /// <summary>
-        /// Watts
+        /// m: Meter (length).
         /// </summary>
-        public static UnitOfMeasure Watts         { get; }
-            = Register("Watts");
+        public static UnitOfMeasure Meter                  { get; }
+            = Register("m");
 
         /// <summary>
-        /// kW
+        /// ms2: m/s² (acceleration).
         /// </summary>
-        public static UnitOfMeasure kW            { get; }
-            = Register("kW");
+        public static UnitOfMeasure MeterPerSecondSquared  { get; }
+            = Register("ms2");
 
         /// <summary>
-        /// VoltAmpere
+        /// N: Newtons (force).
         /// </summary>
-        public static UnitOfMeasure VoltAmpere    { get; }
-            = Register("VoltAmpere");
+        public static UnitOfMeasure Newton                 { get; }
+            = Register("N");
 
         /// <summary>
-        /// kVA
+        /// Ohm: Ohm (impedance).
         /// </summary>
-        public static UnitOfMeasure kVA           { get; }
-            = Register("kVA");
+        public static UnitOfMeasure Ohm                    { get; }
+            = Register("Ohm");
 
         /// <summary>
-        /// var
+        /// kPa: Kilopascal (pressure).
         /// </summary>
-        public static UnitOfMeasure var           { get; }
-            = Register("var");
+        public static UnitOfMeasure kPa                    { get; }
+            = Register("kPa");
 
         /// <summary>
-        /// kvar
+        /// Percent: Percentage.
         /// </summary>
-        public static UnitOfMeasure kvar          { get; }
-            = Register("kvar");
-
-        /// <summary>
-        /// Amperes
-        /// </summary>
-        public static UnitOfMeasure Amperes       { get; }
-            = Register("Amperes");
-
-        /// <summary>
-        /// Voltage
-        /// </summary>
-        public static UnitOfMeasure Voltage       { get; }
-            = Register("Voltage");
-
-        /// <summary>
-        /// Kelvin
-        /// </summary>
-        public static UnitOfMeasure Kelvin        { get; }
-            = Register("Kelvin");
-
-        /// <summary>
-        /// Percent
-        /// </summary>
-        public static UnitOfMeasure Percent       { get; }
+        public static UnitOfMeasure Percent                { get; }
             = Register("Percent");
 
         /// <summary>
-        /// TimeSpan
+        /// RH: Relative humidity %.
         /// </summary>
-        public static UnitOfMeasure TimeSpan      { get; }
-            = Register("TimeSpan");
+        public static UnitOfMeasure RelativeHumidity       { get; }
+            = Register("RH");
+
+        /// <summary>
+        /// RPM: Revolutions per minute.
+        /// </summary>
+        public static UnitOfMeasure RPM                    { get; }
+            = Register("RPM");
+
+        /// <summary>
+        /// s: Seconds (time).
+        /// </summary>
+        public static UnitOfMeasure TimeSpan               { get; }
+            = Register("s");
+
+        /// <summary>
+        /// V: Voltage (DC or r.m.s. AC).
+        /// </summary>
+        public static UnitOfMeasure Voltage                { get; }
+            = Register("V");
+
+        /// <summary>
+        /// VA: Volt-ampere (apparent power).
+        /// </summary>
+        public static UnitOfMeasure VoltAmpere             { get; }
+            = Register("VA");
+
+        /// <summary>
+        /// kVA: Kilovolt-ampere (apparent power).
+        /// </summary>
+        public static UnitOfMeasure kVA                    { get; }
+            = Register("kVA");
+
+        /// <summary>
+        /// VAh: Volt-ampere-hours (apparent energy).
+        /// </summary>
+        public static UnitOfMeasure VAh                    { get; }
+            = Register("VAh");
+
+        /// <summary>
+        /// kVAh: Kilovolt-ampere-hours (apparent energy).
+        /// </summary>
+        public static UnitOfMeasure kVAh                   { get; }
+            = Register("kVAh");
+
+        /// <summary>
+        /// var: Vars (reactive power).
+        /// </summary>
+        public static UnitOfMeasure var                    { get; }
+            = Register("var");
+
+        /// <summary>
+        /// kvar: Kilovars (reactive power).
+        /// </summary>
+        public static UnitOfMeasure kvar                   { get; }
+            = Register("kvar");
+
+        /// <summary>
+        /// varh: Var-hours (reactive energy).
+        /// </summary>
+        public static UnitOfMeasure varh                   { get; }
+            = Register("varh");
+
+        /// <summary>
+        /// kvarh: Kilovar-hours (reactive energy).
+        /// </summary>
+        public static UnitOfMeasure kvarh                  { get; }
+            = Register("kvarh");
+
+        /// <summary>
+        /// W: Watts (power).
+        /// </summary>
+        public static UnitOfMeasure Watts                  { get; }
+            = Register("W");
+
+        /// <summary>
+        /// kW: Kilowatts (power).
+        /// </summary>
+        public static UnitOfMeasure kW                     { get; }
+            = Register("kW");
+
+        /// <summary>
+        /// Wh: Watt-hours (energy) - the default.
+        /// </summary>
+        public static UnitOfMeasure Wh                     { get; }
+            = Register("Wh");
+
+        /// <summary>
+        /// kWh: Kilowatt-hours (energy).
+        /// </summary>
+        public static UnitOfMeasure kWh                    { get; }
+            = Register("kWh");
 
 #pragma warning restore IDE1006 // Naming Styles
 

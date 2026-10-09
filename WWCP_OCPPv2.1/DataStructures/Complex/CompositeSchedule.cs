@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A composite schedule.
     /// </summary>
     public class CompositeSchedule : ACustomData,
+                                     ICBORSerializable<CompositeSchedule>,
                                      IEquatable<CompositeSchedule>
     {
 
@@ -357,6 +360,185 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out CompositeSchedule, out ErrorResponse, CustomCompositeScheduleParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a composite schedule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="CompositeSchedule">The composite schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out CompositeSchedule?  CompositeSchedule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out CompositeSchedule,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a composite schedule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="CompositeSchedule">The composite schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomCompositeScheduleParser">An optional delegate to read custom composite schedules.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out CompositeSchedule?           CompositeSchedule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<CompositeSchedule>?  CustomCompositeScheduleParser)
+        {
+
+            try
+            {
+
+                CompositeSchedule = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a composite schedule is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("evseId",
+                                               "EVSE identification",
+                                               out var EVSEIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (EVSEIdNumber > UInt16.MaxValue || !EVSE_Id.TryParse((UInt16) EVSEIdNumber, out var EVSEId))
+                {
+                    ErrorResponse = $"Invalid EVSE identification '{EVSEIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("duration",
+                                              "duration",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan Duration,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("scheduleStart",
+                                              "start of the schedule",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset ScheduleStart,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("chargingRateUnit",
+                                             "charging rate unit",
+                                             out var ChargingRateUnitText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!ChargingRateUnitsExtensions.TryParse(ChargingRateUnitText, out var ChargingRateUnit))
+                {
+                    ErrorResponse = $"Invalid charging rate unit '{ChargingRateUnitText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<ChargingSchedulePeriod>("chargingSchedulePeriod",
+                                                     "charging schedule periods",
+                                                     OCPPv2_1.ChargingSchedulePeriod.TryParseCBOR,
+                                                     out var ChargingSchedulePeriods,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CompositeSchedule = new CompositeSchedule(
+                                        EVSEId,
+                                        Duration,
+                                        ScheduleStart,
+                                        ChargingRateUnit,
+                                        // Its numbers are in its chargingRateUnit, as in JSON.
+                                        ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.WithUnit(ChargingRateUnit)),
+                                        CustomData
+                                    );
+
+                if (CustomCompositeScheduleParser is not null)
+                    CompositeSchedule = CustomCompositeScheduleParser(CBOR,
+                                                   CompositeSchedule);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                CompositeSchedule  = default;
+                ErrorResponse  = "The given CBOR representation of a composite schedule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<CompositeSchedule>.TryParse(CBOR, out CompositeSchedule, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a composite schedule - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<CompositeSchedule>.TryParse(CBORValue                         CBOR,
+                                                                   out CompositeSchedule                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomCompositeScheduleSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this composite schedule: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomCompositeScheduleSerializer">A delegate to serialize custom composite schedules.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<CompositeSchedule>? CustomCompositeScheduleSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evseId",                  CBORValue.FromUInt64(EVSEId.Value)),
+                           ("duration",                Duration.     ToCBOR()),
+                           ("scheduleStart",           ScheduleStart.ToCBOR()),
+                           ("chargingRateUnit",        CBORValue.FromText(ChargingRateUnit.AsText())),
+                           ("chargingSchedulePeriod",  CBORValue.FromArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToCBOR()))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomCompositeScheduleSerializer is not null
+                       ? CustomCompositeScheduleSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

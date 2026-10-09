@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// The price level schedule entry.
     /// </summary>
     public class PriceLevelScheduleEntry : ACustomData,
+                                           ICBORSerializable<PriceLevelScheduleEntry>,
                                            IEquatable<PriceLevelScheduleEntry>
     {
 
@@ -273,6 +276,148 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out PriceLevelScheduleEntry, out ErrorResponse, CustomPriceLevelScheduleEntryParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price level schedule entry.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="PriceLevelScheduleEntry">The price level schedule entry.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out PriceLevelScheduleEntry?  PriceLevelScheduleEntry,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out PriceLevelScheduleEntry,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price level schedule entry.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="PriceLevelScheduleEntry">The price level schedule entry.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomPriceLevelScheduleEntryParser">An optional delegate to read custom price level schedule entrys.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out PriceLevelScheduleEntry?           PriceLevelScheduleEntry,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntryParser)
+        {
+
+            try
+            {
+
+                PriceLevelScheduleEntry = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a price level schedule entry is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("duration",
+                                              "duration",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan Duration,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priceLevel",
+                                               "price level",
+                                               out var PriceLevelNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PriceLevelNumber > Byte.MaxValue)
+                {
+                    ErrorResponse = $"Invalid price level '{PriceLevelNumber}'!";
+                    return false;
+                }
+
+                var PriceLevel = (Byte) PriceLevelNumber;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                PriceLevelScheduleEntry = new PriceLevelScheduleEntry(
+                                              Duration,
+                                              PriceLevel,
+                                              CustomData
+                                          );
+
+                if (CustomPriceLevelScheduleEntryParser is not null)
+                    PriceLevelScheduleEntry = CustomPriceLevelScheduleEntryParser(CBOR,
+                                                         PriceLevelScheduleEntry);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                PriceLevelScheduleEntry  = default;
+                ErrorResponse  = "The given CBOR representation of a price level schedule entry is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<PriceLevelScheduleEntry>.TryParse(CBOR, out PriceLevelScheduleEntry, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price level schedule entry - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<PriceLevelScheduleEntry>.TryParse(CBORValue                         CBOR,
+                                                                         out PriceLevelScheduleEntry                  Value,
+                                                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomPriceLevelScheduleEntrySerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this price level schedule entry: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomPriceLevelScheduleEntrySerializer">A delegate to serialize custom price level schedule entrys.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<PriceLevelScheduleEntry>? CustomPriceLevelScheduleEntrySerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("duration",                Duration.ToCBOR()),
+                           ("priceLevel",              CBORValue.FromUInt64(PriceLevel)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomPriceLevelScheduleEntrySerializer is not null
+                       ? CustomPriceLevelScheduleEntrySerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

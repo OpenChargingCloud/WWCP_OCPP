@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ChargingSchedule_InWatts()
 
-            => ReadAndWrittenAsTheSchemaSays<ChargingSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingSchedule>(
                    $$"""
                    {
                        "id":                     1,
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ChargingSchedule_InAmperes()
 
-            => ReadAndWrittenAsTheSchemaSays<ChargingSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingSchedule>(
                    """
                    {
                        "id":                     2,
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void CompositeSchedule_InAmperes()
 
-            => ReadAndWrittenAsTheSchemaSays<CompositeSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<CompositeSchedule>(
                    """
                    {
                        "evseId":                 1,

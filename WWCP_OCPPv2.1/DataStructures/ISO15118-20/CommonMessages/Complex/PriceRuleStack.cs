@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
     /// The price rule stack.
     /// </summary>
     public class PriceRuleStack : ACustomData,
+                                  ICBORSerializable<PriceRuleStack>,
                                   IEquatable<PriceRuleStack>
     {
 
@@ -283,6 +286,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out PriceRuleStack, out ErrorResponse, CustomPriceRuleStackParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price rule stack.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="PriceRuleStack">The price rule stack.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out PriceRuleStack?  PriceRuleStack,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out PriceRuleStack,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price rule stack.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="PriceRuleStack">The price rule stack.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomPriceRuleStackParser">An optional delegate to read custom price rule stacks.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out PriceRuleStack?           PriceRuleStack,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<PriceRuleStack>?  CustomPriceRuleStackParser)
+        {
+
+            try
+            {
+
+                PriceRuleStack = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a price rule stack is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("duration",
+                                              "duration",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan Duration,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<PriceRule>("priceRule",
+                                                     "price rules",
+                                                     PriceRule.TryParseCBOR,
+                                                     out var PriceRules,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                PriceRuleStack = new PriceRuleStack(
+                                     Duration,
+                                     PriceRules,
+                                     CustomData
+                                 );
+
+                if (CustomPriceRuleStackParser is not null)
+                    PriceRuleStack = CustomPriceRuleStackParser(CBOR,
+                                                PriceRuleStack);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                PriceRuleStack  = default;
+                ErrorResponse  = "The given CBOR representation of a price rule stack is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<PriceRuleStack>.TryParse(CBOR, out PriceRuleStack, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price rule stack - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<PriceRuleStack>.TryParse(CBORValue                         CBOR,
+                                                                out PriceRuleStack                  Value,
+                                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomPriceRuleStackSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this price rule stack: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomPriceRuleStackSerializer">A delegate to serialize custom price rule stacks.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<PriceRuleStack>? CustomPriceRuleStackSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("duration",                Duration.ToCBOR()),
+                           ("priceRule",               CBORValue.FromArray(PriceRules.Select(priceRule => priceRule.ToCBOR()))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomPriceRuleStackSerializer is not null
+                       ? CustomPriceRuleStackSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

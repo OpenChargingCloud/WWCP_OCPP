@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A relative time interval.
     /// </summary>
     public class RelativeTimeInterval : ACustomData,
+                                        ICBORSerializable<RelativeTimeInterval>,
                                         IEquatable<RelativeTimeInterval>
     {
 
@@ -262,6 +265,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out RelativeTimeInterval, out ErrorResponse, CustomRelativeTimeIntervalParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a relative time interval.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RelativeTimeInterval">The relative time interval.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out RelativeTimeInterval?  RelativeTimeInterval,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out RelativeTimeInterval,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a relative time interval.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RelativeTimeInterval">The relative time interval.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomRelativeTimeIntervalParser">An optional delegate to read custom relative time intervals.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out RelativeTimeInterval?           RelativeTimeInterval,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<RelativeTimeInterval>?  CustomRelativeTimeIntervalParser)
+        {
+
+            try
+            {
+
+                RelativeTimeInterval = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a relative time interval is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("start",
+                                              "start",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan Start,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("duration",
+                                        "duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Duration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                RelativeTimeInterval = new RelativeTimeInterval(
+                                           Start,
+                                           Duration,
+                                           CustomData
+                                       );
+
+                if (CustomRelativeTimeIntervalParser is not null)
+                    RelativeTimeInterval = CustomRelativeTimeIntervalParser(CBOR,
+                                                      RelativeTimeInterval);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                RelativeTimeInterval  = default;
+                ErrorResponse  = "The given CBOR representation of a relative time interval is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<RelativeTimeInterval>.TryParse(CBOR, out RelativeTimeInterval, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a relative time interval - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<RelativeTimeInterval>.TryParse(CBORValue                         CBOR,
+                                                                      out RelativeTimeInterval                  Value,
+                                                                      [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomRelativeTimeIntervalSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this relative time interval: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relative time intervals.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<RelativeTimeInterval>? CustomRelativeTimeIntervalSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("start",                   Start.    ToCBOR()),
+                           ("duration",                Duration?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomRelativeTimeIntervalSerializer is not null
+                       ? CustomRelativeTimeIntervalSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 
