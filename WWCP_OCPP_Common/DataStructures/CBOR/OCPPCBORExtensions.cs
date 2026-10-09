@@ -500,6 +500,31 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
+        #region BASE64: BASE64AsBytes(Text)
+
+        /// <summary>
+        /// A text that is BASE64 in JSON - a signature - as the bytes it encodes,
+        /// or, when it is no BASE64, as the text it is.
+        /// </summary>
+        /// <param name="Text">A BASE64 text.</param>
+        public static CBORValue? BASE64AsBytes(String? Text)
+        {
+
+            if (Text is null)
+                return null;
+
+            var bytes = new Byte[Text.Length];
+
+            return Convert.TryFromBase64String(Text, bytes, out var length) &&
+                   Convert.ToBase64String(bytes, 0, length) == Text
+
+                       ? CBORValue.FromBytes(bytes[..length])
+                       : CBORValue.FromText(Text);
+
+        }
+
+        #endregion
+
         #region Rates:  RateToCBOR(Amount, PerUnit, PerExponent), TryParseRate(CBOR, PerUnit, PerExponent, out Amount, out ErrorResponse)
 
         /// <summary>

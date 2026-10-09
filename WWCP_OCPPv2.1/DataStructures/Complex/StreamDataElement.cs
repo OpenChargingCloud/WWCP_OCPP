@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A stream data element.
     /// </summary>
     public class StreamDataElement : ACustomData,
+                                     ICBORSerializable<StreamDataElement>,
                                      IEquatable<StreamDataElement>,
                                      IComparable<StreamDataElement>,
                                      IComparable
@@ -267,6 +270,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out StreamDataElement, out ErrorResponse, CustomStreamDataElementParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a stream data element.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="StreamDataElement">The stream data element.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out StreamDataElement?  StreamDataElement,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out StreamDataElement,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a stream data element.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="StreamDataElement">The stream data element.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomStreamDataElementParser">An optional delegate to read custom stream data elements.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out StreamDataElement?           StreamDataElement,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<StreamDataElement>?  CustomStreamDataElementParser)
+        {
+
+            try
+            {
+
+                StreamDataElement = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a stream data element is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("t",
+                                              "time offset",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan TimeOffset,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("v",
+                                             "values",
+                                             out var Values,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                StreamDataElement = new StreamDataElement(
+                                        TimeOffset,
+                                        Values,
+                                        CustomData
+                                    );
+
+                if (CustomStreamDataElementParser is not null)
+                    StreamDataElement = CustomStreamDataElementParser(CBOR,
+                                                   StreamDataElement);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                StreamDataElement  = default;
+                ErrorResponse  = "The given CBOR representation of a stream data element is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<StreamDataElement>.TryParse(CBOR, out StreamDataElement, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a stream data element - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<StreamDataElement>.TryParse(CBORValue                         CBOR,
+                                                                   out StreamDataElement                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomStreamDataElementSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this stream data element: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomStreamDataElementSerializer">A delegate to serialize custom stream data elements.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<StreamDataElement>? CustomStreamDataElementSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("t",                                      TimeOffset.ToCBOR()),
+                           ("v",                                      CBORValue.FromText(Values)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomStreamDataElementSerializer is not null
+                       ? CustomStreamDataElementSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -24,6 +24,10 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A firmware.
     /// </summary>
     public class Firmware : ACustomData,
+                            ICBORSerializable<Firmware>,
                             IEquatable<Firmware>
     {
 
@@ -344,6 +349,189 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out Firmware, out ErrorResponse, CustomFirmwareParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a firmware.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Firmware">The firmware.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Firmware?  Firmware,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Firmware,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a firmware.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Firmware">The firmware.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomFirmwareParser">An optional delegate to read custom firmwares.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Firmware?           Firmware,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Firmware>?  CustomFirmwareParser)
+        {
+
+            try
+            {
+
+                Firmware = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a firmware is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("location",
+                                             "firmware location",
+                                             out var FirmwareURLText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!URL.TryParse(FirmwareURLText, out var FirmwareURL))
+                {
+                    ErrorResponse = $"Invalid firmware location '{FirmwareURLText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("retrieveDateTime",
+                                              "retrieve timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset RetrieveTimestamp,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("installDateTime",
+                                        "install timestamp",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? InstallTimestamp,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("signingCertificate",
+                                       "signing certificate",
+                                       out var SigningCertificate,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                // BASE64 in JSON, the bytes in CBOR.
+                String? Signature = null;
+
+                if (CBOR.TryGetValue(CBORValue.FromText("signature"), out var signature))
+                {
+
+                    Signature = signature.Kind switch {
+                                    CBORValueKind.ByteString  => Convert.ToBase64String(signature.AsBytes()),
+                                    CBORValueKind.TextString  => signature.AsText(),
+                                    _                         => null
+                                };
+
+                    if (Signature is null)
+                    {
+                        ErrorResponse = "The firmware signature is neither bytes nor a text!";
+                        return false;
+                    }
+
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Firmware = new Firmware(
+                               FirmwareURL,
+                               RetrieveTimestamp,
+                               InstallTimestamp,
+                               SigningCertificate,
+                               Signature,
+                               CustomData
+                           );
+
+                if (CustomFirmwareParser is not null)
+                    Firmware = CustomFirmwareParser(CBOR,
+                                          Firmware);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Firmware  = default;
+                ErrorResponse  = "The given CBOR representation of a firmware is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Firmware>.TryParse(CBOR, out Firmware, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a firmware - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Firmware>.TryParse(CBORValue                         CBOR,
+                                                          out Firmware                  Value,
+                                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomFirmwareSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this firmware: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomFirmwareSerializer">A delegate to serialize custom firmwares.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Firmware>? CustomFirmwareSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("location",                               CBORValue.FromText(FirmwareURL.ToString())),
+                           ("retrieveDateTime",                       RetrieveTimestamp.ToCBOR()),
+                           ("installDateTime",                        InstallTimestamp?.ToCBOR()),
+                           ("signingCertificate",                     OCPPCBORExtensions.Text(SigningCertificate)),
+                           ("signature",                              OCPPCBORExtensions.BASE64AsBytes(Signature)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomFirmwareSerializer is not null
+                       ? CustomFirmwareSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// CertificateStatusRequestInfo.
     /// </summary>
     public class CertificateStatusRequestInfo : ACustomData,
+                                                ICBORSerializable<CertificateStatusRequestInfo>,
                                                 IEquatable<CertificateStatusRequestInfo>
     {
 
@@ -318,6 +321,170 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out CertificateStatusRequestInfo, out ErrorResponse, CustomCertificateStatusRequestInfoParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a certificate status request information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="CertificateStatusRequestInfo">The certificate status request information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out CertificateStatusRequestInfo?  CertificateStatusRequestInfo,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out CertificateStatusRequestInfo,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a certificate status request information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="CertificateStatusRequestInfo">The certificate status request information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomCertificateStatusRequestInfoParser">An optional delegate to read custom certificate status request information.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out CertificateStatusRequestInfo?           CertificateStatusRequestInfo,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<CertificateStatusRequestInfo>?  CustomCertificateStatusRequestInfoParser)
+        {
+
+            try
+            {
+
+                CertificateStatusRequestInfo = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a certificate status request information is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("certificateHashData",
+                                         "certificate hash data",
+                                         OCPPv2_1.CertificateHashData.TryParseCBOR,
+                                         out CertificateHashData? CertificateHashData,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("source",
+                                             "certificate status source",
+                                             out var SourceText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CertificateStatusSource.TryParse(SourceText, out var Source))
+                {
+                    ErrorResponse = $"Invalid certificate status source '{SourceText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<URL>("urls",
+                                               "URLs",
+                                               (CBORValue item, out URL value, out String? errorResponse) => {
+
+                                                   value         = default;
+                                                   errorResponse = null;
+
+                                                   if (!(item.Kind == CBORValueKind.TextString && URL.TryParse(item.AsText(), out value)))
+                                                   {
+                                                       errorResponse = $"Invalid URL '{item}'!";
+                                                       return false;
+                                                   }
+
+                                                   return true;
+
+                                               },
+                                               out var URLs,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CertificateStatusRequestInfo = new CertificateStatusRequestInfo(
+                                                   CertificateHashData,
+                                                   Source,
+                                                   URLs,
+                                                   CustomData
+                                               );
+
+                if (CustomCertificateStatusRequestInfoParser is not null)
+                    CertificateStatusRequestInfo = CustomCertificateStatusRequestInfoParser(CBOR,
+                                                              CertificateStatusRequestInfo);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                CertificateStatusRequestInfo  = default;
+                ErrorResponse  = "The given CBOR representation of a certificate status request information is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<CertificateStatusRequestInfo>.TryParse(CBOR, out CertificateStatusRequestInfo, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a certificate status request information - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<CertificateStatusRequestInfo>.TryParse(CBORValue                         CBOR,
+                                                                              out CertificateStatusRequestInfo                  Value,
+                                                                              [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomCertificateStatusRequestInfoSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this certificate status request information: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomCertificateStatusRequestInfoSerializer">A delegate to serialize custom certificate status request information.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<CertificateStatusRequestInfo>? CustomCertificateStatusRequestInfoSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("certificateHashData",                    CertificateHashData.ToCBOR()),
+                           ("source",                                 CBORValue.FromText(Source.ToString())),
+                           ("urls",                                   CBORValue.FromArray(URLs.Select(url => CBORValue.FromText(url.ToString())))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomCertificateStatusRequestInfoSerializer is not null
+                       ? CustomCertificateStatusRequestInfoSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

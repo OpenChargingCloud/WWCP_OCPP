@@ -24,6 +24,10 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An APN configuration.
     /// </summary>
     public class APNConfiguration : ACustomData,
+                                    ICBORSerializable<APNConfiguration>,
                                     IEquatable<APNConfiguration>
     {
 
@@ -368,8 +373,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("apnPassword",               Password)
                                : null,
 
+                           // The schema's integer - a PIN that is no number, or one whose leading
+                           // zeros an integer would drop, is written as the text it is.
                            SIMPINCode           is not null
-                               ? new JProperty("simPin",                    SIMPINCode)
+                               ? new JProperty("simPin",                    UInt64.TryParse(SIMPINCode, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var simPin) && simPin.ToString(System.Globalization.CultureInfo.InvariantCulture) == SIMPINCode
+                                                                                ? new JValue(simPin)
+                                                                                : new JValue(SIMPINCode))
                                : null,
 
                            PreferredNetwork     is not null
@@ -394,6 +403,207 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out APNConfiguration, out ErrorResponse, CustomAPNConfigurationParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an APN configuration.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="APNConfiguration">The APN configuration.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out APNConfiguration?  APNConfiguration,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out APNConfiguration,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an APN configuration.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="APNConfiguration">The APN configuration.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAPNConfigurationParser">An optional delegate to read custom APN configurations.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out APNConfiguration?           APNConfiguration,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<APNConfiguration>?  CustomAPNConfigurationParser)
+        {
+
+            try
+            {
+
+                APNConfiguration = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an APN configuration is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("apn",
+                                             "access point name",
+                                             out var AccessPointName,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("apnAuthentication",
+                                             "APN authentication",
+                                             out var AuthenticationMethodText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!APNAuthenticationMethodsExtensions.TryParse(AuthenticationMethodText, out var AuthenticationMethod))
+                {
+                    ErrorResponse = $"Invalid APN authentication '{AuthenticationMethodText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("apnUserName",
+                                       "APN user name",
+                                       out var Username,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("apnPassword",
+                                       "APN password",
+                                       out var Password,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                // The schema's integer, or the text a PIN with leading zeros is.
+                String? SIMPINCode = null;
+
+                if (CBOR.TryGetValue(CBORValue.FromText("simPin"), out var simPin))
+                {
+
+                    SIMPINCode = simPin.Kind switch {
+                                     CBORValueKind.UnsignedInteger  => simPin.AsUInt64().ToString(System.Globalization.CultureInfo.InvariantCulture),
+                                     CBORValueKind.TextString       => simPin.AsText(),
+                                     _                              => null
+                                 };
+
+                    if (SIMPINCode is null)
+                    {
+                        ErrorResponse = "The SIM PIN is neither a number nor a text!";
+                        return false;
+                    }
+
+                }
+
+                CBOR.ParseOptionalText("preferredNetwork",
+                                       "preferred network",
+                                       out var PreferredNetwork,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("useOnlyPreferredNetwork",
+                                          "use only the preferred network",
+                                          out var OnlyPreferredNetwork,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                APNConfiguration = new APNConfiguration(
+                                       AccessPointName,
+                                       AuthenticationMethod,
+                                       Username,
+                                       Password,
+                                       SIMPINCode,
+                                       PreferredNetwork,
+                                       OnlyPreferredNetwork,
+                                       CustomData
+                                   );
+
+                if (CustomAPNConfigurationParser is not null)
+                    APNConfiguration = CustomAPNConfigurationParser(CBOR,
+                                                  APNConfiguration);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                APNConfiguration  = default;
+                ErrorResponse  = "The given CBOR representation of an APN configuration is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<APNConfiguration>.TryParse(CBOR, out APNConfiguration, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an APN configuration - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<APNConfiguration>.TryParse(CBORValue                         CBOR,
+                                                                  out APNConfiguration                  Value,
+                                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAPNConfigurationSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this APN configuration: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAPNConfigurationSerializer">A delegate to serialize custom APN configurations.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<APNConfiguration>? CustomAPNConfigurationSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("apn",                                    CBORValue.FromText(AccessPointName)),
+                           ("apnAuthentication",                      CBORValue.FromText(AuthenticationMethod.AsText())),
+                           ("apnUserName",                            OCPPCBORExtensions.Text(Username)),
+                           ("apnPassword",                            OCPPCBORExtensions.Text(Password)),
+                           ("simPin",                                 SIMPINCode is null ? (CBORValue?) null : UInt64.TryParse(SIMPINCode, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var simPin) && simPin.ToString(System.Globalization.CultureInfo.InvariantCulture) == SIMPINCode ? CBORValue.FromUInt64(simPin) : CBORValue.FromText(SIMPINCode)),
+                           ("preferredNetwork",                       OCPPCBORExtensions.Text(PreferredNetwork)),
+                           ("useOnlyPreferredNetwork",                OCPPCBORExtensions.Flag(OnlyPreferredNetwork)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomAPNConfigurationSerializer is not null
+                       ? CustomAPNConfigurationSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

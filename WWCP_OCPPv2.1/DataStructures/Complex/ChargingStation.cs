@@ -35,6 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A charging station is a physical system where an electrical vehicle can be charged.
     /// </summary>
     public class ChargingStation : ACustomData,
+                                   ICBORSerializable<ChargingStation>,
                                    IEquatable<ChargingStation>
     {
 
@@ -194,7 +195,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) TryParse(JSON,   out ChargingStation, out ErrorResponse, ...)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a custom data object.
+        /// Try to parse the given JSON representation of a charging station.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="ChargingStation">The parsed charging station.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                                    JSON,
+                                       [NotNullWhen(true)]  out ChargingStation?  ChargingStation,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParse(JSON,
+                        out ChargingStation,
+                        out ErrorResponse,
+                        null,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a charging station.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingStation">The parsed charging station.</param>
@@ -204,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(JObject                                        JSON,
                                        [NotNullWhen(true)]  out ChargingStation?      ChargingStation,
                                        [NotNullWhen(false)] out String?               ErrorResponse,
-                                       CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser   = null,
+                                       CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser,
                                        CustomJObjectParserDelegate<CustomData>?       CustomCustomDataParser        = null)
         {
 
@@ -501,6 +519,170 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ChargingStation, out ErrorResponse, CustomChargingStationParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging station.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingStation">The charging station.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ChargingStation?  ChargingStation,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ChargingStation,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging station.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingStation">The charging station.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingStationParser">An optional delegate to read custom charging stations.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ChargingStation?           ChargingStation,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ChargingStation>?  CustomChargingStationParser)
+        {
+
+            try
+            {
+
+                ChargingStation = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a charging station is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("model",
+                                             "model",
+                                             out var Model,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("vendorName",
+                                             "vendor name",
+                                             out var VendorName,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("serialNumber",
+                                       "serial number",
+                                       out var SerialNumber,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("firmwareVersion",
+                                       "firmware version",
+                                       out var FirmwareVersion,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("modem",
+                                   "modem",
+                                   OCPPv2_1.Modem.TryParseCBOR,
+                                   out Modem? Modem,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ChargingStation = new ChargingStation(
+                                      Model,
+                                      VendorName,
+                                      SerialNumber,
+                                      FirmwareVersion,
+                                      Modem,
+                                      CustomData
+                                  );
+
+                if (CustomChargingStationParser is not null)
+                    ChargingStation = CustomChargingStationParser(CBOR,
+                                                 ChargingStation);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingStation  = default;
+                ErrorResponse  = "The given CBOR representation of a charging station is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingStation>.TryParse(CBOR, out ChargingStation, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging station - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingStation>.TryParse(CBORValue                         CBOR,
+                                                                 out ChargingStation                  Value,
+                                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChargingStationSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this charging station: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChargingStationSerializer">A delegate to serialize custom charging stations.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingStation>? CustomChargingStationSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("serialNumber",                           OCPPCBORExtensions.Text(SerialNumber)),
+                           ("model",                                  CBORValue.FromText(Model)),
+                           ("modem",                                  Modem?.ToCBOR()),
+                           ("vendorName",                             CBORValue.FromText(VendorName)),
+                           ("firmwareVersion",                        OCPPCBORExtensions.Text(FirmwareVersion)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomChargingStationSerializer is not null
+                       ? CustomChargingStationSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

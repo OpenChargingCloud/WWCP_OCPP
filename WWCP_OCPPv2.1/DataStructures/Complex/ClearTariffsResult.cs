@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// The result of a ClearTariffs request.
     /// </summary>
     public class ClearTariffsResult : ACustomData,
+                                      ICBORSerializable<ClearTariffsResult>,
                                       IEquatable<ClearTariffsResult>,
                                       IComparable<ClearTariffsResult>,
                                       IComparable
@@ -324,6 +327,169 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomClearTariffsResultSerializer is not null
                        ? CustomClearTariffsResultSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out ClearTariffsResult, out ErrorResponse, CustomClearTariffsResultParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear tariffs result.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ClearTariffsResult">The clear tariffs result.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ClearTariffsResult?  ClearTariffsResult,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ClearTariffsResult,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear tariffs result.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ClearTariffsResult">The clear tariffs result.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomClearTariffsResultParser">An optional delegate to read custom clear tariffs results.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ClearTariffsResult?           ClearTariffsResult,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ClearTariffsResult>?  CustomClearTariffsResultParser)
+        {
+
+            try
+            {
+
+                ClearTariffsResult = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a clear tariffs result is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "tariff clear status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!TariffClearStatus.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid tariff clear status '{StatusText}'!";
+                    return false;
+                }
+
+                Tariff_Id? TariffId = null;
+
+                if (CBOR.ParseOptionalText("tariffId",
+                                           "tariff identification",
+                                           out var TariffIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!Tariff_Id.TryParse(TariffIdText!, out var TariffIdValue))
+                    {
+                        ErrorResponse = $"Invalid tariff identification '{TariffIdText}'!";
+                        return false;
+                    }
+
+                    TariffId = TariffIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status information",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ClearTariffsResult = new ClearTariffsResult(
+                                         Status,
+                                         TariffId,
+                                         StatusInfo,
+                                         CustomData
+                                     );
+
+                if (CustomClearTariffsResultParser is not null)
+                    ClearTariffsResult = CustomClearTariffsResultParser(CBOR,
+                                                    ClearTariffsResult);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClearTariffsResult  = default;
+                ErrorResponse  = "The given CBOR representation of a clear tariffs result is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ClearTariffsResult>.TryParse(CBOR, out ClearTariffsResult, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear tariffs result - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ClearTariffsResult>.TryParse(CBORValue                         CBOR,
+                                                                    out ClearTariffsResult                  Value,
+                                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClearTariffsResultSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this clear tariffs result: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClearTariffsResultSerializer">A delegate to serialize custom clear tariffs results.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClearTariffsResult>? CustomClearTariffsResultSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                                 CBORValue.FromText(Status.ToString())),
+                           ("tariffId",                               OCPPCBORExtensions.Text(TariffId?.ToString())),
+                           ("statusInfo",                             StatusInfo?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomClearTariffsResultSerializer is not null
+                       ? CustomClearTariffsResultSerializer(this, cbor)
+                       : cbor;
 
         }
 

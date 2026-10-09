@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Battery data.
     /// </summary>
     public class BatteryData : ACustomData,
+                               ICBORSerializable<BatteryData>,
                                IEquatable<BatteryData>
     {
 
@@ -382,6 +385,190 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out BatteryData, out ErrorResponse, CustomBatteryDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a battery data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="BatteryData">The battery data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out BatteryData?  BatteryData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out BatteryData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a battery data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="BatteryData">The battery data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomBatteryDataParser">An optional delegate to read custom battery data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out BatteryData?           BatteryData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<BatteryData>?  CustomBatteryDataParser)
+        {
+
+            try
+            {
+
+                BatteryData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a battery data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("evseId",
+                                               "EVSE identification",
+                                               out var EVSEIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (EVSEIdNumber > UInt16.MaxValue || !EVSE_Id.TryParse((UInt16) EVSEIdNumber, out var EVSEId))
+                {
+                    ErrorResponse = $"Invalid EVSE identification '{EVSEIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("serialNumber",
+                                             "serial number",
+                                             out var SerialNumber,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("soC",
+                                              "state of charge",
+                                              OCPPCBORExtensions.TryParsePercentage,
+                                              out Percentage SoC,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("soH",
+                                              "state of health",
+                                              OCPPCBORExtensions.TryParsePercentage,
+                                              out Percentage SoH,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("productionDate",
+                                        "production date",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ProductionDateOffset,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                var ProductionDate = ProductionDateOffset?.UtcDateTime;
+
+                CBOR.ParseOptionalText("vendorInfo",
+                                       "vendor information",
+                                       out var VendorInfo,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                BatteryData = new BatteryData(
+                                  EVSEId,
+                                  SerialNumber,
+                                  SoC,
+                                  SoH,
+                                  ProductionDate,
+                                  VendorInfo,
+                                  CustomData
+                              );
+
+                if (CustomBatteryDataParser is not null)
+                    BatteryData = CustomBatteryDataParser(CBOR,
+                                             BatteryData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                BatteryData  = default;
+                ErrorResponse  = "The given CBOR representation of a battery data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<BatteryData>.TryParse(CBOR, out BatteryData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a battery data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<BatteryData>.TryParse(CBORValue                         CBOR,
+                                                             out BatteryData                  Value,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomBatteryDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this battery data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomBatteryDataSerializer">A delegate to serialize custom battery data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<BatteryData>? CustomBatteryDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evseId",                                 CBORValue.FromUInt64(EVSEId.Value)),
+                           ("serialNumber",                           CBORValue.FromText(SerialNumber)),
+                           ("soC",                                    SoC.ToCBOR()),
+                           ("soH",                                    SoH.ToCBOR()),
+                           ("productionDate",                         ProductionDate.HasValue ? (CBORValue?) new DateTimeOffset(ProductionDate.Value.ToUniversalTime(), TimeSpan.Zero).ToCBOR() : null),
+                           ("vendorInfo",                             OCPPCBORExtensions.Text(VendorInfo)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomBatteryDataSerializer is not null
+                       ? CustomBatteryDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

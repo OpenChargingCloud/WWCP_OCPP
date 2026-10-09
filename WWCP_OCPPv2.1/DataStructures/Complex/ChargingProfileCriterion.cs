@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A charging profile criterion.
     /// </summary>
     public class ChargingProfileCriterion : ACustomData,
+                                            ICBORSerializable<ChargingProfileCriterion>,
                                             IEquatable<ChargingProfileCriterion>
     {
 
@@ -362,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            StackLevel.HasValue
-                               ? new JProperty("stackLevel",               StackLevel.            Value.ToString())
+                               ? new JProperty("stackLevel",               StackLevel.            Value)
                                : null,
 
                            ChargingProfileIds.Any()
@@ -387,6 +390,213 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ChargingProfileCriterion, out ErrorResponse, CustomChargingProfileCriterionParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile criterion.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingProfileCriterion">The charging profile criterion.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ChargingProfileCriterion?  ChargingProfileCriterion,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ChargingProfileCriterion,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile criterion.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingProfileCriterion">The charging profile criterion.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingProfileCriterionParser">An optional delegate to read custom charging profile criterions.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ChargingProfileCriterion?           ChargingProfileCriterion,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ChargingProfileCriterion>?  CustomChargingProfileCriterionParser)
+        {
+
+            try
+            {
+
+                ChargingProfileCriterion = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a charging profile criterion is not a map!";
+                    return false;
+                }
+
+                ChargingProfilePurpose? ChargingProfilePurpose = null;
+
+                if (CBOR.ParseOptionalText("chargingProfilePurpose",
+                                           "charging profile purpose",
+                                           out var ChargingProfilePurposeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.ChargingProfilePurpose.TryParse(ChargingProfilePurposeText!, out var ChargingProfilePurposeValue))
+                    {
+                        ErrorResponse = $"Invalid charging profile purpose '{ChargingProfilePurposeText}'!";
+                        return false;
+                    }
+
+                    ChargingProfilePurpose = ChargingProfilePurposeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                UInt32? StackLevel = null;
+
+                if (CBOR.ParseOptionalUInt64("stackLevel",
+                                             "stack level",
+                                             out var StackLevelNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (StackLevelNumber is not UInt64 StackLevelValue || StackLevelValue > UInt32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid stack level '{StackLevelNumber}'!";
+                        return false;
+                    }
+
+                    StackLevel = (UInt32) StackLevelValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<ChargingProfile_Id>("chargingProfileId",
+                                               "charging profile identifications",
+                                               (CBORValue item, out ChargingProfile_Id value, out String? errorResponse) => {
+
+                                                   value         = default;
+                                                   errorResponse = null;
+
+                                                   if (!(item.Kind == CBORValueKind.UnsignedInteger && item.AsUInt64() <= UInt64.MaxValue && ChargingProfile_Id.TryParse((UInt64) item.AsUInt64(), out value)))
+                                                   {
+                                                       errorResponse = $"Invalid charging profile identification '{item}'!";
+                                                       return false;
+                                                   }
+
+                                                   return true;
+
+                                               },
+                                               out var ChargingProfileIds,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<ChargingLimitSource>("chargingLimitSource",
+                                               "charging limit sources",
+                                               (CBORValue item, out ChargingLimitSource value, out String? errorResponse) => {
+
+                                                   value         = default;
+                                                   errorResponse = null;
+
+                                                   if (!(item.Kind == CBORValueKind.TextString && OCPPv2_1.ChargingLimitSource.TryParse(item.AsText(), out value)))
+                                                   {
+                                                       errorResponse = $"Invalid charging limit source '{item}'!";
+                                                       return false;
+                                                   }
+
+                                                   return true;
+
+                                               },
+                                               out var ChargingLimitSources,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ChargingProfileCriterion = new ChargingProfileCriterion(
+                                               ChargingProfilePurpose,
+                                               StackLevel,
+                                               ChargingProfileIds,
+                                               ChargingLimitSources,
+                                               CustomData
+                                           );
+
+                if (CustomChargingProfileCriterionParser is not null)
+                    ChargingProfileCriterion = CustomChargingProfileCriterionParser(CBOR,
+                                                          ChargingProfileCriterion);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingProfileCriterion  = default;
+                ErrorResponse  = "The given CBOR representation of a charging profile criterion is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingProfileCriterion>.TryParse(CBOR, out ChargingProfileCriterion, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile criterion - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingProfileCriterion>.TryParse(CBORValue                         CBOR,
+                                                                          out ChargingProfileCriterion                  Value,
+                                                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChargingProfileCriterionSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this charging profile criterion: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChargingProfileCriterionSerializer">A delegate to serialize custom charging profile criterions.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingProfileCriterion>? CustomChargingProfileCriterionSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("chargingProfilePurpose",                 OCPPCBORExtensions.Text(ChargingProfilePurpose?.ToString())),
+                           ("stackLevel",                             OCPPCBORExtensions.UInt(StackLevel)),
+                           ("chargingProfileId",                      OCPPCBORExtensions.Array(ChargingProfileIds,   id     => CBORValue.FromUInt64(id.Value))),
+                           ("chargingLimitSource",                    OCPPCBORExtensions.Array(ChargingLimitSources, source => CBORValue.FromText(source.ToString()))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomChargingProfileCriterionSerializer is not null
+                       ? CustomChargingProfileCriterionSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

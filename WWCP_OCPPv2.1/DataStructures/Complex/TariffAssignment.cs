@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Shows assignments of tariffs to EVSEs or IdTokens.
     /// </summary>
     public class TariffAssignment : ACustomData,
+                                    ICBORSerializable<TariffAssignment>,
                                     IEquatable<TariffAssignment>,
                                     IComparable<TariffAssignment>,
                                     IComparable
@@ -360,6 +363,210 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomTariffAssignmentSerializer is not null
                        ? CustomTariffAssignmentSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out TariffAssignment, out ErrorResponse, CustomTariffAssignmentParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff assignment.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffAssignment">The tariff assignment.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out TariffAssignment?  TariffAssignment,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TariffAssignment,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff assignment.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffAssignment">The tariff assignment.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTariffAssignmentParser">An optional delegate to read custom tariff assignments.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out TariffAssignment?           TariffAssignment,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TariffAssignment>?  CustomTariffAssignmentParser)
+        {
+
+            try
+            {
+
+                TariffAssignment = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tariff assignment is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("tariffId",
+                                             "tariff identification",
+                                             out var TariffIdText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!Tariff_Id.TryParse(TariffIdText, out var TariffId))
+                {
+                    ErrorResponse = $"Invalid tariff identification '{TariffIdText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("tariffKind",
+                                             "tariff kind",
+                                             out var TariffKindText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.TariffKind.TryParse(TariffKindText, out var TariffKind))
+                {
+                    ErrorResponse = $"Invalid tariff kind '{TariffKindText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("validFrom",
+                                        "valid from",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ValidFrom,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<EVSE_Id>("evseIds",
+                                               "EVSE identifications",
+                                               (CBORValue item, out EVSE_Id value, out String? errorResponse) => {
+
+                                                   value         = default;
+                                                   errorResponse = null;
+
+                                                   if (!(item.Kind == CBORValueKind.UnsignedInteger && item.AsUInt64() <= UInt16.MaxValue && EVSE_Id.TryParse((UInt16) item.AsUInt64(), out value)))
+                                                   {
+                                                       errorResponse = $"Invalid EVSE identification '{item}'!";
+                                                       return false;
+                                                   }
+
+                                                   return true;
+
+                                               },
+                                               out var EVSEIds,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<String>("idTokens",
+                                               "identification tokens",
+                                               (CBORValue item, out String? value, out String? errorResponse) => {
+
+                                                   value         = default;
+                                                   errorResponse = null;
+
+                                                   if (!(item.Kind == CBORValueKind.TextString && (value = item.AsText()) is not null))
+                                                   {
+                                                       errorResponse = $"Invalid identification token '{item}'!";
+                                                       return false;
+                                                   }
+
+                                                   return true;
+
+                                               },
+                                               out var IdTokens,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TariffAssignment = new TariffAssignment(
+                                       TariffId,
+                                       TariffKind,
+                                       EVSEIds,
+                                       IdTokens,
+                                       ValidFrom,
+                                       CustomData
+                                   );
+
+                if (CustomTariffAssignmentParser is not null)
+                    TariffAssignment = CustomTariffAssignmentParser(CBOR,
+                                                  TariffAssignment);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TariffAssignment  = default;
+                ErrorResponse  = "The given CBOR representation of a tariff assignment is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TariffAssignment>.TryParse(CBOR, out TariffAssignment, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff assignment - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TariffAssignment>.TryParse(CBORValue                         CBOR,
+                                                                  out TariffAssignment                  Value,
+                                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTariffAssignmentSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tariff assignment: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTariffAssignmentSerializer">A delegate to serialize custom tariff assignments.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TariffAssignment>? CustomTariffAssignmentSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("tariffId",                               CBORValue.FromText(TariffId.ToString())),
+                           ("tariffKind",                             CBORValue.FromText(TariffKind.ToString())),
+                           ("validFrom",                              ValidFrom?.ToCBOR()),
+                           ("evseIds",                                OCPPCBORExtensions.Array(EVSEIds,  evseId  => CBORValue.FromUInt64(evseId.Value))),
+                           ("idTokens",                               OCPPCBORExtensions.Array(IdTokens, idToken => CBORValue.FromText(idToken))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTariffAssignmentSerializer is not null
+                       ? CustomTariffAssignmentSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Information to verify the electric vehicle/user contract certificate via OCSP.
     /// </summary>
     public class OCSPRequestData : ACustomData,
+                                   ICBORSerializable<OCSPRequestData>,
                                    IEquatable<OCSPRequestData>
     {
 
@@ -370,6 +373,181 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out OCSPRequestData, out ErrorResponse, CustomOCSPRequestDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an OCSP request data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="OCSPRequestData">The OCSP request data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out OCSPRequestData?  OCSPRequestData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out OCSPRequestData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an OCSP request data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="OCSPRequestData">The OCSP request data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomOCSPRequestDataParser">An optional delegate to read custom OCSP request data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out OCSPRequestData?           OCSPRequestData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<OCSPRequestData>?  CustomOCSPRequestDataParser)
+        {
+
+            try
+            {
+
+                OCSPRequestData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an OCSP request data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("hashAlgorithm",
+                                             "hash algorithm",
+                                             out var HashAlgorithmText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.HashAlgorithm.TryParse(HashAlgorithmText, out var HashAlgorithm))
+                {
+                    ErrorResponse = $"Invalid hash algorithm '{HashAlgorithmText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("issuerNameHash",
+                                             "issuer name hash",
+                                             out var IssuerNameHash,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("issuerKeyHash",
+                                             "issuer key hash",
+                                             out var IssuerKeyHash,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("serialNumber",
+                                             "serial number",
+                                             out var SerialNumber,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("responderURL",
+                                             "responder URL",
+                                             out var ResponderURLText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!URL.TryParse(ResponderURLText, out var ResponderURL))
+                {
+                    ErrorResponse = $"Invalid responder URL '{ResponderURLText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                OCSPRequestData = new OCSPRequestData(
+                                      HashAlgorithm,
+                                      IssuerNameHash,
+                                      IssuerKeyHash,
+                                      SerialNumber,
+                                      ResponderURL,
+                                      CustomData
+                                  );
+
+                if (CustomOCSPRequestDataParser is not null)
+                    OCSPRequestData = CustomOCSPRequestDataParser(CBOR,
+                                                 OCSPRequestData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                OCSPRequestData  = default;
+                ErrorResponse  = "The given CBOR representation of an OCSP request data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<OCSPRequestData>.TryParse(CBOR, out OCSPRequestData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an OCSP request data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<OCSPRequestData>.TryParse(CBORValue                         CBOR,
+                                                                 out OCSPRequestData                  Value,
+                                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomOCSPRequestDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this OCSP request data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomOCSPRequestDataSerializer">A delegate to serialize custom OCSP request data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<OCSPRequestData>? CustomOCSPRequestDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("hashAlgorithm",                          CBORValue.FromText(HashAlgorithm.ToString())),
+                           ("issuerNameHash",                         CBORValue.FromText(IssuerNameHash)),
+                           ("issuerKeyHash",                          CBORValue.FromText(IssuerKeyHash)),
+                           ("serialNumber",                           CBORValue.FromText(SerialNumber)),
+                           ("responderURL",                           CBORValue.FromText(ResponderURL.ToString())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomOCSPRequestDataSerializer is not null
+                       ? CustomOCSPRequestDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

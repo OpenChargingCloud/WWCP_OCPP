@@ -24,6 +24,10 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A network connection profile.
     /// </summary>
     public class NetworkConnectionProfile : ACustomData,
+                                            ICBORSerializable<NetworkConnectionProfile>,
                                             IEquatable<NetworkConnectionProfile>
     {
 
@@ -498,6 +503,259 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out NetworkConnectionProfile, out ErrorResponse, CustomNetworkConnectionProfileParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a network connection profile.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="NetworkConnectionProfile">The network connection profile.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out NetworkConnectionProfile?  NetworkConnectionProfile,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out NetworkConnectionProfile,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a network connection profile.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="NetworkConnectionProfile">The network connection profile.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomNetworkConnectionProfileParser">An optional delegate to read custom network connection profiles.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out NetworkConnectionProfile?           NetworkConnectionProfile,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<NetworkConnectionProfile>?  CustomNetworkConnectionProfileParser)
+        {
+
+            try
+            {
+
+                NetworkConnectionProfile = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a network connection profile is not a map!";
+                    return false;
+                }
+
+                OCPPVersion? Version = null;
+
+                if (CBOR.ParseOptionalText("ocppVersion",
+                                           "OCPP version",
+                                           out var VersionText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPVersion.TryParse(VersionText!, out var VersionValue))
+                    {
+                        ErrorResponse = $"Invalid OCPP version '{VersionText}'!";
+                        return false;
+                    }
+
+                    Version = VersionValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!CBOR.ParseMandatoryText("ocppTransport",
+                                             "OCPP transport",
+                                             out var TransportText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!TransportProtocolsExtensions.TryParse(TransportText, out var Transport))
+                {
+                    ErrorResponse = $"Invalid OCPP transport '{TransportText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("ocppCsmsUrl",
+                                             "CSMS URL",
+                                             out var CentralServiceURLText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!URL.TryParse(CentralServiceURLText, out var CentralServiceURL))
+                {
+                    ErrorResponse = $"Invalid CSMS URL '{CentralServiceURLText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("messageTimeout",
+                                              "message timeout",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan MessageTimeout,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("securityProfile",
+                                               "security profile",
+                                               out var securityProfileNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (securityProfileNumber > Byte.MaxValue || !OCPPSecurityProfilesExtensions.TryParse((Byte) securityProfileNumber, out var SecurityProfile))
+                {
+                    ErrorResponse = $"Invalid security profile '{securityProfileNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("ocppInterface",
+                                             "OCPP interface",
+                                             out var NetworkInterfaceText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.NetworkInterface.TryParse(NetworkInterfaceText, out var NetworkInterface))
+                {
+                    ErrorResponse = $"Invalid OCPP interface '{NetworkInterfaceText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("vpn",
+                                   "VPN configuration",
+                                   OCPPv2_1.VPNConfiguration.TryParseCBOR,
+                                   out VPNConfiguration? VPNConfiguration,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("apn",
+                                   "APN configuration",
+                                   OCPPv2_1.APNConfiguration.TryParseCBOR,
+                                   out APNConfiguration? APNConfiguration,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("identity",
+                                       "identity",
+                                       out var Identity,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("basicAuthPassword",
+                                       "basic auth password",
+                                       out var BasicAuthPassword,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                NetworkConnectionProfile = new NetworkConnectionProfile(
+                                               Version,
+                                               Transport,
+                                               CentralServiceURL,
+                                               MessageTimeout,
+                                               SecurityProfile,
+                                               NetworkInterface,
+                                               VPNConfiguration,
+                                               APNConfiguration,
+                                               Identity,
+                                               BasicAuthPassword,
+                                               CustomData
+                                           );
+
+                if (CustomNetworkConnectionProfileParser is not null)
+                    NetworkConnectionProfile = CustomNetworkConnectionProfileParser(CBOR,
+                                                          NetworkConnectionProfile);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NetworkConnectionProfile  = default;
+                ErrorResponse  = "The given CBOR representation of a network connection profile is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<NetworkConnectionProfile>.TryParse(CBOR, out NetworkConnectionProfile, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a network connection profile - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<NetworkConnectionProfile>.TryParse(CBORValue                         CBOR,
+                                                                          out NetworkConnectionProfile                  Value,
+                                                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNetworkConnectionProfileSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this network connection profile: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNetworkConnectionProfileSerializer">A delegate to serialize custom network connection profiles.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NetworkConnectionProfile>? CustomNetworkConnectionProfileSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("ocppVersion",                            OCPPCBORExtensions.Text(Version?.ToString())),
+                           ("ocppTransport",                          CBORValue.FromText(Transport.AsText())),
+                           ("ocppCsmsUrl",                            CBORValue.FromText(CentralServiceURL.ToString())),
+                           ("messageTimeout",                         MessageTimeout.ToCBOR()),
+                           ("securityProfile",                        CBORValue.FromUInt64(SecurityProfile.AsNumber())),
+                           ("ocppInterface",                          CBORValue.FromText(NetworkInterface.ToString())),
+                           ("vpn",                                    VPNConfiguration?.ToCBOR()),
+                           ("apn",                                    APNConfiguration?.ToCBOR()),
+                           ("identity",                               OCPPCBORExtensions.Text(Identity)),
+                           ("basicAuthPassword",                      OCPPCBORExtensions.Text(BasicAuthPassword)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomNetworkConnectionProfileSerializer is not null
+                       ? CustomNetworkConnectionProfileSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

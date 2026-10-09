@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void MessageInfo()
 
-            => ReadAndWrittenAsTheSchemaSays<MessageInfo>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<MessageInfo>(
                    $$"""
                    {
                        "display":        { "name": "DisplayMessageCtrlr", "instance": "front" },
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void StreamDataElement()
 
-            => ReadAndWrittenAsTheSchemaSays<StreamDataElement>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<StreamDataElement>(
                    $$"""
                    { "t": 1.5, "v": "230.1", "customData": {{Custom}} }
                    """,
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void TariffAssignment()
 
-            => ReadAndWrittenAsTheSchemaSays<TariffAssignment>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<TariffAssignment>(
                    $$"""
                    {
                        "tariffId":   "tariff-1",
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ClearTariffsResult()
 
-            => ReadAndWrittenAsTheSchemaSays<ClearTariffsResult>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ClearTariffsResult>(
                    $$"""
                    {
                        "statusInfo": { "reasonCode": "NoTariff" },
@@ -910,7 +910,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void NetworkConnectionProfile()
 
-            => ReadAndWrittenAsTheSchemaSays<NetworkConnectionProfile>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<NetworkConnectionProfile>(
                    $$"""
                    {
                        "ocppInterface":     "Wired0",
@@ -1322,6 +1322,230 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                    }, "startTime": "2026-10-09T12:00:00Z", "duration": 3600.5, "customData": {{Custom}} }
                    """,
                    OCPPv2_1.DERLimitMaxDischarge.TryParse,
+                   value => value.ToJSON()
+               );
+
+        #endregion
+
+        #region Certificates, network profiles, firmware and the other data types, with every property
+
+        [Test]
+        public void APNConfiguration_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.APNConfiguration>(
+                   $$"""
+                   { "apn": "internet.example.org", "apnUserName": "user", "apnPassword": "secret", "simPin": 1234, "preferredNetwork": "26201", "useOnlyPreferredNetwork": true, "apnAuthentication": "CHAP", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.APNConfiguration.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void VPNConfiguration_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.VPNConfiguration>(
+                   $$"""
+                   { "server": "https://vpn.example.org", "user": "cs01", "group": "stations", "password": "secret", "key": "shared", "type": "IKEv2", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.VPNConfiguration.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void NetworkConnectionProfile_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.NetworkConnectionProfile>(
+                   $$"""
+                   {
+                       "apn":               { "apn": "internet.example.org", "apnUserName": "user", "apnPassword": "secret", "simPin": 1234, "preferredNetwork": "26201", "useOnlyPreferredNetwork": true, "apnAuthentication": "CHAP", "customData": {{Custom}} },
+                       "ocppTransport":     "JSON",
+                       "ocppCsmsUrl":       "wss://csms.example.org/ocpp",
+                       "messageTimeout":    30,
+                       "securityProfile":   2,
+                       "ocppInterface":     "Wireless0",
+                       "vpn":               { "server": "https://vpn.example.org", "user": "cs01", "group": "stations", "password": "secret", "key": "shared", "type": "IKEv2", "customData": {{Custom}} },
+                       "identity":          "CS01",
+                       "basicAuthPassword": "0123456789abcdef",
+                       "customData":        {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.NetworkConnectionProfile.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void AuthorizationData_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.AuthorizationData>(
+                   $$"""
+                   { "idToken": { "idToken": "AABBCCDD", "type": "ISO14443" }, "idTokenInfo": { "status": "Accepted", "chargingPriority": 1 }, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.AuthorizationData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void BatteryData_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.BatteryData>(
+                   $$"""
+                   { "evseId": 1, "serialNumber": "BAT-1", "soC": 80.5, "soH": 95.5, "productionDate": "2026-01-01T00:00:00Z", "vendorInfo": "GraphDefined", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.BatteryData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void CertificateHashData_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.CertificateHashData>(
+                   $$"""
+                   { "hashAlgorithm": "SHA256", "issuerNameHash": "0a1b2c", "issuerKeyHash": "3d4e5f", "serialNumber": "01ab", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.CertificateHashData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void CertificateHashDataChain_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.CertificateHashDataChain>(
+                   $$"""
+                   { "certificateHashData": { "hashAlgorithm": "SHA256", "issuerNameHash": "0a1b2c", "issuerKeyHash": "3d4e5f", "serialNumber": "01ab", "customData": {{Custom}} }, "certificateType": "V2GCertificateChain", "childCertificateHashData": [ { "hashAlgorithm": "SHA256", "issuerNameHash": "0a1b2c", "issuerKeyHash": "3d4e5f", "serialNumber": "01ab", "customData": {{Custom}} } ], "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.CertificateHashDataChain.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void CertificateStatusInfo_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.CertificateStatusInfo>(
+                   $$"""
+                   { "certificateHashData": { "hashAlgorithm": "SHA256", "issuerNameHash": "0a1b2c", "issuerKeyHash": "3d4e5f", "serialNumber": "01ab", "customData": {{Custom}} }, "source": "OCSP", "status": "Good", "nextUpdate": "2026-10-10T12:00:00Z", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.CertificateStatusInfo.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void CertificateStatusRequestInfo_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.CertificateStatusRequestInfo>(
+                   $$"""
+                   { "certificateHashData": { "hashAlgorithm": "SHA256", "issuerNameHash": "0a1b2c", "issuerKeyHash": "3d4e5f", "serialNumber": "01ab", "customData": {{Custom}} }, "source": "OCSP", "urls": [ "https://ocsp.example.org" ], "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.CertificateStatusRequestInfo.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void OCSPRequestData_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.OCSPRequestData>(
+                   $$"""
+                   { "hashAlgorithm": "SHA256", "issuerNameHash": "0a1b2c", "issuerKeyHash": "3d4e5f", "serialNumber": "01ab", "responderURL": "https://ocsp.example.org", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.OCSPRequestData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void ChargingLimit_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.ChargingLimit>(
+                   $$"""
+                   { "chargingLimitSource": "EMS", "isLocalGeneration": true, "isGridCritical": true, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.ChargingLimit.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void ChargingProfileCriterion_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.ChargingProfileCriterion>(
+                   $$"""
+                   { "chargingProfilePurpose": "TxProfile", "stackLevel": 2, "chargingProfileId": [ 1, 2 ], "chargingLimitSource": [ "EMS", "SO" ], "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.ChargingProfileCriterion.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void ClearChargingProfile_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.ClearChargingProfile>(
+                   $$"""
+                   { "evseId": 1, "chargingProfilePurpose": "TxDefaultProfile", "stackLevel": 2, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.ClearChargingProfile.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void Modem_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.Modem>(
+                   $$"""
+                   { "iccid": "8949000000000000000", "imsi": "262010000000000", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.Modem.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void ChargingStation_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.ChargingStation>(
+                   $$"""
+                   { "serialNumber": "SN-1", "model": "CS-1", "modem": { "iccid": "8949000000000000000", "imsi": "262010000000000" }, "vendorName": "GraphDefined", "firmwareVersion": "1.0", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.ChargingStation.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void ConstantStreamData_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.ConstantStreamData>(
+                   $$"""
+                   { "id": 1, "params": { "interval": 60, "values": 10 }, "variableMonitoringId": 9, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.ConstantStreamData.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void Firmware_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.Firmware>(
+                   $$"""
+                   { "location": "https://firmware.example.org/1.0.bin", "retrieveDateTime": "2026-10-09T12:00:00Z", "installDateTime": "2026-10-09T13:00:00Z", "signingCertificate": "-----BEGIN CERTIFICATE-----", "signature": "c2lnbmF0dXJl", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.Firmware.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void Contact_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.Contact>(
+                   $$"""
+                   { "name": "GraphDefined GmbH", "address1": "Street 1", "address2": "Building 2", "city": "Jena", "postalCode": "07743", "country": "DE", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.Contact.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void LogParameters_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<OCPPv2_1.LogParameters>(
+                   $$"""
+                   { "remoteLocation": "https://logs.example.org", "oldestTimestamp": "2026-10-01T00:00:00Z", "latestTimestamp": "2026-10-09T00:00:00Z", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.LogParameters.TryParse,
                    value => value.ToJSON()
                );
 

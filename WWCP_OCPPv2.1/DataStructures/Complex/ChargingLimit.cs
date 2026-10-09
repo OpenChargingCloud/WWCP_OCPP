@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A charging limit.
     /// </summary>
     public class ChargingLimit : ACustomData,
+                                 ICBORSerializable<ChargingLimit>,
                                  IEquatable<ChargingLimit>
     {
 
@@ -300,6 +303,155 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ChargingLimit, out ErrorResponse, CustomChargingLimitParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging limit.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingLimit">The charging limit.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ChargingLimit?  ChargingLimit,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ChargingLimit,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging limit.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingLimit">The charging limit.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingLimitParser">An optional delegate to read custom charging limits.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ChargingLimit?           ChargingLimit,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ChargingLimit>?  CustomChargingLimitParser)
+        {
+
+            try
+            {
+
+                ChargingLimit = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a charging limit is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("chargingLimitSource",
+                                             "charging limit source",
+                                             out var ChargingLimitSourceText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.ChargingLimitSource.TryParse(ChargingLimitSourceText, out var ChargingLimitSource))
+                {
+                    ErrorResponse = $"Invalid charging limit source '{ChargingLimitSourceText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalBoolean("isGridCritical",
+                                          "is grid critical",
+                                          out var IsGridCritical,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalBoolean("isLocalGeneration",
+                                          "is local generation",
+                                          out var IsLocalGeneration,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ChargingLimit = new ChargingLimit(
+                                    ChargingLimitSource,
+                                    IsGridCritical,
+                                    IsLocalGeneration,
+                                    CustomData
+                                );
+
+                if (CustomChargingLimitParser is not null)
+                    ChargingLimit = CustomChargingLimitParser(CBOR,
+                                               ChargingLimit);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingLimit  = default;
+                ErrorResponse  = "The given CBOR representation of a charging limit is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingLimit>.TryParse(CBOR, out ChargingLimit, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging limit - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingLimit>.TryParse(CBORValue                         CBOR,
+                                                               out ChargingLimit                  Value,
+                                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChargingLimitSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this charging limit: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChargingLimitSerializer">A delegate to serialize custom charging limits.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingLimit>? CustomChargingLimitSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("chargingLimitSource",                    CBORValue.FromText(ChargingLimitSource.ToString())),
+                           ("isGridCritical",                         OCPPCBORExtensions.Flag(IsGridCritical)),
+                           ("isLocalGeneration",                      OCPPCBORExtensions.Flag(IsLocalGeneration)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomChargingLimitSerializer is not null
+                       ? CustomChargingLimitSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

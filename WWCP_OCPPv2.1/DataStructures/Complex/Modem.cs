@@ -40,7 +40,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class Modem(String?      ICCID        = null,
                        String?      IMSI         = null,
                        CustomData?  CustomData   = null) : ACustomData(CustomData),
-                                                           IEquatable<Modem>
+                                                           IEquatable<Modem>,
+                                                           ICBORSerializable<Modem>
     {
 
         #region Properties
@@ -397,6 +398,139 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out Modem, out ErrorResponse, CustomModemParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a modem.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Modem">The modem.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Modem?  Modem,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Modem,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a modem.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Modem">The modem.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomModemParser">An optional delegate to read custom modems.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Modem?           Modem,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Modem>?  CustomModemParser)
+        {
+
+            try
+            {
+
+                Modem = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a modem is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("iccid",
+                                       "ICCID",
+                                       out var ICCID,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("imsi",
+                                       "IMSI",
+                                       out var IMSI,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Modem = new Modem(
+                            ICCID,
+                            IMSI,
+                            CustomData
+                        );
+
+                if (CustomModemParser is not null)
+                    Modem = CustomModemParser(CBOR,
+                                       Modem);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Modem  = default;
+                ErrorResponse  = "The given CBOR representation of a modem is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Modem>.TryParse(CBOR, out Modem, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a modem - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Modem>.TryParse(CBORValue                         CBOR,
+                                                       out Modem                  Value,
+                                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomModemSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this modem: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomModemSerializer">A delegate to serialize custom modems.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Modem>? CustomModemSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("iccid",                                  OCPPCBORExtensions.Text(ICCID)),
+                           ("imsi",                                   OCPPCBORExtensions.Text(IMSI)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomModemSerializer is not null
+                       ? CustomModemSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

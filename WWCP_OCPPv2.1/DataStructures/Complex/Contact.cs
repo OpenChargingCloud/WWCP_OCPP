@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A contact.
     /// </summary>
     public class Contact : ACustomData,
+                           ICBORSerializable<Contact>,
                            IEquatable<Contact>
     {
 
@@ -380,6 +383,179 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomContactSerializer is not null
                        ? CustomContactSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out Contact, out ErrorResponse, CustomContactParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a contact.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Contact">The contact.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Contact?  Contact,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Contact,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a contact.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Contact">The contact.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomContactParser">An optional delegate to read custom contacts.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Contact?           Contact,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Contact>?  CustomContactParser)
+        {
+
+            try
+            {
+
+                Contact = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a contact is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("name",
+                                             "name",
+                                             out var Name,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("address1",
+                                             "address line 1",
+                                             out var Address1,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("address2",
+                                       "address line 2",
+                                       out var Address2,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!CBOR.ParseMandatoryText("city",
+                                             "city",
+                                             out var City,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("postalCode",
+                                       "postal code",
+                                       out var PostalCode,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!CBOR.ParseMandatoryText("country",
+                                             "country",
+                                             out var Country,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Contact = new Contact(
+                              Name,
+                              Address1,
+                              City,
+                              Country,
+                              Address2,
+                              PostalCode,
+                              CustomData
+                          );
+
+                if (CustomContactParser is not null)
+                    Contact = CustomContactParser(CBOR,
+                                         Contact);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Contact  = default;
+                ErrorResponse  = "The given CBOR representation of a contact is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Contact>.TryParse(CBOR, out Contact, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a contact - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Contact>.TryParse(CBORValue                         CBOR,
+                                                         out Contact                  Value,
+                                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomContactSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this contact: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomContactSerializer">A delegate to serialize custom contacts.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Contact>? CustomContactSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("name",                                   CBORValue.FromText(Name)),
+                           ("address1",                               CBORValue.FromText(Address1)),
+                           ("address2",                               OCPPCBORExtensions.Text(Address2)),
+                           ("city",                                   CBORValue.FromText(City)),
+                           ("postalCode",                             OCPPCBORExtensions.Text(PostalCode)),
+                           ("country",                                CBORValue.FromText(Country)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomContactSerializer is not null
+                       ? CustomContactSerializer(this, cbor)
+                       : cbor;
 
         }
 

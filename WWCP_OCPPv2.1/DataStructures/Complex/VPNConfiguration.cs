@@ -24,6 +24,10 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using System.Diagnostics.CodeAnalysis;
+
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A VPN configuration.
     /// </summary>
     public class VPNConfiguration : ACustomData,
+                                    ICBORSerializable<VPNConfiguration>,
                                     IEquatable<VPNConfiguration>
     {
 
@@ -374,6 +379,191 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out VPNConfiguration, out ErrorResponse, CustomVPNConfigurationParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a VPN configuration.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VPNConfiguration">The VPN configuration.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out VPNConfiguration?  VPNConfiguration,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out VPNConfiguration,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a VPN configuration.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VPNConfiguration">The VPN configuration.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomVPNConfigurationParser">An optional delegate to read custom VPN configurations.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out VPNConfiguration?           VPNConfiguration,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<VPNConfiguration>?  CustomVPNConfigurationParser)
+        {
+
+            try
+            {
+
+                VPNConfiguration = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a VPN configuration is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("server",
+                                             "VPN server",
+                                             out var ServerURLText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!URL.TryParse(ServerURLText, out var ServerURL))
+                {
+                    ErrorResponse = $"Invalid VPN server '{ServerURLText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("user",
+                                             "VPN user",
+                                             out var Login,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("group",
+                                       "VPN group",
+                                       out var AccessGroup,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!CBOR.ParseMandatoryText("password",
+                                             "VPN password",
+                                             out var Password,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("key",
+                                             "VPN shared secret",
+                                             out var SharedSecret,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("type",
+                                             "VPN type",
+                                             out var ProtocolText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!VPNProtocolsExtensions.TryParse(ProtocolText, out var Protocol))
+                {
+                    ErrorResponse = $"Invalid VPN type '{ProtocolText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                VPNConfiguration = new VPNConfiguration(
+                                       ServerURL,
+                                       Login,
+                                       Password,
+                                       SharedSecret,
+                                       Protocol,
+                                       AccessGroup,
+                                       CustomData
+                                   );
+
+                if (CustomVPNConfigurationParser is not null)
+                    VPNConfiguration = CustomVPNConfigurationParser(CBOR,
+                                                  VPNConfiguration);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                VPNConfiguration  = default;
+                ErrorResponse  = "The given CBOR representation of a VPN configuration is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<VPNConfiguration>.TryParse(CBOR, out VPNConfiguration, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a VPN configuration - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<VPNConfiguration>.TryParse(CBORValue                         CBOR,
+                                                                  out VPNConfiguration                  Value,
+                                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomVPNConfigurationSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this VPN configuration: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomVPNConfigurationSerializer">A delegate to serialize custom VPN configurations.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<VPNConfiguration>? CustomVPNConfigurationSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("server",                                 CBORValue.FromText(ServerURL.ToString())),
+                           ("user",                                   CBORValue.FromText(Login)),
+                           ("group",                                  OCPPCBORExtensions.Text(AccessGroup)),
+                           ("password",                               CBORValue.FromText(Password)),
+                           ("key",                                    CBORValue.FromText(SharedSecret)),
+                           ("type",                                   CBORValue.FromText(Protocol.AsText())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomVPNConfigurationSerializer is not null
+                       ? CustomVPNConfigurationSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

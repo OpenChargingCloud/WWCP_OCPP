@@ -656,6 +656,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
+        #region Firmware, APN
+
+        /// <summary>
+        /// The firmware's signature, BASE64 in JSON, is the bytes it encodes in CBOR.
+        /// </summary>
+        [Test]
+        public void Firmware_SignatureIsBytes()
+        {
+
+            Assert.That(OCPPv2_1.Firmware.TryParse(JObject.Parse("""{ "location": "https://firmware.example.org/1.0.bin", "retrieveDateTime": "2026-10-09T12:00:00Z", "signature": "c2lnbmF0dXJl" }"""), out var firmware, out var errorResponse), Is.True, errorResponse);
+
+            Assert.That(firmware!.ToCBOR().TryGetValue(CBORValue.FromText("signature"), out var signature), Is.True);
+            Assert.That(signature.Kind,      Is.EqualTo(CBORValueKind.ByteString));
+            Assert.That(signature.AsBytes(), Is.EqualTo("signature"u8.ToArray()));
+
+        }
+
+        /// <summary>
+        /// A SIM PIN is the schema's integer - but one with a leading zero keeps
+        /// it, as a text, in JSON and CBOR.
+        /// </summary>
+        [Test]
+        public void APNConfiguration_WithASIMPINWithALeadingZero()
+        {
+
+            Assert.That(OCPPv2_1.APNConfiguration.TryParse(JObject.Parse("""{ "apn": "internet", "apnAuthentication": "AUTO", "simPin": "0123" }"""), out var apn, out var errorResponse), Is.True, errorResponse);
+            Assert.That(apn!.ToJSON()["simPin"]?.Type,     Is.EqualTo(JTokenType.String));
+            Assert.That(apn. ToJSON()["simPin"]?.Value<String>(), Is.EqualTo("0123"));
+
+            Assert.That(OCPPv2_1.APNConfiguration.TryParseCBOR(CBORValue.Parse(apn.ToCBOR().ToByteArray()), out var fromCBOR, out errorResponse), Is.True, errorResponse);
+            Assert.That(fromCBOR!.SIMPINCode, Is.EqualTo("0123"));
+
+        }
+
+        #endregion
+
         #region Refused
 
         /// <summary>

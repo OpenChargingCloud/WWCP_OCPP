@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Message details, for a message to be displayed at a charging station.
     /// </summary>
     public class MessageInfo : ACustomData,
+                               ICBORSerializable<MessageInfo>,
                                IEquatable<MessageInfo>
     {
 
@@ -500,6 +503,251 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out MessageInfo, out ErrorResponse, CustomMessageInfoParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a message information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MessageInfo">The message information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out MessageInfo?  MessageInfo,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out MessageInfo,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a message information.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MessageInfo">The message information.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMessageInfoParser">An optional delegate to read custom message information.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out MessageInfo?           MessageInfo,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<MessageInfo>?  CustomMessageInfoParser)
+        {
+
+            try
+            {
+
+                MessageInfo = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a message information is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "display message identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (IdNumber > UInt64.MaxValue || !DisplayMessage_Id.TryParse((UInt64) IdNumber, out var Id))
+                {
+                    ErrorResponse = $"Invalid display message identification '{IdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("priority",
+                                             "message priority",
+                                             out var PriorityText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!MessagePriority.TryParse(PriorityText, out var Priority))
+                {
+                    ErrorResponse = $"Invalid message priority '{PriorityText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("message",
+                                         "message",
+                                         OCPPv2_1.MessageContent.TryParseCBOR,
+                                         out MessageContent? Message,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<MessageContent>("messageExtra",
+                                               "extra messages",
+                                               OCPPv2_1.MessageContent.TryParseCBOR,
+                                               out var MessageExtra,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                MessageState? State = null;
+
+                if (CBOR.ParseOptionalText("state",
+                                           "message state",
+                                           out var StateText,
+                                           out ErrorResponse))
+                {
+
+                    if (!MessageState.TryParse(StateText!, out var StateValue))
+                    {
+                        ErrorResponse = $"Invalid message state '{StateText}'!";
+                        return false;
+                    }
+
+                    State = StateValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("startDateTime",
+                                        "start timestamp",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StartTimestamp,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("endDateTime",
+                                        "end timestamp",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? EndTimestamp,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Transaction_Id? TransactionId = null;
+
+                if (CBOR.ParseOptionalText("transactionId",
+                                           "transaction identification",
+                                           out var TransactionIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (!Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
+                    {
+                        ErrorResponse = $"Invalid transaction identification '{TransactionIdText}'!";
+                        return false;
+                    }
+
+                    TransactionId = TransactionIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("display",
+                                   "display",
+                                   OCPPv2_1.Component.TryParseCBOR,
+                                   out Component? Display,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                MessageInfo = new MessageInfo(
+                                  Id,
+                                  Priority,
+                                  new MessageContents(new[] { Message }.Concat(MessageExtra)),
+                                  State,
+                                  StartTimestamp,
+                                  EndTimestamp,
+                                  TransactionId,
+                                  Display,
+                                  CustomData
+                              );
+
+                if (CustomMessageInfoParser is not null)
+                    MessageInfo = CustomMessageInfoParser(CBOR,
+                                             MessageInfo);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                MessageInfo  = default;
+                ErrorResponse  = "The given CBOR representation of a message information is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<MessageInfo>.TryParse(CBOR, out MessageInfo, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a message information - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<MessageInfo>.TryParse(CBORValue                         CBOR,
+                                                             out MessageInfo                  Value,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomMessageInfoSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this message information: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomMessageInfoSerializer">A delegate to serialize custom message information.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<MessageInfo>? CustomMessageInfoSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                                     CBORValue.FromUInt64(Id.Value)),
+                           ("priority",                               CBORValue.FromText(Priority.ToString())),
+                           ("message",                                Messages.First().ToCBOR()),
+                           ("messageExtra",                           OCPPCBORExtensions.Array(Messages.Skip(1), message => message.ToCBOR())),
+                           ("state",                                  OCPPCBORExtensions.Text(State?.ToString())),
+                           ("startDateTime",                          StartTimestamp?.ToCBOR()),
+                           ("endDateTime",                            EndTimestamp?.  ToCBOR()),
+                           ("transactionId",                          OCPPCBORExtensions.Text(TransactionId?.Value)),
+                           ("display",                                Display?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomMessageInfoSerializer is not null
+                       ? CustomMessageInfoSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

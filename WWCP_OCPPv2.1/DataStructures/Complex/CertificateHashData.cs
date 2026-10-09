@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Certificate hash data.
     /// </summary>
     public class CertificateHashData : ACustomData,
+                                       ICBORSerializable<CertificateHashData>,
                                        IEquatable<CertificateHashData>
     {
 
@@ -335,6 +338,165 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out CertificateHashData, out ErrorResponse, CustomCertificateHashDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a certificate hash data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="CertificateHashData">The certificate hash data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out CertificateHashData?  CertificateHashData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out CertificateHashData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a certificate hash data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="CertificateHashData">The certificate hash data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomCertificateHashDataParser">An optional delegate to read custom certificate hash data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out CertificateHashData?           CertificateHashData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<CertificateHashData>?  CustomCertificateHashDataParser)
+        {
+
+            try
+            {
+
+                CertificateHashData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a certificate hash data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("hashAlgorithm",
+                                             "hash algorithm",
+                                             out var HashAlgorithmText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.HashAlgorithm.TryParse(HashAlgorithmText, out var HashAlgorithm))
+                {
+                    ErrorResponse = $"Invalid hash algorithm '{HashAlgorithmText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("issuerNameHash",
+                                             "issuer name hash",
+                                             out var IssuerNameHash,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("issuerKeyHash",
+                                             "issuer key hash",
+                                             out var IssuerPublicKeyHash,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("serialNumber",
+                                             "serial number",
+                                             out var SerialNumber,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CertificateHashData = new CertificateHashData(
+                                          HashAlgorithm,
+                                          IssuerNameHash,
+                                          IssuerPublicKeyHash,
+                                          SerialNumber,
+                                          CustomData
+                                      );
+
+                if (CustomCertificateHashDataParser is not null)
+                    CertificateHashData = CustomCertificateHashDataParser(CBOR,
+                                                     CertificateHashData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                CertificateHashData  = default;
+                ErrorResponse  = "The given CBOR representation of a certificate hash data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<CertificateHashData>.TryParse(CBOR, out CertificateHashData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a certificate hash data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<CertificateHashData>.TryParse(CBORValue                         CBOR,
+                                                                     out CertificateHashData                  Value,
+                                                                     [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomCertificateHashDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this certificate hash data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<CertificateHashData>? CustomCertificateHashDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("hashAlgorithm",                          CBORValue.FromText(HashAlgorithm.ToString())),
+                           ("issuerNameHash",                         CBORValue.FromText(IssuerNameHash)),
+                           ("issuerKeyHash",                          CBORValue.FromText(IssuerPublicKeyHash)),
+                           ("serialNumber",                           CBORValue.FromText(SerialNumber)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomCertificateHashDataSerializer is not null
+                       ? CustomCertificateHashDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

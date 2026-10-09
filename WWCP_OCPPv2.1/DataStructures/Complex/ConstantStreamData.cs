@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Constant stream data.
     /// </summary>
     public class ConstantStreamData : ACustomData,
+                                      ICBORSerializable<ConstantStreamData>,
                                       IEquatable<ConstantStreamData>
     {
 
@@ -67,9 +70,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Id">An unique identification of the periodic event stream.</param>
         /// <param name="Parameters">Periodic event stream parameters.</param>
         /// <param name="VariableMonitoringId">An optional variable monitoring identification.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public ConstantStreamData(PeriodicEventStream_Id         Id,
                                   PeriodicEventStreamParameters  Parameters,
-                                  VariableMonitoring_Id          VariableMonitoringId)
+                                  VariableMonitoring_Id          VariableMonitoringId,
+                                  CustomData?                    CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.Id                    = Id;
@@ -243,7 +251,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 ConstantStreamData = new ConstantStreamData(
                                          Id,
                                          Parameters,
-                                         VariableMonitoringId
+                                         VariableMonitoringId,
+                                         CustomData
                                      );
 
                 if (CustomConstantStreamDataParser is not null)
@@ -298,6 +307,162 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ConstantStreamData, out ErrorResponse, CustomConstantStreamDataParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a constant stream data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ConstantStreamData">The constant stream data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ConstantStreamData?  ConstantStreamData,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ConstantStreamData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a constant stream data.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ConstantStreamData">The constant stream data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomConstantStreamDataParser">An optional delegate to read custom constant stream data.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ConstantStreamData?           ConstantStreamData,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ConstantStreamData>?  CustomConstantStreamDataParser)
+        {
+
+            try
+            {
+
+                ConstantStreamData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a constant stream data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "periodic event stream identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (IdNumber > UInt64.MaxValue || !PeriodicEventStream_Id.TryParse((UInt64) IdNumber, out var Id))
+                {
+                    ErrorResponse = $"Invalid periodic event stream identification '{IdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("params",
+                                         "periodic event stream parameters",
+                                         OCPPv2_1.PeriodicEventStreamParameters.TryParseCBOR,
+                                         out PeriodicEventStreamParameters? Parameters,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("variableMonitoringId",
+                                               "variable monitoring identification",
+                                               out var VariableMonitoringIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (VariableMonitoringIdNumber > UInt64.MaxValue || !VariableMonitoring_Id.TryParse((UInt64) VariableMonitoringIdNumber, out var VariableMonitoringId))
+                {
+                    ErrorResponse = $"Invalid variable monitoring identification '{VariableMonitoringIdNumber}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ConstantStreamData = new ConstantStreamData(
+                                         Id,
+                                         Parameters,
+                                         VariableMonitoringId,
+                                         CustomData
+                                     );
+
+                if (CustomConstantStreamDataParser is not null)
+                    ConstantStreamData = CustomConstantStreamDataParser(CBOR,
+                                                    ConstantStreamData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ConstantStreamData  = default;
+                ErrorResponse  = "The given CBOR representation of a constant stream data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ConstantStreamData>.TryParse(CBOR, out ConstantStreamData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a constant stream data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ConstantStreamData>.TryParse(CBORValue                         CBOR,
+                                                                    out ConstantStreamData                  Value,
+                                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomConstantStreamDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this constant stream data: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomConstantStreamDataSerializer">A delegate to serialize custom constant stream data.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ConstantStreamData>? CustomConstantStreamDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                                     CBORValue.FromUInt64(Id.Value)),
+                           ("params",                                 Parameters.ToCBOR()),
+                           ("variableMonitoringId",                   CBORValue.FromUInt64(VariableMonitoringId.Value)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomConstantStreamDataSerializer is not null
+                       ? CustomConstantStreamDataSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

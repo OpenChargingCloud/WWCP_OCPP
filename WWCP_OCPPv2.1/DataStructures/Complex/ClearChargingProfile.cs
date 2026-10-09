@@ -24,6 +24,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using System.Diagnostics.CodeAnalysis;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,6 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A ClearChargingProfile object.
     /// </summary>
     public class ClearChargingProfile : ACustomData,
+                                        ICBORSerializable<ClearChargingProfile>,
                                         IEquatable<ClearChargingProfile>
     {
 
@@ -308,6 +311,188 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ClearChargingProfile, out ErrorResponse, CustomClearChargingProfileParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear charging profile.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ClearChargingProfile">The clear charging profile.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ClearChargingProfile?  ClearChargingProfile,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ClearChargingProfile,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear charging profile.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ClearChargingProfile">The clear charging profile.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomClearChargingProfileParser">An optional delegate to read custom clear charging profiles.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ClearChargingProfile?           ClearChargingProfile,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ClearChargingProfile>?  CustomClearChargingProfileParser)
+        {
+
+            try
+            {
+
+                ClearChargingProfile = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a clear charging profile is not a map!";
+                    return false;
+                }
+
+                EVSE_Id? EVSEId = null;
+
+                if (CBOR.ParseOptionalUInt64("evseId",
+                                             "EVSE identification",
+                                             out var EVSEIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (EVSEIdNumber is not UInt64 EVSEIdValue || EVSEIdValue > UInt16.MaxValue || !EVSE_Id.TryParse((UInt16) EVSEIdValue, out var EVSEIdId))
+                    {
+                        ErrorResponse = $"Invalid EVSE identification '{EVSEIdNumber}'!";
+                        return false;
+                    }
+
+                    EVSEId = EVSEIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ChargingProfilePurpose? ChargingProfilePurpose = null;
+
+                if (CBOR.ParseOptionalText("chargingProfilePurpose",
+                                           "charging profile purpose",
+                                           out var ChargingProfilePurposeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.ChargingProfilePurpose.TryParse(ChargingProfilePurposeText!, out var ChargingProfilePurposeValue))
+                    {
+                        ErrorResponse = $"Invalid charging profile purpose '{ChargingProfilePurposeText}'!";
+                        return false;
+                    }
+
+                    ChargingProfilePurpose = ChargingProfilePurposeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                UInt32? StackLevel = null;
+
+                if (CBOR.ParseOptionalUInt64("stackLevel",
+                                             "stack level",
+                                             out var StackLevelNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (StackLevelNumber is not UInt64 StackLevelValue || StackLevelValue > UInt32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid stack level '{StackLevelNumber}'!";
+                        return false;
+                    }
+
+                    StackLevel = (UInt32) StackLevelValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ClearChargingProfile = new ClearChargingProfile(
+                                           EVSEId,
+                                           ChargingProfilePurpose,
+                                           StackLevel,
+                                           CustomData
+                                       );
+
+                if (CustomClearChargingProfileParser is not null)
+                    ClearChargingProfile = CustomClearChargingProfileParser(CBOR,
+                                                      ClearChargingProfile);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClearChargingProfile  = default;
+                ErrorResponse  = "The given CBOR representation of a clear charging profile is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ClearChargingProfile>.TryParse(CBOR, out ClearChargingProfile, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a clear charging profile - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ClearChargingProfile>.TryParse(CBORValue                         CBOR,
+                                                                      out ClearChargingProfile                  Value,
+                                                                      [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClearChargingProfileSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this clear charging profile: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClearChargingProfileSerializer">A delegate to serialize custom clear charging profiles.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClearChargingProfile>? CustomClearChargingProfileSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evseId",                                 OCPPCBORExtensions.UInt(EVSEId?.Value)),
+                           ("chargingProfilePurpose",                 OCPPCBORExtensions.Text(ChargingProfilePurpose?.ToString())),
+                           ("stackLevel",                             OCPPCBORExtensions.UInt(StackLevel)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomClearChargingProfileSerializer is not null
+                       ? CustomClearChargingProfileSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 
