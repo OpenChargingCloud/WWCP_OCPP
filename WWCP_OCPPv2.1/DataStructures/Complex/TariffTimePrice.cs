@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,7 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The prices within an time tariff element.
     /// </summary>
-    public class TariffTimePrice : ACustomData
+    public class TariffTimePrice : ACustomData,
+                                ICBORSerializable<TariffTimePrice>
     {
 
         #region Properties
@@ -317,6 +320,144 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomTariffTimePriceSerializer is not null
                        ? CustomTariffTimePriceSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out TariffTimePrice, out ErrorResponse, CustomTariffTimePriceParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff time price.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffTimePrice">The tariff time price.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out TariffTimePrice?  TariffTimePrice,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TariffTimePrice,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff time price.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffTimePrice">The tariff time price.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTariffTimePriceParser">An optional delegate to read custom tariff time prices.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out TariffTimePrice?           TariffTimePrice,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TariffTimePrice>?  CustomTariffTimePriceParser)
+        {
+
+            try
+            {
+
+                TariffTimePrice = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tariff time price is not a map!";
+                    return false;
+                }
+
+                // "priceMinute" in JSON: the unit is in the value.
+                if (!CBOR.ParseMandatory("price",
+                                         "price per minute",
+                                         (CBORValue value, out Decimal amount, out String? errorResponse) =>
+                                             OCPPCBORExtensions.TryParseRate(value, org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Minute, 0, out amount, out errorResponse),
+                                         out Decimal PriceMinute,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("conditions",
+                                   "conditions",
+                                   OCPPv2_1.TariffConditions.TryParseCBOR,
+                                   out TariffConditions? Conditions,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TariffTimePrice = new TariffTimePrice(
+                                      PriceMinute,
+                                      null,
+                                      Conditions,
+                                      CustomData
+                                  );
+
+                if (CustomTariffTimePriceParser is not null)
+                    TariffTimePrice = CustomTariffTimePriceParser(CBOR,
+                                                 TariffTimePrice);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TariffTimePrice  = default;
+                ErrorResponse  = "The given CBOR representation of a tariff time price is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TariffTimePrice>.TryParse(CBOR, out TariffTimePrice, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff time price - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TariffTimePrice>.TryParse(CBORValue                         CBOR,
+                                                                 out TariffTimePrice                  Value,
+                                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTariffTimePriceSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tariff time price: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTariffTimePriceSerializer">A delegate to serialize custom tariff time prices.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TariffTimePrice>? CustomTariffTimePriceSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("price",                   OCPPCBORExtensions.RateToCBOR(PriceMinute, org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Minute)),
+                           ("conditions",              Conditions?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTariffTimePriceSerializer is not null
+                       ? CustomTariffTimePriceSerializer(this, cbor)
+                       : cbor;
 
         }
 

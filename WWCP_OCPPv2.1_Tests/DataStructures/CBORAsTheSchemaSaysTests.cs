@@ -296,6 +296,153 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
+        #region MeterValue, SampledValue, UnitsOfMeasure, SignedMeterValue
+
+        /// <summary>
+        /// A sampled value's unit of measure may be left out in CBOR: it is in its metrological value.
+        /// </summary>
+        private static readonly Dictionary<String, String> unitOfMeasureInTheValue = new() { { "unitOfMeasure", "" } };
+
+        [Test]
+        public void MeterValue()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<MeterValue>(
+                   $$"""
+                   {
+                       "timestamp":    "2026-10-09T12:00:00Z",
+                       "sampledValue": [
+                           { "value": 1234.5 },
+                           { "value": 11.04,  "measurand": "Power.Active.Import",   "unitOfMeasure": { "unit": "kW",  "multiplier": 0 } },
+                           { "value": 15.5,   "measurand": "Current.Import",        "unitOfMeasure": { "unit": "A",   "multiplier": 0 }, "phase": "L1" },
+                           { "value": 230,    "measurand": "Voltage",               "unitOfMeasure": { "unit": "V",   "multiplier": 0 }, "phase": "L1-N" },
+                           { "value": 499,    "measurand": "Frequency",             "unitOfMeasure": { "unit": "Hz",  "multiplier": -1 } },
+                           { "value": 80,     "measurand": "SoC",                   "unitOfMeasure": { "unit": "Percent", "multiplier": 0 }, "location": "EV" },
+                           { "value": 3000,   "measurand": "RPM",                   "unitOfMeasure": { "unit": "RPM", "multiplier": 0 } },
+                           { "value": 12,     "context": "Sample.Periodic",         "unitOfMeasure": { "unit": "kWh", "multiplier": 3 } }
+                       ],
+                       "customData":   {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.MeterValue.TryParse,
+                   value => value.ToJSON(),
+                   KeysInCBOR: unitOfMeasureInTheValue
+               );
+
+        /// <summary>
+        /// A sampled value in a metrological unit is one metrological value in CBOR,
+        /// its unit and multiplier its unit and SI prefix; one in a unit that is no
+        /// metrological one keeps its unit of measure beside a plain number.
+        /// </summary>
+        [Test]
+        public void SampledValue_IsAMetrologicalValueWhereItsUnitIsOne()
+        {
+
+            Assert.That(OCPPv2_1.SampledValue.TryParse(JObject.Parse("""{ "value": 12, "unitOfMeasure": { "unit": "kWh", "multiplier": 3 } }"""), out var inMWh, out var errorResponse), Is.True, errorResponse);
+
+            var cbor = inMWh!.ToCBOR();
+
+            Assert.That(cbor.TryGetValue(CBORValue.FromText("unitOfMeasure"), out _), Is.False);
+            Assert.That(cbor.TryGetValue(CBORValue.FromText("value"), out var value),  Is.True);
+            Assert.That(MetrologicalValue.TryParse(value, out var metrologicalValue, out errorResponse), Is.True, errorResponse);
+            Assert.That(metrologicalValue.Unit == org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour, Is.True);
+            Assert.That(metrologicalValue.Prefix.Exponent, Is.EqualTo(6));
+            Assert.That(metrologicalValue.Value,           Is.EqualTo(12));
+
+            Assert.That(OCPPv2_1.SampledValue.TryParse(JObject.Parse("""{ "value": 3000, "unitOfMeasure": { "unit": "RPM" } }"""), out var inRPM, out errorResponse), Is.True, errorResponse);
+
+            cbor = inRPM!.ToCBOR();
+
+            Assert.That(cbor.TryGetValue(CBORValue.FromText("unitOfMeasure"), out _), Is.True);
+            Assert.That(cbor.TryGetValue(CBORValue.FromText("value"), out value),     Is.True);
+            Assert.That(value.HasTag(CBORTag.MetrologicalValue), Is.False);
+
+        }
+
+        [Test]
+        public void SampledValue_WithASignedMeterValue()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<SampledValue>(
+                   $$"""
+                   {
+                       "value":            1234.5,
+                       "context":          "Transaction.End",
+                       "measurand":        "Energy.Active.Import.Register",
+                       "location":         "Outlet",
+                       "signedMeterValue": { "signedMeterData": "AAEC", "signingMethod": "ECDSA-secp256r1-SHA256", "encodingMethod": "OCMF", "publicKey": "MFkw", "customData": {{Custom}} },
+                       "customData":       {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.SampledValue.TryParse,
+                   value => value.ToJSON(),
+                   KeysInCBOR: unitOfMeasureInTheValue
+               );
+
+        [Test]
+        public void UnitsOfMeasure()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<UnitsOfMeasure>(
+                   $$"""{ "unit": "kvarh", "multiplier": -1, "customData": {{Custom}} }""",
+                   OCPPv2_1.UnitsOfMeasure.TryParse,
+                   value => value.ToJSON()
+               );
+
+        #endregion
+
+        #region Tariff
+
+        /// <summary>
+        /// A tariff with every part, signed: its energy price per kWh is "price" in
+        /// CBOR, an amount per Wh, and its signature carries bytes, not BASE64.
+        /// </summary>
+        [Test]
+        public void Tariff()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<Tariff>(
+                   $$"""
+                   {
+                       "tariffId":         "DE-GDF-T1",
+                       "currency":         "EUR",
+                       "description":      [ { "format": "UTF8", "language": "de", "content": "Tagestarif" }, { "format": "UTF8", "language": "en", "content": "Day tariff" } ],
+                       "validFrom":        "2026-10-01T00:00:00Z",
+                       "minCost":          { "exclTax": 1.00, "inclTax": 1.19 },
+                       "maxCost":          { "exclTax": 80.00 },
+                       "fixedFee":         { "prices": [ { "priceFixed": 0.50 } ] },
+                       "reservationFixed": { "prices": [ { "priceFixed": 1.00 } ] },
+                       "reservationTime":  { "prices": [ { "priceMinute": 0.10 } ] },
+                       "energy":           { "prices": [ { "priceKwh": 0.39, "conditions": { "startTimeOfDay": "06:00", "endTimeOfDay": "22:00", "minPower": 11000, "maxEnergy": 50000 } },
+                                                         { "priceKwh": 0.29 } ],
+                                             "taxRates": [ { "type": "VAT", "tax": 19, "stack": 0 } ] },
+                       "chargingTime":     { "prices": [ { "priceMinute": 0.05, "conditions": { "dayOfWeek": [ "Saturday", "Sunday" ] } } ] },
+                       "idleTime":         { "prices": [ { "priceMinute": 0.10, "conditions": { "minIdleTime": 3600 } } ] },
+                       "signatures":       [ { "keyId": "AQID", "value": "MEUCIQ==", "name": "operator", "timestamp": "2026-10-09T12:00:00Z" } ],
+                       "customData":       {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.Tariff.TryParse,
+                   value => value.ToJSON()
+               );
+
+        /// <summary>
+        /// The energy price is an amount per Wh in CBOR: 0.39 per kWh is 0.00039 Wh^-1.
+        /// </summary>
+        [Test]
+        public void TariffEnergyPrice_IsAnAmountPerWattHour()
+        {
+
+            Assert.That(OCPPv2_1.TariffEnergyPrice.TryParse(JObject.Parse("""{ "priceKwh": 0.39 }"""), out var price, out var errorResponse), Is.True, errorResponse);
+
+            var cbor = price!.ToCBOR();
+
+            Assert.That(cbor.TryGetValue(CBORValue.FromText("priceKwh"), out _),   Is.False);
+            Assert.That(cbor.TryGetValue(CBORValue.FromText("price"), out var p),   Is.True);
+            Assert.That(MetrologicalValue.TryParse(p, out var metrologicalValue, out errorResponse), Is.True, errorResponse);
+            Assert.That(metrologicalValue.Value, Is.EqualTo(0.00039M));
+            Assert.That(metrologicalValue.Unit == new UnitExpression(new UnitFactor(org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour, -1)), Is.True);
+
+        }
+
+        #endregion
+
         #region Refused
 
         /// <summary>

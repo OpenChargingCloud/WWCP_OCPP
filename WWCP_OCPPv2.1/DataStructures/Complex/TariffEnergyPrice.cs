@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,7 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The prices within a TariffEnergy tariff element.
     /// </summary>
-    public class TariffEnergyPrice : ACustomData
+    public class TariffEnergyPrice : ACustomData,
+                                  ICBORSerializable<TariffEnergyPrice>
     {
 
         #region Properties
@@ -315,6 +318,144 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomTariffEnergyPriceSerializer is not null
                        ? CustomTariffEnergyPriceSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out TariffEnergyPrice, out ErrorResponse, CustomTariffEnergyPriceParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff energy price.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffEnergyPrice">The tariff energy price.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out TariffEnergyPrice?  TariffEnergyPrice,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TariffEnergyPrice,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff energy price.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffEnergyPrice">The tariff energy price.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTariffEnergyPriceParser">An optional delegate to read custom tariff energy prices.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out TariffEnergyPrice?           TariffEnergyPrice,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TariffEnergyPrice>?  CustomTariffEnergyPriceParser)
+        {
+
+            try
+            {
+
+                TariffEnergyPrice = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tariff energy price is not a map!";
+                    return false;
+                }
+
+                // "priceKwh" in JSON: the unit is in the value.
+                if (!CBOR.ParseMandatory("price",
+                                         "price per kWh",
+                                         (CBORValue value, out Decimal amount, out String? errorResponse) =>
+                                             OCPPCBORExtensions.TryParseRate(value, org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour, 3, out amount, out errorResponse),
+                                         out Decimal PriceKWh,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("conditions",
+                                   "conditions",
+                                   OCPPv2_1.TariffConditions.TryParseCBOR,
+                                   out TariffConditions? Conditions,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TariffEnergyPrice = new TariffEnergyPrice(
+                                        PriceKWh,
+                                        null,
+                                        Conditions,
+                                        CustomData
+                                    );
+
+                if (CustomTariffEnergyPriceParser is not null)
+                    TariffEnergyPrice = CustomTariffEnergyPriceParser(CBOR,
+                                                   TariffEnergyPrice);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TariffEnergyPrice  = default;
+                ErrorResponse  = "The given CBOR representation of a tariff energy price is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TariffEnergyPrice>.TryParse(CBOR, out TariffEnergyPrice, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff energy price - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TariffEnergyPrice>.TryParse(CBORValue                         CBOR,
+                                                                   out TariffEnergyPrice                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTariffEnergyPriceSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tariff energy price: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTariffEnergyPriceSerializer">A delegate to serialize custom tariff energy prices.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TariffEnergyPrice>? CustomTariffEnergyPriceSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("price",                   OCPPCBORExtensions.RateToCBOR(PriceKWh, org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour, 3)),
+                           ("conditions",              Conditions?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTariffEnergyPriceSerializer is not null
+                       ? CustomTariffEnergyPriceSerializer(this, cbor)
+                       : cbor;
 
         }
 

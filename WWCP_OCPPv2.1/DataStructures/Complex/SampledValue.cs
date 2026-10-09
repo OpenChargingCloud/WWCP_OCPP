@@ -24,6 +24,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using System.Diagnostics.CodeAnalysis;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,6 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A sampled (energy) meter value.
     /// </summary>
     public class SampledValue : ACustomData,
+                                ICBORSerializable<SampledValue>,
                                 IEquatable<SampledValue>
     {
 
@@ -442,6 +445,284 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomSampledValueSerializer is not null
                        ? CustomSampledValueSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out SampledValue, out ErrorResponse, CustomSampledValueParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a sampled value.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SampledValue">The sampled value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out SampledValue?  SampledValue,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out SampledValue,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a sampled value.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SampledValue">The sampled value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSampledValueParser">An optional delegate to read custom sampled values.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out SampledValue?           SampledValue,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<SampledValue>?  CustomSampledValueParser)
+        {
+
+            try
+            {
+
+                SampledValue = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a sampled value is not a map!";
+                    return false;
+                }
+
+                // The value: a metrological value, its unit and multiplier with it,
+                // or a number with its unit of measure beside it as in JSON - for a
+                // unit that is no metrological one, or one with custom data.
+                if (!CBOR.TryGetValue(CBORValue.FromText("value"), out var valueCBOR))
+                {
+                    ErrorResponse = "Missing CBOR property 'value'!";
+                    return false;
+                }
+
+                Decimal          Value;
+                UnitsOfMeasure?  UnitOfMeasure = null;
+
+                if (valueCBOR.HasTag(CBORTag.MetrologicalValue))
+                {
+
+                    if (!MetrologicalValue.TryParse(valueCBOR, out var metrologicalValue, out ErrorResponse))
+                        return false;
+
+                    if (!UnitsOfMeasure.TryFromMetrologicalValue(metrologicalValue, out Value, out UnitOfMeasure))
+                    {
+                        ErrorResponse = $"The unit of the sampled value '{metrologicalValue}' is none of OCPP!";
+                        return false;
+                    }
+
+                    if (CBOR.TryGetValue(CBORValue.FromText("unitOfMeasure"), out _))
+                    {
+                        ErrorResponse = "A sampled value with a metrological value has no unit of measure beside it!";
+                        return false;
+                    }
+
+                }
+                else
+                {
+
+                    if (!CBOR.ParseMandatoryDecimal("value",
+                                                    "sampled value",
+                                                    out Value,
+                                                    out ErrorResponse))
+                    {
+                        return false;
+                    }
+
+                    CBOR.ParseOptional("unitOfMeasure",
+                                       "unit of measure",
+                                       OCPPv2_1.UnitsOfMeasure.TryParseCBOR,
+                                       out UnitOfMeasure,
+                                       out ErrorResponse);
+
+                    if (ErrorResponse is not null)
+                        return false;
+
+                }
+
+                ReadingContext? Context = null;
+
+                if (CBOR.ParseOptionalText("context",
+                                           "reading context",
+                                           out var ContextText,
+                                           out ErrorResponse))
+                {
+
+                    if (!ReadingContext.TryParse(ContextText!, out var ContextValue))
+                    {
+                        ErrorResponse = $"Invalid reading context '{ContextText}'!";
+                        return false;
+                    }
+
+                    Context = ContextValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Measurand? Measurand = null;
+
+                if (CBOR.ParseOptionalText("measurand",
+                                           "measurand",
+                                           out var MeasurandText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.Measurand.TryParse(MeasurandText!, out var MeasurandValue))
+                    {
+                        ErrorResponse = $"Invalid measurand '{MeasurandText}'!";
+                        return false;
+                    }
+
+                    Measurand = MeasurandValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Phases? Phase = null;
+
+                if (CBOR.ParseOptionalText("phase",
+                                           "phase",
+                                           out var PhaseText,
+                                           out ErrorResponse))
+                {
+
+                    if (!PhasesExtensions.TryParse(PhaseText!, out var PhaseValue))
+                    {
+                        ErrorResponse = $"Invalid phase '{PhaseText}'!";
+                        return false;
+                    }
+
+                    Phase = PhaseValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                MeasurementLocation? MeasurementLocation = null;
+
+                if (CBOR.ParseOptionalText("location",
+                                           "measurement location",
+                                           out var MeasurementLocationText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.MeasurementLocation.TryParse(MeasurementLocationText!, out var MeasurementLocationValue))
+                    {
+                        ErrorResponse = $"Invalid measurement location '{MeasurementLocationText}'!";
+                        return false;
+                    }
+
+                    MeasurementLocation = MeasurementLocationValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("signedMeterValue",
+                                   "signed meter value",
+                                   OCPPv2_1.SignedMeterValue.TryParseCBOR,
+                                   out SignedMeterValue? SignedMeterValue,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                SampledValue = new SampledValue(
+                                   Value,
+                                   Context,
+                                   Measurand,
+                                   Phase,
+                                   MeasurementLocation,
+                                   SignedMeterValue,
+                                   UnitOfMeasure,
+                                   CustomData
+                               );
+
+                if (CustomSampledValueParser is not null)
+                    SampledValue = CustomSampledValueParser(CBOR,
+                                              SampledValue);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SampledValue  = default;
+                ErrorResponse  = "The given CBOR representation of a sampled value is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<SampledValue>.TryParse(CBOR, out SampledValue, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a sampled value - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<SampledValue>.TryParse(CBORValue                         CBOR,
+                                                              out SampledValue                  Value,
+                                                              [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSampledValueSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this sampled value: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SampledValue>? CustomSampledValueSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           // Wh by default, as in JSON.
+                           ("value",                   (UnitOfMeasure ?? OCPPv2_1.UnitsOfMeasure.Wh()).TryToMetrologicalValue(Value, out var metrologicalValue)
+                                                           ? metrologicalValue.ToCBOR()
+                                                           : CBORValue.FromDecimal(Value)),
+                           ("unitOfMeasure",           UnitOfMeasure is not null && !UnitOfMeasure.TryToMetrologicalValue(Value, out _)
+                                                           ? (CBORValue?) UnitOfMeasure.ToCBOR()
+                                                           : null),
+                           ("context",                 OCPPCBORExtensions.Text(Context?.ToString())),
+                           ("measurand",               OCPPCBORExtensions.Text(Measurand?.ToString())),
+                           ("phase",                   OCPPCBORExtensions.Text(Phase?.AsText())),
+                           ("location",                OCPPCBORExtensions.Text(MeasurementLocation?.ToString())),
+                           ("signedMeterValue",        SignedMeterValue?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomSampledValueSerializer is not null
+                       ? CustomSampledValueSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -28,6 +28,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -163,6 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A tariff.
     /// </summary>
     public class Tariff : ACustomSignableData,
+                          ICBORSerializable<Tariff>,
                           ISignableMessage,
                           IHasId<Tariff_Id>,
                           IEquatable<Tariff>,
@@ -887,6 +890,275 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomTariffSerializer is not null
                        ? CustomTariffSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out Tariff, out ErrorResponse, CustomTariffParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Tariff">The tariff.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Tariff?  Tariff,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Tariff,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Tariff">The tariff.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTariffParser">An optional delegate to read custom tariffs.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Tariff?           Tariff,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Tariff>?  CustomTariffParser)
+        {
+
+            try
+            {
+
+                Tariff = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tariff is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("tariffId",
+                                             "tariff identification",
+                                             out var IdText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!Tariff_Id.TryParse(IdText, out var Id))
+                {
+                    ErrorResponse = $"Invalid tariff identification '{IdText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("currency",
+                                             "currency",
+                                             out var currencyText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!org.GraphDefined.Vanaheimr.Illias.Currency.TryParse(currencyText, out var Currency))
+                {
+                    ErrorResponse = $"Invalid currency '{currencyText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<MessageContent>("description",
+                                               "description",
+                                               OCPPv2_1.MessageContent.TryParseCBOR,
+                                               out var Description,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("validFrom",
+                                        "valid from",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ValidFrom,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("validTo",
+                                        "valid to",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ValidTo,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minCost", "minimum cost", OCPPv2_1.Price.TryParseCBOR, out Price? MinCost, out ErrorResponse);
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxCost", "maximum cost", OCPPv2_1.Price.TryParseCBOR, out Price? MaxCost, out ErrorResponse);
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("fixedFee",
+                                   "fixed fee",
+                                   OCPPv2_1.TariffFixed.TryParseCBOR,
+                                   out TariffFixed? FixedFee,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("reservationFixed",
+                                   "reservation fixed",
+                                   OCPPv2_1.TariffFixed.TryParseCBOR,
+                                   out TariffFixed? ReservationFixed,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("reservationTime",
+                                   "reservation time",
+                                   OCPPv2_1.TariffTime.TryParseCBOR,
+                                   out TariffTime? ReservationTime,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("energy",
+                                   "energy",
+                                   OCPPv2_1.TariffEnergy.TryParseCBOR,
+                                   out TariffEnergy? Energy,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("chargingTime",
+                                   "charging time",
+                                   OCPPv2_1.TariffTime.TryParseCBOR,
+                                   out TariffTime? ChargingTime,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("idleTime",
+                                   "idle time",
+                                   OCPPv2_1.TariffTime.TryParseCBOR,
+                                   out TariffTime? IdleTime,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Tariff = new Tariff(
+                             Id,
+                             Currency,
+                             new MessageContents(Description),
+                             ValidFrom,
+                             ValidTo,
+                             MinCost,
+                             MaxCost,
+                             FixedFee,
+                             ReservationFixed,
+                             ReservationTime,
+                             Energy,
+                             ChargingTime,
+                             IdleTime,
+                             null,
+                             null,
+                             Signatures,
+                             CustomData
+                         );
+
+                if (CustomTariffParser is not null)
+                    Tariff = CustomTariffParser(CBOR,
+                                        Tariff);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Tariff  = default;
+                ErrorResponse  = "The given CBOR representation of a tariff is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Tariff>.TryParse(CBOR, out Tariff, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Tariff>.TryParse(CBORValue                         CBOR,
+                                                        out Tariff                  Value,
+                                                        [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTariffSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tariff: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTariffSerializer">A delegate to serialize custom tariffs.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Tariff>? CustomTariffSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("tariffId",                CBORValue.FromText(Id.ToString())),
+                           ("currency",                CBORValue.FromText(Currency.ISOCode)),
+                           ("description",             OCPPCBORExtensions.Array(Description, messageContent => messageContent.ToCBOR())),
+                           ("validFrom",               ValidFrom?.ToCBOR()),
+                           ("validTo",                 ValidTo?.  ToCBOR()),
+                           ("minCost",                 MinCost?.  ToCBOR()),
+                           ("maxCost",                 MaxCost?.  ToCBOR()),
+                           ("fixedFee",                FixedFee?.        ToCBOR()),
+                           ("reservationFixed",        ReservationFixed?.ToCBOR()),
+                           ("reservationTime",         ReservationTime?. ToCBOR()),
+                           ("energy",                  Energy?.          ToCBOR()),
+                           ("chargingTime",            ChargingTime?.    ToCBOR()),
+                           ("idleTime",                IdleTime?.        ToCBOR()),
+                           ("signatures",              OCPPCBORExtensions.Array(Signatures, signature => signature.ToCBOR())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTariffSerializer is not null
+                       ? CustomTariffSerializer(this, cbor)
+                       : cbor;
 
         }
 

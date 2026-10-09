@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,7 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The prices within a TariffFixed tariff element.
     /// </summary>
-    public class TariffFixedPrice : ACustomData
+    public class TariffFixedPrice : ACustomData,
+                                 ICBORSerializable<TariffFixedPrice>
     {
 
         #region Properties
@@ -280,6 +283,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomTariffFixedPriceSerializer is not null
                        ? CustomTariffFixedPriceSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out TariffFixedPrice, out ErrorResponse, CustomTariffFixedPriceParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff fixed price.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffFixedPrice">The tariff fixed price.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out TariffFixedPrice?  TariffFixedPrice,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TariffFixedPrice,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff fixed price.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffFixedPrice">The tariff fixed price.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTariffFixedPriceParser">An optional delegate to read custom tariff fixed prices.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out TariffFixedPrice?           TariffFixedPrice,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TariffFixedPrice>?  CustomTariffFixedPriceParser)
+        {
+
+            try
+            {
+
+                TariffFixedPrice = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tariff fixed price is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("priceFixed",
+                                                "fixed price",
+                                                out var PriceFixed,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("conditions",
+                                   "conditions",
+                                   OCPPv2_1.TariffConditions.TryParseCBOR,
+                                   out TariffConditions? Conditions,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TariffFixedPrice = new TariffFixedPrice(
+                                       PriceFixed,
+                                       Conditions,
+                                       CustomData
+                                   );
+
+                if (CustomTariffFixedPriceParser is not null)
+                    TariffFixedPrice = CustomTariffFixedPriceParser(CBOR,
+                                                  TariffFixedPrice);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TariffFixedPrice  = default;
+                ErrorResponse  = "The given CBOR representation of a tariff fixed price is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TariffFixedPrice>.TryParse(CBOR, out TariffFixedPrice, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff fixed price - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TariffFixedPrice>.TryParse(CBORValue                         CBOR,
+                                                                  out TariffFixedPrice                  Value,
+                                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTariffFixedPriceSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tariff fixed price: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTariffFixedPriceSerializer">A delegate to serialize custom tariff fixed prices.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TariffFixedPrice>? CustomTariffFixedPriceSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("priceFixed",              CBORValue.FromDecimal(PriceFixed)),
+                           ("conditions",              Conditions?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTariffFixedPriceSerializer is not null
+                       ? CustomTariffFixedPriceSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A meter value.
     /// </summary>
     public class MeterValue : ACustomData,
+                              ICBORSerializable<MeterValue>,
                               IEquatable<MeterValue>
     {
 
@@ -288,6 +291,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomMeterValueSerializer is not null
                        ? CustomMeterValueSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out MeterValue, out ErrorResponse, CustomMeterValueParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a meter value.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MeterValue">The meter value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out MeterValue?  MeterValue,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out MeterValue,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a meter value.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MeterValue">The meter value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomMeterValueParser">An optional delegate to read custom meter values.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out MeterValue?           MeterValue,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<MeterValue>?  CustomMeterValueParser)
+        {
+
+            try
+            {
+
+                MeterValue = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a meter value is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timestamp",
+                                              "timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset Timestamp,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<SampledValue>("sampledValue",
+                                                     "sampled values",
+                                                     OCPPv2_1.SampledValue.TryParseCBOR,
+                                                     out var SampledValues,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                MeterValue = new MeterValue(
+                                 Timestamp,
+                                 SampledValues,
+                                 CustomData
+                             );
+
+                if (CustomMeterValueParser is not null)
+                    MeterValue = CustomMeterValueParser(CBOR,
+                                            MeterValue);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                MeterValue  = default;
+                ErrorResponse  = "The given CBOR representation of a meter value is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<MeterValue>.TryParse(CBOR, out MeterValue, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a meter value - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<MeterValue>.TryParse(CBORValue                         CBOR,
+                                                            out MeterValue                  Value,
+                                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomMeterValueSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this meter value: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<MeterValue>? CustomMeterValueSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("timestamp",               Timestamp.ToCBOR()),
+                           ("sampledValue",            CBORValue.FromArray(SampledValues.Select(sampledValue => sampledValue.ToCBOR()))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomMeterValueSerializer is not null
+                       ? CustomMeterValueSerializer(this, cbor)
+                       : cbor;
 
         }
 

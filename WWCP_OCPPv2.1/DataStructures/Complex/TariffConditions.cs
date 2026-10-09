@@ -27,6 +27,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -36,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Tariff conditions.
     /// </summary>
     public class TariffConditions : ACustomData,
+                                    ICBORSerializable<TariffConditions>,
                                     IEquatable<TariffConditions>
     {
 
@@ -968,6 +971,365 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return json2.HasValues
                        ? json2
                        : null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out TariffConditions, out ErrorResponse, CustomTariffConditionsParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff condition.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffConditions">The tariff condition.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out TariffConditions?  TariffConditions,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TariffConditions,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff condition.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffConditions">The tariff condition.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTariffConditionsParser">An optional delegate to read custom tariff conditions.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out TariffConditions?           TariffConditions,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TariffConditions>?  CustomTariffConditionsParser)
+        {
+
+            try
+            {
+
+                TariffConditions = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tariff condition is not a map!";
+                    return false;
+                }
+
+                DateOnly? ValidFrom = null;
+
+                if (CBOR.ParseOptionalText("validFromDate", "valid from date", out var validFromText, out ErrorResponse))
+                {
+                    if (!DateOnly.TryParseExact(validFromText, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var validFrom))
+                    {
+                        ErrorResponse = $"Invalid valid from date '{validFromText}'!";
+                        return false;
+                    }
+                    ValidFrom = validFrom;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+                DateOnly? ValidTo = null;
+
+                if (CBOR.ParseOptionalText("validToDate", "valid to date", out var validToText, out ErrorResponse))
+                {
+                    if (!DateOnly.TryParseExact(validToText, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var validTo))
+                    {
+                        ErrorResponse = $"Invalid valid to date '{validToText}'!";
+                        return false;
+                    }
+                    ValidTo = validTo;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+                var DaysOfWeek = new List<DayOfWeek>();
+
+                CBOR.ParseOptionalList<String>("dayOfWeek",
+                                               "days of the week",
+                                               (CBORValue item, out String? text, out String? errorResponse) => {
+                                                   text          = item.Kind == CBORValueKind.TextString ? item.AsText() : null;
+                                                   errorResponse = text is null ? "A day of the week is a text!" : null;
+                                                   return text is not null;
+                                               },
+                                               out var dayTexts,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                foreach (var dayText in dayTexts)
+                {
+                    if (!Enum.TryParse<DayOfWeek>(dayText, ignoreCase: true, out var day) || !Enum.IsDefined(day))
+                    {
+                        ErrorResponse = $"Invalid day of the week '{dayText}'!";
+                        return false;
+                    }
+                    DaysOfWeek.Add(day);
+                }
+
+                TimeOnly? StartTimeOfDay = null;
+
+                if (CBOR.ParseOptionalText("startTimeOfDay", "start time of day", out var startTimeText, out ErrorResponse))
+                {
+                    if (!TimeOnly.TryParseExact(startTimeText, [ "HH:mm", "HH:mm:ss" ], System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var startTime))
+                    {
+                        ErrorResponse = $"Invalid start time of day '{startTimeText}'!";
+                        return false;
+                    }
+                    StartTimeOfDay = startTime;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+                TimeOnly? EndTimeOfDay = null;
+
+                if (CBOR.ParseOptionalText("endTimeOfDay", "end time of day", out var endTimeText, out ErrorResponse))
+                {
+                    if (!TimeOnly.TryParseExact(endTimeText, [ "HH:mm", "HH:mm:ss" ], System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var endTime))
+                    {
+                        ErrorResponse = $"Invalid end time of day '{endTimeText}'!";
+                        return false;
+                    }
+                    EndTimeOfDay = endTime;
+                }
+                else if (ErrorResponse is not null)
+                    return false;
+
+                EVSEKinds? EVSEKind = null;
+
+                if (CBOR.ParseOptionalText("evseKind",
+                                           "EVSE kind",
+                                           out var EVSEKindText,
+                                           out ErrorResponse))
+                {
+
+                    if (!EVSEKindsExtensions.TryParse(EVSEKindText!, out var EVSEKindValue))
+                    {
+                        ErrorResponse = $"Invalid EVSE kind '{EVSEKindText}'!";
+                        return false;
+                    }
+
+                    EVSEKind = EVSEKindValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minEnergy",
+                                        "minimum energy",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? MinEnergy,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxEnergy",
+                                        "maximum energy",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? MaxEnergy,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minCurrent",
+                                        "minimum current",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? MinCurrent,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxCurrent",
+                                        "maximum current",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? MaxCurrent,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minPower",
+                                        "minimum power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MinPower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxPower",
+                                        "maximum power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MaxPower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minTime",
+                                        "minimum time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MinTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxTime",
+                                        "maximum time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MaxTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minChargingTime",
+                                        "minimum charging time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MinChargingTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargingTime",
+                                        "maximum charging time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MaxChargingTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minIdleTime",
+                                        "minimum idle time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MinIdleTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxIdleTime",
+                                        "maximum idle time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? MaxIdleTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TariffConditions = new TariffConditions(
+                                       ValidFrom,
+                                       ValidTo,
+                                       DaysOfWeek,
+                                       StartTimeOfDay,
+                                       EndTimeOfDay,
+                                       EVSEKind,
+                                       MinEnergy,
+                                       MaxEnergy,
+                                       MinCurrent,
+                                       MaxCurrent,
+                                       MinPower,
+                                       MaxPower,
+                                       MinTime,
+                                       MaxTime,
+                                       MinChargingTime,
+                                       MaxChargingTime,
+                                       MinIdleTime,
+                                       MaxIdleTime,
+                                       CustomData
+                                   );
+
+                if (CustomTariffConditionsParser is not null)
+                    TariffConditions = CustomTariffConditionsParser(CBOR,
+                                                  TariffConditions);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TariffConditions  = default;
+                ErrorResponse  = "The given CBOR representation of a tariff condition is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TariffConditions>.TryParse(CBOR, out TariffConditions, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff condition - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TariffConditions>.TryParse(CBORValue                         CBOR,
+                                                                  out TariffConditions                  Value,
+                                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTariffConditionsSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tariff condition: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTariffConditionsSerializer">A delegate to serialize custom tariff conditions.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TariffConditions>? CustomTariffConditionsSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("validFromDate",           OCPPCBORExtensions.Text(ValidFrom?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))),
+                           ("validToDate",             OCPPCBORExtensions.Text(ValidTo?.  ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))),
+                           ("dayOfWeek",               OCPPCBORExtensions.Array(DaysOfWeek, day => CBORValue.FromText(day.ToString()))),
+                           ("startTimeOfDay",          OCPPCBORExtensions.Text(StartTimeOfDay?.ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture))),
+                           ("endTimeOfDay",            OCPPCBORExtensions.Text(EndTimeOfDay?.  ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture))),
+                           ("evseKind",                OCPPCBORExtensions.Text(EVSEKind?.AsText())),
+                           ("minEnergy",               MinEnergy?.      ToCBOR()),
+                           ("maxEnergy",               MaxEnergy?.      ToCBOR()),
+                           ("minCurrent",              MinCurrent?.     ToCBOR()),
+                           ("maxCurrent",              MaxCurrent?.     ToCBOR()),
+                           ("minPower",                MinPower?.       ToCBOR()),
+                           ("maxPower",                MaxPower?.       ToCBOR()),
+                           ("minTime",                 MinTime?.        ToCBOR()),
+                           ("maxTime",                 MaxTime?.        ToCBOR()),
+                           ("minChargingTime",         MinChargingTime?.ToCBOR()),
+                           ("maxChargingTime",         MaxChargingTime?.ToCBOR()),
+                           ("minIdleTime",             MinIdleTime?.    ToCBOR()),
+                           ("maxIdleTime",             MaxIdleTime?.    ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTariffConditionsSerializer is not null
+                       ? CustomTariffConditionsSerializer(this, cbor)
+                       : cbor;
 
         }
 

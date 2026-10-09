@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A tax rate.
     /// </summary>
     public readonly struct TaxRate : IEquatable<TaxRate>,
+                                     ICBORSerializable<TaxRate>,
                                      IComparable<TaxRate>,
                                      IComparable
     {
@@ -316,6 +319,169 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomTaxRateSerializer is not null
                        ? CustomTaxRateSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out TaxRate, out ErrorResponse, CustomTaxRateParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tax rate.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TaxRate">The tax rate.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                                             out TaxRate   TaxRate,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TaxRate,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tax rate.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TaxRate">The tax rate.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTaxRateParser">An optional delegate to read custom tax rates.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                                             out TaxRate            TaxRate,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TaxRate>?  CustomTaxRateParser)
+        {
+
+            try
+            {
+
+                TaxRate = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tax rate is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("type",
+                                             "tax type",
+                                             out var TypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!TaxType.TryParse(TypeText, out var Type))
+                {
+                    ErrorResponse = $"Invalid tax type '{TypeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("tax",
+                                              "tax",
+                                              OCPPCBORExtensions.TryParsePercentage,
+                                              out Percentage Tax,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                UInt32? Stack = null;
+
+                if (CBOR.ParseOptionalUInt64("stack",
+                                             "stack",
+                                             out var StackNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (StackNumber is not UInt64 StackValue || StackValue > UInt32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid stack '{StackNumber}'!";
+                        return false;
+                    }
+
+                    Stack = (UInt32) StackValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TaxRate = new TaxRate(
+                              Type,
+                              Tax,
+                              Stack,
+                              CustomData
+                          );
+
+                if (CustomTaxRateParser is not null)
+                    TaxRate = CustomTaxRateParser(CBOR,
+                                         TaxRate);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TaxRate  = default;
+                ErrorResponse  = "The given CBOR representation of a tax rate is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TaxRate>.TryParse(CBOR, out TaxRate, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tax rate - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TaxRate>.TryParse(CBORValue                         CBOR,
+                                                         out TaxRate                  Value,
+                                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTaxRateSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tax rate: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTaxRateSerializer">A delegate to serialize custom tax rates.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TaxRate>? CustomTaxRateSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("type",                    CBORValue.FromText(Type.ToString())),
+                           ("tax",                     Tax.ToCBOR()),
+                           ("stack",                   OCPPCBORExtensions.UInt(Stack)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTaxRateSerializer is not null
+                       ? CustomTaxRateSerializer(this, cbor)
+                       : cbor;
 
         }
 

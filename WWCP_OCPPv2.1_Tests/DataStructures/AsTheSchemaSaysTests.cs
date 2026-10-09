@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         /// <param name="TryParse">The JSON parser.</param>
         /// <param name="ToJSON">The JSON serializer.</param>
         /// <param name="Read">What has to be true of what was read.</param>
-        /// <param name="KeysInCBOR">A key of the JSON objects that is another one in CBOR - one whose suffix names a unit there.</param>
+        /// <param name="KeysInCBOR">A key of the JSON objects that is another one in CBOR - one whose suffix names a unit there - or "" for one CBOR may leave out.</param>
         internal static void ReadAndWrittenAsTheSchemaSaysAndAsCBOR<T>(String                       Sample,
                                                                       Parser<T>                    TryParse,
                                                                       Func<T, JObject>             ToJSON,
@@ -162,7 +162,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                         $"Expected:       {Normalized(sample). ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
                         $"CBOR:           {cbor.ToDiagnosticString()}");
 
-            SameKeys(sample, cbor, "", KeysInCBOR ?? new Dictionary<String, String>());
+            // The keys whose suffix names a unit in JSON are without it in CBOR - the unit is in the value.
+            var keysInCBOR = new Dictionary<String, String> { { "priceKwh", "price" }, { "priceMinute", "price" } };
+
+            foreach (var key in KeysInCBOR ?? new Dictionary<String, String>())
+                keysInCBOR[key.Key] = key.Value;
+
+            SameKeys(sample, cbor, "", keysInCBOR);
 
         }
 
@@ -180,8 +186,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                 if (CBOR.Kind != CBORValueKind.Map)
                     return;
 
-                var expected = jsonObject.Properties().Select(property => KeysInCBOR.TryGetValue(property.Name, out var key) ? key : property.Name).OrderBy(key => key, StringComparer.Ordinal).ToArray();
-                var actual   = CBOR.AsMap().Select(entry => entry.Key.AsText()).OrderBy(key => key, StringComparer.Ordinal).ToArray();
+                // A key mapped to "" is one CBOR may leave out: its meaning is in another value.
+                var expected = jsonObject.Properties().Select(property => KeysInCBOR.TryGetValue(property.Name, out var key) ? key : property.Name).Where(key => key != "").OrderBy(key => key, StringComparer.Ordinal).ToArray();
+                var actual   = CBOR.AsMap().Select(entry => entry.Key.AsText()).Where(key => !KeysInCBOR.Any(mapped => mapped.Value == "" && mapped.Key == key)).OrderBy(key => key, StringComparer.Ordinal).ToArray();
 
                 Assert.That(actual, Is.EqualTo(expected), $"The keys of the map at '{Path}'");
 
@@ -451,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void TaxRate()
 
-            => ReadAndWrittenAsTheSchemaSays<TaxRate>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<TaxRate>(
                    $$"""
                    { "type": "VAT", "tax": 19, "stack": 0, "customData": {{Custom}} }
                    """,
@@ -462,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void Price()
 
-            => ReadAndWrittenAsTheSchemaSays<Price>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<Price>(
                    $$"""
                    {
                        "exclTax":    10,
@@ -481,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void Price_OnlyIncludingTaxes()
 
-            => ReadAndWrittenAsTheSchemaSays<Price>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<Price>(
                    """{ "inclTax": 11.9 }""",
                    (JObject json, out Price value, out String? errorResponse) => OCPPv2_1.Price.TryParse(json, out value, out errorResponse),
                    value => value.ToJSON()
@@ -525,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void TariffConditions()
 
-            => ReadAndWrittenAsTheSchemaSays<TariffConditions>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<TariffConditions>(
                    Conditions,
                    OCPPv2_1.TariffConditions.TryParse,
                    value => value.ToJSON()!
@@ -534,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void TariffEnergy()
 
-            => ReadAndWrittenAsTheSchemaSays<TariffEnergy>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<TariffEnergy>(
                    $$"""
                    {
                        "prices":     [ { "priceKwh": 0.39, "conditions": {{Conditions}}, "customData": {{Custom}} } ],
@@ -549,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void TariffTime()
 
-            => ReadAndWrittenAsTheSchemaSays<TariffTime>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<TariffTime>(
                    $$"""
                    {
                        "prices":     [ { "priceMinute": 0.05, "conditions": { "minIdleTime": 60 }, "customData": {{Custom}} } ],
@@ -564,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void TariffFixed()
 
-            => ReadAndWrittenAsTheSchemaSays<TariffFixed>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<TariffFixed>(
                    $$"""
                    {
                        "prices":     [ { "priceFixed": 1.5, "conditions": { "dayOfWeek": [ "Sunday" ], "evseKind": "DC" }, "customData": {{Custom}} } ],

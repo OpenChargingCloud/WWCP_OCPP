@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A signed meter value.
     /// </summary>
     public class SignedMeterValue : ACustomData,
+                                    ICBORSerializable<SignedMeterValue>,
                                     IEquatable<SignedMeterValue>
     {
 
@@ -328,6 +331,159 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomSignedMeterValueSerializer is not null
                        ? CustomSignedMeterValueSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out SignedMeterValue, out ErrorResponse, CustomSignedMeterValueParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a signed meter value.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SignedMeterValue">The signed meter value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out SignedMeterValue?  SignedMeterValue,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out SignedMeterValue,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a signed meter value.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="SignedMeterValue">The signed meter value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSignedMeterValueParser">An optional delegate to read custom signed meter values.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out SignedMeterValue?           SignedMeterValue,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<SignedMeterValue>?  CustomSignedMeterValueParser)
+        {
+
+            try
+            {
+
+                SignedMeterValue = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a signed meter value is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("signedMeterData",
+                                             "signed meter data",
+                                             out var SignedMeterData,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("encodingMethod",
+                                             "encoding method",
+                                             out var EncodingMethod,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("signingMethod",
+                                       "signing method",
+                                       out var SigningMethod,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("publicKey",
+                                       "public key",
+                                       out var PublicKey,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                SignedMeterValue = new SignedMeterValue(
+                                       SignedMeterData,
+                                       EncodingMethod,
+                                       SigningMethod,
+                                       PublicKey,
+                                       CustomData
+                                   );
+
+                if (CustomSignedMeterValueParser is not null)
+                    SignedMeterValue = CustomSignedMeterValueParser(CBOR,
+                                                  SignedMeterValue);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SignedMeterValue  = default;
+                ErrorResponse  = "The given CBOR representation of a signed meter value is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<SignedMeterValue>.TryParse(CBOR, out SignedMeterValue, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a signed meter value - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<SignedMeterValue>.TryParse(CBORValue                         CBOR,
+                                                                  out SignedMeterValue                  Value,
+                                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSignedMeterValueSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this signed meter value: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSignedMeterValueSerializer">A delegate to serialize custom signed meter values.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signedMeterData",         CBORValue.FromText(SignedMeterData)),
+                           ("encodingMethod",          CBORValue.FromText(EncodingMethod)),
+                           ("signingMethod",           OCPPCBORExtensions.Text(SigningMethod)),
+                           ("publicKey",               OCPPCBORExtensions.Text(PublicKey)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomSignedMeterValueSerializer is not null
+                       ? CustomSignedMeterValueSerializer(this, cbor)
+                       : cbor;
 
         }
 

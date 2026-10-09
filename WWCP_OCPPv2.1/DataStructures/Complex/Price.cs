@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A price.
     /// </summary>
     public readonly struct Price : IEquatable<Price>,
+                                   ICBORSerializable<Price>,
                                    IComparable<Price>,
                                    IComparable
     {
@@ -338,6 +341,156 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomPriceSerializer is not null
                        ? CustomPriceSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out Price, out ErrorResponse, CustomPriceParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Price">The price.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                                             out Price   Price,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Price,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Price">The price.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomPriceParser">An optional delegate to read custom prices.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                                             out Price            Price,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Price>?  CustomPriceParser)
+        {
+
+            try
+            {
+
+                Price = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a price is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalDecimal("exclTax",
+                                          "price excluding taxes",
+                                          out var ExcludingTaxes,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalDecimal("inclTax",
+                                          "price including taxes",
+                                          out var IncludingTaxes,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!ExcludingTaxes.HasValue && !IncludingTaxes.HasValue)
+                {
+                    ErrorResponse = "A price needs an amount excluding or including taxes!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<TaxRate>("taxRates",
+                                               "tax rates",
+                                               OCPPv2_1.TaxRate.TryParseCBOR,
+                                               out var TaxRates,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Price = new Price(
+                            ExcludingTaxes,
+                            IncludingTaxes,
+                            TaxRates,
+                            CustomData
+                        );
+
+                if (CustomPriceParser is not null)
+                    Price = CustomPriceParser(CBOR,
+                                       Price);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Price  = default;
+                ErrorResponse  = "The given CBOR representation of a price is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Price>.TryParse(CBOR, out Price, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a price - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Price>.TryParse(CBORValue                         CBOR,
+                                                       out Price                  Value,
+                                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomPriceSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this price: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomPriceSerializer">A delegate to serialize custom prices.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Price>? CustomPriceSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("exclTax",                 OCPPCBORExtensions.Number(ExcludingTaxes)),
+                           ("inclTax",                 OCPPCBORExtensions.Number(IncludingTaxes)),
+                           ("taxRates",                OCPPCBORExtensions.Array(TaxRates, taxRate => taxRate.ToCBOR())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomPriceSerializer is not null
+                       ? CustomPriceSerializer(this, cbor)
+                       : cbor;
 
         }
 

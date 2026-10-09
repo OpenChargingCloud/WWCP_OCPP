@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A TariffEnergy tariff element.
     /// </summary>
     public class TariffEnergy : ACustomData,
+                                ICBORSerializable<TariffEnergy>,
                                 IEquatable<TariffEnergy>
     {
 
@@ -297,6 +300,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomTariffEnergySerializer is not null
                        ? CustomTariffEnergySerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out TariffEnergy, out ErrorResponse, CustomTariffEnergyParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff energy.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffEnergy">The tariff energy.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out TariffEnergy?  TariffEnergy,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out TariffEnergy,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff energy.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="TariffEnergy">The tariff energy.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomTariffEnergyParser">An optional delegate to read custom tariff energys.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out TariffEnergy?           TariffEnergy,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<TariffEnergy>?  CustomTariffEnergyParser)
+        {
+
+            try
+            {
+
+                TariffEnergy = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a tariff energy is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<TariffEnergyPrice>("prices",
+                                                     "prices",
+                                                     OCPPv2_1.TariffEnergyPrice.TryParseCBOR,
+                                                     out var Prices,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<TaxRate>("taxRates",
+                                               "tax rates",
+                                               OCPPv2_1.TaxRate.TryParseCBOR,
+                                               out var TaxRates,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                TariffEnergy = new TariffEnergy(
+                                Prices,
+                                TaxRates,
+                                CustomData
+                            );
+
+                if (CustomTariffEnergyParser is not null)
+                    TariffEnergy = CustomTariffEnergyParser(CBOR,
+                                              TariffEnergy);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TariffEnergy  = default;
+                ErrorResponse  = "The given CBOR representation of a tariff energy is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<TariffEnergy>.TryParse(CBOR, out TariffEnergy, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a tariff energy - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<TariffEnergy>.TryParse(CBORValue                         CBOR,
+                                                              out TariffEnergy                  Value,
+                                                              [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTariffEnergySerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this tariff energy: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTariffEnergySerializer">A delegate to serialize custom tariff energys.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TariffEnergy>? CustomTariffEnergySerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("prices",                  CBORValue.FromArray(Prices.Select(price => price.ToCBOR()))),
+                           ("taxRates",                OCPPCBORExtensions.Array(TaxRates, taxRate => taxRate.ToCBOR())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomTariffEnergySerializer is not null
+                       ? CustomTariffEnergySerializer(this, cbor)
+                       : cbor;
 
         }
 

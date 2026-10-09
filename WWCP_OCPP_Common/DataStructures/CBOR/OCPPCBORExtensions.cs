@@ -418,6 +418,64 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
+        #region Rates:  RateToCBOR(Amount, PerUnit, PerExponent), TryParseRate(CBOR, PerUnit, PerExponent, out Amount, out ErrorResponse)
+
+        /// <summary>
+        /// An amount per unit - a price per kWh, per minute - as a metrological value
+        /// of the unit to the power of -1, per the unit itself and without a prefix,
+        /// so that nobody has to guess what a prefix of a reciprocal unit means:
+        /// 0.30 per kWh is 0.0003 Wh^-1. What the amount is of (a currency) is
+        /// said elsewhere.
+        /// </summary>
+        /// <param name="Amount">The amount per (10^PerExponent) units.</param>
+        /// <param name="PerUnit">The unit the amount is per.</param>
+        /// <param name="PerExponent">The power of ten of the unit the amount is per: 3 for per kWh.</param>
+        public static CBORValue RateToCBOR(Decimal        Amount,
+                                           UnitOfMeasure  PerUnit,
+                                           Int32          PerExponent = 0)
+
+            => new MetrologicalValue(
+                   Amount / MathHelpers.Pow10(PerExponent),
+                   new UnitExpression(new UnitFactor(PerUnit, -1))
+               ).ToCBOR();
+
+
+        /// <summary>
+        /// Try to read the given CBOR value as an amount per unit: a metrological value
+        /// of the unit to the power of -1.
+        /// </summary>
+        /// <param name="CBOR">A CBOR value.</param>
+        /// <param name="PerUnit">The unit the amount is per.</param>
+        /// <param name="PerExponent">The power of ten of the unit the amount is per: 3 for per kWh.</param>
+        /// <param name="Amount">The amount per (10^PerExponent) units.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseRate(CBORValue                         CBOR,
+                                           UnitOfMeasure                     PerUnit,
+                                           Int32                             PerExponent,
+                                           out Decimal                       Amount,
+                                           [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Amount = default;
+
+            if (!MetrologicalValue.TryParse(CBOR, out var metrologicalValue, out ErrorResponse))
+                return false;
+
+            if (!metrologicalValue.TryToBaseUnit(out var baseValue) ||
+                 baseValue.Unit != new UnitExpression(new UnitFactor(PerUnit, -1)))
+            {
+                ErrorResponse = $"The value '{metrologicalValue}' is not per {PerUnit}!";
+                return false;
+            }
+
+            // Without the zeros the division by the power of ten left behind.
+            Amount = baseValue.Value * MathHelpers.Pow10(PerExponent) / 1.0000000000000000000000000000m;
+            return true;
+
+        }
+
+        #endregion
+
         #region Mandatory values: ParseMandatoryValue<T>(CBOR, PropertyName, PropertyDescription, TryParse, out Value, out ErrorResponse)
 
         /// <summary>
@@ -582,6 +640,140 @@ namespace cloud.charging.open.protocols.OCPP
                 return true;
 
             TryParseList(items, PropertyName, TryParse, out Values, out ErrorResponse);
+            return true;
+
+        }
+
+        #endregion
+
+        #region Signatures: ToCBOR(Signature), TryParseSignature(CBOR, out Signature, out ErrorResponse)
+
+        /// <summary>
+        /// The given cryptographic signature as CBOR: the keys of its JSON object,
+        /// its key identification and value as byte strings - what the JSON has
+        /// to encode as text - and what is not its default only.
+        /// </summary>
+        /// <param name="Signature">A cryptographic signature.</param>
+        public static CBORValue ToCBOR(this Signature Signature)
+
+            => Map(
+                   ("keyId",           CBORValue.FromBytes(Signature.KeyId)),
+                   ("value",           CBORValue.FromBytes(Signature.Value)),
+                   ("signingMethod",   Signature.SigningMethod != CryptoSigningMethod.JSON      ? (CBORValue?) CBORValue.FromText(Signature.SigningMethod.ToString()) : null),
+                   ("encodingMethod",  Signature.Encoding      != CryptoEncoding.     BASE64    ? (CBORValue?) CBORValue.FromText(Signature.Encoding.     ToString()) : null),
+                   ("algorithm",       Signature.Algorithm     != CryptoAlgorithm.    Secp256r1 ? (CBORValue?) CBORValue.FromText(Signature.Algorithm.    ToString()) : null),
+                   ("name",            Text(Signature.Name.IsNotNullOrEmpty() ? Signature.Name : null)),
+                   ("description",     Signature.Description is not null && Signature.Description.IsNotNullOrEmpty()
+                                           ? (CBORValue?) CBORValue.FromMap(Signature.Description.Select(text => new KeyValuePair<CBORValue, CBORValue>(CBORValue.FromText(text.Language.ToString()), CBORValue.FromText(text.Text))))
+                                           : null),
+                   ("timestamp",       Signature.Timestamp?.ToCBOR()),
+                   ("customData",      Signature.CustomData?.ToCBOR())
+               );
+
+
+        /// <summary>
+        /// Try to read the given CBOR value as a cryptographic signature.
+        /// </summary>
+        /// <param name="CBOR">A CBOR value.</param>
+        /// <param name="Signature">The cryptographic signature.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseSignature(CBORValue                            CBOR,
+                                                [NotNullWhen(true)]  out Signature?  Signature,
+                                                [NotNullWhen(false)] out String?     ErrorResponse)
+        {
+
+            Signature = null;
+
+            if (CBOR.Kind != CBORValueKind.Map)
+            {
+                ErrorResponse = "The given CBOR representation of a signature is not a map!";
+                return false;
+            }
+
+            if (!CBOR.ParseMandatoryBytes("keyId", "key identification", out var keyId, out ErrorResponse) ||
+                !CBOR.ParseMandatoryBytes("value", "signature value",    out var value, out ErrorResponse))
+            {
+                return false;
+            }
+
+            CryptoSigningMethod? signingMethod = null;
+            CryptoEncoding?      encoding      = null;
+            CryptoAlgorithm?     algorithm     = null;
+
+            if (CBOR.ParseOptionalText("signingMethod", "signing method", out var signingMethodText, out ErrorResponse))
+            {
+                if (!CryptoSigningMethod.TryParse(signingMethodText!, out var parsed)) { ErrorResponse = $"Invalid signing method '{signingMethodText}'!"; return false; }
+                signingMethod = parsed;
+            }
+            else if (ErrorResponse is not null)
+                return false;
+
+            if (CBOR.ParseOptionalText("encodingMethod", "encoding method", out var encodingText, out ErrorResponse))
+            {
+                if (!CryptoEncoding.TryParse(encodingText!, out var parsed)) { ErrorResponse = $"Invalid encoding method '{encodingText}'!"; return false; }
+                encoding = parsed;
+            }
+            else if (ErrorResponse is not null)
+                return false;
+
+            if (CBOR.ParseOptionalText("algorithm", "crypto algorithm", out var algorithmText, out ErrorResponse))
+            {
+                if (!CryptoAlgorithm.TryParse(algorithmText!, out var parsed)) { ErrorResponse = $"Invalid crypto algorithm '{algorithmText}'!"; return false; }
+                algorithm = parsed;
+            }
+            else if (ErrorResponse is not null)
+                return false;
+
+            CBOR.ParseOptionalText("name", "name", out var name, out ErrorResponse);
+            if (ErrorResponse is not null)
+                return false;
+
+            I18NString? description = null;
+
+            if (CBOR.TryGetValue(CBORValue.FromText("description"), out var descriptionCBOR))
+            {
+
+                if (descriptionCBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The description of a signature is not a map of texts by language!";
+                    return false;
+                }
+
+                description = I18NString.Empty;
+
+                foreach (var entry in descriptionCBOR.AsMap())
+                {
+                    if (!Enum.TryParse<Languages>(entry.Key.AsText(), ignoreCase: true, out var language))
+                    {
+                        ErrorResponse = $"Invalid language '{entry.Key.AsText()}' of a description!";
+                        return false;
+                    }
+                    description = description.Set(language, entry.Value.AsText());
+                }
+
+            }
+
+            CBOR.ParseOptionalValue("timestamp", "timestamp", TryParseTimestamp, out DateTimeOffset? timestamp, out ErrorResponse);
+            if (ErrorResponse is not null)
+                return false;
+
+            CBOR.ParseOptional("customData", "custom data", TryParseCustomData, out CustomData? customData, out ErrorResponse);
+            if (ErrorResponse is not null)
+                return false;
+
+            Signature = new Signature(
+                            keyId,
+                            value,
+                            algorithm,
+                            signingMethod,
+                            encoding,
+                            name,
+                            description,
+                            timestamp,
+                            customData
+                        );
+
+            ErrorResponse = null;
             return true;
 
         }

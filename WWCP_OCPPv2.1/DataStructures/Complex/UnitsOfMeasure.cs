@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -39,7 +41,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class UnitsOfMeasure(UnitOfMeasure  Unit,
                                 Int32?         Multiplier   = null,
                                 CustomData?    CustomData   = null) : ACustomData(CustomData),
-                                                                      IEquatable<UnitsOfMeasure>
+                                                                      IEquatable<UnitsOfMeasure>,
+                                                                      ICBORSerializable<UnitsOfMeasure>
     {
 
         #region Properties
@@ -258,6 +261,166 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, out UnitsOfMeasure, out ErrorResponse, CustomUnitsOfMeasureParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an unit of measure.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="UnitsOfMeasure">The unit of measure.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out UnitsOfMeasure?  UnitsOfMeasure,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out UnitsOfMeasure,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an unit of measure.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="UnitsOfMeasure">The unit of measure.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomUnitsOfMeasureParser">An optional delegate to read custom unit of measures.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out UnitsOfMeasure?           UnitsOfMeasure,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<UnitsOfMeasure>?  CustomUnitsOfMeasureParser)
+        {
+
+            try
+            {
+
+                UnitsOfMeasure = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an unit of measure is not a map!";
+                    return false;
+                }
+
+                OCPPv2_1.UnitOfMeasure? Unit = null;
+
+                if (CBOR.ParseOptionalText("unit",
+                                           "unit of measure",
+                                           out var UnitText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.UnitOfMeasure.TryParse(UnitText!, out var UnitValue))
+                    {
+                        ErrorResponse = $"Invalid unit of measure '{UnitText}'!";
+                        return false;
+                    }
+
+                    Unit = UnitValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                Int32? Multiplier = null;
+
+                if (CBOR.ParseOptionalInt64("multiplier",
+                                            "multiplier",
+                                            out var multiplier,
+                                            out ErrorResponse))
+                {
+
+                    if (multiplier is not Int64 multiplierValue || multiplierValue < Int32.MinValue || multiplierValue > Int32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid multiplier '{multiplier}'!";
+                        return false;
+                    }
+
+                    Multiplier = (Int32) multiplierValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                UnitsOfMeasure = new UnitsOfMeasure(
+                                     Unit ?? OCPPv2_1.UnitOfMeasure.Wh,
+                                     Multiplier,
+                                     CustomData
+                                 );
+
+                if (CustomUnitsOfMeasureParser is not null)
+                    UnitsOfMeasure = CustomUnitsOfMeasureParser(CBOR,
+                                                UnitsOfMeasure);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                UnitsOfMeasure  = default;
+                ErrorResponse  = "The given CBOR representation of an unit of measure is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<UnitsOfMeasure>.TryParse(CBOR, out UnitsOfMeasure, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an unit of measure - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<UnitsOfMeasure>.TryParse(CBORValue                         CBOR,
+                                                                out UnitsOfMeasure                  Value,
+                                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomUnitsOfMeasureSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this unit of measure: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom unit of measures.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<UnitsOfMeasure>? CustomUnitsOfMeasureSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("unit",                    CBORValue.FromText(Unit.ToString())),
+                           ("multiplier",              CBORValue.FromInt64(Multiplier)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomUnitsOfMeasureSerializer is not null
+                       ? CustomUnitsOfMeasureSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
         #region Clone()
 
         /// <summary>
@@ -270,6 +433,121 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Multiplier,
                    CustomData
                );
+
+        #endregion
+
+        #region Metrology: TryToMetrologicalValue(Value, out MetrologicalValue), TryFromMetrologicalValue(...)
+
+        /// <summary>
+        /// The units of the specification's "Standardized Units of Measure" that are
+        /// metrological units: the unit and the power of ten its prefix is.
+        /// </summary>
+        private static readonly Dictionary<String, (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure Unit, Int32 Exponent)> metrologicalUnits = new() {
+            { "A",        (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Ampere,                  0) },
+            { "B",        (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Byte,                    0) },
+            { "Celsius",  (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Celsius,                 0) },
+            { "Deg",      (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Degree,                  0) },
+            { "Hz",       (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Hertz,                   0) },
+            { "mHz",      (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Hertz,                  -3) },
+            { "K",        (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Kelvin,                  0) },
+            { "lx",       (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Lux,                     0) },
+            { "m",        (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Meter,                   0) },
+            { "N",        (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Newton,                  0) },
+            { "Ohm",      (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Ohm,                     0) },
+            { "kPa",      (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Pascal,                  3) },
+            { "Percent",  (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Percent,                 0) },
+            { "s",        (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Second,                  0) },
+            { "V",        (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Volt,                    0) },
+            { "VA",       (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.VoltAmpere,              0) },
+            { "kVA",      (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.VoltAmpere,              3) },
+            { "var",      (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.VoltAmpereReactive,      0) },
+            { "kvar",     (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.VoltAmpereReactive,      3) },
+            { "varh",     (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.VoltAmpereReactiveHour,  0) },
+            { "kvarh",    (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.VoltAmpereReactiveHour,  3) },
+            { "W",        (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Watt,                    0) },
+            { "kW",       (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Watt,                    3) },
+            { "Wh",       (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour,                0) },
+            { "kWh",      (org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour,                3) }
+        };
+
+
+        /// <summary>
+        /// The given value in this unit and with this multiplier as a metrological
+        /// value - for every unit of the specification that is a metrological unit,
+        /// and as long as no custom data comes with it.
+        /// </summary>
+        /// <param name="Value">A value in this unit and with this multiplier.</param>
+        /// <param name="MetrologicalValue">The metrological value.</param>
+        public Boolean TryToMetrologicalValue(Decimal                Value,
+                                              out MetrologicalValue  MetrologicalValue)
+        {
+
+            MetrologicalValue = default;
+
+            if (CustomData is not null ||
+                !metrologicalUnits.TryGetValue(Unit.ToString(), out var unit) ||
+                !SIPrefix.TryFrom(unit.Exponent + Multiplier, out var prefix))
+            {
+                return false;
+            }
+
+            MetrologicalValue = new MetrologicalValue(Value, unit.Unit, prefix);
+            return true;
+
+        }
+
+
+        /// <summary>
+        /// The value, the unit and the multiplier of the given metrological value -
+        /// the unit the specification names with a k where there is one, and no unit
+        /// at all for watt-hours without a prefix, the default of a sampled value.
+        /// </summary>
+        /// <param name="MetrologicalValue">A metrological value.</param>
+        /// <param name="Value">The value.</param>
+        /// <param name="UnitsOfMeasure">The unit and the multiplier, or null for Wh.</param>
+        public static Boolean TryFromMetrologicalValue(MetrologicalValue    MetrologicalValue,
+                                                       out Decimal          Value,
+                                                       out UnitsOfMeasure?  UnitsOfMeasure)
+        {
+
+            Value           = MetrologicalValue.Value;
+            UnitsOfMeasure  = null;
+
+            var exponent    = MetrologicalValue.Prefix.Exponent;
+
+            // Of the units with the same metrological unit: the one whose prefix
+            // is the value's (mHz for 10^-3, kWh for 10^3), else the largest one
+            // not above it that has no fraction of a prefix (kWh for 10^6), else
+            // the unit itself (Hz for 10^-1), else whichever there is (kPa).
+            var candidates  = metrologicalUnits.Where(entry => MetrologicalValue.Unit == entry.Value.Unit).
+                                                OrderByDescending(entry => entry.Value.Exponent).
+                                                ToArray();
+
+            if (candidates.Length == 0)
+                return false;
+
+            var chosen      = candidates.FirstOrDefault(entry => entry.Value.Exponent == exponent);
+
+            if (chosen.Key is null)
+                chosen      = candidates.FirstOrDefault(entry => entry.Value.Exponent >= 0 && entry.Value.Exponent <= exponent);
+
+            if (chosen.Key is null)
+                chosen      = candidates.FirstOrDefault(entry => entry.Value.Exponent == 0);
+
+            if (chosen.Key is null)
+                chosen      = candidates.Last();
+
+            if (chosen.Key == "Wh" && exponent == 0)
+                return true;
+
+            UnitsOfMeasure  = new UnitsOfMeasure(
+                                  OCPPv2_1.UnitOfMeasure.Parse(chosen.Key),
+                                  exponent - chosen.Value.Exponent
+                              );
+
+            return true;
+
+        }
 
         #endregion
 
