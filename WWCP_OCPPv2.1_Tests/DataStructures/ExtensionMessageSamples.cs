@@ -70,6 +70,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
             { "UpdateUserRoleRequest",                $$"""{ "customData": {{Custom}} }""" },
             { "UpdateUserRoleResponse",               $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
 
+            // NTS key establishment
+            { "NTSKERequest",                         $$"""{ "aeadAlgorithm": "AES_256_GCM", "customData": {{Custom}} }""" },
+            { "NTSKEResponse",                        $$"""{ "serverInfos": [ { "c2sKey": "AQID", "s2cKey": "BAUG", "cookies": [ "BwgJ" ], "urls": [ "https://time.example" ], "aeadAlgorithm": "AES_256_GCM" } ], "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
+
             // Testing extensions
             { "AdjustTimeScaleRequest",               $$"""{ "scale": 2.5, "customData": {{Custom}} }""" },
             { "AdjustTimeScaleResponse",              $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },

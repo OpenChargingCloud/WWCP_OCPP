@@ -338,6 +338,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out NTSKERequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NTSKE request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NTSKERequest">The NTSKE request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNTSKERequestParser">A delegate to read custom NTSKE requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                CBOR,
+                                           Request_Id                               RequestId,
+                                           SourceRouting                            Destination,
+                                           NetworkPath                              NetworkPath,
+                                           [NotNullWhen(true)]  out NTSKERequest?   NTSKERequest,
+                                           [NotNullWhen(false)] out String?         ErrorResponse,
+                                           DateTimeOffset?                          RequestTimestamp           = null,
+                                           TimeSpan?                                RequestTimeout             = null,
+                                           EventTracking_Id?                        EventTrackingId            = null,
+                                           CustomCBORParserDelegate<NTSKERequest>?  CustomNTSKERequestParser   = null)
+        {
+
+            try
+            {
+
+                NTSKERequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NTSKE request is not a map!";
+                    return false;
+                }
+
+                AEADAlgorithms? aeadAlgorithm = null;
+
+                if (CBOR.ParseOptionalText("aeadAlgorithm",
+                                           "AEAD algorithm",
+                                           out var aeadAlgorithmText,
+                                           out ErrorResponse))
+                {
+                    if (!AEADAlgorithmsExtensions.TryParse(aeadAlgorithmText!, out aeadAlgorithm, out ErrorResponse))
+                        return false;
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NTSKERequest = new NTSKERequest(
+
+                                   Destination,
+                                   aeadAlgorithm,
+
+                                   null,
+                                   null,
+                                   Signatures,
+
+                                   CustomData,
+
+                                   RequestId,
+                                   RequestTimestamp,
+                                   RequestTimeout,
+                                   EventTrackingId,
+                                   NetworkPath
+
+                               );
+
+                if (CustomNTSKERequestParser is not null)
+                    NTSKERequest = CustomNTSKERequestParser(CBOR,
+                                                           NTSKERequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NTSKERequest = null;
+                ErrorResponse = "The given CBOR representation of a NTSKE request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNTSKERequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NTSKE request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNTSKERequestSerializer">A delegate to serialize custom NTSKE requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NTSKERequest>? CustomNTSKERequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("aeadAlgorithm",             CBORValue.FromText(AEADAlgorithm.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNTSKERequestSerializer is not null
+                       ? CustomNTSKERequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

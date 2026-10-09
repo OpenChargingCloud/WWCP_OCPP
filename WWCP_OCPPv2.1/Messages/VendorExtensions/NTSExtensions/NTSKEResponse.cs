@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region ServerInfos    [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("serverInfos",
-                                                "generic status",
+                                                "NTS-KE server infos",
                                                 nts.NTSKE_ServerInfo.TryParse,
                                                 out HashSet<nts.NTSKE_ServerInfo> serverInfos,
                                                 out ErrorResponse))
@@ -386,6 +386,158 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             return CustomNTSKEResponseSerializer is not null
                        ? CustomNTSKEResponseSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(Request, CBOR, ..., out NTSKEResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NTSKE response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NTSKEResponse">The NTSKE response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomNTSKEResponseParser">A delegate to read custom NTSKE responses.</param>
+        public static Boolean TryParseCBOR(NTSKERequest                              Request,
+                                           CBORValue                                 CBOR,
+                                           SourceRouting                             Destination,
+                                           NetworkPath                               NetworkPath,
+                                           [NotNullWhen(true)]  out NTSKEResponse?   NTSKEResponse,
+                                           [NotNullWhen(false)] out String?          ErrorResponse,
+                                           DateTimeOffset?                           ResponseTimestamp           = null,
+                                           CustomCBORParserDelegate<NTSKEResponse>?  CustomNTSKEResponseParser   = null)
+        {
+
+            try
+            {
+
+                NTSKEResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NTSKE response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<nts.NTSKE_ServerInfo>("serverInfos",
+                                               "NTS-KE server infos",
+                                               nts.NTSKE_ServerInfo.TryParseCBOR,
+                                               out var serverInfos,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "generic status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid generic status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NTSKEResponse = new NTSKEResponse(
+
+                                    Request,
+                                    serverInfos,
+                                    Status,
+                                    StatusInfo,
+
+                                    null,
+                                    ResponseTimestamp,
+
+                                    Destination,
+                                    NetworkPath,
+
+                                    null,
+                                    null,
+                                    Signatures,
+
+                                    CustomData
+
+                                );
+
+                if (CustomNTSKEResponseParser is not null)
+                    NTSKEResponse = CustomNTSKEResponseParser(CBOR,
+                                                             NTSKEResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NTSKEResponse = null;
+                ErrorResponse = "The given CBOR representation of a NTSKE response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNTSKEResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NTSKE response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNTSKEResponseSerializer">A delegate to serialize custom NTSKE responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NTSKEResponse>? CustomNTSKEResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("serverInfos",               CBORValue.FromArray(ServerInfos.Select(serverInfo => serverInfo.ToCBOR()))),
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNTSKEResponseSerializer is not null
+                       ? CustomNTSKEResponseSerializer(this, cbor)
+                       : cbor;
 
         }
 
