@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Voltage Parameters
     /// </summary>
     public class VoltageParameters : ACustomData,
+                                     ICBORSerializable<VoltageParameters>,
                                      IEquatable<VoltageParameters>
     {
 
@@ -325,6 +328,163 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out VoltageParameters, out ErrorResponse, CustomVoltageParametersParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a voltage parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VoltageParameters">The voltage parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out VoltageParameters?  VoltageParameters,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out VoltageParameters,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a voltage parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="VoltageParameters">The voltage parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomVoltageParametersParser">An optional delegate to read custom voltage parameters.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out VoltageParameters?           VoltageParameters,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<VoltageParameters>?  CustomVoltageParametersParser)
+        {
+
+            try
+            {
+
+                VoltageParameters = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a voltage parameters is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalDecimal("hv10MinMeanValue",
+                                          "high voltage 10 min mean value",
+                                          out var HighVoltage_10Min_MeanValue,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("hv10MinMeanTripDelay",
+                                        "high voltage 10 min mean trip delay",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? HighVoltage_10Min_MeanTripDelay,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                PowerDuringCessation? PowerDuringCessation = null;
+
+                if (CBOR.ParseOptionalText("powerDuringCessation",
+                                           "power during cessation",
+                                           out var PowerDuringCessationText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.PowerDuringCessation.TryParse(PowerDuringCessationText!, out var PowerDuringCessationValue))
+                    {
+                        ErrorResponse = $"Invalid power during cessation '{PowerDuringCessationText}'!";
+                        return false;
+                    }
+
+                    PowerDuringCessation = PowerDuringCessationValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                VoltageParameters = new VoltageParameters(
+                                        HighVoltage_10Min_MeanValue,
+                                        HighVoltage_10Min_MeanTripDelay,
+                                        PowerDuringCessation,
+                                        CustomData
+                                    );
+
+                if (CustomVoltageParametersParser is not null)
+                    VoltageParameters = CustomVoltageParametersParser(CBOR,
+                                                   VoltageParameters);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                VoltageParameters  = default;
+                ErrorResponse  = "The given CBOR representation of a voltage parameters is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<VoltageParameters>.TryParse(CBOR, out VoltageParameters, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a voltage parameters - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<VoltageParameters>.TryParse(CBORValue                         CBOR,
+                                                                   out VoltageParameters                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomVoltageParametersSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this voltage parameters: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomVoltageParametersSerializer">A delegate to serialize custom voltage parameters.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<VoltageParameters>? CustomVoltageParametersSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("hv10MinMeanValue",                       OCPPCBORExtensions.Number(HighVoltage_10Min_MeanValue)),
+                           ("hv10MinMeanTripDelay",                   HighVoltage_10Min_MeanTripDelay?.ToCBOR()),
+                           ("powerDuringCessation",                   OCPPCBORExtensions.Text(PowerDuringCessation?.ToString())),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomVoltageParametersSerializer is not null
+                       ? CustomVoltageParametersSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

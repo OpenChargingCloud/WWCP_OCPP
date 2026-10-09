@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER Curve Point
     /// </summary>
     public class DERCurvePoint : ACustomData,
+                                 ICBORSerializable<DERCurvePoint>,
                                  IEquatable<DERCurvePoint>
     {
 
@@ -276,6 +279,139 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DERCurvePoint, out ErrorResponse, CustomDERCurvePointParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER curve point.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERCurvePoint">The DER curve point.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DERCurvePoint?  DERCurvePoint,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DERCurvePoint,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER curve point.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERCurvePoint">The DER curve point.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDERCurvePointParser">An optional delegate to read custom DER curve points.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DERCurvePoint?           DERCurvePoint,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DERCurvePoint>?  CustomDERCurvePointParser)
+        {
+
+            try
+            {
+
+                DERCurvePoint = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER curve point is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("x",
+                                                "x",
+                                                out var X,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("y",
+                                                "y",
+                                                out var Y,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERCurvePoint = new DERCurvePoint(
+                                    X,
+                                    Y,
+                                    CustomData
+                                );
+
+                if (CustomDERCurvePointParser is not null)
+                    DERCurvePoint = CustomDERCurvePointParser(CBOR,
+                                               DERCurvePoint);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DERCurvePoint  = default;
+                ErrorResponse  = "The given CBOR representation of a DER curve point is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DERCurvePoint>.TryParse(CBOR, out DERCurvePoint, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER curve point - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DERCurvePoint>.TryParse(CBORValue                         CBOR,
+                                                               out DERCurvePoint                  Value,
+                                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDERCurvePointSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER curve point: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDERCurvePointSerializer">A delegate to serialize custom DER curve points.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DERCurvePoint>? CustomDERCurvePointSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("x",                                      CBORValue.FromDecimal(X)),
+                           ("y",                                      CBORValue.FromDecimal(Y)),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDERCurvePointSerializer is not null
+                       ? CustomDERCurvePointSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

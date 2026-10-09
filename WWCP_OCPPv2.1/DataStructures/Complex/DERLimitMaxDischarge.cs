@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER Limit Max Discharge
     /// </summary>
     public class DERLimitMaxDischarge : ACustomData,
+                                        ICBORSerializable<DERLimitMaxDischarge>,
                                         IEquatable<DERLimitMaxDischarge>
     {
 
@@ -393,6 +396,183 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DERLimitMaxDischarge, out ErrorResponse, CustomDERLimitMaxDischargeParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER limit of the maximum discharge.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERLimitMaxDischarge">The DER limit of the maximum discharge.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DERLimitMaxDischarge?  DERLimitMaxDischarge,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DERLimitMaxDischarge,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER limit of the maximum discharge.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERLimitMaxDischarge">The DER limit of the maximum discharge.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDERLimitMaxDischargeParser">An optional delegate to read custom DER limit of the maximum discharges.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DERLimitMaxDischarge?           DERLimitMaxDischarge,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DERLimitMaxDischarge>?  CustomDERLimitMaxDischargeParser)
+        {
+
+            try
+            {
+
+                DERLimitMaxDischarge = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER limit of the maximum discharge is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priority",
+                                               "priority",
+                                               out var PriorityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PriorityNumber > Byte.MaxValue)
+                {
+                    ErrorResponse = $"Invalid priority '{PriorityNumber}'!";
+                    return false;
+                }
+
+                var Priority = (Byte) PriorityNumber;
+
+                CBOR.ParseOptionalValue("pctMaxDischargePower",
+                                        "percentage of the maximum discharge power",
+                                        OCPPCBORExtensions.TryParsePercentage,
+                                        out Percentage? PercentageMaxDischargePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("powerMonitoringMustTrip",
+                                   "power monitoring must trip",
+                                   OCPPv2_1.DERCurve.TryParseCBOR,
+                                   out DERCurve? PowerMonitoringMustTrip,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("startTime",
+                                        "start time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StartTimeOffset,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                var StartTime = StartTimeOffset?.UtcDateTime;
+
+                CBOR.ParseOptionalValue("duration",
+                                        "duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Duration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERLimitMaxDischarge = new DERLimitMaxDischarge(
+                                           Priority,
+                                           PercentageMaxDischargePower,
+                                           PowerMonitoringMustTrip,
+                                           StartTime,
+                                           Duration,
+                                           CustomData
+                                       );
+
+                if (CustomDERLimitMaxDischargeParser is not null)
+                    DERLimitMaxDischarge = CustomDERLimitMaxDischargeParser(CBOR,
+                                                      DERLimitMaxDischarge);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DERLimitMaxDischarge  = default;
+                ErrorResponse  = "The given CBOR representation of a DER limit of the maximum discharge is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DERLimitMaxDischarge>.TryParse(CBOR, out DERLimitMaxDischarge, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER limit of the maximum discharge - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DERLimitMaxDischarge>.TryParse(CBORValue                         CBOR,
+                                                                      out DERLimitMaxDischarge                  Value,
+                                                                      [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDERLimitMaxDischargeSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER limit of the maximum discharge: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDERLimitMaxDischargeSerializer">A delegate to serialize custom DER limit of the maximum discharges.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DERLimitMaxDischarge>? CustomDERLimitMaxDischargeSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("priority",                               CBORValue.FromUInt64(Priority)),
+                           ("pctMaxDischargePower",                   PercentageMaxDischargePower?.ToCBOR()),
+                           ("powerMonitoringMustTrip",                PowerMonitoringMustTrip?.ToCBOR()),
+                           ("startTime",                              StartTime.HasValue ? (CBORValue?) new DateTimeOffset(StartTime.Value.ToUniversalTime(), TimeSpan.Zero).ToCBOR() : null),
+                           ("duration",                               Duration?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDERLimitMaxDischargeSerializer is not null
+                       ? CustomDERLimitMaxDischargeSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER Enter Service
     /// </summary>
     public class DEREnterService : ACustomData,
+                                   ICBORSerializable<DEREnterService>,
                                    IEquatable<DEREnterService>
     {
 
@@ -457,6 +460,214 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DEREnterService, out ErrorResponse, CustomDEREnterServiceParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER enter service.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DEREnterService">The DER enter service.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DEREnterService?  DEREnterService,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DEREnterService,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER enter service.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DEREnterService">The DER enter service.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDEREnterServiceParser">An optional delegate to read custom DER enter services.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DEREnterService?           DEREnterService,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DEREnterService>?  CustomDEREnterServiceParser)
+        {
+
+            try
+            {
+
+                DEREnterService = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER enter service is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priority",
+                                               "priority",
+                                               out var PriorityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PriorityNumber > Byte.MaxValue)
+                {
+                    ErrorResponse = $"Invalid priority '{PriorityNumber}'!";
+                    return false;
+                }
+
+                var Priority = (Byte) PriorityNumber;
+
+                if (!CBOR.ParseMandatoryValue("highVoltage",
+                                              "high voltage",
+                                              OCPPCBORExtensions.TryParseVolt,
+                                              out Volt HighVoltage,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("lowVoltage",
+                                              "low voltage",
+                                              OCPPCBORExtensions.TryParseVolt,
+                                              out Volt LowVoltage,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("highFreq",
+                                              "high frequency",
+                                              OCPPCBORExtensions.TryParseHertz,
+                                              out Hertz HighFrequency,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("lowFreq",
+                                              "low frequency",
+                                              OCPPCBORExtensions.TryParseHertz,
+                                              out Hertz LowFrequency,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("delay",
+                                        "delay",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Delay,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("randomDelay",
+                                        "random delay",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? RandomDelay,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("rampRate",
+                                        "ramp rate",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? RampRate,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DEREnterService = new DEREnterService(
+                                      Priority,
+                                      HighVoltage,
+                                      LowVoltage,
+                                      HighFrequency,
+                                      LowFrequency,
+                                      Delay,
+                                      RandomDelay,
+                                      RampRate,
+                                      CustomData
+                                  );
+
+                if (CustomDEREnterServiceParser is not null)
+                    DEREnterService = CustomDEREnterServiceParser(CBOR,
+                                                 DEREnterService);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DEREnterService  = default;
+                ErrorResponse  = "The given CBOR representation of a DER enter service is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DEREnterService>.TryParse(CBOR, out DEREnterService, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER enter service - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DEREnterService>.TryParse(CBORValue                         CBOR,
+                                                                 out DEREnterService                  Value,
+                                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDEREnterServiceSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER enter service: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDEREnterServiceSerializer">A delegate to serialize custom DER enter services.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DEREnterService>? CustomDEREnterServiceSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("priority",                               CBORValue.FromUInt64(Priority)),
+                           ("highVoltage",                            HighVoltage.  ToCBOR()),
+                           ("lowVoltage",                             LowVoltage.   ToCBOR()),
+                           ("highFreq",                               HighFrequency.ToCBOR()),
+                           ("lowFreq",                                LowFrequency. ToCBOR()),
+                           ("delay",                                  Delay?.      ToCBOR()),
+                           ("randomDelay",                            RandomDelay?.ToCBOR()),
+                           ("rampRate",                               RampRate?.   ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDEREnterServiceSerializer is not null
+                       ? CustomDEREnterServiceSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

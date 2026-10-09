@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// (See also: ISO 15118-20 CommonMessages/Complex/EVPowerSchedule)
     /// </summary>
     public class EVPowerSchedule : ACustomData,
+                                   ICBORSerializable<EVPowerSchedule>,
                                    IEquatable<EVPowerSchedule>
     {
 
@@ -287,6 +290,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out EVPowerSchedule, out ErrorResponse, CustomEVPowerScheduleParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV power schedule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVPowerSchedule">The EV power schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out EVPowerSchedule?  EVPowerSchedule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out EVPowerSchedule,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV power schedule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVPowerSchedule">The EV power schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomEVPowerScheduleParser">An optional delegate to read custom EV power schedules.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out EVPowerSchedule?           EVPowerSchedule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<EVPowerSchedule>?  CustomEVPowerScheduleParser)
+        {
+
+            try
+            {
+
+                EVPowerSchedule = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an EV power schedule is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timeAnchor",
+                                              "time anchor",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset TimeAnchor,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<EVPowerScheduleEntry>("evPowerScheduleEntries",
+                                                     "EV power schedule entries",
+                                                     OCPPv2_1.EVPowerScheduleEntry.TryParseCBOR,
+                                                     out var EVPowerScheduleEntries,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                EVPowerSchedule = new EVPowerSchedule(
+                                      TimeAnchor,
+                                      EVPowerScheduleEntries,
+                                      CustomData
+                                  );
+
+                if (CustomEVPowerScheduleParser is not null)
+                    EVPowerSchedule = CustomEVPowerScheduleParser(CBOR,
+                                                 EVPowerSchedule);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                EVPowerSchedule  = default;
+                ErrorResponse  = "The given CBOR representation of an EV power schedule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<EVPowerSchedule>.TryParse(CBOR, out EVPowerSchedule, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV power schedule - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<EVPowerSchedule>.TryParse(CBORValue                         CBOR,
+                                                                 out EVPowerSchedule                  Value,
+                                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomEVPowerScheduleSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this EV power schedule: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomEVPowerScheduleSerializer">A delegate to serialize custom EV power schedules.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<EVPowerSchedule>? CustomEVPowerScheduleSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("timeAnchor",                             TimeAnchor.ToCBOR()),
+                           ("evPowerScheduleEntries",                 CBORValue.FromArray(EVPowerScheduleEntries.Select(entry => entry.ToCBOR()))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomEVPowerScheduleSerializer is not null
+                       ? CustomEVPowerScheduleSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DC charging parameters.
     /// </summary>
     public class DCChargingParameters : ACustomData,
+                                        ICBORSerializable<DCChargingParameters>,
                                         IEquatable<DCChargingParameters>
     {
 
@@ -440,15 +443,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evMaxCurrent",       EVMaxCurrent.          RoundedIntegerValue),
-                                 new JProperty("evMaxVoltage",       EVMaxVoltage.          RoundedIntegerValue),
+                                 new JProperty("evMaxCurrent",       EVMaxCurrent.          Value),
+                                 new JProperty("evMaxVoltage",       EVMaxVoltage.          Value),
 
                            EnergyAmount.HasValue
-                               ? new JProperty("energyAmount",       EnergyAmount.    Value.RoundedIntegerValue)
+                               ? new JProperty("energyAmount",       EnergyAmount.    Value.Value)
                                : null,
 
                            EVMaxPower.HasValue
-                               ? new JProperty("evMaxPower",         EVMaxPower.      Value.RoundedIntegerValue)
+                               ? new JProperty("evMaxPower",         EVMaxPower.      Value.Value)
                                : null,
 
                            StateOfCharge.HasValue
@@ -456,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            EVEnergyCapacity.HasValue
-                               ? new JProperty("evEnergyCapacity",   EVEnergyCapacity.Value.RoundedIntegerValue)
+                               ? new JProperty("evEnergyCapacity",   EVEnergyCapacity.Value.Value)
                                : null,
 
                            FullSoC.HasValue
@@ -481,6 +484,207 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DCChargingParameters, out ErrorResponse, CustomDCChargingParametersParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DC charging parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DCChargingParameters">The DC charging parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DCChargingParameters?  DCChargingParameters,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DCChargingParameters,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DC charging parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DCChargingParameters">The DC charging parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDCChargingParametersParser">An optional delegate to read custom DC charging parameters.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DCChargingParameters?           DCChargingParameters,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DCChargingParameters>?  CustomDCChargingParametersParser)
+        {
+
+            try
+            {
+
+                DCChargingParameters = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DC charging parameters is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("evMaxCurrent",
+                                              "EV maximum current",
+                                              OCPPCBORExtensions.TryParseAmpere,
+                                              out Ampere EVMaxCurrent,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("evMaxVoltage",
+                                              "EV maximum voltage",
+                                              OCPPCBORExtensions.TryParseVolt,
+                                              out Volt EVMaxVoltage,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("energyAmount",
+                                        "energy amount",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? EnergyAmount,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evMaxPower",
+                                        "EV maximum power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? EVMaxPower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("stateOfCharge",
+                                        "state of charge",
+                                        OCPPCBORExtensions.TryParsePercentageByte,
+                                        out PercentageByte? StateOfCharge,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evEnergyCapacity",
+                                        "EV energy capacity",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? EVEnergyCapacity,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("fullSoC",
+                                        "full state of charge",
+                                        OCPPCBORExtensions.TryParsePercentageByte,
+                                        out PercentageByte? FullSoC,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("bulkSoC",
+                                        "bulk state of charge",
+                                        OCPPCBORExtensions.TryParsePercentageByte,
+                                        out PercentageByte? BulkSoC,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DCChargingParameters = new DCChargingParameters(
+                                           EVMaxCurrent,
+                                           EVMaxVoltage,
+                                           EnergyAmount,
+                                           EVMaxPower,
+                                           StateOfCharge,
+                                           EVEnergyCapacity,
+                                           FullSoC,
+                                           BulkSoC,
+                                           CustomData
+                                       );
+
+                if (CustomDCChargingParametersParser is not null)
+                    DCChargingParameters = CustomDCChargingParametersParser(CBOR,
+                                                      DCChargingParameters);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DCChargingParameters  = default;
+                ErrorResponse  = "The given CBOR representation of a DC charging parameters is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DCChargingParameters>.TryParse(CBOR, out DCChargingParameters, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DC charging parameters - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DCChargingParameters>.TryParse(CBORValue                         CBOR,
+                                                                      out DCChargingParameters                  Value,
+                                                                      [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDCChargingParametersSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DC charging parameters: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDCChargingParametersSerializer">A delegate to serialize custom DC charging parameters.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DCChargingParameters>? CustomDCChargingParametersSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evMaxCurrent",                           EVMaxCurrent.ToCBOR()),
+                           ("evMaxVoltage",                           EVMaxVoltage.ToCBOR()),
+                           ("energyAmount",                           EnergyAmount?.ToCBOR()),
+                           ("evMaxPower",                             EVMaxPower?.ToCBOR()),
+                           ("stateOfCharge",                          StateOfCharge?.ToCBOR()),
+                           ("evEnergyCapacity",                       EVEnergyCapacity?.ToCBOR()),
+                           ("fullSoC",                                FullSoC?.ToCBOR()),
+                           ("bulkSoC",                                BulkSoC?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDCChargingParametersSerializer is not null
+                       ? CustomDCChargingParametersSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

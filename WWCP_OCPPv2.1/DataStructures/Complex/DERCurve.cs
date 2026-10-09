@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER Curve
     /// </summary>
     public class DERCurve : ACustomData,
+                            ICBORSerializable<DERCurve>,
                             IEquatable<DERCurve>
     {
 
@@ -517,6 +520,230 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DERCurve, out ErrorResponse, CustomDERCurveParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER curve.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERCurve">The DER curve.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DERCurve?  DERCurve,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DERCurve,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER curve.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERCurve">The DER curve.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDERCurveParser">An optional delegate to read custom DER curves.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DERCurve?           DERCurve,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DERCurve>?  CustomDERCurveParser)
+        {
+
+            try
+            {
+
+                DERCurve = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER curve is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<DERCurvePoint>("curveData",
+                                                     "curve data",
+                                                     OCPPv2_1.DERCurvePoint.TryParseCBOR,
+                                                     out var CurveData,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priority",
+                                               "priority",
+                                               out var PriorityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PriorityNumber > Byte.MaxValue)
+                {
+                    ErrorResponse = $"Invalid priority '{PriorityNumber}'!";
+                    return false;
+                }
+
+                var Priority = (Byte) PriorityNumber;
+
+                if (!CBOR.ParseMandatoryText("yUnit",
+                                             "y unit",
+                                             out var YUnitText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!DERUnit.TryParse(YUnitText, out var YUnit))
+                {
+                    ErrorResponse = $"Invalid y unit '{YUnitText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("hysteresis",
+                                   "hysteresis",
+                                   OCPPv2_1.Hysteresis.TryParseCBOR,
+                                   out Hysteresis? Hysteresis,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("reactivePowerParams",
+                                   "reactive power parameters",
+                                   OCPPv2_1.ReactivePowerParameters.TryParseCBOR,
+                                   out ReactivePowerParameters? ReactivePowerParameters,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("voltageParams",
+                                   "voltage parameters",
+                                   OCPPv2_1.VoltageParameters.TryParseCBOR,
+                                   out VoltageParameters? VoltageParameters,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("responseTime",
+                                        "response time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? ResponseTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("startTime",
+                                        "start time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StartTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("duration",
+                                        "duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Duration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERCurve = new DERCurve(
+                               CurveData,
+                               Priority,
+                               YUnit,
+                               Hysteresis,
+                               ReactivePowerParameters,
+                               VoltageParameters,
+                               ResponseTime,
+                               StartTime,
+                               Duration,
+                               CustomData
+                           );
+
+                if (CustomDERCurveParser is not null)
+                    DERCurve = CustomDERCurveParser(CBOR,
+                                          DERCurve);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DERCurve  = default;
+                ErrorResponse  = "The given CBOR representation of a DER curve is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DERCurve>.TryParse(CBOR, out DERCurve, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER curve - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DERCurve>.TryParse(CBORValue                         CBOR,
+                                                          out DERCurve                  Value,
+                                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDERCurveSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER curve: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDERCurveSerializer">A delegate to serialize custom DER curves.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DERCurve>? CustomDERCurveSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("curveData",                              CBORValue.FromArray(CurveData.Select(point => point.ToCBOR()))),
+                           ("priority",                               CBORValue.FromUInt64(Priority)),
+                           ("yUnit",                                  CBORValue.FromText(YUnit.ToString())),
+                           ("hysteresis",                             Hysteresis?.             ToCBOR()),
+                           ("reactivePowerParams",                    ReactivePowerParameters?.ToCBOR()),
+                           ("voltageParams",                          VoltageParameters?.      ToCBOR()),
+                           ("responseTime",                           ResponseTime?.ToCBOR()),
+                           ("startTime",                              StartTime?.   ToCBOR()),
+                           ("duration",                               Duration?.    ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDERCurveSerializer is not null
+                       ? CustomDERCurveSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

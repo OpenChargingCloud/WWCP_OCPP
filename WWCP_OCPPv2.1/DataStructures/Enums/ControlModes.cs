@@ -72,10 +72,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             switch (Text.Trim())
             {
 
+                // The texts of the specification, and the ones written before.
+                case "ScheduledControl":
                 case "Scheduled":
                     ControlModes = ControlModes.Scheduled;
                     return true;
 
+                case "DynamicControl":
                 case "Dynamic":
                     ControlModes = ControlModes.Dynamic;
                     return true;
@@ -99,8 +102,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this ControlModes ControlModes)
 
             => ControlModes switch {
-                   ControlModes.Scheduled  => "Scheduled",
-                   ControlModes.Dynamic    => "Dynamic",
+                   ControlModes.Scheduled  => "ScheduledControl",
+                   ControlModes.Dynamic    => "DynamicControl",
                    _                       => "Unknown"
                };
 

@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Reactive Power Parameters
     /// </summary>
     public class ReactivePowerParameters : ACustomData,
+                                           ICBORSerializable<ReactivePowerParameters>,
                                            IEquatable<ReactivePowerParameters>
     {
 
@@ -351,6 +354,151 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ReactivePowerParameters, out ErrorResponse, CustomReactivePowerParametersParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a reactive power parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ReactivePowerParameters">The reactive power parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ReactivePowerParameters?  ReactivePowerParameters,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ReactivePowerParameters,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a reactive power parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ReactivePowerParameters">The reactive power parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomReactivePowerParametersParser">An optional delegate to read custom reactive power parameters.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ReactivePowerParameters?           ReactivePowerParameters,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ReactivePowerParameters>?  CustomReactivePowerParametersParser)
+        {
+
+            try
+            {
+
+                ReactivePowerParameters = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a reactive power parameters is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("vRef",
+                                              "reference voltage",
+                                              OCPPCBORExtensions.TryParsePercentage,
+                                              out Percentage VRef,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalBoolean("autonomousVRefEnable",
+                                          "autonomous reference voltage enable",
+                                          out var AutonomousVRefEnable,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("autonomousVRefTimeConstant",
+                                        "autonomous reference voltage time constant",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? AutonomousVRefTimeConstant,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ReactivePowerParameters = new ReactivePowerParameters(
+                                              VRef,
+                                              AutonomousVRefEnable ?? false,
+                                              AutonomousVRefTimeConstant,
+                                              CustomData
+                                          );
+
+                if (CustomReactivePowerParametersParser is not null)
+                    ReactivePowerParameters = CustomReactivePowerParametersParser(CBOR,
+                                                         ReactivePowerParameters);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ReactivePowerParameters  = default;
+                ErrorResponse  = "The given CBOR representation of a reactive power parameters is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ReactivePowerParameters>.TryParse(CBOR, out ReactivePowerParameters, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a reactive power parameters - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ReactivePowerParameters>.TryParse(CBORValue                         CBOR,
+                                                                         out ReactivePowerParameters                  Value,
+                                                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomReactivePowerParametersSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this reactive power parameters: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomReactivePowerParametersSerializer">A delegate to serialize custom reactive power parameters.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ReactivePowerParameters>? CustomReactivePowerParametersSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("vRef",                                   VRef.ToCBOR()),
+                           ("autonomousVRefEnable",                   CBORValue.FromBoolean(AutonomousVRefEnable)),
+                           ("autonomousVRefTimeConstant",             AutonomousVRefTimeConstant?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomReactivePowerParametersSerializer is not null
+                       ? CustomReactivePowerParametersSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

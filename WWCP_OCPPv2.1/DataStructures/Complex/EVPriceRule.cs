@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// (See also: ISO 15118-20 CommonMessages/Complex/EVPriceRule)
     /// </summary>
     public class EVPriceRule : ACustomData,
+                               ICBORSerializable<EVPriceRule>,
                                IEquatable<EVPriceRule>
     {
 
@@ -278,6 +281,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out EVPriceRule, out ErrorResponse, CustomEVPriceRuleParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV price rule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVPriceRule">The EV price rule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out EVPriceRule?  EVPriceRule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out EVPriceRule,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV price rule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVPriceRule">The EV price rule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomEVPriceRuleParser">An optional delegate to read custom EV price rules.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out EVPriceRule?           EVPriceRule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<EVPriceRule>?  CustomEVPriceRuleParser)
+        {
+
+            try
+            {
+
+                EVPriceRule = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an EV price rule is not a map!";
+                    return false;
+                }
+
+                // Cost per kWh: an amount per Wh in CBOR.
+                if (!CBOR.ParseMandatory("energyFee",
+                                         "energy fee",
+                                         (CBORValue value, out Decimal amount, out String? errorResponse) =>
+                                             OCPPCBORExtensions.TryParseRate(value, org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour, 3, out amount, out errorResponse),
+                                         out Decimal EnergyFee,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("powerRangeStart",
+                                              "power range start",
+                                              OCPPCBORExtensions.TryParseWatt,
+                                              out Watt PowerRangeStart,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                EVPriceRule = new EVPriceRule(
+                                  EnergyFee,
+                                  PowerRangeStart,
+                                  CustomData
+                              );
+
+                if (CustomEVPriceRuleParser is not null)
+                    EVPriceRule = CustomEVPriceRuleParser(CBOR,
+                                             EVPriceRule);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                EVPriceRule  = default;
+                ErrorResponse  = "The given CBOR representation of an EV price rule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<EVPriceRule>.TryParse(CBOR, out EVPriceRule, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV price rule - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<EVPriceRule>.TryParse(CBORValue                         CBOR,
+                                                             out EVPriceRule                  Value,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomEVPriceRuleSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this EV price rule: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom EV price rules.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<EVPriceRule>? CustomEVPriceRuleSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("energyFee",                              OCPPCBORExtensions.RateToCBOR(EnergyFee, org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour, 3)),
+                           ("powerRangeStart",                        PowerRangeStart.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomEVPriceRuleSerializer is not null
+                       ? CustomEVPriceRuleSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

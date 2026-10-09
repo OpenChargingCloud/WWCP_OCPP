@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER Gradient
     /// </summary>
     public class DERGradient : ACustomData,
+                               ICBORSerializable<DERGradient>,
                                IEquatable<DERGradient>
     {
 
@@ -208,25 +211,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Gradient        [mandatory]
 
+                // A number of seconds, not only whole ones.
                 if (!JSON.ParseMandatory("gradient",
                                          "gradient",
-                                         out TimeSpan Gradient,
+                                         out Decimal gradientSeconds,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var Gradient = TimeSpan.FromSeconds((Double) gradientSeconds);
 
                 #endregion
 
                 #region SoftGradient    [mandatory]
 
+                // A number of seconds, not only whole ones.
                 if (!JSON.ParseMandatory("softGradient",
                                          "soft gradient",
-                                         out TimeSpan SoftGradient,
+                                         out Decimal softGradientSeconds,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var SoftGradient = TimeSpan.FromSeconds((Double) softGradientSeconds);
 
                 #endregion
 
@@ -302,6 +311,159 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DERGradient, out ErrorResponse, CustomDERGradientParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER gradient.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERGradient">The DER gradient.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DERGradient?  DERGradient,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DERGradient,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER gradient.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERGradient">The DER gradient.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDERGradientParser">An optional delegate to read custom DER gradients.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DERGradient?           DERGradient,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DERGradient>?  CustomDERGradientParser)
+        {
+
+            try
+            {
+
+                DERGradient = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER gradient is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priority",
+                                               "priority",
+                                               out var PriorityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PriorityNumber > Byte.MaxValue)
+                {
+                    ErrorResponse = $"Invalid priority '{PriorityNumber}'!";
+                    return false;
+                }
+
+                var Priority = (Byte) PriorityNumber;
+
+                if (!CBOR.ParseMandatoryValue("gradient",
+                                              "gradient",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan Gradient,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("softGradient",
+                                              "soft gradient",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan SoftGradient,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERGradient = new DERGradient(
+                                  Priority,
+                                  Gradient,
+                                  SoftGradient,
+                                  CustomData
+                              );
+
+                if (CustomDERGradientParser is not null)
+                    DERGradient = CustomDERGradientParser(CBOR,
+                                             DERGradient);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DERGradient  = default;
+                ErrorResponse  = "The given CBOR representation of a DER gradient is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DERGradient>.TryParse(CBOR, out DERGradient, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER gradient - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DERGradient>.TryParse(CBORValue                         CBOR,
+                                                             out DERGradient                  Value,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDERGradientSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER gradient: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDERGradientSerializer">A delegate to serialize custom DER gradients.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DERGradient>? CustomDERGradientSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("priority",                               CBORValue.FromUInt64(Priority)),
+                           ("gradient",                               Gradient.    ToCBOR()),
+                           ("softGradient",                           SoftGradient.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDERGradientSerializer is not null
+                       ? CustomDERGradientSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

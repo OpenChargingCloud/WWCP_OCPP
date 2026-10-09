@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// (See also: ISO 15118-20 CommonMessages/Complex/EVEnergyOffer)
     /// </summary>
     public class EVEnergyOffer : ACustomData,
+                                 ICBORSerializable<EVEnergyOffer>,
                                  IEquatable<EVEnergyOffer>
     {
 
@@ -291,6 +294,141 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out EVEnergyOffer, out ErrorResponse, CustomEVEnergyOfferParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV energy offer.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVEnergyOffer">The EV energy offer.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out EVEnergyOffer?  EVEnergyOffer,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out EVEnergyOffer,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV energy offer.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVEnergyOffer">The EV energy offer.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomEVEnergyOfferParser">An optional delegate to read custom EV energy offers.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out EVEnergyOffer?           EVEnergyOffer,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<EVEnergyOffer>?  CustomEVEnergyOfferParser)
+        {
+
+            try
+            {
+
+                EVEnergyOffer = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an EV energy offer is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("evPowerSchedule",
+                                         "EV power schedule",
+                                         OCPPv2_1.EVPowerSchedule.TryParseCBOR,
+                                         out EVPowerSchedule? EVPowerSchedule,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("evAbsolutePriceSchedule",
+                                   "EV absolute price schedule",
+                                   OCPPv2_1.EVAbsolutePriceSchedule.TryParseCBOR,
+                                   out EVAbsolutePriceSchedule? EVAbsolutePriceSchedule,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                EVEnergyOffer = new EVEnergyOffer(
+                                    EVPowerSchedule,
+                                    EVAbsolutePriceSchedule,
+                                    CustomData
+                                );
+
+                if (CustomEVEnergyOfferParser is not null)
+                    EVEnergyOffer = CustomEVEnergyOfferParser(CBOR,
+                                               EVEnergyOffer);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                EVEnergyOffer  = default;
+                ErrorResponse  = "The given CBOR representation of an EV energy offer is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<EVEnergyOffer>.TryParse(CBOR, out EVEnergyOffer, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV energy offer - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<EVEnergyOffer>.TryParse(CBORValue                         CBOR,
+                                                               out EVEnergyOffer                  Value,
+                                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomEVEnergyOfferSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this EV energy offer: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomEVEnergyOfferSerializer">A delegate to serialize custom EV energy offers.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<EVEnergyOffer>? CustomEVEnergyOfferSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evPowerSchedule",                        EVPowerSchedule.ToCBOR()),
+                           ("evAbsolutePriceSchedule",                EVAbsolutePriceSchedule?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomEVEnergyOfferSerializer is not null
+                       ? CustomEVEnergyOfferSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

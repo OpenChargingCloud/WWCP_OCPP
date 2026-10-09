@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// This type has been extended with controlMode, mobilityNeedsMode and pricing parameters from the ISO 15118-20 service selection.
     /// </summary>
     public class ChargingNeeds : ACustomData,
+                                 ICBORSerializable<ChargingNeeds>,
                                  IEquatable<ChargingNeeds>
     {
 
@@ -610,6 +613,294 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out ChargingNeeds, out ErrorResponse, CustomChargingNeedsParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging needs.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingNeeds">The charging needs.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out ChargingNeeds?  ChargingNeeds,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ChargingNeeds,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging needs.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingNeeds">The charging needs.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingNeedsParser">An optional delegate to read custom charging needs.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out ChargingNeeds?           ChargingNeeds,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<ChargingNeeds>?  CustomChargingNeedsParser)
+        {
+
+            try
+            {
+
+                ChargingNeeds = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a charging needs is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("requestedEnergyTransfer",
+                                             "requested energy transfer mode",
+                                             out var RequestedEnergyTransferModeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!EnergyTransferMode.TryParse(RequestedEnergyTransferModeText, out var RequestedEnergyTransferMode))
+                {
+                    ErrorResponse = $"Invalid requested energy transfer mode '{RequestedEnergyTransferModeText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<EnergyTransferMode>("availableEnergyTransfer",
+                                               "available energy transfer modes",
+                                               (CBORValue item, out EnergyTransferMode value, out String? errorResponse) => {
+
+                                                   value         = default;
+                                                   errorResponse = null;
+
+                                                   if (item.Kind != CBORValueKind.TextString || !EnergyTransferMode.TryParse(item.AsText(), out value))
+                                                   {
+                                                       errorResponse = $"Invalid available energy transfer mode '{item}'!";
+                                                       return false;
+                                                   }
+
+                                                   return true;
+
+                                               },
+                                               out var AvailableEnergyTransferModes,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ControlModes? ControlMode = null;
+
+                if (CBOR.ParseOptionalText("controlMode",
+                                           "control mode",
+                                           out var ControlModeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!ControlModesExtensions.TryParse(ControlModeText!, out var ControlModeValue))
+                    {
+                        ErrorResponse = $"Invalid control mode '{ControlModeText}'!";
+                        return false;
+                    }
+
+                    ControlMode = ControlModeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                MobilityNeedsMode? MobilityNeedsMode = null;
+
+                if (CBOR.ParseOptionalText("mobilityNeedsMode",
+                                           "mobility needs mode",
+                                           out var MobilityNeedsModeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!OCPPv2_1.MobilityNeedsMode.TryParse(MobilityNeedsModeText!, out var MobilityNeedsModeValue))
+                    {
+                        ErrorResponse = $"Invalid mobility needs mode '{MobilityNeedsModeText}'!";
+                        return false;
+                    }
+
+                    MobilityNeedsMode = MobilityNeedsModeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                PricingTypes? Pricing = null;
+
+                if (CBOR.ParseOptionalText("pricing",
+                                           "pricing",
+                                           out var PricingText,
+                                           out ErrorResponse))
+                {
+
+                    if (!PricingTypesExtensions.TryParse(PricingText!, out var PricingValue))
+                    {
+                        ErrorResponse = $"Invalid pricing '{PricingText}'!";
+                        return false;
+                    }
+
+                    Pricing = PricingValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("departureTime",
+                                        "departure time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? DepartureTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("acChargingParameters",
+                                   "AC charging parameters",
+                                   OCPPv2_1.ACChargingParameters.TryParseCBOR,
+                                   out ACChargingParameters? ACChargingParameters,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("dcChargingParameters",
+                                   "DC charging parameters",
+                                   OCPPv2_1.DCChargingParameters.TryParseCBOR,
+                                   out DCChargingParameters? DCChargingParameters,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("v2xChargingParameters",
+                                   "V2X charging parameters",
+                                   OCPPv2_1.V2XChargingParameters.TryParseCBOR,
+                                   out V2XChargingParameters? V2XChargingParameters,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("derChargingParameters",
+                                   "DER charging parameters",
+                                   OCPPv2_1.DERChargingParameters.TryParseCBOR,
+                                   out DERChargingParameters? DERChargingParameters,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("evEnergyOffer",
+                                   "EV energy offer",
+                                   OCPPv2_1.EVEnergyOffer.TryParseCBOR,
+                                   out EVEnergyOffer? EVEnergyOffer,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                ChargingNeeds = new ChargingNeeds(
+                                    RequestedEnergyTransferMode,
+                                    AvailableEnergyTransferModes,
+                                    ControlMode,
+                                    MobilityNeedsMode,
+                                    Pricing,
+                                    DepartureTime,
+                                    ACChargingParameters,
+                                    DCChargingParameters,
+                                    V2XChargingParameters,
+                                    DERChargingParameters,
+                                    EVEnergyOffer,
+                                    CustomData
+                                );
+
+                if (CustomChargingNeedsParser is not null)
+                    ChargingNeeds = CustomChargingNeedsParser(CBOR,
+                                               ChargingNeeds);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingNeeds  = default;
+                ErrorResponse  = "The given CBOR representation of a charging needs is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingNeeds>.TryParse(CBOR, out ChargingNeeds, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging needs - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingNeeds>.TryParse(CBORValue                         CBOR,
+                                                               out ChargingNeeds                  Value,
+                                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChargingNeedsSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this charging needs: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChargingNeedsSerializer">A delegate to serialize custom charging needs.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingNeeds>? CustomChargingNeedsSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("requestedEnergyTransfer",                CBORValue.FromText(RequestedEnergyTransferMode.ToString())),
+                           ("availableEnergyTransfer",                OCPPCBORExtensions.Array(AvailableEnergyTransferModes, mode => CBORValue.FromText(mode.ToString()))),
+                           ("controlMode",                            OCPPCBORExtensions.Text(ControlMode?.AsText())),
+                           ("mobilityNeedsMode",                      OCPPCBORExtensions.Text(MobilityNeedsMode?.ToString())),
+                           ("pricing",                                OCPPCBORExtensions.Text(Pricing?.AsText())),
+                           ("departureTime",                          DepartureTime?.ToCBOR()),
+                           ("acChargingParameters",                   ACChargingParameters?. ToCBOR()),
+                           ("dcChargingParameters",                   DCChargingParameters?. ToCBOR()),
+                           ("v2xChargingParameters",                  V2XChargingParameters?.ToCBOR()),
+                           ("derChargingParameters",                  DERChargingParameters?.ToCBOR()),
+                           ("evEnergyOffer",                          EVEnergyOffer?.        ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomChargingNeedsSerializer is not null
+                       ? CustomChargingNeedsSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -418,6 +418,88 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
+        #region Signed percentages: ToCBOR(SignedPercentage), TryParseSignedPercentage(CBOR, out Value, out ErrorResponse)
+
+        /// <summary>
+        /// The given signed percentage as a metrological value in %.
+        /// </summary>
+        public static CBORValue ToCBOR(this SignedPercentage Value) => new MetrologicalValue(Value.Value, UnitOfMeasure.Percent).ToCBOR();
+
+        public static Boolean TryParseSignedPercentage(CBORValue CBOR, out SignedPercentage Value, [NotNullWhen(false)] out String? ErrorResponse)
+        {
+
+            Value = default;
+
+            if (!TryParsePercent(CBOR, out var percent, out ErrorResponse))
+                return false;
+
+            if (!SignedPercentage.TryParse(percent, out Value))
+            {
+                ErrorResponse = $"Invalid signed percentage '{percent}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region Quantities: QuantityToCBOR(Value, Unit), TryParseQuantity(CBOR, Unit, out Value, out ErrorResponse)
+
+        /// <summary>
+        /// A number in a unit that has no type of its own - a ramp rate in % per
+        /// second - as a metrological value of the given unit.
+        /// </summary>
+        /// <param name="Value">The number.</param>
+        /// <param name="Unit">Its unit, without a prefix.</param>
+        public static CBORValue QuantityToCBOR(Decimal         Value,
+                                               UnitExpression  Unit)
+
+            => new MetrologicalValue(Value, Unit).ToCBOR();
+
+
+        /// <summary>
+        /// Try to read the given CBOR value as a number in the given unit: a
+        /// metrological value of that unit, with or without a prefix.
+        /// </summary>
+        /// <param name="CBOR">A CBOR value.</param>
+        /// <param name="Unit">The unit, without a prefix.</param>
+        /// <param name="Value">The number in the unit.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseQuantity(CBORValue                         CBOR,
+                                               UnitExpression                    Unit,
+                                               out Decimal                       Value,
+                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Value = default;
+
+            if (!MetrologicalValue.TryParse(CBOR, out var metrologicalValue, out ErrorResponse))
+                return false;
+
+            if (!metrologicalValue.TryToBaseUnit(out var baseValue) ||
+                 baseValue.Unit != Unit)
+            {
+                ErrorResponse = $"The value '{metrologicalValue}' is not in {Unit}!";
+                return false;
+            }
+
+            Value = baseValue.Value;
+            return true;
+
+        }
+
+        /// <summary>
+        /// % per second: a ramp rate.
+        /// </summary>
+        public static UnitExpression PercentPerSecond { get; }
+
+            = new (new UnitFactor(UnitOfMeasure.Percent, 1),
+                   new UnitFactor(UnitOfMeasure.Second, -1));
+
+        #endregion
+
         #region Rates:  RateToCBOR(Amount, PerUnit, PerExponent), TryParseRate(CBOR, PerUnit, PerExponent, out Amount, out ErrorResponse)
 
         /// <summary>

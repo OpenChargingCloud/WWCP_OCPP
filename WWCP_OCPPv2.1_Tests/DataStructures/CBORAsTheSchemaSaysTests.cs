@@ -621,6 +621,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
+        #region The EV's charging needs and the DER controls
+
+        /// <summary>
+        /// A current is in A, a fee per kWh an amount per Wh, a ramp rate in % per second.
+        /// </summary>
+        [Test]
+        public void ChargingNeedsAndDERControls_AreMetrologicalValues()
+        {
+
+            static MetrologicalValue ValueOf(CBORValue Map, String Key)
+            {
+                Assert.That(Map.TryGetValue(CBORValue.FromText(Key), out var value), Is.True, Key);
+                Assert.That(MetrologicalValue.TryParse(value, out var metrologicalValue, out var errorResponse), Is.True, errorResponse);
+                return metrologicalValue;
+            }
+
+            Assert.That(OCPPv2_1.ACChargingParameters.TryParse(JObject.Parse("""{ "energyAmount": 20000.5, "evMinCurrent": 6.5, "evMaxCurrent": 31.5, "evMaxVoltage": 400.5 }"""), out var ac, out var errorResponse), Is.True, errorResponse);
+            var current = ValueOf(ac!.ToCBOR(), "evMaxCurrent");
+            Assert.That(current.Value, Is.EqualTo(31.5M));
+            Assert.That(current.Unit == new UnitExpression(org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.Ampere), Is.True);
+
+            Assert.That(OCPPv2_1.EVPriceRule.TryParse(JObject.Parse("""{ "energyFee": 0.39, "powerRangeStart": 0 }"""), out var priceRule, out errorResponse), Is.True, errorResponse);
+            var fee = ValueOf(priceRule!.ToCBOR(), "energyFee");
+            Assert.That(fee.Value, Is.EqualTo(0.00039M));
+            Assert.That(fee.Unit == new UnitExpression(new UnitFactor(org.GraphDefined.Vanaheimr.Illias.UnitOfMeasure.WattHour, -1)), Is.True);
+
+            Assert.That(OCPPv2_1.Hysteresis.TryParse(JObject.Parse("""{ "hysteresisGradient": 0.5 }"""), out var hysteresis, out errorResponse), Is.True, errorResponse);
+            var gradient = ValueOf(hysteresis!.ToCBOR(), "hysteresisGradient");
+            Assert.That(gradient.Value, Is.EqualTo(0.5M));
+            Assert.That(gradient.Unit == OCPP.OCPPCBORExtensions.PercentPerSecond, Is.True);
+
+        }
+
+        #endregion
+
         #region Refused
 
         /// <summary>

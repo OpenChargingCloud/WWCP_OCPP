@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Hysteresis
     /// </summary>
     public class Hysteresis : ACustomData,
+                              ICBORSerializable<Hysteresis>,
                               IEquatable<Hysteresis>
     {
 
@@ -356,6 +359,163 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out Hysteresis, out ErrorResponse, CustomHysteresisParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a hysteresis.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Hysteresis">The hysteresis.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out Hysteresis?  Hysteresis,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out Hysteresis,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a hysteresis.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Hysteresis">The hysteresis.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomHysteresisParser">An optional delegate to read custom hysteresis.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out Hysteresis?           Hysteresis,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<Hysteresis>?  CustomHysteresisParser)
+        {
+
+            try
+            {
+
+                Hysteresis = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a hysteresis is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalDecimal("hysteresisHigh",
+                                          "hysteresis high",
+                                          out var High,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalDecimal("hysteresisLow",
+                                          "hysteresis low",
+                                          out var Low,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("hysteresisDelay",
+                                        "hysteresis delay",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Delay,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                // A ramp rate in % per second.
+                CBOR.ParseOptionalValue("hysteresisGradient",
+                                        "hysteresis gradient",
+                                        (CBORValue value, out Decimal gradient, out String? errorResponse) =>
+                                            OCPPCBORExtensions.TryParseQuantity(value, OCPPCBORExtensions.PercentPerSecond, out gradient, out errorResponse),
+                                        out Decimal? Gradient,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Hysteresis = new Hysteresis(
+                                 High,
+                                 Low,
+                                 Delay,
+                                 Gradient,
+                                 CustomData
+                             );
+
+                if (CustomHysteresisParser is not null)
+                    Hysteresis = CustomHysteresisParser(CBOR,
+                                            Hysteresis);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Hysteresis  = default;
+                ErrorResponse  = "The given CBOR representation of a hysteresis is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<Hysteresis>.TryParse(CBOR, out Hysteresis, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a hysteresis - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<Hysteresis>.TryParse(CBORValue                         CBOR,
+                                                            out Hysteresis                  Value,
+                                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomHysteresisSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this hysteresis: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomHysteresisSerializer">A delegate to serialize custom hysteresis.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<Hysteresis>? CustomHysteresisSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("hysteresisHigh",                         OCPPCBORExtensions.Number(High)),
+                           ("hysteresisLow",                          OCPPCBORExtensions.Number(Low)),
+                           ("hysteresisDelay",                        Delay?.ToCBOR()),
+                           ("hysteresisGradient",                     Gradient.HasValue ? (CBORValue?) OCPPCBORExtensions.QuantityToCBOR(Gradient.Value, OCPPCBORExtensions.PercentPerSecond) : null),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomHysteresisSerializer is not null
+                       ? CustomHysteresisSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

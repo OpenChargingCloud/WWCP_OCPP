@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER Fixed Power Factor
     /// </summary>
     public class DERFixedPowerFactor : ACustomData,
+                                       ICBORSerializable<DERFixedPowerFactor>,
                                        IEquatable<DERFixedPowerFactor>
     {
 
@@ -369,6 +372,181 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DERFixedPowerFactor, out ErrorResponse, CustomDERFixedPowerFactorParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER fixed power factor.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERFixedPowerFactor">The DER fixed power factor.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DERFixedPowerFactor?  DERFixedPowerFactor,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DERFixedPowerFactor,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER fixed power factor.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERFixedPowerFactor">The DER fixed power factor.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDERFixedPowerFactorParser">An optional delegate to read custom DER fixed power factors.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DERFixedPowerFactor?           DERFixedPowerFactor,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DERFixedPowerFactor>?  CustomDERFixedPowerFactorParser)
+        {
+
+            try
+            {
+
+                DERFixedPowerFactor = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER fixed power factor is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priority",
+                                               "priority",
+                                               out var PriorityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PriorityNumber > Byte.MaxValue)
+                {
+                    ErrorResponse = $"Invalid priority '{PriorityNumber}'!";
+                    return false;
+                }
+
+                var Priority = (Byte) PriorityNumber;
+
+                if (!CBOR.ParseMandatoryDecimal("displacement",
+                                                "displacement",
+                                                out var Displacement,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBoolean("excitation",
+                                                "excitation",
+                                                out var Excitation,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("startTime",
+                                        "start time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StartTimeOffset,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                var StartTime = StartTimeOffset?.UtcDateTime;
+
+                CBOR.ParseOptionalValue("duration",
+                                        "duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Duration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERFixedPowerFactor = new DERFixedPowerFactor(
+                                          Priority,
+                                          Displacement,
+                                          Excitation,
+                                          StartTime,
+                                          Duration,
+                                          CustomData
+                                      );
+
+                if (CustomDERFixedPowerFactorParser is not null)
+                    DERFixedPowerFactor = CustomDERFixedPowerFactorParser(CBOR,
+                                                     DERFixedPowerFactor);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DERFixedPowerFactor  = default;
+                ErrorResponse  = "The given CBOR representation of a DER fixed power factor is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DERFixedPowerFactor>.TryParse(CBOR, out DERFixedPowerFactor, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER fixed power factor - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DERFixedPowerFactor>.TryParse(CBORValue                         CBOR,
+                                                                     out DERFixedPowerFactor                  Value,
+                                                                     [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDERFixedPowerFactorSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER fixed power factor: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDERFixedPowerFactorSerializer">A delegate to serialize custom DER fixed power factors.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DERFixedPowerFactor>? CustomDERFixedPowerFactorSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("priority",                               CBORValue.FromUInt64(Priority)),
+                           ("displacement",                           CBORValue.FromDecimal(Displacement)),
+                           ("excitation",                             CBORValue.FromBoolean(Excitation)),
+                           ("startTime",                              StartTime.HasValue ? (CBORValue?) new DateTimeOffset(StartTime.Value.ToUniversalTime(), TimeSpan.Zero).ToCBOR() : null),
+                           ("duration",                               Duration?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDERFixedPowerFactorSerializer is not null
+                       ? CustomDERFixedPowerFactorSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

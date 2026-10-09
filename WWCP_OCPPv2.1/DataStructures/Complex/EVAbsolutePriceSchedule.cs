@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// (See also: ISO 15118-20 CommonMessages/Complex/EVAbsolutePriceSchedule)
     /// </summary>
     public class EVAbsolutePriceSchedule : ACustomData,
+                                           ICBORSerializable<EVAbsolutePriceSchedule>,
                                            IEquatable<EVAbsolutePriceSchedule>
     {
 
@@ -346,6 +349,173 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out EVAbsolutePriceSchedule, out ErrorResponse, CustomEVAbsolutePriceScheduleParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV absolute price schedule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVAbsolutePriceSchedule">The EV absolute price schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out EVAbsolutePriceSchedule?  EVAbsolutePriceSchedule,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out EVAbsolutePriceSchedule,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV absolute price schedule.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="EVAbsolutePriceSchedule">The EV absolute price schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomEVAbsolutePriceScheduleParser">An optional delegate to read custom EV absolute price schedules.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out EVAbsolutePriceSchedule?           EVAbsolutePriceSchedule,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<EVAbsolutePriceSchedule>?  CustomEVAbsolutePriceScheduleParser)
+        {
+
+            try
+            {
+
+                EVAbsolutePriceSchedule = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an EV absolute price schedule is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("timeAnchor",
+                                              "time anchor",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset TimeAnchor,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("currency",
+                                             "currency",
+                                             out var currencyText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!org.GraphDefined.Vanaheimr.Illias.Currency.TryParse(currencyText, out var Currency))
+                {
+                    ErrorResponse = $"Invalid currency '{currencyText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("priceAlgorithm",
+                                             "price algorithm",
+                                             out var PriceAlgorithmText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!OCPPv2_1.PriceAlgorithm.TryParse(PriceAlgorithmText, out var PriceAlgorithm))
+                {
+                    ErrorResponse = $"Invalid price algorithm '{PriceAlgorithmText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<EVAbsolutePriceScheduleEntry>("evAbsolutePriceScheduleEntries",
+                                                     "EV absolute price schedule entries",
+                                                     OCPPv2_1.EVAbsolutePriceScheduleEntry.TryParseCBOR,
+                                                     out var EVAbsolutePriceScheduleEntries,
+                                                     out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                EVAbsolutePriceSchedule = new EVAbsolutePriceSchedule(
+                                              TimeAnchor,
+                                              Currency,
+                                              PriceAlgorithm,
+                                              EVAbsolutePriceScheduleEntries,
+                                              CustomData
+                                          );
+
+                if (CustomEVAbsolutePriceScheduleParser is not null)
+                    EVAbsolutePriceSchedule = CustomEVAbsolutePriceScheduleParser(CBOR,
+                                                         EVAbsolutePriceSchedule);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                EVAbsolutePriceSchedule  = default;
+                ErrorResponse  = "The given CBOR representation of an EV absolute price schedule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<EVAbsolutePriceSchedule>.TryParse(CBOR, out EVAbsolutePriceSchedule, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an EV absolute price schedule - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<EVAbsolutePriceSchedule>.TryParse(CBORValue                         CBOR,
+                                                                         out EVAbsolutePriceSchedule                  Value,
+                                                                         [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomEVAbsolutePriceScheduleSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this EV absolute price schedule: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomEVAbsolutePriceScheduleSerializer">A delegate to serialize custom EV absolute price schedules.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<EVAbsolutePriceSchedule>? CustomEVAbsolutePriceScheduleSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("timeAnchor",                             TimeAnchor.ToCBOR()),
+                           ("currency",                               CBORValue.FromText(Currency.ISOCode)),
+                           ("priceAlgorithm",                         CBORValue.FromText(PriceAlgorithm.ToString())),
+                           ("evAbsolutePriceScheduleEntries",         CBORValue.FromArray(EVAbsolutePriceScheduleEntries.Select(entry => entry.ToCBOR()))),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomEVAbsolutePriceScheduleSerializer is not null
+                       ? CustomEVAbsolutePriceScheduleSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

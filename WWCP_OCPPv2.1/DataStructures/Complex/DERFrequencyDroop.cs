@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER FrequencyDroop
     /// </summary>
     public class DERFrequencyDroop : ACustomData,
+                                     ICBORSerializable<DERFrequencyDroop>,
                                      IEquatable<DERFrequencyDroop>
     {
 
@@ -330,13 +333,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region ResponseTime      [mandatory]
 
+                // A number of seconds, not only whole ones.
                 if (!JSON.ParseMandatory("responseTime",
                                          "response time",
-                                         out TimeSpan ResponseTime,
+                                         out Decimal responseTimeSeconds,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var ResponseTime = TimeSpan.FromSeconds((Double) responseTimeSeconds);
 
                 #endregion
 
@@ -455,6 +461,214 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DERFrequencyDroop, out ErrorResponse, CustomDERFrequencyDroopParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER frequency droop.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERFrequencyDroop">The DER frequency droop.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DERFrequencyDroop?  DERFrequencyDroop,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DERFrequencyDroop,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER frequency droop.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERFrequencyDroop">The DER frequency droop.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDERFrequencyDroopParser">An optional delegate to read custom DER frequency droops.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DERFrequencyDroop?           DERFrequencyDroop,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DERFrequencyDroop>?  CustomDERFrequencyDroopParser)
+        {
+
+            try
+            {
+
+                DERFrequencyDroop = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER frequency droop is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priority",
+                                               "priority",
+                                               out var PriorityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PriorityNumber > Byte.MaxValue)
+                {
+                    ErrorResponse = $"Invalid priority '{PriorityNumber}'!";
+                    return false;
+                }
+
+                var Priority = (Byte) PriorityNumber;
+
+                if (!CBOR.ParseMandatoryValue("overFreq",
+                                              "over frequency",
+                                              OCPPCBORExtensions.TryParseHertz,
+                                              out Hertz OverFrequency,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("underFreq",
+                                              "under frequency",
+                                              OCPPCBORExtensions.TryParseHertz,
+                                              out Hertz UnderFrequency,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("overDroop",
+                                                "over droop",
+                                                out var OverDroop,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryDecimal("underDroop",
+                                                "under droop",
+                                                out var UnderDroop,
+                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("responseTime",
+                                              "response time",
+                                              OCPPCBORExtensions.TryParseDuration,
+                                              out TimeSpan ResponseTime,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("startTime",
+                                        "start time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StartTimeOffset,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                var StartTime = StartTimeOffset?.UtcDateTime;
+
+                CBOR.ParseOptionalValue("duration",
+                                        "duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Duration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERFrequencyDroop = new DERFrequencyDroop(
+                                        Priority,
+                                        OverFrequency,
+                                        UnderFrequency,
+                                        OverDroop,
+                                        UnderDroop,
+                                        ResponseTime,
+                                        StartTime,
+                                        Duration,
+                                        CustomData
+                                    );
+
+                if (CustomDERFrequencyDroopParser is not null)
+                    DERFrequencyDroop = CustomDERFrequencyDroopParser(CBOR,
+                                                   DERFrequencyDroop);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DERFrequencyDroop  = default;
+                ErrorResponse  = "The given CBOR representation of a DER frequency droop is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DERFrequencyDroop>.TryParse(CBOR, out DERFrequencyDroop, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER frequency droop - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DERFrequencyDroop>.TryParse(CBORValue                         CBOR,
+                                                                   out DERFrequencyDroop                  Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDERFrequencyDroopSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER frequency droop: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDERFrequencyDroopSerializer">A delegate to serialize custom DER frequency droops.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DERFrequencyDroop>? CustomDERFrequencyDroopSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("priority",                               CBORValue.FromUInt64(Priority)),
+                           ("overFreq",                               OverFrequency. ToCBOR()),
+                           ("underFreq",                              UnderFrequency.ToCBOR()),
+                           ("overDroop",                              CBORValue.FromDecimal(OverDroop)),
+                           ("underDroop",                             CBORValue.FromDecimal(UnderDroop)),
+                           ("responseTime",                           ResponseTime.ToCBOR()),
+                           ("startTime",                              StartTime.HasValue ? (CBORValue?) new DateTimeOffset(StartTime.Value.ToUniversalTime(), TimeSpan.Zero).ToCBOR() : null),
+                           ("duration",                               Duration?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDERFrequencyDroopSerializer is not null
+                       ? CustomDERFrequencyDroopSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// DER FixedVAR
     /// </summary>
     public class DERFixedVAR : ACustomData,
+                               ICBORSerializable<DERFixedVAR>,
                                IEquatable<DERFixedVAR>
     {
 
@@ -371,6 +374,186 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DERFixedVAR, out ErrorResponse, CustomDERFixedVARParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER fixed var.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERFixedVAR">The DER fixed var.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DERFixedVAR?  DERFixedVAR,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DERFixedVAR,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER fixed var.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERFixedVAR">The DER fixed var.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDERFixedVARParser">An optional delegate to read custom DER fixed vars.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DERFixedVAR?           DERFixedVAR,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DERFixedVAR>?  CustomDERFixedVARParser)
+        {
+
+            try
+            {
+
+                DERFixedVAR = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER fixed var is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("priority",
+                                               "priority",
+                                               out var PriorityNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PriorityNumber > Byte.MaxValue)
+                {
+                    ErrorResponse = $"Invalid priority '{PriorityNumber}'!";
+                    return false;
+                }
+
+                var Priority = (Byte) PriorityNumber;
+
+                if (!CBOR.ParseMandatoryValue("setpoint",
+                                              "setpoint",
+                                              OCPPCBORExtensions.TryParseSignedPercentage,
+                                              out SignedPercentage Setpoint,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("unit",
+                                             "unit",
+                                             out var UnitText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!DERUnit.TryParse(UnitText, out var Unit))
+                {
+                    ErrorResponse = $"Invalid unit '{UnitText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("startTime",
+                                        "start time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StartTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("duration",
+                                        "duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Duration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERFixedVAR = new DERFixedVAR(
+                                  Priority,
+                                  Setpoint,
+                                  Unit,
+                                  StartTime,
+                                  Duration,
+                                  CustomData
+                              );
+
+                if (CustomDERFixedVARParser is not null)
+                    DERFixedVAR = CustomDERFixedVARParser(CBOR,
+                                             DERFixedVAR);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DERFixedVAR  = default;
+                ErrorResponse  = "The given CBOR representation of a DER fixed var is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DERFixedVAR>.TryParse(CBOR, out DERFixedVAR, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER fixed var - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DERFixedVAR>.TryParse(CBORValue                         CBOR,
+                                                             out DERFixedVAR                  Value,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDERFixedVARSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER fixed var: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDERFixedVARSerializer">A delegate to serialize custom DER fixed vars.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DERFixedVAR>? CustomDERFixedVARSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("priority",                               CBORValue.FromUInt64(Priority)),
+                           ("setpoint",                               Setpoint.ToCBOR()),
+                           ("unit",                                   CBORValue.FromText(Unit.ToString())),
+                           ("startTime",                              StartTime?.ToCBOR()),
+                           ("duration",                               Duration?. ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDERFixedVARSerializer is not null
+                       ? CustomDERFixedVARSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

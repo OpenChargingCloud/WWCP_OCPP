@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -35,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// the AC/DCChargingParameters of ISO 15118-2.
     /// </summary>
     public class V2XChargingParameters : ACustomData,
+                                         ICBORSerializable<V2XChargingParameters>,
                                          IEquatable<V2XChargingParameters>
     {
 
@@ -1106,6 +1109,383 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out V2XChargingParameters, out ErrorResponse, CustomV2XChargingParametersParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X charging parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="V2XChargingParameters">The V2X charging parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out V2XChargingParameters?  V2XChargingParameters,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out V2XChargingParameters,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X charging parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="V2XChargingParameters">The V2X charging parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomV2XChargingParametersParser">An optional delegate to read custom V2X charging parameters.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out V2XChargingParameters?           V2XChargingParameters,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<V2XChargingParameters>?  CustomV2XChargingParametersParser)
+        {
+
+            try
+            {
+
+                V2XChargingParameters = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a V2X charging parameters is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("minChargePower",
+                                        "minimum charge power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MinChargePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minChargePower_L2",
+                                        "minimum charge power on L2",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MinChargePower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minChargePower_L3",
+                                        "minimum charge power on L3",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MinChargePower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargePower",
+                                        "maximum charge power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MaxChargePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargePower_L2",
+                                        "maximum charge power on L2",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MaxChargePower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargePower_L3",
+                                        "maximum charge power on L3",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MaxChargePower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minDischargePower",
+                                        "minimum discharge power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MinDischargePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minDischargePower_L2",
+                                        "minimum discharge power on L2",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MinDischargePower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minDischargePower_L3",
+                                        "minimum discharge power on L3",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MinDischargePower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargePower",
+                                        "maximum discharge power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MaxDischargePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargePower_L2",
+                                        "maximum discharge power on L2",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MaxDischargePower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargePower_L3",
+                                        "maximum discharge power on L3",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? MaxDischargePower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minChargeCurrent",
+                                        "minimum charge current",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? MinChargeCurrent,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargeCurrent",
+                                        "maximum charge current",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? MaxChargeCurrent,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minDischargeCurrent",
+                                        "minimum discharge current",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? MinDischargeCurrent,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargeCurrent",
+                                        "maximum discharge current",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? MaxDischargeCurrent,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minVoltage",
+                                        "minimum voltage",
+                                        OCPPCBORExtensions.TryParseVolt,
+                                        out Volt? MinVoltage,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxVoltage",
+                                        "maximum voltage",
+                                        OCPPCBORExtensions.TryParseVolt,
+                                        out Volt? MaxVoltage,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evTargetEnergyRequest",
+                                        "EV target energy request",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? EVTargetEnergyRequest,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evMinEnergyRequest",
+                                        "EV minimum energy request",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? EVMinEnergyRequest,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evMaxEnergyRequest",
+                                        "EV maximum energy request",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? EVMaxEnergyRequest,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evMinV2XEnergyRequest",
+                                        "EV minimum V2X energy request",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? EVMinV2XEnergyRequest,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evMaxV2XEnergyRequest",
+                                        "EV maximum V2X energy request",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? EVMaxV2XEnergyRequest,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("targetSoC",
+                                        "target state of charge",
+                                        OCPPCBORExtensions.TryParsePercentageByte,
+                                        out PercentageByte? TargetSoC,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                V2XChargingParameters = new V2XChargingParameters(
+                                            MinChargePower,
+                                            MinChargePower_L2,
+                                            MinChargePower_L3,
+                                            MaxChargePower,
+                                            MaxChargePower_L2,
+                                            MaxChargePower_L3,
+                                            MinDischargePower,
+                                            MinDischargePower_L2,
+                                            MinDischargePower_L3,
+                                            MaxDischargePower,
+                                            MaxDischargePower_L2,
+                                            MaxDischargePower_L3,
+                                            MinChargeCurrent,
+                                            MaxChargeCurrent,
+                                            MinDischargeCurrent,
+                                            MaxDischargeCurrent,
+                                            MinVoltage,
+                                            MaxVoltage,
+                                            EVTargetEnergyRequest,
+                                            EVMinEnergyRequest,
+                                            EVMaxEnergyRequest,
+                                            EVMinV2XEnergyRequest,
+                                            EVMaxV2XEnergyRequest,
+                                            TargetSoC,
+                                            CustomData
+                                        );
+
+                if (CustomV2XChargingParametersParser is not null)
+                    V2XChargingParameters = CustomV2XChargingParametersParser(CBOR,
+                                                       V2XChargingParameters);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                V2XChargingParameters  = default;
+                ErrorResponse  = "The given CBOR representation of a V2X charging parameters is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<V2XChargingParameters>.TryParse(CBOR, out V2XChargingParameters, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a V2X charging parameters - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<V2XChargingParameters>.TryParse(CBORValue                         CBOR,
+                                                                       out V2XChargingParameters                  Value,
+                                                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomV2XChargingParametersSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this V2X charging parameters: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomV2XChargingParametersSerializer">A delegate to serialize custom V2X charging parameters.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<V2XChargingParameters>? CustomV2XChargingParametersSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("minChargePower",                         MinChargePower?.ToCBOR()),
+                           ("minChargePower_L2",                      MinChargePower_L2?.ToCBOR()),
+                           ("minChargePower_L3",                      MinChargePower_L3?.ToCBOR()),
+                           ("maxChargePower",                         MaxChargePower?.ToCBOR()),
+                           ("maxChargePower_L2",                      MaxChargePower_L2?.ToCBOR()),
+                           ("maxChargePower_L3",                      MaxChargePower_L3?.ToCBOR()),
+                           ("minDischargePower",                      MinDischargePower?.ToCBOR()),
+                           ("minDischargePower_L2",                   MinDischargePower_L2?.ToCBOR()),
+                           ("minDischargePower_L3",                   MinDischargePower_L3?.ToCBOR()),
+                           ("maxDischargePower",                      MaxDischargePower?.ToCBOR()),
+                           ("maxDischargePower_L2",                   MaxDischargePower_L2?.ToCBOR()),
+                           ("maxDischargePower_L3",                   MaxDischargePower_L3?.ToCBOR()),
+                           ("minChargeCurrent",                       MinChargeCurrent?.ToCBOR()),
+                           ("maxChargeCurrent",                       MaxChargeCurrent?.ToCBOR()),
+                           ("minDischargeCurrent",                    MinDischargeCurrent?.ToCBOR()),
+                           ("maxDischargeCurrent",                    MaxDischargeCurrent?.ToCBOR()),
+                           ("minVoltage",                             MinVoltage?.ToCBOR()),
+                           ("maxVoltage",                             MaxVoltage?.ToCBOR()),
+                           ("evTargetEnergyRequest",                  EVTargetEnergyRequest?.ToCBOR()),
+                           ("evMinEnergyRequest",                     EVMinEnergyRequest?.ToCBOR()),
+                           ("evMaxEnergyRequest",                     EVMaxEnergyRequest?.ToCBOR()),
+                           ("evMinV2XEnergyRequest",                  EVMinV2XEnergyRequest?.ToCBOR()),
+                           ("evMaxV2XEnergyRequest",                  EVMaxV2XEnergyRequest?.ToCBOR()),
+                           ("targetSoC",                              TargetSoC?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomV2XChargingParametersSerializer is not null
+                       ? CustomV2XChargingParametersSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 

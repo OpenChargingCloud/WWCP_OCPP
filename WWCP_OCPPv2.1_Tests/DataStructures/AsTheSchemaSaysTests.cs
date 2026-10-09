@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void Hysteresis()
 
-            => ReadAndWrittenAsTheSchemaSays<Hysteresis>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<Hysteresis>(
                    $$"""
                    {
                        "hysteresisHigh":     50.2,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void Hysteresis_Empty()
 
-            => ReadAndWrittenAsTheSchemaSays<Hysteresis>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<Hysteresis>(
                    "{ }",
                    OCPPv2_1.Hysteresis.TryParse,
                    value => value.ToJSON()
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void EVPriceRule()
 
-            => ReadAndWrittenAsTheSchemaSays<EVPriceRule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<EVPriceRule>(
                    $$"""
                    { "energyFee": 0.39, "powerRangeStart": 11000, "customData": {{Custom}} }
                    """,
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void EVPowerScheduleEntry()
 
-            => ReadAndWrittenAsTheSchemaSays<EVPowerScheduleEntry>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<EVPowerScheduleEntry>(
                    $$"""
                    { "duration": 900, "power": -7400, "customData": {{Custom}} }
                    """,
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void EVPowerSchedule()
 
-            => ReadAndWrittenAsTheSchemaSays<EVPowerSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<EVPowerSchedule>(
                    $$"""
                    {
                        "evPowerScheduleEntries": [ { "duration": 900, "power": -7400 } ],
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void EVAbsolutePriceScheduleEntry()
 
-            => ReadAndWrittenAsTheSchemaSays<EVAbsolutePriceScheduleEntry>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<EVAbsolutePriceScheduleEntry>(
                    $$"""
                    {
                        "duration":    900,
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void EVAbsolutePriceSchedule()
 
-            => ReadAndWrittenAsTheSchemaSays<EVAbsolutePriceSchedule>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<EVAbsolutePriceSchedule>(
                    $$"""
                    {
                        "timeAnchor":                     "2026-10-09T12:00:00Z",
@@ -626,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void DERChargingParameters()
 
-            => ReadAndWrittenAsTheSchemaSays<DERChargingParameters>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERChargingParameters>(
                    $$"""
                    {
                        "evSupportedDERControl":          [ "FreqDroop", "FixedPFInject" ],
@@ -642,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ChargingNeeds()
 
-            => ReadAndWrittenAsTheSchemaSays<ChargingNeeds>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingNeeds>(
                    $$"""
                    {
                        "requestedEnergyTransfer": "DC",
@@ -817,7 +817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void DEREnterService()
 
-            => ReadAndWrittenAsTheSchemaSays<DEREnterService>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DEREnterService>(
                    $$"""
                    {
                        "priority":    1,
@@ -841,7 +841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         [Test]
         public void ReactivePowerParameters()
 
-            => ReadAndWrittenAsTheSchemaSays<ReactivePowerParameters>(
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ReactivePowerParameters>(
                    $$"""
                    {
                        "vRef":                       100,
@@ -1035,6 +1035,294 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                    OCPPv2_1.TransactionLimits.TryParse,
                    value => value.ToJSON(),
                    value => Assert.That(value.MaxEnergy?.Value, Is.EqualTo(50000M))
+               );
+
+        #endregion
+
+        #region The EV's charging needs and the DER controls, with every property
+
+        // Every property the schema has, and a fraction wherever it has a
+        // number - currents, voltages, power and energy are not whole numbers.
+
+        [Test]
+        public void ACChargingParameters_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ACChargingParameters>(
+                   $$"""
+                   { "energyAmount": 20000.5, "evMinCurrent": 6.5, "evMaxCurrent": 31.5, "evMaxVoltage": 400.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.ACChargingParameters.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DCChargingParameters_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DCChargingParameters>(
+                   $$"""
+                   { "evMaxCurrent": 125.5, "evMaxVoltage": 800.5, "evMaxPower": 100000.5, "evEnergyCapacity": 80000.5, "energyAmount": 40000.5, "stateOfCharge": 30, "fullSoC": 100, "bulkSoC": 80, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.DCChargingParameters.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void V2XChargingParameters_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<V2XChargingParameters>(
+                   $$"""
+                   {
+                       "minChargePower": 1000.5, "minChargePower_L2": 1000.5, "minChargePower_L3": 1000.5,
+                       "maxChargePower": 11000.5, "maxChargePower_L2": 3700.5, "maxChargePower_L3": 3700.5,
+                       "minDischargePower": 500.5, "minDischargePower_L2": 500.5, "minDischargePower_L3": 500.5,
+                       "maxDischargePower": 7400.5, "maxDischargePower_L2": 2400.5, "maxDischargePower_L3": 2400.5,
+                       "minChargeCurrent": 6.5, "maxChargeCurrent": 16.5, "minDischargeCurrent": 6.5, "maxDischargeCurrent": 10.5,
+                       "minVoltage": 207.5, "maxVoltage": 253.5,
+                       "evTargetEnergyRequest": 30000.5, "evMinEnergyRequest": 10000.5, "evMaxEnergyRequest": 50000.5,
+                       "evMinV2XEnergyRequest": -5000.5, "evMaxV2XEnergyRequest": 40000.5,
+                       "targetSoC": 80,
+                       "customData": {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.V2XChargingParameters.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DERChargingParameters_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERChargingParameters>(
+                   $$"""
+                   {
+                       "evSupportedDERControl":                  [ "FreqDroop", "FixedPFInject" ],
+                       "evOverExcitedMaxDischargePower":         7000.5,
+                       "evOverExcitedPowerFactor":               0.95,
+                       "evUnderExcitedMaxDischargePower":        6000.5,
+                       "evUnderExcitedPowerFactor":              0.9,
+                       "maxApparentPower":                       11000.5,
+                       "maxChargeApparentPower":                 11000.5,
+                       "maxChargeApparentPower_L2":              3700.5,
+                       "maxChargeApparentPower_L3":              3700.5,
+                       "maxDischargeApparentPower":              7400.5,
+                       "maxDischargeApparentPower_L2":           2400.5,
+                       "maxDischargeApparentPower_L3":           2400.5,
+                       "maxChargeReactivePower":                 3000.5,
+                       "maxChargeReactivePower_L2":              1000.5,
+                       "maxChargeReactivePower_L3":              1000.5,
+                       "minChargeReactivePower":                 -3000.5,
+                       "minChargeReactivePower_L2":              -1000.5,
+                       "minChargeReactivePower_L3":              -1000.5,
+                       "maxDischargeReactivePower":              3000.5,
+                       "maxDischargeReactivePower_L2":           1000.5,
+                       "maxDischargeReactivePower_L3":           1000.5,
+                       "minDischargeReactivePower":              -3000.5,
+                       "minDischargeReactivePower_L2":           -1000.5,
+                       "minDischargeReactivePower_L3":           -1000.5,
+                       "nominalVoltage":                         230.5,
+                       "nominalVoltageOffset":                   1.5,
+                       "maxNominalVoltage":                      253.5,
+                       "minNominalVoltage":                      207.5,
+                       "evInverterManufacturer":                 "GraphDefined",
+                       "evInverterModel":                        "Inv1",
+                       "evInverterSerialNumber":                 "SN1",
+                       "evInverterSwVersion":                    "1.0",
+                       "evInverterHwVersion":                    "2.0",
+                       "evIslandingDetectionMethod":             [ "RoCoF", "UVP_OVP" ],
+                       "evIslandingTripTime":                    1.5,
+                       "evMaximumLevel1DCInjection":             0.5,
+                       "evDurationLevel1DCInjection":            2.5,
+                       "evMaximumLevel2DCInjection":             1.5,
+                       "evDurationLevel2DCInjection":            0.5,
+                       "evReactiveSusceptance":                  0.25,
+                       "evSessionTotalDischargeEnergyAvailable": 20000.5,
+                       "customData":                             {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.DERChargingParameters.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void EVEnergyOffer_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<EVEnergyOffer>(
+                   $$"""
+                   { "evPowerSchedule": { "timeAnchor": "2026-10-09T12:00:00Z", "evPowerScheduleEntries": [ { "duration": 900, "power": -7400.5, "customData": {{Custom}} } ], "customData": {{Custom}} }, "evAbsolutePriceSchedule": {
+                       "timeAnchor":                     "2026-10-09T12:00:00Z",
+                       "currency":                       "EUR",
+                       "evAbsolutePriceScheduleEntries": [ { "duration": 900, "evPriceRule": [ { "energyFee": 0.39, "powerRangeStart": 0.5, "customData": {{Custom}} } ], "customData": {{Custom}} } ],
+                       "priceAlgorithm":                 "urn:iso:std:iso:15118:-20:PriceAlgorithm:1-Power",
+                       "customData":                     {{Custom}}
+                   }, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.EVEnergyOffer.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void ChargingNeeds_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ChargingNeeds>(
+                   $$"""
+                   {
+                       "acChargingParameters":    { "energyAmount": 20000.5, "evMinCurrent": 6.5, "evMaxCurrent": 31.5, "evMaxVoltage": 400.5, "customData": {{Custom}} },
+                       "derChargingParameters":   { "evSupportedDERControl": [ "FreqDroop" ] },
+                       "evEnergyOffer":           { "evPowerSchedule": { "timeAnchor": "2026-10-09T12:00:00Z", "evPowerScheduleEntries": [ { "duration": 900, "power": 7400.5 } ] } },
+                       "requestedEnergyTransfer": "AC_three_phase",
+                       "dcChargingParameters":    { "evMaxCurrent": 125.5, "evMaxVoltage": 800.5 },
+                       "v2xChargingParameters":   { "maxChargePower": 11000.5 },
+                       "availableEnergyTransfer": [ "AC_three_phase", "DC" ],
+                       "controlMode":             "DynamicControl",
+                       "mobilityNeedsMode":       "EVCC_SECC",
+                       "departureTime":           "2026-10-09T18:00:00Z",
+                       "customData":              {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.ChargingNeeds.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void Hysteresis_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<Hysteresis>(
+                   $$"""
+                   { "hysteresisHigh": 50.2, "hysteresisLow": 49.8, "hysteresisDelay": 0.5, "hysteresisGradient": 0.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.Hysteresis.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void ReactivePowerParameters_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<ReactivePowerParameters>(
+                   $$"""
+                   { "vRef": 100.5, "autonomousVRefEnable": true, "autonomousVRefTimeConstant": 0.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.ReactivePowerParameters.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void VoltageParameters_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<VoltageParameters>(
+                   $$"""
+                   { "hv10MinMeanValue": 253.5, "hv10MinMeanTripDelay": 2.5, "powerDuringCessation": "Active", "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.VoltageParameters.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DERCurvePoint_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERCurvePoint>(
+                   $$"""
+                   { "x": 50.1, "y": -10.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.DERCurvePoint.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DERCurve_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERCurve>(
+                   $$"""
+                   {
+                       "curveData":           [ { "x": 50.1, "y": -10.5, "customData": {{Custom}} }, { "x": 50.5, "y": -50.5 } ],
+                       "hysteresis":          { "hysteresisHigh": 50.2, "hysteresisLow": 49.8, "hysteresisDelay": 0.5, "hysteresisGradient": 0.5, "customData": {{Custom}} },
+                       "priority":            1,
+                       "reactivePowerParams": { "vRef": 100.5, "autonomousVRefEnable": true, "autonomousVRefTimeConstant": 0.5, "customData": {{Custom}} },
+                       "voltageParams":       { "hv10MinMeanValue": 253.5, "hv10MinMeanTripDelay": 2.5, "powerDuringCessation": "Active", "customData": {{Custom}} },
+                       "yUnit":               "PctMaxW",
+                       "responseTime":        2.5,
+                       "startTime":           "2026-10-09T12:00:00Z",
+                       "duration":            3600.5,
+                       "customData":          {{Custom}}
+                   }
+                   """,
+                   OCPPv2_1.DERCurve.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DEREnterService_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DEREnterService>(
+                   $$"""
+                   { "priority": 1, "highVoltage": 253.5, "lowVoltage": 207.5, "highFreq": 50.2, "lowFreq": 49.8, "delay": 30.5, "randomDelay": 10.5, "rampRate": 60.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.DEREnterService.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DERFixedPowerFactor_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERFixedPowerFactor>(
+                   $$"""
+                   { "priority": 1, "displacement": 0.95, "excitation": true, "startTime": "2026-10-09T12:00:00Z", "duration": 3600.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.DERFixedPowerFactor.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DERFixedVAR_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERFixedVAR>(
+                   $$"""
+                   { "priority": 1, "setpoint": 10.5, "unit": "PctMaxVar", "startTime": "2026-10-09T12:00:00Z", "duration": 3600.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.DERFixedVAR.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DERFrequencyDroop_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERFrequencyDroop>(
+                   $$"""
+                   { "priority": 1, "overFreq": 50.2, "underFreq": 49.8, "overDroop": 5.5, "underDroop": 5.5, "responseTime": 1.5, "startTime": "2026-10-09T12:00:00Z", "duration": 3600.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.DERFrequencyDroop.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DERGradient_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERGradient>(
+                   $$"""
+                   { "priority": 1, "gradient": 10.5, "softGradient": 5.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.DERGradient.TryParse,
+                   value => value.ToJSON()
+               );
+
+        [Test]
+        public void DERLimitMaxDischarge_WithEveryProperty()
+
+            => ReadAndWrittenAsTheSchemaSaysAndAsCBOR<DERLimitMaxDischarge>(
+                   $$"""
+                   { "priority": 1, "pctMaxDischargePower": 50.5, "powerMonitoringMustTrip": {
+                       "curveData":           [ { "x": 50.1, "y": -10.5, "customData": {{Custom}} }, { "x": 50.5, "y": -50.5 } ],
+                       "hysteresis":          { "hysteresisHigh": 50.2, "hysteresisLow": 49.8, "hysteresisDelay": 0.5, "hysteresisGradient": 0.5, "customData": {{Custom}} },
+                       "priority":            1,
+                       "reactivePowerParams": { "vRef": 100.5, "autonomousVRefEnable": true, "autonomousVRefTimeConstant": 0.5, "customData": {{Custom}} },
+                       "voltageParams":       { "hv10MinMeanValue": 253.5, "hv10MinMeanTripDelay": 2.5, "powerDuringCessation": "Active", "customData": {{Custom}} },
+                       "yUnit":               "PctMaxW",
+                       "responseTime":        2.5,
+                       "startTime":           "2026-10-09T12:00:00Z",
+                       "duration":            3600.5,
+                       "customData":          {{Custom}}
+                   }, "startTime": "2026-10-09T12:00:00Z", "duration": 3600.5, "customData": {{Custom}} }
+                   """,
+                   OCPPv2_1.DERLimitMaxDischarge.TryParse,
+                   value => value.ToJSON()
                );
 
         #endregion

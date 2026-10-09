@@ -26,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -42,6 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// NOTE: All these fields have values greater or equal to zero (i.e. are non-negative)
     /// </summary>
     public class DERChargingParameters : ACustomData,
+                                         ICBORSerializable<DERChargingParameters>,
                                          IEquatable<DERChargingParameters>
     {
 
@@ -1647,6 +1650,589 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region (static) TryParseCBOR(CBOR, out DERChargingParameters, out ErrorResponse, CustomDERChargingParametersParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER charging parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERChargingParameters">The DER charging parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                       [NotNullWhen(true)]  out DERChargingParameters?  DERChargingParameters,
+                                       [NotNullWhen(false)] out String?           ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out DERChargingParameters,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER charging parameters.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="DERChargingParameters">The DER charging parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomDERChargingParametersParser">An optional delegate to read custom DER charging parameters.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                       [NotNullWhen(true)]  out DERChargingParameters?           DERChargingParameters,
+                                       [NotNullWhen(false)] out String?            ErrorResponse,
+                                       CustomCBORParserDelegate<DERChargingParameters>?  CustomDERChargingParametersParser)
+        {
+
+            try
+            {
+
+                DERChargingParameters = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DER charging parameters is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<DERControlType>("evSupportedDERControl",
+                                               "EV supported DER controls",
+                                               (CBORValue item, out DERControlType value, out String? errorResponse) => {
+
+                                                   value         = default;
+                                                   errorResponse = null;
+
+                                                   if (item.Kind != CBORValueKind.TextString || !DERControlType.TryParse(item.AsText(), out value))
+                                                   {
+                                                       errorResponse = $"Invalid EV supported DER control '{item}'!";
+                                                       return false;
+                                                   }
+
+                                                   return true;
+
+                                               },
+                                               out var EVSupportedDERControls,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evOverExcitedMaxDischargePower",
+                                        "EV over excited maximum discharge power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? EVOverExcitedMaxDischargePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalDecimal("evOverExcitedPowerFactor",
+                                          "EV over excited power factor",
+                                          out var EVOverExcitedPowerFactor,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evUnderExcitedMaxDischargePower",
+                                        "EV under excited maximum discharge power",
+                                        OCPPCBORExtensions.TryParseWatt,
+                                        out Watt? EVUnderExcitedMaxDischargePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalDecimal("evUnderExcitedPowerFactor",
+                                          "EV under excited power factor",
+                                          out var EVUnderExcitedPowerFactor,
+                                          out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxApparentPower",
+                                        "maximum apparent power",
+                                        OCPPCBORExtensions.TryParseVoltAmpere,
+                                        out VoltAmpere? MaxApparentPower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargeApparentPower",
+                                        "maximum charge apparent power",
+                                        OCPPCBORExtensions.TryParseVoltAmpere,
+                                        out VoltAmpere? MaxChargeApparentPower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargeApparentPower_L2",
+                                        "maximum charge apparent power on L2",
+                                        OCPPCBORExtensions.TryParseVoltAmpere,
+                                        out VoltAmpere? MaxChargeApparentPower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargeApparentPower_L3",
+                                        "maximum charge apparent power on L3",
+                                        OCPPCBORExtensions.TryParseVoltAmpere,
+                                        out VoltAmpere? MaxChargeApparentPower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargeApparentPower",
+                                        "maximum discharge apparent power",
+                                        OCPPCBORExtensions.TryParseVoltAmpere,
+                                        out VoltAmpere? MaxDischargeApparentPower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargeApparentPower_L2",
+                                        "maximum discharge apparent power on L2",
+                                        OCPPCBORExtensions.TryParseVoltAmpere,
+                                        out VoltAmpere? MaxDischargeApparentPower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargeApparentPower_L3",
+                                        "maximum discharge apparent power on L3",
+                                        OCPPCBORExtensions.TryParseVoltAmpere,
+                                        out VoltAmpere? MaxDischargeApparentPower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargeReactivePower",
+                                        "maximum charge reactive power",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MaxChargeReactivePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargeReactivePower_L2",
+                                        "maximum charge reactive power on L2",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MaxChargeReactivePower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxChargeReactivePower_L3",
+                                        "maximum charge reactive power on L3",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MaxChargeReactivePower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minChargeReactivePower",
+                                        "minimum charge reactive power",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MinChargeReactivePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minChargeReactivePower_L2",
+                                        "minimum charge reactive power on L2",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MinChargeReactivePower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minChargeReactivePower_L3",
+                                        "minimum charge reactive power on L3",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MinChargeReactivePower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargeReactivePower",
+                                        "maximum discharge reactive power",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MaxDischargeReactivePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargeReactivePower_L2",
+                                        "maximum discharge reactive power on L2",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MaxDischargeReactivePower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxDischargeReactivePower_L3",
+                                        "maximum discharge reactive power on L3",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MaxDischargeReactivePower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minDischargeReactivePower",
+                                        "minimum discharge reactive power",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MinDischargeReactivePower,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minDischargeReactivePower_L2",
+                                        "minimum discharge reactive power on L2",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MinDischargeReactivePower_L2,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minDischargeReactivePower_L3",
+                                        "minimum discharge reactive power on L3",
+                                        OCPPCBORExtensions.TryParseVoltAmpereReactive,
+                                        out VoltAmpereReactive? MinDischargeReactivePower_L3,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("nominalVoltage",
+                                        "nominal voltage",
+                                        OCPPCBORExtensions.TryParseVolt,
+                                        out Volt? NominalVoltage,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("nominalVoltageOffset",
+                                        "nominal voltage offset",
+                                        OCPPCBORExtensions.TryParseVolt,
+                                        out Volt? NominalVoltageOffset,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("maxNominalVoltage",
+                                        "maximum nominal voltage",
+                                        OCPPCBORExtensions.TryParseVolt,
+                                        out Volt? MaxNominalVoltage,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("minNominalVoltage",
+                                        "minimum nominal voltage",
+                                        OCPPCBORExtensions.TryParseVolt,
+                                        out Volt? MinNominalVoltage,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("evInverterManufacturer",
+                                       "EV inverter manufacturer",
+                                       out var EVInverterManufacturer,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("evInverterModel",
+                                       "EV inverter model",
+                                       out var EVInverterModel,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("evInverterSerialNumber",
+                                       "EV inverter serial number",
+                                       out var EVInverterSerialNumber,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("evInverterSwVersion",
+                                       "EV inverter software version",
+                                       out var EVInverterSWVersion,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("evInverterHwVersion",
+                                       "EV inverter hardware version",
+                                       out var EVInverterHWVersion,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<IslandingDetectionMethod>("evIslandingDetectionMethod",
+                                               "EV islanding detection methods",
+                                               (CBORValue item, out IslandingDetectionMethod value, out String? errorResponse) => {
+
+                                                   value         = default;
+                                                   errorResponse = null;
+
+                                                   if (item.Kind != CBORValueKind.TextString || !IslandingDetectionMethod.TryParse(item.AsText(), out value))
+                                                   {
+                                                       errorResponse = $"Invalid EV islanding detection method '{item}'!";
+                                                       return false;
+                                                   }
+
+                                                   return true;
+
+                                               },
+                                               out var EVIslandingDetectionMethod,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evIslandingTripTime",
+                                        "EV islanding trip time",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? EVIslandingTripTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evMaximumLevel1DCInjection",
+                                        "EV maximum level 1 DC injection",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? EVMaximumLevel1DCInjection,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evDurationLevel1DCInjection",
+                                        "EV duration of level 1 DC injection",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? EVDurationLevel1DCInjection,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evMaximumLevel2DCInjection",
+                                        "EV maximum level 2 DC injection",
+                                        OCPPCBORExtensions.TryParseAmpere,
+                                        out Ampere? EVMaximumLevel2DCInjection,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evDurationLevel2DCInjection",
+                                        "EV duration of level 2 DC injection",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? EVDurationLevel2DCInjection,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evReactiveSusceptance",
+                                        "EV reactive susceptance",
+                                        OCPPCBORExtensions.TryParseSiemens,
+                                        out Siemens? EVReactiveSusceptance,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("evSessionTotalDischargeEnergyAvailable",
+                                        "EV session total discharge energy available",
+                                        OCPPCBORExtensions.TryParseWattHour,
+                                        out WattHour? EVSessionTotalDischargeEnergyAvailable,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DERChargingParameters = new DERChargingParameters(
+                                            EVSupportedDERControls,
+                                            EVOverExcitedMaxDischargePower,
+                                            EVOverExcitedPowerFactor,
+                                            EVUnderExcitedMaxDischargePower,
+                                            EVUnderExcitedPowerFactor,
+                                            MaxApparentPower,
+                                            MaxChargeApparentPower,
+                                            MaxChargeApparentPower_L2,
+                                            MaxChargeApparentPower_L3,
+                                            MaxDischargeApparentPower,
+                                            MaxDischargeApparentPower_L2,
+                                            MaxDischargeApparentPower_L3,
+                                            MaxChargeReactivePower,
+                                            MaxChargeReactivePower_L2,
+                                            MaxChargeReactivePower_L3,
+                                            MinChargeReactivePower,
+                                            MinChargeReactivePower_L2,
+                                            MinChargeReactivePower_L3,
+                                            MaxDischargeReactivePower,
+                                            MaxDischargeReactivePower_L2,
+                                            MaxDischargeReactivePower_L3,
+                                            MinDischargeReactivePower,
+                                            MinDischargeReactivePower_L2,
+                                            MinDischargeReactivePower_L3,
+                                            NominalVoltage,
+                                            NominalVoltageOffset,
+                                            MaxNominalVoltage,
+                                            MinNominalVoltage,
+                                            EVInverterManufacturer,
+                                            EVInverterModel,
+                                            EVInverterSerialNumber,
+                                            EVInverterSWVersion,
+                                            EVInverterHWVersion,
+                                            EVIslandingDetectionMethod,
+                                            EVIslandingTripTime,
+                                            EVMaximumLevel1DCInjection,
+                                            EVDurationLevel1DCInjection,
+                                            EVMaximumLevel2DCInjection,
+                                            EVDurationLevel2DCInjection,
+                                            EVReactiveSusceptance,
+                                            EVSessionTotalDischargeEnergyAvailable,
+                                            CustomData
+                                        );
+
+                if (CustomDERChargingParametersParser is not null)
+                    DERChargingParameters = CustomDERChargingParametersParser(CBOR,
+                                                       DERChargingParameters);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DERChargingParameters  = default;
+                ErrorResponse  = "The given CBOR representation of a DER charging parameters is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<DERChargingParameters>.TryParse(CBOR, out DERChargingParameters, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DER charging parameters - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<DERChargingParameters>.TryParse(CBORValue                         CBOR,
+                                                                       out DERChargingParameters                  Value,
+                                                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDERChargingParametersSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DER charging parameters: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDERChargingParametersSerializer">A delegate to serialize custom DER charging parameters.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DERChargingParameters>? CustomDERChargingParametersSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("evSupportedDERControl",                  OCPPCBORExtensions.Array(EVSupportedDERControls, control => CBORValue.FromText(control.ToString()))),
+                           ("evOverExcitedMaxDischargePower",         EVOverExcitedMaxDischargePower?.ToCBOR()),
+                           ("evOverExcitedPowerFactor",               OCPPCBORExtensions.Number(EVOverExcitedPowerFactor)),
+                           ("evUnderExcitedMaxDischargePower",        EVUnderExcitedMaxDischargePower?.ToCBOR()),
+                           ("evUnderExcitedPowerFactor",              OCPPCBORExtensions.Number(EVUnderExcitedPowerFactor)),
+                           ("maxApparentPower",                       MaxApparentPower?.ToCBOR()),
+                           ("maxChargeApparentPower",                 MaxChargeApparentPower?.ToCBOR()),
+                           ("maxChargeApparentPower_L2",              MaxChargeApparentPower_L2?.ToCBOR()),
+                           ("maxChargeApparentPower_L3",              MaxChargeApparentPower_L3?.ToCBOR()),
+                           ("maxDischargeApparentPower",              MaxDischargeApparentPower?.ToCBOR()),
+                           ("maxDischargeApparentPower_L2",           MaxDischargeApparentPower_L2?.ToCBOR()),
+                           ("maxDischargeApparentPower_L3",           MaxDischargeApparentPower_L3?.ToCBOR()),
+                           ("maxChargeReactivePower",                 MaxChargeReactivePower?.ToCBOR()),
+                           ("maxChargeReactivePower_L2",              MaxChargeReactivePower_L2?.ToCBOR()),
+                           ("maxChargeReactivePower_L3",              MaxChargeReactivePower_L3?.ToCBOR()),
+                           ("minChargeReactivePower",                 MinChargeReactivePower?.ToCBOR()),
+                           ("minChargeReactivePower_L2",              MinChargeReactivePower_L2?.ToCBOR()),
+                           ("minChargeReactivePower_L3",              MinChargeReactivePower_L3?.ToCBOR()),
+                           ("maxDischargeReactivePower",              MaxDischargeReactivePower?.ToCBOR()),
+                           ("maxDischargeReactivePower_L2",           MaxDischargeReactivePower_L2?.ToCBOR()),
+                           ("maxDischargeReactivePower_L3",           MaxDischargeReactivePower_L3?.ToCBOR()),
+                           ("minDischargeReactivePower",              MinDischargeReactivePower?.ToCBOR()),
+                           ("minDischargeReactivePower_L2",           MinDischargeReactivePower_L2?.ToCBOR()),
+                           ("minDischargeReactivePower_L3",           MinDischargeReactivePower_L3?.ToCBOR()),
+                           ("nominalVoltage",                         NominalVoltage?.ToCBOR()),
+                           ("nominalVoltageOffset",                   NominalVoltageOffset?.ToCBOR()),
+                           ("maxNominalVoltage",                      MaxNominalVoltage?.ToCBOR()),
+                           ("minNominalVoltage",                      MinNominalVoltage?.ToCBOR()),
+                           ("evInverterManufacturer",                 OCPPCBORExtensions.Text(EVInverterManufacturer)),
+                           ("evInverterModel",                        OCPPCBORExtensions.Text(EVInverterModel)),
+                           ("evInverterSerialNumber",                 OCPPCBORExtensions.Text(EVInverterSerialNumber)),
+                           ("evInverterSwVersion",                    OCPPCBORExtensions.Text(EVInverterSWVersion)),
+                           ("evInverterHwVersion",                    OCPPCBORExtensions.Text(EVInverterHWVersion)),
+                           ("evIslandingDetectionMethod",             OCPPCBORExtensions.Array(EVIslandingDetectionMethod, method => CBORValue.FromText(method.ToString()))),
+                           ("evIslandingTripTime",                    EVIslandingTripTime?.ToCBOR()),
+                           ("evMaximumLevel1DCInjection",             EVMaximumLevel1DCInjection?.ToCBOR()),
+                           ("evDurationLevel1DCInjection",            EVDurationLevel1DCInjection?.ToCBOR()),
+                           ("evMaximumLevel2DCInjection",             EVMaximumLevel2DCInjection?.ToCBOR()),
+                           ("evDurationLevel2DCInjection",            EVDurationLevel2DCInjection?.ToCBOR()),
+                           ("evReactiveSusceptance",                  EVReactiveSusceptance?.ToCBOR()),
+                           ("evSessionTotalDischargeEnergyAvailable", EVSessionTotalDischargeEnergyAvailable?.ToCBOR()),
+                           ("customData",              CustomData?.ToCBOR())
+                       );
+
+            return CustomDERChargingParametersSerializer is not null
+                       ? CustomDERChargingParametersSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
 
         #region Operator overloading
 
