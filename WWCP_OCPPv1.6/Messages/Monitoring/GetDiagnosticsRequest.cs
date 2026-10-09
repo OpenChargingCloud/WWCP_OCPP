@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                : null,
 
                            Retries.HasValue
-                               ? new JProperty("retries",        Retries.  Value.ToString())
+                               ? new JProperty("retries",        Retries.  Value)
                                : null,
 
                            RetryInterval.HasValue
@@ -644,6 +644,190 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             return CustomGetDiagnosticsRequestSerializer is not null
                        ? CustomGetDiagnosticsRequestSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out GetDiagnosticsRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetDiagnostics request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetDiagnosticsRequest">The GetDiagnostics request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetDiagnosticsRequestParser">A delegate to read custom GetDiagnostics requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                         CBOR,
+                                           Request_Id                                        RequestId,
+                                           SourceRouting                                     Destination,
+                                           NetworkPath                                       NetworkPath,
+                                           [NotNullWhen(true)]  out GetDiagnosticsRequest?   GetDiagnosticsRequest,
+                                           [NotNullWhen(false)] out String?                  ErrorResponse,
+                                           DateTimeOffset?                                   RequestTimestamp                    = null,
+                                           TimeSpan?                                         RequestTimeout                      = null,
+                                           EventTracking_Id?                                 EventTrackingId                     = null,
+                                           CustomCBORParserDelegate<GetDiagnosticsRequest>?  CustomGetDiagnosticsRequestParser   = null)
+        {
+
+            try
+            {
+
+                GetDiagnosticsRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetDiagnostics request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("location",
+                                       "location",
+                                       out var Location,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("startTime",
+                                        "start time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StartTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("stopTime",
+                                        "stop time",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StopTime,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                Byte? Retries = null;
+
+                if (CBOR.ParseOptionalUInt64("retries",
+                                             "retries",
+                                             out var RetriesNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (RetriesNumber is not UInt64 RetriesValue || RetriesValue < Byte.MinValue || RetriesValue > Byte.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid retries '{RetriesNumber}'!";
+                        return false;
+                    }
+
+                    Retries = (Byte) RetriesValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("retryInterval",
+                                        "retry interval",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? RetryInterval,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetDiagnosticsRequest = new GetDiagnosticsRequest(
+
+                                            Destination,
+                                            Location,
+                                            StartTime,
+                                            StopTime,
+                                            Retries,
+                                            RetryInterval,
+
+                                            null,
+                                            null,
+                                            Signatures,
+
+                                            CustomData,
+
+                                            RequestId,
+                                            RequestTimestamp,
+                                            RequestTimeout,
+                                            EventTrackingId,
+                                            NetworkPath
+
+                                        );
+
+                if (CustomGetDiagnosticsRequestParser is not null)
+                    GetDiagnosticsRequest = CustomGetDiagnosticsRequestParser(CBOR,
+                                                                             GetDiagnosticsRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetDiagnosticsRequest = null;
+                ErrorResponse = "The given CBOR representation of a GetDiagnostics request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetDiagnosticsRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetDiagnostics request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetDiagnosticsRequestSerializer">A delegate to serialize custom GetDiagnostics requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetDiagnosticsRequest>? CustomGetDiagnosticsRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("location",                  CBORValue.FromText(Location)),
+                           ("startTime",                 StartTime?.ToCBOR()),
+                           ("stopTime",                  StopTime?.ToCBOR()),
+                           ("retries",                   OCPPCBORExtensions.UInt(Retries)),
+                           ("retryInterval",             RetryInterval?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetDiagnosticsRequestSerializer is not null
+                       ? CustomGetDiagnosticsRequestSerializer(this, cbor)
+                       : cbor;
 
         }
 

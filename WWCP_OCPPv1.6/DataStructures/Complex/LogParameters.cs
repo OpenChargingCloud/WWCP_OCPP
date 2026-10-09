@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -32,7 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Log parameters.
     /// </summary>
-    public class LogParameters : IEquatable<LogParameters>
+    public class LogParameters : IEquatable<LogParameters>,
+                             ICBORSerializable<LogParameters>
     {
 
         #region Properties
@@ -236,6 +239,153 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return CustomLogParametersSerializer is not null
                        ? CustomLogParametersSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out LogParameters, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a log parameters - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="LogParameters">The log parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                 CBOR,
+                                           [NotNullWhen(true)]  out LogParameters?   LogParameters,
+                                           [NotNullWhen(false)] out String?          ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out LogParameters,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a log parameters - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="LogParameters">The log parameters.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomLogParametersParser">A delegate to read custom log parameterss.</param>
+        public static Boolean TryParseCBOR(CBORValue                                 CBOR,
+                                           [NotNullWhen(true)]  out LogParameters?   LogParameters,
+                                           [NotNullWhen(false)] out String?          ErrorResponse,
+                                           CustomCBORParserDelegate<LogParameters>?  CustomLogParametersParser)
+        {
+
+            try
+            {
+
+                LogParameters = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a log parameters is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("remoteLocation",
+                                             "remote location",
+                                             out var RemoteLocationText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(RemoteLocationText, out var RemoteLocation))
+                {
+                    ErrorResponse = $"Invalid remote location '{RemoteLocationText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("oldestTimestamp",
+                                        "oldest timestamp",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? OldestTimestampOffset,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DateTime? OldestTimestamp = OldestTimestampOffset?.UtcDateTime;
+
+                CBOR.ParseOptionalValue("latestTimestamp",
+                                        "latest timestamp",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? LatestTimestampOffset,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DateTime? LatestTimestamp = LatestTimestampOffset?.UtcDateTime;
+
+
+                LogParameters = new LogParameters(
+                                    RemoteLocation,
+                                    OldestTimestamp,
+                                    LatestTimestamp
+                                );
+
+                if (CustomLogParametersParser is not null)
+                    LogParameters = CustomLogParametersParser(CBOR,
+                                                             LogParameters);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                LogParameters = null;
+                ErrorResponse = "The given CBOR representation of a log parameters is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<LogParameters>.TryParse(CBOR, out LogParameters, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a log parameters - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<LogParameters>.TryParse(CBORValue                         CBOR,
+                                                   out LogParameters                  Value,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomLogParametersSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this log parameters: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomLogParametersSerializer">A delegate to serialize custom log parameterss.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<LogParameters>? CustomLogParametersSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("remoteLocation",            CBORValue.FromText(RemoteLocation.ToString())),
+                           ("oldestTimestamp",           OldestTimestamp.HasValue ? (CBORValue?) new DateTimeOffset(OldestTimestamp.Value.ToUniversalTime()).ToCBOR() : null),
+                           ("latestTimestamp",           LatestTimestamp.HasValue ? (CBORValue?) new DateTimeOffset(LatestTimestamp.Value.ToUniversalTime()).ToCBOR() : null)
+                       );
+
+            return CustomLogParametersSerializer is not null
+                       ? CustomLogParametersSerializer(this, cbor)
+                       : cbor;
 
         }
 

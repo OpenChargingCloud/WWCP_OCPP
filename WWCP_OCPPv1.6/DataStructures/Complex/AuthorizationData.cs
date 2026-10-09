@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -32,7 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Authorization data.
     /// </summary>
-    public readonly struct AuthorizationData : IEquatable<AuthorizationData>
+    public readonly struct AuthorizationData : IEquatable<AuthorizationData>,
+                                           ICBORSerializable<AuthorizationData>
     {
 
         #region Properties
@@ -367,6 +370,138 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return CustomAuthorizationDataSerializer is not null
                        ? CustomAuthorizationDataSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out AuthorizationData, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a authorization data - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AuthorizationData">The authorization data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                     CBOR,
+                                           [NotNullWhen(true)]  out AuthorizationData    AuthorizationData,
+                                           [NotNullWhen(false)] out String?              ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out AuthorizationData,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a authorization data - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="AuthorizationData">The authorization data.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAuthorizationDataParser">A delegate to read custom authorization datas.</param>
+        public static Boolean TryParseCBOR(CBORValue                                     CBOR,
+                                           [NotNullWhen(true)]  out AuthorizationData    AuthorizationData,
+                                           [NotNullWhen(false)] out String?              ErrorResponse,
+                                           CustomCBORParserDelegate<AuthorizationData>?  CustomAuthorizationDataParser)
+        {
+
+            try
+            {
+
+                AuthorizationData = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a authorization data is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("idTag",
+                                             "identification tag",
+                                             out var IdTagText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv1_6.IdToken.TryParse(IdTagText, out var IdTag))
+                {
+                    ErrorResponse = $"Invalid identification tag '{IdTagText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("idTagInfo",
+                                        "identification tag information",
+                                        OCPPv1_6.IdTagInfo.TryParseCBOR,
+                                        out IdTagInfo? IdTagInfo,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                AuthorizationData = new AuthorizationData(
+                                        IdTag,
+                                        IdTagInfo
+                                    );
+
+                if (CustomAuthorizationDataParser is not null)
+                    AuthorizationData = CustomAuthorizationDataParser(CBOR,
+                                                                     AuthorizationData);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AuthorizationData = default;
+                ErrorResponse = "The given CBOR representation of a authorization data is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<AuthorizationData>.TryParse(CBOR, out AuthorizationData, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an authorization data - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<AuthorizationData>.TryParse(CBORValue                         CBOR,
+                                                   out AuthorizationData                  Value,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAuthorizationDataSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this authorization data: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom authorization datas.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AuthorizationData>? CustomAuthorizationDataSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("idTag",                     CBORValue.FromText(IdTag.ToString())),
+                           ("idTagInfo",                 IdTagInfo?.ToCBOR())
+                       );
+
+            return CustomAuthorizationDataSerializer is not null
+                       ? CustomAuthorizationDataSerializer(this, cbor)
+                       : cbor;
 
         }
 

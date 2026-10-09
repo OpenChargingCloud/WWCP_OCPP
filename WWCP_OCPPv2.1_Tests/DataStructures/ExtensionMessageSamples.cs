@@ -74,8 +74,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
             { "NTSKERequest",                         $$"""{ "aeadAlgorithm": "AES_256_GCM", "customData": {{Custom}} }""" },
             { "NTSKEResponse",                        $$"""{ "serverInfos": [ { "c2sKey": "AQID", "s2cKey": "BAUG", "cookies": [ "BwgJ" ], "urls": [ "https://time.example" ], "aeadAlgorithm": "AES_256_GCM" } ], "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
 
+            // Web payments: NotifyWebPaymentStarted is a message of OCPP 2.1, NotifyWebPaymentFailed a DataTransfer of the vendor "cloud.charging.open"
+            { "NotifyWebPaymentFailedRequest",       $$"""{ "vendorId": "cloud.charging.open", "messageId": "NotifyWebPaymentFailed", "data": { "evseId": 1, "errorMessage": { "en": "declined" } }, "customData": {{Custom}} }""" },
+            { "NotifyWebPaymentFailedResponse",       $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
+
             // Testing extensions
-            { "AdjustTimeScaleRequest",               $$"""{ "scale": 2.5, "customData": {{Custom}} }""" },
+            { "AdjustTimeScaleRequest",              $$"""{ "scale": 2.5, "customData": {{Custom}} }""" },
             { "AdjustTimeScaleResponse",              $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
             { "AttachCableRequest",                   $$"""{ "evseId": 1, "resistorValue": 2700.5, "connectorId": 1, "customData": {{Custom}} }""" },
             { "AttachCableResponse",                  $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },

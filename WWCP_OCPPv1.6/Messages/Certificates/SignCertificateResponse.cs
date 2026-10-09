@@ -360,6 +360,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out SignCertificateResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SignCertificate response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SignCertificateResponse">The SignCertificate response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomSignCertificateResponseParser">A delegate to read custom SignCertificate responses.</param>
+        public static Boolean TryParseCBOR(SignCertificateRequest                              Request,
+                                           CBORValue                                           CBOR,
+                                           SourceRouting                                       Destination,
+                                           NetworkPath                                         NetworkPath,
+                                           [NotNullWhen(true)]  out SignCertificateResponse?   SignCertificateResponse,
+                                           [NotNullWhen(false)] out String?                    ErrorResponse,
+                                           DateTimeOffset?                                     ResponseTimestamp                     = null,
+                                           CustomCBORParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null)
+        {
+
+            try
+            {
+
+                SignCertificateResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SignCertificate response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "generic status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = GenericStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SignCertificateResponse = new SignCertificateResponse(
+
+                                              Request,
+                                              Status,
+
+                                              null,
+                                              ResponseTimestamp,
+
+                                              Destination,
+                                              NetworkPath,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData
+
+                                          );
+
+                if (CustomSignCertificateResponseParser is not null)
+                    SignCertificateResponse = CustomSignCertificateResponseParser(CBOR,
+                                                                                 SignCertificateResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SignCertificateResponse = null;
+                ErrorResponse = "The given CBOR representation of a SignCertificate response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSignCertificateResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SignCertificate response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSignCertificateResponseSerializer">A delegate to serialize custom SignCertificate responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SignCertificateResponse>? CustomSignCertificateResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSignCertificateResponseSerializer is not null
+                       ? CustomSignCertificateResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

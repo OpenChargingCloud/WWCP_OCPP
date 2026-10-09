@@ -368,6 +368,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out ExtendedTriggerMessageResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an ExtendedTriggerMessage response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ExtendedTriggerMessageResponse">The ExtendedTriggerMessage response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomExtendedTriggerMessageResponseParser">A delegate to read custom ExtendedTriggerMessage responses.</param>
+        public static Boolean TryParseCBOR(ExtendedTriggerMessageRequest                              Request,
+                                           CBORValue                                                  CBOR,
+                                           SourceRouting                                              Destination,
+                                           NetworkPath                                                NetworkPath,
+                                           [NotNullWhen(true)]  out ExtendedTriggerMessageResponse?   ExtendedTriggerMessageResponse,
+                                           [NotNullWhen(false)] out String?                           ErrorResponse,
+                                           DateTimeOffset?                                            ResponseTimestamp                            = null,
+                                           CustomCBORParserDelegate<ExtendedTriggerMessageResponse>?  CustomExtendedTriggerMessageResponseParser   = null)
+        {
+
+            try
+            {
+
+                ExtendedTriggerMessageResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an ExtendedTriggerMessage response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "trigger message status",
+                                             out var TriggerMessageStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var TriggerMessageStatus = TriggerMessageStatusExtensions.Parse(TriggerMessageStatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ExtendedTriggerMessageResponse = new ExtendedTriggerMessageResponse(
+
+                                                     Request,
+                                                     TriggerMessageStatus,
+
+                                                     null,
+                                                     ResponseTimestamp,
+
+                                                     Destination,
+                                                     NetworkPath,
+
+                                                     null,
+                                                     null,
+                                                     Signatures,
+
+                                                     CustomData
+
+                                                 );
+
+                if (CustomExtendedTriggerMessageResponseParser is not null)
+                    ExtendedTriggerMessageResponse = CustomExtendedTriggerMessageResponseParser(CBOR,
+                                                                                               ExtendedTriggerMessageResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ExtendedTriggerMessageResponse = null;
+                ErrorResponse = "The given CBOR representation of an ExtendedTriggerMessage response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomExtendedTriggerMessageResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ExtendedTriggerMessage response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomExtendedTriggerMessageResponseSerializer">A delegate to serialize custom ExtendedTriggerMessage responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ExtendedTriggerMessageResponse>? CustomExtendedTriggerMessageResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomExtendedTriggerMessageResponseSerializer is not null
+                       ? CustomExtendedTriggerMessageResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

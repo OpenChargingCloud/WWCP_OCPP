@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -32,7 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// An identification tag info.
     /// </summary>
-    public readonly struct IdTagInfo : IEquatable<IdTagInfo>
+    public readonly struct IdTagInfo : IEquatable<IdTagInfo>,
+                                   ICBORSerializable<IdTagInfo>
     {
 
         #region Properties
@@ -375,6 +378,157 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return CustomIdTagInfoSerializer is not null
                        ? CustomIdTagInfoSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out IdTagInfo, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a id tag info - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="IdTagInfo">The id tag info.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                             CBOR,
+                                           [NotNullWhen(true)]  out IdTagInfo    IdTagInfo,
+                                           [NotNullWhen(false)] out String?      ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out IdTagInfo,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a id tag info - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="IdTagInfo">The id tag info.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomIdTagInfoParser">A delegate to read custom id tag infos.</param>
+        public static Boolean TryParseCBOR(CBORValue                             CBOR,
+                                           [NotNullWhen(true)]  out IdTagInfo    IdTagInfo,
+                                           [NotNullWhen(false)] out String?      ErrorResponse,
+                                           CustomCBORParserDelegate<IdTagInfo>?  CustomIdTagInfoParser)
+        {
+
+            try
+            {
+
+                IdTagInfo = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a id tag info is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "authorization status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = AuthorizationStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalValue("expiryDate",
+                                        "expiry date",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ExpiryDate,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                IdToken? ParentIdTag = null;
+
+                if (CBOR.ParseOptionalText("parentIdTag",
+                                           "parent id tag",
+                                           out var ParentIdTagText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv1_6.IdToken.TryParse(ParentIdTagText!, out var ParentIdTagValue))
+                    {
+                        ErrorResponse = $"Invalid parent id tag '{ParentIdTagText}'!";
+                        return false;
+                    }
+
+                    ParentIdTag = ParentIdTagValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                IdTagInfo = new IdTagInfo(
+                                Status,
+                                ExpiryDate,
+                                ParentIdTag
+                            );
+
+                if (CustomIdTagInfoParser is not null)
+                    IdTagInfo = CustomIdTagInfoParser(CBOR,
+                                                     IdTagInfo);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                IdTagInfo    = default;
+                ErrorResponse = "The given CBOR representation of a id tag info is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<IdTagInfo>.TryParse(CBOR, out IdTagInfo, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an id tag info - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<IdTagInfo>.TryParse(CBORValue                         CBOR,
+                                                   out IdTagInfo                  Value,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomIdTagInfoSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this id tag info: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomIdTagInfoSerializer">A delegate to serialize custom id tag infos.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<IdTagInfo>? CustomIdTagInfoSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("expiryDate",                ExpiryDate?.ToCBOR()),
+                           ("parentIdTag",               OCPPCBORExtensions.Text(ParentIdTag?.ToString()))
+                       );
+
+            return CustomIdTagInfoSerializer is not null
+                       ? CustomIdTagInfoSerializer(this, cbor)
+                       : cbor;
 
         }
 

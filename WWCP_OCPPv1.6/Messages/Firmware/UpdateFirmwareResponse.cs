@@ -401,6 +401,120 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out UpdateFirmwareResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an UpdateFirmware response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="UpdateFirmwareResponse">The UpdateFirmware response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomUpdateFirmwareResponseParser">A delegate to read custom UpdateFirmware responses.</param>
+        public static Boolean TryParseCBOR(UpdateFirmwareRequest                              Request,
+                                           CBORValue                                          CBOR,
+                                           SourceRouting                                      Destination,
+                                           NetworkPath                                        NetworkPath,
+                                           [NotNullWhen(true)]  out UpdateFirmwareResponse?   UpdateFirmwareResponse,
+                                           [NotNullWhen(false)] out String?                   ErrorResponse,
+                                           DateTimeOffset?                                    ResponseTimestamp                    = null,
+                                           CustomCBORParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null)
+        {
+
+            try
+            {
+
+                UpdateFirmwareResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an UpdateFirmware response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                UpdateFirmwareResponse = new UpdateFirmwareResponse(
+
+                                             Request,
+
+                                             null,
+                                             ResponseTimestamp,
+
+                                             Destination,
+                                             NetworkPath,
+
+                                             null,
+                                             null,
+                                             Signatures,
+
+                                             CustomData
+
+                                         );
+
+                if (CustomUpdateFirmwareResponseParser is not null)
+                    UpdateFirmwareResponse = CustomUpdateFirmwareResponseParser(CBOR,
+                                                                               UpdateFirmwareResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                UpdateFirmwareResponse = null;
+                ErrorResponse = "The given CBOR representation of an UpdateFirmware response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomUpdateFirmwareResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this UpdateFirmware response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomUpdateFirmwareResponseSerializer">A delegate to serialize custom UpdateFirmware responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<UpdateFirmwareResponse>? CustomUpdateFirmwareResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomUpdateFirmwareResponseSerializer is not null
+                       ? CustomUpdateFirmwareResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

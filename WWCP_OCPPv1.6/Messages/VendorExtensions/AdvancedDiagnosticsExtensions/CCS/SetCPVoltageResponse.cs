@@ -335,6 +335,136 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out SetCPVoltageResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetCPVoltage response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetCPVoltageResponse">The SetCPVoltage response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomSetCPVoltageResponseParser">A delegate to read custom SetCPVoltage responses.</param>
+        public static Boolean TryParseCBOR(SetCPVoltageRequest                              Request,
+                                           CBORValue                                        CBOR,
+                                           SourceRouting                                    Destination,
+                                           NetworkPath                                      NetworkPath,
+                                           [NotNullWhen(true)]  out SetCPVoltageResponse?   SetCPVoltageResponse,
+                                           [NotNullWhen(false)] out String?                 ErrorResponse,
+                                           DateTimeOffset?                                  ResponseTimestamp                  = null,
+                                           CustomCBORParserDelegate<SetCPVoltageResponse>?  CustomSetCPVoltageResponseParser   = null)
+        {
+
+            try
+            {
+
+                SetCPVoltageResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetCPVoltage response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "generic status",
+                                             out var statusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!Enum.TryParse(statusText, out GenericStatus status))
+                {
+                    ErrorResponse = $"Invalid generic status '{statusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetCPVoltageResponse = new SetCPVoltageResponse(
+
+                                           Request,
+                                           status,
+
+                                           null,
+                                           ResponseTimestamp,
+
+                                           Destination,
+                                           NetworkPath,
+
+                                           null,
+                                           null,
+                                           Signatures,
+
+                                           CustomData
+
+                                       );
+
+                if (CustomSetCPVoltageResponseParser is not null)
+                    SetCPVoltageResponse = CustomSetCPVoltageResponseParser(CBOR,
+                                                                           SetCPVoltageResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetCPVoltageResponse = null;
+                ErrorResponse = "The given CBOR representation of a SetCPVoltage response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetCPVoltageResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetCPVoltage response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetCPVoltageResponseSerializer">A delegate to serialize custom SetCPVoltage responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetCPVoltageResponse>? CustomSetCPVoltageResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetCPVoltageResponseSerializer is not null
+                       ? CustomSetCPVoltageResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

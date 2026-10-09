@@ -398,6 +398,135 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out DeleteCertificateRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DeleteCertificate request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="DeleteCertificateRequest">The DeleteCertificate request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDeleteCertificateRequestParser">A delegate to read custom DeleteCertificate requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                            CBOR,
+                                           Request_Id                                           RequestId,
+                                           SourceRouting                                        Destination,
+                                           NetworkPath                                          NetworkPath,
+                                           [NotNullWhen(true)]  out DeleteCertificateRequest?   DeleteCertificateRequest,
+                                           [NotNullWhen(false)] out String?                     ErrorResponse,
+                                           DateTimeOffset?                                      RequestTimestamp                       = null,
+                                           TimeSpan?                                            RequestTimeout                         = null,
+                                           EventTracking_Id?                                    EventTrackingId                        = null,
+                                           CustomCBORParserDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestParser   = null)
+        {
+
+            try
+            {
+
+                DeleteCertificateRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DeleteCertificate request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatory("certificateHashData",
+                                         "certificate hash data",
+                                         OCPPv1_6.CertificateHashData.TryParseCBOR,
+                                         out CertificateHashData? CertificateHashData,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                DeleteCertificateRequest = new DeleteCertificateRequest(
+
+                                               Destination,
+                                               CertificateHashData,
+
+                                               null,
+                                               null,
+                                               Signatures,
+
+                                               CustomData,
+
+                                               RequestId,
+                                               RequestTimestamp,
+                                               RequestTimeout,
+                                               EventTrackingId,
+                                               NetworkPath
+
+                                           );
+
+                if (CustomDeleteCertificateRequestParser is not null)
+                    DeleteCertificateRequest = CustomDeleteCertificateRequestParser(CBOR,
+                                                                                   DeleteCertificateRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DeleteCertificateRequest = null;
+                ErrorResponse = "The given CBOR representation of a DeleteCertificate request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDeleteCertificateRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DeleteCertificate request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDeleteCertificateRequestSerializer">A delegate to serialize custom DeleteCertificate requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DeleteCertificateRequest>? CustomDeleteCertificateRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("certificateHashData",       CertificateHashData.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomDeleteCertificateRequestSerializer is not null
+                       ? CustomDeleteCertificateRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

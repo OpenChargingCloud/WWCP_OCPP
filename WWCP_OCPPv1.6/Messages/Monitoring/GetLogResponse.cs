@@ -385,6 +385,142 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetLogResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetLog response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetLogResponse">The GetLog response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetLogResponseParser">A delegate to read custom GetLog responses.</param>
+        public static Boolean TryParseCBOR(GetLogRequest                              Request,
+                                           CBORValue                                  CBOR,
+                                           SourceRouting                              Destination,
+                                           NetworkPath                                NetworkPath,
+                                           [NotNullWhen(true)]  out GetLogResponse?   GetLogResponse,
+                                           [NotNullWhen(false)] out String?           ErrorResponse,
+                                           DateTimeOffset?                            ResponseTimestamp            = null,
+                                           CustomCBORParserDelegate<GetLogResponse>?  CustomGetLogResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetLogResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetLog response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "GetLog status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = LogStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("filename",
+                                       "filename",
+                                       out var Filename,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetLogResponse = new GetLogResponse(
+
+                                     Request,
+                                     Status,
+                                     Filename,
+
+                                     null,
+                                     ResponseTimestamp,
+
+                                     Destination,
+                                     NetworkPath,
+
+                                     null,
+                                     null,
+                                     Signatures,
+
+                                     CustomData
+
+                                 );
+
+                if (CustomGetLogResponseParser is not null)
+                    GetLogResponse = CustomGetLogResponseParser(CBOR,
+                                                               GetLogResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetLogResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetLog response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetLogResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetLog response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetLogResponseSerializer">A delegate to serialize custom GetLog responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetLogResponse>? CustomGetLogResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR()),
+                           ("filename",                  OCPPCBORExtensions.Text(Filename))
+                       );
+
+            return CustomGetLogResponseSerializer is not null
+                       ? CustomGetLogResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

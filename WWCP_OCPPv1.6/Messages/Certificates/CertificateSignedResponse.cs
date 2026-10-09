@@ -359,6 +359,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out CertificateSignedResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a CertificateSigned response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="CertificateSignedResponse">The CertificateSigned response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomCertificateSignedResponseParser">A delegate to read custom CertificateSigned responses.</param>
+        public static Boolean TryParseCBOR(CertificateSignedRequest                              Request,
+                                           CBORValue                                             CBOR,
+                                           SourceRouting                                         Destination,
+                                           NetworkPath                                           NetworkPath,
+                                           [NotNullWhen(true)]  out CertificateSignedResponse?   CertificateSignedResponse,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           DateTimeOffset?                                       ResponseTimestamp                       = null,
+                                           CustomCBORParserDelegate<CertificateSignedResponse>?  CustomCertificateSignedResponseParser   = null)
+        {
+
+            try
+            {
+
+                CertificateSignedResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a CertificateSigned response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "CertificateSigned status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = CertificateSignedStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                CertificateSignedResponse = new CertificateSignedResponse(
+
+                                                Request,
+                                                Status,
+
+                                                null,
+                                                ResponseTimestamp,
+
+                                                Destination,
+                                                NetworkPath,
+
+                                                null,
+                                                null,
+                                                Signatures,
+
+                                                CustomData
+
+                                            );
+
+                if (CustomCertificateSignedResponseParser is not null)
+                    CertificateSignedResponse = CustomCertificateSignedResponseParser(CBOR,
+                                                                                     CertificateSignedResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                CertificateSignedResponse = null;
+                ErrorResponse = "The given CBOR representation of a CertificateSigned response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomCertificateSignedResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this CertificateSigned response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomCertificateSignedResponseSerializer">A delegate to serialize custom CertificateSigned responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<CertificateSignedResponse>? CustomCertificateSignedResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomCertificateSignedResponseSerializer is not null
+                       ? CustomCertificateSignedResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

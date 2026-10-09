@@ -503,6 +503,144 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out ChangeConfigurationRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ChangeConfiguration request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ChangeConfigurationRequest">The ChangeConfiguration request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomChangeConfigurationRequestParser">A delegate to read custom ChangeConfiguration requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                              CBOR,
+                                           Request_Id                                             RequestId,
+                                           SourceRouting                                          Destination,
+                                           NetworkPath                                            NetworkPath,
+                                           [NotNullWhen(true)]  out ChangeConfigurationRequest?   ChangeConfigurationRequest,
+                                           [NotNullWhen(false)] out String?                       ErrorResponse,
+                                           DateTimeOffset?                                        RequestTimestamp                         = null,
+                                           TimeSpan?                                              RequestTimeout                           = null,
+                                           EventTracking_Id?                                      EventTrackingId                          = null,
+                                           CustomCBORParserDelegate<ChangeConfigurationRequest>?  CustomChangeConfigurationRequestParser   = null)
+        {
+
+            try
+            {
+
+                ChangeConfigurationRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ChangeConfiguration request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("key",
+                                       "configuration key",
+                                       out var Key,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("value",
+                                       "configuration value",
+                                       out var Value,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ChangeConfigurationRequest = new ChangeConfigurationRequest(
+
+                                                 Destination,
+                                                 Key,
+                                                 Value,
+
+                                                 null,
+                                                 null,
+                                                 Signatures,
+
+                                                 CustomData,
+
+                                                 RequestId,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
+                                                 NetworkPath
+
+                                             );
+
+                if (CustomChangeConfigurationRequestParser is not null)
+                    ChangeConfigurationRequest = CustomChangeConfigurationRequestParser(CBOR,
+                                                                                       ChangeConfigurationRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChangeConfigurationRequest = null;
+                ErrorResponse = "The given CBOR representation of a ChangeConfiguration request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChangeConfigurationRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ChangeConfiguration request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChangeConfigurationRequestSerializer">A delegate to serialize custom ChangeConfiguration requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChangeConfigurationRequest>? CustomChangeConfigurationRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("key",                       CBORValue.FromText(Key)),
+                           ("value",                     CBORValue.FromText(Value)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomChangeConfigurationRequestSerializer is not null
+                       ? CustomChangeConfigurationRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

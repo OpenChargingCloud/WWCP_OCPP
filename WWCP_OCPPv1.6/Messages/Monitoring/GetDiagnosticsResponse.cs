@@ -363,6 +363,133 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetDiagnosticsResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetDiagnostics response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetDiagnosticsResponse">The GetDiagnostics response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetDiagnosticsResponseParser">A delegate to read custom GetDiagnostics responses.</param>
+        public static Boolean TryParseCBOR(GetDiagnosticsRequest                              Request,
+                                           CBORValue                                          CBOR,
+                                           SourceRouting                                      Destination,
+                                           NetworkPath                                        NetworkPath,
+                                           [NotNullWhen(true)]  out GetDiagnosticsResponse?   GetDiagnosticsResponse,
+                                           [NotNullWhen(false)] out String?                   ErrorResponse,
+                                           DateTimeOffset?                                    ResponseTimestamp                    = null,
+                                           CustomCBORParserDelegate<GetDiagnosticsResponse>?  CustomGetDiagnosticsResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetDiagnosticsResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetDiagnostics response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("fileName",
+                                       "fileName",
+                                       out var FileName,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetDiagnosticsResponse = new GetDiagnosticsResponse(
+
+                                             Request,
+                                             FileName,
+
+                                             null,
+                                             ResponseTimestamp,
+
+                                             Destination,
+                                             NetworkPath,
+
+                                             null,
+                                             null,
+                                             Signatures,
+
+                                             CustomData
+
+                                         );
+
+                if (CustomGetDiagnosticsResponseParser is not null)
+                    GetDiagnosticsResponse = CustomGetDiagnosticsResponseParser(CBOR,
+                                                                               GetDiagnosticsResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetDiagnosticsResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetDiagnostics response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetDiagnosticsResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetDiagnostics response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetDiagnosticsResponseSerializer">A delegate to serialize custom GetDiagnostics responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetDiagnosticsResponse>? CustomGetDiagnosticsResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR()),
+                           // As in JSON: no file name, no key.
+                           ("fileName",                  FileName.IsNotNullOrEmpty()
+                                                             ? (CBORValue?) CBORValue.FromText(FileName.SubstringMax(MaxFileNameLength))
+                                                             : null)
+                       );
+
+            return CustomGetDiagnosticsResponseSerializer is not null
+                       ? CustomGetDiagnosticsResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

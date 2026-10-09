@@ -26,6 +26,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -34,7 +36,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A charging schedule.
     /// </summary>
-    public class ChargingSchedule : IEquatable<ChargingSchedule>
+    public class ChargingSchedule : IEquatable<ChargingSchedule>,
+                                ICBORSerializable<ChargingSchedule>
     {
 
         #region Properties
@@ -491,6 +494,168 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return CustomChargingScheduleSerializer is not null
                        ? CustomChargingScheduleSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out ChargingSchedule, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging schedule - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingSchedule">The charging schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                    CBOR,
+                                           [NotNullWhen(true)]  out ChargingSchedule?   ChargingSchedule,
+                                           [NotNullWhen(false)] out String?             ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ChargingSchedule,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging schedule - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingSchedule">The charging schedule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingScheduleParser">A delegate to read custom charging schedules.</param>
+        public static Boolean TryParseCBOR(CBORValue                                    CBOR,
+                                           [NotNullWhen(true)]  out ChargingSchedule?   ChargingSchedule,
+                                           [NotNullWhen(false)] out String?             ErrorResponse,
+                                           CustomCBORParserDelegate<ChargingSchedule>?  CustomChargingScheduleParser)
+        {
+
+            try
+            {
+
+                ChargingSchedule = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a charging schedule is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("chargingRateUnit",
+                                             "charging rate unit",
+                                             out var ChargingRateUnitText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var ChargingRateUnit = ChargingRateUnitsExtensions.Parse(ChargingRateUnitText);
+
+                if (!CBOR.ParseMandatoryList<ChargingSchedulePeriod>("chargingSchedulePeriod",
+                                               "charging schedule period",
+                                               OCPPv1_6.ChargingSchedulePeriod.TryParseCBOR,
+                                               out var ChargingSchedulePeriods,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("duration",
+                                        "duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? Duration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("startSchedule",
+                                        "start schedule",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? StartSchedule,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                // A metrological value in W or A, or a plain number of the charging rate unit.
+                CBOR.ParseOptionalValue("minChargingRate",
+                                        "min charging rate",
+                                        ChargingRateValue.TryParseCBOR,
+                                        out ChargingRateValue? MinChargingRate,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ChargingSchedule = new ChargingSchedule(
+                                       ChargingRateUnit,
+                                       ChargingSchedulePeriods,
+                                       Duration,
+                                       StartSchedule,
+                                       MinChargingRate
+                                   );
+
+                if (CustomChargingScheduleParser is not null)
+                    ChargingSchedule = CustomChargingScheduleParser(CBOR,
+                                                                   ChargingSchedule);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingSchedule = null;
+                ErrorResponse = "The given CBOR representation of a charging schedule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingSchedule>.TryParse(CBOR, out ChargingSchedule, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging schedule - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingSchedule>.TryParse(CBORValue                         CBOR,
+                                                   out ChargingSchedule                  Value,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChargingScheduleSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this charging schedule: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedules.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingSchedule>? CustomChargingScheduleSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("chargingRateUnit",          CBORValue.FromText(ChargingRateUnit.AsText())),
+                           ("chargingSchedulePeriod",    OCPPCBORExtensions.Array(ChargingSchedulePeriods, x => x.ToCBOR())),
+                           ("duration",                  Duration?.ToCBOR()),
+                           ("startSchedule",             StartSchedule?.ToCBOR()),
+                           ("minChargingRate",           MinChargingRate?.ToCBOR())
+                       );
+
+            return CustomChargingScheduleSerializer is not null
+                       ? CustomChargingScheduleSerializer(this, cbor)
+                       : cbor;
 
         }
 

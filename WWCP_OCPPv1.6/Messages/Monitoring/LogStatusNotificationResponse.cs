@@ -306,6 +306,120 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out LogStatusNotificationResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a LogStatusNotification response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="LogStatusNotificationResponse">The LogStatusNotification response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomLogStatusNotificationResponseParser">A delegate to read custom LogStatusNotification responses.</param>
+        public static Boolean TryParseCBOR(LogStatusNotificationRequest                              Request,
+                                           CBORValue                                                 CBOR,
+                                           SourceRouting                                             Destination,
+                                           NetworkPath                                               NetworkPath,
+                                           [NotNullWhen(true)]  out LogStatusNotificationResponse?   LogStatusNotificationResponse,
+                                           [NotNullWhen(false)] out String?                          ErrorResponse,
+                                           DateTimeOffset?                                           ResponseTimestamp                           = null,
+                                           CustomCBORParserDelegate<LogStatusNotificationResponse>?  CustomLogStatusNotificationResponseParser   = null)
+        {
+
+            try
+            {
+
+                LogStatusNotificationResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a LogStatusNotification response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                LogStatusNotificationResponse = new LogStatusNotificationResponse(
+
+                                                    Request,
+
+                                                    null,
+                                                    ResponseTimestamp,
+
+                                                    Destination,
+                                                    NetworkPath,
+
+                                                    null,
+                                                    null,
+                                                    Signatures,
+
+                                                    CustomData
+
+                                                );
+
+                if (CustomLogStatusNotificationResponseParser is not null)
+                    LogStatusNotificationResponse = CustomLogStatusNotificationResponseParser(CBOR,
+                                                                                             LogStatusNotificationResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                LogStatusNotificationResponse = null;
+                ErrorResponse = "The given CBOR representation of a LogStatusNotification response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomLogStatusNotificationResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this LogStatusNotification response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomLogStatusNotificationResponseSerializer">A delegate to serialize custom LogStatusNotification responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<LogStatusNotificationResponse>? CustomLogStatusNotificationResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomLogStatusNotificationResponseSerializer is not null
+                       ? CustomLogStatusNotificationResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

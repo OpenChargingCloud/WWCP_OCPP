@@ -329,6 +329,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  new JProperty("status",       Status.    AsText()),
 
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(null,
+                                                                                 CustomCustomDataSerializer))
+                               : null,
+
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                           CustomCustomDataSerializer))))
@@ -343,6 +348,143 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             return CustomNotifyWebPaymentFailedResponseSerializer is not null
                        ? CustomNotifyWebPaymentFailedResponseSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(Request, CBOR, ..., out NotifyWebPaymentFailedResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyWebPaymentFailed response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyWebPaymentFailedResponse">The NotifyWebPaymentFailed response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomNotifyWebPaymentFailedResponseParser">A delegate to read custom NotifyWebPaymentFailed responses.</param>
+        public static Boolean TryParseCBOR(NotifyWebPaymentFailedRequest                              Request,
+                                           CBORValue                                                  CBOR,
+                                           SourceRouting                                              Destination,
+                                           NetworkPath                                                NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyWebPaymentFailedResponse?   NotifyWebPaymentFailedResponse,
+                                           [NotNullWhen(false)] out String?                           ErrorResponse,
+                                           DateTimeOffset?                                            ResponseTimestamp                            = null,
+                                           CustomCBORParserDelegate<NotifyWebPaymentFailedResponse>?  CustomNotifyWebPaymentFailedResponseParser   = null)
+        {
+
+            try
+            {
+
+                NotifyWebPaymentFailedResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyWebPaymentFailed response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "data transfer status",
+                                             out var dataTransferStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var dataTransferStatus = DataTransferStatusExtensions.Parse(dataTransferStatusText);
+
+                CBOR.ParseOptional("statusInfo",
+                                   "status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? statusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? customData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyWebPaymentFailedResponse = new NotifyWebPaymentFailedResponse(
+
+                                                     Request,
+                                                     dataTransferStatus,
+                                                     statusInfo,
+
+                                                     null,
+                                                     ResponseTimestamp,
+
+                                                     Destination,
+                                                     NetworkPath,
+
+                                                     null,
+                                                     null,
+                                                     signatures,
+
+                                                     customData
+
+                                                 );
+
+                if (CustomNotifyWebPaymentFailedResponseParser is not null)
+                    NotifyWebPaymentFailedResponse = CustomNotifyWebPaymentFailedResponseParser(CBOR,
+                                                                                               NotifyWebPaymentFailedResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyWebPaymentFailedResponse = null;
+                ErrorResponse = "The given CBOR representation of a NotifyWebPaymentFailed response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyWebPaymentFailedResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyWebPaymentFailed response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyWebPaymentFailedResponseSerializer">A delegate to serialize custom NotifyWebPaymentFailed responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyWebPaymentFailedResponse>? CustomNotifyWebPaymentFailedResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyWebPaymentFailedResponseSerializer is not null
+                       ? CustomNotifyWebPaymentFailedResponseSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -460,6 +460,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out ResetResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a Reset response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ResetResponse">The Reset response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomResetResponseParser">A delegate to read custom Reset responses.</param>
+        public static Boolean TryParseCBOR(ResetRequest                              Request,
+                                           CBORValue                                 CBOR,
+                                           SourceRouting                             Destination,
+                                           NetworkPath                               NetworkPath,
+                                           [NotNullWhen(true)]  out ResetResponse?   ResetResponse,
+                                           [NotNullWhen(false)] out String?          ErrorResponse,
+                                           DateTimeOffset?                           ResponseTimestamp           = null,
+                                           CustomCBORParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
+        {
+
+            try
+            {
+
+                ResetResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a Reset response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "reset status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = ResetStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ResetResponse = new ResetResponse(
+
+                                    Request,
+                                    Status,
+
+                                    null,
+                                    ResponseTimestamp,
+
+                                    Destination,
+                                    NetworkPath,
+
+                                    null,
+                                    null,
+                                    Signatures,
+
+                                    CustomData
+
+                                );
+
+                if (CustomResetResponseParser is not null)
+                    ResetResponse = CustomResetResponseParser(CBOR,
+                                                             ResetResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ResetResponse = null;
+                ErrorResponse = "The given CBOR representation of a Reset response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomResetResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this Reset response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomResetResponseSerializer">A delegate to serialize custom Reset responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ResetResponse>? CustomResetResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomResetResponseSerializer is not null
+                       ? CustomResetResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

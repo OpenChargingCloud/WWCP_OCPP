@@ -435,6 +435,143 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetInstalledCertificateIdsResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetInstalledCertificateIds response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetInstalledCertificateIdsResponse">The GetInstalledCertificateIds response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetInstalledCertificateIdsResponseParser">A delegate to read custom GetInstalledCertificateIds responses.</param>
+        public static Boolean TryParseCBOR(GetInstalledCertificateIdsRequest                              Request,
+                                           CBORValue                                                      CBOR,
+                                           SourceRouting                                                  Destination,
+                                           NetworkPath                                                    NetworkPath,
+                                           [NotNullWhen(true)]  out GetInstalledCertificateIdsResponse?   GetInstalledCertificateIdsResponse,
+                                           [NotNullWhen(false)] out String?                               ErrorResponse,
+                                           DateTimeOffset?                                                ResponseTimestamp                                = null,
+                                           CustomCBORParserDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetInstalledCertificateIdsResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetInstalledCertificateIds response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = GetInstalledCertificateStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalList<CertificateHashData>("certificateHashData",
+                                               "certificate hash data",
+                                               OCPPv1_6.CertificateHashData.TryParseCBOR,
+                                               out var CertificateHashData,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetInstalledCertificateIdsResponse = new GetInstalledCertificateIdsResponse(
+
+                                                         Request,
+                                                         Status,
+                                                         CertificateHashData,
+
+                                                         null,
+                                                         ResponseTimestamp,
+
+                                                         Destination,
+                                                         NetworkPath,
+
+                                                         null,
+                                                         null,
+                                                         Signatures,
+
+                                                         CustomData
+
+                                                     );
+
+                if (CustomGetInstalledCertificateIdsResponseParser is not null)
+                    GetInstalledCertificateIdsResponse = CustomGetInstalledCertificateIdsResponseParser(CBOR,
+                                                                                                       GetInstalledCertificateIdsResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetInstalledCertificateIdsResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetInstalledCertificateIds response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetInstalledCertificateIdsResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetInstalledCertificateIds response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetInstalledCertificateIdsResponseSerializer">A delegate to serialize custom GetInstalledCertificateIds responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetInstalledCertificateIdsResponse>? CustomGetInstalledCertificateIdsResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("certificateHashData",       OCPPCBORExtensions.Array(CertificateHashData, x => x.ToCBOR())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetInstalledCertificateIdsResponseSerializer is not null
+                       ? CustomGetInstalledCertificateIdsResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

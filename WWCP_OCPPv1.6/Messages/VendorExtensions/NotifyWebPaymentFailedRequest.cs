@@ -120,6 +120,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    SignInfos,
                    Signatures,
 
+                   CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -229,9 +231,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 NotifyWebPaymentFailedRequest = null;
 
+                // ToJSON() writes a DataTransfer, which carries the fields in
+                // its "data"; a bare object of the fields is still read.
+                var data = JSON["data"] as JObject ?? JSON;
+
                 #region ConnectorId        [mandatory]
 
-                if (!JSON.ParseMandatory("connectorId",
+                if (!data.ParseMandatory("connectorId",
                                          "connector identification",
                                          Connector_Id.TryParse,
                                          out Connector_Id connectorId,
@@ -242,9 +248,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region Timeout       [optional]
+                #region ErrorMessage  [optional]
 
-                if (JSON.ParseOptionalJSON("errorMessage",
+                if (data.ParseOptionalJSON("errorMessage",
                                            "error message",
                                            I18NString.TryParse,
                                            out I18NString? errorMessage,
@@ -337,32 +343,107 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                               CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
-            var json = JSONObject.Create(
-
-                           IncludeJSONLDContext
-                               ? new JProperty("@context",       DefaultJSONLDContext.ToString())
-                               : null,
-
-                                 new JProperty("connectorId",         ConnectorId.Value),
-
-                           ErrorMessage.IsNotNullOrEmpty()
-                               ? new JProperty("errorMessage",   ErrorMessage.ToJSON())
-                               : null,
-
-                           Signatures.Any()
-                               ? new JProperty("signatures",     new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                            CustomCustomDataSerializer))))
-                               : null,
-
-                           CustomData is not null
-                               ? new JProperty("customData",     CustomData.          ToJSON(CustomCustomDataSerializer))
-                               : null
-
+            // A DataTransfer, which carries the fields in its "data".
+            var json = base.ToJSON(
+                           IncludeJSONLDContext,
+                           null,
+                           CustomSignatureSerializer,
+                           CustomCustomDataSerializer
                        );
 
             return CustomNotifyWebPaymentFailedRequestSerializer is not null
                        ? CustomNotifyWebPaymentFailedRequestSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, RequestId, Destination, NetworkPath, out NotifyWebPaymentFailedRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyWebPaymentFailed request: the
+        /// DataTransfer it is, its fields from the data of the DataTransfer.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="NotifyWebPaymentFailedRequest">The NotifyWebPaymentFailed request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyWebPaymentFailedRequestParser">A delegate to read custom NotifyWebPaymentFailed requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                       CBOR,
+                                           Request_Id                                      RequestId,
+                                           SourceRouting                                   Destination,
+                                           NetworkPath                                     NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyWebPaymentFailedRequest?   NotifyWebPaymentFailedRequest,
+                                           [NotNullWhen(false)] out String?                ErrorResponse,
+                                           DateTimeOffset?                                 RequestTimestamp   = null,
+                                           TimeSpan?                                       RequestTimeout     = null,
+                                           EventTracking_Id?                               EventTrackingId    = null,
+                                           CustomCBORParserDelegate<NotifyWebPaymentFailedRequest>?  CustomNotifyWebPaymentFailedRequestParser   = null)
+        {
+
+            NotifyWebPaymentFailedRequest = null;
+
+            if (!DataTransferRequest.TryParseCBOR(CBOR,
+                                                  RequestId,
+                                                  Destination,
+                                                  NetworkPath,
+                                                  out var dataTransferRequest,
+                                                  out ErrorResponse,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId))
+            {
+                return false;
+            }
+
+            if (dataTransferRequest.Data is not JObject data)
+            {
+                ErrorResponse = "The data of the given CBOR representation of a NotifyWebPaymentFailed request is not a map!";
+                return false;
+            }
+
+            if (!TryParse(data,
+                          RequestId,
+                          Destination,
+                          NetworkPath,
+                          out var request,
+                          out ErrorResponse,
+                          RequestTimestamp,
+                          RequestTimeout,
+                          EventTrackingId))
+            {
+                return false;
+            }
+
+            NotifyWebPaymentFailedRequest = new NotifyWebPaymentFailedRequest(
+                          Destination,
+                          request.ConnectorId,
+                          request.ErrorMessage,
+
+                          null,
+                          null,
+                          dataTransferRequest.Signatures,
+
+                          dataTransferRequest.CustomData,
+
+                          RequestId,
+                          RequestTimestamp,
+                          RequestTimeout,
+                          EventTrackingId,
+                          NetworkPath
+                      );
+
+            if (CustomNotifyWebPaymentFailedRequestParser is not null)
+                NotifyWebPaymentFailedRequest = CustomNotifyWebPaymentFailedRequestParser(CBOR,
+                                                                NotifyWebPaymentFailedRequest);
+
+            return true;
 
         }
 

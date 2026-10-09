@@ -35,6 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => Text.Trim() switch {
                    "Idle"          => DiagnosticsStatus.Idle,
                    "Uploaded"      => DiagnosticsStatus.Uploaded,
+                   "UploadFailed"  => DiagnosticsStatus.UploadFailed,
                    "Uploadfailed"  => DiagnosticsStatus.UploadFailed,
                    "Uploading"     => DiagnosticsStatus.Uploading,
                    _               => DiagnosticsStatus.Unknown

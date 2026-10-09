@@ -431,6 +431,146 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetConfigurationResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetConfiguration response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetConfigurationResponse">The GetConfiguration response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetConfigurationResponseParser">A delegate to read custom GetConfiguration responses.</param>
+        public static Boolean TryParseCBOR(GetConfigurationRequest                              Request,
+                                           CBORValue                                            CBOR,
+                                           SourceRouting                                        Destination,
+                                           NetworkPath                                          NetworkPath,
+                                           [NotNullWhen(true)]  out GetConfigurationResponse?   GetConfigurationResponse,
+                                           [NotNullWhen(false)] out String?                     ErrorResponse,
+                                           DateTimeOffset?                                      ResponseTimestamp                      = null,
+                                           CustomCBORParserDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetConfigurationResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetConfiguration response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<ConfigurationKey>("configurationKey",
+                                               "configuration keys",
+                                               OCPPv1_6.ConfigurationKey.TryParseCBOR,
+                                               out var ConfigurationKeys,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<String>("unknownKey",
+                                               "unknown keys",
+                                               (CBORValue item, out String? value, out String? errorResponse) => {
+                                                   value         = item.Kind == CBORValueKind.TextString ? item.AsText() : null;
+                                                   errorResponse = value is null ? "A text is expected!" : null;
+                                                   return value is not null;
+                                               },
+                                               out var UnknownKeys,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetConfigurationResponse = new GetConfigurationResponse(
+
+                                               Request,
+                                               ConfigurationKeys,
+                                               UnknownKeys,
+
+                                               null,
+                                               ResponseTimestamp,
+
+                                               Destination,
+                                               NetworkPath,
+
+                                               null,
+                                               null,
+                                               Signatures,
+
+                                               CustomData
+
+                                           );
+
+                if (CustomGetConfigurationResponseParser is not null)
+                    GetConfigurationResponse = CustomGetConfigurationResponseParser(CBOR,
+                                                                                   GetConfigurationResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetConfigurationResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetConfiguration response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetConfigurationResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetConfiguration response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetConfigurationResponseSerializer">A delegate to serialize custom GetConfiguration responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetConfigurationResponse>? CustomGetConfigurationResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("configurationKey",          OCPPCBORExtensions.Array(ConfigurationKeys, x => x.ToCBOR())),
+                           ("unknownKey",                OCPPCBORExtensions.Array(UnknownKeys, x => CBORValue.FromText(x))),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetConfigurationResponseSerializer is not null
+                       ? CustomGetConfigurationResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

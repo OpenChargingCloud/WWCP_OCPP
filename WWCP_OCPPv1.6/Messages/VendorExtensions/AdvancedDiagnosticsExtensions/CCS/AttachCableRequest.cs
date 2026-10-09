@@ -369,6 +369,151 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out AttachCableRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an AttachCable request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="AttachCableRequest">The AttachCable request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAttachCableRequestParser">A delegate to read custom AttachCable requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                      CBOR,
+                                           Request_Id                                     RequestId,
+                                           SourceRouting                                  Destination,
+                                           NetworkPath                                    NetworkPath,
+                                           [NotNullWhen(true)]  out AttachCableRequest?   AttachCableRequest,
+                                           [NotNullWhen(false)] out String?               ErrorResponse,
+                                           DateTimeOffset?                                RequestTimestamp                 = null,
+                                           TimeSpan?                                      RequestTimeout                   = null,
+                                           EventTracking_Id?                              EventTrackingId                  = null,
+                                           CustomCBORParserDelegate<AttachCableRequest>?  CustomAttachCableRequestParser   = null)
+        {
+
+            try
+            {
+
+                AttachCableRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an AttachCable request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("connectorId",
+                                               "connector identification",
+                                               out var connectorIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (connectorIdNumber > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Connector_Id.TryParse((UInt64) connectorIdNumber, out var connectorId))
+                {
+                    ErrorResponse = $"Invalid connector identification '{connectorIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("resistorValue",
+                                              "resistor value",
+                                              OCPPCBORExtensions.TryParseOhm,
+                                              out Ohm resistorValue,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? customData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                AttachCableRequest = new AttachCableRequest(
+
+                                         Destination,
+                                         connectorId,
+                                         resistorValue,
+
+                                         null,
+                                         null,
+                                         signatures,
+
+                                         customData,
+
+                                         RequestId,
+                                         RequestTimestamp,
+                                         RequestTimeout,
+                                         EventTrackingId,
+                                         NetworkPath
+
+                                     );
+
+                if (CustomAttachCableRequestParser is not null)
+                    AttachCableRequest = CustomAttachCableRequestParser(CBOR,
+                                                                       AttachCableRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AttachCableRequest = null;
+                ErrorResponse = "The given CBOR representation of an AttachCable request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAttachCableRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this AttachCable request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAttachCableRequestSerializer">A delegate to serialize custom AttachCable requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AttachCableRequest>? CustomAttachCableRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("connectorId",               CBORValue.FromUInt64(ConnectorId.Value)),
+                           ("resistorValue",             ResistorValue.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomAttachCableRequestSerializer is not null
+                       ? CustomAttachCableRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -62,6 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// A configuration key value pair.
     /// </summary>
     public readonly struct ConfigurationKey : IEquatable<ConfigurationKey>,
+                                          ICBORSerializable<ConfigurationKey>,
                                               IComparable<ConfigurationKey>,
                                               IComparable
     {
@@ -334,6 +337,120 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return CustomConfigurationKeySerializer is not null
                        ? CustomConfigurationKeySerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out ConfigurationKey, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a configuration key - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ConfigurationKey">The configuration key.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                           [NotNullWhen(true)]  out ConfigurationKey  ConfigurationKey,
+                                           [NotNullWhen(false)] out String?           ErrorResponse)
+        {
+
+            try
+            {
+
+                ConfigurationKey = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a configuration key is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("key",
+                                       "configuration key",
+                                       out var Key,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBoolean("readonly",
+                                       "readonly",
+                                       out var Readonly,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("value",
+                                       "value",
+                                       out var Value,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ConfigurationKey = new ConfigurationKey(
+                                       Key,
+                                       Readonly
+                                           ? AccessRights.ReadOnly
+                                           : AccessRights.ReadWrite,
+                                       Value
+                                   );
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ConfigurationKey = default;
+                ErrorResponse = "The given CBOR representation of a configuration key is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ConfigurationKey>.TryParse(CBOR, out ConfigurationKey, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a configuration key - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ConfigurationKey>.TryParse(CBORValue                         CBOR,
+                                                   out ConfigurationKey                  Value,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomConfigurationKeySerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this configuration key: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomConfigurationKeySerializer">A delegate to serialize custom configuration keys.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ConfigurationKey>? CustomConfigurationKeySerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("key",                       CBORValue.FromText(Key)),
+                           ("readonly",                  CBORValue.FromBoolean(AccessRights == AccessRights.ReadOnly)),
+                           ("value",                     OCPPCBORExtensions.Text(Value))
+                       );
+
+            return CustomConfigurationKeySerializer is not null
+                       ? CustomConfigurationKeySerializer(this, cbor)
+                       : cbor;
 
         }
 

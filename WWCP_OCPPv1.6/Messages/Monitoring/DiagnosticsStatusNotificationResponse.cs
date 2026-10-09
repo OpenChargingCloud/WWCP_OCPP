@@ -398,6 +398,120 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out DiagnosticsStatusNotificationResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DiagnosticsStatusNotification response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="DiagnosticsStatusNotificationResponse">The DiagnosticsStatusNotification response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomDiagnosticsStatusNotificationResponseParser">A delegate to read custom DiagnosticsStatusNotification responses.</param>
+        public static Boolean TryParseCBOR(DiagnosticsStatusNotificationRequest                              Request,
+                                           CBORValue                                                         CBOR,
+                                           SourceRouting                                                     Destination,
+                                           NetworkPath                                                       NetworkPath,
+                                           [NotNullWhen(true)]  out DiagnosticsStatusNotificationResponse?   DiagnosticsStatusNotificationResponse,
+                                           [NotNullWhen(false)] out String?                                  ErrorResponse,
+                                           DateTimeOffset?                                                   ResponseTimestamp                                   = null,
+                                           CustomCBORParserDelegate<DiagnosticsStatusNotificationResponse>?  CustomDiagnosticsStatusNotificationResponseParser   = null)
+        {
+
+            try
+            {
+
+                DiagnosticsStatusNotificationResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DiagnosticsStatusNotification response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                DiagnosticsStatusNotificationResponse = new DiagnosticsStatusNotificationResponse(
+
+                                                            Request,
+
+                                                            null,
+                                                            ResponseTimestamp,
+
+                                                            Destination,
+                                                            NetworkPath,
+
+                                                            null,
+                                                            null,
+                                                            Signatures,
+
+                                                            CustomData
+
+                                                        );
+
+                if (CustomDiagnosticsStatusNotificationResponseParser is not null)
+                    DiagnosticsStatusNotificationResponse = CustomDiagnosticsStatusNotificationResponseParser(CBOR,
+                                                                                                             DiagnosticsStatusNotificationResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DiagnosticsStatusNotificationResponse = null;
+                ErrorResponse = "The given CBOR representation of a DiagnosticsStatusNotification response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDiagnosticsStatusNotificationResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DiagnosticsStatusNotification response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDiagnosticsStatusNotificationResponseSerializer">A delegate to serialize custom DiagnosticsStatusNotification responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DiagnosticsStatusNotificationResponse>? CustomDiagnosticsStatusNotificationResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomDiagnosticsStatusNotificationResponseSerializer is not null
+                       ? CustomDiagnosticsStatusNotificationResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

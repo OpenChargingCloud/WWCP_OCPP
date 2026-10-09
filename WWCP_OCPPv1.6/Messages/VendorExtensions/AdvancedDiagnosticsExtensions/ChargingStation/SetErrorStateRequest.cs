@@ -429,6 +429,185 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SetErrorStateRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SetErrorState request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SetErrorStateRequest">The SetErrorState request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSetErrorStateRequestParser">A delegate to read custom SetErrorState requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                        CBOR,
+                                           Request_Id                                       RequestId,
+                                           SourceRouting                                    Destination,
+                                           NetworkPath                                      NetworkPath,
+                                           [NotNullWhen(true)]  out SetErrorStateRequest?   SetErrorStateRequest,
+                                           [NotNullWhen(false)] out String?                 ErrorResponse,
+                                           DateTimeOffset?                                  RequestTimestamp                   = null,
+                                           TimeSpan?                                        RequestTimeout                     = null,
+                                           EventTracking_Id?                                EventTrackingId                    = null,
+                                           CustomCBORParserDelegate<SetErrorStateRequest>?  CustomSetErrorStateRequestParser   = null)
+        {
+
+            try
+            {
+
+                SetErrorStateRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SetErrorState request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("faultType",
+                                             "fault type",
+                                             out var faultTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv1_6.FaultType.TryParse(faultTypeText, out var faultType))
+                {
+                    ErrorResponse = $"Invalid fault type '{faultTypeText}'!";
+                    return false;
+                }
+
+                Connector_Id? connectorId = null;
+
+                if (CBOR.ParseOptionalUInt64("connectorId",
+                                             "connector identification",
+                                             out var connectorIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (connectorIdNumber is not UInt64 connectorIdValue || connectorIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Connector_Id.TryParse((UInt64) connectorIdValue, out var connectorIdId))
+                    {
+                        ErrorResponse = $"Invalid connector identification '{connectorIdNumber}'!";
+                        return false;
+                    }
+
+                    connectorId = connectorIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("processingDelay",
+                                        "processing delay",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? processingDelay,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("duration",
+                                        "duration",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? duration,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? customData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SetErrorStateRequest = new SetErrorStateRequest(
+
+                                           Destination,
+                                           faultType,
+                                           connectorId,
+                                           processingDelay,
+                                           duration,
+
+                                           null,
+                                           null,
+                                           signatures,
+
+                                           customData,
+
+                                           RequestId,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
+                                           NetworkPath
+
+                                       );
+
+                if (CustomSetErrorStateRequestParser is not null)
+                    SetErrorStateRequest = CustomSetErrorStateRequestParser(CBOR,
+                                                                           SetErrorStateRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SetErrorStateRequest = null;
+                ErrorResponse = "The given CBOR representation of a SetErrorState request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSetErrorStateRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SetErrorState request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSetErrorStateRequestSerializer">A delegate to serialize custom SetErrorState requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SetErrorStateRequest>? CustomSetErrorStateRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("faultType",                 CBORValue.FromText(FaultType.ToString())),
+                           ("connectorId",               OCPPCBORExtensions.UInt(ConnectorId?.Value)),
+                           ("processingDelay",           ProcessingDelay?.ToCBOR()),
+                           ("duration",                  Duration?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSetErrorStateRequestSerializer is not null
+                       ? CustomSetErrorStateRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

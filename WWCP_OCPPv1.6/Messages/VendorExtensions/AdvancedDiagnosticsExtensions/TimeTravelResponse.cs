@@ -335,6 +335,136 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out TimeTravelResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a TimeTravel response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="TimeTravelResponse">The TimeTravel response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomTimeTravelResponseParser">A delegate to read custom TimeTravel responses.</param>
+        public static Boolean TryParseCBOR(TimeTravelRequest                              Request,
+                                           CBORValue                                      CBOR,
+                                           SourceRouting                                  Destination,
+                                           NetworkPath                                    NetworkPath,
+                                           [NotNullWhen(true)]  out TimeTravelResponse?   TimeTravelResponse,
+                                           [NotNullWhen(false)] out String?               ErrorResponse,
+                                           DateTimeOffset?                                ResponseTimestamp                = null,
+                                           CustomCBORParserDelegate<TimeTravelResponse>?  CustomTimeTravelResponseParser   = null)
+        {
+
+            try
+            {
+
+                TimeTravelResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a TimeTravel response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "generic status",
+                                             out var statusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!Enum.TryParse(statusText, out GenericStatus status))
+                {
+                    ErrorResponse = $"Invalid generic status '{statusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                TimeTravelResponse = new TimeTravelResponse(
+
+                                         Request,
+                                         status,
+
+                                         null,
+                                         ResponseTimestamp,
+
+                                         Destination,
+                                         NetworkPath,
+
+                                         null,
+                                         null,
+                                         Signatures,
+
+                                         CustomData
+
+                                     );
+
+                if (CustomTimeTravelResponseParser is not null)
+                    TimeTravelResponse = CustomTimeTravelResponseParser(CBOR,
+                                                                       TimeTravelResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                TimeTravelResponse = null;
+                ErrorResponse = "The given CBOR representation of a TimeTravel response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomTimeTravelResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this TimeTravel response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomTimeTravelResponseSerializer">A delegate to serialize custom TimeTravel responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<TimeTravelResponse>? CustomTimeTravelResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomTimeTravelResponseSerializer is not null
+                       ? CustomTimeTravelResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

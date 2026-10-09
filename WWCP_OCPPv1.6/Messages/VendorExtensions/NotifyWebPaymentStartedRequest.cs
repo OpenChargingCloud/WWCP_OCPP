@@ -115,6 +115,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    SignInfos,
                    Signatures,
 
+                   CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -337,12 +339,103 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var json = base.ToJSON(
                            IncludeJSONLDContext,
                            null,
-                           CustomSignatureSerializer
+                           CustomSignatureSerializer,
+                           CustomCustomDataSerializer
                        );
 
             return CustomNotifyWebPaymentStartedRequestSerializer is not null
                        ? CustomNotifyWebPaymentStartedRequestSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, RequestId, Destination, NetworkPath, out NotifyWebPaymentStartedRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyWebPaymentStarted request: the
+        /// DataTransfer it is, its fields from the data of the DataTransfer.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="NotifyWebPaymentStartedRequest">The NotifyWebPaymentStarted request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomNotifyWebPaymentStartedRequestParser">A delegate to read custom NotifyWebPaymentStarted requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                       CBOR,
+                                           Request_Id                                      RequestId,
+                                           SourceRouting                                   Destination,
+                                           NetworkPath                                     NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyWebPaymentStartedRequest?   NotifyWebPaymentStartedRequest,
+                                           [NotNullWhen(false)] out String?                ErrorResponse,
+                                           DateTimeOffset?                                 RequestTimestamp   = null,
+                                           TimeSpan?                                       RequestTimeout     = null,
+                                           EventTracking_Id?                               EventTrackingId    = null,
+                                           CustomCBORParserDelegate<NotifyWebPaymentStartedRequest>?  CustomNotifyWebPaymentStartedRequestParser   = null)
+        {
+
+            NotifyWebPaymentStartedRequest = null;
+
+            if (!DataTransferRequest.TryParseCBOR(CBOR,
+                                                  RequestId,
+                                                  Destination,
+                                                  NetworkPath,
+                                                  out var dataTransferRequest,
+                                                  out ErrorResponse,
+                                                  RequestTimestamp,
+                                                  RequestTimeout,
+                                                  EventTrackingId))
+            {
+                return false;
+            }
+
+            if (dataTransferRequest.Data is not JObject data)
+            {
+                ErrorResponse = "The data of the given CBOR representation of a NotifyWebPaymentStarted request is not a map!";
+                return false;
+            }
+
+            if (!TryParse(data,
+                          RequestId,
+                          Destination,
+                          NetworkPath,
+                          out var request,
+                          out ErrorResponse,
+                          RequestTimestamp,
+                          RequestTimeout,
+                          EventTrackingId))
+            {
+                return false;
+            }
+
+            NotifyWebPaymentStartedRequest = new NotifyWebPaymentStartedRequest(
+                          Destination,
+                          request.ConnectorId,
+                          request.Timeout,
+
+                          null,
+                          null,
+                          dataTransferRequest.Signatures,
+
+                          dataTransferRequest.CustomData,
+
+                          RequestId,
+                          RequestTimestamp,
+                          RequestTimeout,
+                          EventTrackingId,
+                          NetworkPath
+                      );
+
+            if (CustomNotifyWebPaymentStartedRequestParser is not null)
+                NotifyWebPaymentStartedRequest = CustomNotifyWebPaymentStartedRequestParser(CBOR,
+                                                                 NotifyWebPaymentStartedRequest);
+
+            return true;
 
         }
 

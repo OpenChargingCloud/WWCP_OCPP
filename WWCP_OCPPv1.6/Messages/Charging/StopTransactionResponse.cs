@@ -499,6 +499,131 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out StopTransactionResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a StopTransaction response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="StopTransactionResponse">The StopTransaction response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomStopTransactionResponseParser">A delegate to read custom StopTransaction responses.</param>
+        public static Boolean TryParseCBOR(StopTransactionRequest                              Request,
+                                           CBORValue                                           CBOR,
+                                           SourceRouting                                       Destination,
+                                           NetworkPath                                         NetworkPath,
+                                           [NotNullWhen(true)]  out StopTransactionResponse?   StopTransactionResponse,
+                                           [NotNullWhen(false)] out String?                    ErrorResponse,
+                                           DateTimeOffset?                                     ResponseTimestamp                     = null,
+                                           CustomCBORParserDelegate<StopTransactionResponse>?  CustomStopTransactionResponseParser   = null)
+        {
+
+            try
+            {
+
+                StopTransactionResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a StopTransaction response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("idTagInfo",
+                                        "identification tag information",
+                                        OCPPv1_6.IdTagInfo.TryParseCBOR,
+                                        out IdTagInfo? IdTagInfo,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                StopTransactionResponse = new StopTransactionResponse(
+
+                                              Request,
+                                              IdTagInfo,
+
+                                              null,
+                                              ResponseTimestamp,
+
+                                              Destination,
+                                              NetworkPath,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData
+
+                                          );
+
+                if (CustomStopTransactionResponseParser is not null)
+                    StopTransactionResponse = CustomStopTransactionResponseParser(CBOR,
+                                                                                 StopTransactionResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                StopTransactionResponse = null;
+                ErrorResponse = "The given CBOR representation of a StopTransaction response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomStopTransactionResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this StopTransaction response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomStopTransactionResponseSerializer">A delegate to serialize custom StopTransaction responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<StopTransactionResponse>? CustomStopTransactionResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("idTagInfo",                 IdTagInfo?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomStopTransactionResponseSerializer is not null
+                       ? CustomStopTransactionResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

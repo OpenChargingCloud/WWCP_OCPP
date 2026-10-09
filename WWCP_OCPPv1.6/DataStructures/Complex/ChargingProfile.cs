@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -32,7 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A charging profile.
     /// </summary>
-    public class ChargingProfile : IEquatable<ChargingProfile>
+    public class ChargingProfile : IEquatable<ChargingProfile>,
+                               ICBORSerializable<ChargingProfile>
     {
 
         #region Properties
@@ -678,6 +681,248 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return CustomChargingProfileSerializer is not null
                        ? CustomChargingProfileSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out ChargingProfile, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingProfile">The charging profile.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                           [NotNullWhen(true)]  out ChargingProfile?   ChargingProfile,
+                                           [NotNullWhen(false)] out String?            ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ChargingProfile,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ChargingProfile">The charging profile.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomChargingProfileParser">A delegate to read custom charging profiles.</param>
+        public static Boolean TryParseCBOR(CBORValue                                   CBOR,
+                                           [NotNullWhen(true)]  out ChargingProfile?   ChargingProfile,
+                                           [NotNullWhen(false)] out String?            ErrorResponse,
+                                           CustomCBORParserDelegate<ChargingProfile>?  CustomChargingProfileParser)
+        {
+
+            try
+            {
+
+                ChargingProfile = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a charging profile is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("chargingProfileId",
+                                               "charging profile id",
+                                               out var ChargingProfileIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (ChargingProfileIdNumber > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.ChargingProfile_Id.TryParse((UInt64) ChargingProfileIdNumber, out var ChargingProfileId))
+                {
+                    ErrorResponse = $"Invalid charging profile id '{ChargingProfileIdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("stackLevel",
+                                               "stack level",
+                                               out var StackLevelNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (StackLevelNumber < UInt32.MinValue || StackLevelNumber > UInt32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid stack level '{StackLevelNumber}'!";
+                    return false;
+                }
+
+                var StackLevel = (UInt32) StackLevelNumber;
+
+                if (!CBOR.ParseMandatoryText("chargingProfilePurpose",
+                                             "charging profile purpose",
+                                             out var ChargingProfilePurposeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var ChargingProfilePurpose = ChargingProfilePurposesExtensions.Parse(ChargingProfilePurposeText);
+
+                if (!CBOR.ParseMandatoryText("chargingProfileKind",
+                                             "charging profile kind",
+                                             out var ChargingProfileKindText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var ChargingProfileKind = ChargingProfileKindsExtensions.Parse(ChargingProfileKindText);
+
+                if (!CBOR.ParseMandatory("chargingSchedule",
+                                         "charging schedule",
+                                         OCPPv1_6.ChargingSchedule.TryParseCBOR,
+                                         out ChargingSchedule? ChargingSchedule,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                Transaction_Id? TransactionId = null;
+
+                if (CBOR.ParseOptionalUInt64("transactionId",
+                                             "transaction identifier",
+                                             out var TransactionIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (TransactionIdNumber is not UInt64 TransactionIdValue || TransactionIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Transaction_Id.TryParse((UInt64) TransactionIdValue, out var TransactionIdId))
+                    {
+                        ErrorResponse = $"Invalid transaction identifier '{TransactionIdNumber}'!";
+                        return false;
+                    }
+
+                    TransactionId = TransactionIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                RecurrencyKinds? RecurrencyKind = null;
+
+                if (CBOR.ParseOptionalText("recurrencyKind",
+                                           "recurrency kind",
+                                           out var RecurrencyKindText,
+                                           out ErrorResponse))
+                {
+
+                    if (!RecurrencyKindsExtensions.TryParse(RecurrencyKindText!, out var RecurrencyKindValue))
+                    {
+                        ErrorResponse = $"Invalid recurrency kind '{RecurrencyKindText}'!";
+                        return false;
+                    }
+
+                    RecurrencyKind = RecurrencyKindValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("validFrom",
+                                        "valid from",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ValidFrom,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("validTo",
+                                        "valid to",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? ValidTo,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ChargingProfile = new ChargingProfile(
+                                      ChargingProfileId,
+                                      StackLevel,
+                                      ChargingProfilePurpose,
+                                      ChargingProfileKind,
+                                      ChargingSchedule,
+                                      TransactionId,
+                                      RecurrencyKind,
+                                      ValidFrom,
+                                      ValidTo
+                                  );
+
+                if (CustomChargingProfileParser is not null)
+                    ChargingProfile = CustomChargingProfileParser(CBOR,
+                                                                 ChargingProfile);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ChargingProfile = null;
+                ErrorResponse = "The given CBOR representation of a charging profile is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ChargingProfile>.TryParse(CBOR, out ChargingProfile, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a charging profile - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ChargingProfile>.TryParse(CBORValue                         CBOR,
+                                                   out ChargingProfile                  Value,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomChargingProfileSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this charging profile: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ChargingProfile>? CustomChargingProfileSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("chargingProfileId",         CBORValue.FromUInt64(ChargingProfileId.Value)),
+                           ("stackLevel",                CBORValue.FromUInt64(StackLevel)),
+                           ("chargingProfilePurpose",    CBORValue.FromText(ChargingProfilePurpose.AsText())),
+                           ("chargingProfileKind",       CBORValue.FromText(ChargingProfileKind.AsText())),
+                           ("chargingSchedule",          ChargingSchedule.ToCBOR()),
+                           ("transactionId",             OCPPCBORExtensions.UInt(TransactionId?.Value)),
+                           ("recurrencyKind",            OCPPCBORExtensions.Text(RecurrencyKind?.AsText())),
+                           ("validFrom",                 ValidFrom?.ToCBOR()),
+                           ("validTo",                   ValidTo?.ToCBOR())
+                       );
+
+            return CustomChargingProfileSerializer is not null
+                       ? CustomChargingProfileSerializer(this, cbor)
+                       : cbor;
 
         }
 

@@ -437,6 +437,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out ClearChargingProfileResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a ClearChargingProfile response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="ClearChargingProfileResponse">The ClearChargingProfile response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomClearChargingProfileResponseParser">A delegate to read custom ClearChargingProfile responses.</param>
+        public static Boolean TryParseCBOR(ClearChargingProfileRequest                              Request,
+                                           CBORValue                                                CBOR,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out ClearChargingProfileResponse?   ClearChargingProfileResponse,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          ResponseTimestamp                          = null,
+                                           CustomCBORParserDelegate<ClearChargingProfileResponse>?  CustomClearChargingProfileResponseParser   = null)
+        {
+
+            try
+            {
+
+                ClearChargingProfileResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a ClearChargingProfile response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "ClearChargingProfile status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = ClearChargingProfileStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ClearChargingProfileResponse = new ClearChargingProfileResponse(
+
+                                                   Request,
+                                                   Status,
+
+                                                   null,
+                                                   ResponseTimestamp,
+
+                                                   Destination,
+                                                   NetworkPath,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData
+
+                                               );
+
+                if (CustomClearChargingProfileResponseParser is not null)
+                    ClearChargingProfileResponse = CustomClearChargingProfileResponseParser(CBOR,
+                                                                                           ClearChargingProfileResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ClearChargingProfileResponse = null;
+                ErrorResponse = "The given CBOR representation of a ClearChargingProfile response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomClearChargingProfileResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this ClearChargingProfile response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomClearChargingProfileResponseSerializer">A delegate to serialize custom ClearChargingProfile responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ClearChargingProfileResponse>? CustomClearChargingProfileResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomClearChargingProfileResponseSerializer is not null
+                       ? CustomClearChargingProfileResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

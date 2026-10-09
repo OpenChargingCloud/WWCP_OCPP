@@ -335,6 +335,136 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out AdjustTimeScaleResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an AdjustTimeScale response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="AdjustTimeScaleResponse">The AdjustTimeScale response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomAdjustTimeScaleResponseParser">A delegate to read custom AdjustTimeScale responses.</param>
+        public static Boolean TryParseCBOR(AdjustTimeScaleRequest                              Request,
+                                           CBORValue                                           CBOR,
+                                           SourceRouting                                       Destination,
+                                           NetworkPath                                         NetworkPath,
+                                           [NotNullWhen(true)]  out AdjustTimeScaleResponse?   AdjustTimeScaleResponse,
+                                           [NotNullWhen(false)] out String?                    ErrorResponse,
+                                           DateTimeOffset?                                     ResponseTimestamp                     = null,
+                                           CustomCBORParserDelegate<AdjustTimeScaleResponse>?  CustomAdjustTimeScaleResponseParser   = null)
+        {
+
+            try
+            {
+
+                AdjustTimeScaleResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an AdjustTimeScale response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "generic status",
+                                             out var statusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!Enum.TryParse(statusText, out GenericStatus status))
+                {
+                    ErrorResponse = $"Invalid generic status '{statusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                AdjustTimeScaleResponse = new AdjustTimeScaleResponse(
+
+                                              Request,
+                                              status,
+
+                                              null,
+                                              ResponseTimestamp,
+
+                                              Destination,
+                                              NetworkPath,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData
+
+                                          );
+
+                if (CustomAdjustTimeScaleResponseParser is not null)
+                    AdjustTimeScaleResponse = CustomAdjustTimeScaleResponseParser(CBOR,
+                                                                                 AdjustTimeScaleResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AdjustTimeScaleResponse = null;
+                ErrorResponse = "The given CBOR representation of an AdjustTimeScale response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAdjustTimeScaleResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this AdjustTimeScale response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAdjustTimeScaleResponseSerializer">A delegate to serialize custom AdjustTimeScale responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AdjustTimeScaleResponse>? CustomAdjustTimeScaleResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomAdjustTimeScaleResponseSerializer is not null
+                       ? CustomAdjustTimeScaleResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

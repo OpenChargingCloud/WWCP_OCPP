@@ -481,6 +481,139 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out GetConfigurationRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetConfiguration request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetConfigurationRequest">The GetConfiguration request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetConfigurationRequestParser">A delegate to read custom GetConfiguration requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                           CBOR,
+                                           Request_Id                                          RequestId,
+                                           SourceRouting                                       Destination,
+                                           NetworkPath                                         NetworkPath,
+                                           [NotNullWhen(true)]  out GetConfigurationRequest?   GetConfigurationRequest,
+                                           [NotNullWhen(false)] out String?                    ErrorResponse,
+                                           DateTimeOffset?                                     RequestTimestamp                      = null,
+                                           TimeSpan?                                           RequestTimeout                        = null,
+                                           EventTracking_Id?                                   EventTrackingId                       = null,
+                                           CustomCBORParserDelegate<GetConfigurationRequest>?  CustomGetConfigurationRequestParser   = null)
+        {
+
+            try
+            {
+
+                GetConfigurationRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetConfiguration request is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<String>("key",
+                                               "configuration keys",
+                                               (CBORValue item, out String? value, out String? errorResponse) => {
+                                                   value         = item.Kind == CBORValueKind.TextString ? item.AsText() : null;
+                                                   errorResponse = value is null ? "A text is expected!" : null;
+                                                   return value is not null;
+                                               },
+                                               out var Keys,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetConfigurationRequest = new GetConfigurationRequest(
+
+                                              Destination,
+                                              Keys,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData,
+
+                                              RequestId,
+                                              RequestTimestamp,
+                                              RequestTimeout,
+                                              EventTrackingId,
+                                              NetworkPath
+
+                                          );
+
+                if (CustomGetConfigurationRequestParser is not null)
+                    GetConfigurationRequest = CustomGetConfigurationRequestParser(CBOR,
+                                                                                 GetConfigurationRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetConfigurationRequest = null;
+                ErrorResponse = "The given CBOR representation of a GetConfiguration request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetConfigurationRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetConfiguration request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetConfigurationRequestSerializer">A delegate to serialize custom GetConfiguration requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetConfigurationRequest>? CustomGetConfigurationRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("key",                       OCPPCBORExtensions.Array(Keys, x => CBORValue.FromText(x))),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetConfigurationRequestSerializer is not null
+                       ? CustomGetConfigurationRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

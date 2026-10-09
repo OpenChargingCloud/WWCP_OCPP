@@ -459,6 +459,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out UnlockConnectorResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an UnlockConnector response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="UnlockConnectorResponse">The UnlockConnector response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomUnlockConnectorResponseParser">A delegate to read custom UnlockConnector responses.</param>
+        public static Boolean TryParseCBOR(UnlockConnectorRequest                              Request,
+                                           CBORValue                                           CBOR,
+                                           SourceRouting                                       Destination,
+                                           NetworkPath                                         NetworkPath,
+                                           [NotNullWhen(true)]  out UnlockConnectorResponse?   UnlockConnectorResponse,
+                                           [NotNullWhen(false)] out String?                    ErrorResponse,
+                                           DateTimeOffset?                                     ResponseTimestamp                     = null,
+                                           CustomCBORParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
+        {
+
+            try
+            {
+
+                UnlockConnectorResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an UnlockConnector response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "unlock status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = UnlockStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                UnlockConnectorResponse = new UnlockConnectorResponse(
+
+                                              Request,
+                                              Status,
+
+                                              null,
+                                              ResponseTimestamp,
+
+                                              Destination,
+                                              NetworkPath,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData
+
+                                          );
+
+                if (CustomUnlockConnectorResponseParser is not null)
+                    UnlockConnectorResponse = CustomUnlockConnectorResponseParser(CBOR,
+                                                                                 UnlockConnectorResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                UnlockConnectorResponse = null;
+                ErrorResponse = "The given CBOR representation of an UnlockConnector response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomUnlockConnectorResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this UnlockConnector response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomUnlockConnectorResponseSerializer">A delegate to serialize custom UnlockConnector responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<UnlockConnectorResponse>? CustomUnlockConnectorResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomUnlockConnectorResponseSerializer is not null
+                       ? CustomUnlockConnectorResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

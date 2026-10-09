@@ -121,7 +121,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                    EventTrackingId,
                    NetworkPath,
                    SerializationFormat ?? SerializationFormats.JSON,
-                   CancellationToken)
+                   CancellationToken,
+                   CustomData)
 
         {
 

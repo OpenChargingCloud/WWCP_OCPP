@@ -473,6 +473,186 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out InstallCertificateRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an InstallCertificate request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="InstallCertificateRequest">The InstallCertificate request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomInstallCertificateRequestParser">A delegate to read custom InstallCertificate requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                             CBOR,
+                                           Request_Id                                            RequestId,
+                                           SourceRouting                                         Destination,
+                                           NetworkPath                                           NetworkPath,
+                                           [NotNullWhen(true)]  out InstallCertificateRequest?   InstallCertificateRequest,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           DateTimeOffset?                                       RequestTimestamp                        = null,
+                                           TimeSpan?                                             RequestTimeout                          = null,
+                                           EventTracking_Id?                                     EventTrackingId                         = null,
+                                           CustomCBORParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser   = null)
+        {
+
+            try
+            {
+
+                InstallCertificateRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an InstallCertificate request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("certificateType",
+                                             "certificate type",
+                                             out var certificateTypeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv1_6.CertificateUse.TryParse(certificateTypeText, out var certificateType))
+                {
+                    ErrorResponse = $"Invalid certificate type '{certificateTypeText}'!";
+                    return false;
+                }
+
+                Certificate? certificate = null;
+
+                if (CBOR.ParseMandatoryText("certificate",
+                                       "certificate",
+                                       out var certificateText,
+                                       out ErrorResponse))
+                {
+
+                    if (!Certificate.TryParse(certificateText!, out var certificateValue, out var certificateError))
+                    {
+                        ErrorResponse = $"Invalid certificate '{certificateText}': {certificateError}";
+                        return false;
+                    }
+
+                    certificate = certificateValue;
+
+                }
+
+                if (certificate is null)
+                    return false;
+
+                CertificateGroup? certificateGroup = null;
+
+                if (CBOR.ParseOptionalText("certificateGroup",
+                                           "certificate group",
+                                           out var certificateGroupText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv1_6.CertificateGroup.TryParse(certificateGroupText!, out var certificateGroupValue))
+                    {
+                        ErrorResponse = $"Invalid certificate group '{certificateGroupText}'!";
+                        return false;
+                    }
+
+                    certificateGroup = certificateGroupValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                InstallCertificateRequest = new InstallCertificateRequest(
+
+                                                Destination,
+                                                certificateType,
+                                                certificate,
+                                                certificateGroup,
+
+                                                null,
+                                                null,
+                                                Signatures,
+
+                                                CustomData,
+
+                                                RequestId,
+                                                RequestTimestamp,
+                                                RequestTimeout,
+                                                EventTrackingId,
+                                                NetworkPath
+
+                                            );
+
+                if (CustomInstallCertificateRequestParser is not null)
+                    InstallCertificateRequest = CustomInstallCertificateRequestParser(CBOR,
+                                                                                     InstallCertificateRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                InstallCertificateRequest = null;
+                ErrorResponse = "The given CBOR representation of an InstallCertificate request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomInstallCertificateRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this InstallCertificate request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomInstallCertificateRequestSerializer">A delegate to serialize custom InstallCertificate requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<InstallCertificateRequest>? CustomInstallCertificateRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("certificateType",           CBORValue.FromText(CertificateType.ToString())),
+                           ("certificate",               CBORValue.FromText(Certificate.ToString())),
+                           ("certificateGroup",          OCPPCBORExtensions.Text(CertificateGroup?.ToString())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomInstallCertificateRequestSerializer is not null
+                       ? CustomInstallCertificateRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

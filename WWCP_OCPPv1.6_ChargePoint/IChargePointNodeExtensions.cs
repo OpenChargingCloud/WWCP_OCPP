@@ -532,6 +532,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            SignInfos,
                            Signatures,
 
+                           null,
+
                            RequestId        ?? ChargePoint.NextRequestId,
                            RequestTimestamp ?? ChargePoint.Now,
                            RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
@@ -595,6 +597,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            SignKeys,
                            SignInfos,
                            Signatures,
+
+                           null,
 
                            RequestId        ?? ChargePoint.NextRequestId,
                            RequestTimestamp ?? ChargePoint.Now,
@@ -836,13 +840,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ChargePoint">The charge point.</param>
         /// <param name="FirmwareStatus">The firmware status.</param>
         /// <param name="Destination">The optional networking node identification. Default is 'CentralSystem'.</param>
-        /// 
+        /// <param name="UpdateRequestId">The optional identification of the SignedUpdateFirmware request that caused this notification.</param>
+        ///
         /// <param name="SignKeys">An optional enumeration of keys to sign this request.</param>
         /// <param name="SignInfos">An optional enumeration of key algorithm information to sign this request.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// 
+        ///
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
+        ///
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -854,6 +859,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             SendSignedFirmwareStatusNotification(this IChargePointNode    ChargePoint,
                                                  FirmwareStatus           FirmwareStatus,
                                                  SourceRouting?           Destination           = null,
+                                                 Int32?                   UpdateRequestId       = null,
 
                                                  IEnumerable<KeyPair>?    SignKeys              = null,
                                                  IEnumerable<SignInfo>?   SignInfos             = null,
@@ -873,6 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        new SignedFirmwareStatusNotificationRequest(
                            Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
                            FirmwareStatus,
+                           UpdateRequestId,
 
                            SignKeys,
                            SignInfos,

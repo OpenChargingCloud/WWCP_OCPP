@@ -897,6 +897,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            SignInfos,
                            Signatures,
 
+                           null,
+
                            RequestId        ?? CentralSystem.NextRequestId,
                            RequestTimestamp ?? CentralSystem.Now,
                            RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,

@@ -354,6 +354,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out SignedUpdateFirmwareResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SignedUpdateFirmware response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SignedUpdateFirmwareResponse">The SignedUpdateFirmware response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomSignedUpdateFirmwareResponseParser">A delegate to read custom SignedUpdateFirmware responses.</param>
+        public static Boolean TryParseCBOR(SignedUpdateFirmwareRequest                              Request,
+                                           CBORValue                                                CBOR,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out SignedUpdateFirmwareResponse?   SignedUpdateFirmwareResponse,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          ResponseTimestamp                          = null,
+                                           CustomCBORParserDelegate<SignedUpdateFirmwareResponse>?  CustomSignedUpdateFirmwareResponseParser   = null)
+        {
+
+            try
+            {
+
+                SignedUpdateFirmwareResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SignedUpdateFirmware response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "signed update firmware status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = UpdateFirmwareStatusExtensions.Parse(StatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SignedUpdateFirmwareResponse = new SignedUpdateFirmwareResponse(
+
+                                                   Request,
+                                                   Status,
+
+                                                   null,
+                                                   ResponseTimestamp,
+
+                                                   Destination,
+                                                   NetworkPath,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData
+
+                                               );
+
+                if (CustomSignedUpdateFirmwareResponseParser is not null)
+                    SignedUpdateFirmwareResponse = CustomSignedUpdateFirmwareResponseParser(CBOR,
+                                                                                           SignedUpdateFirmwareResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SignedUpdateFirmwareResponse = null;
+                ErrorResponse = "The given CBOR representation of a SignedUpdateFirmware response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSignedUpdateFirmwareResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SignedUpdateFirmware response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSignedUpdateFirmwareResponseSerializer">A delegate to serialize custom SignedUpdateFirmware responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SignedUpdateFirmwareResponse>? CustomSignedUpdateFirmwareResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSignedUpdateFirmwareResponseSerializer is not null
+                       ? CustomSignedUpdateFirmwareResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

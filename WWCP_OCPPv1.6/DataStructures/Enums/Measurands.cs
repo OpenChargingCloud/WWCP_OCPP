@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    "Current.Export"                   => Measurands.CurrentExport,
                    "Current.Import"                   => Measurands.CurrentImport,
                    "Current.Offered"                  => Measurands.CurrentOffered,
-                   "Energy.Active.Export.Register"    => Measurands.EnergyReactiveExportRegister,
+                   "Energy.Active.Export.Register"    => Measurands.EnergyActiveExportRegister,
                    "Energy.Active.Import.Register"    => Measurands.EnergyActiveImportRegister,
                    "Energy.Reactive.Export.Register"  => Measurands.EnergyReactiveExportRegister,
                    "Energy.Reactive.Import.Register"  => Measurands.EnergyReactiveImportRegister,

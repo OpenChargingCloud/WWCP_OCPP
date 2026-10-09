@@ -398,6 +398,120 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out FirmwareStatusNotificationResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a FirmwareStatusNotification response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="FirmwareStatusNotificationResponse">The FirmwareStatusNotification response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomFirmwareStatusNotificationResponseParser">A delegate to read custom FirmwareStatusNotification responses.</param>
+        public static Boolean TryParseCBOR(FirmwareStatusNotificationRequest                              Request,
+                                           CBORValue                                                      CBOR,
+                                           SourceRouting                                                  Destination,
+                                           NetworkPath                                                    NetworkPath,
+                                           [NotNullWhen(true)]  out FirmwareStatusNotificationResponse?   FirmwareStatusNotificationResponse,
+                                           [NotNullWhen(false)] out String?                               ErrorResponse,
+                                           DateTimeOffset?                                                ResponseTimestamp                                = null,
+                                           CustomCBORParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseParser   = null)
+        {
+
+            try
+            {
+
+                FirmwareStatusNotificationResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a FirmwareStatusNotification response is not a map!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(
+
+                                                         Request,
+
+                                                         null,
+                                                         ResponseTimestamp,
+
+                                                         Destination,
+                                                         NetworkPath,
+
+                                                         null,
+                                                         null,
+                                                         Signatures,
+
+                                                         CustomData
+
+                                                     );
+
+                if (CustomFirmwareStatusNotificationResponseParser is not null)
+                    FirmwareStatusNotificationResponse = CustomFirmwareStatusNotificationResponseParser(CBOR,
+                                                                                                       FirmwareStatusNotificationResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                FirmwareStatusNotificationResponse = null;
+                ErrorResponse = "The given CBOR representation of a FirmwareStatusNotification response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomFirmwareStatusNotificationResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this FirmwareStatusNotification response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom FirmwareStatusNotification responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<FirmwareStatusNotificationResponse>? CustomFirmwareStatusNotificationResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomFirmwareStatusNotificationResponseSerializer is not null
+                       ? CustomFirmwareStatusNotificationResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

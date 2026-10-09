@@ -60,7 +60,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The status of the firmware installation.
         /// </summary>
-        public FirmwareStatus  Status    { get; }
+        public FirmwareStatus  Status             { get; }
+
+        /// <summary>
+        /// The optional identification of the SignedUpdateFirmware request
+        /// that caused this notification.
+        /// </summary>
+        public Int32?          UpdateRequestId    { get; }
 
         #endregion
 
@@ -71,10 +77,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="Status">The status of the firmware installation.</param>
-        /// 
+        /// <param name="UpdateRequestId">The optional identification of the SignedUpdateFirmware request that caused this notification.</param>
+        ///
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        /// 
+        ///
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -83,6 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SignedFirmwareStatusNotificationRequest(SourceRouting            Destination,
                                                        FirmwareStatus           Status,
+                                                       Int32?                   UpdateRequestId       = null,
 
                                                        IEnumerable<KeyPair>?    SignKeys              = null,
                                                        IEnumerable<SignInfo>?   SignInfos             = null,
@@ -117,12 +125,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         {
 
-            this.Status = Status;
+            this.Status           = Status;
+            this.UpdateRequestId  = UpdateRequestId;
 
             unchecked
             {
-                hashCode = this.Status.GetHashCode() * 3 ^
-                           base.       GetHashCode();
+                hashCode =  this.Status.          GetHashCode()       * 5 ^
+                           (this.UpdateRequestId?.GetHashCode() ?? 0) * 3 ^
+                            base.                 GetHashCode();
             }
 
         }
@@ -260,6 +270,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                #region UpdateRequestId    [optional]
+
+                if (JSON.ParseOptional("requestId",
+                                       "update request identification",
+                                       out Int32? UpdateRequestId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures    [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -293,6 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                               Destination,
                                                               Status,
+                                                              UpdateRequestId,
 
                                                               null,
                                                               null,
@@ -343,6 +367,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                  new JProperty("status",       Status.    AsText()),
 
+                           UpdateRequestId.HasValue
+                               ? new JProperty("requestId",    UpdateRequestId.Value)
+                               : null,
+
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                           CustomCustomDataSerializer))))
@@ -357,6 +385,159 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             return CustomSignedFirmwareStatusNotificationRequestSerializer is not null
                        ? CustomSignedFirmwareStatusNotificationRequestSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out SignedFirmwareStatusNotificationRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SignedFirmwareStatusNotification request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SignedFirmwareStatusNotificationRequest">The SignedFirmwareStatusNotification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSignedFirmwareStatusNotificationRequestParser">A delegate to read custom SignedFirmwareStatusNotification requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                           CBOR,
+                                           Request_Id                                                          RequestId,
+                                           SourceRouting                                                       Destination,
+                                           NetworkPath                                                         NetworkPath,
+                                           [NotNullWhen(true)]  out SignedFirmwareStatusNotificationRequest?   SignedFirmwareStatusNotificationRequest,
+                                           [NotNullWhen(false)] out String?                                    ErrorResponse,
+                                           DateTimeOffset?                                                     RequestTimestamp                                      = null,
+                                           TimeSpan?                                                           RequestTimeout                                        = null,
+                                           EventTracking_Id?                                                   EventTrackingId                                       = null,
+                                           CustomCBORParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser   = null)
+        {
+
+            try
+            {
+
+                SignedFirmwareStatusNotificationRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SignedFirmwareStatusNotification request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "firmware status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var Status = FirmwareStatusExtensions.Parse(StatusText);
+
+                Int32? UpdateRequestId = null;
+
+                if (CBOR.ParseOptionalInt64("requestId",
+                                             "update request identification",
+                                             out var UpdateRequestIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (UpdateRequestIdNumber is not Int64 UpdateRequestIdValue || UpdateRequestIdValue < Int32.MinValue || UpdateRequestIdValue > Int32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid update request identification '{UpdateRequestIdNumber}'!";
+                        return false;
+                    }
+
+                    UpdateRequestId = (Int32) UpdateRequestIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SignedFirmwareStatusNotificationRequest = new SignedFirmwareStatusNotificationRequest(
+
+                                                              Destination,
+                                                              Status,
+                                                              UpdateRequestId,
+
+                                                              null,
+                                                              null,
+                                                              Signatures,
+
+                                                              CustomData,
+
+                                                              RequestId,
+                                                              RequestTimestamp,
+                                                              RequestTimeout,
+                                                              EventTrackingId,
+                                                              NetworkPath
+
+                                                          );
+
+                if (CustomSignedFirmwareStatusNotificationRequestParser is not null)
+                    SignedFirmwareStatusNotificationRequest = CustomSignedFirmwareStatusNotificationRequestParser(CBOR,
+                                                                                                                 SignedFirmwareStatusNotificationRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SignedFirmwareStatusNotificationRequest = null;
+                ErrorResponse = "The given CBOR representation of a SignedFirmwareStatusNotification request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSignedFirmwareStatusNotificationRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SignedFirmwareStatusNotification request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSignedFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom SignedFirmwareStatusNotification requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SignedFirmwareStatusNotificationRequest>? CustomSignedFirmwareStatusNotificationRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("requestId",                 OCPPCBORExtensions.Int(UpdateRequestId)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSignedFirmwareStatusNotificationRequestSerializer is not null
+                       ? CustomSignedFirmwareStatusNotificationRequestSerializer(this, cbor)
+                       : cbor;
 
         }
 
@@ -436,6 +617,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                Status.     Equals(SignedFirmwareStatusNotificationRequest.Status) &&
 
+            ((!UpdateRequestId.HasValue && !SignedFirmwareStatusNotificationRequest.UpdateRequestId.HasValue) ||
+               UpdateRequestId.HasValue &&  SignedFirmwareStatusNotificationRequest.UpdateRequestId.HasValue && UpdateRequestId.Value.Equals(SignedFirmwareStatusNotificationRequest.UpdateRequestId.Value)) &&
+
                base.GenericEquals(SignedFirmwareStatusNotificationRequest);
 
         #endregion
@@ -461,7 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => Status.ToString();
+            => $"{Status}{(UpdateRequestId.HasValue ? $" ({UpdateRequestId.Value})" : "")}";
 
         #endregion
 

@@ -419,6 +419,179 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out GetExecutingEnvironmentResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetExecutingEnvironment response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetExecutingEnvironmentResponse">The GetExecutingEnvironment response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomGetExecutingEnvironmentResponseParser">A delegate to read custom GetExecutingEnvironment responses.</param>
+        public static Boolean TryParseCBOR(GetExecutingEnvironmentRequest                              Request,
+                                           CBORValue                                                   CBOR,
+                                           SourceRouting                                               Destination,
+                                           NetworkPath                                                 NetworkPath,
+                                           [NotNullWhen(true)]  out GetExecutingEnvironmentResponse?   GetExecutingEnvironmentResponse,
+                                           [NotNullWhen(false)] out String?                            ErrorResponse,
+                                           DateTimeOffset?                                             ResponseTimestamp                             = null,
+                                           CustomCBORParserDelegate<GetExecutingEnvironmentResponse>?  CustomGetExecutingEnvironmentResponseParser   = null)
+        {
+
+            try
+            {
+
+                GetExecutingEnvironmentResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetExecutingEnvironment response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "generic status",
+                                             out var statusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!Enum.TryParse(statusText, out GenericStatus status))
+                {
+                    ErrorResponse = $"Invalid generic status '{statusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalUInt64("processId",
+                                       "process identification",
+                                       out var processId,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                URL? restartURL = null;
+
+                if (CBOR.ParseOptionalText("restartURL",
+                                           "restart URL",
+                                           out var restartURLText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(restartURLText!, out var restartURLValue))
+                    {
+                        ErrorResponse = $"Invalid restart URL '{restartURLText}'!";
+                        return false;
+                    }
+
+                    restartURL = restartURLValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("restartSecret",
+                                       "restart secret",
+                                       out var restartSecret,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetExecutingEnvironmentResponse = new GetExecutingEnvironmentResponse(
+
+                                                      Request,
+                                                      status,
+                                                      processId,
+                                                      restartURL,
+                                                      restartSecret,
+
+                                                      null,
+                                                      ResponseTimestamp,
+
+                                                      Destination,
+                                                      NetworkPath,
+
+                                                      null,
+                                                      null,
+                                                      Signatures,
+
+                                                      CustomData
+
+                                                  );
+
+                if (CustomGetExecutingEnvironmentResponseParser is not null)
+                    GetExecutingEnvironmentResponse = CustomGetExecutingEnvironmentResponseParser(CBOR,
+                                                                                                 GetExecutingEnvironmentResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetExecutingEnvironmentResponse = null;
+                ErrorResponse = "The given CBOR representation of a GetExecutingEnvironment response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetExecutingEnvironmentResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetExecutingEnvironment response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetExecutingEnvironmentResponseSerializer">A delegate to serialize custom GetExecutingEnvironment responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetExecutingEnvironmentResponse>? CustomGetExecutingEnvironmentResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.ToString())),
+                           ("processId",                 OCPPCBORExtensions.UInt(ProcessId)),
+                           ("restartURL",                OCPPCBORExtensions.Text(RestartURL?.ToString())),
+                           ("restartSecret",             OCPPCBORExtensions.Text(RestartSecret)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetExecutingEnvironmentResponseSerializer is not null
+                       ? CustomGetExecutingEnvironmentResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

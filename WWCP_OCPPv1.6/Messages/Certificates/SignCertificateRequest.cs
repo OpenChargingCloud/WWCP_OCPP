@@ -356,6 +356,134 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SignCertificateRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SignCertificate request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SignCertificateRequest">The SignCertificate request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSignCertificateRequestParser">A delegate to read custom SignCertificate requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                          CBOR,
+                                           Request_Id                                         RequestId,
+                                           SourceRouting                                      Destination,
+                                           NetworkPath                                        NetworkPath,
+                                           [NotNullWhen(true)]  out SignCertificateRequest?   SignCertificateRequest,
+                                           [NotNullWhen(false)] out String?                   ErrorResponse,
+                                           DateTimeOffset?                                    RequestTimestamp                     = null,
+                                           TimeSpan?                                          RequestTimeout                       = null,
+                                           EventTracking_Id?                                  EventTrackingId                      = null,
+                                           CustomCBORParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser   = null)
+        {
+
+            try
+            {
+
+                SignCertificateRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SignCertificate request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("csr",
+                                       "certificate signing request",
+                                       out var CSR,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SignCertificateRequest = new SignCertificateRequest(
+
+                                             Destination,
+                                             CSR,
+
+                                             null,
+                                             null,
+                                             Signatures,
+
+                                             CustomData,
+
+                                             RequestId,
+                                             RequestTimestamp,
+                                             RequestTimeout,
+                                             EventTrackingId,
+                                             NetworkPath
+
+                                         );
+
+                if (CustomSignCertificateRequestParser is not null)
+                    SignCertificateRequest = CustomSignCertificateRequestParser(CBOR,
+                                                                               SignCertificateRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SignCertificateRequest = null;
+                ErrorResponse = "The given CBOR representation of a SignCertificate request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSignCertificateRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SignCertificate request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSignCertificateRequestSerializer">A delegate to serialize custom SignCertificate requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SignCertificateRequest>? CustomSignCertificateRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("csr",                       CBORValue.FromText(CSR)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSignCertificateRequestSerializer is not null
+                       ? CustomSignCertificateRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

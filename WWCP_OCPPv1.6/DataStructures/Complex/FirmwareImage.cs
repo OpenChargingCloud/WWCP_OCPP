@@ -24,6 +24,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -32,7 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A firmware image.
     /// </summary>
-    public class FirmwareImage : IEquatable<FirmwareImage>
+    public class FirmwareImage : IEquatable<FirmwareImage>,
+                             ICBORSerializable<FirmwareImage>
     {
 
         #region Properties
@@ -287,6 +290,173 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             return CustomFirmwareImageSerializer is not null
                        ? CustomFirmwareImageSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, ..., out FirmwareImage, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a firmware image - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="FirmwareImage">The firmware image.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                 CBOR,
+                                           [NotNullWhen(true)]  out FirmwareImage?   FirmwareImage,
+                                           [NotNullWhen(false)] out String?          ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out FirmwareImage,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a firmware image - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="FirmwareImage">The firmware image.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomFirmwareImageParser">A delegate to read custom firmware images.</param>
+        public static Boolean TryParseCBOR(CBORValue                                 CBOR,
+                                           [NotNullWhen(true)]  out FirmwareImage?   FirmwareImage,
+                                           [NotNullWhen(false)] out String?          ErrorResponse,
+                                           CustomCBORParserDelegate<FirmwareImage>?  CustomFirmwareImageParser)
+        {
+
+            try
+            {
+
+                FirmwareImage = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a firmware image is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("location",
+                                             "remote location",
+                                             out var RemoteLocationText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(RemoteLocationText, out var RemoteLocation))
+                {
+                    ErrorResponse = $"Invalid remote location '{RemoteLocationText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("retrieveDateTime",
+                                              "retrieve timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset RetrieveTimestampOffset,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var RetrieveTimestamp = RetrieveTimestampOffset.UtcDateTime;
+
+                if (!CBOR.ParseMandatoryText("signingCertificate",
+                                       "signing certificate",
+                                       out var SigningCertificate,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("signature",
+                                       "signature",
+                                       out var Signature,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalValue("installDateTime",
+                                        "install timestamp",
+                                        OCPPCBORExtensions.TryParseTimestamp,
+                                        out DateTimeOffset? InstallTimestampOffset,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                DateTime? InstallTimestamp = InstallTimestampOffset?.UtcDateTime;
+
+
+                FirmwareImage = new FirmwareImage(
+                                    RemoteLocation,
+                                    RetrieveTimestamp,
+                                    SigningCertificate,
+                                    Signature,
+                                    InstallTimestamp
+                                );
+
+                if (CustomFirmwareImageParser is not null)
+                    FirmwareImage = CustomFirmwareImageParser(CBOR,
+                                                             FirmwareImage);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                FirmwareImage = null;
+                ErrorResponse = "The given CBOR representation of a firmware image is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<FirmwareImage>.TryParse(CBOR, out FirmwareImage, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a firmware image - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<FirmwareImage>.TryParse(CBORValue                         CBOR,
+                                                   out FirmwareImage                  Value,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomFirmwareImageSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this firmware image: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomFirmwareImageSerializer">A delegate to serialize custom firmware images.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<FirmwareImage>? CustomFirmwareImageSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("location",                  CBORValue.FromText(RemoteLocation.ToString())),
+                           ("retrieveDateTime",          new DateTimeOffset(RetrieveTimestamp.ToUniversalTime()).ToCBOR()),
+                           ("signingCertificate",        CBORValue.FromText(SigningCertificate)),
+                           ("signature",                 CBORValue.FromText(Signature)),
+                           ("installDateTime",           InstallTimestamp.HasValue ? (CBORValue?) new DateTimeOffset(InstallTimestamp.Value.ToUniversalTime()).ToCBOR() : null)
+                       );
+
+            return CustomFirmwareImageSerializer is not null
+                       ? CustomFirmwareImageSerializer(this, cbor)
+                       : cbor;
 
         }
 

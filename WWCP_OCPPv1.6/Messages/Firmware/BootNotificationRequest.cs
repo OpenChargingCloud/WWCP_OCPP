@@ -620,6 +620,214 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out BootNotificationRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a BootNotification request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="BootNotificationRequest">The BootNotification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomBootNotificationRequestParser">A delegate to read custom BootNotification requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                           CBOR,
+                                           Request_Id                                          RequestId,
+                                           SourceRouting                                       Destination,
+                                           NetworkPath                                         NetworkPath,
+                                           [NotNullWhen(true)]  out BootNotificationRequest?   BootNotificationRequest,
+                                           [NotNullWhen(false)] out String?                    ErrorResponse,
+                                           DateTimeOffset?                                     RequestTimestamp                      = null,
+                                           TimeSpan?                                           RequestTimeout                        = null,
+                                           EventTracking_Id?                                   EventTrackingId                       = null,
+                                           CustomCBORParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null)
+        {
+
+            try
+            {
+
+                BootNotificationRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a BootNotification request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("chargePointVendor",
+                                       "charge point vendor",
+                                       out var ChargePointVendor,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("chargePointModel",
+                                       "charge point model",
+                                       out var ChargePointModel,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("chargePointSerialNumber",
+                                       "charge point serial number",
+                                       out var chargePointSerialNumber,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("chargeBoxSerialNumber",
+                                       "charge box serial number",
+                                       out var chargeBoxSerialNumber,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("firmwareVersion",
+                                       "firmware version",
+                                       out var firmwareVersion,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("iccid",
+                                       "iccid",
+                                       out var iccid,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("imsi",
+                                       "imsi",
+                                       out var imsi,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("meterType",
+                                       "meter type",
+                                       out var meterType,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("meterSerialNumber",
+                                       "meter serial number",
+                                       out var meterSerialNumber,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                BootNotificationRequest = new BootNotificationRequest(
+
+                                              Destination,
+                                              ChargePointVendor,
+                                              ChargePointModel,
+                                              chargePointSerialNumber,
+                                              chargeBoxSerialNumber,
+                                              firmwareVersion,
+                                              iccid,
+                                              imsi,
+                                              meterType,
+                                              meterSerialNumber,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData,
+
+                                              RequestId,
+                                              RequestTimestamp,
+                                              RequestTimeout,
+                                              EventTrackingId,
+                                              NetworkPath
+
+                                          );
+
+                if (CustomBootNotificationRequestParser is not null)
+                    BootNotificationRequest = CustomBootNotificationRequestParser(CBOR,
+                                                                                 BootNotificationRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                BootNotificationRequest = null;
+                ErrorResponse = "The given CBOR representation of a BootNotification request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomBootNotificationRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this BootNotification request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom BootNotification requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<BootNotificationRequest>? CustomBootNotificationRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("chargePointVendor",         CBORValue.FromText(ChargePointVendor)),
+                           ("chargePointModel",          CBORValue.FromText(ChargePointModel)),
+                           ("chargePointSerialNumber",   OCPPCBORExtensions.Text(ChargePointSerialNumber)),
+                           ("chargeBoxSerialNumber",     OCPPCBORExtensions.Text(ChargeBoxSerialNumber)),
+                           ("firmwareVersion",           OCPPCBORExtensions.Text(FirmwareVersion)),
+                           ("iccid",                     OCPPCBORExtensions.Text(Iccid)),
+                           ("imsi",                      OCPPCBORExtensions.Text(IMSI)),
+                           ("meterType",                 OCPPCBORExtensions.Text(MeterType)),
+                           ("meterSerialNumber",         OCPPCBORExtensions.Text(MeterSerialNumber)),
+                           ("signatures",               OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomBootNotificationRequestSerializer is not null
+                       ? CustomBootNotificationRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

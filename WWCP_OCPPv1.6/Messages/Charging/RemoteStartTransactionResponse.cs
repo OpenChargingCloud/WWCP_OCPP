@@ -458,6 +458,132 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out RemoteStartTransactionResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a RemoteStartTransaction response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="RemoteStartTransactionResponse">The RemoteStartTransaction response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomRemoteStartTransactionResponseParser">A delegate to read custom RemoteStartTransaction responses.</param>
+        public static Boolean TryParseCBOR(RemoteStartTransactionRequest                              Request,
+                                           CBORValue                                                  CBOR,
+                                           SourceRouting                                              Destination,
+                                           NetworkPath                                                NetworkPath,
+                                           [NotNullWhen(true)]  out RemoteStartTransactionResponse?   RemoteStartTransactionResponse,
+                                           [NotNullWhen(false)] out String?                           ErrorResponse,
+                                           DateTimeOffset?                                            ResponseTimestamp                            = null,
+                                           CustomCBORParserDelegate<RemoteStartTransactionResponse>?  CustomRemoteStartTransactionResponseParser   = null)
+        {
+
+            try
+            {
+
+                RemoteStartTransactionResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a RemoteStartTransaction response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "remote start stop status",
+                                             out var RemoteStartStopStatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                var RemoteStartStopStatus = RemoteStartStopStatusExtensions.Parse(RemoteStartStopStatusText);
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                RemoteStartTransactionResponse = new RemoteStartTransactionResponse(
+
+                                                     Request,
+                                                     RemoteStartStopStatus,
+
+                                                     null,
+                                                     ResponseTimestamp,
+
+                                                     Destination,
+                                                     NetworkPath,
+
+                                                     null,
+                                                     null,
+                                                     Signatures,
+
+                                                     CustomData
+
+                                                 );
+
+                if (CustomRemoteStartTransactionResponseParser is not null)
+                    RemoteStartTransactionResponse = CustomRemoteStartTransactionResponseParser(CBOR,
+                                                                                               RemoteStartTransactionResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                RemoteStartTransactionResponse = null;
+                ErrorResponse = "The given CBOR representation of a RemoteStartTransaction response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomRemoteStartTransactionResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this RemoteStartTransaction response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomRemoteStartTransactionResponseSerializer">A delegate to serialize custom RemoteStartTransaction responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<RemoteStartTransactionResponse>? CustomRemoteStartTransactionResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomRemoteStartTransactionResponseSerializer is not null
+                       ? CustomRemoteStartTransactionResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

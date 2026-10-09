@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.DataTypes
         /// A JSON tree with every number as a decimal and every timestamp as a
         /// UTC instant, and its keys in order.
         /// </summary>
-        private static JToken Normalized(JToken Token)
+        internal static JToken Normalized(JToken Token)
 
             => Token switch {
 

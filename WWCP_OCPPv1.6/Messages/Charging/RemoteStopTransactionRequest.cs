@@ -472,6 +472,140 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out RemoteStopTransactionRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a RemoteStopTransaction request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="RemoteStopTransactionRequest">The RemoteStopTransaction request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomRemoteStopTransactionRequestParser">A delegate to read custom RemoteStopTransaction requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                CBOR,
+                                           Request_Id                                               RequestId,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out RemoteStopTransactionRequest?   RemoteStopTransactionRequest,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          RequestTimestamp                           = null,
+                                           TimeSpan?                                                RequestTimeout                             = null,
+                                           EventTracking_Id?                                        EventTrackingId                            = null,
+                                           CustomCBORParserDelegate<RemoteStopTransactionRequest>?  CustomRemoteStopTransactionRequestParser   = null)
+        {
+
+            try
+            {
+
+                RemoteStopTransactionRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a RemoteStopTransaction request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("transactionId",
+                                               "transaction identification",
+                                               out var TransactionIdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (TransactionIdNumber > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Transaction_Id.TryParse((UInt64) TransactionIdNumber, out var TransactionId))
+                {
+                    ErrorResponse = $"Invalid transaction identification '{TransactionIdNumber}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                RemoteStopTransactionRequest = new RemoteStopTransactionRequest(
+
+                                                   Destination,
+                                                   TransactionId,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData,
+
+                                                   RequestId,
+                                                   RequestTimestamp,
+                                                   RequestTimeout,
+                                                   EventTrackingId,
+                                                   NetworkPath
+
+                                               );
+
+                if (CustomRemoteStopTransactionRequestParser is not null)
+                    RemoteStopTransactionRequest = CustomRemoteStopTransactionRequestParser(CBOR,
+                                                                                           RemoteStopTransactionRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                RemoteStopTransactionRequest = null;
+                ErrorResponse = "The given CBOR representation of a RemoteStopTransaction request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomRemoteStopTransactionRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this RemoteStopTransaction request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomRemoteStopTransactionRequestSerializer">A delegate to serialize custom RemoteStopTransaction requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<RemoteStopTransactionRequest>? CustomRemoteStopTransactionRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("transactionId",             CBORValue.FromUInt64(TransactionId.Value)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomRemoteStopTransactionRequestSerializer is not null
+                       ? CustomRemoteStopTransactionRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

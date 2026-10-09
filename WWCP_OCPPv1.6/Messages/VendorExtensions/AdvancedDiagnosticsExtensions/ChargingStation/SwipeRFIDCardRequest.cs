@@ -433,6 +433,197 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SwipeRFIDCardRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SwipeRFIDCard request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SwipeRFIDCardRequest">The SwipeRFIDCard request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSwipeRFIDCardRequestParser">A delegate to read custom SwipeRFIDCard requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                        CBOR,
+                                           Request_Id                                       RequestId,
+                                           SourceRouting                                    Destination,
+                                           NetworkPath                                      NetworkPath,
+                                           [NotNullWhen(true)]  out SwipeRFIDCardRequest?   SwipeRFIDCardRequest,
+                                           [NotNullWhen(false)] out String?                 ErrorResponse,
+                                           DateTimeOffset?                                  RequestTimestamp                   = null,
+                                           TimeSpan?                                        RequestTimeout                     = null,
+                                           EventTracking_Id?                                EventTrackingId                    = null,
+                                           CustomCBORParserDelegate<SwipeRFIDCardRequest>?  CustomSwipeRFIDCardRequestParser   = null)
+        {
+
+            try
+            {
+
+                SwipeRFIDCardRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SwipeRFIDCard request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("idTag",
+                                             "identification tag",
+                                             out var idTagText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!global::cloud.charging.open.protocols.OCPPv1_6.IdToken.TryParse(idTagText, out var idTag))
+                {
+                    ErrorResponse = $"Invalid identification tag '{idTagText}'!";
+                    return false;
+                }
+
+                Connector_Id? readerId = null;
+
+                if (CBOR.ParseOptionalUInt64("readerId",
+                                             "reader identification",
+                                             out var readerIdNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (readerIdNumber is not UInt64 readerIdValue || readerIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Connector_Id.TryParse((UInt64) readerIdValue, out var readerIdId))
+                    {
+                        ErrorResponse = $"Invalid reader identification '{readerIdNumber}'!";
+                        return false;
+                    }
+
+                    readerId = readerIdId;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                IdTagSimulationMode? simulationMode = null;
+
+                if (CBOR.ParseOptionalText("simulationMode",
+                                           "simulation mode",
+                                           out var simulationModeText,
+                                           out ErrorResponse))
+                {
+
+                    if (!global::cloud.charging.open.protocols.OCPPv1_6.IdTagSimulationMode.TryParse(simulationModeText!, out var simulationModeValue))
+                    {
+                        ErrorResponse = $"Invalid simulation mode '{simulationModeText}'!";
+                        return false;
+                    }
+
+                    simulationMode = simulationModeValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalValue("processingDelay",
+                                        "processing delay",
+                                        OCPPCBORExtensions.TryParseDuration,
+                                        out TimeSpan? processingDelay,
+                                        out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? customData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SwipeRFIDCardRequest = new SwipeRFIDCardRequest(
+
+                                           Destination,
+                                           idTag,
+                                           readerId,
+                                           simulationMode,
+                                           processingDelay,
+
+                                           null,
+                                           null,
+                                           signatures,
+
+                                           customData,
+
+                                           RequestId,
+                                           RequestTimestamp,
+                                           RequestTimeout,
+                                           EventTrackingId,
+                                           NetworkPath
+
+                                       );
+
+                if (CustomSwipeRFIDCardRequestParser is not null)
+                    SwipeRFIDCardRequest = CustomSwipeRFIDCardRequestParser(CBOR,
+                                                                           SwipeRFIDCardRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SwipeRFIDCardRequest = null;
+                ErrorResponse = "The given CBOR representation of a SwipeRFIDCard request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSwipeRFIDCardRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SwipeRFIDCard request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSwipeRFIDCardRequestSerializer">A delegate to serialize custom SwipeRFIDCard requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SwipeRFIDCardRequest>? CustomSwipeRFIDCardRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("idTag",                     CBORValue.FromText(IdTag.ToString())),
+                           ("readerId",                  OCPPCBORExtensions.UInt(ReaderId?.Value)),
+                           ("simulationMode",            OCPPCBORExtensions.Text(SimulationMode?.ToString())),
+                           ("processingDelay",           ProcessingDelay?.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSwipeRFIDCardRequestSerializer is not null
+                       ? CustomSwipeRFIDCardRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 
