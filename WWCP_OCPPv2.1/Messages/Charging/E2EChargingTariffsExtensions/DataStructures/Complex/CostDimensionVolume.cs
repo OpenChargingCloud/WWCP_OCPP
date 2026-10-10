@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The cost dimension.
         /// </summary>
         [Mandatory]
-        public CostDimension  Type      { get; }
+        public CDRCostDimension  Type      { get; }
 
         /// <summary>
         /// The volume of the dimension consumed, measured according to the dimension type.
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Type">A cost dimension.</param>
         /// <param name="Volume">A volume of the dimension consumed, measured according to the dimension type.</param>
-        public CostDimensionVolume(CostDimension  Type,
+        public CostDimensionVolume(CDRCostDimension  Type,
                                    Decimal        Volume)
         {
 
@@ -143,8 +143,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("type",
                                          "cost dimension type",
-                                         CostDimension.TryParse,
-                                         out CostDimension Type,
+                                         CDRCostDimension.TryParse,
+                                         out CDRCostDimension Type,
                                          out ErrorResponse))
                 {
                     return false;

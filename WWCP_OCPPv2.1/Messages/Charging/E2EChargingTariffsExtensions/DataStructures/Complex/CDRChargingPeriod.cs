@@ -35,9 +35,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A charging period.
     /// </summary>
-    public class ChargingPeriod : ACustomData,
-                                  IEquatable<ChargingPeriod>,
-                                  IComparable<ChargingPeriod>,
+    public class CDRChargingPeriod : ACustomData,
+                                  IEquatable<CDRChargingPeriod>,
+                                  IComparable<CDRChargingPeriod>,
                                   IComparable
     {
 
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Costs">An optional enumeration of volume per cost dimension for this charging period.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public ChargingPeriod(TimeSpan                           StartPeriod,
+        public CDRChargingPeriod(TimeSpan                           StartPeriod,
                               Tariff_Id?                 ChargingTariffId   = null,
                               IEnumerable<CostDimensionVolume>?  Costs              = null,
                               CustomData?                        CustomData         = null)
@@ -111,21 +111,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) Parse   (JSON, CustomChargingPeriodParser = null)
+        #region (static) Parse   (JSON, CustomCDRChargingPeriodParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a charging period.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomChargingPeriodParser">A delegate to parse custom charging period JSON objects.</param>
-        public static ChargingPeriod Parse(JObject                                       JSON,
-                                           CustomJObjectParserDelegate<ChargingPeriod>?  CustomChargingPeriodParser   = null)
+        /// <param name="CustomCDRChargingPeriodParser">A delegate to parse custom charging period JSON objects.</param>
+        public static CDRChargingPeriod Parse(JObject                                       JSON,
+                                           CustomJObjectParserDelegate<CDRChargingPeriod>?  CustomCDRChargingPeriodParser   = null)
         {
 
             if (TryParse(JSON,
                          out var chargingPeriod,
                          out var errorResponse,
-                         CustomChargingPeriodParser) &&
+                         CustomCDRChargingPeriodParser) &&
                 chargingPeriod is not null)
             {
                 return chargingPeriod;
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out ChargingPeriod, out ErrorResponse, TariffIdURL = null, CustomTariffParser = null)
+        #region (static) TryParse(JSON, out CDRChargingPeriod, out ErrorResponse, TariffIdURL = null, CustomTariffParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -146,14 +146,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a charging period.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="ChargingPeriod">The parsed charging period.</param>
+        /// <param name="CDRChargingPeriod">The parsed charging period.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject              JSON,
-                                       out ChargingPeriod?  ChargingPeriod,
+                                       out CDRChargingPeriod?  CDRChargingPeriod,
                                        out String?          ErrorResponse)
 
             => TryParse(JSON,
-                        out ChargingPeriod,
+                        out CDRChargingPeriod,
                         out ErrorResponse,
                         null);
 
@@ -162,19 +162,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a charging period.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="ChargingPeriod">The parsed charging period.</param>
+        /// <param name="CDRChargingPeriod">The parsed charging period.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChargingPeriodParser">A delegate to parse custom charging period JSON objects.</param>
+        /// <param name="CustomCDRChargingPeriodParser">A delegate to parse custom charging period JSON objects.</param>
         public static Boolean TryParse(JObject                                       JSON,
-                                       out ChargingPeriod?                           ChargingPeriod,
+                                       out CDRChargingPeriod?                           CDRChargingPeriod,
                                        out String?                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<ChargingPeriod>?  CustomChargingPeriodParser   = null)
+                                       CustomJObjectParserDelegate<CDRChargingPeriod>?  CustomCDRChargingPeriodParser   = null)
         {
 
             try
             {
 
-                ChargingPeriod = default;
+                CDRChargingPeriod = default;
 
                 if (JSON?.HasValues != true)
                 {
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ChargingPeriod = new ChargingPeriod(
+                CDRChargingPeriod = new CDRChargingPeriod(
 
                                      StartPeriod,
                                      ChargingTariffId,
@@ -248,16 +248,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  );
 
-                if (CustomChargingPeriodParser is not null)
-                    ChargingPeriod = CustomChargingPeriodParser(JSON,
-                                                                ChargingPeriod);
+                if (CustomCDRChargingPeriodParser is not null)
+                    CDRChargingPeriod = CustomCDRChargingPeriodParser(JSON,
+                                                                CDRChargingPeriod);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ChargingPeriod  = default;
+                CDRChargingPeriod  = default;
                 ErrorResponse   = "The given JSON representation of a charging period is invalid: " + e.Message;
                 return false;
             }
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomTariffSerializer">A delegate to serialize custom tariff JSON objects.</param>
         /// <param name="CustomCostDimensionValueSerializer">A delegate to serialize custom cost dimension volume JSON objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingPeriod>?       CustomTariffSerializer               = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CDRChargingPeriod>?       CustomTariffSerializer               = null,
                               CustomJObjectSerializerDelegate<CostDimensionVolume>?  CustomCostDimensionValueSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer           = null)
         {
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this charging period.
         /// </summary>
-        public ChargingPeriod Clone()
+        public CDRChargingPeriod Clone()
 
             => new (
 
@@ -334,8 +334,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingPeriod1">A charging period.</param>
         /// <param name="ChargingPeriod2">Another charging period.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingPeriod? ChargingPeriod1,
-                                           ChargingPeriod? ChargingPeriod2)
+        public static Boolean operator == (CDRChargingPeriod? ChargingPeriod1,
+                                           CDRChargingPeriod? ChargingPeriod2)
         {
 
             if (Object.ReferenceEquals(ChargingPeriod1, ChargingPeriod2))
@@ -358,8 +358,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingPeriod1">A charging period.</param>
         /// <param name="ChargingPeriod2">Another charging period.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingPeriod? ChargingPeriod1,
-                                           ChargingPeriod? ChargingPeriod2)
+        public static Boolean operator != (CDRChargingPeriod? ChargingPeriod1,
+                                           CDRChargingPeriod? ChargingPeriod2)
 
             => !(ChargingPeriod1 == ChargingPeriod2);
 
@@ -373,8 +373,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingPeriod1">A charging period.</param>
         /// <param name="ChargingPeriod2">Another charging period.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingPeriod? ChargingPeriod1,
-                                          ChargingPeriod? ChargingPeriod2)
+        public static Boolean operator < (CDRChargingPeriod? ChargingPeriod1,
+                                          CDRChargingPeriod? ChargingPeriod2)
 
             => ChargingPeriod1 is null
                    ? throw new ArgumentNullException(nameof(ChargingPeriod1), "The given charging period must not be null!")
@@ -390,8 +390,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingPeriod1">A charging period.</param>
         /// <param name="ChargingPeriod2">Another charging period.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingPeriod? ChargingPeriod1,
-                                           ChargingPeriod? ChargingPeriod2)
+        public static Boolean operator <= (CDRChargingPeriod? ChargingPeriod1,
+                                           CDRChargingPeriod? ChargingPeriod2)
 
             => !(ChargingPeriod1 > ChargingPeriod2);
 
@@ -405,8 +405,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingPeriod1">A charging period.</param>
         /// <param name="ChargingPeriod2">Another charging period.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingPeriod? ChargingPeriod1,
-                                          ChargingPeriod? ChargingPeriod2)
+        public static Boolean operator > (CDRChargingPeriod? ChargingPeriod1,
+                                          CDRChargingPeriod? ChargingPeriod2)
 
             => ChargingPeriod1 is null
                    ? throw new ArgumentNullException(nameof(ChargingPeriod1), "The given charging period must not be null!")
@@ -422,8 +422,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingPeriod1">A charging period.</param>
         /// <param name="ChargingPeriod2">Another charging period.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingPeriod? ChargingPeriod1,
-                                           ChargingPeriod? ChargingPeriod2)
+        public static Boolean operator >= (CDRChargingPeriod? ChargingPeriod1,
+                                           CDRChargingPeriod? ChargingPeriod2)
 
             => !(ChargingPeriod1 < ChargingPeriod2);
 
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region IComparable<ChargingPeriod> Members
+        #region IComparable<CDRChargingPeriod> Members
 
         #region CompareTo(Object)
 
@@ -441,29 +441,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging period to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is ChargingPeriod chargingPeriod
+            => Object is CDRChargingPeriod chargingPeriod
                    ? CompareTo(chargingPeriod)
                    : throw new ArgumentException("The given object is not a charging period!",
                                                  nameof(Object));
 
         #endregion
 
-        #region CompareTo(ChargingPeriod)
+        #region CompareTo(CDRChargingPeriod)
 
         /// <summary>
         /// Compares two charging periods.
         /// </summary>
-        /// <param name="ChargingPeriod">A charging period to compare with.</param>
-        public Int32 CompareTo(ChargingPeriod? ChargingPeriod)
+        /// <param name="CDRChargingPeriod">A charging period to compare with.</param>
+        public Int32 CompareTo(CDRChargingPeriod? CDRChargingPeriod)
         {
 
-            if (ChargingPeriod is null)
-                throw new ArgumentNullException(nameof(ChargingPeriod), "The given charging period must not be null!");
+            if (CDRChargingPeriod is null)
+                throw new ArgumentNullException(nameof(CDRChargingPeriod), "The given charging period must not be null!");
 
-            var c = StartPeriod.CompareTo(ChargingPeriod.StartPeriod);
+            var c = StartPeriod.CompareTo(CDRChargingPeriod.StartPeriod);
 
-            if (c == 0 && ChargingTariffId.HasValue && ChargingPeriod.ChargingTariffId.HasValue)
-                c = ChargingTariffId.Value.CompareTo(ChargingPeriod.ChargingTariffId.Value);
+            if (c == 0 && ChargingTariffId.HasValue && CDRChargingPeriod.ChargingTariffId.HasValue)
+                c = ChargingTariffId.Value.CompareTo(CDRChargingPeriod.ChargingTariffId.Value);
 
             // Costs
 
@@ -475,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region IEquatable<ChargingPeriod> Members
+        #region IEquatable<CDRChargingPeriod> Members
 
         #region Equals(Object)
 
@@ -485,28 +485,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging period to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ChargingPeriod chargingPeriod &&
+            => Object is CDRChargingPeriod chargingPeriod &&
                    Equals(chargingPeriod);
 
         #endregion
 
-        #region Equals(ChargingPeriod)
+        #region Equals(CDRChargingPeriod)
 
         /// <summary>
         /// Compares two charging periods for equality.
         /// </summary>
-        /// <param name="ChargingPeriod">A charging period to compare with.</param>
-        public Boolean Equals(ChargingPeriod? ChargingPeriod)
+        /// <param name="CDRChargingPeriod">A charging period to compare with.</param>
+        public Boolean Equals(CDRChargingPeriod? CDRChargingPeriod)
 
-            => ChargingPeriod is not null &&
+            => CDRChargingPeriod is not null &&
 
-               StartPeriod.Equals(ChargingPeriod.StartPeriod) &&
+               StartPeriod.Equals(CDRChargingPeriod.StartPeriod) &&
 
-            ((!ChargingTariffId.HasValue && !ChargingPeriod.ChargingTariffId.HasValue) ||
-              (ChargingTariffId.HasValue &&  ChargingPeriod.ChargingTariffId.HasValue && ChargingTariffId.Value.Equals(ChargingPeriod.ChargingTariffId.Value))) &&
+            ((!ChargingTariffId.HasValue && !CDRChargingPeriod.ChargingTariffId.HasValue) ||
+              (ChargingTariffId.HasValue &&  CDRChargingPeriod.ChargingTariffId.HasValue && ChargingTariffId.Value.Equals(CDRChargingPeriod.ChargingTariffId.Value))) &&
 
-               Costs.Count().Equals(ChargingPeriod.Costs.Count()) &&
-               Costs.All(ChargingPeriod.Costs.Contains);
+               Costs.Count().Equals(CDRChargingPeriod.Costs.Count()) &&
+               Costs.All(CDRChargingPeriod.Costs.Contains);
 
         #endregion
 

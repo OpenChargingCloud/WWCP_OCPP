@@ -142,6 +142,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         [Optional]
         public Boolean?         EVSESleep    { get; }
 
+        /// <summary>
+        /// The optional cost of the transaction as the charging station calculated
+        /// it from its tariff.
+        /// </summary>
+        [Optional]
+        public CostDetails?     CostDetails  { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -175,6 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EVSESleep">True when the EVSE electronics are in sleep mode for this transaction (default: false).</param>
+        /// <param name="CostDetails">The optional cost of the transaction as the charging station calculated it from its tariff.</param>
         public TransactionEventRequest(SourceRouting             Destination,
                                        TransactionEvents         EventType,
                                        DateTimeOffset            Timestamp,
@@ -204,7 +212,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        NetworkPath?              NetworkPath             = null,
                                        SerializationFormats?     SerializationFormat     = null,
                                        CancellationToken         CancellationToken       = default,
-                                       Boolean?                  EVSESleep               = null)
+                                       Boolean?                  EVSESleep               = null,
+                                       CostDetails?              CostDetails             = null)
 
             : base(Destination,
                    nameof(TransactionEventRequest)[..^7],
@@ -225,7 +234,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.EVSESleep = EVSESleep;
+            this.EVSESleep    = EVSESleep;
+            this.CostDetails  = CostDetails;
 
             this.EventType              = EventType;
             this.Timestamp              = Timestamp;
@@ -260,6 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                           (this.PreconditioningStatus?.GetHashCode() ?? 0) *  5 ^
                            this.MeterValues.           CalcHashCode()      *  3 ^
                           (this.EVSESleep?.GetHashCode() ?? 0) * 31 ^
+                          (this.CostDetails?.GetHashCode() ?? 0) * 47 ^
                            base.                       GetHashCode();
 
             }
@@ -1416,6 +1427,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region CostDetails          [optional]
+
+                if (JSON.ParseOptionalJSON("costDetails",
+                                           "cost details",
+                                           OCPPv2_1.CostDetails.TryParse,
+                                           out CostDetails? CostDetails,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Signatures               [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -1475,7 +1500,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               RequestTimeout,
                                               EventTrackingId,
                                               NetworkPath,
-                                              EVSESleep: EVSESleep
+                                              EVSESleep:    EVSESleep,
+                                              CostDetails:  CostDetails
 
                                           );
 
@@ -1581,6 +1607,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            EVSESleep.HasValue
                                ? new JProperty("evseSleep",   EVSESleep.Value)
+                               : null,
+
+                           CostDetails is not null
+                               ? new JProperty("costDetails", CostDetails.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
                                : null,
 
                            Signatures.Any()
@@ -1816,6 +1846,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 if (ErrorResponse is not null)
                     return false;
 
+                CBOR.ParseOptional("costDetails",
+                                   "cost details",
+                                   OCPPv2_1.CostDetails.TryParseCBOR,
+                                   out CostDetails? CostDetails,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
                 CBOR.ParseOptionalList<Signature>("signatures",
                                                "cryptographic signatures",
                                                OCPPCBORExtensions.TryParseSignature,
@@ -1865,7 +1904,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               RequestTimeout,
                                               EventTrackingId,
                                               NetworkPath,
-                                              EVSESleep: EVSESleep
+                                              EVSESleep:    EVSESleep,
+                                              CostDetails:  CostDetails
 
                                           );
 
@@ -1913,6 +1953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            ("meterValue",                OCPPCBORExtensions.Array(MeterValues, x => x.ToCBOR())),
                            ("preconditioningStatus",     OCPPCBORExtensions.Text(PreconditioningStatus?.ToString())),
                            ("evseSleep",                 OCPPCBORExtensions.Flag(EVSESleep)),
+                           ("costDetails",               CostDetails?.ToCBOR()),
                            ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
                            ("customData",                CustomData?.ToCBOR())
                        );
@@ -2027,6 +2068,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                MeterValues.All(energyTransferMode => TransactionEventRequest.MeterValues.Contains(energyTransferMode)) &&
 
                Nullable.Equals(EVSESleep, TransactionEventRequest.EVSESleep) &&
+
+             ((CostDetails is null     && TransactionEventRequest.CostDetails is null) ||
+              (CostDetails is not null && CostDetails.Equals(TransactionEventRequest.CostDetails))) &&
 
                base.    GenericEquals(TransactionEventRequest);
 

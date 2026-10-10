@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public IEnumerable<MeteringValue>        MeteringValues            { get; }
 
-        public IEnumerable<ChargingPeriod>       ChargingPeriods           { get; }
+        public IEnumerable<CDRChargingPeriod>       ChargingPeriods           { get; }
 
 
 
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    IEnumerable<CDR_Id>?              Replaces             = null,
                    IEnumerable<CDR_Id>?              References           = null,
                    Tariff?                           ChargingTariff       = null,
-                   IEnumerable<ChargingPeriod>?      ChargingPeriods      = null,
+                   IEnumerable<CDRChargingPeriod>?      ChargingPeriods      = null,
 
                    DisplayTexts?                     Description          = null,
                    URL?                              URL                  = null,
@@ -1034,8 +1034,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("chargingPeriods",
                                               "charging periods",
-                                              ChargingPeriod.TryParse,
-                                              out HashSet<ChargingPeriod> ChargingPeriods,
+                                              CDRChargingPeriod.TryParse,
+                                              out HashSet<CDRChargingPeriod> ChargingPeriods,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

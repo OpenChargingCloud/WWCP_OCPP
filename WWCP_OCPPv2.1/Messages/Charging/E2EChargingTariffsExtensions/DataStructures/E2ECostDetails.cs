@@ -35,9 +35,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A read-only signable cost details.
     /// </summary>
-    public class CostDetails : ACustomSignableData,
-                               IEquatable<CostDetails>,
-                               IComparable<CostDetails>,
+    public class E2ECostDetails : ACustomSignableData,
+                               IEquatable<E2ECostDetails>,
+                               IComparable<E2ECostDetails>,
                                IComparable
     {
 
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public Currency                     Currency                { get; }
 
-        public IEnumerable<ChargingPeriod>  ChargingPeriods         { get; }
+        public IEnumerable<CDRChargingPeriod>  ChargingPeriods         { get; }
 
 
         public Price                        TotalCost               { get; }
@@ -90,10 +90,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public CostDetails(Currency                      Currency,
+        public E2ECostDetails(Currency                      Currency,
                            Price                         TotalCost,
 
-                           IEnumerable<ChargingPeriod>?  ChargingPeriods        = null,
+                           IEnumerable<CDRChargingPeriod>?  ChargingPeriods        = null,
 
                            Price?                        TotalFixedCost         = null,
 
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Currency              = Currency;
             this.TotalCost             = TotalCost;
-            this.ChargingPeriods       = ChargingPeriods?.Distinct() ?? Array.Empty<ChargingPeriod>();
+            this.ChargingPeriods       = ChargingPeriods?.Distinct() ?? Array.Empty<CDRChargingPeriod>();
             this.TotalFixedCost        = TotalFixedCost;
             this.TotalEnergy           = TotalEnergy;
             this.TotalEnergyCost       = TotalEnergyCost;
@@ -157,21 +157,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) Parse   (JSON, CustomCostDetailsParser = null)
+        #region (static) Parse   (JSON, CustomE2ECostDetailsParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of cost details.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomCostDetailsParser">A delegate to parse custom cost details JSON objects.</param>
-        public static CostDetails Parse(JObject                                    JSON,
-                                        CustomJObjectParserDelegate<CostDetails>?  CustomCostDetailsParser    = null)
+        /// <param name="CustomE2ECostDetailsParser">A delegate to parse custom cost details JSON objects.</param>
+        public static E2ECostDetails Parse(JObject                                    JSON,
+                                        CustomJObjectParserDelegate<E2ECostDetails>?  CustomE2ECostDetailsParser    = null)
         {
 
             if (TryParse(JSON,
                          out var costDetails,
                          out var errorResponse,
-                         CustomCostDetailsParser) &&
+                         CustomE2ECostDetailsParser) &&
                 costDetails is not null)
             {
                 return costDetails;
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out CostDetails, out ErrorResponse, TariffIdURL = null, CustomTariffParser = null)
+        #region (static) TryParse(JSON, out E2ECostDetails, out ErrorResponse, TariffIdURL = null, CustomTariffParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -192,14 +192,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a cost details.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CostDetails">The parsed cost details.</param>
+        /// <param name="E2ECostDetails">The parsed cost details.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject           JSON,
-                                       out CostDetails?  CostDetails,
+                                       out E2ECostDetails?  E2ECostDetails,
                                        out String?       ErrorResponse)
 
             => TryParse(JSON,
-                        out CostDetails,
+                        out E2ECostDetails,
                         out ErrorResponse,
                         null);
 
@@ -208,19 +208,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a cost details.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CostDetails">The parsed cost details.</param>
+        /// <param name="E2ECostDetails">The parsed cost details.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCostDetailsParser">A delegate to parse custom cost details JSON objects.</param>
+        /// <param name="CustomE2ECostDetailsParser">A delegate to parse custom cost details JSON objects.</param>
         public static Boolean TryParse(JObject                                    JSON,
-                                       out CostDetails?                           CostDetails,
+                                       out E2ECostDetails?                           E2ECostDetails,
                                        out String?                                ErrorResponse,
-                                       CustomJObjectParserDelegate<CostDetails>?  CustomCostDetailsParser   = null)
+                                       CustomJObjectParserDelegate<E2ECostDetails>?  CustomE2ECostDetailsParser   = null)
         {
 
             try
             {
 
-                CostDetails = default;
+                E2ECostDetails = default;
 
                 if (JSON?.HasValues != true)
                 {
@@ -258,8 +258,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("chargingPeriods",
                                               "charging periods",
-                                              ChargingPeriod.TryParse,
-                                              out HashSet<ChargingPeriod> ChargingPeriods,
+                                              CDRChargingPeriod.TryParse,
+                                              out HashSet<CDRChargingPeriod> ChargingPeriods,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                CostDetails = new CostDetails(
+                E2ECostDetails = new E2ECostDetails(
 
                                   Currency,
                                   TotalCost,
@@ -441,16 +441,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                               );
 
-                if (CustomCostDetailsParser is not null)
-                    CostDetails = CustomCostDetailsParser(JSON,
-                                          CostDetails);
+                if (CustomE2ECostDetailsParser is not null)
+                    E2ECostDetails = CustomE2ECostDetailsParser(JSON,
+                                          E2ECostDetails);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                CostDetails    = default;
+                E2ECostDetails    = default;
                 ErrorResponse  = "The given JSON representation of a cost details is invalid: " + e.Message;
                 return false;
             }
@@ -459,12 +459,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomCostDetailsSerializer = null, CustomDisplayTextSerializer = null, ...)
+        #region ToJSON(CustomE2ECostDetailsSerializer = null, CustomDisplayTextSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCostDetailsSerializer">A delegate to serialize custom cost details JSON objects.</param>
+        /// <param name="CustomE2ECostDetailsSerializer">A delegate to serialize custom cost details JSON objects.</param>
         /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
         /// <param name="CustomTariffElementSerializer">A delegate to serialize custom costDetails element JSON objects.</param>
@@ -475,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CostDetails>?          CustomCostDetailsSerializer           = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<E2ECostDetails>?          CustomE2ECostDetailsSerializer           = null,
                               CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
                               CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
                               //CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
@@ -514,8 +514,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("customData",           CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null);
 
-            return CustomCostDetailsSerializer is not null
-                       ? CustomCostDetailsSerializer(this, json)
+            return CustomE2ECostDetailsSerializer is not null
+                       ? CustomE2ECostDetailsSerializer(this, json)
                        : json;
 
         }
@@ -527,7 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this cost details.
         /// </summary>
-        public CostDetails Clone()
+        public E2ECostDetails Clone()
 
             => new (
 
@@ -564,8 +564,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDetails1">Cost details.</param>
         /// <param name="CostDetails2">Another cost details.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (CostDetails? CostDetails1,
-                                           CostDetails? CostDetails2)
+        public static Boolean operator == (E2ECostDetails? CostDetails1,
+                                           E2ECostDetails? CostDetails2)
         {
 
             if (Object.ReferenceEquals(CostDetails1, CostDetails2))
@@ -588,8 +588,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDetails1">Cost details.</param>
         /// <param name="CostDetails2">Another cost details.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (CostDetails? CostDetails1,
-                                           CostDetails? CostDetails2)
+        public static Boolean operator != (E2ECostDetails? CostDetails1,
+                                           E2ECostDetails? CostDetails2)
 
             => !(CostDetails1 == CostDetails2);
 
@@ -603,8 +603,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDetails1">Cost details.</param>
         /// <param name="CostDetails2">Another cost details.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (CostDetails? CostDetails1,
-                                          CostDetails? CostDetails2)
+        public static Boolean operator < (E2ECostDetails? CostDetails1,
+                                          E2ECostDetails? CostDetails2)
 
             => CostDetails1 is null
                    ? throw new ArgumentNullException(nameof(CostDetails1), "The given cost details must not be null!")
@@ -620,8 +620,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDetails1">Cost details.</param>
         /// <param name="CostDetails2">Another cost details.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (CostDetails? CostDetails1,
-                                           CostDetails? CostDetails2)
+        public static Boolean operator <= (E2ECostDetails? CostDetails1,
+                                           E2ECostDetails? CostDetails2)
 
             => !(CostDetails1 > CostDetails2);
 
@@ -635,8 +635,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDetails1">Cost details.</param>
         /// <param name="CostDetails2">Another cost details.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (CostDetails? CostDetails1,
-                                          CostDetails? CostDetails2)
+        public static Boolean operator > (E2ECostDetails? CostDetails1,
+                                          E2ECostDetails? CostDetails2)
 
             => CostDetails1 is null
                    ? throw new ArgumentNullException(nameof(CostDetails1), "The given cost details must not be null!")
@@ -652,8 +652,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDetails1">Cost details.</param>
         /// <param name="CostDetails2">Another cost details.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (CostDetails? CostDetails1,
-                                           CostDetails? CostDetails2)
+        public static Boolean operator >= (E2ECostDetails? CostDetails1,
+                                           E2ECostDetails? CostDetails2)
 
             => !(CostDetails1 < CostDetails2);
 
@@ -661,7 +661,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region IComparable<CostDetails> Members
+        #region IComparable<E2ECostDetails> Members
 
         #region CompareTo(Object)
 
@@ -671,29 +671,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A cost details to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is CostDetails costDetails
+            => Object is E2ECostDetails costDetails
                    ? CompareTo(costDetails)
                    : throw new ArgumentException("The given object is not a cost details object!",
                                                  nameof(Object));
 
         #endregion
 
-        #region CompareTo(CostDetails)
+        #region CompareTo(E2ECostDetails)
 
         /// <summary>
         /// Compares two cost detailss.
         /// </summary>
-        /// <param name="CostDetails">A cost details to compare with.</param>
-        public Int32 CompareTo(CostDetails? CostDetails)
+        /// <param name="E2ECostDetails">A cost details to compare with.</param>
+        public Int32 CompareTo(E2ECostDetails? E2ECostDetails)
         {
 
-            if (CostDetails is null)
-                throw new ArgumentNullException(nameof(CostDetails), "The given cost details must not be null!");
+            if (E2ECostDetails is null)
+                throw new ArgumentNullException(nameof(E2ECostDetails), "The given cost details must not be null!");
 
-            var c = Currency.   CompareTo(CostDetails.Currency);
+            var c = Currency.   CompareTo(E2ECostDetails.Currency);
 
             if (c == 0)
-                c = TotalCost.  CompareTo(CostDetails.TotalCost);
+                c = TotalCost.  CompareTo(E2ECostDetails.TotalCost);
 
             //if (c == 0)
             //    c = Created.    CompareTo(Tariff.Created);
@@ -720,7 +720,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region IEquatable<CostDetails> Members
+        #region IEquatable<E2ECostDetails> Members
 
         #region Equals(Object)
 
@@ -730,49 +730,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A cost details to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is CostDetails costDetails &&
+            => Object is E2ECostDetails costDetails &&
                    Equals(costDetails);
 
         #endregion
 
-        #region Equals(CostDetails)
+        #region Equals(E2ECostDetails)
 
         /// <summary>
         /// Compares two cost detailss for equality.
         /// </summary>
-        /// <param name="CostDetails">A cost details to compare with.</param>
-        public Boolean Equals(CostDetails? CostDetails)
+        /// <param name="E2ECostDetails">A cost details to compare with.</param>
+        public Boolean Equals(E2ECostDetails? E2ECostDetails)
 
-            => CostDetails is not null &&
+            => E2ECostDetails is not null &&
 
-               //Id.                     Equals(CostDetails.Id)          &&
-               Currency.               Equals(CostDetails.Currency);
+               //Id.                     Equals(E2ECostDetails.Id)          &&
+               Currency.               Equals(E2ECostDetails.Currency);
 
-            //((!TariffType.HasValue    && !CostDetails.TariffType.HasValue) ||
-            //  (TariffType.HasValue    &&  CostDetails.TariffType.HasValue    && TariffType.Value.Equals(CostDetails.TariffType.Value))) &&
+            //((!TariffType.HasValue    && !E2ECostDetails.TariffType.HasValue) ||
+            //  (TariffType.HasValue    &&  E2ECostDetails.TariffType.HasValue    && TariffType.Value.Equals(E2ECostDetails.TariffType.Value))) &&
 
-            //((!TariffType.HasValue    && !CostDetails.TariffType.HasValue) ||
-            //  (TariffType.HasValue    &&  CostDetails.TariffType.HasValue    && TariffType.Value.Equals(CostDetails.TariffType.Value))) &&
+            //((!TariffType.HasValue    && !E2ECostDetails.TariffType.HasValue) ||
+            //  (TariffType.HasValue    &&  E2ECostDetails.TariffType.HasValue    && TariffType.Value.Equals(E2ECostDetails.TariffType.Value))) &&
 
-            //((!MinPrice.  HasValue    && !CostDetails.MinPrice.  HasValue) ||
-            //  (MinPrice.  HasValue    &&  CostDetails.MinPrice.  HasValue    && MinPrice.  Value.Equals(CostDetails.MinPrice.  Value))) &&
+            //((!MinPrice.  HasValue    && !E2ECostDetails.MinPrice.  HasValue) ||
+            //  (MinPrice.  HasValue    &&  E2ECostDetails.MinPrice.  HasValue    && MinPrice.  Value.Equals(E2ECostDetails.MinPrice.  Value))) &&
 
-            //((!MaxPrice.  HasValue    && !CostDetails.MaxPrice.  HasValue) ||
-            //  (MaxPrice.  HasValue    &&  CostDetails.MaxPrice.  HasValue    && MaxPrice.  Value.Equals(CostDetails.MaxPrice.  Value))) &&
+            //((!MaxPrice.  HasValue    && !E2ECostDetails.MaxPrice.  HasValue) ||
+            //  (MaxPrice.  HasValue    &&  E2ECostDetails.MaxPrice.  HasValue    && MaxPrice.  Value.Equals(E2ECostDetails.MaxPrice.  Value))) &&
 
-            //NotBefore.     Equals(CostDetails.NotBefore) &&
+            //NotBefore.     Equals(E2ECostDetails.NotBefore) &&
 
-            //((!NotAfter.       HasValue    && !CostDetails.NotAfter.       HasValue) ||
-            //  (NotAfter.       HasValue    &&  CostDetails.NotAfter.       HasValue    && NotAfter.       Value.Equals(CostDetails.NotAfter.       Value))) &&
+            //((!NotAfter.       HasValue    && !E2ECostDetails.NotAfter.       HasValue) ||
+            //  (NotAfter.       HasValue    &&  E2ECostDetails.NotAfter.       HasValue    && NotAfter.       Value.Equals(E2ECostDetails.NotAfter.       Value))) &&
 
-            // ((EnergyMix  is     null &&  CostDetails.EnergyMix  is null)  ||
-            //  (EnergyMix  is not null &&  CostDetails.EnergyMix  is not null && EnergyMix.       Equals(CostDetails.EnergyMix)))        &&
+            // ((EnergyMix  is     null &&  E2ECostDetails.EnergyMix  is null)  ||
+            //  (EnergyMix  is not null &&  E2ECostDetails.EnergyMix  is not null && EnergyMix.       Equals(E2ECostDetails.EnergyMix)))        &&
 
-            //   TariffElements.Count().Equals(CostDetails.TariffElements.Count())     &&
-            //   TariffElements.All(costDetailsElement => CostDetails.TariffElements.Contains(costDetailsElement)) &&
+            //   TariffElements.Count().Equals(E2ECostDetails.TariffElements.Count())     &&
+            //   TariffElements.All(costDetailsElement => E2ECostDetails.TariffElements.Contains(costDetailsElement)) &&
 
-            //   Description.Count().Equals(CostDetails.Description.Count())     &&
-            //   Description.All(displayText => CostDetails.Description.Contains(displayText));
+            //   Description.Count().Equals(E2ECostDetails.Description.Count())     &&
+            //   Description.All(displayText => E2ECostDetails.Description.Contains(displayText));
 
         #endregion
 

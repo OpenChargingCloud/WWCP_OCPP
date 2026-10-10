@@ -28,22 +28,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// Extension methods for cost dimensions.
     /// </summary>
-    public static class CostDimensionExtensions
+    public static class CDRCostDimensionExtensions
     {
 
         /// <summary>
         /// Indicates whether this cost dimension is null or empty.
         /// </summary>
-        /// <param name="CostDimension">A cost dimension.</param>
-        public static Boolean IsNullOrEmpty(this CostDimension? CostDimension)
-            => !CostDimension.HasValue || CostDimension.Value.IsNullOrEmpty;
+        /// <param name="CDRCostDimension">A cost dimension.</param>
+        public static Boolean IsNullOrEmpty(this CDRCostDimension? CDRCostDimension)
+            => !CDRCostDimension.HasValue || CDRCostDimension.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this cost dimension is NOT null or empty.
         /// </summary>
-        /// <param name="CostDimension">A cost dimension.</param>
-        public static Boolean IsNotNullOrEmpty(this CostDimension? CostDimension)
-            => CostDimension.HasValue && CostDimension.Value.IsNotNullOrEmpty;
+        /// <param name="CDRCostDimension">A cost dimension.</param>
+        public static Boolean IsNotNullOrEmpty(this CDRCostDimension? CDRCostDimension)
+            => CDRCostDimension.HasValue && CDRCostDimension.Value.IsNotNullOrEmpty;
 
     }
 
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The unique identification of a cost dimension.
     /// </summary>
-    public readonly struct CostDimension : IId<CostDimension>
+    public readonly struct CDRCostDimension : IId<CDRCostDimension>
     {
 
         #region Data
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new cost dimension based on the given text.
         /// </summary>
         /// <param name="Text">The text representation of a cost dimension.</param>
-        private CostDimension(String Text)
+        private CDRCostDimension(String Text)
         {
             this.InternalId = Text;
         }
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given text as a cost dimension.
         /// </summary>
         /// <param name="Text">A text representation of a cost dimension.</param>
-        public static CostDimension Parse(String Text)
+        public static CDRCostDimension Parse(String Text)
         {
 
             if (TryParse(Text, out var costDimension))
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text as a cost dimension.
         /// </summary>
         /// <param name="Text">A text representation of a cost dimension.</param>
-        public static CostDimension? TryParse(String Text)
+        public static CDRCostDimension? TryParse(String Text)
         {
 
             if (TryParse(Text, out var costDimension))
@@ -136,14 +136,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Text, out CostDimension)
+        #region (static) TryParse(Text, out CDRCostDimension)
 
         /// <summary>
         /// Try to parse the given text as a cost dimension.
         /// </summary>
         /// <param name="Text">A text representation of a cost dimension.</param>
-        /// <param name="CostDimension">The parsed cost dimension.</param>
-        public static Boolean TryParse(String Text, out CostDimension CostDimension)
+        /// <param name="CDRCostDimension">The parsed cost dimension.</param>
+        public static Boolean TryParse(String Text, out CDRCostDimension CDRCostDimension)
         {
 
             Text = Text.Trim();
@@ -152,14 +152,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
                 try
                 {
-                    CostDimension = new CostDimension(Text);
+                    CDRCostDimension = new CDRCostDimension(Text);
                     return true;
                 }
                 catch
                 { }
             }
 
-            CostDimension = default;
+            CDRCostDimension = default;
             return false;
 
         }
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this cost dimension.
         /// </summary>
-        public CostDimension Clone()
+        public CDRCostDimension Clone()
 
             => new (
                    InternalId.CloneString()
@@ -186,53 +186,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Total amount of energy (dis-)charged during this charging period, defined in kWh.
         /// When negative, more energy was feed into the grid then charged into the EV.
         /// </summary>
-        public static CostDimension kWh
+        public static CDRCostDimension kWh
             => new ("kWh");
 
         /// <summary>
         /// Sum of the maximum current over all phases, reached during this charging period.
         /// When negative, more energy was feed into the grid then charged into the EV.
         /// </summary>
-        public static CostDimension MaxA
+        public static CDRCostDimension MaxA
             => new ("MaxA");
 
         /// <summary>
         /// Sum of the minimum current over all phases, reached during this charging period.
         /// When negative, more energy was feed into the grid then charged into the EV.
         /// </summary>
-        public static CostDimension MinA
+        public static CDRCostDimension MinA
             => new ("MinA");
 
         /// <summary>
         /// Maximum power reached during this charging period.
         /// When negative, more energy was feed into the grid then charged into the EV.
         /// </summary>
-        public static CostDimension MaxKW
+        public static CDRCostDimension MaxKW
             => new ("MaxKW");
 
         /// <summary>
         /// Minumum power reached during this charging period.
         /// When negative, more energy was feed into the grid then charged into the EV.
         /// </summary>
-        public static CostDimension MinKW
+        public static CDRCostDimension MinKW
             => new ("MinKW");
 
         /// <summary>
         /// Time reserved for future charging during this charging period.
         /// </summary>
-        public static CostDimension ReservationHours
+        public static CDRCostDimension ReservationHours
             => new ("ReservationHours");
 
         /// <summary>
         /// Time charging during this charging period.
         /// </summary>
-        public static CostDimension ChargeHours
+        public static CDRCostDimension ChargeHours
             => new ("ChargeHours");
 
         /// <summary>
         /// Time not charging during this charging period.
         /// </summary>
-        public static CostDimension IdleHours
+        public static CDRCostDimension IdleHours
             => new ("IdleHours");
 
         #endregion
@@ -248,8 +248,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDimension1">A cost dimension.</param>
         /// <param name="CostDimension2">Another cost dimension.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator ==(CostDimension CostDimension1,
-                                           CostDimension CostDimension2)
+        public static Boolean operator ==(CDRCostDimension CostDimension1,
+                                           CDRCostDimension CostDimension2)
 
             => CostDimension1.Equals(CostDimension2);
 
@@ -263,8 +263,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDimension1">A cost dimension.</param>
         /// <param name="CostDimension2">Another cost dimension.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator !=(CostDimension CostDimension1,
-                                           CostDimension CostDimension2)
+        public static Boolean operator !=(CDRCostDimension CostDimension1,
+                                           CDRCostDimension CostDimension2)
 
             => !CostDimension1.Equals(CostDimension2);
 
@@ -278,8 +278,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDimension1">A cost dimension.</param>
         /// <param name="CostDimension2">Another cost dimension.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <(CostDimension CostDimension1,
-                                          CostDimension CostDimension2)
+        public static Boolean operator <(CDRCostDimension CostDimension1,
+                                          CDRCostDimension CostDimension2)
 
             => CostDimension1.CompareTo(CostDimension2) < 0;
 
@@ -293,8 +293,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDimension1">A cost dimension.</param>
         /// <param name="CostDimension2">Another cost dimension.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <=(CostDimension CostDimension1,
-                                           CostDimension CostDimension2)
+        public static Boolean operator <=(CDRCostDimension CostDimension1,
+                                           CDRCostDimension CostDimension2)
 
             => CostDimension1.CompareTo(CostDimension2) <= 0;
 
@@ -308,8 +308,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDimension1">A cost dimension.</param>
         /// <param name="CostDimension2">Another cost dimension.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >(CostDimension CostDimension1,
-                                          CostDimension CostDimension2)
+        public static Boolean operator >(CDRCostDimension CostDimension1,
+                                          CDRCostDimension CostDimension2)
 
             => CostDimension1.CompareTo(CostDimension2) > 0;
 
@@ -323,8 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CostDimension1">A cost dimension.</param>
         /// <param name="CostDimension2">Another cost dimension.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >=(CostDimension CostDimension1,
-                                           CostDimension CostDimension2)
+        public static Boolean operator >=(CDRCostDimension CostDimension1,
+                                           CDRCostDimension CostDimension2)
 
             => CostDimension1.CompareTo(CostDimension2) >= 0;
 
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region IComparable<CostDimension> Members
+        #region IComparable<CDRCostDimension> Members
 
         #region CompareTo(Object)
 
@@ -342,30 +342,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A cost dimension to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is CostDimension costDimension
+            => Object is CDRCostDimension costDimension
                    ? CompareTo(costDimension)
                    : throw new ArgumentException("The given object is not a cost dimension!",
                                                  nameof(Object));
 
         #endregion
 
-        #region CompareTo(CostDimension)
+        #region CompareTo(CDRCostDimension)
 
         /// <summary>
         /// Compares two cost dimensions.
         /// </summary>
-        /// <param name="CostDimension">A cost dimension to compare with.</param>
-        public Int32 CompareTo(CostDimension CostDimension)
+        /// <param name="CDRCostDimension">A cost dimension to compare with.</param>
+        public Int32 CompareTo(CDRCostDimension CDRCostDimension)
 
             => String.Compare(InternalId,
-                              CostDimension.InternalId,
+                              CDRCostDimension.InternalId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<CostDimension> Members
+        #region IEquatable<CDRCostDimension> Members
 
         #region Equals(Object)
 
@@ -375,21 +375,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A cost dimension to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is CostDimension costDimension &&
+            => Object is CDRCostDimension costDimension &&
                    Equals(costDimension);
 
         #endregion
 
-        #region Equals(CostDimension)
+        #region Equals(CDRCostDimension)
 
         /// <summary>
         /// Compares two cost dimensions for equality.
         /// </summary>
-        /// <param name="CostDimension">A cost dimension to compare with.</param>
-        public Boolean Equals(CostDimension CostDimension)
+        /// <param name="CDRCostDimension">A cost dimension to compare with.</param>
+        public Boolean Equals(CDRCostDimension CDRCostDimension)
 
             => String.Equals(InternalId,
-                             CostDimension.InternalId,
+                             CDRCostDimension.InternalId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion

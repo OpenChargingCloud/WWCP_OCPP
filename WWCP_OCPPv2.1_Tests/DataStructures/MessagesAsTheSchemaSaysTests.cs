@@ -443,14 +443,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
-        #region ChargingPeriod / ImageLink (extension)
+        #region CDRChargingPeriod / ImageLink (extension)
 
         [Test]
-        public void ChargingPeriod()
+        public void CDRChargingPeriod()
 
-            => WrittenIsRead<ChargingPeriod>(
+            => WrittenIsRead<CDRChargingPeriod>(
                    """{ "startPeriod": 0, "tariffId": "DE-GDF-T1" }""",
-                   OCPPv2_1.ChargingPeriod.TryParse,
+                   OCPPv2_1.CDRChargingPeriod.TryParse,
                    value => value.ToJSON()
                );
 
