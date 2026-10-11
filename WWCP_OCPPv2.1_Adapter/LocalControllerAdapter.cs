@@ -21,6 +21,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.LC;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.POI;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Aegir;
@@ -59,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
 
-        public WWCP.ChargingPool_Id Id => throw new NotImplementedException();
+        public WWCP.POI.ChargingPool_Id Id => throw new NotImplementedException();
 
         public I18NString Name => throw new NotImplementedException();
 
@@ -119,8 +120,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public ReactiveSet<Timestamped<decimal>> MaxCapacityPrognoses => throw new NotImplementedException();
 
-        public WWCP.EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<WWCP.EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public WWCP.POI.EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<WWCP.POI.EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Address ExitAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public GeoCoordinate? ExitLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -146,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public string? DataSource => throw new NotImplementedException();
 
-        public JObject CustomData => throw new NotImplementedException();
+        public CustomDataNew CustomData => throw new NotImplementedException();
 
         public UserDefinedDictionary InternalData => throw new NotImplementedException();
 
@@ -154,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public bool IsNotEmpty => throw new NotImplementedException();
 
-        public DateTime LastChangeDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTimeOffset LastChangeDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Timestamped<ChargingPoolAdminStatusType> AdminStatus { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Timestamped<ChargingPoolStatusType> Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public TimeSpan MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -180,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         IEnumerable<DataLicense> IChargingPool.DataLicenses => throw new NotImplementedException();
 
         Func<ChargingStationStatusReport, ChargingPoolStatusType>? IChargingPool.StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DateTime Created { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTimeOffset Created { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         Timestamped<ChargingPoolAdminStatusType> IAdminStatus<ChargingPoolAdminStatusType>.AdminStatus { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         Timestamped<ChargingPoolStatusType> IStatus<ChargingPoolStatusType>.Status { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -200,8 +201,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         DateTimeOffset IInternalData.LastChangeDate { get => LastChangeDate; set => throw new NotImplementedException(); }
 
         ReactiveSet<Facility> IChargingPool.Facilities => throw new NotImplementedException();
-
-        CustomDataNew IInternalData.CustomData => throw new NotImplementedException();
 
         event OnChargingPoolDataChangedDelegate IChargingPool.OnDataChanged
         {
@@ -269,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public event OnAuthorizeStopRequestDelegate OnAuthorizeStopRequest;
         public event OnAuthorizeStopResponseDelegate OnAuthorizeStopResponse;
 
-        public IEnumerable<WWCP.ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate? IncludeStations = null)
+        public IEnumerable<WWCP.POI.ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate? IncludeStations = null)
         {
             throw new NotImplementedException();
         }
@@ -284,32 +283,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.AddChargingStationResult> AddChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipAddedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.AddChargingStationResult> AddChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipAddedNotifications = false, Func<ChargingStationOperator_Id, WWCP.POI.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.AddChargingStationResult> AddChargingStationIfNotExists(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, bool SkipAddedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.AddChargingStationResult> AddChargingStationIfNotExists(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, bool SkipAddedNotifications = false, Func<ChargingStationOperator_Id, WWCP.POI.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnAdditionSuccess = null, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipAddOrUpdatedUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, EventTracking_Id>? OnAdditionSuccess = null, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipAddOrUpdatedUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.POI.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.UpdateChargingStationResult> UpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.UpdateChargingStationResult> UpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.POI.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.UpdateChargingStationResult> UpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation>? UpdateDelegate, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.UpdateChargingStationResult> UpdateChargingStation(IChargingStation? ChargingStation, Action<IChargingStation>? UpdateDelegate, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, WWCP.POI.ChargingStation_Id, bool>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<WWCP.DeleteChargingStationResult> RemoveChargingStation(WWCP.ChargingStation_Id Id, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipRemovedNotifications = false, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        public Task<WWCP.DeleteChargingStationResult> RemoveChargingStation(WWCP.POI.ChargingStation_Id Id, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, bool SkipRemovedNotifications = false, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }
@@ -324,27 +323,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public bool ContainsChargingStation(WWCP.ChargingStation_Id ChargingStationId)
+        public bool ContainsChargingStation(WWCP.POI.ChargingStation_Id ChargingStationId)
         {
             throw new NotImplementedException();
         }
 
-        public IChargingStation? GetChargingStationById(WWCP.ChargingStation_Id ChargingStationId)
+        public IChargingStation? GetChargingStationById(WWCP.POI.ChargingStation_Id ChargingStationId)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryGetChargingStationById(WWCP.ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
+        public bool TryGetChargingStationById(WWCP.POI.ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryGetChargingStationByEVSEId(WWCP.EVSE_Id EVSEId, out IChargingStation? ChargingStation)
+        public bool TryGetChargingStationByEVSEId(WWCP.POI.EVSE_Id EVSEId, out IChargingStation? ChargingStation)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<WWCP.EVSE_Id> EVSEIds(IncludeEVSEDelegate? IncludeEVSEs = null)
+        public IEnumerable<WWCP.POI.EVSE_Id> EVSEIds(IncludeEVSEDelegate? IncludeEVSEs = null)
         {
             throw new NotImplementedException();
         }
@@ -354,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, bool>? TimestampFilter = null, Func<EVSEAdminStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        public IEnumerable<Tuple<WWCP.POI.EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, bool>? TimestampFilter = null, Func<EVSEAdminStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
         {
             throw new NotImplementedException();
         }
@@ -364,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, bool>? TimestampFilter = null, Func<EVSEStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        public IEnumerable<Tuple<WWCP.POI.EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, bool>? TimestampFilter = null, Func<EVSEStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
         {
             throw new NotImplementedException();
         }
@@ -374,17 +373,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public bool ContainsEVSE(WWCP.EVSE_Id EVSEId)
+        public bool ContainsEVSE(WWCP.POI.EVSE_Id EVSEId)
         {
             throw new NotImplementedException();
         }
 
-        public IEVSE GetEVSEById(WWCP.EVSE_Id EVSEId)
+        public IEVSE GetEVSEById(WWCP.POI.EVSE_Id EVSEId)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryGetEVSEById(WWCP.EVSE_Id EVSEId, out IEVSE? EVSE)
+        public bool TryGetEVSEById(WWCP.POI.EVSE_Id EVSEId, out IEVSE? EVSE)
         {
             throw new NotImplementedException();
         }
@@ -719,12 +718,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTimeOffset, bool>? TimestampFilter = null, Func<EVSEAdminStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        public IEnumerable<Tuple<WWCP.POI.EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTimeOffset, bool>? TimestampFilter = null, Func<EVSEAdminStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Tuple<WWCP.EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTimeOffset, bool>? TimestampFilter = null, Func<EVSEStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
+        public IEnumerable<Tuple<WWCP.POI.EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTimeOffset, bool>? TimestampFilter = null, Func<EVSEStatusType, bool>? StatusFilter = null, ulong? Skip = null, ulong? Take = null)
         {
             throw new NotImplementedException();
         }
