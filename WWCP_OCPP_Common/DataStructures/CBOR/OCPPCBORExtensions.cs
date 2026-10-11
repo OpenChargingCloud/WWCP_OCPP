@@ -641,16 +641,20 @@ namespace cloud.charging.open.protocols.OCPP
 
             Value = null;
 
+            // Styx's ParseOptional: true when there (with an error response when invalid),
+            // false when missing or null.
             if (!CBOR.ParseOptional(PropertyName,
                                     PropertyDescription,
                                     (CBORValue property, out T parsed, out String? errorResponse) => TryParse(property, out parsed, out errorResponse),
                                     out T parsedValue,
                                     out ErrorResponse))
             {
-                return ErrorResponse is not null;
+                return false;
             }
 
-            Value = parsedValue;
+            if (ErrorResponse is null)
+                Value = parsedValue;
+
             return true;
 
         }
@@ -813,6 +817,9 @@ namespace cloud.charging.open.protocols.OCPP
 
             if (CBOR.ParseOptionalText("signingMethod", "signing method", out var signingMethodText, out ErrorResponse))
             {
+                if (ErrorResponse is not null)
+                    return false;
+
                 if (!CryptoSigningMethod.TryParse(signingMethodText!, out var parsed)) { ErrorResponse = $"Invalid signing method '{signingMethodText}'!"; return false; }
                 signingMethod = parsed;
             }
@@ -821,6 +828,9 @@ namespace cloud.charging.open.protocols.OCPP
 
             if (CBOR.ParseOptionalText("encodingMethod", "encoding method", out var encodingText, out ErrorResponse))
             {
+                if (ErrorResponse is not null)
+                    return false;
+
                 if (!CryptoEncoding.TryParse(encodingText!, out var parsed)) { ErrorResponse = $"Invalid encoding method '{encodingText}'!"; return false; }
                 encoding = parsed;
             }
@@ -829,6 +839,9 @@ namespace cloud.charging.open.protocols.OCPP
 
             if (CBOR.ParseOptionalText("algorithm", "crypto algorithm", out var algorithmText, out ErrorResponse))
             {
+                if (ErrorResponse is not null)
+                    return false;
+
                 if (!CryptoAlgorithm.TryParse(algorithmText!, out var parsed)) { ErrorResponse = $"Invalid crypto algorithm '{algorithmText}'!"; return false; }
                 algorithm = parsed;
             }

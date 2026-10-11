@@ -919,6 +919,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                            out var ReasonText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!ReasonsExtensions.TryParse(ReasonText!, out var ReasonValue))
                     {
@@ -940,6 +943,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                            out var IdTagText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv1_6.IdToken.TryParse(IdTagText!, out var IdTagValue))
                     {

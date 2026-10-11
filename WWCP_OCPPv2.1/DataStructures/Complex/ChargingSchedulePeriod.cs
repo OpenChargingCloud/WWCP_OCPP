@@ -1086,6 +1086,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var numberOfPhases,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (numberOfPhases is not UInt64 phases || phases > 3)
                     {
@@ -1106,6 +1109,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var phaseToUseNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (phaseToUseNumber is not UInt64 phaseNumber || phaseNumber > Byte.MaxValue ||
                         !PhasesToUseExtensions.TryParse((Byte) phaseNumber, out var phaseToUse))
@@ -1251,6 +1257,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var operationModeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.OperationMode.TryParse(operationModeText!, out var operationMode))
                     {

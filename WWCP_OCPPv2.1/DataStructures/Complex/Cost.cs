@@ -375,6 +375,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                             out var amountMultiplier,
                                             out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (amountMultiplier is not Int64 multiplier || multiplier < -3 || multiplier > 3)
                     {

@@ -967,6 +967,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var SignatureIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (SignatureIdNumber is not UInt64 SignatureIdValue || SignatureIdValue > UInt32.MaxValue)
                     {

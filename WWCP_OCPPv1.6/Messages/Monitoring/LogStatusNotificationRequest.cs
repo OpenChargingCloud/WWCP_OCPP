@@ -458,6 +458,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                              out var LogRequestIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (LogRequestIdNumber is not Int64 LogRequestIdValue || LogRequestIdValue < Int32.MinValue || LogRequestIdValue > Int32.MaxValue)
                     {

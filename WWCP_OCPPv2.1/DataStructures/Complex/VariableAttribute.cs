@@ -427,6 +427,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var TypeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!AttributeTypesExtensions.TryParse(TypeText!, out var TypeValue))
                     {
@@ -456,6 +459,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var MutabilityText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!MutabilityTypesExtensions.TryParse(MutabilityText!, out var MutabilityValue))
                     {

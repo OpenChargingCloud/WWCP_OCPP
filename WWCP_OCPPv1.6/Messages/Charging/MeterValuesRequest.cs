@@ -782,6 +782,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                              out var TransactionIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (TransactionIdNumber is not UInt64 TransactionIdValue || TransactionIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Transaction_Id.TryParse((UInt64) TransactionIdValue, out var TransactionIdId))
                     {

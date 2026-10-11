@@ -483,6 +483,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                            out var restartURLText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(restartURLText!, out var restartURLValue))
                     {

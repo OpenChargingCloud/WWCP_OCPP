@@ -484,6 +484,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var MessageIdText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.Message_Id.TryParse(MessageIdText!, out var MessageIdValue))
                     {

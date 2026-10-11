@@ -1419,6 +1419,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out var EVSEIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (EVSEIdNumber is not UInt64 EVSEIdValue || EVSEIdValue > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) EVSEIdValue, out var EVSEIdId))
                     {

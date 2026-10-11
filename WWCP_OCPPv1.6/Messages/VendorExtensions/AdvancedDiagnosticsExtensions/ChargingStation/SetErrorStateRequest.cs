@@ -489,6 +489,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              out var connectorIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (connectorIdNumber is not UInt64 connectorIdValue || connectorIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Connector_Id.TryParse((UInt64) connectorIdValue, out var connectorIdId))
                     {

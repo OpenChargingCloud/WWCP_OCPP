@@ -317,6 +317,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var MaxItemsNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (MaxItemsNumber is not UInt64 MaxItemsValue || MaxItemsValue > UInt32.MaxValue)
                     {

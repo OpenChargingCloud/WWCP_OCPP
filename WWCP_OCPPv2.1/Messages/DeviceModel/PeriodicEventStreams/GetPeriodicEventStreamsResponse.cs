@@ -505,6 +505,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            out var StatusText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!GenericStatusExtensions.TryParse(StatusText!, out var StatusValue))
                     {

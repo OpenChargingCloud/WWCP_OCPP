@@ -1073,6 +1073,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (CBOR.ParseOptionalText("validFromDate", "valid from date", out var validFromText, out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     if (!DateOnly.TryParseExact(validFromText, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var validFrom))
                     {
                         ErrorResponse = $"Invalid valid from date '{validFromText}'!";
@@ -1087,6 +1090,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (CBOR.ParseOptionalText("validToDate", "valid to date", out var validToText, out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     if (!DateOnly.TryParseExact(validToText, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var validTo))
                     {
                         ErrorResponse = $"Invalid valid to date '{validToText}'!";
@@ -1126,6 +1132,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (CBOR.ParseOptionalText("startTimeOfDay", "start time of day", out var startTimeText, out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     if (!TimeOnly.TryParseExact(startTimeText, [ "HH:mm", "HH:mm:ss" ], System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var startTime))
                     {
                         ErrorResponse = $"Invalid start time of day '{startTimeText}'!";
@@ -1140,6 +1149,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (CBOR.ParseOptionalText("endTimeOfDay", "end time of day", out var endTimeText, out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     if (!TimeOnly.TryParseExact(endTimeText, [ "HH:mm", "HH:mm:ss" ], System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var endTime))
                     {
                         ErrorResponse = $"Invalid end time of day '{endTimeText}'!";
@@ -1157,6 +1169,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var EVSEKindText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!EVSEKindsExtensions.TryParse(EVSEKindText!, out var EVSEKindValue))
                     {

@@ -587,6 +587,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                             out var chargingPriorityNumber,
                                             out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (chargingPriorityNumber is not Int64 chargingPriorityValue || chargingPriorityValue < Int16.MinValue || chargingPriorityValue > Int16.MaxValue)
                     {
@@ -639,6 +642,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var Language1Text,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!Language_Id.TryParse(Language1Text!, out var Language1Value))
                     {
@@ -660,6 +666,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var Language2Text,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!Language_Id.TryParse(Language2Text!, out var Language2Value))
                     {

@@ -361,6 +361,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var EVSEIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (EVSEIdNumber is not UInt64 EVSEIdValue || EVSEIdValue > UInt16.MaxValue || !EVSE_Id.TryParse((UInt16) EVSEIdValue, out var EVSEIdId))
                     {
@@ -382,6 +385,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var ChargingProfilePurposeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.ChargingProfilePurpose.TryParse(ChargingProfilePurposeText!, out var ChargingProfilePurposeValue))
                     {
@@ -403,6 +409,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var StackLevelNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (StackLevelNumber is not UInt64 StackLevelValue || StackLevelValue > UInt32.MaxValue)
                     {

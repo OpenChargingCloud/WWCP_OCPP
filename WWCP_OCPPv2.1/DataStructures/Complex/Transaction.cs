@@ -595,6 +595,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var ChargingStateText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!ChargingStatesExtensions.TryParse(ChargingStateText!, out var ChargingStateValue))
                     {
@@ -625,6 +628,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var StoppedReasonText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!StopTransactionReason.TryParse(StoppedReasonText!, out var StoppedReasonValue))
                     {
@@ -646,6 +652,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var RemoteStartIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (RemoteStartIdNumber is not UInt64 RemoteStartIdValue || RemoteStartIdValue > UInt64.MaxValue || !RemoteStart_Id.TryParse((UInt64) RemoteStartIdValue, out var RemoteStartIdId))
                     {
@@ -667,6 +676,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var OperationModeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.OperationMode.TryParse(OperationModeText!, out var OperationModeValue))
                     {
@@ -697,6 +709,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var PreconditioningStatusText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.PreconditioningStatus.TryParse(PreconditioningStatusText!, out var PreconditioningStatusValue))
                     {
@@ -726,6 +741,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var TariffIdText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!Tariff_Id.TryParse(TariffIdText!, out var TariffIdValue))
                     {

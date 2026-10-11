@@ -379,6 +379,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var EPriceLevelNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (EPriceLevelNumber is not UInt64 EPriceLevelValue || EPriceLevelValue > UInt32.MaxValue)
                     {

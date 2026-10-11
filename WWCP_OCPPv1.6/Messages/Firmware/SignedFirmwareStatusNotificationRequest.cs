@@ -446,6 +446,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                              out var UpdateRequestIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (UpdateRequestIdNumber is not Int64 UpdateRequestIdValue || UpdateRequestIdValue < Int32.MinValue || UpdateRequestIdValue > Int32.MaxValue)
                     {

@@ -575,6 +575,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var PriorityText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.MessagePriority.TryParse(PriorityText!, out var PriorityValue))
                     {
@@ -596,6 +599,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var StateText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.MessageState.TryParse(StateText!, out var StateValue))
                     {

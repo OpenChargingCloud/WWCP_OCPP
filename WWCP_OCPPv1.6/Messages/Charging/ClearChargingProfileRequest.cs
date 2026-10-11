@@ -654,6 +654,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              out var ChargingProfileIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (ChargingProfileIdNumber is not UInt64 ChargingProfileIdValue || ChargingProfileIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.ChargingProfile_Id.TryParse((UInt64) ChargingProfileIdValue, out var ChargingProfileIdId))
                     {
@@ -675,6 +678,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              out var ConnectorIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (ConnectorIdNumber is not UInt64 ConnectorIdValue || ConnectorIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Connector_Id.TryParse((UInt64) ConnectorIdValue, out var ConnectorIdId))
                     {
@@ -696,6 +702,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            out var ChargingProfilePurposeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!ChargingProfilePurposesExtensions.TryParse(ChargingProfilePurposeText!, out var ChargingProfilePurposeValue))
                     {
@@ -717,6 +726,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                              out var StackLevelNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (StackLevelNumber is not UInt64 StackLevelValue || StackLevelValue < UInt32.MinValue || StackLevelValue > UInt32.MaxValue)
                     {

@@ -721,6 +721,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                out var unitText,
                                                out ErrorResponse))
                     {
+                        if (ErrorResponse is not null)
+                            return false;
+
                         Unit = UnitsOfMeasureExtensions.Parse(unitText!);
                     }
 
@@ -737,7 +740,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ReadingContexts? Context = null;
 
                 if (CBOR.ParseOptionalText("context", "context", out var contextText, out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     Context = ReadingContextExtensions.Parse(contextText!);
+                }
 
                 if (ErrorResponse is not null)
                     return false;
@@ -745,7 +753,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ValueFormats? Format = null;
 
                 if (CBOR.ParseOptionalText("format", "format", out var formatText, out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     Format = ValueFormatExtensions.Parse(formatText!);
+                }
 
                 if (ErrorResponse is not null)
                     return false;
@@ -753,7 +766,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 Measurands? Measurand = null;
 
                 if (CBOR.ParseOptionalText("measurand", "measurand", out var measurandText, out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     Measurand = MeasurandExtensions.Parse(measurandText!);
+                }
 
                 if (ErrorResponse is not null)
                     return false;
@@ -762,6 +780,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (CBOR.ParseOptionalText("phase", "phase", out var phaseText, out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!PhasesExtensions.TryParse(phaseText!, out var phase))
                     {
@@ -779,7 +800,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 Locations? Location = null;
 
                 if (CBOR.ParseOptionalText("location", "location", out var locationText, out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     Location = LocationExtensions.Parse(locationText!);
+                }
 
                 if (ErrorResponse is not null)
                     return false;

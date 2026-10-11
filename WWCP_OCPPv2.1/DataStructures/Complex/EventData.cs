@@ -793,6 +793,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var severityNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (severityNumber is not UInt64 severityValue || severityValue > Byte.MaxValue || !SeveritiesExtensions.TryParse((Byte) severityValue, out var severity))
                     {
@@ -814,6 +817,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var CauseNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (CauseNumber is not UInt64 CauseValue || CauseValue > UInt64.MaxValue || !Event_Id.TryParse((UInt64) CauseValue, out var CauseId))
                     {
@@ -859,6 +865,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var TransactionIdText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
                     {
@@ -880,6 +889,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var VariableMonitoringIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (VariableMonitoringIdNumber is not UInt64 VariableMonitoringIdValue || VariableMonitoringIdValue > UInt64.MaxValue || !VariableMonitoring_Id.TryParse((UInt64) VariableMonitoringIdValue, out var VariableMonitoringIdId))
                     {

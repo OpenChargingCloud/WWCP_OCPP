@@ -568,6 +568,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              out var RemainingContractsNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (RemainingContractsNumber is not UInt64 RemainingContractsValue || RemainingContractsValue < UInt32.MinValue || RemainingContractsValue > UInt32.MaxValue)
                     {

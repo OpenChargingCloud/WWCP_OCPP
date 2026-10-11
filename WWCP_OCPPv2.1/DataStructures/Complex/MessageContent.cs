@@ -388,6 +388,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var languageText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!Language_Id.TryParse(languageText!, out var language))
                     {

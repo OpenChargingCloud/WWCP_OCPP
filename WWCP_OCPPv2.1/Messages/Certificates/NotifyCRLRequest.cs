@@ -465,6 +465,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var LocationText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.TryParse(LocationText!, out var LocationValue))
                     {

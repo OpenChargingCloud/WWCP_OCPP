@@ -553,6 +553,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var VersionText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPVersion.TryParse(VersionText!, out var VersionValue))
                     {

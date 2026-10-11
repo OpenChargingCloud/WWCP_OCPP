@@ -719,6 +719,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            out var ParentIdTagText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv1_6.IdToken.TryParse(ParentIdTagText!, out var ParentIdTagValue))
                     {

@@ -416,6 +416,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              out var PriorityNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (PriorityNumber is not UInt64 PriorityValue || PriorityValue < Byte.MinValue || PriorityValue > Byte.MaxValue)
                     {

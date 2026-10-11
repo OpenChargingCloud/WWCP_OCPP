@@ -310,6 +310,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var UnitText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.UnitOfMeasure.TryParse(UnitText!, out var UnitValue))
                     {
@@ -332,6 +335,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                             out var multiplier,
                                             out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (multiplier is not Int64 multiplierValue || multiplierValue < Int32.MinValue || multiplierValue > Int32.MaxValue)
                     {

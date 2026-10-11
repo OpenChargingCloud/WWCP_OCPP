@@ -584,6 +584,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var certificateGroupText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.CertificateGroup.TryParse(certificateGroupText!, out var certificateGroupValue))
                     {

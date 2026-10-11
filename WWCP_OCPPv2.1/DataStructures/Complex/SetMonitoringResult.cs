@@ -552,6 +552,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var VariableMonitoringIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (VariableMonitoringIdNumber is not UInt64 VariableMonitoringIdValue || VariableMonitoringIdValue > UInt64.MaxValue || !VariableMonitoring_Id.TryParse((UInt64) VariableMonitoringIdValue, out var VariableMonitoringIdId))
                     {

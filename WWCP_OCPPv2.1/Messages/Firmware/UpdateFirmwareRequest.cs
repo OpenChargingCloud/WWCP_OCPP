@@ -585,6 +585,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              out var RetriesNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (RetriesNumber is not UInt64 RetriesValue || RetriesValue < Byte.MinValue || RetriesValue > Byte.MaxValue)
                     {

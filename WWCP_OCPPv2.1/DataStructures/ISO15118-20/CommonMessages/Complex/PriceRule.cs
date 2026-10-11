@@ -490,6 +490,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                                              out var CarbonDioxideEmissionNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (CarbonDioxideEmissionNumber is not UInt64 CarbonDioxideEmissionValue || CarbonDioxideEmissionValue > UInt16.MaxValue)
                     {

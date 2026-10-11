@@ -511,6 +511,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var ChargingRateUnitText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!ChargingRateUnitsExtensions.TryParse(ChargingRateUnitText!, out var ChargingRateUnitValue))
                     {

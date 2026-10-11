@@ -576,6 +576,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out var PublishFirmwareStatusNotificationRequestIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (PublishFirmwareStatusNotificationRequestIdNumber is not Int64 PublishFirmwareStatusNotificationRequestIdValue || PublishFirmwareStatusNotificationRequestIdValue < Int32.MinValue || PublishFirmwareStatusNotificationRequestIdValue > Int32.MaxValue)
                     {

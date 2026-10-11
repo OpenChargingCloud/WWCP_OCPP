@@ -373,6 +373,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var curveTypeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!DERControlType.TryParse(curveTypeText!, out var curveTypeValue))
                     {

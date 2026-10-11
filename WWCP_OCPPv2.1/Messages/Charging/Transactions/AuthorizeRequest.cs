@@ -617,6 +617,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        out var CertificateChainText,
                                        out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPP.CertificateChain.TryParse(CertificateChainText!, out var CertificateChainValue, out var CertificateChainError))
                     {

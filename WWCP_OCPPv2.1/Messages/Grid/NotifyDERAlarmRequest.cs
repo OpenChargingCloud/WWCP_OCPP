@@ -609,6 +609,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var GridEventFaultTypeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.GridEventFaultType.TryParse(GridEventFaultTypeText!, out var GridEventFaultTypeValue))
                     {

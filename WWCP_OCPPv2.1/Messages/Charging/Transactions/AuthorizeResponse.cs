@@ -1227,6 +1227,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var CertificateStatusText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.AuthorizeCertificateStatus.TryParse(CertificateStatusText!, out var CertificateStatusValue))
                     {

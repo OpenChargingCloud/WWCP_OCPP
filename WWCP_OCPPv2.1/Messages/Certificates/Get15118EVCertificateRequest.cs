@@ -604,6 +604,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out var MaximumContractCertificateChainsNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (MaximumContractCertificateChainsNumber is not UInt64 MaximumContractCertificateChainsValue || MaximumContractCertificateChainsValue < UInt32.MinValue || MaximumContractCertificateChainsValue > UInt32.MaxValue)
                     {

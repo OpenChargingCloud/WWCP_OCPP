@@ -552,6 +552,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var ContextText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!ReadingContext.TryParse(ContextText!, out var ContextValue))
                     {
@@ -573,6 +576,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var MeasurandText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.Measurand.TryParse(MeasurandText!, out var MeasurandValue))
                     {
@@ -594,6 +600,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var PhaseText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!PhasesExtensions.TryParse(PhaseText!, out var PhaseValue))
                     {
@@ -615,6 +624,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var MeasurementLocationText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.MeasurementLocation.TryParse(MeasurementLocationText!, out var MeasurementLocationValue))
                     {

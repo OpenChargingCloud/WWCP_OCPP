@@ -705,6 +705,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                              out var ReservationIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (ReservationIdNumber is not UInt64 ReservationIdValue || ReservationIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv1_6.Reservation_Id.TryParse((UInt64) ReservationIdValue, out var ReservationIdId))
                     {

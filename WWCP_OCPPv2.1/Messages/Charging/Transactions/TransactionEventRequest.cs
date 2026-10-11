@@ -1746,6 +1746,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out var NumberOfPhasesUsedNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (NumberOfPhasesUsedNumber is not UInt64 NumberOfPhasesUsedValue || NumberOfPhasesUsedValue < Byte.MinValue || NumberOfPhasesUsedValue > Byte.MaxValue)
                     {
@@ -1776,6 +1779,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out var ReservationIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (ReservationIdNumber is not UInt64 ReservationIdValue || ReservationIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.Reservation_Id.TryParse((UInt64) ReservationIdValue, out var ReservationIdId))
                     {
@@ -1824,6 +1830,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            out var PreconditioningStatusText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.PreconditioningStatus.TryParse(PreconditioningStatusText!, out var PreconditioningStatusValue))
                     {

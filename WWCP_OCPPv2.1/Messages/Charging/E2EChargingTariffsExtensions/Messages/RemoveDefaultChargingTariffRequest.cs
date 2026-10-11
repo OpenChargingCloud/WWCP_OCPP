@@ -403,6 +403,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var ChargingTariffIdText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.Tariff_Id.TryParse(ChargingTariffIdText!, out var ChargingTariffIdValue))
                     {

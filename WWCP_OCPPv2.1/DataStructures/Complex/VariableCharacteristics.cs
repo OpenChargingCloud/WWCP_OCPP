@@ -554,6 +554,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var unitText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!UnitOfMeasure.TryParse(unitText!, out var unitValue))
                     {
@@ -595,6 +598,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var MaxElementsNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (MaxElementsNumber is not UInt64 MaxElementsValue || MaxElementsValue > UInt32.MaxValue)
                     {

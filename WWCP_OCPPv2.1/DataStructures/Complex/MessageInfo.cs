@@ -599,6 +599,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var StateText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!MessageState.TryParse(StateText!, out var StateValue))
                     {
@@ -638,6 +641,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var TransactionIdText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
                     {

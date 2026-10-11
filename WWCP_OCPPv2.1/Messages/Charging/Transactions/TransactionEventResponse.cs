@@ -816,6 +816,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              out var ChargingPriorityNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (ChargingPriorityNumber is not Int64 ChargingPriorityValue || ChargingPriorityValue < Int16.MinValue || ChargingPriorityValue > Int16.MaxValue)
                     {

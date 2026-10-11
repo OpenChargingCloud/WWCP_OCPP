@@ -343,6 +343,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var connectorIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (connectorIdNumber is not UInt64 number || number > Byte.MaxValue || !Connector_Id.TryParse((Byte) number, out var connectorId))
                     {

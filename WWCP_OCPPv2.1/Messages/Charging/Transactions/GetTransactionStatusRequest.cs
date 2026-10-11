@@ -413,6 +413,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var TransactionIdText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.Transaction_Id.TryParse(TransactionIdText!, out var TransactionIdValue))
                     {

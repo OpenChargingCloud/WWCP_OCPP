@@ -395,6 +395,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var TariffIdText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!Tariff_Id.TryParse(TariffIdText!, out var TariffIdValue))
                     {

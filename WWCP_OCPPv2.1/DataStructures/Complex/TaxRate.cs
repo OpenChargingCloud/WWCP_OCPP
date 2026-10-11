@@ -396,6 +396,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out var StackNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (StackNumber is not UInt64 StackValue || StackValue > UInt32.MaxValue)
                     {

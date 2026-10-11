@@ -483,6 +483,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              out var ChargingProfileIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (ChargingProfileIdNumber is not UInt64 ChargingProfileIdValue || ChargingProfileIdValue > UInt64.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.ChargingProfile_Id.TryParse((UInt64) ChargingProfileIdValue, out var ChargingProfileIdId))
                     {

@@ -678,6 +678,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var ConnectorTypeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.ConnectorType.TryParse(ConnectorTypeText!, out var ConnectorTypeValue))
                     {
@@ -699,6 +702,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              out var EVSEIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (EVSEIdNumber is not UInt64 EVSEIdValue || EVSEIdValue > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) EVSEIdValue, out var EVSEIdId))
                     {

@@ -506,6 +506,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var AttributeTypeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!AttributeTypesExtensions.TryParse(AttributeTypeText!, out var AttributeTypeValue))
                     {

@@ -578,6 +578,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out var SignCertificateRequestIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (SignCertificateRequestIdNumber is not Int64 SignCertificateRequestIdValue || SignCertificateRequestIdValue < Int32.MinValue || SignCertificateRequestIdValue > Int32.MaxValue)
                     {
@@ -616,6 +619,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            out var CertificateTypeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.CertificateSigningUse.TryParse(CertificateTypeText!, out var CertificateTypeValue))
                     {

@@ -450,6 +450,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                              out var numberPhasesNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (numberPhasesNumber is not UInt64 numberPhasesValue || numberPhasesValue > Byte.MaxValue)
                     {

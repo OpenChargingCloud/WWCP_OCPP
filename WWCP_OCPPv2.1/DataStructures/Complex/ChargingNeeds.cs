@@ -699,6 +699,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var ControlModeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!ControlModesExtensions.TryParse(ControlModeText!, out var ControlModeValue))
                     {
@@ -720,6 +723,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var MobilityNeedsModeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.MobilityNeedsMode.TryParse(MobilityNeedsModeText!, out var MobilityNeedsModeValue))
                     {
@@ -741,6 +747,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var PricingText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!PricingTypesExtensions.TryParse(PricingText!, out var PricingValue))
                     {

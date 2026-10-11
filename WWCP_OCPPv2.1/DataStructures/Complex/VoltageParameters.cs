@@ -395,6 +395,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            out var PowerDuringCessationText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!OCPPv2_1.PowerDuringCessation.TryParse(PowerDuringCessationText!, out var PowerDuringCessationValue))
                     {

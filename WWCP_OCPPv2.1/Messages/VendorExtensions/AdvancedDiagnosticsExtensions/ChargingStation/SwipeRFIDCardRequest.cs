@@ -492,6 +492,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              out var readerIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (readerIdNumber is not UInt64 readerIdValue || readerIdValue > UInt16.MaxValue || !global::cloud.charging.open.protocols.OCPPv2_1.EVSE_Id.TryParse((UInt16) readerIdValue, out var readerIdId))
                     {
@@ -513,6 +516,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var simulationModeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.IdTokenSimulationMode.TryParse(simulationModeText!, out var simulationModeValue))
                     {

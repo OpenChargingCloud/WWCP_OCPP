@@ -1266,6 +1266,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out var MaxScheduleTuplesNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (MaxScheduleTuplesNumber is not UInt64 MaxScheduleTuplesValue || MaxScheduleTuplesValue < UInt16.MinValue || MaxScheduleTuplesValue > UInt16.MaxValue)
                     {

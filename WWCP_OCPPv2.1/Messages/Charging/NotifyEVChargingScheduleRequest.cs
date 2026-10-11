@@ -1454,6 +1454,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              out var SelectedChargingScheduleIdNumber,
                                              out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (SelectedChargingScheduleIdNumber is not UInt64 SelectedChargingScheduleIdValue || SelectedChargingScheduleIdValue < UInt16.MinValue || SelectedChargingScheduleIdValue > UInt16.MaxValue)
                     {

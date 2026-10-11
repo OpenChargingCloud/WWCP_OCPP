@@ -571,6 +571,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var ControlTypeText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.DERControlType.TryParse(ControlTypeText!, out var ControlTypeValue))
                     {
@@ -592,6 +595,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var ControlIdText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.DERControl_Id.TryParse(ControlIdText!, out var ControlIdValue))
                     {

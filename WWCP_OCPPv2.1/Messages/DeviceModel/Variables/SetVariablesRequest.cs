@@ -591,6 +591,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            out var DataConsistencyModelText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!global::cloud.charging.open.protocols.OCPPv2_1.DataConsistencyModel.TryParse(DataConsistencyModelText!, out var DataConsistencyModelValue))
                     {

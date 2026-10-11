@@ -620,6 +620,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            out var ChargingRateUnitText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
 
                     if (!ChargingRateUnitsExtensions.TryParse(ChargingRateUnitText!, out var ChargingRateUnitValue))
                     {

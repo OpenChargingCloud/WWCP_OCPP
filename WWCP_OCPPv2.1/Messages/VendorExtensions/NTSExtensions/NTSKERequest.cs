@@ -384,6 +384,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            out var aeadAlgorithmText,
                                            out ErrorResponse))
                 {
+                    if (ErrorResponse is not null)
+                        return false;
+
                     if (!AEADAlgorithmsExtensions.TryParse(aeadAlgorithmText!, out aeadAlgorithm, out ErrorResponse))
                         return false;
                 }
