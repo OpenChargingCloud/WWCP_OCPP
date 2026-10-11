@@ -710,11 +710,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     if (!CBOR.ParseMandatoryText("value",
                                                  "value",
-                                                 out Value,
+                                                 out var value,
                                                  out ErrorResponse))
                     {
                         return false;
                     }
+
+                    Value = value;
 
                     if (CBOR.ParseOptionalText("unit",
                                                "unit",

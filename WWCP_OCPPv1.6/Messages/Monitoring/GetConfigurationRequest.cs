@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 CBOR.ParseOptionalList<String>("key",
                                                "configuration keys",
-                                               (CBORValue item, out String? value, out String? errorResponse) => {
+                                               (CBORValue item, [NotNullWhen(true)] out String? value, [NotNullWhen(false)] out String? errorResponse) => {
                                                    value         = item.Kind == CBORValueKind.TextString ? item.AsText() : null;
                                                    errorResponse = value is null ? "A text is expected!" : null;
                                                    return value is not null;

@@ -526,26 +526,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     return false;
                 }
 
-                Certificate? certificate = null;
-
-                if (CBOR.ParseMandatoryText("certificate",
-                                       "certificate",
-                                       out var certificateText,
-                                       out ErrorResponse))
+                if (!CBOR.ParseMandatoryText("certificate",
+                                             "certificate",
+                                             out var certificateText,
+                                             out ErrorResponse))
                 {
-
-                    if (!Certificate.TryParse(certificateText!, out var certificateValue, out var certificateError))
-                    {
-                        ErrorResponse = $"Invalid certificate '{certificateText}': {certificateError}";
-                        return false;
-                    }
-
-                    certificate = certificateValue;
-
+                    return false;
                 }
 
-                if (certificate is null)
+                if (!Certificate.TryParse(certificateText, out var certificate, out var certificateError))
+                {
+                    ErrorResponse = $"Invalid certificate '{certificateText}': {certificateError}";
                     return false;
+                }
 
                 CertificateGroup? certificateGroup = null;
 

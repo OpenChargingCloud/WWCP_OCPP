@@ -70,7 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.DataTypes
         // Read at its first use - after the samples of both parts of this class are there.
         private static readonly Lazy<IReadOnlyDictionary<String, String>> all
 
-            = new (() => FromTheSchemas.Concat(OfTheExtensions).ToDictionary(sample => sample.Key, sample => sample.Value));
+            = new (AllSamples);
+
+        // A method, not a lambda in the initializer: there the compiler takes the other part's fields as possibly null.
+        private static IReadOnlyDictionary<String, String> AllSamples()
+            => FromTheSchemas.Concat(OfTheExtensions).ToDictionary(sample => sample.Key, sample => sample.Value);
 
     }
 
