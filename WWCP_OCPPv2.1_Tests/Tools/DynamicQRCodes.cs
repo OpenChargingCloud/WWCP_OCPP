@@ -59,15 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.Tools
                                     SharedSecret:  sharedSecret
                                 );
 
+            // The remaining time is exact to the tick, and totp1 reads the clock
+            // a moment after timestamp1 was taken - so what all three share is
+            // the end of the window: the same fixed instant for everybody who
+            // asks during it.
             Assert.That(totp1.Previous,       Is.EqualTo(totp2.Previous));
             Assert.That(totp1.Current,        Is.EqualTo(totp2.Current));
             Assert.That(totp1.Next,           Is.EqualTo(totp2.Next));
-            Assert.That(totp1.RemainingTime,  Is.EqualTo(totp2.RemainingTime));
+            Assert.That(totp1.EndTime,        Is.EqualTo(totp2.EndTime));
 
             Assert.That(totp1.Previous,       Is.EqualTo(totp3.Previous));
             Assert.That(totp1.Current,        Is.EqualTo(totp3.Current));
             Assert.That(totp1.Next,           Is.EqualTo(totp3.Next));
-            Assert.That(totp1.RemainingTime,  Is.EqualTo(totp3.RemainingTime));
+            Assert.That(totp1.EndTime,        Is.EqualTo(totp3.EndTime));
 
         }
 
