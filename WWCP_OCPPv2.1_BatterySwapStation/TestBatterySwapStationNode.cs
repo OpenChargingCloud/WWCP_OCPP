@@ -19,6 +19,7 @@
 
 using System.Security.Cryptography;
 using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
@@ -31,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
@@ -47,6 +49,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
     public partial class TestBatterySwapStationNode : ABatterySwapStationNode,
                                                       IBatterySwapStationNode
     {
+
+        #region Data
+
+        /// <summary>
+        /// The reports accepted by GetBaseReport or GetReport, until their response is sent:
+        /// the NotifyReport requests follow it. Keyed by the request itself.
+        /// </summary>
+        private readonly ConcurrentDictionary<Object, IReadOnlyList<ReportData>> pendingReports = new (ReferenceEqualityComparer.Instance);
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The largest number of report data in one NotifyReport request;
+        /// a longer report is sent in several parts.
+        /// </summary>
+        public UInt16 ReportDataPerNotifyReport { get; set; } = 100;
+
+        #endregion
+
+
+        #region (private) SendPendingReport(Request, ReportRequestId, Destination, SentMessageResult)
+
+        /// <summary>
+        /// Send the report accepted for the given request, now that its response is out.
+        /// </summary>
+        /// <param name="Request">The GetBaseReport or GetReport request.</param>
+        /// <param name="ReportRequestId">The request id the NotifyReport requests refer to.</param>
+        /// <param name="Destination">Whom to send the report to.</param>
+        /// <param name="SentMessageResult">How sending the response went.</param>
+        private void SendPendingReport(Object              Request,
+                                       Int32               ReportRequestId,
+                                       SourceRouting       Destination,
+                                       SentMessageResults  SentMessageResult)
+        {
+
+            if (!pendingReports.TryRemove(Request, out var reportData) ||
+                SentMessageResult != SentMessageResults.Success)
+            {
+                return;
+            }
+
+            // Not awaited here: this runs while the response is being sent, and the
+            // answers to the NotifyReport requests come in over that same connection.
+            _ = Task.Run(async () => {
+
+                try
+                {
+
+                    var generatedAt = Now;
+
+                    await DeviceModel.SendReportAsync(
+                              reportData,
+                              ReportDataPerNotifyReport,
+                              (sequenceNumber, part, toBeContinued) => this.NotifyReport(
+                                                                           NotifyReportRequestId:   ReportRequestId,
+                                                                           SequenceNumber:          sequenceNumber,
+                                                                           GeneratedAt:             generatedAt,
+                                                                           ReportData:              part,
+                                                                           ToBeContinued:           toBeContinued,
+                                                                           Destination:             Destination
+                                                                       )
+                          );
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"NotifyReport {ReportRequestId}");
+                }
+
+            });
+
+        }
+
+        #endregion
+
 
         #region Constructor(s)
 
@@ -191,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 // CertificateType
                 // Certificate
 
-                var status = request.Certificate?.Parsed is not null
+                var status = request.Certificate.Parsed is not null
                                  ? InstallCertificateStatus.Accepted
                                  : InstallCertificateStatus.Rejected;
 
@@ -2140,19 +2219,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                         request,
                                         ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}) accepted.");
+                DebugX.Log($"Charging station '{Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}, {request.ReportBase}).");
 
-                // GetBaseReportRequestId
-                // ReportBase
+                var (status, reportData) = DeviceModel.BaseReport(
+                                               AllComponentConfigs,
+                                               request.ReportBase
+                                           );
+
+                // The report follows the response, see OnGetBaseReportResponseSent.
+                if (status == GenericDeviceModelStatus.Accepted)
+                    pendingReports[request] = reportData;
 
                 return Task.FromResult(
                            new GetBaseReportResponse(
                                Request:      request,
-                               Status:       GenericDeviceModelStatus.Accepted,
+                               Status:       status,
                                StatusInfo:   null,
                                CustomData:   null
                            )
                        );
+
+            };
+
+            OCPP.OUT.OnGetBaseReportResponseSent += (timestamp,
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     response,
+                                                     runtime,
+                                                     sentMessageResult,
+                                                     ct) => {
+
+                SendPendingReport(
+                    request,
+                    (Int32) request.GetBaseReportRequestId,
+                    SourceRouting.To(request.NetworkPath.Source),
+                    sentMessageResult
+                );
+
+                return Task.CompletedTask;
 
             };
 
@@ -2166,16 +2271,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                     request,
                                     ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming GetReport request ({request.GetReportRequestId}) accepted.");
+                DebugX.Log($"Charging station '{Id}': Incoming GetReport request ({request.GetReportRequestId}).");
 
-                // GetReportRequestId
-                // ComponentCriteria
-                // ComponentVariables
+                var (status, reportData) = DeviceModel.Report(
+                                               AllComponentConfigs,
+                                               request.ComponentCriteria,
+                                               request.ComponentVariables
+                                           );
+
+                // The report follows the response, see OnGetReportResponseSent.
+                if (status == GenericDeviceModelStatus.Accepted)
+                    pendingReports[request] = reportData;
 
                 return Task.FromResult(
                            new GetReportResponse(
                                Request:      request,
-                               Status:       GenericDeviceModelStatus.Accepted,
+                               Status:       status,
                                StatusInfo:   null,
                                CustomData:   null
                            )
@@ -2183,15 +2294,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
             };
 
+            OCPP.OUT.OnGetReportResponseSent += (timestamp,
+                                                 sender,
+                                                 connection,
+                                                 request,
+                                                 response,
+                                                 runtime,
+                                                 sentMessageResult,
+                                                 ct) => {
+
+                SendPendingReport(
+                    request,
+                    request.GetReportRequestId,
+                    SourceRouting.To(request.NetworkPath.Source),
+                    sentMessageResult
+                );
+
+                return Task.CompletedTask;
+
+            };
+
             #endregion
 
             #region OnSetVariables
 
-            OCPP.IN.OnSetVariables += (timestamp,
-                                       sender,
-                                       connection,
-                                       request,
-                                       ct) => {
+            OCPP.IN.OnSetVariables += async (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             ct) => {
 
                 DebugX.Log($"Charging station '{Id}': {request.VariableData.Count()} SetVariables request(s)");
 
@@ -2207,220 +2338,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                 if (UserRoles.Count != 0 &&
                     userRoles.IsMissing(BatterySwapStationSettings.UserRoles.Admin))
-                    return Task.FromResult(
-                        new SetVariablesResponse(
-                            Request:             request,
-                            SetVariableResults:  request.VariableData.Select(
-                                                     setVariableData => new SetVariableResult(
-                                                                            AttributeStatus:       SetVariableStatus.Rejected,
-                                                                            Component:             setVariableData.Component,
-                                                                            Variable:              setVariableData.Variable,
-                                                                            AttributeType:         setVariableData.AttributeType,
-                                                                            AttributeStatusInfo:   new StatusInfo(
-                                                                                                       "error",
-                                                                                                       $"Access denied!"
-                                                                                                   )
-                                                                        )
-                                                 ),
-                            CustomData:          null
-                        )
-                    );
-
-                #endregion
-
-
-                #region Independent Requests (default)
-
-                var setVariableResults = new List<SetVariableResult>();
-
-                if (request.DataConsistencyModel == null ||
-                         request.DataConsistencyModel == DataConsistencyModel.IndependentRequests)
-                {
-                    foreach (var setVariableData in request.VariableData)
-                    {
-
-                        var componentInstanceFound  = false;
-                        var variableFound           = false;
-                        var variableInstanceFound   = false;
-
-                        var componentConfigList     = GetComponentConfigs(
-                                                          setVariableData.Component.Name,
-                                                          setVariableData.Component.EVSE
-                                                      );
-
-                        if (componentConfigList is not null)
-                        {
-
-                            foreach (var componentConfig in componentConfigList)
-                            {
-                                if (componentConfig.Instance == setVariableData.Component.Instance)
-                                {
-
-                                    componentInstanceFound = true;
-
-                                    foreach (var variableConfig in componentConfig.VariableConfigs)
-                                    {
-
-                                        if (variableConfig.Name == setVariableData.Variable.Name)
-                                        {
-
-                                            variableFound = true;
-
-                                            if (variableConfig.Instance == setVariableData.Variable.Instance)
-                                            {
-
-                                                variableInstanceFound = true;
-
-                                                if (variableConfig.Attributes?.Mutability == MutabilityTypes.ReadOnly)
-                                                    setVariableResults.Add(
-                                                        new SetVariableResult(
-                                                            AttributeStatus:       SetVariableStatus.Rejected,
-                                                            Component:             setVariableData.Component,
-                                                            Variable:              setVariableData.Variable,
-                                                            AttributeType:         variableConfig.Attributes?.Type,
-                                                            AttributeStatusInfo:   new StatusInfo(
-                                                                                       "error",
-                                                                                       $"{setVariableData.Component.Name}{(setVariableData.Component.Instance is not null ? $"({setVariableData.Component.Instance})" : "")}/" +
-                                                                                       $"{setVariableData.Variable.Name}{(setVariableData.Variable.Instance is not null ? $"({setVariableData.Variable.Instance})" : "")} is read-only!"
-                                                                                   )
-                                                        )
-                                                    );
-
-                                                else // Mutability == ReadWrite | WriteOnly
-                                                {
-
-                                                    //ToDo: Check User Access Rights!
-
-                                                    var rr = variableConfig.Set(setVariableData.AttributeValue,
-                                                                                setVariableData.OldAttributeValue);
-
-                                                    if (rr.ErrorMessage is not null)
-                                                        setVariableResults.Add(
-                                                            new SetVariableResult(
-                                                                AttributeStatus:       SetVariableStatus.Rejected,
-                                                                Component:             setVariableData.Component,
-                                                                Variable:              setVariableData.Variable,
-                                                                AttributeType:         variableConfig.Attributes?.Type,
-                                                                AttributeStatusInfo:   new StatusInfo("error", rr.ErrorMessage),
-                                                                CustomData:            null
-                                                            )
-                                                        );
-
-                                                    else
-                                                        setVariableResults.Add(
-                                                            new SetVariableResult(
-                                                                AttributeStatus:       SetVariableStatus.Accepted,
-                                                                Component:             setVariableData.Component,
-                                                                Variable:              setVariableData.Variable,
-                                                                AttributeType:         variableConfig.Attributes?.Type,
-                                                                AttributeStatusInfo:   null,
-                                                                CustomData:            null
-                                                            )
-                                                        );
-
-                                                }
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                    if (!variableFound)
-                                        setVariableResults.Add(
-                                            new SetVariableResult(
-                                                AttributeStatus:   SetVariableStatus.UnknownVariable,
-                                                Component:         setVariableData.Component,
-                                                Variable:          setVariableData.Variable
-                                            )
-                                        );
-
-                                    else if (!variableInstanceFound)
-                                        setVariableResults.Add(
-                                            new SetVariableResult(
-                                                AttributeStatus:   SetVariableStatus.UnknownVariable,
-                                                Component:         setVariableData.Component,
-                                                Variable:          setVariableData.Variable
-                                            )
-                                        );
-
-                                }
-                            }
-
-                            if (!componentInstanceFound)
-                                setVariableResults.Add(
-                                    new SetVariableResult(
-                                        AttributeStatus:   SetVariableStatus.UnknownComponent,
-                                        Component:         setVariableData.Component,
-                                        Variable:          setVariableData.Variable
-                                    )
-                                );
-
-                        }
-
-                        else
-                            setVariableResults.Add(
-                                new SetVariableResult(
-                                    AttributeStatus:      SetVariableStatus.UnknownComponent,
-                                    Component:            setVariableData.Component,
-                                    Variable:             setVariableData.Variable,
-                                    AttributeStatusInfo:  new StatusInfo(
-                                                              "error",
-                                                              $"Unknown component '{setVariableData.Component.Name}'!"
-                                                          )
-                                )
-                            );
-
-                    }
-                }
-
-                #endregion
-
-                #region BASE
-
-                else if (request.DataConsistencyModel == DataConsistencyModel.BASE)
-                {
-
-                }
-
-                #endregion
-
-                #region ACID
-
-                else if (request.DataConsistencyModel == DataConsistencyModel.ACID)
-                {
-
-                }
-
-                #endregion
-
-                #region unknown... reject!
-
-                else
-                    setVariableResults.AddRange(
-                        request.VariableData.Select(
-                            setVariableData => new SetVariableResult(
-                                                   AttributeStatus:       SetVariableStatus.Rejected,
-                                                   Component:             setVariableData.Component,
-                                                   Variable:              setVariableData.Variable,
-                                                   AttributeType:         setVariableData.AttributeType,
-                                                   AttributeStatusInfo:   new StatusInfo(
-                                                                              "error",
-                                                                              $"Unknown data consistency model '{request.DataConsistencyModel}'!"
-                                                                          )
-                                               )
-                        )
-                    );
-
-                #endregion
-
-
-                return Task.FromResult(
-                           new SetVariablesResponse(
+                    return new SetVariablesResponse(
                                Request:             request,
-                               SetVariableResults:  setVariableResults,
+                               SetVariableResults:  request.VariableData.Select(
+                                                        setVariableData => new SetVariableResult(
+                                                                               AttributeStatus:       SetVariableStatus.Rejected,
+                                                                               Component:             setVariableData.Component,
+                                                                               Variable:              setVariableData.Variable,
+                                                                               AttributeType:         setVariableData.AttributeType,
+                                                                               AttributeStatusInfo:   new StatusInfo(
+                                                                                                          "error",
+                                                                                                          $"Access denied!"
+                                                                                                      )
+                                                                           )
+                                                    ),
                                CustomData:          null
-                           )
+                           );
+
+                #endregion
+
+                return new SetVariablesResponse(
+                           Request:             request,
+                           SetVariableResults:  await DeviceModel.SetVariablesAsync(
+                                                          request,
+                                                          (name, evse) => GetComponentConfigs(name, evse),
+                                                          ct
+                                                      ),
+                           CustomData:          null
                        );
 
             };
@@ -2437,138 +2381,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetVariables request accepted.");
 
-                var getVariableResults = new List<GetVariableResult>();
-
-                foreach (var getVariableData in request.VariableData)
-                {
-
-                    var componentInstanceFound  = false;
-                    var variableFound           = false;
-                    var variableInstanceFound   = false;
-
-                    var componentConfigList     = GetComponentConfigs(
-                                                      getVariableData.Component.Name,
-                                                      getVariableData.Component.EVSE
-                                                  );
-
-                    if (componentConfigList.Any())
-                    {
-                        foreach (var componentConfig in componentConfigList)
-                        {
-                            if (componentConfig.Instance == getVariableData.Component.Instance)
-                            {
-
-                                componentInstanceFound = true;
-
-                                foreach (var variableConfig in componentConfig.VariableConfigs)
-                                {
-
-                                    if (variableConfig.Name == getVariableData.Variable.Name)
-                                    {
-
-                                        variableFound = true;
-
-                                        if (variableConfig.Instance == getVariableData.Variable.Instance)
-                                        {
-
-                                            variableInstanceFound = true;
-
-                                            // A write-only variable, like a password, is never read out.
-                                            if (variableConfig.Attributes?.Mutability == MutabilityTypes.WriteOnly)
-                                                getVariableResults.Add(
-                                                    new GetVariableResult(
-                                                        AttributeStatus:       GetVariableStatus.Rejected,
-                                                        Component:             getVariableData.Component,
-                                                        Variable:              getVariableData.Variable,
-                                                        AttributeType:         variableConfig.Attributes?.Type,
-                                                        AttributeStatusInfo:   new StatusInfo(
-                                                                                   "error",
-                                                                                   $"{getVariableData.Component.Name}{(getVariableData.Component.Instance is not null ? $"({getVariableData.Component.Instance})" : "")}/" +
-                                                                                   $"{getVariableData.Variable.Name}{(getVariableData.Variable.Instance is not null ? $"({getVariableData.Variable.Instance})" : "")} is write-only!"
-                                                                               )
-                                                    )
-                                                );
-
-                                            else
-                                                getVariableResults.Add(new GetVariableResult(
-                                                                           AttributeStatus:       GetVariableStatus.Accepted,
-                                                                           Component:             getVariableData.Component,
-                                                                           Variable:              getVariableData.Variable,
-                                                                           AttributeValue:        variableConfig.Value,
-                                                                           AttributeType:         variableConfig.Attributes?.Type,
-                                                                           AttributeStatusInfo:   null,
-                                                                           CustomData:            null
-                                                                       ));
-
-                                        }
-
-                                    }
-
-                                }
-
-                                if (!variableFound)
-                                    getVariableResults.Add(
-                                        new GetVariableResult(
-                                            AttributeStatus:      GetVariableStatus.UnknownVariable,
-                                            Component:            getVariableData.Component,
-                                            Variable:             getVariableData.Variable,
-                                            AttributeStatusInfo:  new StatusInfo(
-                                                                      "error",
-                                                                      $"Variable '{getVariableData.Variable.Name}' of component '{getVariableData.Component}' not found!"
-                                                                  )
-                                        )
-                                    );
-
-                                else if (!variableInstanceFound)
-                                    getVariableResults.Add(
-                                        new GetVariableResult(
-                                            AttributeStatus:      GetVariableStatus.UnknownVariable,
-                                            Component:            getVariableData.Component,
-                                            Variable:             getVariableData.Variable,
-                                            AttributeStatusInfo:  new StatusInfo(
-                                                                      "error",
-                                                                      $"Instance '{getVariableData.Variable.Instance}' of variable '{getVariableData.Component}' / '{getVariableData.Variable.Name}' not found!"
-                                                                  )
-                                        )
-                                    );
-
-                            }
-                        }
-
-                        if (!componentInstanceFound)
-                            getVariableResults.Add(
-                                new GetVariableResult(
-                                    AttributeStatus:      GetVariableStatus.UnknownComponent,
-                                    Component:            getVariableData.Component,
-                                    Variable:             getVariableData.Variable,
-                                    AttributeStatusInfo:  new StatusInfo(
-                                                                "error",
-                                                                $"Instance of component '{getVariableData.Component.Name}' not found!"
-                                                            )
-                                )
-                            );
-
-                    }
-
-                    else
-                        getVariableResults.Add(
-                            new GetVariableResult(
-                                AttributeStatus:      GetVariableStatus.UnknownComponent,
-                                Component:            getVariableData.Component,
-                                Variable:             getVariableData.Variable,
-                                AttributeStatusInfo:  new StatusInfo(
-                                                          "error",
-                                                          $"Unknown component '{getVariableData.Component.Name}'!"
-                                                      )
-                            )
-                        );
-
-                }
-
                 return Task.FromResult(
                            new GetVariablesResponse(
                                Request:     request,
-                               Results:     getVariableResults,
+                               Results:     DeviceModel.GetVariables(
+                                                request.VariableData,
+                                                (name, evse) => GetComponentConfigs(name, evse)
+                                            ),
                                CustomData:  null
                            )
                        );

@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
-        private readonly        ConcurrentDictionary<String, List<ComponentConfig>>  componentConfigs                = [];
+        private readonly        ComponentConfigStore                                 componentConfigs                = new();
         private readonly        ConcurrentDictionary<Request_Id, SendRequestState>   requests                        = [];
         private readonly        HashSet<SignaturePolicy>                             signaturePolicies               = [];
         private                 Int64                                                internalRequestId               = 800000;
@@ -977,9 +977,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              [NotNullWhen(true)] out IEnumerable<ComponentConfig>  Components)
         {
 
-            if (componentConfigs.TryGetValue(Name, out var components))
+            if (componentConfigs.TryGet(Name, out var components))
             {
-                Components = components ?? [];
+                Components = components;
                 return true;
             }
 
@@ -1003,9 +1003,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                              [NotNullWhen(true)] out IEnumerable<ComponentConfig>  Components)
         {
 
-            if (componentConfigs.TryGetValue(Name, out var components))
+            if (componentConfigs.TryGet(Name, out _))
             {
-                Components = components.Where(component => component.Instance == Instance);
+                Components = componentConfigs.Get(Name, Instance);
                 return true;
             }
 
@@ -1042,31 +1042,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                      String  Instance)
             where T : ComponentConfig
 
-            => TryGetComponentConfig(Name, out var controllerList)
-                   ? controllerList.Where(componentConfig => componentConfig.Instance == Instance).
-                                    Cast<T>()
-                   : [];
+            => componentConfigs.Get(Name, Instance).
+                                Cast<T>();
+
+        #endregion
+
+        #region ComponentConfigs
+
+        /// <summary>
+        /// All component configurations of this node, as they are at this moment.
+        /// </summary>
+        public IEnumerable<ComponentConfig> ComponentConfigs
+            => componentConfigs;
 
         #endregion
 
 
-        #region AddOrUpdateComponentConfig(Name, AddValueFactory, UpdateValueFactory)
+        #region TryAddComponentConfig   (ComponentConfig)
 
         /// <summary>
-        /// Add or update a component configuration.
+        /// Add the given component configuration, unless a component with the
+        /// same name, instance and EVSE is already there.
         /// </summary>
-        /// <param name="Name">The name of the component.</param>
-        /// <param name="AddValueFactory">The method to call when adding a new component configuration.</param>
-        /// <param name="UpdateValueFactory">The method to call when updating an existing component configuration.</param>
-        public List<ComponentConfig> AddOrUpdateComponentConfig(String                                                      Name,
-                                                                Func<String, List<ComponentConfig>>                         AddValueFactory,
-                                                                Func<String, List<ComponentConfig>, List<ComponentConfig>>  UpdateValueFactory)
+        /// <param name="ComponentConfig">A component configuration.</param>
+        public Boolean TryAddComponentConfig(ComponentConfig ComponentConfig)
 
-            => componentConfigs.AddOrUpdate(
-                   Name,
-                   AddValueFactory,
-                   UpdateValueFactory
-               );
+            => componentConfigs.TryAdd(ComponentConfig);
+
+        #endregion
+
+        #region TryRemoveComponentConfig(Name, Instance = null, EVSE = null)
+
+        /// <summary>
+        /// Remove the component configuration with the given name, instance and EVSE.
+        /// </summary>
+        /// <param name="Name">The case insensitive name of the component.</param>
+        /// <param name="Instance">The optional case insensitive instance of the component.</param>
+        /// <param name="EVSE">The optional EVSE of the component.</param>
+        public Boolean TryRemoveComponentConfig(String   Name,
+                                                String?  Instance   = null,
+                                                EVSE?    EVSE       = null)
+
+            => componentConfigs.TryRemove(Name, Instance, EVSE, out _);
 
         #endregion
 

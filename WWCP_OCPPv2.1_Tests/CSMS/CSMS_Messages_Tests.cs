@@ -619,12 +619,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
+                var notifyReportRequests = new ConcurrentList<CS.NotifyReportRequest>();
+
+                testCSMS1.OCPP.IN.OnNotifyReportRequestReceived += (timestamp, sender, connection, notifyReportRequest, ct) => {
+                    notifyReportRequests.TryAdd(notifyReportRequest);
+                    return Task.CompletedTask;
+                };
+
                 var response = await testCSMS1.GetBaseReport(
                                          Destination:              SourceRouting.To(chargingStation1.Id),
                                          GetBaseReportRequestId:   1,
                                          ReportBase:               ReportBase.FullInventory,
                                          CustomData:               null
                                      );
+
+                // The report follows the response, in NotifyReport requests the CSMS answers.
+                var deadline = Timestamp.Now + TimeSpan.FromSeconds(10);
+
+                while (Timestamp.Now < deadline &&
+                       !(notifyReportRequests.Any(notifyReportRequest => notifyReportRequest.ToBeContinued != true) &&
+                         chargingStation1WebSocketJSONResponsesReceived.Count == notifyReportRequests.Count))
+                {
+                    await Task.Delay(20);
+                }
+
+                var parts = notifyReportRequests.Count;
 
 
                 Assert.Multiple(() => {
@@ -633,18 +652,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(response.Status,                                             Is.EqualTo(GenericDeviceModelStatus.Accepted));
 
                     Assert.That(getBaseReportRequests.Count,                                 Is.EqualTo(1));
+                    Assert.That(parts,                                                       Is.GreaterThan(0));
 
                     Assert.That(csms1WebSocketJSONRequestsSent.                     Count,   Is.EqualTo(1));
                     Assert.That(csms1WebSocketJSONRequestErrorsReceived.            Count,   Is.EqualTo(0));
                     Assert.That(csms1WebSocketJSONResponsesReceived.                Count,   Is.EqualTo(1));
 
-                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(0));
-                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(0));
+                    Assert.That(csms1WebSocketJSONRequestsReceived.                 Count,   Is.EqualTo(parts));
+                    Assert.That(csms1WebSocketJSONResponsesSent.                    Count,   Is.EqualTo(parts));
                     Assert.That(csms1WebSocketJSONResponseErrorsReceived.           Count,   Is.EqualTo(0));
 
-                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONRequestsSent.          Count,   Is.EqualTo(parts));
                     Assert.That(chargingStation1WebSocketJSONRequestErrorsReceived. Count,   Is.EqualTo(0));
-                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(0));
+                    Assert.That(chargingStation1WebSocketJSONResponsesReceived.     Count,   Is.EqualTo(parts));
 
                     Assert.That(chargingStation1WebSocketJSONRequestsReceived.      Count,   Is.EqualTo(1));
                     Assert.That(chargingStation1WebSocketJSONResponsesSent.         Count,   Is.EqualTo(1));
@@ -729,7 +749,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(GenericDeviceModelStatus.Accepted));
+                    // The charging station has no "Alert System!", so there is nothing to report.
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericDeviceModelStatus.EmptyResultSet));
 
                     Assert.That(getReportRequests.Count,                                     Is.EqualTo(1));
 

@@ -1415,27 +1415,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        public List<ComponentConfig> AddComponent(ComponentConfig Component)
+        /// <summary>
+        /// Add the given component, unless a component with the same name and instance is already there.
+        /// </summary>
+        /// <param name="Component">A component configuration.</param>
+        public Boolean AddComponent(ComponentConfig Component)
 
-            => OCPP.AddOrUpdateComponentConfig(
-                   Component.Name,
-                   name         => [ Component ],
-                   (name, list) => list.AddAndReturnList(Component)
-               );
+            => OCPP.TryAddComponentConfig(Component);
 
+        /// <summary>
+        /// Add the given component, unless a component with the same name and instance is already there,
+        /// and return it.
+        /// </summary>
+        /// <param name="Component">A component configuration.</param>
         public T AddComponentX<T>(T Component)
             where T : ComponentConfig
         {
 
-            var x = OCPP.AddOrUpdateComponentConfig(
-                        Component.Name,
-                        name         => [ Component ],
-                        (name, list) => list.AddAndReturnList(Component)
-                    );
+            OCPP.TryAddComponentConfig(Component);
 
             return Component;
 
         }
+
+        /// <summary>
+        /// Remove the component with the given name and instance, at the given EVSE if one is given.
+        /// </summary>
+        /// <param name="Name">The case insensitive name of the component.</param>
+        /// <param name="Instance">The optional case insensitive instance of the component.</param>
+        /// <param name="EVSE">The optional EVSE of the component.</param>
+        public Boolean RemoveComponent(String   Name,
+                                       String?  Instance   = null,
+                                       EVSE?    EVSE       = null)
+
+            => EVSE is null
+                   ? OCPP.TryRemoveComponentConfig(Name, Instance)
+                   : evses.TryGetValue(EVSE.Id, out var evse) &&
+                     evse.ComponentConfigs.TryRemove(Name, Instance, EVSE, out _);
 
 
         public IEnumerable<ComponentConfig> GetComponentConfigs(String Name, EVSE? EVSE = null)
@@ -1448,13 +1464,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             else if (evses.TryGetValue(EVSE.Id, out var evse))
             {
-                if (evse.ComponentConfigs.TryGetValue(Name, out var _componentConfigList))
+                if (evse.ComponentConfigs.TryGet(Name, out var _componentConfigList))
                     componentConfigList = _componentConfigList;
             }
 
             return componentConfigList ?? [];
 
         }
+
+        /// <summary>
+        /// All components of this charging station and of its EVSEs, as they are at this moment.
+        /// </summary>
+        public IEnumerable<ComponentConfig> AllComponentConfigs
+
+            => [.. OCPP.ComponentConfigs,
+                .. evses.Values.SelectMany(evse => evse.ComponentConfigs)];
 
 
         #region (Timer) DoMaintenance(State)

@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Instance">The name of the instance.</param>
         public NTPClientGroupController?              TimeClientController(String Instance)
-            => GetComponentConfigs<NTPClientGroupController>(nameof(TimeClientController), Instance).FirstOrDefault();
+            => GetComponentConfigs<NTPClientGroupController>(nameof(OCPPv2_1.NTPClientGroupController), Instance).FirstOrDefault();
 
         /// <summary>
         /// The legal Time Controller.
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="Instance">The name of the instance.</param>
         public NTPClientController?              NetworkTimeClientController(String Instance)
-            => GetComponentConfigs<NTPClientController>(nameof(NetworkTimeClientController), Instance).FirstOrDefault();
+            => GetComponentConfigs<NTPClientController>(nameof(OCPPv2_1.NTPClientController), Instance).FirstOrDefault();
 
         #endregion
 

@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         private   readonly AChargingStationNode                                          parentChargingStation;
 
         protected readonly ConcurrentDictionary<Connector_Id, ChargingStationConnector>  connectors         = [];
-        public             ConcurrentDictionary<String, List<ComponentConfig>>           ComponentConfigs   = [];
+        public             ComponentConfigStore                                          ComponentConfigs   = new();
 
         #endregion
 
@@ -161,11 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             where T : ComponentConfig
 
-            => ComponentConfigs.TryGetValue(Name, out var controllerList)
-                   ? controllerList.Where  (controller => controller.Name     == Name &&
-                                                          controller.EVSE?.Id == Id   &&
+            => ComponentConfigs.TryGet(Name, out var controllerList)
+                   ? controllerList.Where  (controller => controller.EVSE?.Id == Id   &&
                                                           (!ConnectorId.HasValue        || controller.EVSE?.ConnectorId == ConnectorId) &&
-                                                          ( Instance.   IsNullOrEmpty() || controller.Instance          == Instance)).
+                                                          ( Instance.   IsNullOrEmpty() || ComponentConfigStore.SameInstance(controller.Instance, Instance))).
                                     Cast<T>()
                    : [];
 
@@ -263,16 +262,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        public void AddComponent(ComponentConfig Component)
-        {
+        public Boolean AddComponent(ComponentConfig Component)
 
-            ComponentConfigs.AddOrUpdate(
-                                 Component.Name,
-                                 name => [Component],
-                                 (name, list) => list.AddAndReturnList(Component)
-                             );
-
-        }
+            => ComponentConfigs.TryAdd(Component);
 
 
 

@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Data
 
         private readonly ChargingStationEVSE                                  parentEVSE;
-        public           ConcurrentDictionary<String, List<ComponentConfig>>  ComponentConfigs   = [];
+        public           ComponentConfigStore                                 ComponentConfigs   = new();
 
         #endregion
 
@@ -65,11 +65,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             where T : ComponentConfig
 
-            => ComponentConfigs.TryGetValue(Name, out var controllerList)
-                   ? controllerList.Where  (controller => controller.Name              == Name           &&
-                                                          controller.EVSE?.Id          == parentEVSE?.Id &&
+            => ComponentConfigs.TryGet(Name, out var controllerList)
+                   ? controllerList.Where  (controller => controller.EVSE?.Id          == parentEVSE?.Id &&
                                                           controller.EVSE?.ConnectorId == Id             &&
-                                                          ( Instance.IsNullOrEmpty() || controller.Instance == Instance)).
+                                                          ( Instance.IsNullOrEmpty() || ComponentConfigStore.SameInstance(controller.Instance, Instance))).
                                     Cast<T>()
                    : [];
 

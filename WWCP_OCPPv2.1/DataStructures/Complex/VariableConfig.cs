@@ -30,12 +30,123 @@ using cloud.charging.open.protocols.WWCP;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public class ValueSetterResponse(String?  NewValue,
-                                     String?  ErrorMessage   = null)
+    /// <summary>
+    /// What setting a variable came to: its status for the SetVariables result,
+    /// why, and the value the variable has afterwards.
+    /// </summary>
+    public class ValueSetterResponse
     {
 
-        public String?  NewValue        { get; } = NewValue;
-        public String?  ErrorMessage    { get; } = ErrorMessage;
+        #region Properties
+
+        /// <summary>
+        /// The value of the variable after the attempt.
+        /// </summary>
+        public String?            NewValue        { get; }
+
+        /// <summary>
+        /// The status of the attempt, as the SetVariables result reports it.
+        /// </summary>
+        public SetVariableStatus  Status          { get; }
+
+        /// <summary>
+        /// Why the attempt came to its status, as the SetVariables result reports it.
+        /// </summary>
+        public StatusInfo?        StatusInfo      { get; }
+
+        /// <summary>
+        /// The reason a rejected attempt was rejected, or null.
+        /// </summary>
+        public String?            ErrorMessage
+            => Status == SetVariableStatus.Accepted || Status == SetVariableStatus.RebootRequired
+                   ? null
+                   : StatusInfo?.AdditionalInfo ?? StatusInfo?.ReasonCode ?? Status.ToString();
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// The attempt was accepted, or rejected with the given error message.
+        /// </summary>
+        /// <param name="NewValue">The value of the variable after the attempt.</param>
+        /// <param name="ErrorMessage">The reason the attempt was rejected, or null when it was accepted.</param>
+        public ValueSetterResponse(String?  NewValue,
+                                   String?  ErrorMessage   = null)
+
+            : this(NewValue,
+                   ErrorMessage is null
+                       ? SetVariableStatus.Accepted
+                       : SetVariableStatus.Rejected,
+                   ErrorMessage is null
+                       ? null
+                       : new StatusInfo("error", ErrorMessage))
+
+        { }
+
+        /// <summary>
+        /// The attempt came to the given status, for the given reason.
+        /// </summary>
+        /// <param name="NewValue">The value of the variable after the attempt.</param>
+        /// <param name="Status">The status of the attempt.</param>
+        /// <param name="StatusInfo">Why the attempt came to its status.</param>
+        public ValueSetterResponse(String?            NewValue,
+                                   SetVariableStatus  Status,
+                                   StatusInfo?        StatusInfo   = null)
+        {
+
+            this.NewValue    = NewValue;
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
+
+        }
+
+        #endregion
+
+
+        #region (static) Accepted       (NewValue)
+
+        /// <summary>
+        /// The variable has the given new value.
+        /// </summary>
+        /// <param name="NewValue">The new value of the variable.</param>
+        public static ValueSetterResponse Accepted(String? NewValue)
+
+            => new (NewValue,
+                    SetVariableStatus.Accepted);
+
+        #endregion
+
+        #region (static) RebootRequired (NewValue)
+
+        /// <summary>
+        /// The variable has the given new value, which takes effect after a reboot.
+        /// </summary>
+        /// <param name="NewValue">The new value of the variable.</param>
+        public static ValueSetterResponse RebootRequired(String? NewValue)
+
+            => new (NewValue,
+                    SetVariableStatus.RebootRequired);
+
+        #endregion
+
+        #region (static) Rejected       (OldValue, ReasonCode, AdditionalInfo = null)
+
+        /// <summary>
+        /// The variable keeps its value, for the given reason.
+        /// </summary>
+        /// <param name="OldValue">The value the variable keeps.</param>
+        /// <param name="ReasonCode">A reason code, e.g. "ReadOnly", "InvalidValue" or "ValueOutOfRange".</param>
+        /// <param name="AdditionalInfo">More about the reason, for a person to read.</param>
+        public static ValueSetterResponse Rejected(String?  OldValue,
+                                                   String   ReasonCode,
+                                                   String?  AdditionalInfo   = null)
+
+            => new (OldValue,
+                    SetVariableStatus.Rejected,
+                    new StatusInfo(ReasonCode, AdditionalInfo));
+
+        #endregion
 
     }
 
@@ -49,8 +160,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        public readonly Func<String?>?                                ValueGetter;
-        public readonly Func<String?, String?, ValueSetterResponse>?  ValueSetter;
+        public readonly Func<String?>?                                                         ValueGetter;
+        public readonly Func<String?, String?, ValueSetterResponse>?                           ValueSetter;
+        public readonly Func<String?, String?, CancellationToken, Task<ValueSetterResponse>>?  AsyncValueSetter;
 
         #endregion
 
@@ -108,29 +220,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Name">The case insensitive name of the variable. Name should be taken from the list of standardized variable names whenever possible.</param>
         /// <param name="ValueGetter">A delegate to return the value of the variable. In some rare cases of WriteOnly variables this might be null!</param>
         /// <param name="ValueSetter">A delegate to set the value of the variable. The old value can optionally be passed as second parameter. This is null for all ReadOnly variables.</param>
-        /// 
+        ///
         /// <param name="Instance">The optional case insensitive name of the instance in case the variable exists as multiple instances.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public VariableConfig(String                                        Name,
-                              Func<String?>?                                ValueGetter       = null,
-                              Func<String?, String?, ValueSetterResponse>?  ValueSetter       = null,
-                              String?                                       Instance          = null,
+        /// <param name="AsyncValueSetter">A delegate to set the value of the variable asynchronously, for a source that has to wait to take it. When given, it is used instead of the ValueSetter.</param>
+        public VariableConfig(String                                                                 Name,
+                              Func<String?>?                                                         ValueGetter        = null,
+                              Func<String?, String?, ValueSetterResponse>?                           ValueSetter        = null,
+                              String?                                                                Instance           = null,
 
-                              VariableAttribute?                            Attributes        = null,
-                              VariableCharacteristics?                      Characteristics   = null,
-                              VariableMonitoring?                           Monitorings       = null,
-                              I18NString?                                   Description       = null,
+                              VariableAttribute?                                                     Attributes         = null,
+                              VariableCharacteristics?                                               Characteristics    = null,
+                              VariableMonitoring?                                                    Monitorings        = null,
+                              I18NString?                                                            Description        = null,
 
-                              CustomData?                                   CustomData        = null)
+                              CustomData?                                                            CustomData         = null,
+
+                              Func<String?, String?, CancellationToken, Task<ValueSetterResponse>>?  AsyncValueSetter   = null)
 
             : base(CustomData)
 
         {
 
-            this.Name             = Name.     Trim();
-            this.ValueGetter      = ValueGetter;
-            this.ValueSetter      = ValueSetter;
-            this.Instance         = Instance?.Trim();
+            this.Name              = Name.     Trim();
+            this.ValueGetter       = ValueGetter;
+            this.ValueSetter       = ValueSetter;
+            this.AsyncValueSetter  = AsyncValueSetter;
+            this.Instance          = Instance?.Trim();
 
             this.Attributes       = Attributes;
             this.Characteristics  = Characteristics;
@@ -449,32 +565,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    Description?.    Clone(),
 
-                   CustomData
+                   CustomData,
+
+                   AsyncValueSetter
 
                );
 
         #endregion
 
 
-        public ValueSetterResponse Set(String? NewValue,
-                                       String? OldValue = null)
+        #region IsWritable
 
+        /// <summary>
+        /// Whether this variable can be set at all: it is not read-only, and it has a setter.
+        /// </summary>
+        public Boolean IsWritable
+
+            => Attributes?.Mutability != MutabilityTypes.ReadOnly &&
+               (ValueSetter is not null || AsyncValueSetter is not null);
+
+        #endregion
+
+        #region SetAsync(NewValue, OldValue = null, CancellationToken = default)
+
+        /// <summary>
+        /// Set this variable to the given value.
+        /// </summary>
+        /// <param name="NewValue">The new value.</param>
+        /// <param name="OldValue">The value the variable must have now, for a compare-and-set, or null.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
+        public async Task<ValueSetterResponse> SetAsync(String?            NewValue,
+                                                        String?            OldValue            = null,
+                                                        CancellationToken  CancellationToken   = default)
         {
 
-            var response = ValueSetter?.Invoke(NewValue,
-                                               OldValue)
+            var response = AsyncValueSetter is not null
+                               ? await AsyncValueSetter(NewValue, OldValue, CancellationToken).ConfigureAwait(false)
+                               : ValueSetter?.Invoke(NewValue, OldValue)
+                                     ?? ValueSetterResponse.Rejected(
+                                            Value,
+                                            Attributes?.Mutability == MutabilityTypes.ReadOnly
+                                                ? "ReadOnly"
+                                                : "UnsupportedRequest",
+                                            $"{Name}{(Instance is not null ? $"({Instance})" : "")} cannot be set!"
+                                        );
 
-                               ?? new ValueSetterResponse(
-                                      "error",
-                                      "Internal error!"
-                                  );
-
-            if (response.ErrorMessage is null)
+            if (response.Status == SetVariableStatus.Accepted ||
+                response.Status == SetVariableStatus.RebootRequired)
+            {
                 LastUpdate = Timestamp.Now;
+            }
 
             return response;
 
         }
+
+        #endregion
 
 
 
