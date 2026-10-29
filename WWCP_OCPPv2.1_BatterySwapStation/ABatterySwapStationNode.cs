@@ -761,8 +761,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                              CertificateEntries:                 128,
                              SecurityProfile:                    SecurityProfiles.SecurityProfile2,
 
-                             Identity:                           "CS001",
-                             BasicAuthPassword:                  "s3cur3!",
+                             // The identity is the station's own; a password it only gets from whoever gives it one.
+                             Identity:                           Id.ToString(),
                              AdditionalRootCertificateCheck:     false,
                              MaxCertificateChainSize:            128
                          ));

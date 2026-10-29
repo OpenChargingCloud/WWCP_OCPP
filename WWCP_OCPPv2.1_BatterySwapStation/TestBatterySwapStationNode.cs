@@ -191,16 +191,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 // CertificateType
                 // Certificate
 
-                var success = certificates.AddOrUpdate(request.CertificateType,
-                                                           a    => request.Certificate,
-                                                          (b,c) => request.Certificate);
+                var status = request.Certificate?.Parsed is not null
+                                 ? InstallCertificateStatus.Accepted
+                                 : InstallCertificateStatus.Rejected;
+
+                // Only an accepted certificate is stored: a rejected one must not replace the one installed before it.
+                if (status == InstallCertificateStatus.Accepted)
+                    certificates[request.CertificateType] = request.Certificate;
 
                 return Task.FromResult(
                            new InstallCertificateResponse(
                                Request:      request,
-                               Status:       request.Certificate?.Parsed is not null
-                                                 ? InstallCertificateStatus.Accepted
-                                                 : InstallCertificateStatus.Rejected,
+                               Status:       status,
                                StatusInfo:   null,
                                CustomData:   null
                            )
@@ -2471,15 +2473,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                                             variableInstanceFound = true;
 
-                                            getVariableResults.Add(new GetVariableResult(
-                                                                       AttributeStatus:       GetVariableStatus.Accepted,
-                                                                       Component:             getVariableData.Component,
-                                                                       Variable:              getVariableData.Variable,
-                                                                       AttributeValue:        variableConfig.Value,
-                                                                       AttributeType:         variableConfig.Attributes?.Type,
-                                                                       AttributeStatusInfo:   null,
-                                                                       CustomData:            null
-                                                                   ));
+                                            // A write-only variable, like a password, is never read out.
+                                            if (variableConfig.Attributes?.Mutability == MutabilityTypes.WriteOnly)
+                                                getVariableResults.Add(
+                                                    new GetVariableResult(
+                                                        AttributeStatus:       GetVariableStatus.Rejected,
+                                                        Component:             getVariableData.Component,
+                                                        Variable:              getVariableData.Variable,
+                                                        AttributeType:         variableConfig.Attributes?.Type,
+                                                        AttributeStatusInfo:   new StatusInfo(
+                                                                                   "error",
+                                                                                   $"{getVariableData.Component.Name}{(getVariableData.Component.Instance is not null ? $"({getVariableData.Component.Instance})" : "")}/" +
+                                                                                   $"{getVariableData.Variable.Name}{(getVariableData.Variable.Instance is not null ? $"({getVariableData.Variable.Instance})" : "")} is write-only!"
+                                                                               )
+                                                    )
+                                                );
+
+                                            else
+                                                getVariableResults.Add(new GetVariableResult(
+                                                                           AttributeStatus:       GetVariableStatus.Accepted,
+                                                                           Component:             getVariableData.Component,
+                                                                           Variable:              getVariableData.Variable,
+                                                                           AttributeValue:        variableConfig.Value,
+                                                                           AttributeType:         variableConfig.Attributes?.Type,
+                                                                           AttributeStatusInfo:   null,
+                                                                           CustomData:            null
+                                                                       ));
 
                                         }
 

@@ -621,6 +621,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="MeterType">An optional meter type of the main power meter of the charge point.</param>
         /// <param name="MeterSerialNumber">An optional serial number of the main power meter of the charge point.</param>
         /// <param name="MeterPublicKey">An optional public key of the main power meter of the charge point.</param>
+        /// <param name="ConfigurationKeys">The configuration keys of the charge point, if any.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
         /// 
@@ -644,6 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    String?                     Iccid                          = null,
                                    String?                     IMSI                           = null,
                                    IEnergyMeter?               UplinkEnergyMeter              = null,
+                                   IEnumerable<KeyValuePair<String, ConfigurationData>>?   ConfigurationKeys   = null,
 
                                    TimeSpan?                   DefaultRequestTimeout          = null,
 
@@ -719,14 +721,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
-            this.Configuration.TryAdd("hello",          new ConfigurationData("world",    AccessRights.ReadOnly,  false));
-            this.Configuration.TryAdd("changeMe",       new ConfigurationData("now",      AccessRights.ReadWrite, false));
-            this.Configuration.TryAdd("doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false));
-            this.Configuration.TryAdd("password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false));
+            // No keys of its own: a key every charge point brought along, a password among them, would be known to all.
+            foreach (var configurationKey in ConfigurationKeys ?? [])
+                this.Configuration.TryAdd(configurationKey.Key, configurationKey.Value);
 
             WireEvents();
 
         }
+
+        #endregion
+
+
+        #region (private static) ToConfigurationKey(Key, ConfigurationData)
+
+        /// <summary>
+        /// The given configuration value as GetConfiguration reports it:
+        /// a write-only key is listed, but without its value.
+        /// </summary>
+        /// <param name="Key">The configuration key.</param>
+        /// <param name="ConfigurationData">The configuration value.</param>
+        private static ConfigurationKey ToConfigurationKey(String             Key,
+                                                           ConfigurationData  ConfigurationData)
+
+            => new (
+                   Key,
+                   ConfigurationData.AccessRights,
+                   ConfigurationData.AccessRights == AccessRights.WriteOnly
+                       ? null
+                       : ConfigurationData.Value
+               );
 
         #endregion
 
@@ -1254,10 +1277,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                         if (Configuration.TryGetValue(key, out var configurationData))
                             configurationKeys.Add(
-                                new ConfigurationKey(
+                                ToConfigurationKey(
                                     key,
-                                    configurationData.AccessRights,
-                                    configurationData.Value
+                                    configurationData
                                 )
                             );
 
@@ -1271,10 +1293,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
                     foreach (var configuration in Configuration)
                         configurationKeys.Add(
-                            new ConfigurationKey(
+                            ToConfigurationKey(
                                 configuration.Key,
-                                configuration.Value.AccessRights,
-                                configuration.Value.Value
+                                configuration.Value
                             )
                         );
                 }
@@ -1326,20 +1347,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 }
 
-                // An unknown key is created, and is writable from then on.
-                Configuration.TryAdd(
-                    request.Key,
-                    new ConfigurationData(
-                        request.Value,
-                        AccessRights.ReadWrite,
-                        false
-                    )
-                );
-
+                // A key the charge point does not have is not supported, and is not created either.
                 return Task.FromResult(
                            new ChangeConfigurationResponse(
                                request,
-                               ConfigurationStatus.Accepted
+                               ConfigurationStatus.NotSupported
                            )
                        );
 

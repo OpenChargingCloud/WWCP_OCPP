@@ -17,11 +17,15 @@
 
 #region Usings
 
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
 using NUnit.Framework;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
@@ -1500,6 +1504,132 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+        #region GetVariables_WriteOnly_Test()
+
+        /// <summary>
+        /// A write-only variable is not read out: the charging station rejects
+        /// reading it and sends no value, and answers the other variables of
+        /// the same request as usual.
+        /// </summary>
+        [Test]
+        public async Task GetVariables_WriteOnly_Test()
+        {
+
+            if (testCSMS1        is not null &&
+                chargingStation1 is not null)
+            {
+
+                chargingStation1.GetComponentConfigs<SecurityCtrlr>(nameof(SecurityCtrlr)).Single().BasicAuthPassword = "0123456789abcdef";
+
+                var response = await testCSMS1.GetVariables(
+                                         Destination:    SourceRouting.To(chargingStation1.Id),
+                                         VariableData:   [
+
+                                                             new GetVariableData(
+                                                                 Component:   new Component(Name: nameof(SecurityCtrlr)),
+                                                                 Variable:    new Variable (Name: "BasicAuthPassword")
+                                                             ),
+
+                                                             new GetVariableData(
+                                                                 Component:   new Component(Name: nameof(SecurityCtrlr)),
+                                                                 Variable:    new Variable (Name: "OrganizationName")
+                                                             )
+
+                                                         ]
+                                     );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Results.Count(),                        Is.EqualTo(2));
+
+                    Assert.That(response.Results.ElementAt(0).AttributeStatus,   Is.EqualTo(GetVariableStatus.Rejected));
+                    Assert.That(response.Results.ElementAt(0).AttributeValue,    Is.Null);
+
+                    Assert.That(response.Results.ElementAt(1).AttributeStatus,   Is.EqualTo(GetVariableStatus.Accepted));
+                    Assert.That(response.Results.ElementAt(1).AttributeValue,    Is.EqualTo("GraphDefined CSO"));
+
+                });
+
+            }
+
+            else
+                Assert.Fail($"{nameof(GetVariables_WriteOnly_Test)} preconditions failed!");
+
+        }
+
+        #endregion
+
+        #region SecurityCtrlr_NoBuiltInCredentials_Test()
+
+        /// <summary>
+        /// A charging station is not born with HTTP Basic Authentication
+        /// credentials: its identity is its own id, and it has no password
+        /// until it is given one.
+        /// </summary>
+        [Test]
+        public void SecurityCtrlr_NoBuiltInCredentials_Test()
+        {
+
+            if (chargingStation1 is not null)
+            {
+
+                var securityCtrlr = chargingStation1.GetComponentConfigs<SecurityCtrlr>(nameof(SecurityCtrlr)).Single();
+
+                Assert.Multiple(() => {
+                    Assert.That(securityCtrlr.Identity,            Is.EqualTo(chargingStation1.Id.ToString()));
+                    Assert.That(securityCtrlr.BasicAuthPassword,   Is.Null);
+                });
+
+            }
+
+            else
+                Assert.Fail($"{nameof(SecurityCtrlr_NoBuiltInCredentials_Test)} preconditions failed!");
+
+        }
+
+        #endregion
+
+        #region BatterySwapStation_SecurityCtrlr_NoBuiltInCredentials_Test()
+
+        /// <summary>
+        /// A battery swap station is not born with HTTP Basic Authentication
+        /// credentials either.
+        /// </summary>
+        [Test]
+        public async Task BatterySwapStation_SecurityCtrlr_NoBuiltInCredentials_Test()
+        {
+
+            var batterySwapStation = new BSS.TestBatterySwapStationNode(
+                                         Id:                     NetworkingNode_Id.Parse("GD-BSS001"),
+                                         VendorName:             "GraphDefined OEM #1",
+                                         Model:                  "VBSS.1",
+                                         HTTPAPI_Disabled:       true,
+                                         WebAPI_Disabled:        true,
+                                         DisableSendHeartbeats:  true,
+                                         DNSClient:              testCSMS1?.DNSClient as DNSClient
+                                     );
+
+            try
+            {
+
+                var securityCtrlr = batterySwapStation.GetComponentConfigs<BSS.SecurityCtrlr>(nameof(BSS.SecurityCtrlr)).Single();
+
+                Assert.Multiple(() => {
+                    Assert.That(securityCtrlr.Identity,            Is.EqualTo(batterySwapStation.Id.ToString()));
+                    Assert.That(securityCtrlr.BasicAuthPassword,   Is.Null);
+                });
+
+            }
+            finally
+            {
+                await batterySwapStation.Stop();
+            }
+
+        }
+
+        #endregion
+
 
         #region SetMonitoringBase_Test()
 
@@ -2781,6 +2911,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             else
                 Assert.Fail($"{nameof(InstallCertificate_Test)} preconditions failed!");
+
+        }
+
+        #endregion
+
+        #region InstallCertificate_Rejected_Test()
+
+        /// <summary>
+        /// A certificate the charging station rejects is not stored, so it does
+        /// not replace the certificate installed before it.
+        /// </summary>
+        /// <remarks>
+        /// A certificate that does not parse is refused by the request parser
+        /// before any handler sees it. A custom request parser is the one way
+        /// a certificate without its parsed form reaches the handler, so the
+        /// second request goes through one.
+        /// </remarks>
+        [Test]
+        public async Task InstallCertificate_Rejected_Test()
+        {
+
+            if (testCSMS1        is not null &&
+                chargingStation1 is not null)
+            {
+
+                var installed  = SelfSignedCertificate("V2G Root installed");
+                var rejected   = SelfSignedCertificate("V2G Root rejected");
+
+                var response1  = await testCSMS1.InstallCertificate(
+                                           Destination:       SourceRouting.To(chargingStation1.Id),
+                                           CertificateType:   InstallCertificateUse.V2GRootCertificate,
+                                           Certificate:       OCPP.Certificate.Parse(installed.ExportCertificatePem())
+                                       );
+
+                chargingStation1.OCPP.CustomInstallCertificateRequestParser = (json, request) =>
+                    new InstallCertificateRequest(
+                        Destination:       request.Destination,
+                        CertificateType:   request.CertificateType,
+                        Certificate:       request.Certificate.Clone,
+                        RequestId:         request.RequestId,
+                        RequestTimestamp:  request.RequestTimestamp,
+                        RequestTimeout:    request.RequestTimeout,
+                        EventTrackingId:   request.EventTrackingId,
+                        NetworkPath:       request.NetworkPath
+                    );
+
+                var response2  = await testCSMS1.InstallCertificate(
+                                           Destination:       SourceRouting.To(chargingStation1.Id),
+                                           CertificateType:   InstallCertificateUse.V2GRootCertificate,
+                                           Certificate:       OCPP.Certificate.Parse(rejected.ExportCertificatePem())
+                                       );
+
+                var response3  = await testCSMS1.GetInstalledCertificateIds(
+                                           Destination:       SourceRouting.To(chargingStation1.Id),
+                                           CertificateTypes:  [ GetCertificateIdUse.V2GRootCertificate ]
+                                       );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response1.Status,   Is.EqualTo(InstallCertificateStatus.Accepted));
+                    Assert.That(response2.Status,   Is.EqualTo(InstallCertificateStatus.Rejected));
+
+                    Assert.That(response3.Status,   Is.EqualTo(GetInstalledCertificateStatus.Accepted));
+                    Assert.That(response3.CertificateHashDataChain.Single().CertificateHashData.SerialNumber,
+                                Is.EqualTo(installed.SerialNumber));
+
+                });
+
+            }
+
+            else
+                Assert.Fail($"{nameof(InstallCertificate_Rejected_Test)} preconditions failed!");
+
+        }
+
+        #endregion
+
+        #region (private static) SelfSignedCertificate(Subject)
+
+        private static X509Certificate2 SelfSignedCertificate(String Subject)
+        {
+
+            using var key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+
+            return new System.Security.Cryptography.X509Certificates.CertificateRequest(
+                           $"CN={Subject}",
+                           key,
+                           HashAlgorithmName.SHA256
+                       ).CreateSelfSigned(
+                           DateTimeOffset.UtcNow.AddMinutes(-1),
+                           DateTimeOffset.UtcNow.AddDays(1)
+                       );
 
         }
 

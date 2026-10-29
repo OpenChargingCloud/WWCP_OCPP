@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
@@ -650,6 +651,150 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
 
             }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_ChangeConfiguration_UnknownKey_Test()
+
+        /// <summary>
+        /// A key the charge point does not know is not supported, and changing
+        /// it does not create it.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_ChangeConfiguration_UnknownKey_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null)
+            {
+
+                var key        = "ABCD";
+                var response1  = await testCentralSystem01.ChangeConfiguration(
+                                           Destination:  SourceRouting.To(chargePoint1.Id),
+                                           Key:          key,
+                                           Value:        "1234"
+                                       );
+
+                var response2  = await testCentralSystem01.GetConfiguration(
+                                           Destination:  SourceRouting.To(chargePoint1.Id),
+                                           Keys:         [ key ]
+                                       );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response1.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response1.Status,                                 Is.EqualTo(ConfigurationStatus.NotSupported));
+
+                    Assert.That(response2.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response2.ConfigurationKeys,                      Is.Empty);
+                    Assert.That(response2.UnknownKeys,                            Is.EqualTo(new[] { key }));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_GetConfiguration_WriteOnlyKey_Test()
+
+        /// <summary>
+        /// A write-only key is reported without its value, whether it is asked
+        /// for by name or along with all the others.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_GetConfiguration_WriteOnlyKey_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null)
+            {
+
+                var response1  = await testCentralSystem01.GetConfiguration(
+                                           Destination:  SourceRouting.To(chargePoint1.Id),
+                                           Keys:         [ "password" ]
+                                       );
+
+                var response2  = await testCentralSystem01.GetConfiguration(
+                                           Destination:  SourceRouting.To(chargePoint1.Id)
+                                       );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response1.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response1.ConfigurationKeys.Count(),              Is.EqualTo(1));
+                    Assert.That(response1.ConfigurationKeys.First().Key,          Is.EqualTo("password"));
+                    Assert.That(response1.ConfigurationKeys.First().Value,        Is.Null);
+
+                    Assert.That(response2.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response2.ConfigurationKeys.Single(configurationKey => configurationKey.Key == "password").Value,  Is.Null);
+                    Assert.That(response2.ConfigurationKeys.Single(configurationKey => configurationKey.Key == "hello").   Value,  Is.EqualTo("world"));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_ChargePoint_HasNoKeysOfItsOwn_Test()
+
+        /// <summary>
+        /// A charge point that is given no configuration keys has none: no
+        /// test keys, and no password that anybody could look up.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_ChargePoint_HasNoKeysOfItsOwn_Test()
+        {
+
+            var chargePoint = new ChargePointShowingItsKeys(
+                                  NetworkingNode_Id.Parse("CP-NO-KEYS"),
+                                  testCentralSystem01?.DNSClient
+                              );
+
+            try
+            {
+                Assert.That(chargePoint.ConfigurationKeys, Is.Empty);
+            }
+            finally
+            {
+                await chargePoint.Stop();
+            }
+
+        }
+
+        private sealed class ChargePointShowingItsKeys : TestChargePointNode
+        {
+
+            public IEnumerable<String> ConfigurationKeys
+                => Configuration.Keys;
+
+            public ChargePointShowingItsKeys(NetworkingNode_Id  Id,
+                                             IDNSClient?        DNSClient)
+
+                : base(Id,
+                       [],
+                       DNSClient: DNSClient)
+
+            { }
 
         }
 

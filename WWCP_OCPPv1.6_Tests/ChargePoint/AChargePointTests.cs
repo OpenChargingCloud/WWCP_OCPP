@@ -89,6 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                            //   PublicKeys:    [ WWCP.PublicKey.Parse("0x...") ]
                                                           ),
 
+                                ConfigurationKeys:        [
+                                                              new ("hello",          new ConfigurationData("world",    AccessRights.ReadOnly)),
+                                                              new ("changeMe",       new ConfigurationData("now",      AccessRights.ReadWrite)),
+                                                              new ("doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly)),
+                                                              new ("password",       new ConfigurationData("12345678", AccessRights.WriteOnly))
+                                                          ],
+
                                 //HTTPBasicAuth:            new Tuple<String, String>("OLI_001", "1234"),
                                 //HTTPBasicAuth:            new Tuple<String, String>("GD001", "1234"),
                                 DNSClient:                testCentralSystem01!.DNSClient
