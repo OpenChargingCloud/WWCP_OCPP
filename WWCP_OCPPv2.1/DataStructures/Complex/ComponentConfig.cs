@@ -70,6 +70,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public I18NString?                  Description        { get; }
 
+        /// <summary>
+        /// Where the variables of this component are set together, with every
+        /// entry of a SetVariables request that is the source's - or null to set
+        /// them one at a time through their own setters. A variable that names
+        /// a source of its own goes there instead. Not part of the JSON.
+        /// </summary>
+        public ISetVariablesSource?         SetVariablesSource { get; init; }
+
         #endregion
 
         #region Constructor(s)

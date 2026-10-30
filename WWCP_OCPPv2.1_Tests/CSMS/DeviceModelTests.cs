@@ -399,8 +399,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #region SetVariables_ACIDIsRejected_Test()
 
         /// <summary>
-        /// A data consistency model other than independent requests is not supported
-        /// yet, so every entry of such a request is rejected and none is set.
+        /// A variable that is set through its own setter cannot be rolled back, so
+        /// with ACID it is rejected rather than set.
         /// </summary>
         [Test]
         public async Task SetVariables_ACIDIsRejected_Test()

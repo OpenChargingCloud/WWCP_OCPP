@@ -103,6 +103,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     SetVariableStatus = SetVariableStatus.RebootRequired;
                     return true;
 
+                case "SecurityAccessViolation":
+                    SetVariableStatus = SetVariableStatus.SecurityAccessViolation;
+                    return true;
+
+                case "DatabaseTransactionFailed":
+                    SetVariableStatus = SetVariableStatus.DatabaseTransactionFailed;
+                    return true;
+
+                case "Rolledback":
+                    SetVariableStatus = SetVariableStatus.Rolledback;
+                    return true;
+
                 default:
                     SetVariableStatus = SetVariableStatus.Unknown;
                     return false;
@@ -124,6 +136,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    SetVariableStatus.NotSupportedAttributeType  => "NotSupportedAttributeType",
                    SetVariableStatus.Rejected                   => "Rejected",
                    SetVariableStatus.RebootRequired             => "RebootRequired",
+                   SetVariableStatus.SecurityAccessViolation    => "SecurityAccessViolation",
+                   SetVariableStatus.DatabaseTransactionFailed  => "DatabaseTransactionFailed",
+                   SetVariableStatus.Rolledback                 => "Rolledback",
                    _                                            => "Unknown"
                };
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
@@ -44,23 +46,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The variables of the paper, in its order.
         /// </summary>
-        internal static readonly DNSVariable[] Variables = [
+        internal static readonly ControllerVariable[] Variables = [
 
-            new ("Enabled",          DataTypes.Boolean,     "Whether names are resolved at all. Switched off, no name is resolved, the CSMS's included."),
-            new ("QueryTimeout",     DataTypes.Decimal,     "How long one query may take.",                                                            MinLimit: 0.1m, MaxLimit: 120, InSeconds: true),
-            new ("MaxRetries",       DataTypes.Integer,     "How often an unanswered query is sent again.",                                            MinLimit: 0,    MaxLimit: 255),
-            new ("RecursionDesired", DataTypes.OptionList,  "Whether queries ask the server to recurse: Set, Unset, or Default to leave each query as it is.", ValuesList: [ "Set", "Unset", "Default" ]),
-            new ("UseCache",         DataTypes.Boolean,     "Whether answers are kept for their time to live."),
-            new ("DNSSECOK",         DataTypes.Boolean,     "Whether queries set the DNSSEC OK bit (RFC 3225)."),
-            new ("FollowCNAMEs",     DataTypes.Boolean,     "Whether CNAME records are followed."),
-            new ("MaxCNAMEFollows",  DataTypes.Integer,     "How many CNAME records are followed at most.",                                            MinLimit: 0,    MaxLimit: 255),
+            new ("Enabled",          DataTypes.Boolean,     "Whether names are resolved at all. Switched off, no name is resolved, the CSMS's included.",                                                   Writable: true),
+            new ("QueryTimeout",     DataTypes.Decimal,     "How long one query may take.",                                                            MinLimit: 0.1m, MaxLimit: 120, InSeconds: true,  Writable: true),
+            new ("MaxRetries",       DataTypes.Integer,     "How often an unanswered query is sent again.",                                            MinLimit: 0,    MaxLimit: 255,                   Writable: true),
+            new ("RecursionDesired", DataTypes.OptionList,  "Whether queries ask the server to recurse: Set, Unset, or Default to leave each query as it is.", ValuesList: [ "Set", "Unset", "Default" ],  Writable: true),
+            new ("UseCache",         DataTypes.Boolean,     "Whether answers are kept for their time to live.",                                                                                                             Writable: true),
+            new ("DNSSECOK",         DataTypes.Boolean,     "Whether queries set the DNSSEC OK bit (RFC 3225).",                                                                                                            Writable: true),
+            new ("FollowCNAMEs",     DataTypes.Boolean,     "Whether CNAME records are followed.",                                                                                                                          Writable: true),
+            new ("MaxCNAMEFollows",  DataTypes.Integer,     "How many CNAME records are followed at most.",                                            MinLimit: 0,    MaxLimit: 255,                   Writable: true),
             new ("MaxServers",       DataTypes.Integer,     "The number of DNSServerController instances this charging station offers."),
             new ("UDPPayloadSize",   DataTypes.Integer,     "The EDNS(0) UDP payload size this charging station announces."),
             new ("ClientSubnet",     DataTypes.String,      "The EDNS Client Subnet sent with queries (RFC 7871), or empty for none."),
-            new ("EncryptedOnly",    DataTypes.Boolean,     "Whether name servers over an unencrypted transport are refused."),
-            new ("ServerSource",     DataTypes.OptionList,  "System: the name servers of the operating system or the network. Manual: those of DNSServerController.", ValuesList: [ "System", "Manual" ])
+            new ("EncryptedOnly",    DataTypes.Boolean,     "Whether name servers over an unencrypted transport are refused.",                                                                                              Writable: true),
+            new ("ServerSource",     DataTypes.OptionList,  "System: the name servers of the operating system or the network. Manual: those of DNSServerController.", ValuesList: [ "System", "Manual" ], Writable: true)
 
         ];
+
+        #endregion
+
+        #region (static) TryCheck(Variable, Value, out Refusal)
+
+        /// <summary>
+        /// Whether the given variable of the paper can be set to the given value
+        /// by its type, its limits and its values alone - or why not, as a
+        /// SetVariables result says it. Whether the value fits the rest of the
+        /// configuration is for the source to ask.
+        /// </summary>
+        /// <param name="Variable">The name of the variable, in any case.</param>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public static Boolean TryCheck(String                                Variable,
+                                       String?                               Value,
+                                       [NotNullWhen(false)] out StatusInfo?  Refusal)
+        {
+
+            var variable = Variables.FirstOrDefault(variable => String.Equals(variable.Name, Variable, StringComparison.OrdinalIgnoreCase));
+
+            if (variable is null)
+            {
+                Refusal = new StatusInfo("NotFound", $"Unknown variable '{Variable}' of component '{nameof(DNSClientController)}'!");
+                return false;
+            }
+
+            return variable.TryCheck(Value, $"{nameof(DNSClientController)}.{variable.Name}", out Refusal);
+
+        }
 
         #endregion
 
@@ -83,12 +115,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
+            // Written only by a source that takes a change: every write goes to
+            // it with the others of its request, since what one variable may be
+            // depends on the others.
+            var setter   = Source as ISetVariablesSource;
             var answered = new HashSet<String>(Source.ClientVariables, StringComparer.OrdinalIgnoreCase);
+            var written  = new HashSet<String>(setter is not null ? Source.WritableClientVariables : [], StringComparer.OrdinalIgnoreCase);
 
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 variableConfigs.Add(
-                    variable.ToVariableConfig(() => Source.ClientValue(variable.Name))
+                    variable.ToVariableConfig(() => Source.ClientValue(variable.Name),
+                                              written.Contains(variable.Name))
                 );
+
+            if (written.Count > 0)
+                SetVariablesSource = setter;
 
         }
 

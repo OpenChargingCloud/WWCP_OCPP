@@ -74,8 +74,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetVariablesAsync   (Request, ComponentConfigs, CancellationToken = default)
 
         /// <summary>
-        /// Set the variables of the given SetVariables request, one after the other.
+        /// Set the variables of the given SetVariables request: one after the
+        /// other, and the variables of a source together - see
+        /// <see cref="ISetVariablesSource"/>.
         /// </summary>
+        /// <remarks>
+        /// With ACID and BASE (OCPP_CSE) only variables of a source are set,
+        /// because only a source can take a change as a whole or not at all.
+        /// The others are rejected rather than set without being able to roll
+        /// them back. Each source is a change of its own: the request is not one
+        /// transaction across sources, and entries of other components are not
+        /// affected by a source's refusal.
+        /// </remarks>
         /// <param name="Request">A SetVariables request.</param>
         /// <param name="ComponentConfigs">The lookup of the node's component configurations.</param>
         /// <param name="CancellationToken">A cancellation token.</param>
@@ -84,35 +94,120 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                     CancellationToken              CancellationToken   = default)
         {
 
-            // BASE and ACID (OCPP_CSE) need every entry before the first is set. Until
-            // that exists, no entry is set rather than some of them.
-            if (Request.DataConsistencyModel.HasValue &&
-                Request.DataConsistencyModel.Value != DataConsistencyModel.IndependentRequests)
+            var model     = Request.DataConsistencyModel ?? DataConsistencyModel.IndependentRequests;
+            var entries   = Request.VariableData.ToArray();
+            var atomic    = model == DataConsistencyModel.ACID || model == DataConsistencyModel.BASE;
+
+            if (!atomic && model != DataConsistencyModel.IndependentRequests)
+                return [.. entries.Select(setVariableData => Refused(setVariableData,
+                                                                     "UnsupportedParam",
+                                                                     $"The data consistency model '{model}' is not supported!"))];
+
+            // Every entry found and checked before the first is set, so that a
+            // change knows whether all of it can be set before any of it is.
+            var checks    = entries.Select(setVariableData => Check(setVariableData, ComponentConfigs)).ToArray();
+            var results   = new SetVariableResult?[entries.Length];
+
+            #region Which entries form one change
+
+            // In the order of their first entry. A change without a source is one
+            // entry set through its own setter.
+            var changes   = new List<(ISetVariablesSource? Source, Object? Unit, List<Int32> Entries)>();
+
+            for (var index = 0; index < entries.Length; index++)
             {
-                return [.. Request.VariableData.Select(setVariableData => new SetVariableResult(
-                                                                              AttributeStatus:       SetVariableStatus.Rejected,
-                                                                              Component:             setVariableData.Component,
-                                                                              Variable:              setVariableData.Variable,
-                                                                              AttributeType:         setVariableData.AttributeType,
-                                                                              AttributeStatusInfo:   new StatusInfo(
-                                                                                                         "UnsupportedParam",
-                                                                                                         $"The data consistency model '{Request.DataConsistencyModel}' is not supported!"
-                                                                                                     )
-                                                                          ))];
+
+                var check = checks[index];
+
+                if (check.Source is null)
+                {
+
+                    if (check.Refused is not null)
+                        results[index] = check.Refused;
+
+                    else if (atomic)
+                        results[index] = Refused(entries[index],
+                                                 "UnsupportedParam",
+                                                 $"{NameOf(entries[index].Component, entries[index].Variable)} cannot be rolled back, so it cannot be set with the data consistency model '{model}'!");
+
+                    else
+                        changes.Add((null, null, [ index ]));
+
+                    continue;
+
+                }
+
+                var unit   = model == DataConsistencyModel.BASE
+                                 ? check.Source.BaseUnitOf(check.Component!)
+                                 : null;
+
+                var change = changes.FindIndex(change => ReferenceEquals(change.Source, check.Source) &&
+                                                         Equals(change.Unit, unit));
+
+                if (change >= 0)
+                    changes[change].Entries.Add(index);
+                else
+                    changes.Add((check.Source, unit, [ index ]));
+
             }
 
-            var setVariableResults = new List<SetVariableResult>();
+            #endregion
 
-            foreach (var setVariableData in Request.VariableData)
-                setVariableResults.Add(
-                    await SetVariableAsync(
-                              setVariableData,
-                              ComponentConfigs,
-                              CancellationToken
-                          ).ConfigureAwait(false)
-                );
+            foreach (var (source, _, ofTheChange) in changes)
+            {
 
-            return setVariableResults;
+                if (source is null)
+                {
+                    var index = ofTheChange[0];
+                    results[index] = await SetOneAsync(checks[index].Entry!, CancellationToken).ConfigureAwait(false);
+                    continue;
+                }
+
+                var refused = ofTheChange.Where(index => checks[index].Refused is not null).ToArray();
+
+                // All of it or nothing: what was not refused itself is rolled
+                // back, and named after the first entry that was.
+                if (atomic && refused.Length > 0)
+                {
+
+                    var why = NameOf(entries[refused[0]].Component, entries[refused[0]].Variable);
+
+                    foreach (var index in ofTheChange)
+                        results[index] = checks[index].Refused
+                                             ?? new SetVariableResult(
+                                                    AttributeStatus:       SetVariableStatus.Rolledback,
+                                                    Component:             entries[index].Component,
+                                                    Variable:              entries[index].Variable,
+                                                    AttributeType:         entries[index].AttributeType,
+                                                    AttributeStatusInfo:   new StatusInfo(
+                                                                               "Unspecified",
+                                                                               $"Not set, because {why} of the same change could not be!"
+                                                                           )
+                                                );
+
+                    continue;
+
+                }
+
+                foreach (var index in refused)
+                    results[index] = checks[index].Refused;
+
+                var handedOver = ofTheChange.Where(index => checks[index].Refused is null).ToArray();
+
+                if (handedOver.Length == 0)
+                    continue;
+
+                var answered   = await HandOverAsync(source,
+                                                     [.. handedOver.Select(index => checks[index].Entry!)],
+                                                     model,
+                                                     CancellationToken).ConfigureAwait(false);
+
+                for (var at = 0; at < handedOver.Length; at++)
+                    results[handedOver[at]] = answered[at];
+
+            }
+
+            return [.. results.Select(result => result!)];
 
         }
 
@@ -290,52 +385,104 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (private static) SetVariableAsync   (SetVariableData, ComponentConfigs, CancellationToken)
+        #region (private static) Check              (SetVariableData, ComponentConfigs)
 
-        private static async Task<SetVariableResult> SetVariableAsync(SetVariableData                SetVariableData,
-                                                                      ComponentConfigLookupDelegate  ComponentConfigs,
-                                                                      CancellationToken              CancellationToken)
+        /// <summary>
+        /// An entry of a SetVariables request as far as it was checked: what it
+        /// was found to mean, where it is set, and why not, if it is not.
+        /// </summary>
+        /// <param name="Entry">The entry with its component and variable, when both were found.</param>
+        /// <param name="Component">The component, when it was found.</param>
+        /// <param name="Source">Where the entry is set together with others, when it is - known as soon as the component is.</param>
+        /// <param name="Refused">Why the entry cannot be set, or null when it may be tried.</param>
+        private sealed record EntryCheck(SetVariableEntry?     Entry,
+                                         ComponentConfig?      Component,
+                                         ISetVariablesSource?  Source,
+                                         SetVariableResult?    Refused);
+
+        private static EntryCheck Check(SetVariableData                SetVariableData,
+                                        ComponentConfigLookupDelegate  ComponentConfigs)
         {
 
             var component = SetVariableData.Component;
             var variable  = SetVariableData.Variable;
 
             if (!TryFind(component, variable, ComponentConfigs, out var componentConfig, out var variableConfig, out var notFound))
-                return new SetVariableResult(
-                           AttributeStatus:       componentConfig is null
-                                                      ? SetVariableStatus.UnknownComponent
-                                                      : SetVariableStatus.UnknownVariable,
-                           Component:             component,
-                           Variable:              variable,
-                           AttributeType:         SetVariableData.AttributeType,
-                           AttributeStatusInfo:   notFound
+                return new EntryCheck(
+                           null,
+                           componentConfig,
+                           componentConfig?.SetVariablesSource,
+                           new SetVariableResult(
+                               AttributeStatus:       componentConfig is null
+                                                          ? SetVariableStatus.UnknownComponent
+                                                          : SetVariableStatus.UnknownVariable,
+                               Component:             component,
+                               Variable:              variable,
+                               AttributeType:         SetVariableData.AttributeType,
+                               AttributeStatusInfo:   notFound
+                           )
                        );
 
+            var source        = variableConfig.SetVariablesSource ?? componentConfig!.SetVariablesSource;
             var attributeType = variableConfig.Attributes?.Type ?? AttributeTypes.Actual;
 
             if ((SetVariableData.AttributeType ?? AttributeTypes.Actual) != attributeType)
-                return new SetVariableResult(
-                           AttributeStatus:       SetVariableStatus.NotSupportedAttributeType,
-                           Component:             component,
-                           Variable:              variable,
-                           AttributeType:         SetVariableData.AttributeType,
-                           AttributeStatusInfo:   new StatusInfo(
-                                                      "UnsupportedParam",
-                                                      $"{NameOf(component, variable)} has no {SetVariableData.AttributeType} attribute!"
-                                                  )
+                return new EntryCheck(
+                           null,
+                           componentConfig,
+                           source,
+                           new SetVariableResult(
+                               AttributeStatus:       SetVariableStatus.NotSupportedAttributeType,
+                               Component:             component,
+                               Variable:              variable,
+                               AttributeType:         SetVariableData.AttributeType,
+                               AttributeStatusInfo:   new StatusInfo(
+                                                          "UnsupportedParam",
+                                                          $"{NameOf(component, variable)} has no {SetVariableData.AttributeType} attribute!"
+                                                      )
+                           )
                        );
 
             if (variableConfig.Attributes?.Mutability == MutabilityTypes.ReadOnly)
-                return new SetVariableResult(
-                           AttributeStatus:       SetVariableStatus.Rejected,
-                           Component:             component,
-                           Variable:              variable,
-                           AttributeType:         attributeType,
-                           AttributeStatusInfo:   new StatusInfo(
-                                                      "ReadOnly",
-                                                      $"{NameOf(component, variable)} is read-only!"
-                                                  )
+                return new EntryCheck(
+                           null,
+                           componentConfig,
+                           source,
+                           new SetVariableResult(
+                               AttributeStatus:       SetVariableStatus.Rejected,
+                               Component:             component,
+                               Variable:              variable,
+                               AttributeType:         attributeType,
+                               AttributeStatusInfo:   new StatusInfo(
+                                                          "ReadOnly",
+                                                          $"{NameOf(component, variable)} is read-only!"
+                                                      )
+                           )
                        );
+
+            return new EntryCheck(
+                       new SetVariableEntry(SetVariableData, componentConfig!, variableConfig),
+                       componentConfig,
+                       source,
+                       null
+                   );
+
+        }
+
+        #endregion
+
+        #region (private static) SetOneAsync        (Entry, CancellationToken)
+
+        /// <summary>
+        /// Set an entry through its variable's own setter.
+        /// </summary>
+        private static async Task<SetVariableResult> SetOneAsync(SetVariableEntry   Entry,
+                                                                 CancellationToken  CancellationToken)
+        {
+
+            var component      = Entry.Data.Component;
+            var variable       = Entry.Data.Variable;
+            var variableConfig = Entry.Variable;
 
             ValueSetterResponse response;
 
@@ -343,8 +490,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 response = await variableConfig.SetAsync(
-                                     SetVariableData.AttributeValue,
-                                     SetVariableData.OldAttributeValue,
+                                     Entry.Data.AttributeValue,
+                                     Entry.Data.OldAttributeValue,
                                      CancellationToken
                                  ).ConfigureAwait(false);
 
@@ -362,11 +509,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        AttributeStatus:       response.Status,
                        Component:             component,
                        Variable:              variable,
-                       AttributeType:         attributeType,
+                       AttributeType:         variableConfig.Attributes?.Type ?? AttributeTypes.Actual,
                        AttributeStatusInfo:   response.StatusInfo
                    );
 
         }
+
+        #endregion
+
+        #region (private static) HandOverAsync      (Source, Entries, Model, CancellationToken)
+
+        /// <summary>
+        /// Let a source set one change of its own. A source that throws, or does
+        /// not answer each entry, has set nothing anybody can tell apart, so
+        /// every entry of the change is then an internal error.
+        /// </summary>
+        private static async Task<IReadOnlyList<SetVariableResult>> HandOverAsync(ISetVariablesSource              Source,
+                                                                                  IReadOnlyList<SetVariableEntry>  Entries,
+                                                                                  DataConsistencyModel             Model,
+                                                                                  CancellationToken                CancellationToken)
+        {
+
+            String why;
+
+            try
+            {
+
+                var answered = await Source.SetVariablesAsync(Entries, Model, CancellationToken).ConfigureAwait(false);
+
+                if (answered.Count == Entries.Count)
+                    return answered;
+
+                why = $"answered {answered.Count} of {Entries.Count} entries";
+
+            }
+            catch (Exception e)
+            {
+                why = e.Message;
+            }
+
+            return [.. Entries.Select(entry => Refused(entry.Data,
+                                                       "InternalError",
+                                                       $"{NameOf(entry.Data.Component, entry.Data.Variable)} could not be set: {why}"))];
+
+        }
+
+        #endregion
+
+        #region (private static) Refused            (SetVariableData, ReasonCode, AdditionalInfo)
+
+        private static SetVariableResult Refused(SetVariableData  SetVariableData,
+                                                 String           ReasonCode,
+                                                 String           AdditionalInfo)
+
+            => new (
+                   AttributeStatus:       SetVariableStatus.Rejected,
+                   Component:             SetVariableData.Component,
+                   Variable:              SetVariableData.Variable,
+                   AttributeType:         SetVariableData.AttributeType,
+                   AttributeStatusInfo:   new StatusInfo(
+                                              ReasonCode,
+                                              AdditionalInfo
+                                          )
+               );
 
         #endregion
 

@@ -210,6 +210,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String?                   Value
             => ValueGetter?.Invoke();
 
+        /// <summary>
+        /// Where this variable is set together with others, when that is not
+        /// where its component's variables are - see
+        /// <see cref="ComponentConfig.SetVariablesSource"/>. Its own setter is
+        /// then not used. Not part of the JSON.
+        /// </summary>
+        public ISetVariablesSource?      SetVariablesSource { get; init; }
+
         #endregion
 
         #region Constructor(s)

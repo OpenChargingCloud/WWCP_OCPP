@@ -36,7 +36,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     /// <summary>
     /// The DNS controllers of the Secure DNS white paper, as a CSMS reads them:
     /// values from their source at every read, one slot per name server, the
-    /// unused ones included, and nothing a CSMS may change yet.
+    /// unused ones included - and writable where the paper allows it and the
+    /// source takes a change, all writes of a request at once.
     /// </summary>
     [TestFixture]
     public class DNSControllerTests : AChargingStationTests
@@ -167,8 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #region SetVariables_IsReadOnlyForNow_Test()
 
         /// <summary>
-        /// Until the setters exist, every variable is read-only: a CSMS is told
-        /// so, and nothing reaches the source.
+        /// A source that takes no changes leaves every variable read-only: a
+        /// CSMS is told so, and nothing reaches the source.
         /// </summary>
         [Test]
         public async Task SetVariables_IsReadOnlyForNow_Test()
@@ -312,6 +313,175 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(DNSServerController.AllOf(source).Select(controller => controller.Instance),
                             Is.EqualTo(Enumerable.Range(1, 16).Select(slot => slot.ToString())));
             });
+
+        }
+
+        #endregion
+
+        #region AWritingSourceMakesWritableWhatThePaperAllows_Test()
+
+        /// <summary>
+        /// A source that takes changes makes the variables it writes read-write -
+        /// those the paper lets a CSMS write, and no others - and takes the
+        /// writes of its controllers. A source that takes none leaves all of
+        /// them read-only.
+        /// </summary>
+        [Test]
+        public void AWritingSourceMakesWritableWhatThePaperAllows_Test()
+        {
+
+            var writer          = new ADNSWriter(new ADNSSource());
+            var client          = new DNSClientController(writer);
+            var server          = new DNSServerController(writer, 1);
+            var readOnlyClient  = new DNSClientController(new ADNSSource());
+
+            MutabilityTypes? MutabilityOf(ComponentConfig Component, String Variable)
+                => Component.VariableConfigs.Single(variable => variable.Name == Variable).Attributes?.Mutability;
+
+            Assert.Multiple(() => {
+
+                Assert.That(MutabilityOf(client, "Enabled"),                                 Is.EqualTo(MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(client, "MaxServers"),                              Is.EqualTo(MutabilityTypes.ReadOnly),  "the paper says read-only");
+                Assert.That(MutabilityOf(client, "DNSSECOK"),                                Is.EqualTo(MutabilityTypes.ReadOnly),  "the source does not write it");
+                Assert.That(MutabilityOf(server, "Address"),                                 Is.EqualTo(MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(server, "Problem"),                                 Is.EqualTo(MutabilityTypes.ReadOnly),  "the paper says read-only");
+
+                Assert.That(client.SetVariablesSource,                                       Is.SameAs(writer));
+                Assert.That(server.SetVariablesSource,                                       Is.SameAs(writer));
+
+                Assert.That(readOnlyClient.VariableConfigs.Select(variable => variable.Attributes?.Mutability),
+                                                                                             Is.All.EqualTo(MutabilityTypes.ReadOnly));
+                Assert.That(readOnlyClient.SetVariablesSource,                               Is.Null);
+
+            });
+
+        }
+
+        #endregion
+
+        #region TryCheck_SaysWhatThePaperAllows_Test()
+
+        /// <summary>
+        /// A value is checked against the type, the limits and the values the
+        /// paper gives its variable, and refused as a SetVariables result says it.
+        /// </summary>
+        [Test]
+        public void TryCheck_SaysWhatThePaperAllows_Test()
+        {
+
+            String? ReasonOf(Boolean Fits, StatusInfo? Refusal)
+                => Fits ? null : Refusal?.ReasonCode;
+
+            var seventeen = String.Join(",", Enumerable.Range(0, 17).Select(index => new String((Char) ('a' + index % 6), 64)));
+
+            Assert.Multiple(() => {
+
+                Assert.That(ReasonOf(DNSClientController.TryCheck("Enabled",          "TRUE",  out var refusal), refusal), Is.Null);
+                Assert.That(ReasonOf(DNSClientController.TryCheck("Enabled",          "yes",   out refusal),     refusal), Is.EqualTo("InvalidValue"));
+                Assert.That(ReasonOf(DNSClientController.TryCheck("QueryTimeout",     "0.05",  out refusal),     refusal), Is.EqualTo("ValueOutOfRange"));
+                Assert.That(ReasonOf(DNSClientController.TryCheck("QueryTimeout",     "",      out refusal),     refusal), Is.EqualTo("InvalidValue"));
+                Assert.That(ReasonOf(DNSClientController.TryCheck("MaxRetries",       "256",   out refusal),     refusal), Is.EqualTo("ValueOutOfRange"));
+                Assert.That(ReasonOf(DNSClientController.TryCheck("RecursionDesired", "unset", out refusal),     refusal), Is.Null);
+                Assert.That(ReasonOf(DNSClientController.TryCheck("NoSuchVariable",   "1",     out refusal),     refusal), Is.EqualTo("NotFound"));
+
+                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Port",          "0",     out refusal),     refusal), Is.EqualTo("ValueOutOfRange"));
+                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Port",          "",      out refusal),     refusal), Is.Null, "the port of the transport");
+                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "QueryTimeout",  "",      out refusal),     refusal), Is.Null, "the client's");
+                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Address",       "",      out refusal),     refusal), Is.Null, "an unused slot");
+                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Transport",     "tls",   out refusal),     refusal), Is.Null);
+                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Transport",     "QUIC",  out refusal),     refusal), Is.EqualTo("InvalidValue"));
+                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "RootPins",      seventeen, out refusal),   refusal), Is.EqualTo("ValueOutOfRange"));
+
+            });
+
+            DNSServerController.TryCheck(2, "Port", "70000", out var named);
+
+            Assert.That(named?.AdditionalInfo, Does.Contain("DNSServerController[2].Port"));
+
+        }
+
+        #endregion
+
+        #region SetVariables_ReachesAWritingSourceAtOnce_Test()
+
+        /// <summary>
+        /// The writes of a request to both controllers reach a writing source in
+        /// one call, in request order; a variable it does not write stays
+        /// read-only.
+        /// </summary>
+        [Test]
+        public async Task SetVariables_ReachesAWritingSourceAtOnce_Test()
+        {
+
+            Assert.That(testCSMS1,        Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+
+            var writer = new ADNSWriter(new ADNSSource());
+
+            Assert.That(chargingStation1!.AddComponent(new DNSClientController(writer)), Is.True);
+
+            foreach (var server in DNSServerController.AllOf(writer))
+                Assert.That(chargingStation1.AddComponent(server), Is.True);
+
+            var response = await testCSMS1!.SetVariables(
+                                     Destination:    SourceRouting.To(chargingStation1.Id),
+                                     VariableData:   [
+                                                         new SetVariableData(Component: new Component(Name: nameof(DNSServerController), Instance: "3"), Variable: new Variable(Name: "Address"), AttributeValue: "203.0.113.53"),
+                                                         new SetVariableData(Component: new Component(Name: nameof(DNSServerController), Instance: "3"), Variable: new Variable(Name: "Port"), AttributeValue: "54"),
+                                                         new SetVariableData(Component: new Component(Name: nameof(DNSClientController)), Variable: new Variable(Name: "Enabled"), AttributeValue: "false")
+                                                     ]
+                                 );
+
+            Assert.Multiple(() => {
+
+                Assert.That(writer.Calls,                                                    Is.EqualTo(new[] { "DNSServerController(3).Address=203.0.113.53|DNSClientController.Enabled=false" }));
+                Assert.That(response.SetVariableResults.Select(result => result.AttributeStatus),
+                                                                                             Is.EqualTo(new[] { SetVariableStatus.Accepted, SetVariableStatus.Rejected, SetVariableStatus.Accepted }));
+                Assert.That(response.SetVariableResults.ElementAt(1).AttributeStatusInfo?.ReasonCode,
+                                                                                             Is.EqualTo("ReadOnly"));
+
+            });
+
+        }
+
+        #endregion
+
+        #region (class) ADNSWriter
+
+        /// <summary>
+        /// A source that reads from another and takes writes of Enabled,
+        /// MaxServers (which the paper does not let a CSMS write), Address and
+        /// Problem (neither that), remembering each call.
+        /// </summary>
+        private sealed class ADNSWriter(ADNSSource Values) : IDNSControllerSource, ISetVariablesSource
+        {
+
+            public List<String>         Calls                    { get; } = [];
+
+            public IEnumerable<String>  ClientVariables          => Values.ClientVariables;
+            public IEnumerable<String>  ServerVariables          => Values.ServerVariables;
+            public IEnumerable<String>  WritableClientVariables  => [ "Enabled", "MaxServers" ];
+            public IEnumerable<String>  WritableServerVariables  => [ "Address", "Problem" ];
+            public UInt16               Slots                    => Values.Slots;
+
+            public String? ClientValue(String Variable)
+                => Values.ClientValue(Variable);
+
+            public String? ServerValue(UInt16 Slot, String Variable)
+                => Values.ServerValue(Slot, Variable);
+
+            public Task<IReadOnlyList<SetVariableResult>> SetVariablesAsync(IReadOnlyList<SetVariableEntry>  Entries,
+                                                                            DataConsistencyModel             DataConsistencyModel,
+                                                                            CancellationToken                CancellationToken)
+            {
+
+                Calls.Add(String.Join("|", Entries.Select(entry => $"{entry.Data.Component.Name}{(entry.Data.Component.Instance is not null ? $"({entry.Data.Component.Instance})" : "")}.{entry.Data.Variable.Name}={entry.Data.AttributeValue}")));
+
+                return Task.FromResult<IReadOnlyList<SetVariableResult>>(
+                           [.. Entries.Select(entry => new SetVariableResult(AttributeStatus: SetVariableStatus.Accepted, Component: entry.Data.Component, Variable: entry.Data.Variable, AttributeType: entry.Data.AttributeType))]
+                       );
+
+            }
 
         }
 

@@ -25,6 +25,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// The controllers keep no value of their own: whatever holds the
     /// configuration answers each read, in the words of the Secure DNS white
     /// paper, so that a change made elsewhere is what the next read sees.
+    /// A source that is an <see cref="ISetVariablesSource"/> as well takes the
+    /// writes of a SetVariables request, all of them at once.
     /// </remarks>
     public interface IDNSControllerSource
     {
@@ -32,12 +34,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The variables of DNSClientController this source can answer.
         /// </summary>
-        IEnumerable<String>  ClientVariables    { get; }
+        IEnumerable<String>  ClientVariables            { get; }
 
         /// <summary>
         /// The variables of DNSServerController this source can answer.
         /// </summary>
-        IEnumerable<String>  ServerVariables    { get; }
+        IEnumerable<String>  ServerVariables            { get; }
+
+        /// <summary>
+        /// The variables of DNSClientController this source can write, where
+        /// the paper lets a CSMS write them. None, unless it says so.
+        /// </summary>
+        IEnumerable<String>  WritableClientVariables
+            => [];
+
+        /// <summary>
+        /// The variables of DNSServerController this source can write, where
+        /// the paper lets a CSMS write them. None, unless it says so.
+        /// </summary>
+        IEnumerable<String>  WritableServerVariables
+            => [];
 
         /// <summary>
         /// The number of name servers the station takes: the instances of
