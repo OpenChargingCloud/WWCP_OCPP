@@ -245,7 +245,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Value            [optional]
 
-                var Value = JSON.GetString("value");
+                // As it was sent: an empty value is a value, and only a write-only
+                // variable has none, so "" must not be read as a missing one.
+                var Value = JSON["value"] is JValue { Type: not (JTokenType.Null or JTokenType.Undefined) } value
+                                ? value.Value<String>()
+                                : null;
 
                 #endregion
 
