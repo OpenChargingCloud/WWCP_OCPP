@@ -17,11 +17,9 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.WWCP;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Norn.NTS;
+
+using cloud.charging.open.protocols.WWCP;
 
 #endregion
 
@@ -29,481 +27,128 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A Network Time Synchronization controller for Network Time Protocol (NTPv4)
-    /// and Network Time Security (NTS).
-    /// 
-    /// Well-known instances are:
-    ///   - "legal" for legal time because of dynamic tariffs et.al
-    ///   - "local" for local load balancing and time servers on Local Controllers
+    /// An NTP client controller of the Secure Time Synchronization white paper
+    /// (section 3.2.4): one time server of exactly one group. The instance is
+    /// the client id, unique across all groups.
     /// </summary>
+    /// <remarks>
+    /// Its variables are those of the paper that the given source can answer,
+    /// read from it at every read. A variable it cannot answer is left out, so
+    /// that a CSMS asking for it learns it is unknown rather than reading an
+    /// empty value as an answer.
+    /// </remarks>
     public class NTPClientController : ALogicalComponentConfig
     {
+
+        #region Data
+
+        /// <summary>
+        /// The variables of the paper, in its order.
+        /// </summary>
+        internal static readonly ControllerVariable[] Variables = [
+
+            new ("Enabled",                     DataTypes.Boolean,     "Whether the client is asked. A disabled client keeps its configuration.",                                                                    Writable: true),
+            new ("ServerURL",                   DataTypes.String,      "The server to ask, as a host name or an IP address: in mode NTSv4 the NTS-KE server, unless NTSKEServerURL names another one.",  MaxLimit: 253,                 Writable: true),
+            new ("ServerPort",                  DataTypes.Integer,     "The NTP port; in mode NTSv4 the port the NTS-KE response names takes precedence.",                            MinLimit: 1,  MaxLimit: 65535,                 Writable: true),
+            new ("Mode",                        DataTypes.OptionList,  "NTSv4: NTS (RFC 8915). NTPv4TLS: NTP over TLS to a smart meter gateway. NTPv4: NTP without authentication, never for the legal group.",
+                                                                       ValuesList: [ "NTPv4", "NTSv4", "NTPv4TLS" ],                                                                                                 Writable: true),
+            new ("Priority",                    DataTypes.Integer,     "Clients with lower values are asked first; clients with the same value together, and their answers must reach the quorum on their own.", MinLimit: 0, MaxLimit: 255, Writable: true),
+            new ("DelayAsymmetry",              DataTypes.Decimal,     "A correction, in milliseconds, applied to the offsets measured with this server for known stable asymmetries of the delays.",                Writable: true, MayBeEmpty: true),
+            new ("DelayVarAsymmetry",           DataTypes.Decimal,     "Fine-tunes the offset calculation when the variability of the delays is greater in one direction.",                                         Writable: true, MayBeEmpty: true),
+            new ("NTSKEServerURL",              DataTypes.String,      "An NTS-KE server other than ServerURL, as a host name or an IP address; empty when ServerURL is the NTS-KE server.",  MaxLimit: 253,                 Writable: true),
+            new ("NTSKEServerPort",             DataTypes.Integer,     "The NTS-KE port.",                                                                                             MinLimit: 1,  MaxLimit: 65535,                 Writable: true),
+            new ("RootCAs",                     DataTypes.String,      "The certificate group of NetworkTimeRootCertificate root CAs the server's certificate must chain to.",                       MaxLimit: 50,                  Writable: true),
+            new ("CertificatePins",             DataTypes.String,      "Comma separated SHA-256 fingerprints of the certificates this server may show.",                                                            Writable: true, MaxItems: 16),
+            new ("RootPins",                    DataTypes.String,      "Comma separated SHA-256 fingerprints of the root CA certificates this server's chain may end at.",                                          Writable: true, MaxItems: 16),
+            new ("OnPinMismatch",               DataTypes.OptionList,  "What a certificate matching none of the pins leads to.",                                       ValuesList: [ "Refuse", "Record", "Accept" ],        Writable: true),
+            new ("TrustOnFirstUse",             DataTypes.OptionList,  "What is learned as a pin from the first certificate the server is believed with.",            ValuesList: [ "None", "Root", "Certificate" ],       Writable: true),
+            new ("NoCertTimeCheckAfterReboot",  DataTypes.Boolean,     "Whether the validity period of the server's certificate is not checked for the first request after a reboot.",                             Writable: true),
+            new ("MinRefresh",                  DataTypes.Integer,     "The time since the last NTS-KE handshake after which a new one is started.",                  MinLimit: 60,                   InSeconds: true,  Writable: true),
+            new ("MaxRefresh",                  DataTypes.Integer,     "The time since the last NTS-KE handshake within which a new one must have succeeded.",        MinLimit: 60,                   InSeconds: true,  Writable: true),
+            new ("AEADAlgorithm",               DataTypes.OptionList,  "The AEAD algorithm offered for the NTS authentication of NTP messages.",                       ValuesList: [ "AES-SIV-CMAC-256", "AES-128-GCM-SIV" ], Writable: true),
+            new ("SignedResponses",             DataTypes.Boolean,     "Whether a digitally signed second response is requested.",                                                                                  Writable: true),
+            new ("Problem",                     DataTypes.Boolean,     "True while the last NTS-KE handshake with this server was refused, or its last exchange failed."),
+            new ("CertificateFingerprint",      DataTypes.String,      "The SHA-256 fingerprint of the certificate the server showed at its last NTS-KE handshake."),
+            new ("LastKeyExchange",             DataTypes.DateTime,    "When the last NTS-KE handshake with this server succeeded."),
+            new ("Cookies",                     DataTypes.Integer,     "The number of unused NTS cookies held for this server.")
+
+        ];
+
+        #endregion
 
         #region Properties
 
         /// <summary>
-        /// Whether the NTP/NTS server is enabled or not.
+        /// The id of the client: the instance.
         /// </summary>
-        public Boolean                  Enabled                             { get; }
-
+        public String  Client    { get; }
 
         /// <summary>
-        /// The NTP/NTS server URL.
-        /// May depend on the device’s country or location.
+        /// The id of the group the client belongs to.
         /// </summary>
-        public URL                      ServerURL                           { get; }
-
-        /// <summary>
-        /// The optional NTP/NTS server port.
-        /// </summary>
-        public IPPort?                  ServerPort                          { get; }
-
-        /// <summary>
-        /// The optional NTP/NTS server mode.
-        /// NTPv4 may be prohibited unless additional security measures are implemented!
-        /// </summary>
-        public NTPMode                  Mode                                { get; }
-
-        /// <summary>
-        /// These values specifies a correction (in milliseconds) which will be applied to measured time offsets.
-        /// This can compensate known stable asymmetries in network or processing delays.
-        /// For example, if packets sent to the source were on average delayed by 100 microseconds more
-        /// than packets sent from the source back, the correction would be -0.05 (-50 microseconds).
-        /// </summary>
-        public TimeSpan?                DelayAsymmetry                      { get; }
-
-        /// <summary>
-        /// These values can fine-tune the offset calculations when network delay variability is greater
-        /// in one direction than the other.
-        /// Use only if you know your network has a consistent asymmetry.
-        /// </summary>
-        public Double?                  DelayVarAsymmetry                   { get; }
-
-        /// <summary>
-        /// The optional priority of the NTP/NTS server.
-        /// Servers with lower values are queried first.
-        /// Servers with the same value are queried in parallel.
-        /// </summary>
-        public Byte?                    Priority                            { get; }
-
-        /// <summary>
-        /// The minimal time span between randomized NTP/NTS time sync requests.
-        /// </summary>
-        public TimeSpan?                MinInterval                         { get; }
-
-        /// <summary>
-        /// The maximal time span between randomized NTP/NTS time sync requests.
-        /// </summary>
-        public TimeSpan?                MaxInterval                         { get; }
-
-        /// <summary>
-        /// Occasional requests to an NTP/NTS server may be delayed due to network caching effects such
-        /// as ARP or DNS resolution, firewall state establishment, TLS tunnel setup, and similar factors.
-        /// To prevent inaccurate delay measurements, a preflight NTP packet is sent and its response
-        /// ignored before the actual measurement takes place.
-        /// The configured values define the time intervals since the last measurement that trigger
-        /// sending preflight NTP packets.
-        /// </summary>
-        public TimeSpan?                Preflight                           { get; }
-
-        /// <summary>
-        /// The number of consecutive measurement errors that should lead to an entry within the security log book.
-        /// When the measurements recovered from the error another log book entry shall be added.
-        /// </summary>
-        public UInt16?                  ErrorLogging                        { get; }
-
-
-        /// <summary>
-        /// The optional NTSKE server URL.
-        /// When empty and the mode is NTSv4, the ServerURL will be used for NTS-KE.
-        /// </summary>
-        public URL?                     NTSKEServerURL                      { get; }
-
-        /// <summary>
-        /// The optional NTS-KE server port.
-        /// </summary>
-        public IPPort?                  NTSKEServerPort                     { get; }
-
-        /// <summary>
-        /// Which rootCA group can be used for NTS-KE and NTP-over-TLS server certificate validation.
-        /// When this configuration is not set, the system default list of NetworkTimeRootCertificate rootCAs
-        /// is used and when this list is empty the system default list of rootCAs is used (not recommended)!
-        /// </summary>
-        public CertificateGroup?        RootCAs                             { get; }
-
-        /// <summary>
-        /// Whether the notBefore and notAfter timestamp checks of NTS and NTP-over-TLS TLS certificates
-        /// can be skipped on the first time sync request per server immediately after a reboot, as the
-        /// device might have started with a wrong internal time, e.g. due to not having an RTC or
-        /// backup battery.
-        /// </summary>
-        public Boolean?                 NoCertTimeCheckAfterReboot          { get; }
-
-        /// <summary>
-        /// Refreshing the NTS keys and cookies should be started after the given time span
-        /// since the last NTS-KE handshakes (randomly between given min and max values).
-        /// </summary>
-        public TimeSpan?                MinRefresh                          { get; }
-
-        /// <summary>
-        /// Refreshing the NTS keys and cookies must be completed within the given time span
-        /// since the last NTS-KE handshakes (randomly between given min and max values).
-        /// </summary>
-        public TimeSpan?                MaxRefresh                          { get; }
-
-        /// <summary>
-        /// The optional Authenticated Encryption with Associated Data (AEAD) algorithm used for NTS authentication of NTP messages.
-        /// </summary>
-        public AEADAlgorithms?          AEADAlgorithm                       { get; }
-
-        /// <summary>
-        /// Whether NTS responses shall be digital signed.
-        /// </summary>
-        public Boolean?                 SignedResponses                     { get; }
-
-
-
-        /// <summary>
-        /// Configured local time offset in the format: "+01:00", "-02:00" etc.
-        /// </summary>
-        public String?                  TimeOffset                          { get; set; }
-
-
-
-        /// <summary>
-        /// Contains the current date and time.
-        /// </summary>
-        [Mandatory]
-        public DateTimeOffset           DateTime                            { get; }
-
-        public Double                   Accurancy                           { get; }
+        public String  Group     { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Network Time Synchronization controller.
+        /// Create the NTP client controller of the given client of the given source.
         /// </summary>
-        /// <param name="Id">The identification of the NTP client controller.</param>
-        /// <param name="ServerURL">The URL of the NTP server.</param>
-        /// 
-        /// <param name="TimeOffset">Configured local time offset in the format: "+01:00", "-02:00" etc.</param>
-        /// <param name="DateTime">Contains the current date and time.</param>
-        /// 
+        /// <param name="Source">Where the values come from.</param>
+        /// <param name="Group">The id of the group the client belongs to.</param>
+        /// <param name="Client">The id of the client; its instance.</param>
+        /// <param name="Description">An optional multi-language description of the controller.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public NTPClientController(String             Id,
-                                   URL                ServerURL,
-
-                                   Boolean?           Enabled                      = null,
-                                   I18NString?        Description                  = null,
-                                   IPPort?            ServerPort                   = null,
-                                   NTPMode?           Mode                         = null,
-
-                                   TimeSpan?          DelayAsymmetry               = null,
-                                   Double?            DelayVarAsymmetry            = null,
-                                   Byte?              Priority                     = null,
-                                   TimeSpan?          MinInterval                  = null,
-                                   TimeSpan?          MaxInterval                  = null,
-                                   TimeSpan?          Preflight                    = null,
-
-                                   URL?               NTSKEServerURL               = null,
-                                   IPPort?            NTSKEServerPort              = null,
-                                   CertificateGroup?  RootCAs                      = null,
-                                   Boolean?           NoCertTimeCheckAfterReboot   = null,
-                                   TimeSpan?          MinRefresh                   = null,
-                                   TimeSpan?          MaxRefresh                   = null,
-                                   AEADAlgorithms?    AEADAlgorithm                = null,
-                                   Boolean?           SignedResponses              = null,
-
-
-                                   String?            TimeOffset                   = null,
-
-                                   DateTimeOffset?    DateTime                     = null,
-
-                                   CustomData?        CustomData                   = null)
+        public NTPClientController(INTPControllerSource  Source,
+                                   String                Group,
+                                   String                Client,
+                                   I18NString?           Description   = null,
+                                   CustomData?           CustomData    = null)
 
             : base(nameof(NTPClientController),
-                   Id,
-                   Description ?? I18NString.Create("A Network Time Synchronization controller for Network Time Protocol (NTPv4) and Network Time Security (NTS)."),
+                   Client,
+                   Description ?? I18NString.Create($"The time server '{Client}' of the group '{Group}' of this charging station (Secure Time Synchronization)."),
                    CustomData)
 
         {
 
-            this.ServerURL                         = ServerURL;
-
-            this.Enabled                           = Enabled                    ?? true;
-            this.ServerPort                        = ServerPort                 ?? IPPort.Parse(123);
-            this.DelayAsymmetry                    = DelayAsymmetry;
-            this.DelayVarAsymmetry                 = DelayVarAsymmetry;
-            this.Priority                          = Priority;
-            this.MinInterval                       = MinInterval;
-            this.MaxInterval                       = MaxInterval;
-            this.Preflight                         = Preflight;
-
-            this.NTSKEServerURL                    = NTSKEServerURL;
-            this.NTSKEServerPort                   = NTSKEServerPort            ?? IPPort.Parse(4460);
-            this.RootCAs                           = RootCAs;
-            this.NoCertTimeCheckAfterReboot        = NoCertTimeCheckAfterReboot ?? false;
-            this.MinRefresh                        = MinRefresh;
-            this.MaxRefresh                        = MaxRefresh;
-            this.AEADAlgorithm                     = AEADAlgorithm;
-            this.SignedResponses                   = SignedResponses;
-
-            this.Mode                              = Mode                       ?? (NTSKEServerURL is not null
-                                                                                       ? NTPMode.NTSv4
-                                                                                       : NTPMode.NTPv4);
-
-
-            this.TimeOffset                        = TimeOffset;
-
-            this.DateTime                          = DateTime ?? Timestamp.Now;
-
-
-            #region DateTime
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "DateTime",
-                    ValueGetter:      () => this.DateTime.ToISO8601(),
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.DateTime
-                                      ),
-
-                    Description:      I18NString.Create("Contains the current date and time.")
-
-                )
-            );
-
-            #endregion
-
-            #region TimeSource
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        Name:             "TimeSource",
-            //        ValueGetter:      () => this.TimeSource.Any()
-            //                                    ? this.TimeSource.AggregateWith(',')
-            //                                    : null,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create(
-            //                              "Via this variable, the Charging Station provides the CSMS with the option to configure a clock source, if more than 1 are implemented. " +
-            //                              "\"NTP,Heartbeat\" means, use NTP, but when none of the NTP servers responses, use time synchronization via Heartbeat."
-            //                          )
-
-            //    )
-            //);
-
-            #endregion
-
-            #region NtpServerUri
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        // Single digit, multiple servers allowed, primary NtpServer has instance '1', the secondary has instance '2'. etc
-            //        Name:             "NtpServerUri",
-            //        ValueGetter:      () => this.NtpServerUri,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create(
-            //                              "This contains the address of the NTP server. Multiple NTP servers can be configured as backups, etc. " +
-            //                              "If the NTP client supports it, it can also connect to multiple NTP servers simultaneous to get a " +
-            //                              "more reliable time source. Variable instance value is single digit NTP priority (1=highest)."
-            //                          )
-
-            //    )
-            //);
-
-            #endregion
-
-            #region NtpSource
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        Name:             "NtpSource",
-            //        ValueGetter:      () => this.NtpSource.HasValue
-            //                                    ? this.NtpSource.Value.AsText()
-            //                                    : null,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create(
-            //                              "When an NTP client is implemented, this variable can be used to configure the client: " +
-            //                              "Use the NTP server provided via DHCP, or use the manually configured NTP server."
-            //                          )
-
-            //    )
-            //);
-
-            #endregion
-
-            #region TimeOffset
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeOffset",
-                    ValueGetter:      () => this.TimeOffset,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "Configured local time offset in the format: \"+01:00\", \"-02:00\" etc. " +
-                                          "When a TimeOffset is used, it is advised not to implement: TimeZone. " +
-                                          "If a Charging Station has implemented both TimeOffset and TimeZone it is RECOMMENDED to not use both at the same time."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region NextTimeOffsetTransitionDateTime
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        Name:             "NextTimeOffsetTransitionDateTime",
-            //        ValueGetter:      () => this.NextTimeOffsetTransitionDateTime.HasValue
-            //                                    ? this.NextTimeOffsetTransitionDateTime.Value.ToISO8601()
-            //                                    : null,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.DateTime
-            //                          ),
-
-            //        Description:      I18NString.Create(
-            //                              "Date time of the next time offset transition. On this date time, the clock displayed to the EV driver " +
-            //                              "will be given the new offset as configured via 'TimeOffsetNextTransition'. " +
-            //                              "This can be used to manually configure the next start or end of a daylight saving time period."
-            //                          )
-
-            //    )
-            //);
-
-            #endregion
-
-            #region TimeOffsetNextTransition
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        Name:             "TimeOffsetNextTransition",
-            //        Instance:         "NextTransition",
-            //        ValueGetter:      () => this.NextTimeOffsetTransition,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create(
-            //                              "Next local time offset in the format: \"+01:00\", \"-02:00\" etc. New offset that will be set on the next time " +
-            //                              "offset transition as configured via 'NextTimeOffsetTransitionDateTime'. " +
-            //                              "This can be used to manually configure the offset for the start or end of the daylight saving time period."
-            //                          )
-
-            //    )
-            //);
-
-            #endregion
-
-            #region TimeZone
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        Name:             "TimeZone",
-            //        ValueGetter:      () => this.TimeZone,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create("Configured current local time zone in the format: \"Europe/Oslo\", \"Asia/Singapore\" etc.")
-
-            //    )
-            //);
-
-            #endregion
-
-            #region TimeAdjustmentReportingThreshold
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        Name:             "TimeAdjustmentReportingThreshold",
-            //        ValueGetter:      () => this.TimeAdjustmentReportingThreshold.HasValue
-            //                                    ? this.TimeAdjustmentReportingThreshold.Value.ToString()
-            //                                    : null,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create("If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime.")
-
-            //    )
-            //);
-
-            #endregion
-
+            if (!Source.ClientsOf(Group).Contains(Client, StringComparer.OrdinalIgnoreCase))
+                throw new ArgumentException($"The source has no client '{Client}' in the group '{Group}'!", nameof(Client));
+
+            this.Client   = Client;
+            this.Group    = Group;
+
+            var answered  = new HashSet<String>(Source.ClientVariables, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
+                variableConfigs.Add(
+                    variable.ToVariableConfig(() => Source.ClientValue(Client, variable.Name),
+                                              Writes: false)
+                );
 
         }
 
         #endregion
 
+
+        #region (static) AllOf(Source)
+
+        /// <summary>
+        /// The NTP client controllers of every client of every group of the
+        /// given source. A client id named by a second group as well is left to
+        /// the first, since a client belongs to exactly one group.
+        /// </summary>
+        /// <param name="Source">Where the values come from.</param>
+        public static IEnumerable<NTPClientController> AllOf(INTPControllerSource Source)
+
+            => Source.Groups.
+                      Distinct  (StringComparer.OrdinalIgnoreCase).
+                      SelectMany(group  => Source.ClientsOf(group).Select(client => (group, client))).
+                      DistinctBy(member => member.client, StringComparer.OrdinalIgnoreCase).
+                      Select    (member => new NTPClientController(Source, member.group, member.client));
+
+        #endregion
 
     }
 

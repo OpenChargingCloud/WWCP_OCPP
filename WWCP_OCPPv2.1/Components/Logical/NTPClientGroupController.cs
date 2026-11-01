@@ -27,359 +27,140 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A generic Time Synchronization controller.
-    /// 
+    /// An NTP client group controller of the Secure Time Synchronization white
+    /// paper (section 3.2.3): one group of time servers, asked together in
+    /// rounds, with its quorum, its schedule and its error handling. The
+    /// instance is the group id.
+    ///
     /// Well-known instances are:
-    ///   - "legal" for legal time because of dynamic tariffs et.al
-    ///   - "local" for local load balancing and time servers on Local Controllers
+    ///   - "legal" for legal time, which dynamic tariffs and everything else
+    ///     calibration law rests on use
+    ///   - "local" for a time consistent across the charging stations of a
+    ///     location, e.g. from time servers on Local Controllers
     /// </summary>
+    /// <remarks>
+    /// Its variables are those of the paper that the given source can answer,
+    /// read from it at every read, and Clients, read from the clients of the
+    /// group. The variables of legal time exist in the legal group only.
+    /// </remarks>
     public class NTPClientGroupController : ALogicalComponentConfig
     {
+
+        #region Data
+
+        /// <summary>
+        /// The id of the group whose time is legal time.
+        /// </summary>
+        public const String LegalGroup = "legal";
+
+        /// <summary>
+        /// The variables of the paper, in its order.
+        /// </summary>
+        internal static readonly ControllerVariable[] Variables = [
+
+            new ("Enabled",             DataTypes.Boolean,     "Whether the group is asked. A disabled group keeps its clients.",                                                                                   Writable: true),
+            new ("Clients",             DataTypes.String,      "The ids of the NTPClientController instances of this group, comma separated.",                                                                     Writable: true),
+            new ("MinServers",          DataTypes.Integer,     "The quorum: how many clients of one priority must answer in a round for its time to count.",                         MinLimit: 1,      MaxLimit: 255,                     Writable: true),
+            new ("MaxDeviation",        DataTypes.Decimal,     "The spread between the answers of one round that is accepted silently; a larger one is logged.",                       MinLimit: 0.001m, MaxLimit: 3600,  InSeconds: true,  Writable: true),
+            new ("MinInterval",         DataTypes.Integer,     "The shortest time between the start of two rounds.",                                                                  MinLimit: 10,     MaxLimit: 86400, InSeconds: true,  Writable: true, MayBeEmpty: true),
+            new ("MaxInterval",         DataTypes.Integer,     "The longest time between the start of two rounds; each round is due at a random time between both.",                 MinLimit: 10,     MaxLimit: 86400, InSeconds: true,  Writable: true, MayBeEmpty: true),
+            new ("Preflight",           DataTypes.Integer,     "After this long without a round, every client is first sent a preflight packet whose answer is ignored.",          MinLimit: 1,      MaxLimit: 86400, InSeconds: true,  Writable: true, MayBeEmpty: true),
+            new ("Timeout",             DataTypes.Decimal,     "How long one exchange with a client may take.",                                                                       MinLimit: 0.1m,   MaxLimit: 3600,  InSeconds: true,  Writable: true, MayBeEmpty: true),
+            new ("ErrorLogging",        DataTypes.Integer,     "The number of failed rounds in a row that leads to an entry in the log of the group.",                                MinLimit: 1,      MaxLimit: 65535,                   Writable: true),
+            new ("MaxErrors",           DataTypes.Integer,     "The number of failed rounds in a row after which what rests on the time of the group is limited.",                   MinLimit: 1,      MaxLimit: 65535,                   Writable: true),
+            new ("Limited",             DataTypes.Boolean,     "True from the moment MaxErrors is reached until a round produces a time again."),
+            new ("ErrorsInARow",        DataTypes.Integer,     "The number of failed rounds in a row so far."),
+            new ("LastCheck",           DataTypes.DateTime,    "When the last round that produced a time took place."),
+            new ("LastOffset",          DataTypes.Decimal,     "The offset of the clock of this charging station against the time of that round.",                                                                 InSeconds: true),
+            new ("LegalTimeAuthority",  DataTypes.String,      "Who stands behind the time of the group, e.g. \"PTB\". Without it the time is not legal time.",                                        MaxLimit: 80,                      Writable: true),
+            new ("LegalTimeTolerance",  DataTypes.Decimal,     "How far the clock of this charging station may be from the time of the group and still be legal time.",              MinLimit: 0.001m, MaxLimit: 60,    InSeconds: true,  Writable: true),
+            new ("LegalTimeMaxAge",     DataTypes.Integer,     "How old the last round that produced a time may be and still be legal time.",                                         MinLimit: 10,     MaxLimit: 86400, InSeconds: true,  Writable: true)
+
+        ];
+
+        /// <summary>
+        /// The variables only the legal group has.
+        /// </summary>
+        public static readonly IReadOnlySet<String> LegalOnly = new HashSet<String>(StringComparer.OrdinalIgnoreCase) {
+                                                                    "LegalTimeAuthority",
+                                                                    "LegalTimeTolerance",
+                                                                    "LegalTimeMaxAge"
+                                                                };
+
+        #endregion
 
         #region Properties
 
         /// <summary>
-        /// Contains the current date and time.
+        /// The id of the group: the instance.
         /// </summary>
-        [Mandatory]
-        public DateTimeOffset                    DateTime           { get; }
-
-
-
-        public IEnumerable<NTPClientController>  Clients                  { get; }
-
-        public Boolean?                          AllowJumpsAfterReboot    { get; }
-
-
-        public Byte?                             MinServers               { get; }
-
-        public TimeSpan MaxDeviation { get; }
-
-        public UInt16? ErrorLogging { get; }
-
-        public UInt16? MaxLogging { get; }
-
-
+        public String   Group      { get; }
 
         /// <summary>
-        /// Configured local time offset in the format: "+01:00", "-02:00" etc.
+        /// Whether this is the group whose time is legal time.
         /// </summary>
-        public String?                  TimeOffset                          { get; set; }
-
-        /// <summary>
-        /// Date time of the next time offset transition.
-        /// </summary>
-        public DateTimeOffset?          NextTimeOffsetTransitionDateTime    { get; set; }
-
-        /// <summary>
-        /// Next local time offset in the format: "+01:00", "-02:00" etc.
-        /// </summary>
-        public String?                  NextTimeOffsetTransition            { get; set; }
-
-        /// <summary>
-        /// Configured current local time zone in the format: "Europe/Oslo", "Asia/Singapore" etc.
-        /// </summary>
-        public String?                  TimeZone                            { get; set; }
-
-        /// <summary>
-        /// If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime.
-        /// </summary>
-        public Int32?                   TimeAdjustmentReportingThreshold    { get; set; }
+        public Boolean  IsLegal    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Network Time Synchronization controller.
+        /// Create the NTP client group controller of the given group of the given source.
         /// </summary>
-        /// <param name="DateTime">Contains the current date and time.</param>
-        /// <param name="TimeOffset">Configured local time offset in the format: "+01:00", "-02:00" etc.</param>
-        /// <param name="NextTimeOffsetTransitionDateTime">Date time of the next time offset transition.</param>
-        /// <param name="NextTimeOffsetTransition">Next local time offset in the format: "+01:00", "-02:00" etc.</param>
-        /// <param name="TimeZone">Configured current local time zone in the format: "Europe/Oslo", "Asia/Singapore" etc.</param>
-        /// <param name="TimeAdjustmentReportingThreshold">If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime.</param>
-        /// 
-        /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
+        /// <param name="Source">Where the values come from.</param>
+        /// <param name="Group">The id of the group; its instance.</param>
+        /// <param name="Description">An optional multi-language description of the controller.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public NTPClientGroupController(String                            Instance,
-                                        IEnumerable<NTPClientController>  Clients,
-
-                                        I18NString?                       Description                        = null,
-
-                                        String?                           TimeOffset                         = null,
-                                        DateTimeOffset?                   NextTimeOffsetTransitionDateTime   = null,
-                                        String?                           NextTimeOffsetTransition           = null,
-                                        String?                           TimeZone                           = null,
-                                        Int32?                            TimeAdjustmentReportingThreshold   = null,
-
-                                        DateTimeOffset?                   DateTime                           = null,
-
-                                        CustomData?                       CustomData                         = null)
+        public NTPClientGroupController(INTPControllerSource  Source,
+                                        String                Group,
+                                        I18NString?           Description   = null,
+                                        CustomData?           CustomData    = null)
 
             : base(nameof(NTPClientGroupController),
-                   Instance,
-                   Description ?? I18NString.Create("A Network Time Synchronization Group controller for Network Time Protocol (NTPv4) and Network Time Security (NTS)."),
+                   Group,
+                   Description ?? I18NString.Create($"The group '{Group}' of time servers of this charging station (Secure Time Synchronization)."),
                    CustomData)
 
         {
 
-            this.Clients                           = Clients.Distinct();
-
-            this.TimeOffset                        = TimeOffset;
-            this.NextTimeOffsetTransitionDateTime  = NextTimeOffsetTransitionDateTime;
-            this.NextTimeOffsetTransition          = NextTimeOffsetTransition;
-            this.TimeZone                          = TimeZone;
-            this.TimeAdjustmentReportingThreshold  = TimeAdjustmentReportingThreshold;
-
-            this.DateTime                          = DateTime ?? Timestamp.Now;
-
-
-
-            #region DateTime
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "DateTime",
-                    ValueGetter:      () => this.DateTime.ToISO8601(),
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.DateTime
-                                      ),
-
-                    Description:      I18NString.Create("Contains the current date and time.")
-
-                )
-            );
-
-            #endregion
-
-            #region TimeSource
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        Name:             "TimeSource",
-            //        ValueGetter:      () => this.TimeSource.Any()
-            //                                    ? this.TimeSource.AggregateWith(',')
-            //                                    : null,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create(
-            //                              "Via this variable, the Charging Station provides the CSMS with the option to configure a clock source, if more than 1 are implemented. " +
-            //                              "\"NTP,Heartbeat\" means, use NTP, but when none of the NTP servers responses, use time synchronization via Heartbeat."
-            //                          )
-
-            //    )
-            //);
-
-            #endregion
-
-            #region NtpServerUri
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        // Single digit, multiple servers allowed, primary NtpServer has instance '1', the secondary has instance '2'. etc
-            //        Name:             "NtpServerUri",
-            //        ValueGetter:      () => this.NtpServerUri,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create(
-            //                              "This contains the address of the NTP server. Multiple NTP servers can be configured as backups, etc. " +
-            //                              "If the NTP client supports it, it can also connect to multiple NTP servers simultaneous to get a " +
-            //                              "more reliable time source. Variable instance value is single digit NTP priority (1=highest)."
-            //                          )
-
-            //    )
-            //);
-
-            #endregion
-
-            #region NtpSource
-
-            //variableConfigs.Add(
-            //    new VariableConfig(
-
-            //        Name:             "NtpSource",
-            //        ValueGetter:      () => this.NtpSource.HasValue
-            //                                    ? this.NtpSource.Value.AsText()
-            //                                    : null,
-
-            //        Attributes:       new VariableAttribute(
-            //                              Mutability:  MutabilityTypes.ReadWrite
-            //                          ),
-
-            //        Characteristics:  new VariableCharacteristics(
-            //                              DataType:    DataTypes.String
-            //                          ),
-
-            //        Description:      I18NString.Create(
-            //                              "When an NTP client is implemented, this variable can be used to configure the client: " +
-            //                              "Use the NTP server provided via DHCP, or use the manually configured NTP server."
-            //                          )
-
-            //    )
-            //);
-
-            #endregion
-
-            #region TimeOffset
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeOffset",
-                    ValueGetter:      () => this.TimeOffset,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "Configured local time offset in the format: \"+01:00\", \"-02:00\" etc. " +
-                                          "When a TimeOffset is used, it is advised not to implement: TimeZone. " +
-                                          "If a Charging Station has implemented both TimeOffset and TimeZone it is RECOMMENDED to not use both at the same time."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region NextTimeOffsetTransitionDateTime
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "NextTimeOffsetTransitionDateTime",
-                    ValueGetter:      () => this.NextTimeOffsetTransitionDateTime.HasValue
-                                                ? this.NextTimeOffsetTransitionDateTime.Value.ToISO8601()
-                                                : null,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.DateTime
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "Date time of the next time offset transition. On this date time, the clock displayed to the EV driver " +
-                                          "will be given the new offset as configured via 'TimeOffsetNextTransition'. " +
-                                          "This can be used to manually configure the next start or end of a daylight saving time period."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region TimeOffsetNextTransition
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeOffsetNextTransition",
-                    Instance:         "NextTransition",
-                    ValueGetter:      () => this.NextTimeOffsetTransition,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "Next local time offset in the format: \"+01:00\", \"-02:00\" etc. New offset that will be set on the next time " +
-                                          "offset transition as configured via 'NextTimeOffsetTransitionDateTime'. " +
-                                          "This can be used to manually configure the offset for the start or end of the daylight saving time period."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region TimeZone
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeZone",
-                    ValueGetter:      () => this.TimeZone,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create("Configured current local time zone in the format: \"Europe/Oslo\", \"Asia/Singapore\" etc.")
-
-                )
-            );
-
-            #endregion
-
-            #region TimeAdjustmentReportingThreshold
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeAdjustmentReportingThreshold",
-                    ValueGetter:      () => this.TimeAdjustmentReportingThreshold.HasValue
-                                                ? this.TimeAdjustmentReportingThreshold.Value.ToString()
-                                                : null,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create("If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime.")
-
-                )
-            );
-
-            #endregion
-
+            if (!Source.Groups.Contains(Group, StringComparer.OrdinalIgnoreCase))
+                throw new ArgumentException($"The source has no group '{Group}'!", nameof(Group));
+
+            this.Group    = Group;
+            this.IsLegal  = String.Equals(Group, LegalGroup, StringComparison.OrdinalIgnoreCase);
+
+            var answered  = new HashSet<String>(Source.GroupVariables, StringComparer.OrdinalIgnoreCase) {
+                                "Clients"
+                            };
+
+            foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name) &&
+                                                                 (IsLegal || !LegalOnly.Contains(variable.Name))))
+                variableConfigs.Add(
+                    variable.ToVariableConfig(variable.Name == "Clients"
+                                                  ? () => String.Join(",", Source.ClientsOf(Group))
+                                                  : () => Source.GroupValue(Group, variable.Name),
+                                              Writes: false)
+                );
 
         }
 
         #endregion
 
+
+        #region (static) AllOf(Source)
+
+        /// <summary>
+        /// The NTP client group controllers of every group of the given source.
+        /// </summary>
+        /// <param name="Source">Where the values come from.</param>
+        public static IEnumerable<NTPClientGroupController> AllOf(INTPControllerSource Source)
+
+            => Source.Groups.
+                      Distinct(StringComparer.OrdinalIgnoreCase).
+                      Select  (group => new NTPClientGroupController(Source, group));
+
+        #endregion
 
     }
 

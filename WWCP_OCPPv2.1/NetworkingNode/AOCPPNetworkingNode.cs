@@ -106,6 +106,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region NTPController
+
+        /// <summary>
+        /// The NTP Controller: which groups of time servers there are, and
+        /// whether the time is legal time.
+        /// </summary>
+        public NTPController?  NTPController
+            => GetComponentConfigs<NTPController>(nameof(OCPPv2_1.NTPController)).FirstOrDefault();
+
+        #endregion
+
         #region TimeClientController(s)
 
         /// <summary>
