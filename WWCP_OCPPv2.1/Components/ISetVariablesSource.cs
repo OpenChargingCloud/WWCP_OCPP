@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
@@ -25,9 +31,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <param name="Data">The entry as it was sent.</param>
     /// <param name="Component">The component configuration it names.</param>
     /// <param name="Variable">The variable configuration it names.</param>
-    public sealed record SetVariableEntry(SetVariableData  Data,
-                                          ComponentConfig  Component,
-                                          VariableConfig   Variable);
+    /// <param name="Request">The request it is part of: who sent it, by its network path - a source that writes down who changed what needs that.</param>
+    public sealed record SetVariableEntry(SetVariableData       Data,
+                                          ComponentConfig       Component,
+                                          VariableConfig        Variable,
+                                          SetVariablesRequest?  Request   = null);
 
 
     /// <summary>

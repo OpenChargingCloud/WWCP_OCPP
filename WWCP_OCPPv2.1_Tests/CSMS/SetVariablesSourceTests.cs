@@ -49,7 +49,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               Int32                           Answers    = Int32.MaxValue) : ISetVariablesSource
         {
 
-            public List<(String[] Entries, DataConsistencyModel Model)>  Calls  { get; } = [];
+            public List<(String[] Entries, DataConsistencyModel Model)>  Calls    { get; } = [];
+
+            public List<String?>                                         Senders  { get; } = [];
 
             public Object BaseUnitOf(ComponentConfig Component)
                 => Unit?.Invoke(Component) ?? Component;
@@ -59,7 +61,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                             CancellationToken                CancellationToken)
             {
 
-                Calls.Add(([.. Entries.Select(entry => NameOf(entry.Data))], DataConsistencyModel));
+                Calls.  Add(([.. Entries.Select(entry => NameOf(entry.Data))], DataConsistencyModel));
+                Senders.AddRange(Entries.Select(entry => entry.Request?.NetworkPath.Source.ToString()));
 
                 return Task.FromResult<IReadOnlyList<SetVariableResult>>(
                            [.. Entries.Take(Answers).Select(entry => new SetVariableResult(
@@ -224,6 +227,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(its.       Calls.Single().Entries,                               Is.EqualTo(new[] { "FCtrlr.Own" }));
                 Assert.That(components.Calls.Single().Entries,                               Is.EqualTo(new[] { "FCtrlr.X" }));
             });
+
+        }
+
+        #endregion
+
+        #region ASourceIsToldWhoSentTheRequest_Test()
+
+        /// <summary>
+        /// Every entry a source is handed carries the request it came with, so
+        /// that a source writing down who changed what can name the CSMS - by
+        /// the start of the network path, which is "CSMS" for one the station
+        /// is connected to directly.
+        /// </summary>
+        [Test]
+        public async Task ASourceIsToldWhoSentTheRequest_Test()
+        {
+
+            var source = new ARecordingSource();
+
+            Add(AComponent("HCtrlr", null, source, AVariable("X"), AVariable("Z")));
+
+            await SetVariables(null,
+                               ("HCtrlr", null, "X", "1"),
+                               ("HCtrlr", null, "Z", "2"));
+
+            Assert.That(source.Senders, Is.EqualTo(new[] { NetworkingNode_Id.CSMS.ToString(), NetworkingNode_Id.CSMS.ToString() }));
 
         }
 

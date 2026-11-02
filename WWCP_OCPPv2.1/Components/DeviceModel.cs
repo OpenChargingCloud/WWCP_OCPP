@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             // Every entry found and checked before the first is set, so that a
             // change knows whether all of it can be set before any of it is.
-            var checks    = entries.Select(setVariableData => Check(setVariableData, ComponentConfigs)).ToArray();
+            var checks    = entries.Select(setVariableData => Check(setVariableData, Request, ComponentConfigs)).ToArray();
             var results   = new SetVariableResult?[entries.Length];
 
             #region Which entries form one change
@@ -401,6 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          SetVariableResult?    Refused);
 
         private static EntryCheck Check(SetVariableData                SetVariableData,
+                                        SetVariablesRequest            Request,
                                         ComponentConfigLookupDelegate  ComponentConfigs)
         {
 
@@ -461,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        );
 
             return new EntryCheck(
-                       new SetVariableEntry(SetVariableData, componentConfig!, variableConfig),
+                       new SetVariableEntry(SetVariableData, componentConfig!, variableConfig, Request),
                        componentConfig,
                        source,
                        null
