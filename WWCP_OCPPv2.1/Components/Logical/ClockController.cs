@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2025 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -27,362 +27,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Provides a means to configure management of time tracking.
+    /// The standard clock controller, ClockCtrlr: what time the charging
+    /// station has, and where it comes from. It has no instance.
     /// </summary>
+    /// <remarks>
+    /// Its variables are those of the standard that the given source can
+    /// answer, read from it at every read. A variable the source cannot answer
+    /// is left out, so that a CSMS asking for it learns it is unknown rather
+    /// than reading an empty value as an answer.
+    ///
+    /// NtpServerUri has the instances "1" to "9", the priority of the server,
+    /// 1 for the highest; TimeOffset has none, for the offset now, and
+    /// "NextTransition", for the offset after the next transition.
+    /// </remarks>
     public class ClockController : ALogicalComponentConfig
     {
 
-        #region Properties
+        #region Data
 
         /// <summary>
-        /// Contains the current date and time.
+        /// The name of the component, as the standard spells it.
         /// </summary>
-        [Mandatory]
-        public DateTimeOffset           DateTime                      { get; }
+        public const String ComponentName = "ClockCtrlr";
 
         /// <summary>
-        /// This contains the address of the NTP server.
-        /// Multiple NTP servers can be configured as backups, etc.
-        /// If the NTP client supports it, it can also connect to multiple NTP servers simultaneous to get a more reliable time source.
-        /// Variable instance value is single digit NTP priority (1=highest).
+        /// The variables of the standard, in its order.
         /// </summary>
-        public String?                  NtpServerUri                        { get; set; }
+        internal static readonly ControllerVariable[] Variables = [
+
+            new ("DateTime",                          DataTypes.DateTime,      "The current date and time of the charging station."),
+            new ("NextTimeOffsetTransitionDateTime",  DataTypes.DateTime,      "When the local time offset changes next.",                                                                     Writable: true, MayBeEmpty: true),
+            new ("NtpServerUri",                      DataTypes.String,        "The address of an NTP server. The instance is its priority, 1 for the highest; an empty one names no server.",  Writable: true, MayBeEmpty: true),
+            new ("NtpSource",                         DataTypes.OptionList,    "Whether the NTP servers come from DHCP or are configured manually.",                                          ValuesList: [ "DHCP", "manual" ],  Writable: true),
+            new ("TimeAdjustmentReportingThreshold",  DataTypes.Integer,       "A time adjustment larger than this is reported as the security event SettingSystemTime.",                    InSeconds: true,                   Writable: true, MayBeEmpty: true),
+            new ("TimeOffset",                        DataTypes.String,        "The local time offset, e.g. \"+01:00\"; in the instance NextTransition the one after the next transition.",  Writable: true, MayBeEmpty: true),
+            new ("TimeSource",                        DataTypes.SequenceList,  "Where the time comes from, in the order the sources are tried.",
+                                                                               ValuesList: [ "Heartbeat", "NTP", "GPS", "RealTimeClock", "MobileNetwork", "RadioTimeTransmitter" ],                    Writable: true),
+            new ("TimeZone",                          DataTypes.String,        "The local time zone, e.g. \"Europe/Oslo\".",                                                                    Writable: true, MayBeEmpty: true)
+
+        ];
 
         /// <summary>
-        /// When an NTP client is implemented, this variable can be used to configure the client:
-        /// Use the NTP server provided via DHCP, or use the manually configured NTP server.
+        /// The instances of NtpServerUri: one per priority, 1 for the highest.
         /// </summary>
-        public NTPSources?              NtpSource                           { get; set; }
-
-        /// <summary>
-        /// Configured local time offset in the format: "+01:00", "-02:00" etc.
-        /// </summary>
-        public String?                  TimeOffset                          { get; set; }
-
-        /// <summary>
-        /// Date time of the next time offset transition.
-        /// </summary>
-        public DateTimeOffset?          NextTimeOffsetTransitionDateTime    { get; set; }
-
-        /// <summary>
-        /// Next local time offset in the format: "+01:00", "-02:00" etc.
-        /// </summary>
-        public String?                  NextTimeOffsetTransition            { get; set; }
-
-        /// <summary>
-        /// Via this variable, the Charging Station provides the CSMS with the option to configure
-        /// a clock source, if more than 1 are implemented.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<TimeSource>  TimeSource                          { get; set; }
-
-        /// <summary>
-        /// Configured current local time zone in the format: "Europe/Oslo", "Asia/Singapore" etc.
-        /// </summary>
-        public String?                  TimeZone                            { get; set; }
-
-        /// <summary>
-        /// If set, then time adjustments with an absolute value in seconds larger than this
-        /// need to be reported as a security event SettingSystemTime.
-        /// </summary>
-        public Int32?                   TimeAdjustmentReportingThreshold    { get; set; }
+        public static readonly IReadOnlyList<String> NtpServerUriInstances = [ "1", "2", "3", "4", "5", "6", "7", "8", "9" ];
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new clock controller.
+        /// Create the clock controller of the given source.
         /// </summary>
-        /// <param name="DateTime">Contains the current date and time.</param>
-        /// <param name="NtpServerUri">This contains the address of the NTP server. Multiple NTP servers can be configured as backups, etc. If the NTP client supports it, it can also connect to multiple NTP servers simultaneous to get a more reliable time source. Variable instance value is single digit NTP priority (1=highest).</param>
-        /// <param name="NtpSource">When an NTP client is implemented, this variable can be used to configure the client: Use the NTP server provided via DHCP, or use the manually configured NTP server.</param>
-        /// <param name="TimeOffset">Configured local time offset in the format: "+01:00", "-02:00" etc.</param>
-        /// <param name="NextTimeOffsetTransitionDateTime">Date time of the next time offset transition.</param>
-        /// <param name="NextTimeOffsetTransition">Next local time offset in the format: "+01:00", "-02:00" etc.</param>
-        /// <param name="TimeSource">Via this variable, the Charging Station provides the CSMS with the option to configure a clock source, if more than 1 are implemented.</param>
-        /// <param name="TimeZone">Configured current local time zone in the format: "Europe/Oslo", "Asia/Singapore" etc.</param>
-        /// <param name="TimeAdjustmentReportingThreshold">If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime.</param>
-        /// 
-        /// <param name="Instance">The optional case insensitive name of the instance in case the component exists as multiple instances.</param>
+        /// <param name="Source">Where the values come from.</param>
+        /// <param name="Description">An optional multi-language description of the controller.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
-        public ClockController(DateTimeOffset           DateTime,
-                               IEnumerable<TimeSource>  TimeSource,
+        public ClockController(IClockControllerSource  Source,
+                               I18NString?             Description   = null,
+                               CustomData?             CustomData    = null)
 
-                               String?                  NtpServerUri,
-                               NTPSources?              NtpSource,
-                               String?                  TimeOffset,
-                               DateTimeOffset?          NextTimeOffsetTransitionDateTime,
-                               String?                  NextTimeOffsetTransition,
-                               String?                  TimeZone,
-                               Int32?                   TimeAdjustmentReportingThreshold,
-
-                               String?                  Instance     = null,
-                               CustomData?              CustomData   = null)
-
-            : base(nameof(ClockController),
-                   Instance,
-                   I18NString.Create("Provides a means to configure management of time tracking by charging station."),
+            : base(ComponentName,
+                   null,
+                   Description ?? I18NString.Create("What time this charging station has, and where it comes from."),
                    CustomData)
 
         {
 
-            this.DateTime                          = DateTime;
-            this.TimeSource                        = TimeSource;
-
-            this.NtpServerUri                      = NtpServerUri;
-            this.NtpSource                         = NtpSource;
-            this.TimeOffset                        = TimeOffset;
-            this.NextTimeOffsetTransitionDateTime  = NextTimeOffsetTransitionDateTime;
-            this.NextTimeOffsetTransition          = NextTimeOffsetTransition;
-            this.TimeZone                          = TimeZone;
-            this.TimeAdjustmentReportingThreshold  = TimeAdjustmentReportingThreshold;
-
-
-            #region DateTime
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "DateTime",
-                    ValueGetter:      () => this.DateTime.ToISO8601(),
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.DateTime
-                                      ),
-
-                    Description:      I18NString.Create("Contains the current date and time.")
-
-                )
-            );
-
-            #endregion
-
-            #region TimeSource
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeSource",
-                    ValueGetter:      () => this.TimeSource.Any()
-                                                ? this.TimeSource.AggregateWith(',')
-                                                : null,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "Via this variable, the Charging Station provides the CSMS with the option to configure a clock source, if more than 1 are implemented. " +
-                                          "\"NTP,Heartbeat\" means, use NTP, but when none of the NTP servers responses, use time synchronization via Heartbeat."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region NtpServerUri
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    // Single digit, multiple servers allowed, primary NtpServer has instance '1', the secondary has instance '2'. etc
-                    Name:             "NtpServerUri",
-                    ValueGetter:      () => this.NtpServerUri,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "This contains the address of the NTP server. Multiple NTP servers can be configured as backups, etc. " +
-                                          "If the NTP client supports it, it can also connect to multiple NTP servers simultaneous to get a " +
-                                          "more reliable time source. Variable instance value is single digit NTP priority (1=highest)."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region NtpSource
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "NtpSource",
-                    ValueGetter:      () => this.NtpSource.HasValue
-                                                ? this.NtpSource.Value.AsText()
-                                                : null,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "When an NTP client is implemented, this variable can be used to configure the client: " +
-                                          "Use the NTP server provided via DHCP, or use the manually configured NTP server."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region TimeOffset
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeOffset",
-                    ValueGetter:      () => this.TimeOffset,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "Configured local time offset in the format: \"+01:00\", \"-02:00\" etc. " +
-                                          "When a TimeOffset is used, it is advised not to implement: TimeZone. " +
-                                          "If a Charging Station has implemented both TimeOffset and TimeZone it is RECOMMENDED to not use both at the same time."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region NextTimeOffsetTransitionDateTime
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "NextTimeOffsetTransitionDateTime",
-                    ValueGetter:      () => this.NextTimeOffsetTransitionDateTime.HasValue
-                                                ? this.NextTimeOffsetTransitionDateTime.Value.ToISO8601()
-                                                : null,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.DateTime
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "Date time of the next time offset transition. On this date time, the clock displayed to the EV driver " +
-                                          "will be given the new offset as configured via 'TimeOffsetNextTransition'. " +
-                                          "This can be used to manually configure the next start or end of a daylight saving time period."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region TimeOffsetNextTransition
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeOffsetNextTransition",
-                    Instance:         "NextTransition",
-                    ValueGetter:      () => this.NextTimeOffsetTransition,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create(
-                                          "Next local time offset in the format: \"+01:00\", \"-02:00\" etc. New offset that will be set on the next time " +
-                                          "offset transition as configured via 'NextTimeOffsetTransitionDateTime'. " +
-                                          "This can be used to manually configure the offset for the start or end of the daylight saving time period."
-                                      )
-
-                )
-            );
-
-            #endregion
-
-            #region TimeZone
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeZone",
-                    ValueGetter:      () => this.TimeZone,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create("Configured current local time zone in the format: \"Europe/Oslo\", \"Asia/Singapore\" etc.")
-
-                )
-            );
-
-            #endregion
-
-            #region TimeAdjustmentReportingThreshold
-
-            variableConfigs.Add(
-                new VariableConfig(
-
-                    Name:             "TimeAdjustmentReportingThreshold",
-                    ValueGetter:      () => this.TimeAdjustmentReportingThreshold.HasValue
-                                                ? this.TimeAdjustmentReportingThreshold.Value.ToString()
-                                                : null,
-
-                    Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
-                                      ),
-
-                    Characteristics:  new VariableCharacteristics(
-                                          DataType:    DataTypes.String
-                                      ),
-
-                    Description:      I18NString.Create("If set, then time adjustments with an absolute value in seconds larger than this need to be reported as a security event SettingSystemTime.")
-
-                )
-            );
-
-            #endregion
-
+            var answered = new HashSet<String>(Source.Variables, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
+                foreach (var instance in InstancesOf(variable.Name))
+                    variableConfigs.Add(
+                        variable.ToVariableConfig(() => Source.Value(variable.Name, instance),
+                                                  Writes:    false,
+                                                  Instance:  instance)
+                    );
 
         }
 
         #endregion
 
+
+        #region (private static) InstancesOf(Variable)
+
+        private static IEnumerable<String?> InstancesOf(String Variable)
+
+            => Variable switch {
+                   "NtpServerUri"  => (IEnumerable<String?>) NtpServerUriInstances,
+                   "TimeOffset"    => [ null, "NextTransition" ],
+                   _               => [ null ]
+               };
+
+        #endregion
 
     }
 

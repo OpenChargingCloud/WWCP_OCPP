@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        Int32?                MaxItems     = null)
     {
 
-        #region ToVariableConfig(Value, Writes)
+        #region ToVariableConfig(Value, Writes, Instance = null)
 
         /// <summary>
         /// This variable, reading its value from the given getter.
@@ -67,12 +67,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </remarks>
         /// <param name="Value">Where its value comes from, at every read.</param>
         /// <param name="Writes">Whether the source writes it.</param>
+        /// <param name="Instance">The instance of the variable, for one that has several: ClockCtrlr's NtpServerUri, say.</param>
         public VariableConfig ToVariableConfig(Func<String?>  Value,
-                                               Boolean        Writes)
+                                               Boolean        Writes,
+                                               String?        Instance   = null)
 
             => new (
                    Name:             Name,
                    ValueGetter:      Value,
+                   Instance:         Instance,
                    Attributes:       new VariableAttribute(
                                          Mutability:  Writable && Writes
                                                           ? MutabilityTypes.ReadWrite

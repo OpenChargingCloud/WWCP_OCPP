@@ -95,14 +95,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// All Clock Controllers
         /// </summary>
         public IEnumerable<ClockController>  ClockControllers()
-            => GetComponentConfigs<ClockController>(nameof(OCPPv2_1.ClockController));
+            => GetComponentConfigs<ClockController>(OCPPv2_1.ClockController.ComponentName);
 
         /// <summary>
         /// The Clock Controller for the given instance.
         /// </summary>
         /// <param name="Instance">The name of the instance.</param>
         public ClockController?              ClockController(String Instance)
-            => GetComponentConfigs<ClockController>(nameof(ClockController), Instance).FirstOrDefault();
+            => GetComponentConfigs<ClockController>(OCPPv2_1.ClockController.ComponentName, Instance).FirstOrDefault();
 
         #endregion
 

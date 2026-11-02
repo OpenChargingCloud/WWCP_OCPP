@@ -45,6 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         protected TestChargingStationNode?      chargingStation1;
         protected InMemoryNTPSource?            ntpSource1;
+        protected InMemoryClockSource?          clockSource1;
 
         protected List<LogJSONRequest>?         chargingStation1WebSocketJSONRequestsSent;
         protected List<LogJSONRequest>?         chargingStation1WebSocketJSONResponsesSent;
@@ -233,6 +234,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             foreach (var component in NTPController.AllOf(ntpSource1))
                 chargingStation1.AddComponent(component);
+
+            #endregion
+
+            #region Add the standard clock controller of a clock set by NTS
+
+            clockSource1 = new InMemoryClockSource();
+
+            chargingStation1.AddComponent(new ClockController(clockSource1));
 
             #endregion
 
