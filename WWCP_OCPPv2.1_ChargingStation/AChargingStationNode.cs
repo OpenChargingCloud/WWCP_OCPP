@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// An abstract charging station node.
     /// </summary>
-    public abstract class AChargingStationNode : AOCPPNetworkingNode,
+    public abstract partial class AChargingStationNode : AOCPPNetworkingNode,
                                                  IChargingStationNode
     {
 
@@ -1536,6 +1536,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             foreach (var evse in EVSEs)
                 await evse.DoMaintenanceAsync(this, State);
+
+            RetryOfflineQueue();
+            CheckMonitorsInTime();
 
         }
 

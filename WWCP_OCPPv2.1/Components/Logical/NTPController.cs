@@ -94,7 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     variable.ToVariableConfig(variable.Name == "ClientGroups"
                                                   ? () => String.Join(",", Source.Groups)
                                                   : () => Source.ControllerValue(variable.Name),
-                                              written.Contains(variable.Name))
+                                              written.Contains(variable.Name),
+                                              Monitored: true)
                 );
 
             if (written.Count > 0)

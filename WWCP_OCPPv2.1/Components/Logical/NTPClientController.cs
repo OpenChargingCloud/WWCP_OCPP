@@ -149,7 +149,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 variableConfigs.Add(
                     variable.ToVariableConfig(() => Source.ClientValue(Client, variable.Name),
-                                              written.Contains(variable.Name))
+                                              written.Contains(variable.Name),
+                                              Monitored: true)
                 );
 
             if (written.Count > 0)

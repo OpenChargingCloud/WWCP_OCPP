@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// An abstract Charge Point node.
     /// </summary>
-    public abstract class AChargePointNode : AOCPPNetworkingNode,
+    public abstract partial class AChargePointNode : AOCPPNetworkingNode,
                                              IChargePointNode
     {
 
@@ -906,6 +906,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         protected override async Task DoMaintenanceAsync(Object? State)
         {
 
+            RetryOfflineQueue();
 
         }
 

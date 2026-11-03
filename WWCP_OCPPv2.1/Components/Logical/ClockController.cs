@@ -106,8 +106,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 foreach (var instance in InstancesOf(variable.Name))
                     variableConfigs.Add(
                         variable.ToVariableConfig(() => Source.Value(variable.Name, instance),
-                                                  Writes:    written.Contains(variable.Name),
-                                                  Instance:  instance)
+                                                  Writes:     written.Contains(variable.Name),
+                                                  Instance:   instance,
+                                                  // The time itself changes at every read.
+                                                  Monitored:  variable.Name != "DateTime")
                     );
 
             if (written.Count > 0)

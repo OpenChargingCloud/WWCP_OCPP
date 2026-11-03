@@ -355,6 +355,55 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                            "The Central System did only allow connections using TLS cipher suites that are not allowed by the security specification.",
                                                                                             false);
 
+        /// <summary>
+        /// The legal group of time servers reached MaxErrors: the station keeps no legal time until a round of it produces a time again (Secure Time Synchronization, section 3.2.6).
+        /// </summary>
+        public readonly static SecurityEvent LegalTimeLimited                       = new ("LegalTimeLimited",
+                                                                                           "The legal group of time servers reached MaxErrors: the station keeps no legal time until a round of it produces a time again (Secure Time Synchronization, section 3.2.6).",
+                                                                                            true);
+
+        /// <summary>
+        /// A round of the legal group of time servers produced a time again after it had reached MaxErrors (Secure Time Synchronization, section 3.2.6).
+        /// </summary>
+        public readonly static SecurityEvent LegalTimeRestored                      = new ("LegalTimeRestored",
+                                                                                           "A round of the legal group of time servers produced a time again after it had reached MaxErrors (Secure Time Synchronization, section 3.2.6).",
+                                                                                            false);
+
+        /// <summary>
+        /// An NTS-KE or NTP-over-TLS handshake was refused: wrong name, untrusted chain, or a pin mismatch with OnPinMismatch = Refuse (Secure Time Synchronization, section 3.2.6).
+        /// </summary>
+        public readonly static SecurityEvent InvalidTimeServerCertificate           = new ("InvalidTimeServerCertificate",
+                                                                                           "An NTS-KE or NTP-over-TLS handshake was refused: wrong name, untrusted chain, or a pin mismatch with OnPinMismatch = Refuse (Secure Time Synchronization, section 3.2.6).",
+                                                                                            true);
+
+        /// <summary>
+        /// A time server was believed with another certificate or root CA than before (Secure Time Synchronization, section 3.2.6).
+        /// </summary>
+        public readonly static SecurityEvent TimeServerCertificateChanged           = new ("TimeServerCertificateChanged",
+                                                                                           "A time server was believed with another certificate or root CA than before (Secure Time Synchronization, section 3.2.6).",
+                                                                                            true);
+
+        /// <summary>
+        /// A TLS handshake with a name server was refused: wrong name, untrusted chain, no certificate, or a pin mismatch with OnPinMismatch = Refuse (Secure Name Resolution, section 3.1.4).
+        /// </summary>
+        public readonly static SecurityEvent InvalidNameServerCertificate           = new ("InvalidNameServerCertificate",
+                                                                                           "A TLS handshake with a name server was refused: wrong name, untrusted chain, no certificate, or a pin mismatch with OnPinMismatch = Refuse (Secure Name Resolution, section 3.1.4).",
+                                                                                            true);
+
+        /// <summary>
+        /// A name server was used despite a pin mismatch, as OnPinMismatch = Record or Accept says (Secure Name Resolution, section 3.1.4).
+        /// </summary>
+        public readonly static SecurityEvent NameServerPinMismatchTolerated         = new ("NameServerPinMismatchTolerated",
+                                                                                           "A name server was used despite a pin mismatch, as OnPinMismatch = Record or Accept says (Secure Name Resolution, section 3.1.4).",
+                                                                                            false);
+
+        /// <summary>
+        /// A name server was believed with another certificate or root CA than before (Secure Name Resolution, section 3.1.4).
+        /// </summary>
+        public readonly static SecurityEvent NameServerCertificateChanged           = new ("NameServerCertificateChanged",
+                                                                                           "A name server was believed with another certificate or root CA than before (Secure Name Resolution, section 3.1.4).",
+                                                                                            true);
+
         #endregion
 
 

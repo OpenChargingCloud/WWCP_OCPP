@@ -613,14 +613,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (private static) TryFind            (Component, Variable, ComponentConfigs, out ComponentConfig, out VariableConfig, out NotFound)
+        #region (internal static) TryFind           (Component, Variable, ComponentConfigs, out ComponentConfig, out VariableConfig, out NotFound)
 
-        private static Boolean TryFind(Component                                   Component,
-                                       Variable                                    Variable,
-                                       ComponentConfigLookupDelegate               ComponentConfigs,
-                                       out ComponentConfig?                        ComponentConfig,
-                                       [NotNullWhen(true)]  out VariableConfig?    VariableConfig,
-                                       [NotNullWhen(false)] out StatusInfo?        NotFound)
+        internal static Boolean TryFind(Component                                   Component,
+                                        Variable                                    Variable,
+                                        ComponentConfigLookupDelegate               ComponentConfigs,
+                                        out ComponentConfig?                        ComponentConfig,
+                                        [NotNullWhen(true)]  out VariableConfig?    VariableConfig,
+                                        [NotNullWhen(false)] out StatusInfo?        NotFound)
         {
 
             VariableConfig   = null;

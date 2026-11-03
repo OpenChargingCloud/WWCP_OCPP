@@ -61,6 +61,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         private readonly ConcurrentDictionary<Object, IReadOnlyList<ReportData>> pendingReports = new (ReferenceEqualityComparer.Instance);
 
+        /// <summary>
+        /// The monitoring reports accepted by GetMonitoringReport, until their
+        /// response is sent: the NotifyMonitoringReport requests follow it.
+        /// </summary>
+        private readonly ConcurrentDictionary<Object, IReadOnlyList<MonitoringData>> pendingMonitoringReports = new (ReferenceEqualityComparer.Instance);
+
         #endregion
 
         #region Properties
@@ -121,6 +127,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 catch (Exception e)
                 {
                     DebugX.LogException(e, $"NotifyReport {ReportRequestId}");
+                }
+
+            });
+
+        }
+
+        #endregion
+
+        #region (private) SendPendingMonitoringReport(Request, ReportRequestId, Destination, SentMessageResult)
+
+        /// <summary>
+        /// Send the monitoring report accepted for the given request, now that
+        /// its response is out: in parts of at most ReportDataPerNotifyReport
+        /// monitored variables, as a report is sent.
+        /// </summary>
+        private void SendPendingMonitoringReport(Object              Request,
+                                                 Int32               ReportRequestId,
+                                                 SourceRouting       Destination,
+                                                 SentMessageResults  SentMessageResult)
+        {
+
+            if (!pendingMonitoringReports.TryRemove(Request, out var monitoringData) ||
+                SentMessageResult != SentMessageResults.Success)
+            {
+                return;
+            }
+
+            _ = Task.Run(async () => {
+
+                try
+                {
+
+                    var generatedAt  = Now;
+                    var parts        = monitoringData.Chunk(Math.Max((UInt16) 1, ReportDataPerNotifyReport)).ToList();
+
+                    for (var sequenceNumber = 0; sequenceNumber < parts.Count; sequenceNumber++)
+                        await this.NotifyMonitoringReport(
+                                  NotifyMonitoringReportRequestId:   ReportRequestId,
+                                  SequenceNumber:                    (UInt32) sequenceNumber,
+                                  GeneratedAt:                       generatedAt,
+                                  MonitoringData:                    parts[sequenceNumber],
+                                  ToBeContinued:                     sequenceNumber < parts.Count - 1,
+                                  Destination:                       Destination
+                              );
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"NotifyMonitoringReport {ReportRequestId}");
                 }
 
             });
@@ -2080,9 +2135,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             request,
                                             ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringBase request accepted.");
+                DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringBase request ({request.MonitoringBase}).");
 
-                // MonitoringBase
+                VariableMonitors.SetBase(request.MonitoringBase);
 
                 return Task.FromResult(
                            new SetMonitoringBaseResponse(
@@ -2105,20 +2160,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               request,
                                               ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming GetMonitoringReport request ({request.GetMonitoringReportRequestId}) accepted.");
+                DebugX.Log($"Charging station '{Id}': Incoming GetMonitoringReport request ({request.GetMonitoringReportRequestId}).");
 
-                // GetMonitoringReportRequestId
-                // MonitoringCriteria
-                // ComponentVariables
+                var monitoringData = VariableMonitors.Report(request.MonitoringCriteria, request.ComponentVariables);
+
+                // The report follows the response, see OnGetMonitoringReportResponseSent.
+                if (monitoringData.Count > 0)
+                    pendingMonitoringReports[request] = monitoringData;
 
                 return Task.FromResult(
                            new GetMonitoringReportResponse(
                                Request:      request,
-                               Status:       GenericDeviceModelStatus.Accepted,
+                               Status:       monitoringData.Count > 0
+                                                 ? GenericDeviceModelStatus.Accepted
+                                                 : GenericDeviceModelStatus.EmptyResultSet,
                                StatusInfo:   null,
                                CustomData:   null
                            )
                        );
+
+            };
+
+            OCPP.OUT.OnGetMonitoringReportResponseSent += (timestamp,
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           response,
+                                                           runtime,
+                                                           sentMessageResult,
+                                                           ct) => {
+
+                SendPendingMonitoringReport(
+                    request,
+                    request.GetMonitoringReportRequestId,
+                    SourceRouting.To(request.NetworkPath.Source),
+                    sentMessageResult
+                );
+
+                return Task.CompletedTask;
 
             };
 
@@ -2132,9 +2211,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              request,
                                              ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
+                DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request ({request.Severity}).");
 
-                // Severity
+                VariableMonitors.SetLevel(request.Severity);
 
                 return Task.FromResult(
                            new SetMonitoringLevelResponse(
@@ -2157,23 +2236,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 request,
                                                 ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
-
-                // MonitoringData
+                DebugX.Log($"Charging station '{Id}': Incoming SetVariableMonitoring request ({request.MonitoringData.Count()} monitor(s)).");
 
                 return Task.FromResult(
                            new SetVariableMonitoringResponse(
                                Request:                request,
-                               SetMonitoringResults:   request.MonitoringData.Select(setMonitoringData => new SetMonitoringResult(
-                                                                                                              Status:                 SetMonitoringStatus.Accepted,
-                                                                                                              MonitorType:            setMonitoringData.MonitorType,
-                                                                                                              Severity:               setMonitoringData.Severity,
-                                                                                                              Component:              setMonitoringData.Component,
-                                                                                                              Variable:               setMonitoringData.Variable,
-                                                                                                              VariableMonitoringId:   setMonitoringData.VariableMonitoringId,
-                                                                                                              StatusInfo:             null,
-                                                                                                              CustomData:             null
-                                                                                                          )),
+                               SetMonitoringResults:   VariableMonitors.Set(request.MonitoringData, (name, evse) => GetComponentConfigs(name, evse)),
                                CustomData:             null
                            )
                        );
@@ -2192,17 +2260,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 DebugX.Log($"Charging station '{Id}': Incoming ClearVariableMonitoring request (VariableMonitoringIds: {request.VariableMonitoringIds.AggregateWith(", ")})");
 
-                // VariableMonitoringIds
-
                 return Task.FromResult(
                            new ClearVariableMonitoringResponse(
                                Request:                  request,
-                               ClearMonitoringResults:   request.VariableMonitoringIds.Select(variableMonitoringId => new ClearMonitoringResult(
-                                                                                                                          Status:       ClearMonitoringStatus.Accepted,
-                                                                                                                          Id:           variableMonitoringId,
-                                                                                                                          StatusInfo:   null,
-                                                                                                                          CustomData:   null
-                                                                                                                      )),
+                               ClearMonitoringResults:   VariableMonitors.Clear(request.VariableMonitoringIds),
                                CustomData:               null
                            )
                        );

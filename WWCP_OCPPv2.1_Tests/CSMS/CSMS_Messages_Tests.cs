@@ -1824,7 +1824,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response.Result.ResultCode,                                  Is.EqualTo(ResultCode.OK));
-                    Assert.That(response.Status,                                             Is.EqualTo(GenericDeviceModelStatus.Accepted));
+                    Assert.That(response.Status,                                             Is.EqualTo(GenericDeviceModelStatus.EmptyResultSet),  "no monitor is set on that component");
 
                     Assert.That(setMonitoringBaseRequests.Count,                             Is.EqualTo(1));
 

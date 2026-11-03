@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        Int32?                MaxItems     = null)
     {
 
-        #region ToVariableConfig(Value, Writes, Instance = null)
+        #region ToVariableConfig(Value, Writes, Instance = null, Monitored = false)
 
         /// <summary>
         /// This variable, reading its value from the given getter.
@@ -68,9 +68,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Value">Where its value comes from, at every read.</param>
         /// <param name="Writes">Whether the source writes it.</param>
         /// <param name="Instance">The instance of the variable, for one that has several: ClockCtrlr's NtpServerUri, say.</param>
+        /// <param name="Monitored">Whether a CSMS may set a monitor on it - see VariableMonitors.</param>
         public VariableConfig ToVariableConfig(Func<String?>  Value,
                                                Boolean        Writes,
-                                               String?        Instance   = null)
+                                               String?        Instance    = null,
+                                               Boolean        Monitored   = false)
 
             => new (
                    Name:             Name,
@@ -82,11 +84,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                           : MutabilityTypes.ReadOnly
                                      ),
                    Characteristics:  new VariableCharacteristics(
-                                         DataType:    DataType,
-                                         Unit:        InSeconds ? UnitsOfMeasure.TimeSpan() : null,
-                                         MinLimit:    MinLimit,
-                                         MaxLimit:    MaxLimit,
-                                         ValuesList:  ValuesList
+                                         DataType:            DataType,
+                                         SupportsMonitoring:  Monitored,
+                                         Unit:                InSeconds ? UnitsOfMeasure.TimeSpan() : null,
+                                         MinLimit:            MinLimit,
+                                         MaxLimit:            MaxLimit,
+                                         ValuesList:          ValuesList
                                      ),
                    Description:      I18NString.Create(Description)
                );
