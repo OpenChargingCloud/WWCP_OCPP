@@ -67,15 +67,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                              ("ClockCtrlr",       "NtpServerUri",  "3"),
                                              ("ClockController",  "DateTime",      null));
 
-            // The value of DateTime is not compared: the JSON of a message is read
-            // with Newtonsoft's defaults, which take a string that looks like a
-            // time for a time, and the CSMS reads "2026-11-02T12:00:00.000Z"
-            // back as "11/02/2026 12:00:00" - see NTS-DeviceModel-Concept.md B.16.
+            // The time as the station wrote it: a string that looks like a time
+            // is read as the string it is (NTS-DeviceModel-Concept.md B.16).
             Assert.Multiple(() => {
                 Assert.That(results.Select(result => result.AttributeStatus),                   Is.EqualTo(new[] { GetVariableStatus.Accepted, GetVariableStatus.Accepted, GetVariableStatus.Accepted,
                                                                                                                    GetVariableStatus.Accepted, GetVariableStatus.Accepted, GetVariableStatus.Accepted,
                                                                                                                    GetVariableStatus.UnknownComponent }));
-                Assert.That(results.Skip(1).Take(5).Select(result => result.AttributeValue),   Is.EqualTo(new[] { "NTP,RealTimeClock", "manual",
+                Assert.That(results.Take(6).Select(result => result.AttributeValue),           Is.EqualTo(new[] { "2026-11-02T12:00:00.000Z", "NTP,RealTimeClock", "manual",
                                                                                                                    "nts://ptbtime1.ptb.de", "nts://ptbtime2.ptb.de:4461", "" }));
             });
 
