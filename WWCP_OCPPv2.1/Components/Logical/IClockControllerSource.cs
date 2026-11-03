@@ -36,6 +36,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         IEnumerable<String> Variables { get; }
 
         /// <summary>
+        /// The variables of ClockCtrlr a CSMS may set through this source. Only
+        /// a source that is an ISetVariablesSource as well writes any; none by
+        /// default.
+        /// </summary>
+        IEnumerable<String> WritableVariables
+            => [];
+
+        /// <summary>
         /// The value of a variable of ClockCtrlr, or null where there is no such
         /// variable.
         /// </summary>

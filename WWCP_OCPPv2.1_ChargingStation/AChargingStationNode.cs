@@ -101,6 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         protected readonly ConcurrentDictionary<EVSE_Id,               ChargingStationEVSE> evses             = [];
         protected readonly ConcurrentDictionary<DisplayMessage_Id,     MessageInfo>         displayMessages   = [];
+        private   readonly List<INewInstancesSource>                                         newInstancesSources = [];
         /// <summary>
         /// The outlets held for somebody who is on their way.
         /// </summary>
@@ -1469,6 +1470,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
             return componentConfigList ?? [];
+
+        }
+
+        /// <summary>
+        /// Let the given source make the instances of its components that a
+        /// SetVariables request names and this charging station does not have
+        /// yet - see <see cref="INewInstancesSource"/>.
+        /// </summary>
+        /// <param name="Source">A source of new instances.</param>
+        public void AddNewInstancesSource(INewInstancesSource Source)
+        {
+            lock (newInstancesSources)
+            {
+                if (!newInstancesSources.Contains(Source))
+                    newInstancesSources.Add(Source);
+            }
+        }
+
+        /// <summary>
+        /// The instance the given SetVariables request makes of the given
+        /// component, from the first source of new instances of that component
+        /// that makes one - or null where none does.
+        /// </summary>
+        /// <param name="Component">A component, with an instance this charging station does not have.</param>
+        /// <param name="Request">The whole request.</param>
+        public ComponentConfig? NewInstanceOf(Component            Component,
+                                              SetVariablesRequest  Request)
+        {
+
+            INewInstancesSource[] sources;
+
+            lock (newInstancesSources)
+            {
+                sources = [.. newInstancesSources];
+            }
+
+            return sources.Where (source => source.NewInstanceComponents.Contains(Component.Name, StringComparer.OrdinalIgnoreCase)).
+                           Select(source => source.NewInstance(Component, Request)).
+                           FirstOrDefault(made => made is not null);
 
         }
 

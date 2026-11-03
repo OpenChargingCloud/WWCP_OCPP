@@ -2335,7 +2335,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            SetVariableResults:  await DeviceModel.SetVariablesAsync(
                                                           request,
                                                           (name, evse) => GetComponentConfigs(name, evse),
-                                                          ct
+                                                          ct,
+                                                          NewInstanceOf
                                                       ),
                            CustomData:          null
                        );

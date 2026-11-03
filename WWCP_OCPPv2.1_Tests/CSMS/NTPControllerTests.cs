@@ -324,6 +324,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+        #region AWritingSourceMakesTheControllersReadWrite_Test()
+
+        /// <summary>
+        /// The controllers of a source that takes a change are ReadWrite where
+        /// the source writes, ReadOnly elsewhere, and hand every write to the
+        /// source; a stand-in for a new group or client is made the same way.
+        /// </summary>
+        [Test]
+        public void AWritingSourceMakesTheControllersReadWrite_Test()
+        {
+
+            static MutabilityTypes? MutabilityOf(ComponentConfig Component, String Variable)
+                => Component.VariableConfigs.First(variable => variable.Name == Variable).Attributes?.Mutability;
+
+            var source      = new AWritingNTPSource(new InMemoryNTPSource());
+            var controller  = new NTPController           (source);
+            var legal       = new NTPClientGroupController(source, "legal");
+            var client      = new NTPClientController     (source, "legal", "ptb1");
+            var newGroup    = NTPClientGroupController.NewInstance(source, "grid");
+            var newClient   = NTPClientController.     NewInstance(source, "grid", "grid1");
+
+            Assert.Multiple(() => {
+
+                Assert.That(MutabilityOf(controller, "ClientGroups"),  Is.EqualTo(MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(controller, "LegalTime"),     Is.EqualTo(MutabilityTypes.ReadOnly));
+                Assert.That(MutabilityOf(legal,      "MinServers"),    Is.EqualTo(MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(legal,      "LastCheck"),     Is.EqualTo(MutabilityTypes.ReadOnly));
+                Assert.That(MutabilityOf(client,     "ServerURL"),     Is.EqualTo(MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(client,     "Mode"),          Is.EqualTo(MutabilityTypes.ReadOnly));
+
+                Assert.That(new ComponentConfig[] { controller, legal, client, newGroup, newClient }.Select(component => component.SetVariablesSource),
+                            Is.All.SameAs(source));
+
+                Assert.That(newGroup. IsNew,                           Is.True);
+                Assert.That(newClient.IsNew,                           Is.True);
+                Assert.That(newClient.Group,                           Is.EqualTo("grid"));
+                Assert.That(legal.    IsNew,                           Is.False);
+                Assert.That(MutabilityOf(newClient,  "ServerURL"),     Is.EqualTo(MutabilityTypes.ReadWrite));
+
+                // A source that reads only: the same controllers, read-only.
+                Assert.That(new NTPClientGroupController(new InMemoryNTPSource(), "legal").SetVariablesSource,  Is.Null);
+
+            });
+
+        }
+
+        #endregion
+
+        #region TryCheck_SaysWhyAValueCannotBeSet_Test()
+
+        [Test]
+        public void TryCheck_SaysWhyAValueCannotBeSet_Test()
+        {
+
+            Assert.Multiple(() => {
+
+                Assert.That(NTPClientGroupController.TryCheck("legal", "MinServers", "0",    out var low),     Is.False);
+                Assert.That(low?.ReasonCode,                                                                    Is.EqualTo("ValueOutOfRange"));
+                Assert.That(low?.AdditionalInfo,                                                                Does.Contain("NTPClientGroupController[legal].MinServers"));
+
+                Assert.That(NTPClientController.TryCheck("ptb1", "OnPinMismatch", "Ignore",  out var option),  Is.False);
+                Assert.That(option?.ReasonCode,                                                                 Is.EqualTo("InvalidValue"));
+
+                Assert.That(NTPController.TryCheck("ClientGroups", "legal,local,grid",       out _),           Is.True);
+                Assert.That(ClockController.TryCheck("TimeSource", "NTP,RealTimeClock",      out _),           Is.True);
+                Assert.That(ClockController.TryCheck("TimeSource", "NTP,Sundial",            out var list),    Is.False);
+                Assert.That(list?.AdditionalInfo,                                                               Does.Contain("Sundial"));
+
+            });
+
+        }
+
+        #endregion
+
         #region TheStationFindsItsNTPControllers_Test()
 
         [Test]
@@ -340,6 +414,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+
+        #region (class) AWritingNTPSource
+
+        /// <summary>
+        /// An in-memory source that says it writes the paper's writable
+        /// variables, and accepts whatever it is handed.
+        /// </summary>
+        private sealed class AWritingNTPSource(InMemoryNTPSource Values) : INTPControllerSource,
+                                                                            ISetVariablesSource
+        {
+
+            public IEnumerable<String>  ControllerVariables          => Values.ControllerVariables;
+            public IEnumerable<String>  GroupVariables               => Values.GroupVariables;
+            public IEnumerable<String>  ClientVariables              => Values.ClientVariables;
+            public IEnumerable<String>  WritableControllerVariables  => [ "ClientGroups" ];
+            public IEnumerable<String>  WritableGroupVariables       => [ "Enabled", "Clients", "MinServers" ];
+            public IEnumerable<String>  WritableClientVariables      => [ "Enabled", "ServerURL" ];
+            public IEnumerable<String>  Groups                       => Values.Groups;
+
+            public IEnumerable<String> ClientsOf      (String Group)                    => Values.ClientsOf(Group);
+            public String?             ControllerValue(String Variable)                 => Values.ControllerValue(Variable);
+            public String?             GroupValue     (String Group,  String Variable)  => Values.GroupValue(Group, Variable);
+            public String?             ClientValue    (String Client, String Variable)  => Values.ClientValue(Client, Variable);
+
+            public Task<IReadOnlyList<SetVariableResult>> SetVariablesAsync(IReadOnlyList<SetVariableEntry>  Entries,
+                                                                            DataConsistencyModel             DataConsistencyModel,
+                                                                            CancellationToken                CancellationToken)
+
+                => Task.FromResult<IReadOnlyList<SetVariableResult>>(
+                       [.. Entries.Select(entry => new SetVariableResult(SetVariableStatus.Accepted, entry.Data.Component, entry.Data.Variable))]
+                   );
+
+        }
+
+        #endregion
 
         #region (private) GetVariables(params Asked)
 

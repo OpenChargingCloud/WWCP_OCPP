@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
@@ -101,6 +103,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public Boolean  IsLegal    { get; }
 
+        /// <summary>
+        /// Whether this stands for a group a SetVariables request makes, which
+        /// the source does not have yet - see <see cref="NewInstance"/>.
+        /// </summary>
+        public Boolean  IsNew      { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -117,6 +125,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         I18NString?           Description   = null,
                                         CustomData?           CustomData    = null)
 
+            : this(Source, Group, false, Description, CustomData)
+
+        { }
+
+        private NTPClientGroupController(INTPControllerSource  Source,
+                                         String                Group,
+                                         Boolean               IsNew,
+                                         I18NString?           Description,
+                                         CustomData?           CustomData)
+
             : base(nameof(NTPClientGroupController),
                    Group,
                    Description ?? I18NString.Create($"The group '{Group}' of time servers of this charging station (Secure Time Synchronization)."),
@@ -124,15 +142,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            if (!Source.Groups.Contains(Group, StringComparer.OrdinalIgnoreCase))
+            if (!IsNew && !Source.Groups.Contains(Group, StringComparer.OrdinalIgnoreCase))
                 throw new ArgumentException($"The source has no group '{Group}'!", nameof(Group));
 
             this.Group    = Group;
             this.IsLegal  = String.Equals(Group, LegalGroup, StringComparison.OrdinalIgnoreCase);
+            this.IsNew    = IsNew;
 
+            // Written only by a source that takes a change: every write goes to
+            // it with the others of its request, since what one variable may be
+            // depends on the others.
+            var setter    = Source as ISetVariablesSource;
             var answered  = new HashSet<String>(Source.GroupVariables, StringComparer.OrdinalIgnoreCase) {
                                 "Clients"
                             };
+            var written   = new HashSet<String>(setter is not null ? Source.WritableGroupVariables : [], StringComparer.OrdinalIgnoreCase);
 
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name) &&
                                                                  (IsLegal || !LegalOnly.Contains(variable.Name))))
@@ -140,10 +164,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     variable.ToVariableConfig(variable.Name == "Clients"
                                                   ? () => String.Join(",", Source.ClientsOf(Group))
                                                   : () => Source.GroupValue(Group, variable.Name),
-                                              Writes: false)
+                                              written.Contains(variable.Name))
                 );
 
+            if (written.Count > 0)
+                SetVariablesSource = setter;
+
         }
+
+        #endregion
+
+
+        #region (static) NewInstance(Source, Group)
+
+        /// <summary>
+        /// The controller of a group the source does not have yet, standing in
+        /// for it while a SetVariables request that makes it is set: with the
+        /// variables the source writes, and the source to write them.
+        /// </summary>
+        /// <param name="Source">Where the values of the group will come from.</param>
+        /// <param name="Group">The id of the new group; its instance.</param>
+        public static NTPClientGroupController NewInstance(INTPControllerSource  Source,
+                                                           String                Group)
+
+            => new (Source, Group, true, null, null);
+
+        #endregion
+
+        #region (static) TryCheck(Group, Variable, Value, out Refusal)
+
+        /// <summary>
+        /// Whether the given variable of the paper can be set to the given value
+        /// in the given group by its type, its limits and its values alone - or
+        /// why not, as a SetVariables result says it. Whether the value fits the
+        /// rest of the configuration is for the source to ask.
+        /// </summary>
+        /// <param name="Group">The id of the group, for the sentence.</param>
+        /// <param name="Variable">The name of the variable, in any case.</param>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public static Boolean TryCheck(String                                Group,
+                                       String                                Variable,
+                                       String?                               Value,
+                                       [NotNullWhen(false)] out StatusInfo?  Refusal)
+
+            => ControllerVariable.TryCheck(Variables, $"{nameof(NTPClientGroupController)}[{Group}]", Variable, Value, out Refusal);
 
         #endregion
 

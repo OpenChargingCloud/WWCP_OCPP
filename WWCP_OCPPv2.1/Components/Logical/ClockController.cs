@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
@@ -93,17 +95,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
+            // Written only by a source that takes a change: every write goes to
+            // it with the others of its request, since a server at one priority
+            // depends on those at the others.
+            var setter   = Source as ISetVariablesSource;
             var answered = new HashSet<String>(Source.Variables, StringComparer.OrdinalIgnoreCase);
+            var written  = new HashSet<String>(setter is not null ? Source.WritableVariables : [], StringComparer.OrdinalIgnoreCase);
 
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 foreach (var instance in InstancesOf(variable.Name))
                     variableConfigs.Add(
                         variable.ToVariableConfig(() => Source.Value(variable.Name, instance),
-                                                  Writes:    false,
+                                                  Writes:    written.Contains(variable.Name),
                                                   Instance:  instance)
                     );
 
+            if (written.Count > 0)
+                SetVariablesSource = setter;
+
         }
+
+        #endregion
+
+
+        #region (static) TryCheck(Variable, Value, out Refusal)
+
+        /// <summary>
+        /// Whether the given variable of the standard can be set to the given
+        /// value by its type, its limits and its values alone - or why not, as
+        /// a SetVariables result says it. Whether the value fits the rest of the
+        /// configuration is for the source to ask.
+        /// </summary>
+        /// <param name="Variable">The name of the variable, in any case.</param>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public static Boolean TryCheck(String                                Variable,
+                                       String?                               Value,
+                                       [NotNullWhen(false)] out StatusInfo?  Refusal)
+
+            => ControllerVariable.TryCheck(Variables, ComponentName, Variable, Value, out Refusal);
 
         #endregion
 

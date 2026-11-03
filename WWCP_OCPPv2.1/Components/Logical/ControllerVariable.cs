@@ -154,6 +154,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         Refusal = new StatusInfo("InvalidValue", $"'{Where}' is one of {String.Join(", ", ValuesList ?? [])}, not \"{value}\"!");
                     break;
 
+                // Several of the values, comma separated: in an order that
+                // matters, or in none.
+                case DataTypes.SequenceList:
+                case DataTypes.MemberList:
+                    if (value.Split(',', StringSplitOptions.TrimEntries).FirstOrDefault(member => !(ValuesList ?? []).Contains(member, StringComparer.OrdinalIgnoreCase)) is String stranger)
+                        Refusal = new StatusInfo("InvalidValue", $"'{Where}' is a list of {String.Join(", ", ValuesList ?? [])}, and \"{stranger}\" is none of them!");
+                    break;
+
                 case DataTypes.String:
                     if (MaxLimit.HasValue && value.Length > MaxLimit.Value)
                         Refusal = new StatusInfo("ValueOutOfRange", $"'{Where}' takes at most {MaxLimit.Value} characters!");
@@ -168,6 +176,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
             return Refusal is null;
+
+        }
+
+        #endregion
+
+        #region (static) TryCheck(Variables, Component, Variable, Value, out Refusal)
+
+        /// <summary>
+        /// Whether the named variable of the given ones can be set to the given
+        /// value by what the paper says of it alone, or why not - "NotFound"
+        /// where the component has no such variable.
+        /// </summary>
+        /// <param name="Variables">The variables of a controller.</param>
+        /// <param name="Component">The name of the controller, for the sentence.</param>
+        /// <param name="Variable">The name of the variable, in any case.</param>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public static Boolean TryCheck(IEnumerable<ControllerVariable>       Variables,
+                                       String                                Component,
+                                       String                                Variable,
+                                       String?                               Value,
+                                       [NotNullWhen(false)] out StatusInfo?  Refusal)
+        {
+
+            var variable = Variables.FirstOrDefault(variable => String.Equals(variable.Name, Variable, StringComparison.OrdinalIgnoreCase));
+
+            if (variable is null)
+            {
+                Refusal = new StatusInfo("NotFound", $"Unknown variable '{Variable}' of component '{Component}'!");
+                return false;
+            }
+
+            return variable.TryCheck(Value, $"{Component}.{variable.Name}", out Refusal);
 
         }
 

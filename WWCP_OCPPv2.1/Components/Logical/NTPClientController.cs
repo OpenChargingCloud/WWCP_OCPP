@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
@@ -86,7 +88,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The id of the group the client belongs to.
         /// </summary>
-        public String  Group     { get; }
+        public String   Group     { get; }
+
+        /// <summary>
+        /// Whether this stands for a client a SetVariables request makes, which
+        /// the source does not have yet - see <see cref="NewInstance"/>.
+        /// </summary>
+        public Boolean  IsNew     { get; }
 
         #endregion
 
@@ -106,6 +114,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    I18NString?           Description   = null,
                                    CustomData?           CustomData    = null)
 
+            : this(Source, Group, Client, false, Description, CustomData)
+
+        { }
+
+        private NTPClientController(INTPControllerSource  Source,
+                                    String                Group,
+                                    String                Client,
+                                    Boolean               IsNew,
+                                    I18NString?           Description,
+                                    CustomData?           CustomData)
+
             : base(nameof(NTPClientController),
                    Client,
                    Description ?? I18NString.Create($"The time server '{Client}' of the group '{Group}' of this charging station (Secure Time Synchronization)."),
@@ -113,21 +132,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            if (!Source.ClientsOf(Group).Contains(Client, StringComparer.OrdinalIgnoreCase))
+            if (!IsNew && !Source.ClientsOf(Group).Contains(Client, StringComparer.OrdinalIgnoreCase))
                 throw new ArgumentException($"The source has no client '{Client}' in the group '{Group}'!", nameof(Client));
 
             this.Client   = Client;
             this.Group    = Group;
+            this.IsNew    = IsNew;
 
+            // Written only by a source that takes a change: every write goes to
+            // it with the others of its request, since what one variable may be
+            // depends on the others.
+            var setter    = Source as ISetVariablesSource;
             var answered  = new HashSet<String>(Source.ClientVariables, StringComparer.OrdinalIgnoreCase);
+            var written   = new HashSet<String>(setter is not null ? Source.WritableClientVariables : [], StringComparer.OrdinalIgnoreCase);
 
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 variableConfigs.Add(
                     variable.ToVariableConfig(() => Source.ClientValue(Client, variable.Name),
-                                              Writes: false)
+                                              written.Contains(variable.Name))
                 );
 
+            if (written.Count > 0)
+                SetVariablesSource = setter;
+
         }
+
+        #endregion
+
+
+        #region (static) NewInstance(Source, Group, Client)
+
+        /// <summary>
+        /// The controller of a client the source does not have yet, standing in
+        /// for it while a SetVariables request that makes it is set: with the
+        /// variables the source writes, and the source to write them.
+        /// </summary>
+        /// <param name="Source">Where the values of the client will come from.</param>
+        /// <param name="Group">The id of the group the request puts the client into.</param>
+        /// <param name="Client">The id of the new client; its instance.</param>
+        public static NTPClientController NewInstance(INTPControllerSource  Source,
+                                                      String                Group,
+                                                      String                Client)
+
+            => new (Source, Group, Client, true, null, null);
+
+        #endregion
+
+        #region (static) TryCheck(Client, Variable, Value, out Refusal)
+
+        /// <summary>
+        /// Whether the given variable of the paper can be set to the given value
+        /// for the given client by its type, its limits and its values alone -
+        /// or why not, as a SetVariables result says it. Whether the value fits
+        /// the rest of the configuration is for the source to ask.
+        /// </summary>
+        /// <param name="Client">The id of the client, for the sentence.</param>
+        /// <param name="Variable">The name of the variable, in any case.</param>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public static Boolean TryCheck(String                                Client,
+                                       String                                Variable,
+                                       String?                               Value,
+                                       [NotNullWhen(false)] out StatusInfo?  Refusal)
+
+            => ControllerVariable.TryCheck(Variables, $"{nameof(NTPClientController)}[{Client}]", Variable, Value, out Refusal);
 
         #endregion
 

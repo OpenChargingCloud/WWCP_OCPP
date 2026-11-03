@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
@@ -78,19 +80,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
+            // Written only by a source that takes a change: every write goes to
+            // it with the others of its request, since what one variable may be
+            // depends on the others.
+            var setter   = Source as ISetVariablesSource;
             var answered = new HashSet<String>(Source.ControllerVariables, StringComparer.OrdinalIgnoreCase) {
                                "ClientGroups"
                            };
+            var written  = new HashSet<String>(setter is not null ? Source.WritableControllerVariables : [], StringComparer.OrdinalIgnoreCase);
 
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 variableConfigs.Add(
                     variable.ToVariableConfig(variable.Name == "ClientGroups"
                                                   ? () => String.Join(",", Source.Groups)
                                                   : () => Source.ControllerValue(variable.Name),
-                                              Writes: false)
+                                              written.Contains(variable.Name))
                 );
 
+            if (written.Count > 0)
+                SetVariablesSource = setter;
+
         }
+
+        #endregion
+
+
+        #region (static) TryCheck(Variable, Value, out Refusal)
+
+        /// <summary>
+        /// Whether the given variable of the paper can be set to the given value
+        /// by its type, its limits and its values alone - or why not, as a
+        /// SetVariables result says it. Whether the value fits the rest of the
+        /// configuration is for the source to ask.
+        /// </summary>
+        /// <param name="Variable">The name of the variable, in any case.</param>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public static Boolean TryCheck(String                                Variable,
+                                       String?                               Value,
+                                       [NotNullWhen(false)] out StatusInfo?  Refusal)
+
+            => ControllerVariable.TryCheck(Variables, nameof(NTPController), Variable, Value, out Refusal);
 
         #endregion
 

@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SetVariablesAsync   (Request, ComponentConfigs, CancellationToken = default)
+        #region SetVariablesAsync   (Request, ComponentConfigs, CancellationToken = default, NewInstances = null)
 
         /// <summary>
         /// Set the variables of the given SetVariables request: one after the
@@ -89,9 +89,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Request">A SetVariables request.</param>
         /// <param name="ComponentConfigs">The lookup of the node's component configurations.</param>
         /// <param name="CancellationToken">A cancellation token.</param>
+        /// <param name="NewInstances">Where an instance the node does not have is asked for, before its entries are UnknownComponent - see <see cref="INewInstancesSource"/>.</param>
         public static async Task<IReadOnlyList<SetVariableResult>> SetVariablesAsync(SetVariablesRequest            Request,
                                                                                     ComponentConfigLookupDelegate  ComponentConfigs,
-                                                                                    CancellationToken              CancellationToken   = default)
+                                                                                    CancellationToken              CancellationToken   = default,
+                                                                                    NewInstanceLookupDelegate?     NewInstances        = null)
         {
 
             var model     = Request.DataConsistencyModel ?? DataConsistencyModel.IndependentRequests;
@@ -103,9 +105,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                      "UnsupportedParam",
                                                                      $"The data consistency model '{model}' is not supported!"))];
 
+            // An instance the node does not have, which the request makes, is
+            // found as if it were there - one and the same for every entry
+            // naming it, so that they are one change of its source.
+            var made      = new Dictionary<(String Name, String? Instance, Int32? EVSE), ComponentConfig?>();
+
+            IEnumerable<ComponentConfig> Lookup(String Name, EVSE? EVSE)
+            {
+
+                var found = ComponentConfigs(Name, EVSE);
+
+                if (NewInstances is null)
+                    return found;
+
+                return [ .. found, .. made.Where (pair => String.Equals(pair.Key.Name, Name, StringComparison.OrdinalIgnoreCase) &&
+                                                         pair.Key.EVSE == EVSE?.Id.Value &&
+                                                         pair.Value is not null).
+                                           Select(pair => pair.Value!) ];
+
+            }
+
+            if (NewInstances is not null)
+                foreach (var component in entries.Select(setVariableData => setVariableData.Component))
+                {
+
+                    var key = (component.Name.ToLowerInvariant(), component.Instance?.ToLowerInvariant(), (Int32?) component.EVSE?.Id.Value);
+
+                    if (component.Instance is not null &&
+                        !made.ContainsKey(key) &&
+                        !ComponentConfigs(component.Name, component.EVSE).Any(componentConfig => ComponentConfigStore.SameInstance(componentConfig.Instance, component.Instance)))
+                    {
+                        made[key] = NewInstances(component, Request);
+                    }
+
+                }
+
             // Every entry found and checked before the first is set, so that a
             // change knows whether all of it can be set before any of it is.
-            var checks    = entries.Select(setVariableData => Check(setVariableData, Request, ComponentConfigs)).ToArray();
+            var checks    = entries.Select(setVariableData => Check(setVariableData, Request, Lookup)).ToArray();
             var results   = new SetVariableResult?[entries.Length];
 
             #region Which entries form one change

@@ -54,6 +54,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         IEnumerable<String>  ClientVariables        { get; }
 
         /// <summary>
+        /// The variables of NTPController a CSMS may set through this source,
+        /// ClientGroups among them where groups can be made and taken away.
+        /// Only a source that is an ISetVariablesSource as well writes any;
+        /// none by default.
+        /// </summary>
+        IEnumerable<String>  WritableControllerVariables
+            => [];
+
+        /// <summary>
+        /// The variables of NTPClientGroupController a CSMS may set through this
+        /// source, Clients among them where servers can be added and taken
+        /// away; none by default.
+        /// </summary>
+        IEnumerable<String>  WritableGroupVariables
+            => [];
+
+        /// <summary>
+        /// The variables of NTPClientController a CSMS may set through this
+        /// source; none by default.
+        /// </summary>
+        IEnumerable<String>  WritableClientVariables
+            => [];
+
+        /// <summary>
         /// The ids of the groups, in their order.
         /// </summary>
         IEnumerable<String>  Groups                 { get; }
