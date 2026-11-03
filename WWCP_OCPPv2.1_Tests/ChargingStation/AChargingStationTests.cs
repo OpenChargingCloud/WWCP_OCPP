@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics;
+
 using NUnit.Framework;
 
 using Newtonsoft.Json.Linq;
@@ -71,6 +73,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         protected List<LogBinaryRequest>?       chargingStation1WebSocketBinaryResponseErrorsReceived;
         protected List<LogBinaryRequest>?       chargingStation1WebSocketBinarySendMessagesReceived;
 
+        protected MessagesInHand                chargingStation1MessagesInHand = new();
+
         #endregion
 
         #region Charging Station #1 Data
@@ -101,6 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         protected List<LogBinaryRequest>?       chargingStation2WebSocketBinaryResponseErrorsReceived;
         protected List<LogBinaryRequest>?       chargingStation2WebSocketBinarySendMessagesReceived;
 
+        protected MessagesInHand                chargingStation2MessagesInHand = new();
+
         #endregion
 
         #region Charging Station #3 Data
@@ -130,6 +136,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         protected List<LogBinaryRequest>?       chargingStation3WebSocketBinaryRequestErrorsReceived;
         protected List<LogBinaryRequest>?       chargingStation3WebSocketBinaryResponseErrorsReceived;
         protected List<LogBinaryRequest>?       chargingStation3WebSocketBinarySendMessagesReceived;
+
+        protected MessagesInHand                chargingStation3MessagesInHand = new();
 
         #endregion
 
@@ -227,6 +235,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                );
 
             Assert.That(chargingStation1,  Is.Not.Null);
+
+            chargingStation1MessagesInHand = Watch(chargingStation1);
 
             #region Add the NTP controllers of a source with a "legal" and a "local" group
 
@@ -369,6 +379,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 };
 
+                // After the counting above, and after the station's own handler,
+                // which was subscribed when the client was made.
+                chargingStation1WebSocketClient.OnJSONMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => chargingStation1MessagesInHand.Finished();
+
             }
 
             #endregion
@@ -444,6 +458,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             Assert.That(chargingStation2,  Is.Not.Null);
 
+            chargingStation2MessagesInHand = Watch(chargingStation2);
+
             if (testBackendWebSockets1 is not null)
             {
 
@@ -485,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 }
 
 
-                var chargingStation2WebSocketClient = chargingStation1.OCPPWebSocketClients.First();
+                var chargingStation2WebSocketClient = chargingStation2.OCPPWebSocketClients.First();
                 Assert.That(chargingStation2WebSocketClient,  Is.Not.Null);
 
                 chargingStation2WebSocketClient.OnJSONMessageSent     += (timestamp,
@@ -564,6 +580,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     return Task.CompletedTask;
 
                 };
+
+                chargingStation2WebSocketClient.OnJSONMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => chargingStation2MessagesInHand.Finished();
 
             }
 
@@ -653,6 +671,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                );
 
             Assert.That(chargingStation3,  Is.Not.Null);
+
+            chargingStation3MessagesInHand = Watch(chargingStation3);
 
             if (testBackendWebSockets1 is not null ||
                 lcOCPPWebSocketServer1 is not null)
@@ -778,6 +798,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 };
 
+                chargingStation3WebSocketClient.OnJSONMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => chargingStation3MessagesInHand.Finished();
+
             }
 
             #endregion
@@ -791,6 +813,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         [TearDown]
         public override async Task ShutdownEachTest()
         {
+
+            // The counting handlers write to the fields, which the next test fills
+            // with lists of its own: a message still in hand here would be counted
+            // there.
+            await EveryMessageHandled();
 
             // Really stop the charging stations, otherwise their WebSocket
             // clients (and their auto reconnects!) will pile up and fight
@@ -809,6 +836,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation1 = null;
             chargingStation2 = null;
             chargingStation3 = null;
+
+        }
+
+        #endregion
+
+
+        #region (protected) MessagesStillInHand
+
+        /// <summary>
+        /// Whether the CSMS or a charging station is still handling a message it received.
+        /// </summary>
+        protected override Boolean MessagesStillInHand
+
+            => base.MessagesStillInHand            ||
+               !chargingStation1MessagesInHand.None ||
+               !chargingStation2MessagesInHand.None ||
+               !chargingStation3MessagesInHand.None;
+
+        #endregion
+
+        #region (protected) FollowUpExchanged(Exchanges)
+
+        /// <summary>
+        /// Return once charging station #1 and the CSMS have exchanged the given
+        /// number of requests the station sent on its own.
+        /// </summary>
+        /// <remarks>
+        /// A station that answers a request and sends a follow-up message after
+        /// that, on its own, cannot be waited for by its answer. Waiting for a
+        /// fixed time instead - half a second - was usually enough and now and
+        /// then was not, on a loaded runner and on a quiet machine alike. Ten
+        /// seconds is the ceiling, not the expectation; a follow-up that never
+        /// comes still fails the test, with the counts that say so.
+        /// </remarks>
+        /// <param name="Exchanges">How many follow-up requests and answers to wait for.</param>
+        protected async Task FollowUpExchanged(Int32 Exchanges)
+        {
+
+            var waited = Stopwatch.StartNew();
+
+            while (waited.Elapsed < TimeSpan.FromSeconds(10) &&
+                  (csms1WebSocketJSONRequestsReceived?.            Count < Exchanges ||
+                   csms1WebSocketJSONResponsesSent?.               Count < Exchanges ||
+                   chargingStation1WebSocketJSONResponsesReceived?.Count < Exchanges))
+            {
+                await Task.Delay(20);
+            }
+
+        }
+
+        #endregion
+
+        #region (private static) Watch(ChargingStation)
+
+        /// <summary>
+        /// The messages the given charging station has begun to handle and not
+        /// yet finished with. Its adapter tells of every message it could parse
+        /// before it acts on it: before it answers a request, and before an
+        /// answer reaches whoever waits for it. The finishing is told by the
+        /// last handler subscribed to the station's WebSocket client.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        private static MessagesInHand Watch(TestChargingStationNode ChargingStation)
+        {
+
+            var inHand = new MessagesInHand();
+
+            ChargingStation.OCPP.IN.OnJSONRequestMessageReceived       += (timestamp, sender, connection, message, ct) => inHand.Begun();
+            ChargingStation.OCPP.IN.OnJSONResponseMessageReceived      += (timestamp, sender, connection, message, ct) => inHand.Begun();
+            ChargingStation.OCPP.IN.OnJSONRequestErrorMessageReceived  += (timestamp, sender, connection, message, ct) => inHand.Begun();
+            ChargingStation.OCPP.IN.OnJSONResponseErrorMessageReceived += (timestamp, sender, connection, message, ct) => inHand.Begun();
+            ChargingStation.OCPP.IN.OnJSONSendMessageReceived          += (timestamp, sender, connection, message, ct) => inHand.Begun();
+
+            return inHand;
 
         }
 

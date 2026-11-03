@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics;
+
 using NUnit.Framework;
 
 using Newtonsoft.Json.Linq;
@@ -76,6 +78,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         protected List<LogBinaryRequest>?       csms1WebSocketBinaryRequestErrorsReceived;
         protected List<LogBinaryRequest>?       csms1WebSocketBinaryResponseErrorsReceived;
         protected List<LogBinaryRequest>?       csms1WebSocketBinarySendMessagesReceived;
+
+        protected readonly MessagesInHand       csms1MessagesInHand = new();
 
         #endregion
 
@@ -352,6 +356,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 return Task.CompletedTask;
 
             };
+
+            // The server logs a message before it hands it on for processing,
+            // and its processing is subscribed to OnJSONMessageReceived2 by now,
+            // so a handler added to that one runs after it.
+            testBackendWebSockets1.OnJSONMessageReceived  += (timestamp, webSocketServer, webSocketConnection, messageTimestamp, eventTrackingId, sourceNodeId, message, cancellationToken) => csms1MessagesInHand.Begun();
+            testBackendWebSockets1.OnJSONMessageReceived2 += (timestamp, webSocketServer, webSocketConnection, messageTimestamp, eventTrackingId, sourceNodeId, message, cancellationToken) => csms1MessagesInHand.Finished();
 
             #endregion
 
@@ -910,6 +920,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             testBackendWebSockets1  = null;
             testBackendWebSockets2  = null;
             testBackendWebSockets3  = null;
+
+        }
+
+        #endregion
+
+
+        #region (protected) MessagesStillInHand
+
+        /// <summary>
+        /// Whether an endpoint of this test is still handling a message it received.
+        /// </summary>
+        protected virtual Boolean MessagesStillInHand
+            => !csms1MessagesInHand.None;
+
+        #endregion
+
+        #region (protected) EveryMessageHandled(Timeout = null)
+
+        /// <summary>
+        /// Return once every endpoint is through with every message it received,
+        /// so that what the endpoints logged is all there to be counted.
+        /// </summary>
+        /// <remarks>
+        /// It waits, rather than blocks: a test that is answered can be running
+        /// inside the very handlers it waits for, and they go on only once it
+        /// yields. After the timeout it returns all the same, and the counters
+        /// say what is missing.
+        /// </remarks>
+        /// <param name="Timeout">How long to wait at most, 10 seconds by default.</param>
+        protected async Task EveryMessageHandled(TimeSpan? Timeout = null)
+        {
+
+            var waited = Stopwatch.StartNew();
+
+            while (MessagesStillInHand &&
+                   waited.Elapsed < (Timeout ?? TimeSpan.FromSeconds(10)))
+            {
+                await Task.Delay(5);
+            }
 
         }
 
