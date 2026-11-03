@@ -753,6 +753,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+        #region (private static) SenderOf(Path)
+
+        /// <summary>
+        /// Who sent a request, as a certificate source writes it down: the node
+        /// it came from, or "CentralSystem" where its path does not say.
+        /// </summary>
+        private static String SenderOf(NetworkPath Path)
+
+            => Path is { Length: > 0 }
+                   ? Path.Source.ToString()
+                   : "CentralSystem";
+
+        #endregion
+
 
         private Task HandleErrors(String     Module,
                                   String     Caller,
@@ -1353,6 +1367,108 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                request,
                                ConfigurationStatus.NotSupported
                            )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnInstallCertificate
+
+            OCPP.IN.OnInstallCertificate += async (timestamp,
+                                                   sender,
+                                                   connection,
+                                                   request,
+                                                   cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming InstallCertificate request (certificate type: {request.CertificateType}).");
+
+                var answer = await CertificateSources.InstallAsync(
+                                       request.CertificateType.ToString(),
+                                       request.CertificateGroup?.ToString(),
+                                       request.Certificate,
+                                       SenderOf(request.NetworkPath),
+                                       cancellationToken
+                                   );
+
+                // 1.6 has no reason to give: Rejected and Failed say all it can.
+                return new InstallCertificateResponse(
+                           request,
+                           answer.Status switch {
+                               CertificateAnswerStatus.Accepted  => CertificateStatus.Accepted,
+                               CertificateAnswerStatus.Rejected  => CertificateStatus.Rejected,
+                               _                                 => CertificateStatus.Failed
+                           }
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetInstalledCertificateIds
+
+            OCPP.IN.OnGetInstalledCertificateIds += (timestamp,
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming GetInstalledCertificateIds request (certificate type: {request.CertificateType}).");
+
+                var certificateHashData = CertificateSources.Installed([ request.CertificateType.ToString() ]).
+                                                             Select   (installed => {
+                                                                           var hashes = CertificateHashes.Of(installed.Certificate);
+                                                                           return new CertificateHashData(
+                                                                                      HashAlgorithmsExtensions.Parse(hashes.HashAlgorithm),
+                                                                                      hashes.IssuerNameHash,
+                                                                                      hashes.IssuerKeyHash,
+                                                                                      hashes.SerialNumber
+                                                                                  );
+                                                                       }).
+                                                             ToArray();
+
+                return Task.FromResult(
+                           new GetInstalledCertificateIdsResponse(
+                               request,
+                               certificateHashData.Length > 0
+                                   ? GetInstalledCertificateStatus.Accepted
+                                   : GetInstalledCertificateStatus.NotFound,
+                               certificateHashData
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnDeleteCertificate
+
+            OCPP.IN.OnDeleteCertificate += async (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming DeleteCertificate request.");
+
+                var answer = await CertificateSources.DeleteAsync(
+                                       new CertificateHashes(
+                                           request.CertificateHashData.HashAlgorithm.AsText(),
+                                           request.CertificateHashData.IssuerNameHash,
+                                           request.CertificateHashData.IssuerPublicKeyHash,
+                                           request.CertificateHashData.SerialNumber
+                                       ),
+                                       SenderOf(request.NetworkPath),
+                                       cancellationToken
+                                   );
+
+                return new DeleteCertificateResponse(
+                           request,
+                           answer.Status switch {
+                               CertificateAnswerStatus.Accepted  => DeleteCertificateStatus.Accepted,
+                               CertificateAnswerStatus.NotFound  => DeleteCertificateStatus.NotFound,
+                               _                                 => DeleteCertificateStatus.Failed
+                           }
                        );
 
             };

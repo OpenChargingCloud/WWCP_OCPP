@@ -116,11 +116,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         protected readonly ConcurrentDictionary<Reservation_Id,        Reservation>         reservations      = [];
         protected readonly ConcurrentDictionary<Transaction_Id,        Transaction>         transactions      = [];
         protected readonly ConcurrentDictionary<Transaction_Id,        Decimal>             totalCosts        = [];
-        protected readonly ConcurrentDictionary<InstallCertificateUse, OCPP.Certificate>    certificates      = [];
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Where the root certificates a CSMS installs, lists and deletes are
+        /// kept: in memory, and by a source of their own for the types one was
+        /// added for (<see cref="CertificateSources.Add"/>).
+        /// </summary>
+        public CertificateSources  CertificateSources    { get; } = new();
 
         /// <summary>
         /// The charging station vendor identification.

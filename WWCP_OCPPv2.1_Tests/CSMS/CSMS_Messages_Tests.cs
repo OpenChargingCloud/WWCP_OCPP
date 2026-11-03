@@ -3049,7 +3049,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                     Assert.That(response3.Status,   Is.EqualTo(GetInstalledCertificateStatus.Accepted));
                     Assert.That(response3.CertificateHashDataChain.Single().CertificateHashData.SerialNumber,
-                                Is.EqualTo(installed.SerialNumber));
+                                Is.EqualTo(OCPP.CertificateHashes.Of(installed).SerialNumber));
 
                 });
 
@@ -3461,7 +3461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.Multiple(() => {
 
                     Assert.That(response4.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
-                    Assert.That(response4.Status,                                            Is.EqualTo(GetInstalledCertificateStatus.Accepted));
+                    Assert.That(response4.Status,                                            Is.EqualTo(GetInstalledCertificateStatus.NotFound),  "none is installed any more");
                     Assert.That(response4.CertificateHashDataChain.Count(),                  Is.EqualTo(0));
 
                     Assert.That(getInstalledCertificateIdsRequests.Count,                    Is.EqualTo(1));

@@ -235,6 +235,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static GetCertificateIdUse  OEMRootCertificate             { get; }
             = Register("OEMRootCertificate");
 
+        /// <summary>
+        /// Root certificate for verification of the NetworkTime certificates
+        /// (Secure Time Synchronization, section 3.2.5).
+        /// </summary>
+        public static GetCertificateIdUse  NetworkTimeRootCertificate     { get; }
+            = Register("NetworkTimeRootCertificate");
+
+        /// <summary>
+        /// Root certificate for verification of the certificates of name servers
+        /// reached over TLS or HTTPS (Secure Name Resolution, section 3.1.3).
+        /// </summary>
+        public static GetCertificateIdUse  NameServerRootCertificate      { get; }
+            = Register("NameServerRootCertificate");
+
         #endregion
 
 

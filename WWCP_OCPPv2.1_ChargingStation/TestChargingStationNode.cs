@@ -37,6 +37,10 @@ using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
+using CertificateAnswer       = cloud.charging.open.protocols.OCPP.CertificateAnswer;
+using CertificateAnswerStatus = cloud.charging.open.protocols.OCPP.CertificateAnswerStatus;
+using CertificateHashes       = cloud.charging.open.protocols.OCPP.CertificateHashes;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -122,6 +126,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             });
 
         }
+
+        #endregion
+
+        #region (private static) SenderOf(Path) / StatusInfoOf(Answer)
+
+        /// <summary>
+        /// Who sent a request, as a certificate source writes it down: the node
+        /// it came from, or "CSMS" where its path does not say.
+        /// </summary>
+        private static String SenderOf(NetworkPath Path)
+
+            => Path is { Length: > 0 }
+                   ? Path.Source.ToString()
+                   : "CSMS";
+
+        /// <summary>
+        /// Why a certificate source said no, as the response says it - nothing
+        /// where it said yes, or did not say why.
+        /// </summary>
+        private static StatusInfo? StatusInfoOf(CertificateAnswer Answer)
+
+            => Answer.ReasonCode is not null
+                   ? new StatusInfo(Answer.ReasonCode, Answer.AdditionalInfo)
+                   : null;
 
         #endregion
 
@@ -258,32 +286,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region OnInstallCertificate
 
-            OCPP.IN.OnInstallCertificate += (timestamp,
-                                             sender,
-                                             connection,
-                                             request,
-                                             ct) => {
+            OCPP.IN.OnInstallCertificate += async (timestamp,
+                                                   sender,
+                                                   connection,
+                                                   request,
+                                                   ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming InstallCertificate request (certificate type: {request.CertificateType}!");
 
-                // CertificateType
-                // Certificate
+                // Only an accepted certificate is kept: a rejected one must not
+                // replace the one installed before it, which is up to the source.
+                var answer = await CertificateSources.InstallAsync(
+                                       request.CertificateType.ToString(),
+                                       request.CertificateGroup?.ToString(),
+                                       request.Certificate,
+                                       SenderOf(request.NetworkPath),
+                                       ct
+                                   );
 
-                var status = request.Certificate.Parsed is not null
-                                 ? InstallCertificateStatus.Accepted
-                                 : InstallCertificateStatus.Rejected;
-
-                // Only an accepted certificate is stored: a rejected one must not replace the one installed before it.
-                if (status == InstallCertificateStatus.Accepted)
-                    certificates[request.CertificateType] = request.Certificate;
-
-                return Task.FromResult(
-                           new InstallCertificateResponse(
-                               Request:      request,
-                               Status:       status,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
+                return new InstallCertificateResponse(
+                           Request:      request,
+                           Status:       answer.Status switch {
+                                             CertificateAnswerStatus.Accepted  => InstallCertificateStatus.Accepted,
+                                             CertificateAnswerStatus.Rejected  => InstallCertificateStatus.Rejected,
+                                             _                                      => InstallCertificateStatus.Failed
+                                         },
+                           StatusInfo:   StatusInfoOf(answer),
+                           CustomData:   null
                        );
 
             };
@@ -300,33 +329,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 DebugX.Log($"Charging station '{Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType).AggregateWith(", ")}!");
 
-                // CertificateTypes
-
-                var certificateHashDataChain = new List<CertificateHashDataChain>();
-
-                foreach (var certificateType in request.CertificateTypes)
-                {
-
-                    if (certificates.TryGetValue(InstallCertificateUse.Parse(certificateType.ToString()), out var cert))
-                        certificateHashDataChain.Add(
-                            new CertificateHashDataChain(
-                                new CertificateHashData(
-                                    HashAlgorithm:         HashAlgorithm.SHA256,
-                                    IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
-                                    IssuerPublicKeyHash:   cert.Parsed?.GetPublicKeyString() ?? "-",
-                                    SerialNumber:          cert.Parsed?.SerialNumber         ?? "-",
-                                    CustomData:            null
-                                ),
-                                GetCertificateIdUse.CSMSRootCertificate
-                            )
-                        );
-
-                }
+                // Of every type where none is named, each with its own type and
+                // named by the hashes OCPP names a certificate by.
+                var certificateHashDataChain = CertificateSources.Installed(request.CertificateTypes.Select(certificateType => certificateType.ToString())).
+                                                                  Select   (installed => {
+                                                                                var hashes = CertificateHashes.Of(installed.Certificate);
+                                                                                return new CertificateHashDataChain(
+                                                                                           new CertificateHashData(
+                                                                                               HashAlgorithm:         HashAlgorithm.Parse(hashes.HashAlgorithm),
+                                                                                               IssuerNameHash:        hashes.IssuerNameHash,
+                                                                                               IssuerPublicKeyHash:   hashes.IssuerKeyHash,
+                                                                                               SerialNumber:          hashes.SerialNumber,
+                                                                                               CustomData:            null
+                                                                                           ),
+                                                                                           GetCertificateIdUse.Parse(installed.CertificateType)
+                                                                                       );
+                                                                            }).
+                                                                  ToArray();
 
                 return Task.FromResult(
                            new GetInstalledCertificateIdsResponse(
                                Request:                    request,
-                               Status:                     GetInstalledCertificateStatus.Accepted,
+                               Status:                     certificateHashDataChain.Length > 0
+                                                               ? GetInstalledCertificateStatus.Accepted
+                                                               : GetInstalledCertificateStatus.NotFound,
                                CertificateHashDataChain:   certificateHashDataChain,
                                StatusInfo:                 null,
                                CustomData:                 null
@@ -339,29 +365,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region OnDeleteCertificate
 
-            OCPP.IN.OnDeleteCertificate += (timestamp,
-                                            sender,
-                                            connection,
-                                            request,
-                                            ct) => {
+            OCPP.IN.OnDeleteCertificate += async (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming DeleteCertificate request!");
 
-                // CertificateHashData
+                var answer = await CertificateSources.DeleteAsync(
+                                       new CertificateHashes(
+                                           request.CertificateHashData.HashAlgorithm.ToString(),
+                                           request.CertificateHashData.IssuerNameHash,
+                                           request.CertificateHashData.IssuerPublicKeyHash,
+                                           request.CertificateHashData.SerialNumber
+                                       ),
+                                       SenderOf(request.NetworkPath),
+                                       ct
+                                   );
 
-                var certKV  = certificates.FirstOrDefault(certificateKV => request.CertificateHashData.SerialNumber == certificateKV.Value.Parsed?.SerialNumber);
-
-                var success = certificates.TryRemove(certKV);
-
-                return Task.FromResult(
-                           new DeleteCertificateResponse(
-                               Request:      request,
-                               Status:       success
-                                                 ? DeleteCertificateStatus.Accepted
-                                                 : DeleteCertificateStatus.NotFound,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
+                return new DeleteCertificateResponse(
+                           Request:      request,
+                           Status:       answer.Status switch {
+                                             CertificateAnswerStatus.Accepted  => DeleteCertificateStatus.Accepted,
+                                             CertificateAnswerStatus.NotFound  => DeleteCertificateStatus.NotFound,
+                                             _                                      => DeleteCertificateStatus.Failed
+                                         },
+                           StatusInfo:   StatusInfoOf(answer),
+                           CustomData:   null
                        );
 
             };

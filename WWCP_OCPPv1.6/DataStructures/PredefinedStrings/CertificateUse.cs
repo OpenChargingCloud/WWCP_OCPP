@@ -235,6 +235,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static CertificateUse  NetworkTimeRootCertificate      { get; }
             = Register("NetworkTimeRootCertificate");
 
+        /// <summary>
+        /// Root certificate for verification of the certificates of name servers
+        /// reached over TLS or HTTPS (Secure Name Resolution, section 3.2).
+        /// </summary>
+        public static CertificateUse  NameServerRootCertificate       { get; }
+            = Register("NameServerRootCertificate");
+
         #endregion
 
 

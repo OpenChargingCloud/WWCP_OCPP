@@ -74,6 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
+        /// Where the root certificates a central system installs, lists and
+        /// deletes are kept: in memory, and by a source of their own for the
+        /// types one was added for (<see cref="OCPP.CertificateSources.Add"/>).
+        /// </summary>
+        public OCPP.CertificateSources  CertificateSources    { get; } = new();
+
+        /// <summary>
         /// The charge point vendor identification.
         /// </summary>
         [Mandatory]
