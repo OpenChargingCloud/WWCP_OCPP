@@ -122,10 +122,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var answered = new HashSet<String>(Source.ClientVariables, StringComparer.OrdinalIgnoreCase);
             var written  = new HashSet<String>(setter is not null ? Source.WritableClientVariables : [], StringComparer.OrdinalIgnoreCase);
 
+            // Each may be monitored: a value changes on the page and from the
+            // command line as well, without the CSMS asking.
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 variableConfigs.Add(
                     variable.ToVariableConfig(() => Source.ClientValue(variable.Name),
-                                              written.Contains(variable.Name))
+                                              written.Contains(variable.Name),
+                                              Monitored: true)
                 );
 
             if (written.Count > 0)

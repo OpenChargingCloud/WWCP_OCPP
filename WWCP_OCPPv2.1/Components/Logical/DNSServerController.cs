@@ -112,10 +112,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var answered = new HashSet<String>(Source.ServerVariables, StringComparer.OrdinalIgnoreCase);
             var written  = new HashSet<String>(setter is not null ? Source.WritableServerVariables : [], StringComparer.OrdinalIgnoreCase);
 
+            // Each may be monitored: the pins change by trust on first use, and
+            // the verdict at a handshake - the Delta monitor of the paper.
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 variableConfigs.Add(
                     variable.ToVariableConfig(() => Source.ServerValue(Slot, variable.Name),
-                                              written.Contains(variable.Name))
+                                              written.Contains(variable.Name),
+                                              Monitored: true)
                 );
 
             if (written.Count > 0)

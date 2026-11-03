@@ -318,6 +318,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+        #region EveryVariableMayBeMonitored_Test()
+
+        /// <summary>
+        /// Every variable says it may be monitored, and a CSMS can set the Delta
+        /// monitor the paper names on the pins a server learns on first use.
+        /// </summary>
+        [Test]
+        public void EveryVariableMayBeMonitored_Test()
+        {
+
+            var source      = new ADNSSource();
+            var client      = new DNSClientController(source);
+            var servers     = DNSServerController.AllOf(source).ToArray();
+            var monitors    = new VariableMonitors();
+
+            var set         = monitors.Set([ new SetMonitoringData(0, MonitorType.Delta, Severities.Alert,
+                                                                   new Component(nameof(DNSServerController), "1"),
+                                                                   new Variable("RootPins")) ],
+                                           (name, evse) => servers.Where(server => server.Name == name));
+
+            Assert.Multiple(() => {
+                Assert.That(client.    VariableConfigs.Select(variable => variable.Characteristics?.SupportsMonitoring),  Is.All.True);
+                Assert.That(servers[0].VariableConfigs.Select(variable => variable.Characteristics?.SupportsMonitoring),  Is.All.True);
+                Assert.That(set.Single().Status,                                                                          Is.EqualTo(SetMonitoringStatus.Accepted));
+            });
+
+        }
+
+        #endregion
+
         #region AWritingSourceMakesWritableWhatThePaperAllows_Test()
 
         /// <summary>
