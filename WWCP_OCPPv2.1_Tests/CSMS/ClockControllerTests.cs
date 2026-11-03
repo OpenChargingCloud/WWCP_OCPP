@@ -210,6 +210,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #endregion
 
 
+        #region TryCheck_TheReportingThresholdIsWholeSecondsOrNone_Test()
+
+        /// <summary>
+        /// TimeAdjustmentReportingThreshold is a whole number of seconds from
+        /// one to a day, or empty for none: below a second every check would
+        /// report.
+        /// </summary>
+        [Test]
+        public void TryCheck_TheReportingThresholdIsWholeSecondsOrNone_Test()
+        {
+
+            var five     = ClockController.TryCheck("TimeAdjustmentReportingThreshold", "5",     out var fiveRefusal);
+            var none     = ClockController.TryCheck("TimeAdjustmentReportingThreshold", "",      out var noneRefusal);
+            var zero     = ClockController.TryCheck("TimeAdjustmentReportingThreshold", "0",     out var zeroRefusal);
+            var tooLong  = ClockController.TryCheck("TimeAdjustmentReportingThreshold", "86401", out var longRefusal);
+            var half     = ClockController.TryCheck("TimeAdjustmentReportingThreshold", "2.5",   out var halfRefusal);
+
+            Assert.Multiple(() => {
+                Assert.That(five,                         Is.True,  fiveRefusal?.AdditionalInfo);
+                Assert.That(none,                         Is.True,  noneRefusal?.AdditionalInfo);
+                Assert.That(zero,                         Is.False);
+                Assert.That(zeroRefusal?.ReasonCode,      Is.EqualTo("ValueOutOfRange"));
+                Assert.That(zeroRefusal?.AdditionalInfo,  Is.EqualTo("'ClockCtrlr.TimeAdjustmentReportingThreshold' is from 1 to 86400!"));
+                Assert.That(tooLong,                      Is.False);
+                Assert.That(longRefusal?.ReasonCode,      Is.EqualTo("ValueOutOfRange"));
+                Assert.That(half,                         Is.False);
+                Assert.That(halfRefusal?.ReasonCode,      Is.EqualTo("InvalidValue"));
+            });
+
+        }
+
+        #endregion
+
+
         // ---- With the in-memory source --------------------------------------
 
         #region TheStationFindsItsClockController_Test()
