@@ -753,6 +753,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+        #region (private static) Shown(Key)
+
+        /// <summary>
+        /// A key of a source as GetConfiguration reports it: a write-only key is
+        /// listed, but without its value.
+        /// </summary>
+        private static ConfigurationKey Shown(ConfigurationKey Key)
+
+            => Key.AccessRights == AccessRights.WriteOnly
+                   ? new ConfigurationKey(Key.Key, Key.AccessRights)
+                   : Key;
+
+        #endregion
+
         #region (private static) SenderOf(Path)
 
         /// <summary>
@@ -1283,13 +1297,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 var configurationKeys  = new List<ConfigurationKey>();
                 var unknownKeys        = new List<String>();
 
-                // No keys asked for means all of them.
+                // No keys asked for means all of them: those of the sources,
+                // computed now, and the charge point's own.
                 if (request.Keys.Any())
                 {
                     foreach (var key in request.Keys)
                     {
 
-                        if (Configuration.TryGetValue(key, out var configurationData))
+                        if (ConfigurationKeySources.Select(source => source.Get(key)).FirstOrDefault(found => found is not null) is ConfigurationKey fromSource)
+                            configurationKeys.Add(Shown(fromSource));
+
+                        else if (Configuration.TryGetValue(key, out var configurationData))
                             configurationKeys.Add(
                                 ToConfigurationKey(
                                     key,
@@ -1305,6 +1323,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 else
                 {
+
+                    foreach (var source in ConfigurationKeySources)
+                        foreach (var key in source.Keys)
+                            if (source.Get(key) is ConfigurationKey fromSource)
+                                configurationKeys.Add(Shown(fromSource));
+
                     foreach (var configuration in Configuration)
                         configurationKeys.Add(
                             ToConfigurationKey(
@@ -1328,45 +1352,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnChangeConfiguration
 
-            OCPP.IN.OnChangeConfiguration += (timestamp,
-                                              sender,
-                                              connection,
-                                              request,
-                                              cancellationToken) => {
+            OCPP.IN.OnChangeConfiguration += async (timestamp,
+                                                    sender,
+                                                    connection,
+                                                    request,
+                                                    cancellationToken) => {
 
                 DebugX.Log($"ChargeBox[{Id}] Incoming change configuration for '{request.Key}' with value '{request.Value}'.");
+
+                // A source that knows the key answers for it.
+                foreach (var source in ConfigurationKeySources)
+                    if (await source.ChangeAsync(request.Key, request.Value, SenderOf(request.NetworkPath), cancellationToken) is ConfigurationStatus status)
+                        return new ChangeConfigurationResponse(request, status);
 
                 if (Configuration.TryGetValue(request.Key, out var configurationData))
                 {
 
                     // A read-only key keeps its value, whoever asks.
                     if (configurationData.AccessRights == AccessRights.ReadOnly)
-                        return Task.FromResult(
-                                   new ChangeConfigurationResponse(
-                                       request,
-                                       ConfigurationStatus.Rejected
-                                   )
+                        return new ChangeConfigurationResponse(
+                                   request,
+                                   ConfigurationStatus.Rejected
                                );
 
                     configurationData.Value = request.Value;
 
-                    return Task.FromResult(
-                               new ChangeConfigurationResponse(
-                                   request,
-                                   configurationData.RebootRequired
-                                       ? ConfigurationStatus.RebootRequired
-                                       : ConfigurationStatus.Accepted
-                               )
+                    return new ChangeConfigurationResponse(
+                               request,
+                               configurationData.RebootRequired
+                                   ? ConfigurationStatus.RebootRequired
+                                   : ConfigurationStatus.Accepted
                            );
 
                 }
 
                 // A key the charge point does not have is not supported, and is not created either.
-                return Task.FromResult(
-                           new ChangeConfigurationResponse(
-                               request,
-                               ConfigurationStatus.NotSupported
-                           )
+                return new ChangeConfigurationResponse(
+                           request,
+                           ConfigurationStatus.NotSupported
                        );
 
             };
