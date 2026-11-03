@@ -104,16 +104,17 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
-        #region CheckDeletion(Hashes)
+        #region CheckDeletionAsync(Hashes, CancellationToken = default)
 
         /// <inheritdoc/>
-        public CertificateAnswer? CheckDeletion(CertificateHashes Hashes)
+        public Task<CertificateAnswer?> CheckDeletionAsync(CertificateHashes  Hashes,
+                                                           CancellationToken  CancellationToken = default)
         {
 
             lock (gate)
-                return installed.Any(entry => Hashes.Names(entry.Certificate))
-                           ? CertificateAnswer.Accepted
-                           : null;
+                return Task.FromResult(installed.Any(entry => Hashes.Names(entry.Certificate))
+                                           ? CertificateAnswer.Accepted
+                                           : null);
 
         }
 

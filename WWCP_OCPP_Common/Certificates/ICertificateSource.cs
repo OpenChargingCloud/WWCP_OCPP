@@ -270,7 +270,15 @@ namespace cloud.charging.open.protocols.OCPP
         /// where this source has none of them, accepted where it would delete
         /// it, and failed, with why, where it would not.
         /// </summary>
-        CertificateAnswer? CheckDeletion(CertificateHashes Hashes);
+        /// <remarks>
+        /// Asked before anything of any source is deleted, and it may take a
+        /// while: whether the names of the CSMS still resolve without a root
+        /// for name servers is asked of the name servers.
+        /// </remarks>
+        /// <param name="Hashes">What it is named by.</param>
+        /// <param name="CancellationToken">To give up.</param>
+        Task<CertificateAnswer?> CheckDeletionAsync(CertificateHashes  Hashes,
+                                                    CancellationToken  CancellationToken = default);
 
         /// <summary>
         /// Delete the certificate of these hashes.

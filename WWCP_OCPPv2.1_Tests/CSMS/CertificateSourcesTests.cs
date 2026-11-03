@@ -73,12 +73,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             public IEnumerable<X509Certificate2> Installed(String CertificateType)
                 => Kept.Where(kept => kept.Type == CertificateType).Select(kept => kept.Certificate);
 
-            public CertificateAnswer? CheckDeletion(CertificateHashes Hashes)
-                => Kept.Any(kept => Hashes.Names(kept.Certificate))
-                       ? Refuses
-                             ? CertificateAnswer.Failed("InUse", "A configured server's chain ends at it.")
-                             : CertificateAnswer.Accepted
-                       : null;
+            public Task<CertificateAnswer?> CheckDeletionAsync(CertificateHashes Hashes, CancellationToken CancellationToken = default)
+                => Task.FromResult(Kept.Any(kept => Hashes.Names(kept.Certificate))
+                                       ? Refuses
+                                             ? CertificateAnswer.Failed("InUse", "A configured server's chain ends at it.")
+                                             : CertificateAnswer.Accepted
+                                       : null);
 
             public Task<CertificateAnswer> DeleteAsync(CertificateHashes Hashes, String? Sender, CancellationToken CancellationToken = default)
             {

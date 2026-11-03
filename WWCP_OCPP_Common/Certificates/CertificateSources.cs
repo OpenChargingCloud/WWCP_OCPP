@@ -197,15 +197,16 @@ namespace cloud.charging.open.protocols.OCPP
             try
             {
 
-                var holders = sources.Append(Default).
-                                      Select (source => (source, answer: source.CheckDeletion(Hashes))).
-                                      Where  (holder => holder.answer is not null).
-                                      ToArray();
+                var holders = new List<(ICertificateSource source, CertificateAnswer answer)>();
 
-                if (holders.Length == 0)
+                foreach (var source in sources.Append(Default))
+                    if (await source.CheckDeletionAsync(Hashes, CancellationToken) is CertificateAnswer answer)
+                        holders.Add((source, answer));
+
+                if (holders.Count == 0)
                     return CertificateAnswer.NotFound;
 
-                if (holders.FirstOrDefault(holder => holder.answer!.Status != CertificateAnswerStatus.Accepted).answer is CertificateAnswer no)
+                if (holders.FirstOrDefault(holder => holder.answer.Status != CertificateAnswerStatus.Accepted).answer is CertificateAnswer no)
                     return no;
 
                 foreach (var (source, _) in holders)

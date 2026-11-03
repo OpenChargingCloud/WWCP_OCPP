@@ -66,8 +66,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
             public IEnumerable<X509Certificate2> Installed(String CertificateType)
                 => Kept.Where(kept => kept.Type == CertificateType).Select(kept => kept.Certificate);
 
-            public CertificateAnswer? CheckDeletion(CertificateHashes Hashes)
-                => Kept.Any(kept => Hashes.Names(kept.Certificate)) ? CertificateAnswer.Accepted : null;
+            public Task<CertificateAnswer?> CheckDeletionAsync(CertificateHashes Hashes, CancellationToken CancellationToken = default)
+                => Task.FromResult(Kept.Any(kept => Hashes.Names(kept.Certificate)) ? CertificateAnswer.Accepted : null);
 
             public Task<CertificateAnswer> DeleteAsync(CertificateHashes Hashes, String? Sender, CancellationToken CancellationToken = default)
             {
