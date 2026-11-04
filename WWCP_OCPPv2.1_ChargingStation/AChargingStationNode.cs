@@ -964,38 +964,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region (Timer) DoSendHeartbeatSync(State)
+        #region (Timer) DoSendHeartbeatsAsync(State)
 
-        protected override void DoSendHeartbeatsSync(Object? State)
+        /// <summary>
+        /// Send a heartbeat to the CSMS, at a tick of the node's heartbeat
+        /// timer, which neither waits for it nor asks again before it is sent.
+        /// </summary>
+        protected override async Task DoSendHeartbeatsAsync(Object? State)
         {
-            if (!DisableSendHeartbeats)
+            try
             {
-                try
-                {
 
-                    OCPP.OUT.Heartbeat(
-                        new HeartbeatRequest(
+                await OCPP.OUT.Heartbeat(
+                    new HeartbeatRequest(
 
-                           Destination:        SourceRouting.CSMS,
+                       Destination:        SourceRouting.CSMS,
 
-                           SignKeys:           null, //SignKeys
-                           SignInfos:          null, //SignInfos
-                           Signatures:         null, //Signatures
+                       SignKeys:           null, //SignKeys
+                       SignInfos:          null, //SignInfos
+                       Signatures:         null, //Signatures
 
-                           CustomData:         null, //CustomData
+                       CustomData:         null, //CustomData
 
-                           RequestId:          null, //RequestId        ?? ChargingStation.NextRequestId
-                           RequestTimestamp:   null, //RequestTimestamp ?? Now
-                           RequestTimeout:     null  //RequestTimeout   ?? ChargingStation.DefaultRequestTimeout
+                       RequestId:          null, //RequestId        ?? ChargingStation.NextRequestId
+                       RequestTimestamp:   null, //RequestTimestamp ?? Now
+                       RequestTimeout:     null  //RequestTimeout   ?? ChargingStation.DefaultRequestTimeout
 
-                        )
-                    ).Wait();
+                    )
+                );
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, nameof(DoSendHeartbeatsSync));
-                }
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, nameof(DoSendHeartbeatsAsync));
             }
         }
 

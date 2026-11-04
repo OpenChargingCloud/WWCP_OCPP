@@ -862,39 +862,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region (Timer) DoSendHeartbeatSync(State)
+        #region (Timer) DoSendHeartbeatsAsync(State)
 
-        protected override void DoSendHeartbeatsSync(Object? State)
+        /// <summary>
+        /// Send no heartbeat yet, at a tick of the node's heartbeat timer.
+        /// </summary>
+        protected override Task DoSendHeartbeatsAsync(Object? State)
         {
-            if (!DisableSendHeartbeats)
-            {
-                try
-                {
 
-                    //OCPP.OUT.Heartbeat(
-                    //    new HeartbeatRequest(
+            //return OCPP.OUT.Heartbeat(
+            //    new HeartbeatRequest(
 
-                    //       Destination:        SourceRouting.CSMS,
+            //       Destination:        SourceRouting.CSMS,
 
-                    //       SignKeys:           null, //SignKeys
-                    //       SignInfos:          null, //SignInfos
-                    //       Signatures:         null, //Signatures
+            //       SignKeys:           null, //SignKeys
+            //       SignInfos:          null, //SignInfos
+            //       Signatures:         null, //Signatures
 
-                    //       CustomData:         null, //CustomData
+            //       CustomData:         null, //CustomData
 
-                    //       RequestId:          null, //RequestId        ?? ChargingStation.NextRequestId
-                    //       RequestTimestamp:   null, //RequestTimestamp ?? Timestamp.Now
-                    //       RequestTimeout:     null  //RequestTimeout   ?? ChargingStation.DefaultRequestTimeout
+            //       RequestId:          null, //RequestId        ?? ChargingStation.NextRequestId
+            //       RequestTimestamp:   null, //RequestTimestamp ?? Timestamp.Now
+            //       RequestTimeout:     null  //RequestTimeout   ?? ChargingStation.DefaultRequestTimeout
 
-                    //    )
-                    //).Wait();
+            //    )
+            //);
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, nameof(DoSendHeartbeatsSync));
-                }
-            }
+            return Task.CompletedTask;
+
         }
 
         #endregion
