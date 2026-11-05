@@ -87,6 +87,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public TimeSpan          OfflineQueueRetry     { get; set; } = TimeSpan.FromSeconds(30);
 
         /// <summary>
+        /// Whether what the queue holds waits rather than goes: queued all the
+        /// same, and sent by <see cref="FlushOfflineQueueAsync"/> once this is
+        /// false again.
+        /// </summary>
+        /// <remarks>
+        /// For a station whose CSMS has not accepted its BootNotification yet,
+        /// and which may tell it nothing else until then.
+        /// </remarks>
+        public Boolean           HoldOfflineQueue      { get; set; }
+
+        /// <summary>
         /// How often the node reads the variables its monitors watch by itself,
         /// beside whenever it is told one may have changed: a value read live
         /// changes without anybody saying so.
@@ -202,6 +213,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public async Task<Int32> FlushOfflineQueueAsync()
         {
 
+            // Held: nothing goes, and nothing was refused either, so the queue
+            // is not put off until its next try.
+            if (HoldOfflineQueue)
+                return 0;
+
             await flushing.WaitAsync();
 
             try
@@ -245,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         private void RetryOfflineQueue()
         {
 
-            if (Now < nextQueueTry || OfflineQueue.Pending.Count == 0 || flushing.CurrentCount == 0)
+            if (HoldOfflineQueue || Now < nextQueueTry || OfflineQueue.Pending.Count == 0 || flushing.CurrentCount == 0)
                 return;
 
             nextQueueTry = Now + OfflineQueueRetry;

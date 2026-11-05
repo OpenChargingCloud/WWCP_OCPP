@@ -782,18 +782,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                     this.CSMSTime               = response.CurrentTime;
                 }
 
-                else if (response.Status == RegistrationStatus.Pending)
-                {
-                    this.DisableSendHeartbeats  = false;
-                    this.SendHeartbeatsEvery    = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
-                    this.SendHeartbeatsTimer.Change(this.SendHeartbeatsEvery, this.SendHeartbeatsEvery);
-                    this.CSMSTime               = response.CurrentTime;
-                }
-
+                // Pending or Rejected: the interval is how long to wait before
+                // the next BootNotification, not how often to send a heartbeat,
+                // and until a BootNotification is accepted there is none.
                 else
                 {
+
                     this.DisableSendHeartbeats  = true;
                     this.SendHeartbeatsTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                    if (response.Status == RegistrationStatus.Pending)
+                        this.CSMSTime           = response.CurrentTime;
+
                 }
 
                 return Task.CompletedTask;

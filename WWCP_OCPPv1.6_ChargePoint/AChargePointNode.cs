@@ -695,18 +695,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     this.CSMSTime               = response.CurrentTime;
                 }
 
-                else if (response.Status == RegistrationStatus.Pending)
-                {
-                    this.DisableSendHeartbeats  = false;
-                    this.SendHeartbeatsEvery    = response.HeartbeatInterval >= TimeSpan.FromSeconds(5) ? response.HeartbeatInterval : TimeSpan.FromSeconds(5);
-                    this.SendHeartbeatsTimer.Change(this.SendHeartbeatsEvery, this.SendHeartbeatsEvery);
-                    this.CSMSTime               = response.CurrentTime;
-                }
-
+                // Pending or Rejected: the interval is how long to wait before
+                // the next BootNotification, not how often to send a heartbeat,
+                // and until a BootNotification is accepted there is none.
                 else
                 {
+
                     this.DisableSendHeartbeats  = true;
                     this.SendHeartbeatsTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                    if (response.Status == RegistrationStatus.Pending)
+                        this.CSMSTime           = response.CurrentTime;
+
                 }
 
                 return Task.CompletedTask;
@@ -865,31 +865,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (Timer) DoSendHeartbeatsAsync(State)
 
         /// <summary>
-        /// Send no heartbeat yet, at a tick of the node's heartbeat timer.
+        /// Send a heartbeat to the central system, at a tick of the node's
+        /// heartbeat timer, which neither waits for it nor asks again before it
+        /// is sent.
         /// </summary>
-        protected override Task DoSendHeartbeatsAsync(Object? State)
+        protected override async Task DoSendHeartbeatsAsync(Object? State)
         {
-
-            //return OCPP.OUT.Heartbeat(
-            //    new HeartbeatRequest(
-
-            //       Destination:        SourceRouting.CSMS,
-
-            //       SignKeys:           null, //SignKeys
-            //       SignInfos:          null, //SignInfos
-            //       Signatures:         null, //Signatures
-
-            //       CustomData:         null, //CustomData
-
-            //       RequestId:          null, //RequestId        ?? ChargingStation.NextRequestId
-            //       RequestTimestamp:   null, //RequestTimestamp ?? Timestamp.Now
-            //       RequestTimeout:     null  //RequestTimeout   ?? ChargingStation.DefaultRequestTimeout
-
-            //    )
-            //);
-
-            return Task.CompletedTask;
-
+            try
+            {
+                await this.SendHeartbeat();
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, nameof(DoSendHeartbeatsAsync));
+            }
         }
 
         #endregion
