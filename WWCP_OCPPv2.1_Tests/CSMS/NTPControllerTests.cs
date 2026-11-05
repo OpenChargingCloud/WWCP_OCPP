@@ -398,6 +398,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+        #region TryCheck_TheAEADAlgorithmIsOneOfTheTwoOrNone_Test()
+
+        /// <summary>
+        /// AEADAlgorithm is one of the paper's two, in any case, or empty: the
+        /// server's key exchange offers every algorithm then, and the server
+        /// chooses.
+        /// </summary>
+        [Test]
+        public void TryCheck_TheAEADAlgorithmIsOneOfTheTwoOrNone_Test()
+        {
+
+            var siv     = NTPClientController.TryCheck("ptb1", "AEADAlgorithm", "AES-SIV-CMAC-256", out var sivRefusal);
+            var gcm     = NTPClientController.TryCheck("ptb1", "AEADAlgorithm", "aes-128-gcm-siv",  out var gcmRefusal);
+            var none    = NTPClientController.TryCheck("ptb1", "AEADAlgorithm", "",                 out var noneRefusal);
+            var other   = NTPClientController.TryCheck("ptb1", "AEADAlgorithm", "AES-256-GCM-SIV",  out var otherRefusal);
+
+            Assert.Multiple(() => {
+                Assert.That(siv,                         Is.True,   sivRefusal?. AdditionalInfo);
+                Assert.That(gcm,                         Is.True,   gcmRefusal?. AdditionalInfo);
+                Assert.That(none,                        Is.True,   noneRefusal?.AdditionalInfo);
+                Assert.That(other,                       Is.False);
+                Assert.That(otherRefusal?.ReasonCode,    Is.EqualTo("InvalidValue"));
+            });
+
+        }
+
+        #endregion
+
         #region TheStationFindsItsNTPControllers_Test()
 
         [Test]
