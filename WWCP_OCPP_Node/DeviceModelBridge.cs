@@ -116,8 +116,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                            Node.TryUpdateDNSConfiguration,
                                                            (change, names, within, cancellationToken) => Node.ResolveWithAsync(change, names, within, cancellationToken),
                                                            NamesToKeepResolving,
-                                                           sentence => Node.Log.Notice(sentence, "dns", "ocpp"));
-            this.DNSRootCertificates  = new DNSRootCertificates(Node, NamesToKeepResolving);
+                                                           sentence => Node.Log.Notice(sentence, "dns", "ocpp"),
+                                                           () => LegalTimeNamesOf(Node));
+            this.DNSRootCertificates  = new DNSRootCertificates(Node, NamesToKeepResolving, () => LegalTimeNamesOf(Node));
 
             // The components first, so that a monitor asked about a change
             // below finds the component the change made.
@@ -206,6 +207,34 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
+
+        #region (internal static) LegalTimeNamesOf(Node)
+
+        /// <summary>
+        /// The names of the NTS-KE servers of the legal time: those of the
+        /// legal group's servers that are switched on, leaving out those named
+        /// by an address, which need no name resolution. None while the legal
+        /// group is switched off, as nothing is asked of them then.
+        /// </summary>
+        /// <remarks>
+        /// A change of the name servers, or a root taken away, must not stop
+        /// all of them resolving (SecureDNS-DeviceModel-Concept.md B.13 point
+        /// 6). The node does the key exchange with the host of a server, so
+        /// that host is its NTS-KE server.
+        /// </remarks>
+        /// <param name="Node">The node whose legal group it is.</param>
+        internal static IEnumerable<String> LegalTimeNamesOf(WWCPNode Node)
+
+            => Node.NTSGroups.
+                    Where     (group  => group.IsLegal && group.Enabled).
+                    SelectMany(group  => group.Sources.Sources).
+                    Where     (source => source.Enabled).
+                    Select    (source => source.Hostname.Trimmed).
+                    Where     (host   => !System.Net.IPAddress.TryParse(host.Trim('[', ']'), out _)).
+                    Distinct  (StringComparer.OrdinalIgnoreCase).
+                    ToArray   ();
+
+        #endregion
 
         #region (private) FollowDNSServers([Node])
 

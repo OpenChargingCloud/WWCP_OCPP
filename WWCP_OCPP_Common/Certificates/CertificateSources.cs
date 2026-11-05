@@ -219,7 +219,11 @@ namespace cloud.charging.open.protocols.OCPP
 
                 }
 
-                return CertificateAnswer.Accepted;
+                // Deleted - and where a source let it go with a word of what
+                // that costs, such as a server of the legal time that would
+                // no longer resolve, that word is the answer's.
+                return holders.Select(holder => holder.answer).
+                               FirstOrDefault(answer => answer.ReasonCode is not null) ?? CertificateAnswer.Accepted;
 
             }
             catch (Exception e)

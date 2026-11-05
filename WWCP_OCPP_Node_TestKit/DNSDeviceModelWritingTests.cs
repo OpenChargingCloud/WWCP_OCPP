@@ -597,6 +597,22 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             public String[]             Names            { get; set; } = [ "csms.example.test" ];
 
+            /// <summary>
+            /// The names of the NTS-KE servers of the legal time.
+            /// </summary>
+            public String[]             LegalNames       { get; set; } = [];
+
+            /// <summary>
+            /// Names that would not resolve with the change, whatever
+            /// ResolvesThen says of the others.
+            /// </summary>
+            public HashSet<String>      LostThen         { get; } = new (StringComparer.OrdinalIgnoreCase);
+
+            /// <summary>
+            /// What the source wrote into the log.
+            /// </summary>
+            public List<String>         Logged           { get; } = [];
+
             public Boolean TryUpdate(Func<JObject, JObject?>           Change,
                                      [NotNullWhen(false)] out String?  Error,
                                      out Boolean                       NotSaved,
@@ -629,9 +645,15 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                        if (Change.Count > 0)
                            Meanwhile?.Invoke();
 
+                       // Switched off, a node resolves nothing, as its dry run says.
+                       var switchedOff = Change["enabled"]?.Type == JTokenType.Boolean && !Change.Value<Boolean>("enabled");
+
                        return new DNSPreflight(
-                                       Names.ToDictionary(name => name, _ => Change.Count == 0 ? ResolvesNow : ResolvesThen),
-                                       Change.Count == 0 || ResolvesThen
+                                       Names.ToDictionary(name => name,
+                                                          name => Change.Count == 0
+                                                                      ? ResolvesNow
+                                                                      : ResolvesThen && !switchedOff && !LostThen.Contains(name)),
+                                       Change.Count == 0 || ResolvesThen && LostThen.Count == 0
                                            ? []
                                            : [ new ServerJudgement(
                                                    Service:                 "dns",
@@ -654,7 +676,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             public DNSDeviceModel Source()
 
-                => new (() => Section, TryUpdate, ResolveWith, () => Names);
+                => new (() => Section, TryUpdate, ResolveWith, () => Names, Logged.Add, () => LegalNames);
 
         }
 
@@ -706,6 +728,146 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             Assert.Multiple(() => {
                 Assert.That(results.Single().AttributeStatus,                          Is.EqualTo(OCPP21.SetVariableStatus.Accepted));
                 Assert.That(node.Changes.Single()["servers"]?[1]?["address"]?.Value<String>(), Is.EqualTo("198.51.100.53"));
+            });
+
+        }
+
+        #endregion
+
+        #region AChangeThatLeavesTheLegalTimeNoNTSKEServerIsRefused()
+
+        /// <summary>
+        /// A change after which none of the NTS-KE servers of the legal time
+        /// would resolve, while they do now, is NTSKEUnreachable as a whole,
+        /// saying the names and what each name server came to; nothing is put
+        /// into the node (SecureDNS-DeviceModel-Concept.md B.13 point 6).
+        /// </summary>
+        [Test]
+        public async Task AChangeThatLeavesTheLegalTimeNoNTSKEServerIsRefused()
+        {
+
+            var node    = new ANodeOfWords { Names = [], LegalNames = [ "nts1.example.test", "nts2.example.test" ], ResolvesThen = false };
+
+            var results = await SetIn(node.Source(), OCPP21.DataConsistencyModel.ACID,
+                                      ("dns-1", "Address",   "203.0.113.53"),
+                                      ("dns-1", "RootPins",  AnotherRoot));
+
+            Assert.Multiple(() => {
+                Assert.That(StatusesOf(results),                                       Is.All.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(results.Select(result => result.AttributeStatusInfo?.ReasonCode), Is.All.EqualTo(DNSDeviceModel.NTSKEUnreachable));
+                Assert.That(results[0].AttributeStatusInfo?.AdditionalInfo,            Does.Contain("'nts1.example.test', 'nts2.example.test' would not resolve").
+                                                                                       And.Contains("no NTS-KE server left").
+                                                                                       And.Contains("tls://203.0.113.53:853 untrusted"));
+                Assert.That(node.Changes,                                              Is.Empty);
+            });
+
+        }
+
+        #endregion
+
+        #region AChangeThatKeepsTheLegalTimeAnNTSKEServerIsMadeAndSaysWhatItLoses()
+
+        /// <summary>
+        /// A change after which one NTS-KE server of the legal time would no
+        /// longer resolve, and another still would, is put into effect: every
+        /// entry is accepted with NTSKEUnreachable in its status info, naming
+        /// the one lost and the one kept, and the log says it as well.
+        /// </summary>
+        [Test]
+        public async Task AChangeThatKeepsTheLegalTimeAnNTSKEServerIsMadeAndSaysWhatItLoses()
+        {
+
+            var node    = new ANodeOfWords { Names = [], LegalNames = [ "nts1.example.test", "nts2.example.test" ] };
+
+            node.LostThen.Add("nts1.example.test");
+
+            var results = await SetIn(node.Source(), OCPP21.DataConsistencyModel.ACID,
+                                      ("dns-2", "Address",  "198.51.100.53"),
+                                      (null,    "UseCache", "false"));
+
+            Assert.Multiple(() => {
+                Assert.That(StatusesOf(results),                                       Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(results.Select(result => result.AttributeStatusInfo?.ReasonCode), Is.All.EqualTo(DNSDeviceModel.NTSKEUnreachable));
+                Assert.That(results[0].AttributeStatusInfo?.AdditionalInfo,            Does.Contain("'nts1.example.test' of the legal time would not resolve any more, 'nts2.example.test' still would"));
+                Assert.That(node.Changes.Single()["servers"]?[1]?["address"]?.Value<String>(), Is.EqualTo("198.51.100.53"));
+                Assert.That(node.Logged.Any(line => line.Contains("the legal time loses NTS-KE servers") && line.Contains("'nts1.example.test'")),
+                            Is.True, String.Join(Environment.NewLine, node.Logged));
+            });
+
+        }
+
+        #endregion
+
+        #region AnNTSKEServerOfTheLegalTimeThatDoesNotResolveNowBlocksNothing()
+
+        /// <summary>
+        /// An NTS-KE server of the legal time that does not resolve now does
+        /// not block a change, and is not said to be lost by it, so that a
+        /// CSMS can repair a broken configuration.
+        /// </summary>
+        [Test]
+        public async Task AnNTSKEServerOfTheLegalTimeThatDoesNotResolveNowBlocksNothing()
+        {
+
+            var node    = new ANodeOfWords { Names = [], LegalNames = [ "nts1.example.test" ], ResolvesNow = false, ResolvesThen = false };
+
+            var results = await SetIn(node.Source(), null, ("dns-2", "Address", "198.51.100.53"));
+
+            Assert.Multiple(() => {
+                Assert.That(results.Single().AttributeStatus,                          Is.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(results.Single().AttributeStatusInfo,                      Is.Null);
+                Assert.That(node.Changes,                                              Has.Count.EqualTo(1));
+            });
+
+        }
+
+        #endregion
+
+        #region NameResolutionIsNotSwitchedOffUnderTheLegalTime()
+
+        /// <summary>
+        /// Switched off, a node resolves nothing: while an NTS-KE server of the
+        /// legal time resolves, that is NTSKEUnreachable, even with no CSMS
+        /// dialled by its name.
+        /// </summary>
+        [Test]
+        public async Task NameResolutionIsNotSwitchedOffUnderTheLegalTime()
+        {
+
+            var node    = new ANodeOfWords { Names = [], LegalNames = [ "nts1.example.test" ] };
+
+            var results = await SetIn(node.Source(), null, (null, "Enabled", "false"));
+
+            Assert.Multiple(() => {
+                Assert.That(results.Single().AttributeStatus,                          Is.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(results.Single().AttributeStatusInfo?.ReasonCode,          Is.EqualTo(DNSDeviceModel.NTSKEUnreachable));
+                Assert.That(node.Changes,                                              Is.Empty);
+            });
+
+        }
+
+        #endregion
+
+        #region ACSMSCutOffIsSaidBeforeTheLegalTime()
+
+        /// <summary>
+        /// A change that would cut off the CSMS and the legal time alike is
+        /// CSMSUnreachable: the CSMS is the one it must not lose at all. A
+        /// name of both is the CSMS's.
+        /// </summary>
+        [Test]
+        public async Task ACSMSCutOffIsSaidBeforeTheLegalTime()
+        {
+
+            var node    = new ANodeOfWords { LegalNames = [ "csms.example.test", "nts1.example.test" ], ResolvesThen = false };
+
+            var results = await SetIn(node.Source(), null, ("dns-1", "Address", "203.0.113.53"));
+
+            Assert.Multiple(() => {
+                Assert.That(results.Single().AttributeStatusInfo?.ReasonCode,          Is.EqualTo("CSMSUnreachable"));
+                Assert.That(results.Single().AttributeStatusInfo?.AdditionalInfo,     Does.Contain("'csms.example.test' would not resolve").
+                                                                                       And.Not.Contains("nts1"));
+                Assert.That(node.Changes,                                              Is.Empty);
             });
 
         }

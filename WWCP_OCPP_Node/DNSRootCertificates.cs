@@ -59,13 +59,20 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// resolve without it: the name servers are asked with the store as it
     /// would be afterwards, as for a change of the name servers themselves
     /// (Secure DNS T21). Its connections are let go of once it is gone, by
-    /// the node.
+    /// the node. The same holds for the names of the NTS-KE servers of the
+    /// legal time, all of which it must not take away, as a change of the
+    /// name servers must not (B.13 point 6): where some of them would still
+    /// resolve, it is deleted, and the answer says which would not.
     /// </para>
     /// </remarks>
     /// <param name="Node">The node whose store keeps them.</param>
     /// <param name="NamesToKeepResolving">The names the CSMS connections are dialled by.</param>
-    public sealed class DNSRootCertificates(WWCPNode                    Node,
-                                            Func<IEnumerable<String>>?  NamesToKeepResolving = null) : ICertificateSource
+    /// <param name="LegalTimeNames">The names of the NTS-KE servers of the legal time.</param>
+    /// <param name="ResolveWithout">How names are resolved with the store as it is (no root given) or without the given root; as the node's WWCPNode.ResolveWithAsync does it where none is given.</param>
+    public sealed class DNSRootCertificates(WWCPNode                                                              Node,
+                                            Func<IEnumerable<String>>?                                            NamesToKeepResolving   = null,
+                                            Func<IEnumerable<String>>?                                            LegalTimeNames         = null,
+                                            Func<IEnumerable<String>, String?, CancellationToken, Task<DNSPreflight>>?  ResolveWithout   = null) : ICertificateSource
     {
 
         #region Data
@@ -181,7 +188,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// and without the root, and a name that resolves now and would not
         /// then keeps the root. Where they do not resolve now either, the root
         /// is not what stops them. Name servers asked without TLS owe nothing
-        /// to a root, so there is nothing to ask where all of them are.
+        /// to a root, so there is nothing to ask where all of them are. The
+        /// NTS-KE servers of the legal time keep it only where none of them
+        /// would resolve without it while one does now; where some would not
+        /// and others would, it goes, and the answer says so.
         /// </remarks>
         public async Task<CertificateAnswer?> CheckDeletionAsync(CertificateHashes  Hashes,
                                                                  CancellationToken  CancellationToken = default)
@@ -194,28 +204,58 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return ForEveryUse(entry);
 
             var names = NamesToKeepResolving?.Invoke().ToArray() ?? [];
+            var legal = LegalTimeNames?.Invoke().
+                                        Where   (name => !names.Contains(name, StringComparer.OrdinalIgnoreCase)).
+                                        Distinct(StringComparer.OrdinalIgnoreCase).
+                                        ToArray () ?? [];
 
-            if (names.Length == 0 || !AnyServerOverTLS())
+            if (names.Length == 0 && legal.Length == 0 || !AnyServerOverTLS())
                 return CertificateAnswer.Accepted;
 
-            var now   = Node.ResolveWithAsync(new JObject(), names, DNSDeviceModel.PreflightTime, CancellationToken);
-            var then  = Node.ResolveWithAsync(new JObject(), names, DNSDeviceModel.PreflightTime, CancellationToken, WithoutRoots: [ entry.Thumbprint ]);
+            var now   = Resolve([ .. names, .. legal ], null,             CancellationToken);
+            var then  = Resolve([ .. names, .. legal ], entry.Thumbprint, CancellationToken);
 
             await Task.WhenAll(now, then).ConfigureAwait(false);
-
-            var lost  = names.Where(name => now.Result.Resolves(name) && !then.Result.Resolves(name)).ToArray();
-
-            if (lost.Length == 0)
-                return CertificateAnswer.Accepted;
 
             var servers = then.Result.Judgements.Count > 0
                               ? String.Join(", ", then.Result.Judgements.Select(judgement => $"{judgement.Server} {judgement.Outcome}"))
                               : "no name server answered";
 
-            return CertificateAnswer.Failed("CSMSUnreachable",
-                                            $"Without the root '{entry.Label}', '{String.Join("', '", lost)}' would not resolve: {servers}!");
+            var lost  = names.Where(name => now.Result.Resolves(name) && !then.Result.Resolves(name)).ToArray();
+
+            if (lost.Length > 0)
+                return CertificateAnswer.Failed("CSMSUnreachable",
+                                                $"Without the root '{entry.Label}', '{String.Join("', '", lost)}' would not resolve: {servers}!");
+
+            var legalNow   = legal.Where(name => now. Result.Resolves(name)).ToArray();
+            var legalThen  = legal.Where(name => then.Result.Resolves(name)).ToArray();
+            var legalLost  = legalNow.Where(name => !then.Result.Resolves(name)).ToArray();
+
+            if (legalNow.Length > 0 && legalThen.Length == 0)
+                return CertificateAnswer.Failed(DNSDeviceModel.NTSKEUnreachable,
+                                                $"Without the root '{entry.Label}', '{String.Join("', '", legalNow)}' would not resolve, and the legal time would have no NTS-KE server left: {servers}!");
+
+            if (legalLost.Length > 0)
+                return new CertificateAnswer(CertificateAnswerStatus.Accepted,
+                                             DNSDeviceModel.NTSKEUnreachable,
+                                             $"Without the root '{entry.Label}', '{String.Join("', '", legalLost)}' of the legal time would not resolve any more, '{String.Join("', '", legalThen)}' still would: {servers}.");
+
+            return CertificateAnswer.Accepted;
 
         }
+
+        /// <summary>
+        /// Resolve the given names with the store as it is, or without the
+        /// given root.
+        /// </summary>
+        private Task<DNSPreflight> Resolve(IEnumerable<String>  Names,
+                                           String?              WithoutRoot,
+                                           CancellationToken    CancellationToken)
+
+            => ResolveWithout is not null
+                   ? ResolveWithout(Names, WithoutRoot, CancellationToken)
+                   : Node.ResolveWithAsync(new JObject(), Names, DNSDeviceModel.PreflightTime, CancellationToken,
+                                           WithoutRoots: WithoutRoot is null ? null : [ WithoutRoot ]);
 
         #endregion
 

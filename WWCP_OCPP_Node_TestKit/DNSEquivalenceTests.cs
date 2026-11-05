@@ -74,6 +74,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         private const String  CSMS     = "csms.example.test";
 
+        /// <summary>
+        /// The one NTS-KE server of the legal time of a node made to ask one.
+        /// </summary>
+        private const String  LegalTime = "nts.example.test";
+
         private static readonly Regex origin = new (@" \(by [^)]*\)", RegexOptions.CultureInvariant);
 
         private readonly List<(IBridgedNode Station, String Directory)> twins = [];
@@ -506,6 +511,127 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region ANameServerTheLegalTimeWouldNotResolveThroughIsRefusedByEitherVersion()
+
+        /// <summary>
+        /// No CSMS is dialled by its name, but the legal time asks its one
+        /// NTS-KE server by its name, which resolves through a name server
+        /// over TLS. Moved to a name server whose certificate nobody vouches
+        /// for, through SetVariables and through dns.ports, the legal time
+        /// would have no NTS-KE server left: both are refused, as
+        /// NTSKEUnreachable where OCPP 2.1 can say so, and nothing is changed
+        /// (SecureDNS-DeviceModel-Concept.md B.13 point 6). The bridge takes
+        /// the name from the node's legal group.
+        /// </summary>
+        [Test]
+        public async Task ANameServerTheLegalTimeWouldNotResolveThroughIsRefusedByEitherVersion()
+        {
+
+            using var trustedCertificate    = ServerCertificate("A trusted name server");
+            using var untrustedCertificate  = ServerCertificate("An untrusted name server");
+
+            var trusted    = NameServer(trustedCertificate);
+            var untrusted  = NameServer(untrustedCertificate);
+
+            await trusted.  Start();
+            await untrusted.Start();
+
+            try
+            {
+
+                var station  = LegalTwin();
+                var port     = untrusted.ActiveTLSUnicastSocket!.Value.Port.ToUInt16().ToString();
+
+                Assert.That(station.Node.TryUpdateDNSConfiguration(JObject.Parse($$"""
+                                { "servers": [ { "address": "127.0.0.1", "port": {{trusted.ActiveTLSUnicastSocket!.Value.Port.ToUInt16()}}, "transport": "TLS" } ],
+                                  "maxRetries": 0 }
+                                """), out var error),
+                            Is.True, error);
+
+                Assert.That(station.Node.Certificates.Import(Encoding.ASCII.GetBytes(trustedCertificate.ExportCertificatePem()), CertificateKind.TLSRoot, null, null,
+                                                        [ CertificateUsages.DNS ], out _, out error),
+                            Is.True, error);
+
+                var before     = station.Node.DNSConfigurationJSON().ToString();
+
+                var refused21  = await Set(station, OCPP21.DataConsistencyModel.ACID, Server("dns-1", "Port", port));
+                var refused16  = await KeysOf(station).ChangeAsync("dns.ports", port, "CS-16");
+                var after      = station.Node.DNSConfigurationJSON().ToString();
+
+                Assert.Multiple(() => {
+                    Assert.That(refused21.Single().AttributeStatus,                    Is.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                    Assert.That(refused21.Single().AttributeStatusInfo?.ReasonCode,    Is.EqualTo(DNSDeviceModel.NTSKEUnreachable));
+                    Assert.That(refused21.Single().AttributeStatusInfo?.AdditionalInfo, Does.Contain($"'{LegalTime}' would not resolve"));
+                    Assert.That(refused16,                                             Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                    Assert.That(after,                                                 Is.EqualTo(before), "nothing was changed");
+                });
+
+            }
+            finally
+            {
+                await trusted.  Stop();
+                await untrusted.Stop();
+            }
+
+        }
+
+        #endregion
+
+        #region ALegalTimeThatIsSwitchedOffHoldsOnToNoNameServer()
+
+        /// <summary>
+        /// The same change, with the legal group switched off: nothing is
+        /// asked of its NTS-KE server, so nothing is lost by moving the name
+        /// servers, and the change is accepted without a word about it.
+        /// </summary>
+        [Test]
+        public async Task ALegalTimeThatIsSwitchedOffHoldsOnToNoNameServer()
+        {
+
+            using var trustedCertificate    = ServerCertificate("A trusted name server");
+            using var untrustedCertificate  = ServerCertificate("An untrusted name server");
+
+            var trusted    = NameServer(trustedCertificate);
+            var untrusted  = NameServer(untrustedCertificate);
+
+            await trusted.  Start();
+            await untrusted.Start();
+
+            try
+            {
+
+                var station  = LegalTwin(Enabled: false);
+                var port     = untrusted.ActiveTLSUnicastSocket!.Value.Port.ToUInt16().ToString();
+
+                Assert.That(station.Node.TryUpdateDNSConfiguration(JObject.Parse($$"""
+                                { "servers": [ { "address": "127.0.0.1", "port": {{trusted.ActiveTLSUnicastSocket!.Value.Port.ToUInt16()}}, "transport": "TLS" } ],
+                                  "maxRetries": 0 }
+                                """), out var error),
+                            Is.True, error);
+
+                Assert.That(station.Node.Certificates.Import(Encoding.ASCII.GetBytes(trustedCertificate.ExportCertificatePem()), CertificateKind.TLSRoot, null, null,
+                                                        [ CertificateUsages.DNS ], out _, out error),
+                            Is.True, error);
+
+                var accepted   = await Set(station, OCPP21.DataConsistencyModel.ACID, Server("dns-1", "Port", port));
+
+                Assert.Multiple(() => {
+                    Assert.That(accepted.Single().AttributeStatus,                     Is.EqualTo(OCPP21.SetVariableStatus.Accepted), accepted.Single().AttributeStatusInfo?.AdditionalInfo);
+                    Assert.That(accepted.Single().AttributeStatusInfo,                 Is.Null);
+                    Assert.That(station.Node.DNSConfigurationJSON()["servers"]?[0]?.Value<String>("port"),  Is.EqualTo(port));
+                });
+
+            }
+            finally
+            {
+                await trusted.  Stop();
+                await untrusted.Stop();
+            }
+
+        }
+
+        #endregion
+
         #region WhatTheFileCannotTakeIsChangedNowhere()
 
         /// <summary>
@@ -581,6 +707,23 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             var directory = TestNodes.TemporaryDirectory("dns-equivalence-twin");
             var station   = Nodes.New(directory, Configuration);
+
+            twins.Add((station, directory));
+
+            return station;
+
+        }
+
+        /// <summary>
+        /// A node whose legal time asks one NTS-KE server, by its name, built
+        /// and never started: nothing is asked of it but its name.
+        /// </summary>
+        /// <param name="Enabled">Whether the legal group is switched on.</param>
+        private IBridgedNode LegalTwin(Boolean Enabled = true)
+        {
+
+            var directory = TestNodes.TemporaryDirectory("dns-equivalence-legal");
+            var station   = Nodes.New(directory, JObject.Parse($$"""{ "nts": { "groups": { "legal": { "enabled": {{(Enabled ? "true" : "false")}}, "servers": [ "{{LegalTime}}" ] } } } }"""));
 
             twins.Add((station, directory));
 
@@ -764,7 +907,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         /// <summary>
         /// A name server on the loopback, over TLS and nothing else, that knows
-        /// the CSMS's name.
+        /// the CSMS's name and that of the legal time's NTS-KE server.
         /// </summary>
         private static DNSServer NameServer(X509Certificate2 Certificate)
 
@@ -776,6 +919,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                                    DNSQueryClasses.IN,
                                    TimeSpan.   FromMinutes(5),
                                    IPv4Address.Parse("127.0.0.42")
+                               )).
+                           Add(new A(
+                                   DomainName. Parse(LegalTime + "."),
+                                   DNSQueryClasses.IN,
+                                   TimeSpan.   FromMinutes(5),
+                                   IPv4Address.Parse("127.0.0.43")
                                ))
                    ),
                    new DNSServerOptions {

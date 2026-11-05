@@ -328,6 +328,143 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region ARootTheLegalTimeCanDoWithoutGoesAndTheAnswerSaysWhatItCosts()
+
+        /// <summary>
+        /// Without the root, one NTS-KE server of the legal time would no
+        /// longer resolve and another still would: the root goes, and the
+        /// answer - Accepted - says NTSKEUnreachable and names both. Without
+        /// the root none of them would: the root is kept, as Failed
+        /// (SecureDNS-DeviceModel-Concept.md B.13 point 6).
+        /// </summary>
+        [Test]
+        public async Task ARootTheLegalTimeCanDoWithoutGoesAndTheAnswerSaysWhatItCosts()
+        {
+
+            // A name server over TLS, so that a root matters; it is never asked.
+            Assert.That(station!.Node.TryUpdateDNSConfiguration(JObject.Parse("""
+                            { "servers": [ { "address": "127.0.0.1", "port": 853, "transport": "TLS" } ], "maxRetries": 0 }
+                            """), out var error),
+                        Is.True, error);
+
+            Import(root,  [ "dns" ]);
+            Import(other, [ "dns" ]);
+
+            var legal    = new[] { "nts1.example.test", "nts2.example.test" };
+
+            // Without "root", nts1 is lost; without "other", both.
+            OCPPC.CertificateSources SourcesResolving(String Lost)
+            {
+                var sources = new OCPPC.CertificateSources();
+                sources.Add(new DNSRootCertificates(station.Node, () => [], () => legal,
+                                                    (names, without, _) => Task.FromResult(new protocols.WWCP.Node.DNSPreflight(
+                                                                               names.ToDictionary(name => name,
+                                                                                                  name => without is null || (without != CertificateEntry.ThumbprintOf(other) && name != Lost)),
+                                                                               []))));
+                return sources;
+            }
+
+            var gone  = await SourcesResolving("nts1.example.test").DeleteAsync(OCPPC.CertificateHashes.Of(root),  "CSMS");
+            var kept  = await SourcesResolving("nts1.example.test").DeleteAsync(OCPPC.CertificateHashes.Of(other), "CSMS");
+
+            Assert.Multiple(() => {
+
+                Assert.That(gone.Status,              Is.EqualTo(OCPPC.CertificateAnswerStatus.Accepted));
+                Assert.That(gone.ReasonCode,          Is.EqualTo(DNSDeviceModel.NTSKEUnreachable));
+                Assert.That(gone.AdditionalInfo,      Does.Contain("'nts1.example.test' of the legal time would not resolve any more, 'nts2.example.test' still would"));
+                Assert.That(TLSRoot(root),            Is.Null);
+
+                Assert.That(kept.Status,              Is.EqualTo(OCPPC.CertificateAnswerStatus.Failed));
+                Assert.That(kept.ReasonCode,          Is.EqualTo(DNSDeviceModel.NTSKEUnreachable));
+                Assert.That(kept.AdditionalInfo,      Does.Contain("'nts1.example.test', 'nts2.example.test' would not resolve").
+                                                      And.Contains("no NTS-KE server left"));
+                Assert.That(TLSRoot(other),           Is.Not.Null);
+
+            });
+
+        }
+
+        #endregion
+
+        #region ARootTheLegalTimeResolvesThroughIsKeptByTheBridge()
+
+        /// <summary>
+        /// The one root a name server over TLS is believed through, while the
+        /// legal time asks its one NTS-KE server by its name and no CSMS is
+        /// dialled by one: deleting it through the OCPP 2.1 node fails as
+        /// NTSKEUnreachable, and the root is kept. The bridge takes the name
+        /// from the node's legal group.
+        /// </summary>
+        [Test]
+        public async Task ARootTheLegalTimeResolvesThroughIsKeptByTheBridge()
+        {
+
+            using var serverCertificate = ServerCertificate();
+
+            var server = new DNSServer(
+                             new AuthoritativeDNSRequestHandler(
+                                 new InMemoryDNSZone().
+                                     Add(new A(
+                                             DomainName. Parse("nts.example.test."),
+                                             DNSQueryClasses.IN,
+                                             TimeSpan.   FromMinutes(5),
+                                             IPv4Address.Parse("127.0.0.43")
+                                         ))
+                             ),
+                             new DNSServerOptions {
+                                 EnableUDPUnicast      = false,
+                                 EnableUDPMulticast    = false,
+                                 EnableTCPUnicast      = false,
+                                 EnableTLSUnicast      = true,
+                                 TLSUnicastSocket      = new IPSocket(IPv4Address.Localhost, IPPort.Parse(0)),
+                                 TLSServerCertificate  = serverCertificate
+                             }
+                         );
+
+            var legalDirectory  = TestNodes.TemporaryDirectory("dns-root-certificates-legal");
+            var legal           = Nodes.New(legalDirectory, JObject.Parse("""{ "nts": { "groups": { "legal": { "servers": [ "nts.example.test" ] } } } }"""));
+
+            await server.Start();
+
+            try
+            {
+
+                var port = server.ActiveTLSUnicastSocket!.Value.Port;
+
+                Assert.That(legal.Node.TryUpdateDNSConfiguration(JObject.Parse($$"""
+                                { "servers": [ { "address": "127.0.0.1", "port": {{port.ToUInt16()}}, "transport": "TLS" } ], "maxRetries": 0 }
+                                """), out var error),
+                            Is.True, error);
+
+                using var resolverRoot = X509CertificateLoader.LoadCertificate(serverCertificate.RawData);
+
+                Assert.That(legal.Node.Certificates.Import(Encoding.ASCII.GetBytes(resolverRoot.ExportCertificatePem()), CertificateKind.TLSRoot, null, null, [ "dns" ], out _, out error),
+                            Is.True, error);
+
+                var kept = await legal.OCPPv2_1Node.CertificateSources.DeleteAsync(OCPPC.CertificateHashes.Of(resolverRoot), "CSMS");
+
+                Assert.Multiple(() => {
+                    Assert.That(kept.Status,          Is.EqualTo(OCPPC.CertificateAnswerStatus.Failed));
+                    Assert.That(kept.ReasonCode,      Is.EqualTo(DNSDeviceModel.NTSKEUnreachable));
+                    Assert.That(kept.AdditionalInfo,  Does.Contain("'nts.example.test' would not resolve").
+                                                      And.Contains($"tls://127.0.0.1:{port} untrusted"));
+                    Assert.That(legal.Node.Certificates.ByKind(CertificateKind.TLSRoot).
+                                                        Any(entry => entry.Thumbprint == CertificateEntry.ThumbprintOf(resolverRoot)),
+                                Is.True, "the root was deleted");
+                });
+
+            }
+            finally
+            {
+                await server.Stop();
+                await legal.DisposeAsync();
+                TestNodes.Remove(legalDirectory);
+            }
+
+        }
+
+        #endregion
+
         #region TheStationsNodesAskItsOwnSource()
 
         /// <summary>

@@ -113,6 +113,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// SecureDNS-DeviceModel-Concept.md B.6 and B.9 say all of this at length.
     /// </para>
     /// <para>
+    /// The names of the NTS-KE servers of the legal time are resolved with it
+    /// as well (B.13 point 6). A change after which none of them would resolve
+    /// while one does now is NTSKEUnreachable: the legal time would be lost.
+    /// One that loses some of them and keeps another is accepted, and says
+    /// which it loses in the status info of every entry, with the same reason
+    /// code, and in the log.
+    /// </para>
+    /// <para>
     /// The node is handed each change together with its list as it is while
     /// nothing else can change it. A list that is no longer the one the table
     /// holds - a server added on the page while the request was being made -
@@ -133,6 +141,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// before a change is put into effect.
         /// </summary>
         public static readonly TimeSpan PreflightTime = TimeSpan.FromSeconds(10);
+
+        /// <summary>
+        /// The reason code of a change, or of a deleted root, after which an
+        /// NTS-KE server of the legal time would no longer resolve: of a
+        /// refusal where none of them would, of the status info of an accepted
+        /// change where others still would.
+        /// </summary>
+        public const String NTSKEUnreachable = "NTSKEUnreachable";
 
         /// <summary>
         /// The most characters of the additionalInfo of a result (OCPP 2.1).
@@ -174,6 +190,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private readonly TryUpdateDNSConfigurationDelegate?  update;
         private readonly DNSPreflightDelegate?               preflight;
         private readonly Func<IEnumerable<String>>?          namesToKeepResolving;
+        private readonly Func<IEnumerable<String>>?          legalTimeNames;
         private readonly Action<String>?                     log;
 
         /// <summary>
@@ -213,11 +230,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="Preflight">How names are resolved with a change before it is put into effect, as WWCPNode.ResolveWithAsync does it.</param>
         /// <param name="NamesToKeepResolving">The names a change must not stop resolving: those the CSMS connections are dialled by.</param>
         /// <param name="Log">Where a change is said before it is made.</param>
+        /// <param name="LegalTimeNames">The names of the NTS-KE servers of the legal time, of which a change must not stop all resolving.</param>
         public DNSDeviceModel(Func<JObject>                      Section,
                               TryUpdateDNSConfigurationDelegate  Update,
                               DNSPreflightDelegate               Preflight,
                               Func<IEnumerable<String>>          NamesToKeepResolving,
-                              Action<String>?                    Log   = null)
+                              Action<String>?                    Log              = null,
+                              Func<IEnumerable<String>>?         LegalTimeNames   = null)
 
             : this(Section)
 
@@ -226,6 +245,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             this.update                = Update;
             this.preflight             = Preflight;
             this.namesToKeepResolving  = NamesToKeepResolving;
+            this.legalTimeNames        = LegalTimeNames;
             this.log                   = Log;
 
         }
@@ -634,20 +654,29 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             #region The pre-flight
 
-            var names = namesToKeepResolving?.Invoke().ToArray() ?? [];
+            // The names of the CSMS connections, none of which a change may
+            // stop resolving, and those of the NTS-KE servers of the legal
+            // time, not all of which it may stop resolving (B.13 point 6). A
+            // name of both is a CSMS's.
+            var names    = namesToKeepResolving?.Invoke().ToArray() ?? [];
+            var legal    = legalTimeNames?.Invoke().
+                                           Where   (name => !names.Contains(name, StringComparer.OrdinalIgnoreCase)).
+                                           Distinct(StringComparer.OrdinalIgnoreCase).
+                                           ToArray () ?? [];
+            var warning  = (String?) null;
 
-            if (names.Length > 0)
+            if (names.Length > 0 && section["enabled"]?.Type == JTokenType.Boolean && !section.Value<Boolean>("enabled"))
+            {
+                Refuse(Change, Change, Results, false, "CSMSUnreachable",
+                       $"Name resolution cannot be switched off while the CSMS is dialled by its name: '{String.Join("', '", names)}'!");
+                return;
+            }
+
+            if (names.Length > 0 || legal.Length > 0)
             {
 
-                if (section["enabled"]?.Type == JTokenType.Boolean && !section.Value<Boolean>("enabled"))
-                {
-                    Refuse(Change, Change, Results, false, "CSMSUnreachable",
-                           $"Name resolution cannot be switched off while the CSMS is dialled by its name: '{String.Join("', '", names)}'!");
-                    return;
-                }
-
-                var now    = preflight!(new JObject(), names, PreflightTime, CancellationToken);
-                var then   = preflight!(section,       names, PreflightTime, CancellationToken);
+                var now    = preflight!(new JObject(), [ .. names, .. legal ], PreflightTime, CancellationToken);
+                var then   = preflight!(section,       [ .. names, .. legal ], PreflightTime, CancellationToken);
 
                 await Task.WhenAll(now, then).ConfigureAwait(false);
 
@@ -657,20 +686,39 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     return;
                 }
 
-                var lost = names.Where(name => now.Result.Resolves(name) && !then.Result.Resolves(name)).ToArray();
+                var asked = then.Result.Judgements.Count > 0
+                                ? String.Join(", ", then.Result.Judgements.Select(judgement => $"{judgement.Server} {judgement.Outcome}"))
+                                : "no name server answered";
+
+                var lost  = names.Where(name => now.Result.Resolves(name) && !then.Result.Resolves(name)).ToArray();
 
                 if (lost.Length > 0)
                 {
-
-                    var asked = then.Result.Judgements.Count > 0
-                                    ? String.Join(", ", then.Result.Judgements.Select(judgement => $"{judgement.Server} {judgement.Outcome}"))
-                                    : "no name server answered";
-
                     Refuse(Change, Change, Results, false, "CSMSUnreachable",
                            $"'{String.Join("', '", lost)}' would not resolve: {asked}!");
-
                     return;
+                }
 
+                // The legal time is lost only where none of its servers would
+                // resolve while one does now: a server that does not resolve
+                // now blocks nothing, so that a broken configuration can be
+                // repaired, and one that would resolve with the change keeps it.
+                var legalNow   = legal.Where(name =>  now. Result.Resolves(name)).ToArray();
+                var legalThen  = legal.Where(name =>  then.Result.Resolves(name)).ToArray();
+                var legalLost  = legalNow.Where(name => !then.Result.Resolves(name)).ToArray();
+
+                if (legalNow.Length > 0 && legalThen.Length == 0)
+                {
+                    Refuse(Change, Change, Results, false, NTSKEUnreachable,
+                           $"'{String.Join("', '", legalNow)}' would not resolve, and the legal time would have no NTS-KE server left: {asked}!");
+                    return;
+                }
+
+                if (legalLost.Length > 0)
+                {
+                    warning = $"'{String.Join("', '", legalLost)}' of the legal time would not resolve any more, '{String.Join("', '", legalThen)}' still would: {asked}.";
+                    if (warning.Length > MaxAdditionalInfo)
+                        warning = warning[..(MaxAdditionalInfo - 1)] + "…";
                 }
 
             }
@@ -731,8 +779,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
             foreach (var server in Table)
                 server.ShownAsSent();
 
+            // Taken, and said where it costs the legal time a server: to the
+            // CSMS with every entry, and in the log.
+            if (warning is not null)
+                log?.Invoke($"A CSMS changed the name resolution of this node (by {origin}), and the legal time loses NTS-KE servers: {warning}");
+
             foreach (var item in Change)
-                Results[item.Index] = Result(item.Entry, SetVariableStatus.Accepted);
+                Results[item.Index] = warning is null
+                                          ? Result(item.Entry, SetVariableStatus.Accepted)
+                                          : Result(item.Entry, SetVariableStatus.Accepted, NTSKEUnreachable, warning);
 
         }
 
