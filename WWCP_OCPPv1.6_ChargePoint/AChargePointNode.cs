@@ -53,7 +53,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// An abstract Charge Point node.
     /// </summary>
     public abstract partial class AChargePointNode : AOCPPNetworkingNode,
-                                             IChargePointNode
+                                             IChargePointNode,
+                                             IConfigurationKeysNode
     {
 
         #region Data

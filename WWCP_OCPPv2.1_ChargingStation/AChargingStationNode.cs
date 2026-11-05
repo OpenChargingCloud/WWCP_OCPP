@@ -94,7 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// An abstract charging station node.
     /// </summary>
     public abstract partial class AChargingStationNode : AOCPPNetworkingNode,
-                                                 IChargingStationNode
+                                                 IChargingStationNode,
+                                                 IDeviceModelNode
     {
 
         #region Data

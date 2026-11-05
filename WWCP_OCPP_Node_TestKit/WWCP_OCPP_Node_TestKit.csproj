@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The tests of WWCP_OCPP_Node's bridges: what OCPP 2.1 and 1.6 read and
+    change of a node's name servers and time servers, the roots for both,
+    the security events and the monitors - against every kind of node that
+    wires them. A library and not a test project, as WWCP_Node_TestKit is:
+    its tests are abstract, and run in the suite of each kind that derives a
+    fixture from them and says how it makes such a node (IBridgedNodes) -
+    WWCP_OCPP_Node_Tests for a bare WWCPNode, a charging station for its own.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>cloud.charging.open.protocols.OCPP.Node.TestKit</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NUnit" Version="5.0.0" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.15.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WWCP_Node\WWCP_Node_TestKit\WWCP_Node_TestKit.csproj" />
+    <ProjectReference Include="..\WWCP_OCPP_Node\WWCP_OCPP_Node.csproj" />
+  </ItemGroup>
+
+</Project>

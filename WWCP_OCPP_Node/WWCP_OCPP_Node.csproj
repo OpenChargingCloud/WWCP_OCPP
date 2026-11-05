@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The bridges between a WWCP_Node and the Device Model of its OCPP nodes:
+    what OCPP 2.1 reads and changes of the node's name servers and time
+    servers as components and variables, and OCPP 1.6 as configuration keys,
+    with the roots for both and the security events of the two white papers.
+
+    The node stays the only truth: nothing here keeps a value of its own. A
+    project of its own, so that WWCP_OCPP's libraries stay free of the node
+    and WWCP_Node stays free of OCPP, and every kind of node - a charging
+    station, a local controller - wires them the same way (DeviceModelBridge).
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>cloud.charging.open.protocols.OCPP.Node</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WWCP_Node\WWCP_Node\WWCP_Node.csproj" />
+    <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv1.6\WWCP_OCPPv1.6.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv1.6_ChargePoint\WWCP_OCPPv1.6_ChargePoint.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="WWCP_OCPP_Node_TestKit" />
+  </ItemGroup>
+
+</Project>
