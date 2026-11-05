@@ -89,6 +89,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             ["local"]  = [ "lc1", "lc2" ]
         };
 
+        /// <summary>
+        /// The values of the paper this source supports of a client variable,
+        /// where it supports fewer: none named by default, so every value.
+        /// </summary>
+        public Dictionary<String, String[]>                     Supported    { get; } = new (StringComparer.OrdinalIgnoreCase);
+
         public Dictionary<String, Dictionary<String, String>>   Client       { get; } = new (StringComparer.OrdinalIgnoreCase) {
             ["ptb1"]  = Server("ptbtime1.ptb.de"),
             ["ptb2"]  = Server("ptbtime2.ptb.de"),
@@ -142,6 +148,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             => ClientVariables.Contains(Variable, StringComparer.OrdinalIgnoreCase) &&
                this.Client.TryGetValue(Client, out var values)
                    ? values.GetValueOrDefault(Variable, "")
+                   : null;
+
+        public IEnumerable<String>? SupportedClientValues(String Variable)
+
+            => Supported.TryGetValue(Variable, out var values)
+                   ? values
                    : null;
 
         #endregion

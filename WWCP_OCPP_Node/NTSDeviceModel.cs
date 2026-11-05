@@ -185,6 +185,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         IEnumerable<String> protocols.OCPPv2_1.INTPControllerSource.  ClientVariables
             => ClientVariables;
 
+        // The node asks its time servers by NTS only, so a CSMS is offered no
+        // other mode: neither NTPv4 nor NTPv4TLS.
+        IEnumerable<String>? protocols.OCPPv2_1.INTPControllerSource. SupportedClientValues(String Variable)
+            => String.Equals(Variable, "Mode", StringComparison.OrdinalIgnoreCase)
+                   ? [ "NTSv4" ]
+                   : null;
+
         IEnumerable<String> protocols.OCPPv2_1.IClockControllerSource.Variables
             => ClockVariables;
 

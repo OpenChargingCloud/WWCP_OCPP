@@ -151,7 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 variableConfigs.Add(
                     variable.ToVariableConfig(() => Source.ClientValue(Client, variable.Name),
                                               written.Contains(variable.Name),
-                                              Monitored: true)
+                                              Monitored:  true,
+                                              Supported:  Source.SupportedClientValues(variable.Name))
                 );
 
             if (written.Count > 0)
@@ -198,6 +199,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        [NotNullWhen(false)] out StatusInfo?  Refusal)
 
             => ControllerVariable.TryCheck(Variables, $"{nameof(NTPClientController)}[{Client}]", Variable, Value, out Refusal);
+
+        #endregion
+
+        #region (static) TryCheck(Source, Client, Variable, Value, out Refusal)
+
+        /// <summary>
+        /// Whether the given variable of the paper can be set to the given value
+        /// for the given client by its type, its limits, its values and the
+        /// values the given source supports of it - or why not, as a
+        /// SetVariables result says it.
+        /// </summary>
+        /// <param name="Source">The source that would write it, saying what it supports.</param>
+        /// <param name="Client">The id of the client, for the sentence.</param>
+        /// <param name="Variable">The name of the variable, in any case.</param>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public static Boolean TryCheck(INTPControllerSource                  Source,
+                                       String                                Client,
+                                       String                                Variable,
+                                       String?                               Value,
+                                       [NotNullWhen(false)] out StatusInfo?  Refusal)
+
+            => ControllerVariable.TryCheck(Variables, $"{nameof(NTPClientController)}[{Client}]", Variable, Value, Source.SupportedClientValues, out Refusal);
 
         #endregion
 

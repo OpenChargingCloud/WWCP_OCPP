@@ -918,13 +918,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// its type, its limits and its values - as the paper or the standard
         /// says them - or why not.
         /// </summary>
-        private static Boolean TryCheck(Item                                  Item,
-                                        [NotNullWhen(false)] out StatusInfo?  Refusal)
+        private Boolean TryCheck(Item                                  Item,
+                                 [NotNullWhen(false)] out StatusInfo?  Refusal)
 
             => Item.Kind switch {
                    Kind.ClientGroups               => NTPController.           TryCheck(              Item.Name, Item.Value, out Refusal),
                    Kind.Group                      => NTPClientGroupController.TryCheck(Item.Group!,  Item.Name, Item.Value, out Refusal),
-                   Kind.Client                     => NTPClientController.     TryCheck(Item.Client!, Item.Name, Item.Value, out Refusal),
+                   Kind.Client                     => NTPClientController.     TryCheck(this, Item.Client!, Item.Name, Item.Value, out Refusal),
                    _                               => ClockController.         TryCheck(              Item.Name, Item.Value, out Refusal)
                };
 

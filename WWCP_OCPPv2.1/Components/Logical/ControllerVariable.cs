@@ -54,7 +54,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        Int32?                MaxItems     = null)
     {
 
-        #region ToVariableConfig(Value, Writes, Instance = null, Monitored = false)
+        #region ValuesOf(Supported)
+
+        /// <summary>
+        /// The values of the paper, in its order and as it spells them - only
+        /// those among the given ones, where a source supports fewer.
+        /// </summary>
+        /// <remarks>
+        /// The paper of Secure Time Synchronization asks for this of Mode: "The
+        /// valuesList shall list only what the charging station supports." A
+        /// value the paper does not have stays out, whatever a source says.
+        /// </remarks>
+        /// <param name="Supported">The values a source supports, in any order and in any case; null for every value of the paper.</param>
+        public IReadOnlyList<String>? ValuesOf(IEnumerable<String>? Supported)
+        {
+
+            if (ValuesList is null)
+                return null;
+
+            if (Supported is null)
+                return [.. ValuesList];
+
+            var supported = new HashSet<String>(Supported, StringComparer.OrdinalIgnoreCase);
+
+            return [.. ValuesList.Where(supported.Contains)];
+
+        }
+
+        #endregion
+
+        #region ToVariableConfig(Value, Writes, Instance = null, Monitored = false, Supported = null)
 
         /// <summary>
         /// This variable, reading its value from the given getter.
@@ -69,10 +98,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Writes">Whether the source writes it.</param>
         /// <param name="Instance">The instance of the variable, for one that has several: ClockCtrlr's NtpServerUri, say.</param>
         /// <param name="Monitored">Whether a CSMS may set a monitor on it - see VariableMonitors.</param>
-        public VariableConfig ToVariableConfig(Func<String?>  Value,
-                                               Boolean        Writes,
-                                               String?        Instance    = null,
-                                               Boolean        Monitored   = false)
+        /// <param name="Supported">The values of the paper the source supports, where it supports fewer: the valuesList lists only these - see <see cref="ValuesOf"/>.</param>
+        public VariableConfig ToVariableConfig(Func<String?>         Value,
+                                               Boolean               Writes,
+                                               String?               Instance    = null,
+                                               Boolean               Monitored   = false,
+                                               IEnumerable<String>?  Supported   = null)
 
             => new (
                    Name:             Name,
@@ -89,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          Unit:                InSeconds ? UnitsOfMeasure.TimeSpan() : null,
                                          MinLimit:            MinLimit,
                                          MaxLimit:            MaxLimit,
-                                         ValuesList:          ValuesList
+                                         ValuesList:          ValuesOf(Supported)
                                      ),
                    Description:      I18NString.Create(Description)
                );
@@ -113,10 +144,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Boolean TryCheck(String?                               Value,
                                 String                                Where,
                                 [NotNullWhen(false)] out StatusInfo?  Refusal)
+
+            => TryCheck(Value, Where, null, out Refusal);
+
+        #endregion
+
+        #region TryCheck(Value, Where, Supported, out Refusal)
+
+        /// <summary>
+        /// Whether the given value is one this variable can be set to by what the
+        /// paper says of it and by the values a source supports of it, or why
+        /// not, as a SetVariables result says it.
+        /// </summary>
+        /// <remarks>
+        /// A value of the paper that the source does not support is refused as
+        /// one the paper does not have: the valuesList a CSMS reads lists
+        /// neither - see <see cref="ValuesOf"/>.
+        /// </remarks>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="Where">The variable as a sentence names it: "NTPClientController[ptb1].Mode".</param>
+        /// <param name="Supported">The values of the paper the source supports, where it supports fewer; null for every one.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public Boolean TryCheck(String?                               Value,
+                                String                                Where,
+                                IEnumerable<String>?                  Supported,
+                                [NotNullWhen(false)] out StatusInfo?  Refusal)
         {
 
-            Refusal   = null;
-            var value = Value ?? "";
+            Refusal     = null;
+            var value   = Value ?? "";
+            var values  = ValuesOf(Supported) ?? [];
 
             if (value.Length == 0)
             {
@@ -153,16 +210,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     break;
 
                 case DataTypes.OptionList:
-                    if (!(ValuesList ?? []).Contains(value, StringComparer.OrdinalIgnoreCase))
-                        Refusal = new StatusInfo("InvalidValue", $"'{Where}' is one of {String.Join(", ", ValuesList ?? [])}, not \"{value}\"!");
+                    if (!values.Contains(value, StringComparer.OrdinalIgnoreCase))
+                        Refusal = new StatusInfo("InvalidValue", Unsupported(value) ?? $"'{Where}' is {(values.Count == 1 ? values[0] : $"one of {String.Join(", ", values)}")}, not \"{value}\"!");
                     break;
 
                 // Several of the values, comma separated: in an order that
                 // matters, or in none.
                 case DataTypes.SequenceList:
                 case DataTypes.MemberList:
-                    if (value.Split(',', StringSplitOptions.TrimEntries).FirstOrDefault(member => !(ValuesList ?? []).Contains(member, StringComparer.OrdinalIgnoreCase)) is String stranger)
-                        Refusal = new StatusInfo("InvalidValue", $"'{Where}' is a list of {String.Join(", ", ValuesList ?? [])}, and \"{stranger}\" is none of them!");
+                    if (value.Split(',', StringSplitOptions.TrimEntries).FirstOrDefault(member => !values.Contains(member, StringComparer.OrdinalIgnoreCase)) is String stranger)
+                        Refusal = new StatusInfo("InvalidValue", Unsupported(stranger) ?? $"'{Where}' is a list of {String.Join(", ", values)}, and \"{stranger}\" is none of them!");
                     break;
 
                 case DataTypes.String:
@@ -179,6 +236,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
             return Refusal is null;
+
+            // A value of the paper that the source does not support: said so,
+            // with what it does support.
+            String? Unsupported(String Member)
+
+                => (ValuesList ?? []).FirstOrDefault(paperValue => String.Equals(paperValue, Member, StringComparison.OrdinalIgnoreCase)) is String known
+
+                       ? $"'{Where}' takes {(values.Count > 0 ? String.Join(", ", values) : "none of the paper's values")} here: \"{known}\" is not supported!"
+
+                       : null;
 
         }
 
@@ -201,6 +268,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        String                                Variable,
                                        String?                               Value,
                                        [NotNullWhen(false)] out StatusInfo?  Refusal)
+
+            => TryCheck(Variables, Component, Variable, Value, null, out Refusal);
+
+        #endregion
+
+        #region (static) TryCheck(Variables, Component, Variable, Value, SupportedOf, out Refusal)
+
+        /// <summary>
+        /// Whether the named variable of the given ones can be set to the given
+        /// value by what the paper says of it and by the values a source
+        /// supports of it, or why not - "NotFound" where the component has no
+        /// such variable.
+        /// </summary>
+        /// <param name="Variables">The variables of a controller.</param>
+        /// <param name="Component">The name of the controller, for the sentence.</param>
+        /// <param name="Variable">The name of the variable, in any case.</param>
+        /// <param name="Value">The value as it was sent.</param>
+        /// <param name="SupportedOf">The values of the paper a source supports of a variable, by its name as the paper spells it: null for every one.</param>
+        /// <param name="Refusal">Why the value cannot be set.</param>
+        public static Boolean TryCheck(IEnumerable<ControllerVariable>       Variables,
+                                       String                                Component,
+                                       String                                Variable,
+                                       String?                               Value,
+                                       Func<String, IEnumerable<String>?>?   SupportedOf,
+                                       [NotNullWhen(false)] out StatusInfo?  Refusal)
         {
 
             var variable = Variables.FirstOrDefault(variable => String.Equals(variable.Name, Variable, StringComparison.OrdinalIgnoreCase));
@@ -211,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return false;
             }
 
-            return variable.TryCheck(Value, $"{Component}.{variable.Name}", out Refusal);
+            return variable.TryCheck(Value, $"{Component}.{variable.Name}", SupportedOf?.Invoke(variable.Name), out Refusal);
 
         }
 

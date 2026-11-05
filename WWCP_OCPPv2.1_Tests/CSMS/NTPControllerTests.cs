@@ -426,6 +426,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+        #region TheValuesListIsWhatTheSourceSupports_Test()
+
+        /// <summary>
+        /// A source that supports fewer modes than the paper has them offers a
+        /// CSMS only those: in the paper's order and spelling, whatever order
+        /// and case the source says them in, and never a value the paper does
+        /// not have. A source that says nothing offers every mode, and the
+        /// other variables keep the paper's values (STS 3.2.4).
+        /// </summary>
+        [Test]
+        public void TheValuesListIsWhatTheSourceSupports_Test()
+        {
+
+            var source = new InMemoryNTPSource();
+            source.Supported["Mode"] = [ "ntpv4tls", "Sundial", "NTSv4" ];
+
+            static IEnumerable<String>? ValuesListOf(NTPClientController  Controller,
+                                                     String               Variable)
+
+                => Controller.VariableConfigs.First(variable => variable.Name == Variable).Characteristics?.ValuesList;
+
+            var narrowed  = new NTPClientController(source,                  "legal", "ptb1");
+            var paper     = new NTPClientController(new InMemoryNTPSource(), "legal", "ptb1");
+
+            Assert.Multiple(() => {
+                Assert.That(ValuesListOf(narrowed, "Mode"),           Is.EqualTo(new[] { "NTSv4", "NTPv4TLS" }));
+                Assert.That(ValuesListOf(narrowed, "AEADAlgorithm"),  Is.EqualTo(new[] { "AES-SIV-CMAC-256", "AES-128-GCM-SIV" }));
+                Assert.That(ValuesListOf(narrowed, "OnPinMismatch"),  Is.EqualTo(new[] { "Refuse", "Record", "Accept" }));
+                Assert.That(ValuesListOf(paper,    "Mode"),           Is.EqualTo(new[] { "NTPv4", "NTSv4", "NTPv4TLS" }));
+            });
+
+        }
+
+        #endregion
+
+        #region TryCheck_AModeTheSourceDoesNotSupportIsRefused_Test()
+
+        /// <summary>
+        /// Checked with its source, a mode of the paper the source does not
+        /// support is refused as an invalid value that says what is supported;
+        /// one it supports passes in any case. Checked by the paper alone, every
+        /// mode of the paper passes.
+        /// </summary>
+        [Test]
+        public void TryCheck_AModeTheSourceDoesNotSupportIsRefused_Test()
+        {
+
+            var source = new InMemoryNTPSource();
+            source.Supported["Mode"] = [ "NTSv4" ];
+
+            var ntp       = NTPClientController.TryCheck(source, "ptb1", "Mode", "NTPv4",  out var ntpRefusal);
+            var nts       = NTPClientController.TryCheck(source, "ptb1", "Mode", "ntsv4",  out var ntsRefusal);
+            var stranger  = NTPClientController.TryCheck(source, "ptb1", "Mode", "Sundial", out var strangerRefusal);
+            var byPaper   = NTPClientController.TryCheck(        "ptb1", "Mode", "NTPv4",  out var byPaperRefusal);
+
+            Assert.Multiple(() => {
+                Assert.That(ntp,                                Is.False);
+                Assert.That(ntpRefusal?.ReasonCode,             Is.EqualTo("InvalidValue"));
+                Assert.That(ntpRefusal?.AdditionalInfo,         Is.EqualTo("'NTPClientController[ptb1].Mode' takes NTSv4 here: \"NTPv4\" is not supported!"));
+                Assert.That(nts,                                Is.True,  ntsRefusal?.AdditionalInfo);
+                Assert.That(stranger,                           Is.False);
+                Assert.That(strangerRefusal?.AdditionalInfo,    Is.EqualTo("'NTPClientController[ptb1].Mode' is NTSv4, not \"Sundial\"!"));
+                Assert.That(byPaper,                            Is.True,  byPaperRefusal?.AdditionalInfo);
+            });
+
+        }
+
+        #endregion
+
         #region TheStationFindsItsNTPControllers_Test()
 
         [Test]

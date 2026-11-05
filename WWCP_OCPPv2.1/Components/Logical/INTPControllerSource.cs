@@ -115,6 +115,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         String? ClientValue(String  Client,
                             String  Variable);
 
+        /// <summary>
+        /// The values of the paper this source supports of a variable of
+        /// NTPClientController that has a values list - the modes it can ask a
+        /// time server in, say - or null where it supports every one; every one
+        /// by default.
+        /// </summary>
+        /// <remarks>
+        /// The valuesList a CSMS reads lists only these, in the paper's order,
+        /// and a value the source does not support is refused like one the
+        /// paper does not have (STS 3.2.4: "The valuesList shall list only
+        /// what the charging station supports").
+        /// </remarks>
+        /// <param name="Variable">The name of the variable, as the paper spells it.</param>
+        IEnumerable<String>? SupportedClientValues(String Variable)
+            => null;
+
     }
 
 }
