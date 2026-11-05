@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String   ReasonCode        { get; }
 
         /// <summary>
-        /// Additional text to provide detailed information. [max 512]
+        /// Additional text to provide detailed information. [max 1024]
         /// </summary>
         public String?  AdditionalInfo    { get; }
 
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "additionalInfo": {
         //       "description": "Additional text to provide detailed information.",
         //       "type": "string",
-        //       "maxLength": 512
+        //       "maxLength": 1024
         //     }
         //   },
         //   "required": [

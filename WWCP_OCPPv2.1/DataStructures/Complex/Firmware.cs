@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "location": {
         //       "description": "Firmware. Location. URI\r\nurn:x-enexis:ecdm:uid:1:569460\r\nURI defining the origin of the firmware.",
         //       "type": "string",
-        //       "maxLength": 512
+        //       "maxLength": 2000
         //     },
         //     "retrieveDateTime": {
         //       "description": "Firmware. Retrieve. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569461\r\nDate and time at which the firmware shall be retrieved.",

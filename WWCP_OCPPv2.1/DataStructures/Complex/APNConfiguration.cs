@@ -142,17 +142,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "apn": {
         //       "description": "APN. APN. URI\r\nurn:x-oca:ocpp:uid:1:568814\r\nThe Access Point Name as an URL.",
         //       "type": "string",
-        //       "maxLength": 512
+        //       "maxLength": 2000
         //     },
         //     "apnUserName": {
         //       "description": "APN. APN. User_ Name\r\nurn:x-oca:ocpp:uid:1:568818\r\nAPN username.",
         //       "type": "string",
-        //       "maxLength": 20
+        //       "maxLength": 50
         //     },
         //     "apnPassword": {
         //       "description": "APN. APN. Password\r\nurn:x-oca:ocpp:uid:1:568819\r\nAPN Password.",
         //       "type": "string",
-        //       "maxLength": 20
+        //       "maxLength": 64
         //     },
         //     "simPin": {
         //       "description": "APN. SIMPIN. PIN_ Code\r\nurn:x-oca:ocpp:uid:1:568821\r\nSIM card pin code.",

@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "ocppCsmsUrl": {
         //       "description": "Communication_ Function. OCPP_ Central_ System_ URL. URI\r\nurn:x-oca:ocpp:uid:1:569357\r\nURL of the CSMS(s) that this Charging Station  communicates with.",
         //       "type": "string",
-        //       "maxLength": 512
+        //       "maxLength": 2000
         //     },
         //     "messageTimeout": {
         //       "description": "Duration in seconds before a message send by the Charging Station via this network connection times-out.\r\nThe best setting depends on the underlying network and response times of the CSMS.\r\nIf you are looking for a some guideline: use 30 seconds as a starting point.",

@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //            The Configuration Variable <<configkey-configuration-value-size, ConfigurationValueSize>>; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList.
         //            The max size of these values will always remain equal.",
         //       "type": "string",
-        //       "maxLength": 1000
+        //       "maxLength": 2500
         //     },
         //     "component": {
         //       "$ref": "#/definitions/ComponentType"

@@ -131,22 +131,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //     "server": {
         //       "description": "VPN. Server. URI\r\nurn:x-oca:ocpp:uid:1:569272\r\nVPN Server Address",
         //       "type": "string",
-        //       "maxLength": 512
+        //       "maxLength": 2000
         //     },
         //     "user": {
         //       "description": "VPN. User. User_ Name\r\nurn:x-oca:ocpp:uid:1:569273\r\nVPN User",
         //       "type": "string",
-        //       "maxLength": 20
+        //       "maxLength": 50
         //     },
         //     "group": {
         //       "description": "VPN. Group. Group_ Name\r\nurn:x-oca:ocpp:uid:1:569274\r\nVPN group.",
         //       "type": "string",
-        //       "maxLength": 20
+        //       "maxLength": 50
         //     },
         //     "password": {
         //       "description": "VPN. Password. Password\r\nurn:x-oca:ocpp:uid:1:569275\r\nVPN Password.",
         //       "type": "string",
-        //       "maxLength": 20
+        //       "maxLength": 64
         //     },
         //     "key": {
         //       "description": "VPN. Key. VPN_ Key\r\nurn:x-oca:ocpp:uid:1:569276\r\nVPN shared secret.",
