@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("MaxServers",       DataTypes.Integer,     "The most DNSServerController instances this charging station takes."),
             new ("UDPPayloadSize",   DataTypes.Integer,     "The EDNS(0) UDP payload size this charging station announces."),
             new ("ClientSubnet",     DataTypes.String,      "The EDNS Client Subnet sent with queries (RFC 7871), or empty for none."),
-            new ("EncryptedOnly",    DataTypes.Boolean,     "Whether name servers over an unencrypted transport are refused.",                                                                                              Writable: true),
+            new ("EncryptedOnly",    DataTypes.Boolean,     "Whether only the name servers reached over TLS or HTTPS are asked: one over an unencrypted transport is not asked, and none can be added.",                     Writable: true),
             new ("ServerSource",     DataTypes.OptionList,  "System: the name servers of the operating system or the network. Manual: those of DNSServerController.", ValuesList: [ "System", "Manual" ], Writable: true)
 
         ];
