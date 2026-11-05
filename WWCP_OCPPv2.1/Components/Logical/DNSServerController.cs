@@ -18,7 +18,6 @@
 #region Usings
 
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -31,13 +30,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
     /// <summary>
     /// A DNS server controller of the Secure DNS white paper (section 3.1.2):
-    /// one slot for one name server, in the fixed instances "1" to
-    /// DNSClientController.MaxServers.
+    /// one name server. The instance is the server's id, which it keeps
+    /// whatever its address becomes and whichever servers are added or taken
+    /// away around it.
     /// </summary>
     /// <remarks>
-    /// A slot no server is in reads "" for every variable: it is there, so
-    /// that a CSMS can put a server in it. Its variables are those of the paper
-    /// that the given source can answer, read from it at every read.
+    /// Servers come and go through DNSClientController.Servers, as time servers
+    /// do through the Clients of their group. Its variables are those of the
+    /// paper that the given source can answer, read from it at every read.
     /// </remarks>
     public class DNSServerController : ALogicalComponentConfig
     {
@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         internal static readonly ControllerVariable[] Variables = [
 
-            new ("Address",                 DataTypes.String,      "The IP address or the domain name of the name server; empty for an unused slot.",                MaxLimit: 253,                                      Writable: true, MayBeEmpty: true),
+            new ("Address",                 DataTypes.String,      "The IP address or the domain name of the name server.",                                           MaxLimit: 253,                                      Writable: true),
             new ("Port",                    DataTypes.Integer,     "The port of the name server; by default the one of its transport.",                               MinLimit: 1, MaxLimit: 65535,                       Writable: true, MayBeEmpty: true),
             new ("Transport",               DataTypes.OptionList,  "How the name server is asked.",                                                                    ValuesList: [ "UDP", "TCP", "TLS", "HTTPS", "HTTPS_GET" ], Writable: true),
             new ("QueryTimeout",            DataTypes.Decimal,     "How long one query to this server may take; empty for the one of DNSClientController.",           MinLimit: 0.1m, MaxLimit: 120, InSeconds: true,     Writable: true, MayBeEmpty: true),
@@ -74,37 +74,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The slot, from 1.
+        /// The id of the name server: the instance.
         /// </summary>
-        public UInt16  Slot    { get; }
+        public String   Server    { get; }
+
+        /// <summary>
+        /// Whether this stands for a name server a SetVariables request adds,
+        /// which the source does not have yet - see <see cref="NewInstance"/>.
+        /// </summary>
+        public Boolean  IsNew     { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create the DNS server controller of the given slot of the given source.
+        /// Create the DNS server controller of the given name server of the given source.
         /// </summary>
         /// <param name="Source">Where the values come from.</param>
-        /// <param name="Slot">The slot, from 1; its instance.</param>
+        /// <param name="Server">The id of the name server; its instance.</param>
         /// <param name="Description">An optional multi-language description of the controller.</param>
         /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
         public DNSServerController(IDNSControllerSource  Source,
-                                   UInt16                Slot,
+                                   String                Server,
                                    I18NString?           Description   = null,
                                    CustomData?           CustomData    = null)
 
+            : this(Source, Server, false, Description, CustomData)
+
+        { }
+
+        private DNSServerController(IDNSControllerSource  Source,
+                                    String                Server,
+                                    Boolean               IsNew,
+                                    I18NString?           Description,
+                                    CustomData?           CustomData)
+
             : base(nameof(DNSServerController),
-                   Slot.ToString(CultureInfo.InvariantCulture),
-                   Description ?? I18NString.Create("One name server of this charging station (Secure DNS)."),
+                   Server,
+                   Description ?? I18NString.Create($"The name server '{Server}' of this charging station (Secure DNS)."),
                    CustomData)
 
         {
 
-            if (Slot < 1 || Slot > Source.Slots)
-                throw new ArgumentOutOfRangeException(nameof(Slot), Slot, $"The slot must be from 1 to {Source.Slots}!");
+            if (!IsNew && !Source.ServerIds.Contains(Server, StringComparer.OrdinalIgnoreCase))
+                throw new ArgumentException($"The source has no name server '{Server}'!", nameof(Server));
 
-            this.Slot = Slot;
+            this.Server  = Server;
+            this.IsNew   = IsNew;
 
             // Written only by a source that takes a change, as the client's -
             // see DNSClientController.
@@ -116,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             // the verdict at a handshake - the Delta monitor of the paper.
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 variableConfigs.Add(
-                    variable.ToVariableConfig(() => Source.ServerValue(Slot, variable.Name),
+                    variable.ToVariableConfig(() => Source.ServerValue(Server, variable.Name),
                                               written.Contains(variable.Name),
                                               Monitored: true)
                 );
@@ -128,7 +145,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryCheck(Slot, Variable, Value, out Refusal)
+
+        #region (static) NewInstance(Source, Server)
+
+        /// <summary>
+        /// The controller of a name server the source does not have yet,
+        /// standing in for it while a SetVariables request that adds it is set:
+        /// with the variables the source writes, and the source to write them.
+        /// </summary>
+        /// <param name="Source">Where the values of the name server will come from.</param>
+        /// <param name="Server">The id of the new name server; its instance.</param>
+        public static DNSServerController NewInstance(IDNSControllerSource  Source,
+                                                      String                Server)
+
+            => new (Source, Server, true, null, null);
+
+        #endregion
+
+        #region (static) TryCheck(Server, Variable, Value, out Refusal)
 
         /// <summary>
         /// Whether the given variable of the paper can be set to the given value
@@ -136,11 +170,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// SetVariables result says it. Whether the value fits the rest of the
         /// configuration is for the source to ask.
         /// </summary>
-        /// <param name="Slot">The slot, from 1, to name it in a refusal.</param>
+        /// <param name="Server">The id of the name server, to name it in a refusal.</param>
         /// <param name="Variable">The name of the variable, in any case.</param>
         /// <param name="Value">The value as it was sent.</param>
         /// <param name="Refusal">Why the value cannot be set.</param>
-        public static Boolean TryCheck(UInt16                                Slot,
+        public static Boolean TryCheck(String                                Server,
                                        String                                Variable,
                                        String?                               Value,
                                        [NotNullWhen(false)] out StatusInfo?  Refusal)
@@ -154,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return false;
             }
 
-            return variable.TryCheck(Value, $"{nameof(DNSServerController)}[{Slot}].{variable.Name}", out Refusal);
+            return variable.TryCheck(Value, $"{nameof(DNSServerController)}[{Server}].{variable.Name}", out Refusal);
 
         }
 
@@ -164,14 +198,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) AllOf(Source)
 
         /// <summary>
-        /// The DNS server controllers of every slot of the given source, the
-        /// unused ones included.
+        /// The DNS server controllers of every name server of the given source.
         /// </summary>
         /// <param name="Source">Where the values come from.</param>
         public static IEnumerable<DNSServerController> AllOf(IDNSControllerSource Source)
 
-            => Enumerable.Range(1, Source.Slots).
-                          Select(slot => new DNSServerController(Source, (UInt16) slot));
+            => Source.ServerIds.
+                      Distinct(StringComparer.OrdinalIgnoreCase).
+                      Select  (server => new DNSServerController(Source, server));
 
         #endregion
 

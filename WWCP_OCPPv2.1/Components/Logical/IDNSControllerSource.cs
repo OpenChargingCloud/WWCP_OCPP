@@ -56,10 +56,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => [];
 
         /// <summary>
-        /// The number of name servers the station takes: the instances of
-        /// DNSServerController are "1" to this.
+        /// The ids of the name servers, in the order the station keeps them:
+        /// the instances of DNSServerController. DNSClientController.Servers
+        /// is read from here as well, so the two cannot disagree.
         /// </summary>
-        UInt16               Slots              { get; }
+        IEnumerable<String>  ServerIds          { get; }
 
         /// <summary>
         /// The value of a variable of DNSClientController, or null where there
@@ -69,13 +70,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         String? ClientValue(String Variable);
 
         /// <summary>
-        /// The value of a variable of the DNSServerController in the given slot:
-        /// "" for every variable of a slot no server is in, and null where there
-        /// is no such slot or no such variable.
+        /// The value of a variable of the given name server, or null where there
+        /// is no such server or no such variable.
         /// </summary>
-        /// <param name="Slot">The instance, from 1.</param>
+        /// <param name="Server">The id of the server, in any case.</param>
         /// <param name="Variable">The name of the variable, in any case.</param>
-        String? ServerValue(UInt16  Slot,
+        String? ServerValue(String  Server,
                             String  Variable);
 
     }

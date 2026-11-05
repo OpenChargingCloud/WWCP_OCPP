@@ -56,7 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("DNSSECOK",         DataTypes.Boolean,     "Whether queries set the DNSSEC OK bit (RFC 3225).",                                                                                                            Writable: true),
             new ("FollowCNAMEs",     DataTypes.Boolean,     "Whether CNAME records are followed.",                                                                                                                          Writable: true),
             new ("MaxCNAMEFollows",  DataTypes.Integer,     "How many CNAME records are followed at most.",                                            MinLimit: 0,    MaxLimit: 255,                   Writable: true),
-            new ("MaxServers",       DataTypes.Integer,     "The number of DNSServerController instances this charging station offers."),
+            new ("Servers",          DataTypes.String,      "The ids of the DNSServerController instances, comma separated, in the order the name servers are kept. A new id adds a name server, whose Address must be set in the same request; an id taken out removes it.", MaxItems: 16, Writable: true),
+            new ("MaxServers",       DataTypes.Integer,     "The most DNSServerController instances this charging station takes."),
             new ("UDPPayloadSize",   DataTypes.Integer,     "The EDNS(0) UDP payload size this charging station announces."),
             new ("ClientSubnet",     DataTypes.String,      "The EDNS Client Subnet sent with queries (RFC 7871), or empty for none."),
             new ("EncryptedOnly",    DataTypes.Boolean,     "Whether name servers over an unencrypted transport are refused.",                                                                                              Writable: true),
@@ -119,14 +120,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             // it with the others of its request, since what one variable may be
             // depends on the others.
             var setter   = Source as ISetVariablesSource;
-            var answered = new HashSet<String>(Source.ClientVariables, StringComparer.OrdinalIgnoreCase);
+            var answered = new HashSet<String>(Source.ClientVariables, StringComparer.OrdinalIgnoreCase) {
+                               "Servers"
+                           };
             var written  = new HashSet<String>(setter is not null ? Source.WritableClientVariables : [], StringComparer.OrdinalIgnoreCase);
 
             // Each may be monitored: a value changes on the page and from the
-            // command line as well, without the CSMS asking.
+            // command line as well, without the CSMS asking. Servers is read
+            // from the ids of the instances, so that the two cannot disagree.
             foreach (var variable in Variables.Where(variable => answered.Contains(variable.Name)))
                 variableConfigs.Add(
-                    variable.ToVariableConfig(() => Source.ClientValue(variable.Name),
+                    variable.ToVariableConfig(variable.Name == "Servers"
+                                                  ? () => String.Join(",", Source.ServerIds)
+                                                  : () => Source.ClientValue(variable.Name),
                                               written.Contains(variable.Name),
                                               Monitored: true)
                 );

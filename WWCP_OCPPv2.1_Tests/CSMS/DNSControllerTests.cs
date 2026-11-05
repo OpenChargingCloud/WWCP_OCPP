@@ -35,9 +35,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
     /// <summary>
     /// The DNS controllers of the Secure DNS white paper, as a CSMS reads them:
-    /// values from their source at every read, one slot per name server, the
-    /// unused ones included - and writable where the paper allows it and the
-    /// source takes a change, all writes of a request at once.
+    /// values from their source at every read, one instance per name server by
+    /// its id - and writable where the paper allows it and the source takes a
+    /// change, all writes of a request at once.
     /// </summary>
     [TestFixture]
     public class DNSControllerTests : AChargingStationTests
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         /// <summary>
         /// A source holding its values in dictionaries a test changes, with two
-        /// name servers in sixteen slots, and without EncryptedOnly and
+        /// name servers, "dns-1" and "office", and without EncryptedOnly and
         /// ServerSource, as a station whose node does not have them yet.
         /// </summary>
         private sealed class ADNSSource : IDNSControllerSource
@@ -67,9 +67,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 ["ClientSubnet"]      = ""
             };
 
-            public List<Dictionary<String, String>>                Servers  { get; } = [
-                new (StringComparer.OrdinalIgnoreCase) { ["Address"] = "192.0.2.53",   ["Port"] = "853", ["Transport"] = "TLS", ["RootPins"] = "9d2e4f6a8b0c1d3e5f7a9b1c3d5e7f9a0b2c4d6e8f0a1b3c5d7e9f1a2b4c6d8e", ["CertificateStatus"] = "Accepted" },
-                new (StringComparer.OrdinalIgnoreCase) { ["Address"] = "2001:db8::53", ["Port"] = "53",  ["Transport"] = "UDP" }
+            public List<(String Id, Dictionary<String, String> Values)>  Servers  { get; } = [
+                ("dns-1",  new (StringComparer.OrdinalIgnoreCase) { ["Address"] = "192.0.2.53",   ["Port"] = "853", ["Transport"] = "TLS", ["RootPins"] = "9d2e4f6a8b0c1d3e5f7a9b1c3d5e7f9a0b2c4d6e8f0a1b3c5d7e9f1a2b4c6d8e", ["CertificateStatus"] = "Accepted" }),
+                ("office", new (StringComparer.OrdinalIgnoreCase) { ["Address"] = "2001:db8::53", ["Port"] = "53",  ["Transport"] = "UDP" })
             ];
 
             public IEnumerable<String>  ClientVariables
@@ -79,8 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 => [ "Address", "Port", "Transport", "QueryTimeout", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse",
                      "Problem", "CertificateStatus", "CertificateFingerprint", "RootFingerprint", "KnownSince" ];
 
-            public UInt16               Slots
-                => 16;
+            public IEnumerable<String>  ServerIds
+                => Servers.Select(server => server.Id);
 
             public String? ClientValue(String Variable)
 
@@ -88,13 +88,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                        ? value
                        : null;
 
-            public String? ServerValue(UInt16 Slot, String Variable)
+            public String? ServerValue(String Server, String Variable)
 
-                => Slot < 1 || Slot > Slots || !ServerVariables.Contains(Variable, StringComparer.OrdinalIgnoreCase)
-                       ? null
-                       : Slot <= Servers.Count
-                             ? Servers[Slot - 1].GetValueOrDefault(Variable, "")
-                             : "";
+                => ServerVariables.Contains(Variable, StringComparer.OrdinalIgnoreCase)
+                       ? Servers.FirstOrDefault(server => String.Equals(server.Id, Server, StringComparison.OrdinalIgnoreCase)).Values?.GetValueOrDefault(Variable, "")
+                       : null;
 
         }
 
@@ -105,7 +103,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         /// <summary>
         /// GetVariables answers what the source says at that moment, for the
-        /// client, for a slot with a server and for an unused one.
+        /// client, for its servers by their ids, and for which servers there
+        /// are.
         /// </summary>
         [Test]
         public async Task GetVariables_ReadsTheSourceAtEveryRead_Test()
@@ -114,25 +113,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             var (chargingStation, source) = AStationWithDNS();
 
             var first   = await GetVariables(chargingStation,
-                                             (nameof(DNSClientController), null, "QueryTimeout"),
-                                             (nameof(DNSServerController), "1",  "Address"),
-                                             (nameof(DNSServerController), "1",  "RootPins"),
-                                             (nameof(DNSServerController), "2",  "Transport"),
-                                             (nameof(DNSServerController), "3",  "Address"));
+                                             (nameof(DNSClientController), null,      "QueryTimeout"),
+                                             (nameof(DNSClientController), null,      "Servers"),
+                                             (nameof(DNSServerController), "dns-1",   "Address"),
+                                             (nameof(DNSServerController), "dns-1",   "RootPins"),
+                                             (nameof(DNSServerController), "OFFICE",  "Transport"));
 
-            source.Client["QueryTimeout"]   = "3";
-            source.Servers[0]["Address"]    = "198.51.100.53";
+            source.Client["QueryTimeout"]         = "3";
+            source.Servers[0].Values["Address"]   = "198.51.100.53";
+            source.Servers.Add(("third", new (StringComparer.OrdinalIgnoreCase) { ["Address"] = "203.0.113.53" }));
 
             var second  = await GetVariables(chargingStation,
-                                             (nameof(DNSClientController), null, "QueryTimeout"),
-                                             (nameof(DNSServerController), "1",  "Address"));
+                                             (nameof(DNSClientController), null,      "QueryTimeout"),
+                                             (nameof(DNSClientController), null,      "Servers"),
+                                             (nameof(DNSServerController), "dns-1",   "Address"));
 
             Assert.Multiple(() => {
 
                 Assert.That(first.Select(result => result.AttributeStatus),   Is.All.EqualTo(GetVariableStatus.Accepted));
-                Assert.That(first.Select(result => result.AttributeValue),    Is.EqualTo(new[] { "2.5", "192.0.2.53", source.Servers[0]["RootPins"], "UDP", "" }));
+                Assert.That(first.Select(result => result.AttributeValue),    Is.EqualTo(new[] { "2.5", "dns-1,office", "192.0.2.53", source.Servers[0].Values["RootPins"], "UDP" }));
 
-                Assert.That(second.Select(result => result.AttributeValue),   Is.EqualTo(new[] { "3", "198.51.100.53" }));
+                Assert.That(second.Select(result => result.AttributeValue),   Is.EqualTo(new[] { "3", "dns-1,office,third", "198.51.100.53" }));
 
             });
 
@@ -143,9 +144,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #region GetVariables_WhatIsNotThereIsUnknown_Test()
 
         /// <summary>
-        /// A slot beyond the last is an unknown component, and a variable of the
-        /// paper that the source cannot answer is an unknown variable, not an
-        /// empty value.
+        /// A server the source does not have is an unknown component - the slot
+        /// "1" of before as well - and a variable of the paper that the source
+        /// cannot answer is an unknown variable, not an empty value.
         /// </summary>
         [Test]
         public async Task GetVariables_WhatIsNotThereIsUnknown_Test()
@@ -154,9 +155,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             var (chargingStation, _) = AStationWithDNS();
 
             var results = await GetVariables(chargingStation,
-                                             (nameof(DNSServerController), "17", "Address"),
-                                             (nameof(DNSClientController), null, "EncryptedOnly"),
-                                             (nameof(DNSServerController), "1",  "AuthenticationName"));
+                                             (nameof(DNSServerController), "1",      "Address"),
+                                             (nameof(DNSClientController), null,     "EncryptedOnly"),
+                                             (nameof(DNSServerController), "dns-1",  "AuthenticationName"));
 
             Assert.That(results.Select(result => result.AttributeStatus),
                         Is.EqualTo(new[] { GetVariableStatus.UnknownComponent, GetVariableStatus.UnknownVariable, GetVariableStatus.UnknownVariable }));
@@ -181,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      Destination:    SourceRouting.To(chargingStation.Id),
                                      VariableData:   [
                                                          new SetVariableData(
-                                                             Component:        new Component(Name: nameof(DNSServerController), Instance: "1"),
+                                                             Component:        new Component(Name: nameof(DNSServerController), Instance: "dns-1"),
                                                              Variable:         new Variable (Name: "Address"),
                                                              AttributeValue:   "203.0.113.53"
                                                          ),
@@ -189,6 +190,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                              Component:        new Component(Name: nameof(DNSClientController)),
                                                              Variable:         new Variable (Name: "Enabled"),
                                                              AttributeValue:   "false"
+                                                         ),
+                                                         new SetVariableData(
+                                                             Component:        new Component(Name: nameof(DNSClientController)),
+                                                             Variable:         new Variable (Name: "Servers"),
+                                                             AttributeValue:   "dns-1"
                                                          )
                                                      ]
                                  );
@@ -196,24 +202,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             Assert.Multiple(() => {
                 Assert.That(response.SetVariableResults.Select(result => result.AttributeStatus),              Is.All.EqualTo(SetVariableStatus.Rejected));
                 Assert.That(response.SetVariableResults.Select(result => result.AttributeStatusInfo?.ReasonCode), Is.All.EqualTo("ReadOnly"));
-                Assert.That(source.Servers[0]["Address"],                                                       Is.EqualTo("192.0.2.53"));
+                Assert.That(source.Servers[0].Values["Address"],                                                Is.EqualTo("192.0.2.53"));
                 Assert.That(source.Client["Enabled"],                                                           Is.EqualTo("true"));
+                Assert.That(source.ServerIds,                                                                   Is.EqualTo(new[] { "dns-1", "office" }));
             });
 
         }
 
         #endregion
 
-        #region GetBaseReport_ListsEverySlotWithItsCharacteristics_Test()
+        #region GetBaseReport_ListsEveryServerWithItsCharacteristics_Test()
 
         /// <summary>
-        /// A full inventory lists the client and all sixteen slots, the unused
-        /// ones with empty values, each variable with the characteristics of the
-        /// paper; a configuration inventory lists none of them while they are
-        /// read-only.
+        /// A full inventory lists the client and every server by its id, each
+        /// variable with the characteristics of the paper; a configuration
+        /// inventory lists none of them while they are read-only.
         /// </summary>
         [Test]
-        public async Task GetBaseReport_ListsEverySlotWithItsCharacteristics_Test()
+        public async Task GetBaseReport_ListsEveryServerWithItsCharacteristics_Test()
         {
 
             var (chargingStation, _) = AStationWithDNS();
@@ -243,12 +249,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 Assert.That(full.Status,                                                                   Is.EqualTo(GenericDeviceModelStatus.Accepted));
 
-                Assert.That(fullReport.Count(reportData => reportData.Component.Name == nameof(DNSClientController)), Is.EqualTo(11));
-                Assert.That(servers.Select(reportData => reportData.Component.Instance).Distinct(),        Is.EquivalentTo(Enumerable.Range(1, 16).Select(slot => slot.ToString())));
-                Assert.That(servers.Count,                                                                 Is.EqualTo(16 * 13));
+                Assert.That(fullReport.Count(reportData => reportData.Component.Name == nameof(DNSClientController)), Is.EqualTo(12));
+                Assert.That(servers.Select(reportData => reportData.Component.Instance).Distinct(),        Is.EquivalentTo(new[] { "dns-1", "office" }));
+                Assert.That(servers.Count,                                                                 Is.EqualTo(2 * 13));
 
-                Assert.That(servers.Where (reportData => reportData.Component.Instance == "16").
-                                    Select(reportData => reportData.VariableAttributes.Single().Value),    Is.All.EqualTo(""));
+                Assert.That(fullReport.Single(reportData => reportData.Component.Name == nameof(DNSClientController) &&
+                                                            reportData.Variable. Name == "Servers").
+                                       VariableAttributes.Single().Value,                                  Is.EqualTo("dns-1,office"));
 
                 Assert.That(queryTimeout.VariableAttributes.Single().Value,                                Is.EqualTo("2.5"));
                 Assert.That(queryTimeout.VariableAttributes.Single().Mutability,                           Is.EqualTo(MutabilityTypes.ReadOnly));
@@ -299,19 +306,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
-        #region Constructor_RefusesASlotThatIsNotThere_Test()
+        #region Constructor_RefusesAServerThatIsNotThere_Test()
 
+        /// <summary>
+        /// A controller is made for a server the source has, and a stand-in for
+        /// one a request adds: it reads nothing yet.
+        /// </summary>
         [Test]
-        public void Constructor_RefusesASlotThatIsNotThere_Test()
+        public void Constructor_RefusesAServerThatIsNotThere_Test()
         {
 
-            var source = new ADNSSource();
+            var source   = new ADNSSource();
+            var standIn  = DNSServerController.NewInstance(source, "third");
 
             Assert.Multiple(() => {
-                Assert.That(() => new DNSServerController(source,  0), Throws.InstanceOf<ArgumentOutOfRangeException>());
-                Assert.That(() => new DNSServerController(source, 17), Throws.InstanceOf<ArgumentOutOfRangeException>());
+                Assert.That(() => new DNSServerController(source, "third"),            Throws.InstanceOf<ArgumentException>());
+                Assert.That(() => new DNSServerController(source, "1"),                Throws.InstanceOf<ArgumentException>());
+                Assert.That(new DNSServerController(source, "OFFICE").Server,          Is.EqualTo("OFFICE"));
                 Assert.That(DNSServerController.AllOf(source).Select(controller => controller.Instance),
-                            Is.EqualTo(Enumerable.Range(1, 16).Select(slot => slot.ToString())));
+                            Is.EqualTo(new[] { "dns-1", "office" }));
+                Assert.That(standIn.IsNew,                                              Is.True);
+                Assert.That(standIn.Instance,                                           Is.EqualTo("third"));
+                Assert.That(standIn.VariableConfigs.Single(variable => variable.Name == "Address").Attributes?.Value,
+                                                                                        Is.Null, "nothing to read of a server not there yet");
             });
 
         }
@@ -334,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             var monitors    = new VariableMonitors();
 
             var set         = monitors.Set([ new SetMonitoringData(0, MonitorType.Delta, Severities.Alert,
-                                                                   new Component(nameof(DNSServerController), "1"),
+                                                                   new Component(nameof(DNSServerController), "dns-1"),
                                                                    new Variable("RootPins")) ],
                                            (name, evse) => servers.Where(server => server.Name == name));
 
@@ -362,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             var writer          = new ADNSWriter(new ADNSSource());
             var client          = new DNSClientController(writer);
-            var server          = new DNSServerController(writer, 1);
+            var server          = new DNSServerController(writer, "dns-1");
             var readOnlyClient  = new DNSClientController(new ADNSSource());
 
             MutabilityTypes? MutabilityOf(ComponentConfig Component, String Variable)
@@ -371,6 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             Assert.Multiple(() => {
 
                 Assert.That(MutabilityOf(client, "Enabled"),                                 Is.EqualTo(MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(client, "Servers"),                                 Is.EqualTo(MutabilityTypes.ReadWrite));
                 Assert.That(MutabilityOf(client, "MaxServers"),                              Is.EqualTo(MutabilityTypes.ReadOnly),  "the paper says read-only");
                 Assert.That(MutabilityOf(client, "DNSSECOK"),                                Is.EqualTo(MutabilityTypes.ReadOnly),  "the source does not write it");
                 Assert.That(MutabilityOf(server, "Address"),                                 Is.EqualTo(MutabilityTypes.ReadWrite));
@@ -414,19 +432,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(ReasonOf(DNSClientController.TryCheck("RecursionDesired", "unset", out refusal),     refusal), Is.Null);
                 Assert.That(ReasonOf(DNSClientController.TryCheck("NoSuchVariable",   "1",     out refusal),     refusal), Is.EqualTo("NotFound"));
 
-                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Port",          "0",     out refusal),     refusal), Is.EqualTo("ValueOutOfRange"));
-                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Port",          "",      out refusal),     refusal), Is.Null, "the port of the transport");
-                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "QueryTimeout",  "",      out refusal),     refusal), Is.Null, "the client's");
-                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Address",       "",      out refusal),     refusal), Is.Null, "an unused slot");
-                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Transport",     "tls",   out refusal),     refusal), Is.Null);
-                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "Transport",     "QUIC",  out refusal),     refusal), Is.EqualTo("InvalidValue"));
-                Assert.That(ReasonOf(DNSServerController.TryCheck(2, "RootPins",      seventeen, out refusal),   refusal), Is.EqualTo("ValueOutOfRange"));
+                Assert.That(ReasonOf(DNSClientController.TryCheck("Servers",          seventeen, out refusal),   refusal), Is.EqualTo("ValueOutOfRange"), "more than 16 servers");
+
+                Assert.That(ReasonOf(DNSServerController.TryCheck("office", "Port",          "0",     out refusal),     refusal), Is.EqualTo("ValueOutOfRange"));
+                Assert.That(ReasonOf(DNSServerController.TryCheck("office", "Port",          "",      out refusal),     refusal), Is.Null, "the port of the transport");
+                Assert.That(ReasonOf(DNSServerController.TryCheck("office", "QueryTimeout",  "",      out refusal),     refusal), Is.Null, "the client's");
+                Assert.That(ReasonOf(DNSServerController.TryCheck("office", "Transport",     "tls",   out refusal),     refusal), Is.Null);
+                Assert.That(ReasonOf(DNSServerController.TryCheck("office", "Transport",     "QUIC",  out refusal),     refusal), Is.EqualTo("InvalidValue"));
+                Assert.That(ReasonOf(DNSServerController.TryCheck("office", "RootPins",      seventeen, out refusal),   refusal), Is.EqualTo("ValueOutOfRange"));
 
             });
 
-            DNSServerController.TryCheck(2, "Port", "70000", out var named);
+            DNSServerController.TryCheck("office", "Port", "70000", out var named);
 
-            Assert.That(named?.AdditionalInfo, Does.Contain("DNSServerController[2].Port"));
+            Assert.That(named?.AdditionalInfo, Does.Contain("DNSServerController[office].Port"));
 
         }
 
@@ -456,15 +475,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             var response = await testCSMS1!.SetVariables(
                                      Destination:    SourceRouting.To(chargingStation1.Id),
                                      VariableData:   [
-                                                         new SetVariableData(Component: new Component(Name: nameof(DNSServerController), Instance: "3"), Variable: new Variable(Name: "Address"), AttributeValue: "203.0.113.53"),
-                                                         new SetVariableData(Component: new Component(Name: nameof(DNSServerController), Instance: "3"), Variable: new Variable(Name: "Port"), AttributeValue: "54"),
+                                                         new SetVariableData(Component: new Component(Name: nameof(DNSServerController), Instance: "office"), Variable: new Variable(Name: "Address"), AttributeValue: "203.0.113.53"),
+                                                         new SetVariableData(Component: new Component(Name: nameof(DNSServerController), Instance: "office"), Variable: new Variable(Name: "Port"), AttributeValue: "54"),
                                                          new SetVariableData(Component: new Component(Name: nameof(DNSClientController)), Variable: new Variable(Name: "Enabled"), AttributeValue: "false")
                                                      ]
                                  );
 
             Assert.Multiple(() => {
 
-                Assert.That(writer.Calls,                                                    Is.EqualTo(new[] { "DNSServerController(3).Address=203.0.113.53|DNSClientController.Enabled=false" }));
+                Assert.That(writer.Calls,                                                    Is.EqualTo(new[] { "DNSServerController(office).Address=203.0.113.53|DNSClientController.Enabled=false" }));
                 Assert.That(response.SetVariableResults.Select(result => result.AttributeStatus),
                                                                                              Is.EqualTo(new[] { SetVariableStatus.Accepted, SetVariableStatus.Rejected, SetVariableStatus.Accepted }));
                 Assert.That(response.SetVariableResults.ElementAt(1).AttributeStatusInfo?.ReasonCode,
@@ -476,29 +495,97 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+        #region SetVariables_AServerNamedInServersIsMadeForTheRequest_Test()
+
+        /// <summary>
+        /// A server a request names anew in DNSClientController.Servers reaches
+        /// a writing source that makes new instances, with the request's other
+        /// entries, through a stand-in for it - and one no Servers names stays
+        /// an unknown component.
+        /// </summary>
+        [Test]
+        public async Task SetVariables_AServerNamedInServersIsMadeForTheRequest_Test()
+        {
+
+            Assert.That(testCSMS1,        Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+
+            var writer = new ADNSWriter(new ADNSSource());
+
+            Assert.That(chargingStation1!.AddComponent(new DNSClientController(writer)), Is.True);
+
+            foreach (var server in DNSServerController.AllOf(writer))
+                Assert.That(chargingStation1.AddComponent(server), Is.True);
+
+            chargingStation1.AddNewInstancesSource(writer);
+
+            var response = await testCSMS1!.SetVariables(
+                                     Destination:            SourceRouting.To(chargingStation1.Id),
+                                     VariableData:           [
+                                                                 new SetVariableData(Component: new Component(Name: nameof(DNSClientController)), Variable: new Variable(Name: "Servers"), AttributeValue: "dns-1,office,third"),
+                                                                 new SetVariableData(Component: new Component(Name: nameof(DNSServerController), Instance: "third"),  Variable: new Variable(Name: "Address"), AttributeValue: "203.0.113.53"),
+                                                                 new SetVariableData(Component: new Component(Name: nameof(DNSServerController), Instance: "fourth"), Variable: new Variable(Name: "Address"), AttributeValue: "203.0.113.54")
+                                                             ],
+                                     DataConsistencyModel:   DataConsistencyModel.IndependentRequests
+                                 );
+
+            Assert.Multiple(() => {
+
+                Assert.That(writer.Calls,                                                    Is.EqualTo(new[] { "DNSClientController.Servers=dns-1,office,third|DNSServerController(third).Address=203.0.113.53" }));
+                Assert.That(writer.NewOnes,                                                  Is.EqualTo(new[] { "third" }));
+                Assert.That(response.SetVariableResults.Select(result => result.AttributeStatus),
+                                                                                             Is.EqualTo(new[] { SetVariableStatus.Accepted, SetVariableStatus.Accepted, SetVariableStatus.UnknownComponent }));
+
+            });
+
+        }
+
+        #endregion
+
         #region (class) ADNSWriter
 
         /// <summary>
-        /// A source that reads from another and takes writes of Enabled,
+        /// A source that reads from another and takes writes of Enabled, Servers,
         /// MaxServers (which the paper does not let a CSMS write), Address and
-        /// Problem (neither that), remembering each call.
+        /// Problem (neither that), remembering each call - and makes a stand-in
+        /// for a server a request names in Servers, remembering which.
         /// </summary>
-        private sealed class ADNSWriter(ADNSSource Values) : IDNSControllerSource, ISetVariablesSource
+        private sealed class ADNSWriter(ADNSSource Values) : IDNSControllerSource, ISetVariablesSource, INewInstancesSource
         {
 
             public List<String>         Calls                    { get; } = [];
+            public List<String>         NewOnes                  { get; } = [];
 
             public IEnumerable<String>  ClientVariables          => Values.ClientVariables;
             public IEnumerable<String>  ServerVariables          => Values.ServerVariables;
-            public IEnumerable<String>  WritableClientVariables  => [ "Enabled", "MaxServers" ];
+            public IEnumerable<String>  WritableClientVariables  => [ "Enabled", "Servers", "MaxServers" ];
             public IEnumerable<String>  WritableServerVariables  => [ "Address", "Problem" ];
-            public UInt16               Slots                    => Values.Slots;
+            public IEnumerable<String>  ServerIds                => Values.ServerIds;
+            public IEnumerable<String>  NewInstanceComponents    => [ nameof(DNSServerController) ];
 
             public String? ClientValue(String Variable)
                 => Values.ClientValue(Variable);
 
-            public String? ServerValue(UInt16 Slot, String Variable)
-                => Values.ServerValue(Slot, Variable);
+            public String? ServerValue(String Server, String Variable)
+                => Values.ServerValue(Server, Variable);
+
+            public ComponentConfig? NewInstance(Component            Component,
+                                                SetVariablesRequest  Request)
+            {
+
+                if (Component.Instance is not String server ||
+                    !Request.VariableData.Any(entry => entry.Component.Name == nameof(DNSClientController) &&
+                                                       entry.Variable. Name == "Servers" &&
+                                                       (entry.AttributeValue ?? "").Split(',').Contains(server)))
+                {
+                    return null;
+                }
+
+                NewOnes.Add(server);
+
+                return DNSServerController.NewInstance(this, server);
+
+            }
 
             public Task<IReadOnlyList<SetVariableResult>> SetVariablesAsync(IReadOnlyList<SetVariableEntry>  Entries,
                                                                             DataConsistencyModel             DataConsistencyModel,
