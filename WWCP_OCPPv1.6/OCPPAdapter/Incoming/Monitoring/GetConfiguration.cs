@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetConfigurationRequestReceivedDelegate(DateTimeOffset            Timestamp,
                                                                    IEventSender              Sender,
-                                                                   IWebSocketConnection      Connection,
+                                                                   IMessageConnection        Connection,
                                                                    GetConfigurationRequest   Request,
                                                                    CancellationToken         CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetConfigurationResponseReceivedDelegate(DateTimeOffset             Timestamp,
                                                                     IEventSender               Sender,
-                                                                    IWebSocketConnection?      Connection,
+                                                                    IMessageConnection?        Connection,
                                                                     GetConfigurationRequest?   Request,
                                                                     GetConfigurationResponse   Response,
                                                                     TimeSpan?                  Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetConfigurationRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                         IEventSender                   Sender,
-                                                                        IWebSocketConnection           Connection,
+                                                                        IMessageConnection             Connection,
                                                                         GetConfigurationRequest?       Request,
                                                                         OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                         TimeSpan?                      Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetConfigurationResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
-                                                                         IWebSocketConnection            Connection,
+                                                                         IMessageConnection              Connection,
                                                                          GetConfigurationRequest?        Request,
                                                                          GetConfigurationResponse?       Response,
                                                                          OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnGetConfigurationDelegate(DateTimeOffset            Timestamp,
                                    IEventSender              Sender,
-                                   IWebSocketConnection      Connection,
+                                   IMessageConnection        Connection,
                                    GetConfigurationRequest   Request,
                                    CancellationToken         CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_GetConfiguration(DateTimeOffset        RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
+                                     IMessageConnection    WebSocketConnection,
                                      SourceRouting     Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
@@ -306,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_GetConfiguration(DateTimeOffset        RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
+                                     IMessageConnection    WebSocketConnection,
                                      SourceRouting         Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
@@ -474,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_GetConfigurationResponse(GetConfigurationRequest  Request,
                                              JObject                  ResponseJSON,
-                                             IWebSocketConnection     WebSocketConnection,
+                                             IMessageConnection       WebSocketConnection,
                                              SourceRouting            Destination,
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
@@ -572,7 +573,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_GetConfigurationResponse(GetConfigurationRequest  Request,
                                              Byte[]                   ResponseBinary,
-                                             IWebSocketConnection     WebSocketConnection,
+                                             IMessageConnection       WebSocketConnection,
                                              SourceRouting            Destination,
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
@@ -682,7 +683,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_GetConfigurationRequestError(GetConfigurationRequest       Request,
                                                  OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection          Connection,
+                                                 IMessageConnection            Connection,
                                                  SourceRouting             Destination,
                                                  NetworkPath                   NetworkPath,
                                                  EventTracking_Id              EventTrackingId,
@@ -761,7 +762,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_GetConfigurationRequestError(GetConfigurationRequest         Request,
                                                  OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection            Connection,
+                                                 IMessageConnection              Connection,
                                                  SourceRouting                   Destination,
                                                  NetworkPath                     NetworkPath,
                                                  EventTracking_Id                EventTrackingId,
@@ -850,7 +851,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             Receive_GetConfigurationResponseError(GetConfigurationRequest?       Request,
                                                   GetConfigurationResponse?      Response,
                                                   OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                  IWebSocketConnection           Connection,
+                                                  IMessageConnection             Connection,
                                                   SourceRouting                  Destination,
                                                   NetworkPath                    NetworkPath,
                                                   EventTracking_Id               EventTrackingId,

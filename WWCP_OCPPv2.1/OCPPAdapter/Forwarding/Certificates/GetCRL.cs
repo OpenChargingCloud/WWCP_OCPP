@@ -45,7 +45,7 @@
 
 //        OnGetCRLRequestFilterDelegate(DateTimeOffset         Timestamp,
 //                                      IEventSender           Sender,
-//                                      IWebSocketConnection   Connection,
+//                                      IMessageConnection     Connection,
 //                                      GetCRLRequest          Request,
 //                                      CancellationToken      CancellationToken);
 
@@ -63,7 +63,7 @@
 
 //        OnGetCRLRequestFilteredDelegate(DateTimeOffset                                      Timestamp,
 //                                        IEventSender                                        Sender,
-//                                        IWebSocketConnection                                Connection,
+//                                        IMessageConnection                                  Connection,
 //                                        GetCRLRequest                                       Request,
 //                                        RequestForwardingDecision<GetCRLRequest, GetCRLResponse>   ForwardingDecision,
 //                                        CancellationToken                                   CancellationToken);
@@ -89,7 +89,7 @@
 
 //            Forward_GetCRL(OCPP_JSONRequestMessage    JSONRequestMessage,
 //                           OCPP_BinaryRequestMessage  BinaryRequestMessage,
-//                           IWebSocketConnection       WebSocketConnection,
+//                           IMessageConnection         WebSocketConnection,
 //                           CancellationToken          CancellationToken   = default)
 
 //        {

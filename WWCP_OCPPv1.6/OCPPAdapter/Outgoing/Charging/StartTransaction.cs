@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 
@@ -46,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnStartTransactionRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
+                                                               IMessageConnection?       Connection,
                                                                StartTransactionRequest   Request,
                                                                SentMessageResults        SentMessageResult,
                                                                CancellationToken         CancellationToken);
@@ -67,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnStartTransactionResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
+                                               IMessageConnection?        Connection,
                                                StartTransactionRequest    Request,
                                                StartTransactionResponse   Response,
                                                TimeSpan                   Runtime,
@@ -90,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnStartTransactionRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
+                                                   IMessageConnection?            Connection,
                                                    StartTransactionRequest?       Request,
                                                    OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                    TimeSpan?                      Runtime,
@@ -114,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnStartTransactionResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
+                                                    IMessageConnection?             Connection,
                                                     StartTransactionRequest?        Request,
                                                     StartTransactionResponse?       Response,
                                                     OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -480,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnStartTransactionResponseSent(DateTimeOffset            Timestamp,
                                                        IEventSender              Sender,
-                                                       IWebSocketConnection?     Connection,
+                                                       IMessageConnection?       Connection,
                                                        StartTransactionRequest   Request,
                                                        StartTransactionResponse  Response,
                                                        TimeSpan                  Runtime,
@@ -513,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnStartTransactionRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
+                                                           IMessageConnection?           Connection,
                                                            StartTransactionRequest?      Request,
                                                            OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                            TimeSpan                      Runtime,
@@ -546,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnStartTransactionResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
+                                                            IMessageConnection?            Connection,
                                                             StartTransactionRequest?       Request,
                                                             StartTransactionResponse?      Response,
                                                             OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

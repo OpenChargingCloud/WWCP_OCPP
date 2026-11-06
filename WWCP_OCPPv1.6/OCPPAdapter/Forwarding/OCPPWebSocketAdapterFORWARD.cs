@@ -26,6 +26,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -55,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyJSONRequestFilterDelegate(DateTimeOffset            Timestamp,
                                        IEventSender              Sender,
-                                       IWebSocketConnection      Connection,
+                                       IMessageConnection        Connection,
                                        OCPP_JSONRequestMessage   Request,
                                        CancellationToken         CancellationToken);
 
@@ -73,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyJSONRequestFilteredDelegate(DateTimeOffset            Timestamp,
                                          IEventSender              Sender,
-                                         IWebSocketConnection      Connection,
+                                         IMessageConnection        Connection,
                                          OCPP_JSONRequestMessage   Request,
                                          RequestForwardingDecision        ForwardingDecision,
                                          CancellationToken         CancellationToken);
@@ -94,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyBinaryRequestFilterDelegate(DateTimeOffset              Timestamp,
                                          IEventSender                Sender,
-                                         IWebSocketConnection        Connection,
+                                         IMessageConnection          Connection,
                                          OCPP_BinaryRequestMessage   Request,
                                          CancellationToken           CancellationToken);
 
@@ -112,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyBinaryRequestFilteredDelegate(DateTimeOffset              Timestamp,
                                            IEventSender                Sender,
-                                           IWebSocketConnection        Connection,
+                                           IMessageConnection          Connection,
                                            OCPP_BinaryRequestMessage   Request,
                                            RequestForwardingDecision          ForwardingDecision,
                                            CancellationToken           CancellationToken);
@@ -134,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyJSONResponseFilterDelegate(DateTimeOffset             Timestamp,
                                         IEventSender               Sender,
-                                        IWebSocketConnection       Connection,
+                                        IMessageConnection         Connection,
                                         OCPP_JSONResponseMessage   Response,
                                         CancellationToken          CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyJSONResponseFilteredDelegate(DateTimeOffset            Timestamp,
                                          IEventSender              Sender,
-                                         IWebSocketConnection      Connection,
+                                         IMessageConnection        Connection,
                                          OCPP_JSONResponseMessage   Response,
                                          RequestForwardingDecision        ForwardingDecision,
                                          CancellationToken         CancellationToken);
@@ -173,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyBinaryResponseFilterDelegate(DateTimeOffset              Timestamp,
                                          IEventSender                Sender,
-                                         IWebSocketConnection        Connection,
+                                         IMessageConnection          Connection,
                                          OCPP_BinaryResponseMessage   Response,
                                          CancellationToken           CancellationToken);
 
@@ -191,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyBinaryResponseFilteredDelegate(DateTimeOffset              Timestamp,
                                            IEventSender                Sender,
-                                           IWebSocketConnection        Connection,
+                                           IMessageConnection          Connection,
                                            OCPP_BinaryResponseMessage   Response,
                                            RequestForwardingDecision          ForwardingDecision,
                                            CancellationToken           CancellationToken);
@@ -214,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyJSONSendMessageFilterDelegate(DateTimeOffset         Timestamp,
                                            IEventSender           Sender,
-                                           IWebSocketConnection   Connection,
+                                           IMessageConnection     Connection,
                                            OCPP_JSONSendMessage   SendMessage,
                                            CancellationToken      CancellationToken);
 
@@ -232,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyJSONSendMessageFilteredDelegate(DateTimeOffset              Timestamp,
                                              IEventSender                Sender,
-                                             IWebSocketConnection        Connection,
+                                             IMessageConnection          Connection,
                                              OCPP_JSONSendMessage        SendMessage,
                                              MessageForwardingDecision   ForwardingDecision,
                                              CancellationToken           CancellationToken);
@@ -253,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyBinarySendMessageFilterDelegate(DateTimeOffset           Timestamp,
                                              IEventSender             Sender,
-                                             IWebSocketConnection     Connection,
+                                             IMessageConnection       Connection,
                                              OCPP_BinarySendMessage   SendMessage,
                                              CancellationToken        CancellationToken);
 
@@ -271,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAnyBinarySendMessageFilteredDelegate(DateTimeOffset              Timestamp,
                                                IEventSender                Sender,
-                                               IWebSocketConnection        Connection,
+                                               IMessageConnection          Connection,
                                                OCPP_BinarySendMessage      SendMessage,
                                                MessageForwardingDecision   ForwardingDecision,
                                                CancellationToken           CancellationToken);
@@ -431,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessJSONRequestMessage         (JSONRequestMessage,         WebSocketConnection)
 
         public async Task ProcessJSONRequestMessage(OCPP_JSONRequestMessage  JSONRequestMessage,
-                                                    IWebSocketConnection     WebSocketConnection)
+                                                    IMessageConnection       WebSocketConnection)
         {
 
             if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONRequestMessage.Destination.Next))
@@ -667,7 +668,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessJSONResponseMessage        (JSONResponseMessage,        WebSocketConnection)
 
         public async Task ProcessJSONResponseMessage(OCPP_JSONResponseMessage  JSONResponseMessage,
-                                                     IWebSocketConnection      WebSocketConnection)
+                                                     IMessageConnection        WebSocketConnection)
         {
 
             #region Do we have a general filter rule for any JSON response?
@@ -768,7 +769,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessJSONRequestErrorMessage    (JSONRequestErrorMessage,    WebSocketConnection)
 
         public async Task ProcessJSONRequestErrorMessage(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
-                                                         IWebSocketConnection          WebSocketConnection)
+                                                         IMessageConnection            WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(JSONRequestErrorMessage.RequestId, out var responseInfo))
@@ -794,7 +795,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessJSONResponseErrorMessage   (JSONResponseErrorMessage,   WebSocketConnection)
 
         public async Task ProcessJSONResponseErrorMessage(OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,
-                                                          IWebSocketConnection           WebSocketConnection)
+                                                          IMessageConnection             WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(JSONResponseErrorMessage.RequestId, out var responseInfo))
@@ -820,7 +821,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessJSONSendMessage            (JSONSendMessage,            WebSocketConnection)
 
         public async Task ProcessJSONSendMessage(OCPP_JSONSendMessage  JSONSendMessage,
-                                                 IWebSocketConnection  WebSocketConnection)
+                                                 IMessageConnection    WebSocketConnection)
         {
 
             if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(JSONSendMessage.Destination.Next))
@@ -1037,7 +1038,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessBinaryRequestMessage       (BinaryRequestMessage,       WebSocketConnection)
 
         public async Task ProcessBinaryRequestMessage(OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                                                      IWebSocketConnection       WebSocketConnection)
+                                                      IMessageConnection         WebSocketConnection)
         {
 
             if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinaryRequestMessage.Destination.Next))
@@ -1272,7 +1273,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessBinaryResponseMessage      (BinaryResponseMessage,      WebSocketConnection)
 
         public async Task ProcessBinaryResponseMessage(OCPP_BinaryResponseMessage  BinaryResponseMessage,
-                                                       IWebSocketConnection        WebSocketConnection)
+                                                       IMessageConnection          WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(BinaryResponseMessage.RequestId, out var responseInfo))
@@ -1305,7 +1306,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessBinaryRequestErrorMessage  (BinaryRequestErrorMessage,  WebSocketConnection)
 
         public async Task ProcessBinaryRequestErrorMessage(OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
-                                                           IWebSocketConnection            WebSocketConnection)
+                                                           IMessageConnection              WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(BinaryRequestErrorMessage.RequestId, out var responseInfo))
@@ -1331,7 +1332,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessBinaryResponseErrorMessage (BinaryResponseErrorMessage, WebSocketConnection)
 
         public async Task ProcessBinaryResponseErrorMessage(OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
-                                                            IWebSocketConnection             WebSocketConnection)
+                                                            IMessageConnection               WebSocketConnection)
         {
 
             if (expectedResponses.TryRemove(BinaryResponseErrorMessage.RequestId, out var responseInfo))
@@ -1357,7 +1358,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessBinarySendMessage          (BinarySendMessage,          WebSocketConnection)
 
         public async Task ProcessBinarySendMessage(OCPP_BinarySendMessage  BinarySendMessage,
-                                                   IWebSocketConnection    WebSocketConnection)
+                                                   IMessageConnection      WebSocketConnection)
         {
 
             if (AnycastIdsAllowed.Count > 0 && !AnycastIdsAllowed.Contains(BinarySendMessage.Destination.Next))

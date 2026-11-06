@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -173,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => ToAbstractJSON(null, RequestData);
 
-        public JObject ToAbstractJSON(IWebSocketConnection  Connection,
+        public JObject ToAbstractJSON(IMessageConnection    Connection,
                                       Object                RequestData)
         {
 

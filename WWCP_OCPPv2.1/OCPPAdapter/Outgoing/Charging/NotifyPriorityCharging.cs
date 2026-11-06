@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyPriorityChargingRequestSentDelegate(DateTimeOffset                  Timestamp,
                                                                      IEventSender                    Sender,
-                                                                     IWebSocketConnection?           Connection,
+                                                                     IMessageConnection?             Connection,
                                                                      NotifyPriorityChargingRequest   Request,
                                                                      SentMessageResults              SentMessageResult,
                                                                      CancellationToken               CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnNotifyPriorityChargingResponseSentDelegate(DateTimeOffset                   Timestamp,
                                                      IEventSender                     Sender,
-                                                     IWebSocketConnection?            Connection,
+                                                     IMessageConnection?              Connection,
                                                      NotifyPriorityChargingRequest    Request,
                                                      NotifyPriorityChargingResponse   Response,
                                                      TimeSpan                         Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnNotifyPriorityChargingRequestErrorSentDelegate(DateTimeOffset                   Timestamp,
                                                          IEventSender                     Sender,
-                                                         IWebSocketConnection?            Connection,
+                                                         IMessageConnection?              Connection,
                                                          NotifyPriorityChargingRequest?   Request,
                                                          OCPP_JSONRequestErrorMessage     RequestErrorMessage,
                                                          TimeSpan?                        Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnNotifyPriorityChargingResponseErrorSentDelegate(DateTimeOffset                    Timestamp,
                                                           IEventSender                      Sender,
-                                                          IWebSocketConnection?             Connection,
+                                                          IMessageConnection?               Connection,
                                                           NotifyPriorityChargingRequest?    Request,
                                                           NotifyPriorityChargingResponse?   Response,
                                                           OCPP_JSONResponseErrorMessage     ResponseErrorMessage,
@@ -266,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnNotifyPriorityChargingResponseSent(DateTimeOffset                  Timestamp,
                                                              IEventSender                    Sender,
-                                                             IWebSocketConnection?           Connection,
+                                                             IMessageConnection?             Connection,
                                                              NotifyPriorityChargingRequest   Request,
                                                              NotifyPriorityChargingResponse  Response,
                                                              TimeSpan                        Runtime,
@@ -299,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnNotifyPriorityChargingRequestErrorSent(DateTimeOffset                  Timestamp,
                                                                  IEventSender                    Sender,
-                                                                 IWebSocketConnection?           Connection,
+                                                                 IMessageConnection?             Connection,
                                                                  NotifyPriorityChargingRequest?  Request,
                                                                  OCPP_JSONRequestErrorMessage    RequestErrorMessage,
                                                                  TimeSpan                        Runtime,
@@ -332,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnNotifyPriorityChargingResponseErrorSent(DateTimeOffset                   Timestamp,
                                                                   IEventSender                     Sender,
-                                                                  IWebSocketConnection?            Connection,
+                                                                  IMessageConnection?              Connection,
                                                                   NotifyPriorityChargingRequest?   Request,
                                                                   NotifyPriorityChargingResponse?  Response,
                                                                   OCPP_JSONResponseErrorMessage    ResponseErrorMessage,

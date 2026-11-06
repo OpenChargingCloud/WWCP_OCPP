@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnPullDynamicScheduleUpdateRequestSentDelegate(DateTimeOffset                     Timestamp,
                                                                         IEventSender                       Sender,
-                                                                        IWebSocketConnection?              Connection,
+                                                                        IMessageConnection?                Connection,
                                                                         PullDynamicScheduleUpdateRequest   Request,
                                                                         SentMessageResults                 SentMessageResult,
                                                                         CancellationToken                  CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnPullDynamicScheduleUpdateResponseSentDelegate(DateTimeOffset                      Timestamp,
                                                         IEventSender                        Sender,
-                                                        IWebSocketConnection?               Connection,
+                                                        IMessageConnection?                 Connection,
                                                         PullDynamicScheduleUpdateRequest    Request,
                                                         PullDynamicScheduleUpdateResponse   Response,
                                                         TimeSpan                            Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnPullDynamicScheduleUpdateRequestErrorSentDelegate(DateTimeOffset                      Timestamp,
                                                             IEventSender                        Sender,
-                                                            IWebSocketConnection?               Connection,
+                                                            IMessageConnection?                 Connection,
                                                             PullDynamicScheduleUpdateRequest?   Request,
                                                             OCPP_JSONRequestErrorMessage        RequestErrorMessage,
                                                             TimeSpan?                           Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnPullDynamicScheduleUpdateResponseErrorSentDelegate(DateTimeOffset                       Timestamp,
                                                              IEventSender                         Sender,
-                                                             IWebSocketConnection?                Connection,
+                                                             IMessageConnection?                  Connection,
                                                              PullDynamicScheduleUpdateRequest?    Request,
                                                              PullDynamicScheduleUpdateResponse?   Response,
                                                              OCPP_JSONResponseErrorMessage        ResponseErrorMessage,
@@ -267,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnPullDynamicScheduleUpdateResponseSent(DateTimeOffset                     Timestamp,
                                                                 IEventSender                       Sender,
-                                                                IWebSocketConnection?              Connection,
+                                                                IMessageConnection?                Connection,
                                                                 PullDynamicScheduleUpdateRequest   Request,
                                                                 PullDynamicScheduleUpdateResponse  Response,
                                                                 TimeSpan                           Runtime,
@@ -300,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnPullDynamicScheduleUpdateRequestErrorSent(DateTimeOffset                     Timestamp,
                                                                     IEventSender                       Sender,
-                                                                    IWebSocketConnection?              Connection,
+                                                                    IMessageConnection?                Connection,
                                                                     PullDynamicScheduleUpdateRequest?  Request,
                                                                     OCPP_JSONRequestErrorMessage       RequestErrorMessage,
                                                                     TimeSpan                           Runtime,
@@ -333,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnPullDynamicScheduleUpdateResponseErrorSent(DateTimeOffset                      Timestamp,
                                                                      IEventSender                        Sender,
-                                                                     IWebSocketConnection?               Connection,
+                                                                     IMessageConnection?                 Connection,
                                                                      PullDynamicScheduleUpdateRequest?   Request,
                                                                      PullDynamicScheduleUpdateResponse?  Response,
                                                                      OCPP_JSONResponseErrorMessage       ResponseErrorMessage,

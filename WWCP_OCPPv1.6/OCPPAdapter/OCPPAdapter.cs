@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -1091,11 +1092,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONRequestMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendJSONRequest(JSONRequestMessage);
-
-                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendJSONRequest(JSONRequestMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendJSONRequest(JSONRequestMessage);
 
             }
 
@@ -1276,11 +1274,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONResponseMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendJSONResponse(JSONResponseMessage);
-
-                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendJSONResponse(JSONResponseMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendJSONResponse(JSONResponseMessage);
 
             }
 
@@ -1300,11 +1295,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendJSONRequestError(JSONRequestErrorMessage);
-
-                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendJSONRequestError(JSONRequestErrorMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendJSONRequestError(JSONRequestErrorMessage);
 
             }
 
@@ -1324,11 +1316,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONResponseErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendJSONResponseError(JSONResponseErrorMessage);
-
-                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendJSONResponseError(JSONResponseErrorMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendJSONResponseError(JSONResponseErrorMessage);
 
             }
 
@@ -1368,11 +1357,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             else if (NetworkingNode.Routing.LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendJSONSendMessage(JSONSendMessage);
-
-                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendJSONSendMessage(JSONSendMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendJSONSendMessage(JSONSendMessage);
 
             }
 
@@ -1400,11 +1386,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryRequestMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendBinaryRequest(BinaryRequestMessage);
-
-                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendBinaryRequest(BinaryRequestMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendBinaryRequest(BinaryRequestMessage);
 
             }
 
@@ -1551,11 +1534,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryResponseMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendBinaryResponse(BinaryResponseMessage);
-
-                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendBinaryResponse(BinaryResponseMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendBinaryResponse(BinaryResponseMessage);
 
             }
 
@@ -1575,11 +1555,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendBinaryRequestError(BinaryRequestErrorMessage);
-
-                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendBinaryRequestError(BinaryRequestErrorMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendBinaryRequestError(BinaryRequestErrorMessage);
 
             }
 
@@ -1599,11 +1576,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryResponseErrorMessage.Destination.Next, out var reachability))
             {
 
-                if (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendBinaryResponseError(BinaryResponseErrorMessage);
-
-                if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendBinaryResponseError(BinaryResponseErrorMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendBinaryResponseError(BinaryResponseErrorMessage);
 
             }
 
@@ -1624,11 +1598,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinarySendMessage.Destination.Next, out var reachability))
             {
 
-                if      (reachability.WWCPWebSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                    sentMessageResult = await ocppWebSocketClient.SendBinarySendMessage(BinarySendMessage);
-
-                else if (reachability.WWCPWebSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                    sentMessageResult = await ocppWebSocketServer.SendBinarySendMessage(BinarySendMessage);
+                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
+                    sentMessageResult = await ocppTransport.SendBinarySendMessage(BinarySendMessage);
 
             }
 
@@ -1648,7 +1619,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region (internal) ReceiveJSONResponse        (JSONResponseMessag,         WebSocketConnection)
 
         internal Boolean ReceiveJSONResponse(OCPP_JSONResponseMessage  JSONResponseMessage,
-                                             IWebSocketConnection      WebSocketConnection)
+                                             IMessageConnection        WebSocketConnection)
         {
 
             if (requests.TryGetValue(JSONResponseMessage.RequestId, out var sendRequestState))
@@ -1674,7 +1645,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region (internal) ReceiveJSONRequestError    (JSONRequestErrorMessage,    WebSocketConnection)
 
         internal Boolean ReceiveJSONRequestError(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
-                                                 IWebSocketConnection          WebSocketConnection)
+                                                 IMessageConnection            WebSocketConnection)
         {
 
             if (requests.TryGetValue(JSONRequestErrorMessage.RequestId, out var sendRequestState))
@@ -1700,7 +1671,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region (internal) ReceiveJSONResponseError   (JSONResponseErrorMessage,   WebSocketConnection)
 
         internal Boolean ReceiveJSONResponseError(OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,
-                                                  IWebSocketConnection           WebSocketConnection)
+                                                  IMessageConnection             WebSocketConnection)
         {
 
             if (requests.TryGetValue(JSONResponseErrorMessage.RequestId, out var sendRequestState))
@@ -1732,7 +1703,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region (internal) ReceiveBinaryResponse      (BinaryResponseMessage,      WebSocketConnection)
 
         internal Boolean ReceiveBinaryResponse(OCPP_BinaryResponseMessage  BinaryResponseMessage,
-                                               IWebSocketConnection        WebSocketConnection)
+                                               IMessageConnection          WebSocketConnection)
         {
 
             if (requests.TryGetValue(BinaryResponseMessage.RequestId, out var sendRequestState))
@@ -1758,7 +1729,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region (internal) ReceiveBinaryRequestError  (BinaryRequestErrorMessage,  WebSocketConnection)
 
         internal Boolean ReceiveBinaryRequestError(OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
-                                                   IWebSocketConnection            WebSocketConnection)
+                                                   IMessageConnection              WebSocketConnection)
         {
 
             if (requests.TryGetValue(BinaryRequestErrorMessage.RequestId, out var sendRequestState))
@@ -1784,7 +1755,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region (internal) ReceiveBinaryResponseError (BinaryResponseErrorMessage, WebSocketConnection)
 
         internal Boolean ReceiveBinaryResponseError(OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
-                                                    IWebSocketConnection             WebSocketConnection)
+                                                    IMessageConnection               WebSocketConnection)
         {
 
             if (requests.TryGetValue(BinaryResponseErrorMessage.RequestId, out var sendRequestState))

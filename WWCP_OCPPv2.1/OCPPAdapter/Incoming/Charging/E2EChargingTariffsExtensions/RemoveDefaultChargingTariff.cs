@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -49,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnRemoveDefaultChargingTariffRequestReceivedDelegate(DateTimeOffset                       Timestamp,
                                                              IEventSender                         Sender,
-                                                             IWebSocketConnection                 Connection,
+                                                             IMessageConnection                   Connection,
                                                              RemoveDefaultChargingTariffRequest   Request,
                                                              CancellationToken                    CancellationToken);
 
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRemoveDefaultChargingTariffResponseReceivedDelegate(DateTimeOffset                        Timestamp,
                                                                                IEventSender                          Sender,
-                                                                               IWebSocketConnection?                 Connection,
+                                                                               IMessageConnection?                   Connection,
                                                                                RemoveDefaultChargingTariffRequest?   Request,
                                                                                RemoveDefaultChargingTariffResponse   Response,
                                                                                TimeSpan?                             Runtime,
@@ -85,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRemoveDefaultChargingTariffRequestErrorReceivedDelegate(DateTimeOffset                        Timestamp,
                                                                                    IEventSender                          Sender,
-                                                                                   IWebSocketConnection                  Connection,
+                                                                                   IMessageConnection                    Connection,
                                                                                    RemoveDefaultChargingTariffRequest?   Request,
                                                                                    OCPP_JSONRequestErrorMessage          RequestErrorMessage,
                                                                                    TimeSpan?                             Runtime,
@@ -105,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRemoveDefaultChargingTariffResponseErrorReceivedDelegate(DateTimeOffset                         Timestamp,
                                                                                     IEventSender                           Sender,
-                                                                                    IWebSocketConnection                   Connection,
+                                                                                    IMessageConnection                     Connection,
                                                                                     RemoveDefaultChargingTariffRequest?    Request,
                                                                                     RemoveDefaultChargingTariffResponse?   Response,
                                                                                     OCPP_JSONResponseErrorMessage          ResponseErrorMessage,
@@ -128,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnRemoveDefaultChargingTariffDelegate(DateTimeOffset                       Timestamp,
                                               IEventSender                         Sender,
-                                              IWebSocketConnection                 Connection,
+                                              IMessageConnection                   Connection,
                                               RemoveDefaultChargingTariffRequest   Request,
                                               CancellationToken                    CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_RemoveDefaultChargingTariff(DateTimeOffset        RequestTimestamp,
-                                                IWebSocketConnection  WebSocketConnection,
+                                                IMessageConnection    WebSocketConnection,
                                                 SourceRouting         Destination,
                                                 NetworkPath           NetworkPath,
                                                 EventTracking_Id      EventTrackingId,
@@ -315,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_RemoveDefaultChargingTariffResponse(RemoveDefaultChargingTariffRequest  Request,
                                                         JObject                             ResponseJSON,
-                                                        IWebSocketConnection                WebSocketConnection,
+                                                        IMessageConnection                  WebSocketConnection,
                                                         SourceRouting                   Destination,
                                                         NetworkPath                         NetworkPath,
                                                         EventTracking_Id                    EventTrackingId,
@@ -418,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_RemoveDefaultChargingTariffRequestError(RemoveDefaultChargingTariffRequest  Request,
                                                             OCPP_JSONRequestErrorMessage        RequestErrorMessage,
-                                                            IWebSocketConnection                Connection,
+                                                            IMessageConnection                  Connection,
                                                             SourceRouting                   Destination,
                                                             NetworkPath                         NetworkPath,
                                                             EventTracking_Id                    EventTrackingId,
@@ -507,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_RemoveDefaultChargingTariffResponseError(RemoveDefaultChargingTariffRequest?   Request,
                                                              RemoveDefaultChargingTariffResponse?  Response,
                                                              OCPP_JSONResponseErrorMessage         ResponseErrorMessage,
-                                                             IWebSocketConnection                  Connection,
+                                                             IMessageConnection                    Connection,
                                                              SourceRouting                         Destination,
                                                              NetworkPath                           NetworkPath,
                                                              EventTracking_Id                      EventTrackingId,

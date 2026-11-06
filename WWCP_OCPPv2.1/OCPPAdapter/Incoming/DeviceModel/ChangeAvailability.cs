@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeAvailabilityRequestReceivedDelegate(DateTimeOffset              Timestamp,
                                                                      IEventSender                Sender,
-                                                                     IWebSocketConnection        Connection,
+                                                                     IMessageConnection          Connection,
                                                                      ChangeAvailabilityRequest   Request,
                                                                      CancellationToken           CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeAvailabilityResponseReceivedDelegate(DateTimeOffset               Timestamp,
                                                                       IEventSender                 Sender,
-                                                                      IWebSocketConnection?        Connection,
+                                                                      IMessageConnection?          Connection,
                                                                       ChangeAvailabilityRequest?   Request,
                                                                       ChangeAvailabilityResponse   Response,
                                                                       TimeSpan?                    Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeAvailabilityRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                           IEventSender                   Sender,
-                                                                          IWebSocketConnection           Connection,
+                                                                          IMessageConnection             Connection,
                                                                           ChangeAvailabilityRequest?     Request,
                                                                           OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                           TimeSpan?                      Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeAvailabilityResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                            IEventSender                    Sender,
-                                                                           IWebSocketConnection            Connection,
+                                                                           IMessageConnection              Connection,
                                                                            ChangeAvailabilityRequest?      Request,
                                                                            ChangeAvailabilityResponse?     Response,
                                                                            OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnChangeAvailabilityDelegate(DateTimeOffset              Timestamp,
                                      IEventSender                Sender,
-                                     IWebSocketConnection        Connection,
+                                     IMessageConnection          Connection,
                                      ChangeAvailabilityRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_ChangeAvailability(DateTimeOffset        RequestTimestamp,
-                                       IWebSocketConnection  WebSocketConnection,
+                                       IMessageConnection    WebSocketConnection,
                                        SourceRouting         Destination,
                                        NetworkPath           NetworkPath,
                                        EventTracking_Id      EventTrackingId,
@@ -317,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_ChangeAvailabilityResponse(ChangeAvailabilityRequest  Request,
                                                JObject                    ResponseJSON,
-                                               IWebSocketConnection       WebSocketConnection,
+                                               IMessageConnection         WebSocketConnection,
                                                SourceRouting              Destination,
                                                NetworkPath                NetworkPath,
                                                EventTracking_Id           EventTrackingId,
@@ -423,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_ChangeAvailabilityRequestError(ChangeAvailabilityRequest     Request,
                                                    OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                   IWebSocketConnection          Connection,
+                                                   IMessageConnection            Connection,
                                                    SourceRouting                 Destination,
                                                    NetworkPath                   NetworkPath,
                                                    EventTracking_Id              EventTrackingId,
@@ -512,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_ChangeAvailabilityResponseError(ChangeAvailabilityRequest?     Request,
                                                     ChangeAvailabilityResponse?    Response,
                                                     OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                    IWebSocketConnection           Connection,
+                                                    IMessageConnection             Connection,
                                                     SourceRouting                  Destination,
                                                     NetworkPath                    NetworkPath,
                                                     EventTracking_Id               EventTrackingId,

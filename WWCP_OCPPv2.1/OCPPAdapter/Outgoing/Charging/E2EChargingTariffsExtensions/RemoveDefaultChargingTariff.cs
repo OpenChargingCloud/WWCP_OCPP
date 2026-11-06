@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRemoveDefaultChargingTariffRequestSentDelegate(DateTimeOffset                       Timestamp,
                                                                           IEventSender                         Sender,
-                                                                          IWebSocketConnection?                Connection,
+                                                                          IMessageConnection?                  Connection,
                                                                           RemoveDefaultChargingTariffRequest   Request,
                                                                           SentMessageResults                   SentMessageResult,
                                                                           CancellationToken                    CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnRemoveDefaultChargingTariffResponseSentDelegate(DateTimeOffset                        Timestamp,
                                                           IEventSender                          Sender,
-                                                          IWebSocketConnection?                 Connection,
+                                                          IMessageConnection?                   Connection,
                                                           RemoveDefaultChargingTariffRequest?   Request,
                                                           RemoveDefaultChargingTariffResponse   Response,
                                                           TimeSpan                              Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnRemoveDefaultChargingTariffRequestErrorSentDelegate(DateTimeOffset                        Timestamp,
                                                               IEventSender                          Sender,
-                                                              IWebSocketConnection?                 Connection,
+                                                              IMessageConnection?                   Connection,
                                                               RemoveDefaultChargingTariffRequest?   Request,
                                                               OCPP_JSONRequestErrorMessage          RequestErrorMessage,
                                                               TimeSpan?                             Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnRemoveDefaultChargingTariffResponseErrorSentDelegate(DateTimeOffset                         Timestamp,
                                                                IEventSender                           Sender,
-                                                               IWebSocketConnection?                  Connection,
+                                                               IMessageConnection?                    Connection,
                                                                RemoveDefaultChargingTariffRequest?    Request,
                                                                RemoveDefaultChargingTariffResponse?   Response,
                                                                OCPP_JSONResponseErrorMessage          ResponseErrorMessage,
@@ -263,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnRemoveDefaultChargingTariffResponseSent(DateTimeOffset                       Timestamp,
                                                                   IEventSender                         Sender,
-                                                                  IWebSocketConnection?                Connection,
+                                                                  IMessageConnection?                  Connection,
                                                                   RemoveDefaultChargingTariffRequest   Request,
                                                                   RemoveDefaultChargingTariffResponse  Response,
                                                                   TimeSpan                             Runtime,
@@ -296,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnRemoveDefaultChargingTariffRequestErrorSent(DateTimeOffset                       Timestamp,
                                                                       IEventSender                         Sender,
-                                                                      IWebSocketConnection?                Connection,
+                                                                      IMessageConnection?                  Connection,
                                                                       RemoveDefaultChargingTariffRequest?  Request,
                                                                       OCPP_JSONRequestErrorMessage         RequestErrorMessage,
                                                                       TimeSpan                             Runtime,
@@ -329,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnRemoveDefaultChargingTariffResponseErrorSent(DateTimeOffset                        Timestamp,
                                                                        IEventSender                          Sender,
-                                                                       IWebSocketConnection?                 Connection,
+                                                                       IMessageConnection?                   Connection,
                                                                        RemoveDefaultChargingTariffRequest?   Request,
                                                                        RemoveDefaultChargingTariffResponse?  Response,
                                                                        OCPP_JSONResponseErrorMessage         ResponseErrorMessage,

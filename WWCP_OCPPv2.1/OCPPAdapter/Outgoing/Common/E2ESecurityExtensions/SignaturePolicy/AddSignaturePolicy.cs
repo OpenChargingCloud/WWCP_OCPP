@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnAddSignaturePolicyRequestSentDelegate(DateTimeOffset              Timestamp,
                                                                  IEventSender                Sender,
-                                                                 IWebSocketConnection?       Connection,
+                                                                 IMessageConnection?         Connection,
                                                                  AddSignaturePolicyRequest   Request,
                                                                  SentMessageResults          SentMessageResult,
                                                                  CancellationToken           CancellationToken);
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnAddSignaturePolicyResponseSentDelegate(DateTimeOffset               Timestamp,
                                                  IEventSender                 Sender,
-                                                 IWebSocketConnection?        Connection,
+                                                 IMessageConnection?          Connection,
                                                  AddSignaturePolicyRequest    Request,
                                                  AddSignaturePolicyResponse   Response,
                                                  TimeSpan                     Runtime,
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnAddSignaturePolicyRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
-                                                     IWebSocketConnection?          Connection,
+                                                     IMessageConnection?            Connection,
                                                      AddSignaturePolicyRequest?     Request,
                                                      OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                      TimeSpan?                      Runtime,
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnAddSignaturePolicyResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
-                                                      IWebSocketConnection?           Connection,
+                                                      IMessageConnection?             Connection,
                                                       AddSignaturePolicyRequest?      Request,
                                                       AddSignaturePolicyResponse?     Response,
                                                       OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -265,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnAddSignaturePolicyResponseSent(DateTimeOffset              Timestamp,
                                                          IEventSender                Sender,
-                                                         IWebSocketConnection?       Connection,
+                                                         IMessageConnection?         Connection,
                                                          AddSignaturePolicyRequest   Request,
                                                          AddSignaturePolicyResponse  Response,
                                                          TimeSpan                    Runtime,
@@ -298,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnAddSignaturePolicyRequestErrorSent(DateTimeOffset                Timestamp,
                                                              IEventSender                  Sender,
-                                                             IWebSocketConnection?         Connection,
+                                                             IMessageConnection?           Connection,
                                                              AddSignaturePolicyRequest?    Request,
                                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                              TimeSpan                      Runtime,
@@ -331,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnAddSignaturePolicyResponseErrorSent(DateTimeOffset                 Timestamp,
                                                               IEventSender                   Sender,
-                                                              IWebSocketConnection?          Connection,
+                                                              IMessageConnection?            Connection,
                                                               AddSignaturePolicyRequest?     Request,
                                                               AddSignaturePolicyResponse?    Response,
                                                               OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

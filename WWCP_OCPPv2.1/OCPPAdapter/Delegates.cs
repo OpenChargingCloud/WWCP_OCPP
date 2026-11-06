@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -39,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="JSONRequest">The incoming JSON request.</param>
     public delegate Task WebSocketJSONRequestLogHandler          (DateTimeOffset              Timestamp,
                                                                   IEventSender                Server,
-                                                                  IWebSocketConnection        WebSocketConnection,
+                                                                  IMessageConnection          WebSocketConnection,
                                                                   NetworkingNode_Id           DestinationId,
                                                                   NetworkPath                 NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
@@ -54,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="BinaryRequest">The incoming binary request.</param>
     public delegate Task WebSocketBinaryRequestLogHandler        (DateTimeOffset              Timestamp,
                                                                   IEventSender                Server,
-                                                                  IWebSocketConnection        WebSocketConnection,
+                                                                  IMessageConnection          WebSocketConnection,
                                                                   NetworkingNode_Id           DestinationId,
                                                                   NetworkPath                 NetworkPath,
                                                                   EventTracking_Id            EventTrackingId,
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public delegate Task WebSocketJSONRequestJSONResponseLogHandler    (DateTimeOffset              Timestamp,
                                                                         IEventSender                Server,
-                                                                        IWebSocketConnection        WebSocketConnection,
+                                                                        IMessageConnection          WebSocketConnection,
                                                                         NetworkingNode_Id           DestinationId,
                                                                         NetworkPath                 NetworkPath,
                                                                         EventTracking_Id            EventTrackingId,
@@ -78,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTimeOffset              Timestamp,
                                                                         IEventSender                Server,
-                                                                        IWebSocketConnection        WebSocketConnection,
+                                                                        IMessageConnection          WebSocketConnection,
                                                                         NetworkingNode_Id           DestinationId,
                                                                         NetworkPath                 NetworkPath,
                                                                         EventTracking_Id            EventTrackingId,
@@ -90,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTimeOffset              Timestamp,
                                                                         IEventSender                Server,
-                                                                        IWebSocketConnection        WebSocketConnection,
+                                                                        IMessageConnection          WebSocketConnection,
                                                                         NetworkingNode_Id           DestinationId,
                                                                         NetworkPath                 NetworkPath,
                                                                         EventTracking_Id            EventTrackingId,
@@ -102,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     public delegate Task WebSocketBinaryRequestBinaryResponseLogHandler(DateTimeOffset              Timestamp,
                                                                         IEventSender                Server,
-                                                                        IWebSocketConnection        WebSocketConnection,
+                                                                        IMessageConnection          WebSocketConnection,
                                                                         NetworkingNode_Id           DestinationId,
                                                                         NetworkPath                 NetworkPath,
                                                                         EventTracking_Id            EventTrackingId,

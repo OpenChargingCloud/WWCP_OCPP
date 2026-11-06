@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetDefaultE2EChargingTariffRequestSentDelegate(DateTimeOffset                       Timestamp,
                                                                           IEventSender                         Sender,
-                                                                          IWebSocketConnection?                Connection,
+                                                                          IMessageConnection?                  Connection,
                                                                           SetDefaultE2EChargingTariffRequest   Request,
                                                                           SentMessageResults                   SentMessageResult,
                                                                           CancellationToken                    CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSetDefaultE2EChargingTariffResponseSentDelegate(DateTimeOffset                        Timestamp,
                                                           IEventSender                          Sender,
-                                                          IWebSocketConnection?                 Connection,
+                                                          IMessageConnection?                   Connection,
                                                           SetDefaultE2EChargingTariffRequest?   Request,
                                                           SetDefaultE2EChargingTariffResponse   Response,
                                                           TimeSpan                              Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSetDefaultE2EChargingTariffRequestErrorSentDelegate(DateTimeOffset                        Timestamp,
                                                               IEventSender                          Sender,
-                                                              IWebSocketConnection?                 Connection,
+                                                              IMessageConnection?                   Connection,
                                                               SetDefaultE2EChargingTariffRequest?   Request,
                                                               OCPP_JSONRequestErrorMessage          RequestErrorMessage,
                                                               TimeSpan?                             Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSetDefaultE2EChargingTariffResponseErrorSentDelegate(DateTimeOffset                         Timestamp,
                                                                IEventSender                           Sender,
-                                                               IWebSocketConnection?                  Connection,
+                                                               IMessageConnection?                    Connection,
                                                                SetDefaultE2EChargingTariffRequest?    Request,
                                                                SetDefaultE2EChargingTariffResponse?   Response,
                                                                OCPP_JSONResponseErrorMessage          ResponseErrorMessage,
@@ -286,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSetDefaultE2EChargingTariffResponseSent(DateTimeOffset                       Timestamp,
                                                                   IEventSender                         Sender,
-                                                                  IWebSocketConnection?                Connection,
+                                                                  IMessageConnection?                  Connection,
                                                                   SetDefaultE2EChargingTariffRequest   Request,
                                                                   SetDefaultE2EChargingTariffResponse  Response,
                                                                   TimeSpan                             Runtime,
@@ -319,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSetDefaultE2EChargingTariffRequestErrorSent(DateTimeOffset                       Timestamp,
                                                                       IEventSender                         Sender,
-                                                                      IWebSocketConnection?                Connection,
+                                                                      IMessageConnection?                  Connection,
                                                                       SetDefaultE2EChargingTariffRequest?  Request,
                                                                       OCPP_JSONRequestErrorMessage         RequestErrorMessage,
                                                                       TimeSpan                             Runtime,
@@ -352,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSetDefaultE2EChargingTariffResponseErrorSent(DateTimeOffset                        Timestamp,
                                                                        IEventSender                          Sender,
-                                                                       IWebSocketConnection?                 Connection,
+                                                                       IMessageConnection?                   Connection,
                                                                        SetDefaultE2EChargingTariffRequest?   Request,
                                                                        SetDefaultE2EChargingTariffResponse?  Response,
                                                                        OCPP_JSONResponseErrorMessage         ResponseErrorMessage,

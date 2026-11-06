@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyMonitoringReportRequestReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
-                                                                         IWebSocketConnection            Connection,
+                                                                         IMessageConnection              Connection,
                                                                          NotifyMonitoringReportRequest   Request,
                                                                          CancellationToken               CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyMonitoringReportResponseReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                           IEventSender                     Sender,
-                                                                          IWebSocketConnection?            Connection,
+                                                                          IMessageConnection?              Connection,
                                                                           NotifyMonitoringReportRequest?   Request,
                                                                           NotifyMonitoringReportResponse   Response,
                                                                           TimeSpan?                        Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyMonitoringReportRequestErrorReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                               IEventSender                     Sender,
-                                                                              IWebSocketConnection             Connection,
+                                                                              IMessageConnection               Connection,
                                                                               NotifyMonitoringReportRequest?   Request,
                                                                               OCPP_JSONRequestErrorMessage     RequestErrorMessage,
                                                                               TimeSpan?                        Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyMonitoringReportResponseErrorReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                                IEventSender                      Sender,
-                                                                               IWebSocketConnection              Connection,
+                                                                               IMessageConnection                Connection,
                                                                                NotifyMonitoringReportRequest?    Request,
                                                                                NotifyMonitoringReportResponse?   Response,
                                                                                OCPP_JSONResponseErrorMessage     ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnNotifyMonitoringReportDelegate(DateTimeOffset                  Timestamp,
                                          IEventSender                    Sender,
-                                         IWebSocketConnection            Connection,
+                                         IMessageConnection              Connection,
                                          NotifyMonitoringReportRequest   Request,
                                          CancellationToken               CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_NotifyMonitoringReport(DateTimeOffset        RequestTimestamp,
-                                           IWebSocketConnection  WebSocketConnection,
+                                           IMessageConnection    WebSocketConnection,
                                            SourceRouting     Destination,
                                            NetworkPath           NetworkPath,
                                            EventTracking_Id      EventTrackingId,
@@ -319,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_NotifyMonitoringReportResponse(NotifyMonitoringReportRequest  Request,
                                                    JObject                        ResponseJSON,
-                                                   IWebSocketConnection           WebSocketConnection,
+                                                   IMessageConnection             WebSocketConnection,
                                                    SourceRouting              Destination,
                                                    NetworkPath                    NetworkPath,
                                                    EventTracking_Id               EventTrackingId,
@@ -423,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_NotifyMonitoringReportRequestError(NotifyMonitoringReportRequest  Request,
                                                        OCPP_JSONRequestErrorMessage   RequestErrorMessage,
-                                                       IWebSocketConnection           Connection,
+                                                       IMessageConnection             Connection,
                                                        SourceRouting              Destination,
                                                        NetworkPath                    NetworkPath,
                                                        EventTracking_Id               EventTrackingId,
@@ -512,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_NotifyMonitoringReportResponseError(NotifyMonitoringReportRequest?   Request,
                                                         NotifyMonitoringReportResponse?  Response,
                                                         OCPP_JSONResponseErrorMessage    ResponseErrorMessage,
-                                                        IWebSocketConnection             Connection,
+                                                        IMessageConnection               Connection,
                                                         SourceRouting                    Destination,
                                                         NetworkPath                      NetworkPath,
                                                         EventTracking_Id                 EventTrackingId,

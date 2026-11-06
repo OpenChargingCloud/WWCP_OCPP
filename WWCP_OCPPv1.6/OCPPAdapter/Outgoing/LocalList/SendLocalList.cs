@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSendLocalListRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
+                                                               IMessageConnection?       Connection,
                                                                SendLocalListRequest   Request,
                                                                SentMessageResults        SentMessageResult,
                                                                CancellationToken         CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnSendLocalListResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
+                                               IMessageConnection?        Connection,
                                                SendLocalListRequest    Request,
                                                SendLocalListResponse   Response,
                                                TimeSpan                   Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnSendLocalListRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
+                                                   IMessageConnection?            Connection,
                                                    SendLocalListRequest?       Request,
                                                    OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                    TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnSendLocalListResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
+                                                    IMessageConnection?             Connection,
                                                     SendLocalListRequest?        Request,
                                                     SendLocalListResponse?       Response,
                                                     OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -484,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnSendLocalListResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
+                                                       IMessageConnection?        Connection,
                                                        SendLocalListRequest    Request,
                                                        SendLocalListResponse   Response,
                                                        TimeSpan                   Runtime,
@@ -517,7 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnSendLocalListRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
+                                                           IMessageConnection?           Connection,
                                                            SendLocalListRequest?      Request,
                                                            OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                            TimeSpan                      Runtime,
@@ -550,7 +551,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnSendLocalListResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
+                                                            IMessageConnection?            Connection,
                                                             SendLocalListRequest?       Request,
                                                             SendLocalListResponse?      Response,
                                                             OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

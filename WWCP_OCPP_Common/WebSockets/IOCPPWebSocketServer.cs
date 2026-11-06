@@ -28,24 +28,11 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// <summary>
     /// The common interface of all OCPP HTTP WebSocket servers.
     /// </summary>
-    public interface IOCPPWebSocketServer : IWWCPWebSocketServer
+    public interface IOCPPWebSocketServer : IWWCPWebSocketServer,
+                                            IOCPPMessageTransport
     {
 
        // OCPPAdapter  OCPPAdapter    { get; }
-
-
-        Task<SentMessageResult> SendJSONRequest         (OCPP_JSONRequestMessage          JSONRequestMessage);
-        Task<SentMessageResult> SendJSONResponse        (OCPP_JSONResponseMessage         JSONResponseMessage);
-        Task<SentMessageResult> SendJSONRequestError    (OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage);
-        Task<SentMessageResult> SendJSONResponseError   (OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage);
-        Task<SentMessageResult> SendJSONSendMessage     (OCPP_JSONSendMessage             JSONSendMessage);
-
-
-        Task<SentMessageResult> SendBinaryRequest       (OCPP_BinaryRequestMessage        BinaryRequestMessage);
-        Task<SentMessageResult> SendBinaryResponse      (OCPP_BinaryResponseMessage       BinaryResponseMessage);
-        Task<SentMessageResult> SendBinaryRequestError  (OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage);
-        Task<SentMessageResult> SendBinaryResponseError (OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
-        Task<SentMessageResult> SendBinarySendMessage   (OCPP_BinarySendMessage           BinarySendMessage);
 
 
     }

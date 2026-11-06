@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetLogRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
+                                                               IMessageConnection?       Connection,
                                                                GetLogRequest   Request,
                                                                SentMessageResults        SentMessageResult,
                                                                CancellationToken         CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnGetLogResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
+                                               IMessageConnection?        Connection,
                                                GetLogRequest    Request,
                                                GetLogResponse   Response,
                                                TimeSpan                   Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnGetLogRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
+                                                   IMessageConnection?            Connection,
                                                    GetLogRequest?       Request,
                                                    OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                    TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnGetLogResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
+                                                    IMessageConnection?             Connection,
                                                     GetLogRequest?        Request,
                                                     GetLogResponse?       Response,
                                                     OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -482,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnGetLogResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
+                                                       IMessageConnection?        Connection,
                                                        GetLogRequest    Request,
                                                        GetLogResponse   Response,
                                                        TimeSpan                   Runtime,
@@ -515,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnGetLogRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
+                                                           IMessageConnection?           Connection,
                                                            GetLogRequest?      Request,
                                                            OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                            TimeSpan                      Runtime,
@@ -548,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnGetLogResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
+                                                            IMessageConnection?            Connection,
                                                             GetLogRequest?       Request,
                                                             GetLogResponse?      Response,
                                                             OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

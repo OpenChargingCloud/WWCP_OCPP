@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteFileRequestSentDelegate(DateTimeOffset          Timestamp,
                                                          IEventSender            Sender,
-                                                         IWebSocketConnection?   Connection,
+                                                         IMessageConnection?     Connection,
                                                          DeleteFileRequest       Request,
                                                          SentMessageResults      SentMessageResult,
                                                          CancellationToken       CancellationToken);
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteFileResponseSentDelegate(DateTimeOffset         Timestamp,
                                          IEventSender           Sender,
-                                         IWebSocketConnection?  Connection,
+                                         IMessageConnection?    Connection,
                                          DeleteFileRequest      Request,
                                          DeleteFileResponse     Response,
                                          TimeSpan               Runtime,
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteFileRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                              IEventSender                   Sender,
-                                             IWebSocketConnection?          Connection,
+                                             IMessageConnection?            Connection,
                                              DeleteFileRequest?             Request,
                                              OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                              TimeSpan?                      Runtime,
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteFileResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                               IEventSender                    Sender,
-                                              IWebSocketConnection?           Connection,
+                                              IMessageConnection?             Connection,
                                               DeleteFileRequest?              Request,
                                               DeleteFileResponse?             Response,
                                               OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -265,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteFileResponseSent(DateTimeOffset        Timestamp,
                                                  IEventSender          Sender,
-                                                 IWebSocketConnection? Connection,
+                                                 IMessageConnection?   Connection,
                                                  DeleteFileRequest     Request,
                                                  DeleteFileResponse    Response,
                                                  TimeSpan              Runtime,
@@ -298,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteFileRequestErrorSent(DateTimeOffset                Timestamp,
                                                      IEventSender                  Sender,
-                                                     IWebSocketConnection?         Connection,
+                                                     IMessageConnection?           Connection,
                                                      DeleteFileRequest?            Request,
                                                      OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                      TimeSpan                      Runtime,
@@ -331,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteFileResponseErrorSent(DateTimeOffset                 Timestamp,
                                                       IEventSender                   Sender,
-                                                      IWebSocketConnection?          Connection,
+                                                      IMessageConnection?            Connection,
                                                       DeleteFileRequest?             Request,
                                                       DeleteFileResponse?            Response,
                                                       OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

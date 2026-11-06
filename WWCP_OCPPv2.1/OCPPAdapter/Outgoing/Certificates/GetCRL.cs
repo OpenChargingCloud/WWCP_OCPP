@@ -45,7 +45,7 @@
 //    /// <param name="CancellationToken">An optional cancellation token.</param>
 //    public delegate Task OnGetCRLRequestSentDelegate(DateTimeOffset          Timestamp,
 //                                                     IEventSender            Sender,
-//                                                     IWebSocketConnection?   Connection,
+//                                                     IMessageConnection?     Connection,
 //                                                     GetCRLRequest           Request,
 //                                                     SentMessageResults      SentMessageResult,
 //                                                     CancellationToken       CancellationToken);
@@ -66,7 +66,7 @@
 
 //        OnGetCRLResponseSentDelegate(DateTimeOffset          Timestamp,
 //                                     IEventSender            Sender,
-//                                     IWebSocketConnection?   Connection,
+//                                     IMessageConnection?     Connection,
 //                                     GetCRLRequest           Request,
 //                                     GetCRLResponse          Response,
 //                                     TimeSpan                Runtime,
@@ -89,7 +89,7 @@
 
 //        OnGetCRLRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
 //                                         IEventSender                   Sender,
-//                                         IWebSocketConnection?          Connection,
+//                                         IMessageConnection?            Connection,
 //                                         GetCRLRequest?                 Request,
 //                                         OCPP_JSONRequestErrorMessage   RequestErrorMessage,
 //                                         TimeSpan?                      Runtime,
@@ -113,7 +113,7 @@
 
 //        OnGetCRLResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
 //                                          IEventSender                    Sender,
-//                                          IWebSocketConnection?           Connection,
+//                                          IMessageConnection?             Connection,
 //                                          GetCRLRequest?                  Request,
 //                                          GetCRLResponse?                 Response,
 //                                          OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -270,7 +270,7 @@
 
 //        public Task SendOnGetCRLResponseSent(DateTimeOffset        Timestamp,
 //                                             IEventSender          Sender,
-//                                             IWebSocketConnection? Connection,
+//                                             IMessageConnection? Connection,
 //                                             GetCRLRequest         Request,
 //                                             GetCRLResponse        Response,
 //                                             TimeSpan              Runtime,
@@ -303,7 +303,7 @@
 
 //        public Task SendOnGetCRLRequestErrorSent(DateTimeOffset                Timestamp,
 //                                                 IEventSender                  Sender,
-//                                                 IWebSocketConnection?         Connection,
+//                                                 IMessageConnection?           Connection,
 //                                                 GetCRLRequest?                Request,
 //                                                 OCPP_JSONRequestErrorMessage  RequestErrorMessage,
 //                                                 TimeSpan                      Runtime,
@@ -336,7 +336,7 @@
 
 //        public Task SendOnGetCRLResponseErrorSent(DateTimeOffset                 Timestamp,
 //                                                  IEventSender                   Sender,
-//                                                  IWebSocketConnection?          Connection,
+//                                                  IMessageConnection?            Connection,
 //                                                  GetCRLRequest?                 Request,
 //                                                  GetCRLResponse?                Response,
 //                                                  OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

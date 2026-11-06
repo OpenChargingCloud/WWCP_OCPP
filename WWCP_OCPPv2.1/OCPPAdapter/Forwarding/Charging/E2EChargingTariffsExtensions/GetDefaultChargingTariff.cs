@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetDefaultChargingTariffRequestFilterDelegate(DateTimeOffset                    Timestamp,
                                                         IEventSender                      Sender,
-                                                        IWebSocketConnection              Connection,
+                                                        IMessageConnection                Connection,
                                                         GetDefaultChargingTariffRequest   Request,
                                                         CancellationToken                 CancellationToken);
 
@@ -62,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetDefaultChargingTariffRequestFilteredDelegate(DateTimeOffset                                                                          Timestamp,
                                                           IEventSender                                                                            Sender,
-                                                          IWebSocketConnection                                                                    Connection,
+                                                          IMessageConnection                                                                      Connection,
                                                           GetDefaultChargingTariffRequest                                                         Request,
                                                           RequestForwardingDecision<GetDefaultChargingTariffRequest, GetDefaultChargingTariffResponse>   ForwardingDecision,
                                                           CancellationToken                                                                       CancellationToken);
@@ -88,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Forward_GetDefaultChargingTariff(OCPP_JSONRequestMessage    JSONRequestMessage,
                                              OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                                             IWebSocketConnection       WebSocketConnection,
+                                             IMessageConnection         WebSocketConnection,
                                              CancellationToken          CancellationToken   = default)
 
         {

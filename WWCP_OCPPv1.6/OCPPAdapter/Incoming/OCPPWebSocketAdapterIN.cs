@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv1_6.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
@@ -43,31 +44,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
     public delegate Task OnJSONRequestMessageReceivedDelegate         (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_JSONRequestMessage          JSONRequestMessage,
                                                                        CancellationToken                CancellationToken);
 
     public delegate Task OnJSONResponseMessageReceivedDelegate        (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_JSONResponseMessage         JSONResponseMessage,
                                                                        CancellationToken                CancellationToken);
 
     public delegate Task OnJSONRequestErrorMessageReceivedDelegate    (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_JSONRequestErrorMessage     JSONRequestErrorMessage,
                                                                        CancellationToken                CancellationToken);
 
     public delegate Task OnJSONResponseErrorMessageReceivedDelegate   (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_JSONResponseErrorMessage    JSONResponseErrorMessage,
                                                                        CancellationToken                CancellationToken);
 
     public delegate Task OnJSONSendMessageReceivedDelegate            (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_JSONSendMessage             JSONSendMessage,
                                                                        CancellationToken                CancellationToken);
 
@@ -75,31 +76,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
     public delegate Task OnBinaryRequestMessageReceivedDelegate       (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_BinaryRequestMessage        BinaryRequestMessage,
                                                                        CancellationToken                CancellationToken);
 
     public delegate Task OnBinaryResponseMessageReceivedDelegate      (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_BinaryResponseMessage       BinaryResponseMessage,
                                                                        CancellationToken                CancellationToken);
 
     public delegate Task OnBinaryRequestErrorMessageReceivedDelegate  (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_BinaryRequestErrorMessage   BinaryRequestErrorMessage,
                                                                        CancellationToken                CancellationToken);
 
     public delegate Task OnBinaryResponseErrorMessageReceivedDelegate (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
                                                                        CancellationToken                CancellationToken);
 
     public delegate Task OnBinarySendMessageReceivedDelegate          (DateTimeOffset                   Timestamp,
                                                                        OCPPWebSocketAdapterIN           Sender,
-                                                                       IWebSocketConnection?            WebSocketConnection,
+                                                                       IMessageConnection?              WebSocketConnection,
                                                                        OCPP_BinarySendMessage           BinarySendMessage,
                                                                        CancellationToken                CancellationToken);
 
@@ -273,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public async Task ProcessJSONMessage(DateTimeOffset        MessageTimestamp,
-                                             IWebSocketConnection  WebSocketConnection,
+                                             IMessageConnection    WebSocketConnection,
                                              NetworkingNode_Id?    sourceNodeId,
                                              JArray                JSONMessage,
                                              EventTracking_Id      EventTrackingId,
@@ -296,17 +297,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         jsonRequestMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection)
+                        switch (WebSocketConnection.Role)
                         {
 
-                            case WebSocketClientConnection:
+                            case ConnectionRole.Client:
                                 jsonRequestMessage = jsonRequestMessage.ChangeNetworking(
                                                          SourceRouting.To(parentNetworkingNode.Id),
                                                          jsonRequestMessage.NetworkPath.Append(sourceNodeId.Value)
                                                      );
                                 break;
 
-                            case WebSocketServerConnection:
+                            case ConnectionRole.Server:
                                 jsonRequestMessage = jsonRequestMessage.ChangeNetworking(
                                                          SourceRouting.To(NetworkingNode_Id.CentralSystem),
                                                          jsonRequestMessage.NetworkPath.Append(sourceNodeId.Value)
@@ -434,17 +435,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         jsonResponseMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection)
+                        switch (WebSocketConnection.Role)
                         {
 
-                            case WebSocketClientConnection:
+                            case ConnectionRole.Client:
                                 jsonResponseMessage = jsonResponseMessage.ChangeNetworking(
                                                           SourceRouting.To(parentNetworkingNode.Id),
                                                           jsonResponseMessage.NetworkPath.Append(sourceNodeId.Value)
                                                       );
                                 break;
 
-                            case WebSocketServerConnection:
+                            case ConnectionRole.Server:
                                 jsonResponseMessage = jsonResponseMessage.ChangeNetworking(
                                                           SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(jsonResponseMessage.RequestId) ?? parentNetworkingNode.Id),
                                                           jsonResponseMessage.NetworkPath.Append(sourceNodeId.Value)
@@ -570,17 +571,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         jsonSendMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection)
+                        switch (WebSocketConnection.Role)
                         {
 
-                            case WebSocketClientConnection:
+                            case ConnectionRole.Client:
                                 jsonSendMessage = jsonSendMessage.ChangeNetworking(
                                                        SourceRouting.To(parentNetworkingNode.Id),
                                                        jsonSendMessage.NetworkPath.Append(sourceNodeId.Value)
                                                    );
                                 break;
 
-                            case WebSocketServerConnection:
+                            case ConnectionRole.Server:
                                 jsonSendMessage = jsonSendMessage.ChangeNetworking(
                                                       SourceRouting.To(NetworkingNode_Id.CentralSystem),
                                                       jsonSendMessage.NetworkPath.Append(sourceNodeId.Value)
@@ -718,7 +719,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #region ProcessBinaryMessage (MessageTimestamp, WebSocketConnection, BinaryMessage, EventTrackingId, CancellationToken)
 
         public async Task ProcessBinaryMessage(DateTimeOffset        MessageTimestamp,
-                                               IWebSocketConnection  WebSocketConnection,
+                                               IMessageConnection    WebSocketConnection,
                                                NetworkingNode_Id?    sourceNodeId,
                                                Byte[]                BinaryMessage,
                                                EventTracking_Id      EventTrackingId,
@@ -741,17 +742,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         binaryRequestMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection)
+                        switch (WebSocketConnection.Role)
                         {
 
-                            case WebSocketClientConnection:
+                            case ConnectionRole.Client:
                                 binaryRequestMessage = binaryRequestMessage.ChangeNetworking(
                                                            SourceRouting.To(parentNetworkingNode.Id),
                                                            binaryRequestMessage.NetworkPath.Append(sourceNodeId.Value)
                                                        );
                                 break;
 
-                            case WebSocketServerConnection:
+                            case ConnectionRole.Server:
                                 binaryRequestMessage = binaryRequestMessage.ChangeNetworking(
                                                            SourceRouting.To(NetworkingNode_Id.CentralSystem),
                                                            binaryRequestMessage.NetworkPath.Append(sourceNodeId.Value)
@@ -879,17 +880,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         binaryResponseMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection)
+                        switch (WebSocketConnection.Role)
                         {
 
-                            case WebSocketClientConnection:
+                            case ConnectionRole.Client:
                                 binaryResponseMessage = binaryResponseMessage.ChangeNetworking(
                                                             SourceRouting.To(parentNetworkingNode.Id),
                                                             binaryResponseMessage.NetworkPath.Append(sourceNodeId.Value)
                                                         );
                                 break;
 
-                            case WebSocketServerConnection:
+                            case ConnectionRole.Server:
                                 binaryResponseMessage = binaryResponseMessage.ChangeNetworking(
                                                             SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(binaryResponseMessage.RequestId) ?? parentNetworkingNode.Id),
                                                             binaryResponseMessage.NetworkPath.Append(sourceNodeId.Value)
@@ -989,17 +990,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         binarySendMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection)
+                        switch (WebSocketConnection.Role)
                         {
 
-                            case WebSocketClientConnection:
+                            case ConnectionRole.Client:
                                 binarySendMessage = binarySendMessage.ChangeNetworking(
                                                         SourceRouting.To(parentNetworkingNode.Id),
                                                         binarySendMessage.NetworkPath.Append(sourceNodeId.Value)
                                                     );
                                 break;
 
-                            case WebSocketServerConnection:
+                            case ConnectionRole.Server:
                                 binarySendMessage = binarySendMessage.ChangeNetworking(
                                                         SourceRouting.CSMS,
                                                         binarySendMessage.NetworkPath.Append(sourceNodeId.Value)

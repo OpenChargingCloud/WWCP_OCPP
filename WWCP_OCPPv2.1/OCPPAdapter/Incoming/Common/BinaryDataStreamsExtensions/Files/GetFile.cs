@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetFileRequestReceivedDelegate(DateTimeOffset         Timestamp,
                                                           IEventSender           Sender,
-                                                          IWebSocketConnection   Connection,
+                                                          IMessageConnection     Connection,
                                                           GetFileRequest         Request,
                                                           CancellationToken      CancellationToken);
 
@@ -62,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetFileResponseReceivedDelegate(DateTimeOffset          Timestamp,
                                                            IEventSender            Sender,
-                                                           IWebSocketConnection?   Connection,
+                                                           IMessageConnection?     Connection,
                                                            GetFileRequest?         Request,
                                                            GetFileResponse         Response,
                                                            TimeSpan?               Runtime,
@@ -81,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetFileRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                IEventSender                   Sender,
-                                                               IWebSocketConnection           Connection,
+                                                               IMessageConnection             Connection,
                                                                GetFileRequest?                Request,
                                                                OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                TimeSpan?                      Runtime,
@@ -101,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetFileResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                 IEventSender                    Sender,
-                                                                IWebSocketConnection            Connection,
+                                                                IMessageConnection              Connection,
                                                                 GetFileRequest?                 Request,
                                                                 GetFileResponse?                Response,
                                                                 OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -124,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetFileDelegate(DateTimeOffset         Timestamp,
                           IEventSender           Sender,
-                          IWebSocketConnection   Connection,
+                          IMessageConnection     Connection,
                           GetFileRequest         Request,
                           CancellationToken      CancellationToken);
 
@@ -150,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_GetFile(DateTimeOffset        RequestTimestamp,
-                            IWebSocketConnection  WebSocketConnection,
+                            IMessageConnection    WebSocketConnection,
                             SourceRouting         Destination,
                             NetworkPath           NetworkPath,
                             EventTracking_Id      EventTrackingId,
@@ -311,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_GetFileResponse(GetFileRequest        Request,
                                     Byte[]                ResponseBytes,
-                                    IWebSocketConnection  WebSocketConnection,
+                                    IMessageConnection    WebSocketConnection,
                                     SourceRouting     Destination,
                                     NetworkPath           NetworkPath,
                                     EventTracking_Id      EventTrackingId,
@@ -417,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_GetFileRequestError(GetFileRequest                Request,
                                         OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                        IWebSocketConnection          Connection,
+                                        IMessageConnection            Connection,
                                         SourceRouting                 Destination,
                                         NetworkPath                   NetworkPath,
                                         EventTracking_Id              EventTrackingId,
@@ -506,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_GetFileResponseError(GetFileRequest?                Request,
                                          GetFileResponse?               Response,
                                          OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                         IWebSocketConnection           Connection,
+                                         IMessageConnection             Connection,
                                          SourceRouting                  Destination,
                                          NetworkPath                    NetworkPath,
                                          EventTracking_Id               EventTrackingId,

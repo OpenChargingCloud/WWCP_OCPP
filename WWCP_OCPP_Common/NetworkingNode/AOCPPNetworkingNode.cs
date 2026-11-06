@@ -29,11 +29,17 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.SSH;
+using org.GraphDefined.Vanaheimr.Hermod.SSH.Client;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
+using cloud.charging.open.protocols.WWCP.SSH;
+using cloud.charging.open.protocols.OCPP.SSH;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Logging;
 
 #endregion
@@ -70,6 +76,31 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             => wwcpWebSocketServers.
                    Where(webSocketServer => webSocketServer is IOCPPWebSocketServer).
                    Cast<IOCPPWebSocketServer>();
+
+        /// <summary>
+        /// The SSH subsystems this node serves OCPP on.
+        /// </summary>
+        public IEnumerable<OCPPSshServer> OCPPSshServers
+            => WWCPSshServers.OfType<OCPPSshServer>();
+
+        /// <summary>
+        /// The SSH connections this node speaks OCPP over.
+        /// </summary>
+        public IEnumerable<OCPPSshClient> OCPPSshClients
+            => WWCPSshClients.OfType<OCPPSshClient>();
+
+        /// <summary>
+        /// The OCPP versions this node offers and serves over SSH, by preference - where a caller names none.
+        /// </summary>
+        protected virtual IEnumerable<String> DefaultOCPPSubprotocols
+            => [];
+
+        /// <summary>
+        /// Whom a connection to a CSMS reaches, where a caller names nobody: "CSMS" in OCPP 2.0.1 and 2.1,
+        /// "CentralSystem" in OCPP 1.6 - by that name a node sends to its CSMS.
+        /// </summary>
+        protected virtual NetworkingNode_Id DefaultNextHopNetworkingNodeId
+            => NetworkingNode_Id.CSMS;
 
         #endregion
 
@@ -350,6 +381,314 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             return ocppWebSocketServer;
 
         }
+
+        #endregion
+
+
+        #region ConnectOCPPClient       (RemoteURL, ...)
+
+        /// <summary>
+        /// Connect to another networking node - a CSMS, a local controller - by its URL: over an HTTP WebSocket
+        /// for "ws://" and "wss://" (and "http://" and "https://"), over the SSH subsystem
+        /// "ocpp@open.charging.cloud" for "ssh://". The parameters of the other transport are not used.
+        /// </summary>
+        /// <param name="RemoteURL">Where to connect to: "wss://csms.example.org/ocpp/cs001", "ssh://cs001@lc.example.org:2222".</param>
+        /// <param name="NextHopNetworkingNodeId">The networking node at the other end; by default the node's CSMS, see <see cref="DefaultNextHopNetworkingNodeId"/>.</param>
+        /// <param name="RoutingNetworkingNodeIds">The networking nodes reached through it.</param>
+        /// <param name="NetworkingMode">Whether messages carry their network path; standard by default.</param>
+        /// <param name="Subprotocols">The OCPP versions to offer, by preference; the node's own by default.</param>
+        /// <param name="RequestTimeout">How long to wait for an answer to a request (HTTP WebSocket).</param>
+        /// <param name="PingEvery">Every how long to send a ping.</param>
+        /// <param name="Description">An optional description.</param>
+        /// <param name="HTTPAuthentication">HTTP Basic credentials (HTTP WebSocket).</param>
+        /// <param name="TOTPConfig">A one-time password configuration (HTTP WebSocket).</param>
+        /// <param name="ClientCertificates">TLS client certificates (HTTP WebSocket).</param>
+        /// <param name="ClientCertificateContext">A TLS client certificate context (HTTP WebSocket).</param>
+        /// <param name="RemoteCertificateValidator">Whether to believe the server's TLS certificate (HTTP WebSocket).</param>
+        /// <param name="TLSProtocols">The TLS versions allowed (HTTP WebSocket).</param>
+        /// <param name="Ssh">The SSH login: user name, keys, how the host key is checked (SSH) - its user name must be the URL's, where the URL has one.</param>
+        /// <param name="DNSClient">An optional DNS client (HTTP WebSocket).</param>
+        /// <param name="EventTrackingId">An optional event tracking identification.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
+        /// <exception cref="ArgumentException">The URL is neither a WebSocket URL nor "ssh://"; or it is "ssh://" and no SSH login was given.</exception>
+        public async Task<OCPPClientConnectResult> ConnectOCPPClient(URL                                                             RemoteURL,
+                                                                     NetworkingNode_Id?                                              NextHopNetworkingNodeId      = null,
+                                                                     IEnumerable<NetworkingNode_Id>?                                 RoutingNetworkingNodeIds     = null,
+                                                                     NetworkingMode?                                                 NetworkingMode               = null,
+                                                                     IEnumerable<String>?                                            Subprotocols                 = null,
+                                                                     TimeSpan?                                                       RequestTimeout               = null,
+                                                                     TimeSpan?                                                       PingEvery                    = null,
+                                                                     I18NString?                                                     Description                  = null,
+
+                                                                     IHTTPAuthentication?                                            HTTPAuthentication           = null,
+                                                                     TOTPConfig?                                                     TOTPConfig                   = null,
+                                                                     IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
+                                                                     SslStreamCertificateContext?                                    ClientCertificateContext     = null,
+                                                                     RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
+                                                                     SslProtocols?                                                   TLSProtocols                 = null,
+
+                                                                     SshClientOptions?                                               Ssh                          = null,
+
+                                                                     IDNSClient?                                                     DNSClient                    = null,
+                                                                     EventTracking_Id?                                               EventTrackingId              = null,
+                                                                     CancellationToken                                               CancellationToken            = default)
+        {
+
+            if (RemoteURL.Scheme == URIScheme.ssh)
+            {
+
+                if (Ssh is null)
+                    throw new ArgumentException($"'{RemoteURL}' is an ssh:// URL, and no SSH login was given.", nameof(Ssh));
+
+                var sshClient = NewOCPPSshClient(
+                                    WWCPSshClient.OptionsFrom(RemoteURL, Ssh, OCPPSshServer.OCPPSubsystem, Subprotocols, ReconnectPolicy, PingEvery),
+                                    NetworkingMode,
+                                    WWCPSshClient.ConnectAsFrom(RemoteURL),
+                                    Description
+                                );
+
+                try
+                {
+
+                    var connection = await ConnectSshClient(
+                                               sshClient,
+                                               NextHopNetworkingNodeId ?? DefaultNextHopNetworkingNodeId,
+                                               RoutingNetworkingNodeIds,
+                                               CancellationToken
+                                           );
+
+                    return new OCPPClientConnectResult(RemoteURL, MessageTransport.SSH, sshClient, connection, null, null);
+
+                }
+                catch (Exception e) when (!CancellationToken.IsCancellationRequested)
+                {
+                    return new OCPPClientConnectResult(RemoteURL, MessageTransport.SSH, sshClient, null, null, e);
+                }
+
+            }
+
+            // http:// and https:// as well: many a configuration names its WebSocket that way.
+            if (RemoteURL.Scheme != URIScheme.ws   &&
+                RemoteURL.Scheme != URIScheme.wss  &&
+                RemoteURL.Scheme != URIScheme.http &&
+                RemoteURL.Scheme != URIScheme.https)
+            {
+                throw new ArgumentException($"'{RemoteURL}' is neither a WebSocket URL (ws://, wss://, http://, https://) nor an ssh:// URL.", nameof(RemoteURL));
+            }
+
+            var response = await ConnectOCPPWebSocketClient(
+
+                                     RemoteURL:                   RemoteURL,
+                                     Description:                 Description,
+                                     NetworkingMode:              NetworkingMode,
+                                     HTTPAuthentication:          HTTPAuthentication,
+                                     SecWebSocketProtocols:       Subprotocols,
+                                     RequestTimeout:              RequestTimeout,
+                                     NextHopNetworkingNodeId:     NextHopNetworkingNodeId,
+                                     RoutingNetworkingNodeIds:    RoutingNetworkingNodeIds,
+                                     WebSocketPingEvery:          PingEvery,
+                                     RemoteCertificateValidator:  RemoteCertificateValidator,
+                                     ClientCertificates:          ClientCertificates,
+                                     ClientCertificateContext:    ClientCertificateContext,
+                                     TLSProtocols:                TLSProtocols,
+                                     TOTPConfig:                  TOTPConfig,
+                                     DNSClient:                   DNSClient,
+                                     EventTrackingId:             EventTrackingId,
+                                     CancellationToken:           CancellationToken
+
+                                 );
+
+            // The client was made for this URL just now: the last one for it.
+            var webSocketClient = WWCPWebSocketClients.LastOrDefault(client => client.RemoteURL == RemoteURL);
+
+            return new OCPPClientConnectResult(
+                       RemoteURL,
+                       MessageTransport.WebSocket,
+                       webSocketClient,
+                       response.HTTPStatusCode == HTTPStatusCode.SwitchingProtocols
+                           ? (webSocketClient as WWCP.WebSockets.WWCPWebSocketClient)?.WebSocketClientConnection
+                           : null,
+                       response,
+                       null
+                   );
+
+        }
+
+        #endregion
+
+        #region ConnectOCPPSshClient    (RemoteURL, Ssh, ...)
+
+        /// <summary>
+        /// Connect to another networking node over the SSH subsystem "ocpp@open.charging.cloud", by its
+        /// "ssh://" URL: who signs in is the URL's user name, or the SSH login's; the URL's last path segment,
+        /// where it has one, names the networking node to connect as.
+        /// </summary>
+        /// <param name="RemoteURL">An "ssh://" URL: "ssh://cs001@lc.example.org:2222", "ssh://lc01@csms.example.org/cs001".</param>
+        /// <param name="Ssh">The SSH login: user name, keys, how the host key is checked.</param>
+        /// <param name="NextHopNetworkingNodeId">The networking node at the other end; by default the node's CSMS, see <see cref="DefaultNextHopNetworkingNodeId"/>.</param>
+        /// <param name="RoutingNetworkingNodeIds">The networking nodes reached through it.</param>
+        /// <param name="NetworkingMode">Whether messages carry their network path; standard by default.</param>
+        /// <param name="Subprotocols">The OCPP versions to offer, by preference; the node's own by default.</param>
+        /// <param name="PingEvery">Every how long to send a PING; null for none.</param>
+        /// <param name="Description">An optional description.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
+        /// <returns>The connection. A failure is thrown - and, with the node's reconnect policy, tried again in the background.</returns>
+        public Task<SshMessageConnection> ConnectOCPPSshClient(URL                              RemoteURL,
+                                                               SshClientOptions                 Ssh,
+                                                               NetworkingNode_Id?               NextHopNetworkingNodeId    = null,
+                                                               IEnumerable<NetworkingNode_Id>?  RoutingNetworkingNodeIds   = null,
+                                                               NetworkingMode?                  NetworkingMode             = null,
+                                                               IEnumerable<String>?             Subprotocols               = null,
+                                                               TimeSpan?                        PingEvery                  = null,
+                                                               I18NString?                      Description                = null,
+                                                               CancellationToken                CancellationToken          = default)
+
+            => ConnectOCPPSshClient(
+                   WWCPSshClient.OptionsFrom(RemoteURL, Ssh, OCPPSshServer.OCPPSubsystem, Subprotocols, ReconnectPolicy, PingEvery),
+                   NextHopNetworkingNodeId,
+                   RoutingNetworkingNodeIds,
+                   NetworkingMode,
+                   WWCPSshClient.ConnectAsFrom(RemoteURL),
+                   Description,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region ConnectOCPPSshClient    (Options,        ...)
+
+        /// <summary>
+        /// Connect to another networking node over an SSH subsystem, as the given options say. OCPP versions
+        /// it names none of are the node's own; a reconnect policy it has none of is the node's.
+        /// </summary>
+        /// <param name="Options">Where and how to connect.</param>
+        /// <param name="NextHopNetworkingNodeId">The networking node at the other end; by default the node's CSMS, see <see cref="DefaultNextHopNetworkingNodeId"/>.</param>
+        /// <param name="RoutingNetworkingNodeIds">The networking nodes reached through it.</param>
+        /// <param name="NetworkingMode">Whether messages carry their network path; standard by default.</param>
+        /// <param name="ConnectAs">The networking node to connect as, where that is not the SSH login.</param>
+        /// <param name="Description">An optional description.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
+        /// <returns>The connection. A failure is thrown - and, with a reconnect policy, tried again in the background.</returns>
+        public Task<SshMessageConnection> ConnectOCPPSshClient(SshMessageClientOptions          Options,
+                                                               NetworkingNode_Id?               NextHopNetworkingNodeId    = null,
+                                                               IEnumerable<NetworkingNode_Id>?  RoutingNetworkingNodeIds   = null,
+                                                               NetworkingMode?                  NetworkingMode             = null,
+                                                               NetworkingNode_Id?               ConnectAs                  = null,
+                                                               I18NString?                      Description                = null,
+                                                               CancellationToken                CancellationToken          = default)
+
+            => ConnectSshClient(
+                   NewOCPPSshClient(Options, NetworkingMode, ConnectAs, Description),
+                   NextHopNetworkingNodeId ?? DefaultNextHopNetworkingNodeId,
+                   RoutingNetworkingNodeIds,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region AttachOCPPSshSubsystem  (Subsystem = "ocpp@open.charging.cloud", Subprotocols = null, ...)
+
+        /// <summary>
+        /// Serve OCPP over an SSH subsystem. The SSH server is not this node's: hand the returned server's
+        /// <see cref="WWCPSshServer.Handler"/> to its SshServerOptions.Subsystems. Who signs in is who
+        /// connects; <see cref="WWCPSshServer.AllowToActFor"/> lets a login connect as others.
+        /// </summary>
+        /// <param name="Subsystem">The subsystem served.</param>
+        /// <param name="Subprotocols">The OCPP versions served; the node's own by default.</param>
+        /// <param name="MaxMessageSize">The largest message taken and sent.</param>
+        /// <param name="PingEvery">Every how long a PING is sent on every connection; null for none.</param>
+        public OCPPSshServer AttachOCPPSshSubsystem(String                Subsystem        = OCPPSshServer.OCPPSubsystem,
+                                                    IEnumerable<String>?  Subprotocols     = null,
+                                                    UInt64?               MaxMessageSize   = null,
+                                                    TimeSpan?             PingEvery        = null)
+        {
+
+            var sshServer = new OCPPSshServer(
+                                this,
+                                Subsystem,
+                                Subprotocols ?? DefaultOCPPSubprotocols,
+                                MaxMessageSize,
+                                PingEvery
+                            );
+
+            sshServer.OnJSONMessageReceived   += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, jsonMessage,   cancellationToken) =>
+                                                     ProcessIncomingJSONMessage  (connection, messageTimestamp, sourceNodeId, jsonMessage,   eventTrackingId, cancellationToken);
+
+            sshServer.OnBinaryMessageReceived += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) =>
+                                                     ProcessIncomingBinaryMessage(connection, messageTimestamp, sourceNodeId, binaryMessage, eventTrackingId, cancellationToken);
+
+            AttachSshServer(sshServer);
+
+            return sshServer;
+
+        }
+
+        #endregion
+
+        #region (private)   NewOCPPSshClient(Options, NetworkingMode, ConnectAs, Description)
+
+        /// <summary>
+        /// A client whose messages go to this node's OCPP adapter, offering the node's OCPP versions where the
+        /// options name none, and coming back as the node's reconnect policy says where they have none.
+        /// </summary>
+        private OCPPSshClient NewOCPPSshClient(SshMessageClientOptions  Options,
+                                               NetworkingMode?          NetworkingMode,
+                                               NetworkingNode_Id?       ConnectAs,
+                                               I18NString?              Description)
+        {
+
+            var sshClient = new OCPPSshClient(
+                                this,
+                                Options with {
+                                    Subprotocols  = Options.Subprotocols.Count > 0 ? Options.Subprotocols : [.. DefaultOCPPSubprotocols],
+                                    Reconnect     = Options.Reconnect ?? ReconnectPolicy
+                                },
+                                NetworkingMode,
+                                ConnectAs,
+                                Description
+                            );
+
+            sshClient.OnJSONMessageReceived   += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, jsonMessage,   cancellationToken) =>
+                                                     ProcessIncomingJSONMessage  (connection, messageTimestamp, sourceNodeId, jsonMessage,   eventTrackingId, cancellationToken);
+
+            sshClient.OnBinaryMessageReceived += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) =>
+                                                     ProcessIncomingBinaryMessage(connection, messageTimestamp, sourceNodeId, binaryMessage, eventTrackingId, cancellationToken);
+
+            return sshClient;
+
+        }
+
+        #endregion
+
+        #region (protected) ProcessIncomingJSONMessage  (Connection, MessageTimestamp, SourceNodeId, JSONMessage,   EventTrackingId, CancellationToken)
+
+        /// <summary>
+        /// A JSON message that came over SSH, for this node's OCPP adapter: each OCPP version hands it to its own.
+        /// </summary>
+        protected virtual Task ProcessIncomingJSONMessage(IMessageConnection  Connection,
+                                                          DateTimeOffset      MessageTimestamp,
+                                                          NetworkingNode_Id   SourceNodeId,
+                                                          JArray              JSONMessage,
+                                                          EventTracking_Id    EventTrackingId,
+                                                          CancellationToken   CancellationToken)
+
+            => Task.CompletedTask;
+
+        #endregion
+
+        #region (protected) ProcessIncomingBinaryMessage(Connection, MessageTimestamp, SourceNodeId, BinaryMessage, EventTrackingId, CancellationToken)
+
+        /// <summary>
+        /// A binary message that came over SSH, for this node's OCPP adapter: each OCPP version hands it to its own.
+        /// </summary>
+        protected virtual Task ProcessIncomingBinaryMessage(IMessageConnection  Connection,
+                                                            DateTimeOffset      MessageTimestamp,
+                                                            NetworkingNode_Id   SourceNodeId,
+                                                            Byte[]              BinaryMessage,
+                                                            EventTracking_Id    EventTrackingId,
+                                                            CancellationToken   CancellationToken)
+
+            => Task.CompletedTask;
 
         #endregion
 

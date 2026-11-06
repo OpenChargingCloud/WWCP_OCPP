@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -48,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignedFirmwareStatusNotificationRequestReceivedDelegate(DateTimeOffset                           Timestamp,
                                                                                    IEventSender                             Sender,
-                                                                                   IWebSocketConnection                     Connection,
+                                                                                   IMessageConnection                       Connection,
                                                                                    SignedFirmwareStatusNotificationRequest  Request,
                                                                                    CancellationToken                        CancellationToken);
 
@@ -65,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignedFirmwareStatusNotificationResponseReceivedDelegate(DateTimeOffset                            Timestamp,
                                                                                     IEventSender                              Sender,
-                                                                                    IWebSocketConnection?                     Connection,
+                                                                                    IMessageConnection?                       Connection,
                                                                                     SignedFirmwareStatusNotificationRequest?  Request,
                                                                                     SignedFirmwareStatusNotificationResponse  Response,
                                                                                     TimeSpan?                                 Runtime,
@@ -84,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignedFirmwareStatusNotificationRequestErrorReceivedDelegate(DateTimeOffset                            Timestamp,
                                                                                         IEventSender                              Sender,
-                                                                                        IWebSocketConnection                      Connection,
+                                                                                        IMessageConnection                        Connection,
                                                                                         SignedFirmwareStatusNotificationRequest?  Request,
                                                                                         OCPP_JSONRequestErrorMessage              RequestErrorMessage,
                                                                                         TimeSpan?                                 Runtime,
@@ -104,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignedFirmwareStatusNotificationResponseErrorReceivedDelegate(DateTimeOffset                             Timestamp,
                                                                                          IEventSender                               Sender,
-                                                                                         IWebSocketConnection                       Connection,
+                                                                                         IMessageConnection                         Connection,
                                                                                          SignedFirmwareStatusNotificationRequest?   Request,
                                                                                          SignedFirmwareStatusNotificationResponse?  Response,
                                                                                          OCPP_JSONResponseErrorMessage              ResponseErrorMessage,
@@ -127,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnSignedFirmwareStatusNotificationDelegate(DateTimeOffset                           Timestamp,
                                                    IEventSender                             Sender,
-                                                   IWebSocketConnection                     Connection,
+                                                   IMessageConnection                       Connection,
                                                    SignedFirmwareStatusNotificationRequest  Request,
                                                    CancellationToken                        CancellationToken);
 
@@ -153,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SignedFirmwareStatusNotification(DateTimeOffset        RequestTimestamp,
-                                                     IWebSocketConnection  WebSocketConnection,
+                                                     IMessageConnection    WebSocketConnection,
                                                      SourceRouting         Destination,
                                                      NetworkPath           NetworkPath,
                                                      EventTracking_Id      EventTrackingId,
@@ -305,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SignedFirmwareStatusNotification(DateTimeOffset        RequestTimestamp,
-                                                     IWebSocketConnection  WebSocketConnection,
+                                                     IMessageConnection    WebSocketConnection,
                                                      SourceRouting         Destination,
                                                      NetworkPath           NetworkPath,
                                                      EventTracking_Id      EventTrackingId,
@@ -473,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_SignedFirmwareStatusNotificationResponse(SignedFirmwareStatusNotificationRequest  Request,
                                                              JObject                                  ResponseJSON,
-                                                             IWebSocketConnection                     WebSocketConnection,
+                                                             IMessageConnection                       WebSocketConnection,
                                                              SourceRouting                            Destination,
                                                              NetworkPath                              NetworkPath,
                                                              EventTracking_Id                         EventTrackingId,
@@ -570,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_SignedFirmwareStatusNotificationResponse(SignedFirmwareStatusNotificationRequest  Request,
                                                              Byte[]                                   ResponseBinary,
-                                                             IWebSocketConnection                     WebSocketConnection,
+                                                             IMessageConnection                       WebSocketConnection,
                                                              SourceRouting                            Destination,
                                                              NetworkPath                              NetworkPath,
                                                              EventTracking_Id                         EventTrackingId,
@@ -680,7 +681,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_SignedFirmwareStatusNotificationRequestError(SignedFirmwareStatusNotificationRequest  Request,
                                                                  OCPP_JSONRequestErrorMessage             RequestErrorMessage,
-                                                                 IWebSocketConnection                     Connection,
+                                                                 IMessageConnection                       Connection,
                                                                  SourceRouting                            Destination,
                                                                  NetworkPath                              NetworkPath,
                                                                  EventTracking_Id                         EventTrackingId,
@@ -759,7 +760,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_SignedFirmwareStatusNotificationRequestError(SignedFirmwareStatusNotificationRequest  Request,
                                                                  OCPP_BinaryRequestErrorMessage           RequestErrorMessage,
-                                                                 IWebSocketConnection                     Connection,
+                                                                 IMessageConnection                       Connection,
                                                                  SourceRouting                            Destination,
                                                                  NetworkPath                              NetworkPath,
                                                                  EventTracking_Id                         EventTrackingId,
@@ -848,7 +849,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             Receive_SignedFirmwareStatusNotificationResponseError(SignedFirmwareStatusNotificationRequest?   Request,
                                                                   SignedFirmwareStatusNotificationResponse?  Response,
                                                                   OCPP_JSONResponseErrorMessage              ResponseErrorMessage,
-                                                                  IWebSocketConnection                       Connection,
+                                                                  IMessageConnection                         Connection,
                                                                   SourceRouting                              Destination,
                                                                   NetworkPath                                NetworkPath,
                                                                   EventTracking_Id                           EventTrackingId,

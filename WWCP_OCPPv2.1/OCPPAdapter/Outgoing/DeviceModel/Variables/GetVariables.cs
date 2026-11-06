@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetVariablesRequestSentDelegate(DateTimeOffset          Timestamp,
                                                            IEventSender            Sender,
-                                                           IWebSocketConnection?   Connection,
+                                                           IMessageConnection?     Connection,
                                                            GetVariablesRequest     Request,
                                                            SentMessageResults      SentMessageResult,
                                                            CancellationToken       CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetVariablesResponseSentDelegate(DateTimeOffset         Timestamp,
                                            IEventSender           Sender,
-                                           IWebSocketConnection?  Connection,
+                                           IMessageConnection?    Connection,
                                            GetVariablesRequest    Request,
                                            GetVariablesResponse   Response,
                                            TimeSpan               Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetVariablesRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                IEventSender                   Sender,
-                                               IWebSocketConnection?          Connection,
+                                               IMessageConnection?            Connection,
                                                GetVariablesRequest?           Request,
                                                OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetVariablesResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                 IEventSender                    Sender,
-                                                IWebSocketConnection?           Connection,
+                                                IMessageConnection?             Connection,
                                                 GetVariablesRequest?            Request,
                                                 GetVariablesResponse?           Response,
                                                 OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -275,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGetVariablesResponseSent(DateTimeOffset         Timestamp,
                                                    IEventSender           Sender,
-                                                   IWebSocketConnection?  Connection,
+                                                   IMessageConnection?    Connection,
                                                    GetVariablesRequest    Request,
                                                    GetVariablesResponse   Response,
                                                    TimeSpan               Runtime,
@@ -308,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGetVariablesRequestErrorSent(DateTimeOffset                Timestamp,
                                                        IEventSender                  Sender,
-                                                       IWebSocketConnection?         Connection,
+                                                       IMessageConnection?           Connection,
                                                        GetVariablesRequest?          Request,
                                                        OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                        TimeSpan                      Runtime,
@@ -341,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGetVariablesResponseErrorSent(DateTimeOffset                 Timestamp,
                                                         IEventSender                   Sender,
-                                                        IWebSocketConnection?          Connection,
+                                                        IMessageConnection?            Connection,
                                                         GetVariablesRequest?           Request,
                                                         GetVariablesResponse?          Response,
                                                         OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSendFileRequestSentDelegate(DateTimeOffset          Timestamp,
                                                        IEventSender            Sender,
-                                                       IWebSocketConnection?   Connection,
+                                                       IMessageConnection?     Connection,
                                                        SendFileRequest         Request,
                                                        SentMessageResults      SentMessageResult,
                                                        CancellationToken       CancellationToken);
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSendFileResponseSentDelegate(DateTimeOffset         Timestamp,
                                        IEventSender           Sender,
-                                       IWebSocketConnection?  Connection,
+                                       IMessageConnection?    Connection,
                                        SendFileRequest        Request,
                                        SendFileResponse       Response,
                                        TimeSpan               Runtime,
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSendFileRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                            IEventSender                   Sender,
-                                           IWebSocketConnection?          Connection,
+                                           IMessageConnection?            Connection,
                                            SendFileRequest?               Request,
                                            OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                            TimeSpan?                      Runtime,
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSendFileResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                             IEventSender                    Sender,
-                                            IWebSocketConnection?           Connection,
+                                            IMessageConnection?             Connection,
                                             SendFileRequest?                Request,
                                             SendFileResponse?               Response,
                                             OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -264,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSendFileResponseSent(DateTimeOffset        Timestamp,
                                                IEventSender          Sender,
-                                               IWebSocketConnection? Connection,
+                                               IMessageConnection?   Connection,
                                                SendFileRequest       Request,
                                                SendFileResponse      Response,
                                                TimeSpan              Runtime,
@@ -297,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSendFileRequestErrorSent(DateTimeOffset                Timestamp,
                                                    IEventSender                  Sender,
-                                                   IWebSocketConnection?         Connection,
+                                                   IMessageConnection?           Connection,
                                                    SendFileRequest?              Request,
                                                    OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                    TimeSpan                      Runtime,
@@ -330,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSendFileResponseErrorSent(DateTimeOffset                 Timestamp,
                                                     IEventSender                   Sender,
-                                                    IWebSocketConnection?          Connection,
+                                                    IMessageConnection?            Connection,
                                                     SendFileRequest?               Request,
                                                     SendFileResponse?              Response,
                                                     OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

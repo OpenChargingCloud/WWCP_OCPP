@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnPullDynamicScheduleUpdateRequestFilterDelegate(DateTimeOffset                     Timestamp,
                                                          IEventSender                       Sender,
-                                                         IWebSocketConnection               Connection,
+                                                         IMessageConnection                 Connection,
                                                          PullDynamicScheduleUpdateRequest   Request,
                                                          CancellationToken                  CancellationToken);
 
@@ -63,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnPullDynamicScheduleUpdateRequestFilteredDelegate(DateTimeOffset                                                                            Timestamp,
                                                            IEventSender                                                                              Sender,
-                                                           IWebSocketConnection                                                                      Connection,
+                                                           IMessageConnection                                                                        Connection,
                                                            PullDynamicScheduleUpdateRequest                                                          Request,
                                                            RequestForwardingDecision<PullDynamicScheduleUpdateRequest, PullDynamicScheduleUpdateResponse>   ForwardingDecision,
                                                            CancellationToken                                                                         CancellationToken);
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Forward_PullDynamicScheduleUpdate(OCPP_JSONRequestMessage    JSONRequestMessage,
                                               OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                                              IWebSocketConnection       WebSocketConnection,
+                                              IMessageConnection         WebSocketConnection,
                                               CancellationToken          CancellationToken   = default)
 
         {

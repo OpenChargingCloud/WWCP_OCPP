@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetVariablesRequestReceivedDelegate(DateTimeOffset         Timestamp,
                                                                IEventSender           Sender,
-                                                               IWebSocketConnection   Connection,
+                                                               IMessageConnection     Connection,
                                                                SetVariablesRequest    Request,
                                                                CancellationToken      CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetVariablesResponseReceivedDelegate(DateTimeOffset          Timestamp,
                                                                 IEventSender            Sender,
-                                                                IWebSocketConnection?   Connection,
+                                                                IMessageConnection?     Connection,
                                                                 SetVariablesRequest?    Request,
                                                                 SetVariablesResponse    Response,
                                                                 TimeSpan?               Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetVariablesRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                     IEventSender                   Sender,
-                                                                    IWebSocketConnection           Connection,
+                                                                    IMessageConnection             Connection,
                                                                     SetVariablesRequest?           Request,
                                                                     OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                     TimeSpan?                      Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetVariablesResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                      IEventSender                    Sender,
-                                                                     IWebSocketConnection            Connection,
+                                                                     IMessageConnection              Connection,
                                                                      SetVariablesRequest?            Request,
                                                                      SetVariablesResponse?           Response,
                                                                      OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSetVariablesDelegate(DateTimeOffset         Timestamp,
                                IEventSender           Sender,
-                               IWebSocketConnection   Connection,
+                               IMessageConnection     Connection,
                                SetVariablesRequest    Request,
                                CancellationToken      CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SetVariables(DateTimeOffset        RequestTimestamp,
-                                 IWebSocketConnection  WebSocketConnection,
+                                 IMessageConnection    WebSocketConnection,
                                  SourceRouting         Destination,
                                  NetworkPath           NetworkPath,
                                  EventTracking_Id      EventTrackingId,
@@ -328,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SetVariablesResponse(SetVariablesRequest   Request,
                                          JObject               ResponseJSON,
-                                         IWebSocketConnection  WebSocketConnection,
+                                         IMessageConnection    WebSocketConnection,
                                          SourceRouting     Destination,
                                          NetworkPath           NetworkPath,
                                          EventTracking_Id      EventTrackingId,
@@ -442,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SetVariablesRequestError(SetVariablesRequest           Request,
                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                             IWebSocketConnection          Connection,
+                                             IMessageConnection            Connection,
                                              SourceRouting                 Destination,
                                              NetworkPath                   NetworkPath,
                                              EventTracking_Id              EventTrackingId,
@@ -531,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_SetVariablesResponseError(SetVariablesRequest?           Request,
                                               SetVariablesResponse?          Response,
                                               OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                              IWebSocketConnection           Connection,
+                                              IMessageConnection             Connection,
                                               SourceRouting                  Destination,
                                               NetworkPath                    NetworkPath,
                                               EventTracking_Id               EventTrackingId,

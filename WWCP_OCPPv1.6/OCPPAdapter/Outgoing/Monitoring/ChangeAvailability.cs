@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeAvailabilityRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
+                                                               IMessageConnection?       Connection,
                                                                ChangeAvailabilityRequest   Request,
                                                                SentMessageResults        SentMessageResult,
                                                                CancellationToken         CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnChangeAvailabilityResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
+                                               IMessageConnection?        Connection,
                                                ChangeAvailabilityRequest    Request,
                                                ChangeAvailabilityResponse   Response,
                                                TimeSpan                   Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnChangeAvailabilityRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
+                                                   IMessageConnection?            Connection,
                                                    ChangeAvailabilityRequest?       Request,
                                                    OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                    TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnChangeAvailabilityResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
+                                                    IMessageConnection?             Connection,
                                                     ChangeAvailabilityRequest?        Request,
                                                     ChangeAvailabilityResponse?       Response,
                                                     OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -480,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnChangeAvailabilityResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
+                                                       IMessageConnection?        Connection,
                                                        ChangeAvailabilityRequest    Request,
                                                        ChangeAvailabilityResponse   Response,
                                                        TimeSpan                   Runtime,
@@ -513,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnChangeAvailabilityRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
+                                                           IMessageConnection?           Connection,
                                                            ChangeAvailabilityRequest?      Request,
                                                            OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                            TimeSpan                      Runtime,
@@ -546,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnChangeAvailabilityResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
+                                                            IMessageConnection?            Connection,
                                                             ChangeAvailabilityRequest?       Request,
                                                             ChangeAvailabilityResponse?      Response,
                                                             OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

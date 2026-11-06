@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteSignaturePolicyRequestReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                         IEventSender                   Sender,
-                                                                        IWebSocketConnection           Connection,
+                                                                        IMessageConnection             Connection,
                                                                         DeleteSignaturePolicyRequest   Request,
                                                                         CancellationToken              CancellationToken);
 
@@ -62,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteSignaturePolicyResponseReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
-                                                                         IWebSocketConnection?           Connection,
+                                                                         IMessageConnection?             Connection,
                                                                          DeleteSignaturePolicyRequest?   Request,
                                                                          DeleteSignaturePolicyResponse   Response,
                                                                          TimeSpan?                       Runtime,
@@ -81,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteSignaturePolicyRequestErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                              IEventSender                    Sender,
-                                                                             IWebSocketConnection            Connection,
+                                                                             IMessageConnection              Connection,
                                                                              DeleteSignaturePolicyRequest?   Request,
                                                                              OCPP_JSONRequestErrorMessage    RequestErrorMessage,
                                                                              TimeSpan?                       Runtime,
@@ -101,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteSignaturePolicyResponseErrorReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                               IEventSender                     Sender,
-                                                                              IWebSocketConnection             Connection,
+                                                                              IMessageConnection               Connection,
                                                                               DeleteSignaturePolicyRequest?    Request,
                                                                               DeleteSignaturePolicyResponse?   Response,
                                                                               OCPP_JSONResponseErrorMessage    ResponseErrorMessage,
@@ -124,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteSignaturePolicyDelegate(DateTimeOffset                 Timestamp,
                                         IEventSender                   Sender,
-                                        IWebSocketConnection           Connection,
+                                        IMessageConnection             Connection,
                                         DeleteSignaturePolicyRequest   Request,
                                         CancellationToken              CancellationToken);
 
@@ -150,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_DeleteSignaturePolicy(DateTimeOffset        RequestTimestamp,
-                                          IWebSocketConnection  WebSocketConnection,
+                                          IMessageConnection    WebSocketConnection,
                                           SourceRouting         Destination,
                                           NetworkPath           NetworkPath,
                                           EventTracking_Id      EventTrackingId,
@@ -311,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_DeleteSignaturePolicyResponse(DeleteSignaturePolicyRequest  Request,
                                                   JObject                       ResponseJSON,
-                                                  IWebSocketConnection          WebSocketConnection,
+                                                  IMessageConnection            WebSocketConnection,
                                                   SourceRouting                 Destination,
                                                   NetworkPath                   NetworkPath,
                                                   EventTracking_Id              EventTrackingId,
@@ -416,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_DeleteSignaturePolicyRequestError(DeleteSignaturePolicyRequest  Request,
                                                       OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                      IWebSocketConnection          Connection,
+                                                      IMessageConnection            Connection,
                                                       SourceRouting                 Destination,
                                                       NetworkPath                   NetworkPath,
                                                       EventTracking_Id              EventTrackingId,
@@ -505,7 +506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_DeleteSignaturePolicyResponseError(DeleteSignaturePolicyRequest?   Request,
                                                        DeleteSignaturePolicyResponse?  Response,
                                                        OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
-                                                       IWebSocketConnection            Connection,
+                                                       IMessageConnection              Connection,
                                                        SourceRouting                   Destination,
                                                        NetworkPath                     NetworkPath,
                                                        EventTracking_Id                EventTrackingId,

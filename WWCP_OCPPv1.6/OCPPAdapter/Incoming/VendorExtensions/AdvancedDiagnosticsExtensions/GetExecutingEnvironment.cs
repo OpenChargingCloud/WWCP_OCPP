@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetExecutingEnvironmentRequestReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                           IEventSender                     Sender,
-                                                                          IWebSocketConnection             Connection,
+                                                                          IMessageConnection               Connection,
                                                                           GetExecutingEnvironmentRequest   Request,
                                                                           CancellationToken                CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetExecutingEnvironmentResponseReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                            IEventSender                      Sender,
-                                                                           IWebSocketConnection?             Connection,
+                                                                           IMessageConnection?               Connection,
                                                                            GetExecutingEnvironmentRequest?   Request,
                                                                            GetExecutingEnvironmentResponse   Response,
                                                                            TimeSpan?                         Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetExecutingEnvironmentRequestErrorReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                                IEventSender                      Sender,
-                                                                               IWebSocketConnection              Connection,
+                                                                               IMessageConnection                Connection,
                                                                                GetExecutingEnvironmentRequest?   Request,
                                                                                OCPP_JSONRequestErrorMessage      RequestErrorMessage,
                                                                                TimeSpan?                         Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetExecutingEnvironmentResponseErrorReceivedDelegate(DateTimeOffset                     Timestamp,
                                                                                 IEventSender                       Sender,
-                                                                                IWebSocketConnection               Connection,
+                                                                                IMessageConnection                 Connection,
                                                                                 GetExecutingEnvironmentRequest?    Request,
                                                                                 GetExecutingEnvironmentResponse?   Response,
                                                                                 OCPP_JSONResponseErrorMessage      ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnGetExecutingEnvironmentDelegate(DateTimeOffset                   Timestamp,
                                           IEventSender                     Sender,
-                                          IWebSocketConnection             Connection,
+                                          IMessageConnection               Connection,
                                           GetExecutingEnvironmentRequest   Request,
                                           CancellationToken                CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_GetExecutingEnvironment(DateTimeOffset        RequestTimestamp,
-                                            IWebSocketConnection  WebSocketConnection,
+                                            IMessageConnection    WebSocketConnection,
                                             SourceRouting         Destination,
                                             NetworkPath           NetworkPath,
                                             EventTracking_Id      EventTrackingId,
@@ -311,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_GetExecutingEnvironmentResponse(GetExecutingEnvironmentRequest  Request,
                                                     JObject                         ResponseJSON,
-                                                    IWebSocketConnection            WebSocketConnection,
+                                                    IMessageConnection              WebSocketConnection,
                                                     SourceRouting                   Destination,
                                                     NetworkPath                     NetworkPath,
                                                     EventTracking_Id                EventTrackingId,
@@ -415,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_GetExecutingEnvironmentRequestError(GetExecutingEnvironmentRequest  Request,
                                                         OCPP_JSONRequestErrorMessage    RequestErrorMessage,
-                                                        IWebSocketConnection            Connection,
+                                                        IMessageConnection              Connection,
                                                         SourceRouting                   Destination,
                                                         NetworkPath                     NetworkPath,
                                                         EventTracking_Id                EventTrackingId,
@@ -494,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_GetExecutingEnvironmentRequestError(GetExecutingEnvironmentRequest  Request,
                                                         OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                                        IWebSocketConnection            Connection,
+                                                        IMessageConnection              Connection,
                                                         SourceRouting                   Destination,
                                                         NetworkPath                     NetworkPath,
                                                         EventTracking_Id                EventTrackingId,
@@ -583,7 +584,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             Receive_GetExecutingEnvironmentResponseError(GetExecutingEnvironmentRequest?   Request,
                                                          GetExecutingEnvironmentResponse?  Response,
                                                          OCPP_JSONResponseErrorMessage     ResponseErrorMessage,
-                                                         IWebSocketConnection              Connection,
+                                                         IMessageConnection                Connection,
                                                          SourceRouting                     Destination,
                                                          NetworkPath                       NetworkPath,
                                                          EventTracking_Id                  EventTrackingId,

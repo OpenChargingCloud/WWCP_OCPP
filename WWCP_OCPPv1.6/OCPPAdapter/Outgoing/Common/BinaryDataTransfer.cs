@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnBinaryDataTransferRequestSentDelegate(DateTimeOffset            Timestamp,
                                                                IEventSender              Sender,
-                                                               IWebSocketConnection?     Connection,
+                                                               IMessageConnection?       Connection,
                                                                BinaryDataTransferRequest   Request,
                                                                SentMessageResults        SentMessageResult,
                                                                CancellationToken         CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnBinaryDataTransferResponseSentDelegate(DateTimeOffset             Timestamp,
                                                IEventSender               Sender,
-                                               IWebSocketConnection?      Connection,
+                                               IMessageConnection?        Connection,
                                                BinaryDataTransferRequest    Request,
                                                BinaryDataTransferResponse   Response,
                                                TimeSpan                   Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnBinaryDataTransferRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                    IEventSender                   Sender,
-                                                   IWebSocketConnection?          Connection,
+                                                   IMessageConnection?            Connection,
                                                    BinaryDataTransferRequest?       Request,
                                                    OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                    TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnBinaryDataTransferResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
+                                                    IMessageConnection?             Connection,
                                                     BinaryDataTransferRequest?        Request,
                                                     BinaryDataTransferResponse?       Response,
                                                     OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -386,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnBinaryDataTransferResponseSent(DateTimeOffset             Timestamp,
                                                        IEventSender               Sender,
-                                                       IWebSocketConnection?      Connection,
+                                                       IMessageConnection?        Connection,
                                                        BinaryDataTransferRequest    Request,
                                                        BinaryDataTransferResponse   Response,
                                                        TimeSpan                   Runtime,
@@ -419,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnBinaryDataTransferRequestErrorSent(DateTimeOffset                Timestamp,
                                                            IEventSender                  Sender,
-                                                           IWebSocketConnection?         Connection,
+                                                           IMessageConnection?           Connection,
                                                            BinaryDataTransferRequest?      Request,
                                                            OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                            TimeSpan                      Runtime,
@@ -452,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnBinaryDataTransferResponseErrorSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
+                                                            IMessageConnection?            Connection,
                                                             BinaryDataTransferRequest?       Request,
                                                             BinaryDataTransferResponse?      Response,
                                                             OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

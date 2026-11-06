@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -233,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         protected async Task NotifyRequestReceived(String                OCPPAction,
                                                    DateTimeOffset      Timestamp,
                                                    IEventSender          Sender,
-                                                   IWebSocketConnection  Connection,
+                                                   IMessageConnection    Connection,
                                                    IRequest              Request,
                                                    JObject               RequestJSON,
                                                    CancellationToken     CancellationToken = default)
@@ -280,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         protected async Task NotifyRequestSent(String                 OCPPAction,
                                                DateTimeOffset       Timestamp,
                                                IEventSender           Sender,
-                                               IWebSocketConnection?  Connection,
+                                               IMessageConnection?    Connection,
                                                IRequest               Request,
                                                JObject                RequestJSON,
                                                SentMessageResults     SentMessageResult,
@@ -330,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         protected async Task NotifyResponseReceived(String                 OCPPAction,
                                                     DateTimeOffset       Timestamp,
                                                     IEventSender           Sender,
-                                                    IWebSocketConnection?  Connection,
+                                                    IMessageConnection?    Connection,
                                                     IRequest?              Request,
                                                     JObject?               RequestJSON,
                                                     IResponse              Response,
@@ -388,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         protected async Task NotifyResponseSent(String                 OCPPAction,
                                                 DateTimeOffset       Timestamp,
                                                 IEventSender           Sender,
-                                                IWebSocketConnection?  Connection,
+                                                IMessageConnection?    Connection,
                                                 IRequest?              Request,
                                                 JObject?               RequestJSON,
                                                 IResponse              Response,
@@ -450,7 +451,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         protected async Task NotifyRequestReceived(String                OCPPAction,
                                                    DateTimeOffset      Timestamp,
                                                    IEventSender          Sender,
-                                                   IWebSocketConnection  Connection,
+                                                   IMessageConnection    Connection,
                                                    IRequest              Request,
                                                    Byte[]                RequestBinary,
                                                    CancellationToken     CancellationToken = default)
@@ -497,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         protected async Task NotifyRequestSent(String                 OCPPAction,
                                                DateTimeOffset       Timestamp,
                                                IEventSender           Sender,
-                                               IWebSocketConnection?  Connection,
+                                               IMessageConnection?    Connection,
                                                IRequest               Request,
                                                Byte[]                 RequestBinary,
                                                SentMessageResults     SentMessageResult,
@@ -547,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         protected async Task NotifyResponseReceived(String                 OCPPAction,
                                                     DateTimeOffset       Timestamp,
                                                     IEventSender           Sender,
-                                                    IWebSocketConnection?  Connection,
+                                                    IMessageConnection?    Connection,
                                                     IRequest?              Request,
                                                     Byte[]?                RequestBinary,
                                                     IResponse              Response,
@@ -605,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         protected async Task NotifyResponseSent(String                 OCPPAction,
                                                 DateTimeOffset       Timestamp,
                                                 IEventSender           Sender,
-                                                IWebSocketConnection?  Connection,
+                                                IMessageConnection?    Connection,
                                                 IRequest?              Request,
                                                 Byte[]?                RequestBinary,
                                                 IResponse              Response,

@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyNetworkTopologyMessageSentDelegate(DateTimeOffset                 Timestamp,
                                                                     IEventSender                   Sender,
-                                                                    IWebSocketConnection?          Connection,
+                                                                    IMessageConnection?            Connection,
                                                                     NotifyNetworkTopologyMessage   Request,
                                                                     SentMessageResults             SentMessageResult,
                                                                     CancellationToken              CancellationToken);
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     //    OnNotifyNetworkTopologyResponseSentDelegate(DateTimeOffset                  Timestamp,
     //                                                IEventSender                    Sender,
-    //                                                IWebSocketConnection?           Connection,
+    //                                                IMessageConnection?             Connection,
     //                                                NotifyNetworkTopologyMessage    Request,
     //                                                NotifyNetworkTopologyResponse   Response,
     //                                                TimeSpan                        Runtime,
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     //    OnNotifyNetworkTopologyMessageErrorSentDelegate(DateTimeOffset                  Timestamp,
     //                                                    IEventSender                    Sender,
-    //                                                    IWebSocketConnection?           Connection,
+    //                                                    IMessageConnection?             Connection,
     //                                                    NotifyNetworkTopologyMessage?   Request,
     //                                                    OCPP_JSONRequestErrorMessage    RequestErrorMessage,
     //                                                    TimeSpan?                       Runtime,
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
     //    OnNotifyNetworkTopologyResponseErrorSentDelegate(DateTimeOffset                   Timestamp,
     //                                                     IEventSender                     Sender,
-    //                                                     IWebSocketConnection?            Connection,
+    //                                                     IMessageConnection?              Connection,
     //                                                     NotifyNetworkTopologyMessage?    Request,
     //                                                     NotifyNetworkTopologyResponse?   Response,
     //                                                     OCPP_JSONResponseErrorMessage    ResponseErrorMessage,
@@ -269,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         //public Task SendOnNotifyNetworkTopologyResponseSent(DateTimeOffset                 Timestamp,
         //                                                    IEventSender                   Sender,
-        //                                                    IWebSocketConnection?          Connection,
+        //                                                    IMessageConnection?            Connection,
         //                                                    NotifyNetworkTopologyMessage   Request,
         //                                                    NotifyNetworkTopologyResponse  Response,
         //                                                    TimeSpan                       Runtime,
@@ -302,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         //public Task SendOnNotifyNetworkTopologyMessageErrorSent(DateTimeOffset                 Timestamp,
         //                                                        IEventSender                   Sender,
-        //                                                        IWebSocketConnection?          Connection,
+        //                                                        IMessageConnection?            Connection,
         //                                                        NotifyNetworkTopologyMessage?  Request,
         //                                                        OCPP_JSONRequestErrorMessage   RequestErrorMessage,
         //                                                        TimeSpan                       Runtime,
@@ -335,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         //public Task SendOnNotifyNetworkTopologyResponseErrorSent(DateTimeOffset                  Timestamp,
         //                                                         IEventSender                    Sender,
-        //                                                         IWebSocketConnection?           Connection,
+        //                                                         IMessageConnection?             Connection,
         //                                                         NotifyNetworkTopologyMessage?   Request,
         //                                                         NotifyNetworkTopologyResponse?  Response,
         //                                                         OCPP_JSONResponseErrorMessage   ResponseErrorMessage,

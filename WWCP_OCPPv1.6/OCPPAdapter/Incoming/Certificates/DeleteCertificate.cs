@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteCertificateRequestReceivedDelegate(DateTimeOffset            Timestamp,
                                                                    IEventSender              Sender,
-                                                                   IWebSocketConnection      Connection,
+                                                                   IMessageConnection        Connection,
                                                                    DeleteCertificateRequest   Request,
                                                                    CancellationToken         CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteCertificateResponseReceivedDelegate(DateTimeOffset             Timestamp,
                                                                     IEventSender               Sender,
-                                                                    IWebSocketConnection?      Connection,
+                                                                    IMessageConnection?        Connection,
                                                                     DeleteCertificateRequest?   Request,
                                                                     DeleteCertificateResponse   Response,
                                                                     TimeSpan?                  Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteCertificateRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                         IEventSender                   Sender,
-                                                                        IWebSocketConnection           Connection,
+                                                                        IMessageConnection             Connection,
                                                                         DeleteCertificateRequest?       Request,
                                                                         OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                         TimeSpan?                      Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteCertificateResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
-                                                                         IWebSocketConnection            Connection,
+                                                                         IMessageConnection              Connection,
                                                                          DeleteCertificateRequest?        Request,
                                                                          DeleteCertificateResponse?       Response,
                                                                          OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnDeleteCertificateDelegate(DateTimeOffset            Timestamp,
                                    IEventSender              Sender,
-                                   IWebSocketConnection      Connection,
+                                   IMessageConnection        Connection,
                                    DeleteCertificateRequest   Request,
                                    CancellationToken         CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_DeleteCertificate(DateTimeOffset        RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
+                                     IMessageConnection    WebSocketConnection,
                                      SourceRouting     Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
@@ -305,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_DeleteCertificate(DateTimeOffset        RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
+                                     IMessageConnection    WebSocketConnection,
                                      SourceRouting         Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
@@ -473,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_DeleteCertificateResponse(DeleteCertificateRequest  Request,
                                              JObject                  ResponseJSON,
-                                             IWebSocketConnection     WebSocketConnection,
+                                             IMessageConnection       WebSocketConnection,
                                              SourceRouting            Destination,
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
@@ -570,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_DeleteCertificateResponse(DeleteCertificateRequest  Request,
                                              Byte[]                   ResponseBinary,
-                                             IWebSocketConnection     WebSocketConnection,
+                                             IMessageConnection       WebSocketConnection,
                                              SourceRouting            Destination,
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
@@ -680,7 +681,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_DeleteCertificateRequestError(DeleteCertificateRequest       Request,
                                                  OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection          Connection,
+                                                 IMessageConnection            Connection,
                                                  SourceRouting             Destination,
                                                  NetworkPath                   NetworkPath,
                                                  EventTracking_Id              EventTrackingId,
@@ -759,7 +760,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_DeleteCertificateRequestError(DeleteCertificateRequest         Request,
                                                  OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection            Connection,
+                                                 IMessageConnection              Connection,
                                                  SourceRouting                   Destination,
                                                  NetworkPath                     NetworkPath,
                                                  EventTracking_Id                EventTrackingId,
@@ -848,7 +849,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             Receive_DeleteCertificateResponseError(DeleteCertificateRequest?       Request,
                                                   DeleteCertificateResponse?      Response,
                                                   OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                  IWebSocketConnection           Connection,
+                                                  IMessageConnection             Connection,
                                                   SourceRouting                  Destination,
                                                   NetworkPath                    NetworkPath,
                                                   EventTracking_Id               EventTrackingId,

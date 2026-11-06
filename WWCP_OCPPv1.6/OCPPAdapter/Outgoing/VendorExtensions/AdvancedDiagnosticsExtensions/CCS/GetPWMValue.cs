@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetPWMValueRequestSentDelegate(DateTimeOffset          Timestamp,
                                                           IEventSender            Sender,
-                                                          IWebSocketConnection?   Connection,
+                                                          IMessageConnection?     Connection,
                                                           GetPWMValueRequest      Request,
                                                           SentMessageResults      SentMessageResult,
                                                           CancellationToken       CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnGetPWMValueResponseSentDelegate(DateTimeOffset          Timestamp,
                                           IEventSender            Sender,
-                                          IWebSocketConnection?   Connection,
+                                          IMessageConnection?     Connection,
                                           GetPWMValueRequest      Request,
                                           GetPWMValueResponse     Response,
                                           TimeSpan                Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnGetPWMValueRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                               IEventSender                   Sender,
-                                              IWebSocketConnection?          Connection,
+                                              IMessageConnection?            Connection,
                                               GetPWMValueRequest?            Request,
                                               OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                               TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnGetPWMValueResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                IEventSender                    Sender,
-                                               IWebSocketConnection?           Connection,
+                                               IMessageConnection?             Connection,
                                                GetPWMValueRequest?             Request,
                                                GetPWMValueResponse?            Response,
                                                OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -480,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnGetPWMValueResponseSent(DateTimeOffset         Timestamp,
                                                   IEventSender           Sender,
-                                                  IWebSocketConnection?  Connection,
+                                                  IMessageConnection?    Connection,
                                                   GetPWMValueRequest     Request,
                                                   GetPWMValueResponse    Response,
                                                   TimeSpan               Runtime,
@@ -513,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnGetPWMValueRequestErrorSent(DateTimeOffset                Timestamp,
                                                       IEventSender                  Sender,
-                                                      IWebSocketConnection?         Connection,
+                                                      IMessageConnection?           Connection,
                                                       GetPWMValueRequest?           Request,
                                                       OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                       TimeSpan                      Runtime,
@@ -546,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnGetPWMValueResponseErrorSent(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
-                                                       IWebSocketConnection?          Connection,
+                                                       IMessageConnection?            Connection,
                                                        GetPWMValueRequest?            Request,
                                                        GetPWMValueResponse?           Response,
                                                        OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

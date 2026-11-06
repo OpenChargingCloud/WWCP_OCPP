@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -49,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnChangeTransactionTariffRequestReceivedDelegate(DateTimeOffset                   Timestamp,
                                                          IEventSender                     Sender,
-                                                         IWebSocketConnection             Connection,
+                                                         IMessageConnection               Connection,
                                                          ChangeTransactionTariffRequest   Request,
                                                          CancellationToken                CancellationToken);
 
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeTransactionTariffResponseReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                            IEventSender                      Sender,
-                                                                           IWebSocketConnection?             Connection,
+                                                                           IMessageConnection?               Connection,
                                                                            ChangeTransactionTariffRequest?   Request,
                                                                            ChangeTransactionTariffResponse   Response,
                                                                            TimeSpan?                         Runtime,
@@ -85,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeTransactionTariffRequestErrorReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                                IEventSender                      Sender,
-                                                                               IWebSocketConnection              Connection,
+                                                                               IMessageConnection                Connection,
                                                                                ChangeTransactionTariffRequest?   Request,
                                                                                OCPP_JSONRequestErrorMessage      RequestErrorMessage,
                                                                                TimeSpan?                         Runtime,
@@ -105,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnChangeTransactionTariffResponseErrorReceivedDelegate(DateTimeOffset                     Timestamp,
                                                                                 IEventSender                       Sender,
-                                                                                IWebSocketConnection               Connection,
+                                                                                IMessageConnection                 Connection,
                                                                                 ChangeTransactionTariffRequest?    Request,
                                                                                 ChangeTransactionTariffResponse?   Response,
                                                                                 OCPP_JSONResponseErrorMessage      ResponseErrorMessage,
@@ -128,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnChangeTransactionTariffDelegate(DateTimeOffset                   Timestamp,
                                           IEventSender                     Sender,
-                                          IWebSocketConnection             Connection,
+                                          IMessageConnection               Connection,
                                           ChangeTransactionTariffRequest   Request,
                                           CancellationToken                CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_ChangeTransactionTariff(DateTimeOffset        RequestTimestamp,
-                                            IWebSocketConnection  WebSocketConnection,
+                                            IMessageConnection    WebSocketConnection,
                                             SourceRouting         Destination,
                                             NetworkPath           NetworkPath,
                                             EventTracking_Id      EventTrackingId,
@@ -327,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_ChangeTransactionTariffResponse(ChangeTransactionTariffRequest  Request,
                                                     JObject                         ResponseJSON,
-                                                    IWebSocketConnection            WebSocketConnection,
+                                                    IMessageConnection              WebSocketConnection,
                                                     SourceRouting                   Destination,
                                                     NetworkPath                     NetworkPath,
                                                     EventTracking_Id                EventTrackingId,
@@ -433,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_ChangeTransactionTariffRequestError(ChangeTransactionTariffRequest  Request,
                                                         OCPP_JSONRequestErrorMessage    RequestErrorMessage,
-                                                        IWebSocketConnection            Connection,
+                                                        IMessageConnection              Connection,
                                                         SourceRouting                   Destination,
                                                         NetworkPath                     NetworkPath,
                                                         EventTracking_Id                EventTrackingId,
@@ -522,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_ChangeTransactionTariffResponseError(ChangeTransactionTariffRequest?   Request,
                                                          ChangeTransactionTariffResponse?  Response,
                                                          OCPP_JSONResponseErrorMessage     ResponseErrorMessage,
-                                                         IWebSocketConnection              Connection,
+                                                         IMessageConnection                Connection,
                                                          SourceRouting                     Destination,
                                                          NetworkPath                       NetworkPath,
                                                          EventTracking_Id                  EventTrackingId,

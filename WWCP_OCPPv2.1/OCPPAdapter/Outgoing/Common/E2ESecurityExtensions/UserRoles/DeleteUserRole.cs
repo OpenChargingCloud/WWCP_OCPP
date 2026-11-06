@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteUserRoleRequestSentDelegate(DateTimeOffset          Timestamp,
                                                              IEventSender            Sender,
-                                                             IWebSocketConnection?   Connection,
+                                                             IMessageConnection?     Connection,
                                                              DeleteUserRoleRequest   Request,
                                                              SentMessageResults      SentMessageResult,
                                                              CancellationToken       CancellationToken);
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteUserRoleResponseSentDelegate(DateTimeOffset           Timestamp,
                                              IEventSender             Sender,
-                                             IWebSocketConnection?    Connection,
+                                             IMessageConnection?      Connection,
                                              DeleteUserRoleRequest    Request,
                                              DeleteUserRoleResponse   Response,
                                              TimeSpan                 Runtime,
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteUserRoleRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                  IEventSender                   Sender,
-                                                 IWebSocketConnection?          Connection,
+                                                 IMessageConnection?            Connection,
                                                  DeleteUserRoleRequest?         Request,
                                                  OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                  TimeSpan?                      Runtime,
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteUserRoleResponseErrorSentDelegate(DateTimeOffset                   Timestamp,
                                                   IEventSender                     Sender,
-                                                  IWebSocketConnection?            Connection,
+                                                  IMessageConnection?              Connection,
                                                   DeleteUserRoleRequest?           Request,
                                                   DeleteUserRoleResponse?          Response,
                                                   OCPP_JSONResponseErrorMessage    ResponseErrorMessage,
@@ -263,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteUserRoleResponseSent(DateTimeOffset          Timestamp,
                                                      IEventSender            Sender,
-                                                     IWebSocketConnection?   Connection,
+                                                     IMessageConnection?     Connection,
                                                      DeleteUserRoleRequest   Request,
                                                      DeleteUserRoleResponse  Response,
                                                      TimeSpan                Runtime,
@@ -296,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteUserRoleRequestErrorSent(DateTimeOffset                Timestamp,
                                                          IEventSender                  Sender,
-                                                         IWebSocketConnection?         Connection,
+                                                         IMessageConnection?           Connection,
                                                          DeleteUserRoleRequest?        Request,
                                                          OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                          TimeSpan                      Runtime,
@@ -329,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteUserRoleResponseErrorSent(DateTimeOffset                 Timestamp,
                                                           IEventSender                   Sender,
-                                                          IWebSocketConnection?          Connection,
+                                                          IMessageConnection?            Connection,
                                                           DeleteUserRoleRequest?         Request,
                                                           DeleteUserRoleResponse?        Response,
                                                           OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

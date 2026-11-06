@@ -21,7 +21,10 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
@@ -490,6 +493,61 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             return ocppWebSocketServer;
 
         }
+
+        #endregion
+
+
+        #region (protected) SSH: OCPP versions, and incoming messages
+
+        /// <summary>
+        /// OCPP 1.6 - as over HTTP WebSockets.
+        /// </summary>
+        protected override IEnumerable<String> DefaultOCPPSubprotocols
+            => [ Version.WebSocketSubProtocolId ];
+
+        /// <summary>
+        /// An OCPP 1.6 node sends to its central system as "CentralSystem" - as over HTTP WebSockets.
+        /// </summary>
+        protected override NetworkingNode_Id DefaultNextHopNetworkingNodeId
+            => NetworkingNode_Id.CentralSystem;
+
+        /// <summary>
+        /// A JSON message that came over SSH goes where one over an HTTP WebSocket goes.
+        /// </summary>
+        protected override Task ProcessIncomingJSONMessage(IMessageConnection  Connection,
+                                                           DateTimeOffset      MessageTimestamp,
+                                                           NetworkingNode_Id   SourceNodeId,
+                                                           JArray              JSONMessage,
+                                                           EventTracking_Id    EventTrackingId,
+                                                           CancellationToken   CancellationToken)
+
+            => OCPP.IN.ProcessJSONMessage(
+                   MessageTimestamp,
+                   Connection,
+                   SourceNodeId,
+                   JSONMessage,
+                   EventTrackingId,
+                   CancellationToken
+               );
+
+        /// <summary>
+        /// A binary message that came over SSH goes where one over an HTTP WebSocket goes.
+        /// </summary>
+        protected override Task ProcessIncomingBinaryMessage(IMessageConnection  Connection,
+                                                             DateTimeOffset      MessageTimestamp,
+                                                             NetworkingNode_Id   SourceNodeId,
+                                                             Byte[]              BinaryMessage,
+                                                             EventTracking_Id    EventTrackingId,
+                                                             CancellationToken   CancellationToken)
+
+            => OCPP.IN.ProcessBinaryMessage(
+                   MessageTimestamp,
+                   Connection,
+                   SourceNodeId,
+                   BinaryMessage,
+                   EventTrackingId,
+                   CancellationToken
+               );
 
         #endregion
 

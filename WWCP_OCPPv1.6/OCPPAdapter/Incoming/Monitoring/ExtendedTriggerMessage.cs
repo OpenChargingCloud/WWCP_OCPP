@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnExtendedTriggerMessageRequestReceivedDelegate(DateTimeOffset            Timestamp,
                                                                    IEventSender              Sender,
-                                                                   IWebSocketConnection      Connection,
+                                                                   IMessageConnection        Connection,
                                                                    ExtendedTriggerMessageRequest   Request,
                                                                    CancellationToken         CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnExtendedTriggerMessageResponseReceivedDelegate(DateTimeOffset             Timestamp,
                                                                     IEventSender               Sender,
-                                                                    IWebSocketConnection?      Connection,
+                                                                    IMessageConnection?        Connection,
                                                                     ExtendedTriggerMessageRequest?   Request,
                                                                     ExtendedTriggerMessageResponse   Response,
                                                                     TimeSpan?                  Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnExtendedTriggerMessageRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                         IEventSender                   Sender,
-                                                                        IWebSocketConnection           Connection,
+                                                                        IMessageConnection             Connection,
                                                                         ExtendedTriggerMessageRequest?       Request,
                                                                         OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                         TimeSpan?                      Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnExtendedTriggerMessageResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                          IEventSender                    Sender,
-                                                                         IWebSocketConnection            Connection,
+                                                                         IMessageConnection              Connection,
                                                                          ExtendedTriggerMessageRequest?        Request,
                                                                          ExtendedTriggerMessageResponse?       Response,
                                                                          OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnExtendedTriggerMessageDelegate(DateTimeOffset            Timestamp,
                                    IEventSender              Sender,
-                                   IWebSocketConnection      Connection,
+                                   IMessageConnection        Connection,
                                    ExtendedTriggerMessageRequest   Request,
                                    CancellationToken         CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_ExtendedTriggerMessage(DateTimeOffset        RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
+                                     IMessageConnection    WebSocketConnection,
                                      SourceRouting     Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
@@ -304,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_ExtendedTriggerMessage(DateTimeOffset        RequestTimestamp,
-                                     IWebSocketConnection  WebSocketConnection,
+                                     IMessageConnection    WebSocketConnection,
                                      SourceRouting         Destination,
                                      NetworkPath           NetworkPath,
                                      EventTracking_Id      EventTrackingId,
@@ -472,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_ExtendedTriggerMessageResponse(ExtendedTriggerMessageRequest  Request,
                                              JObject                  ResponseJSON,
-                                             IWebSocketConnection     WebSocketConnection,
+                                             IMessageConnection       WebSocketConnection,
                                              SourceRouting            Destination,
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
@@ -569,7 +570,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_ExtendedTriggerMessageResponse(ExtendedTriggerMessageRequest  Request,
                                              Byte[]                   ResponseBinary,
-                                             IWebSocketConnection     WebSocketConnection,
+                                             IMessageConnection       WebSocketConnection,
                                              SourceRouting            Destination,
                                              NetworkPath              NetworkPath,
                                              EventTracking_Id         EventTrackingId,
@@ -679,7 +680,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_ExtendedTriggerMessageRequestError(ExtendedTriggerMessageRequest       Request,
                                                  OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection          Connection,
+                                                 IMessageConnection            Connection,
                                                  SourceRouting             Destination,
                                                  NetworkPath                   NetworkPath,
                                                  EventTracking_Id              EventTrackingId,
@@ -758,7 +759,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_ExtendedTriggerMessageRequestError(ExtendedTriggerMessageRequest         Request,
                                                  OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                                 IWebSocketConnection            Connection,
+                                                 IMessageConnection              Connection,
                                                  SourceRouting                   Destination,
                                                  NetworkPath                     NetworkPath,
                                                  EventTracking_Id                EventTrackingId,
@@ -847,7 +848,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             Receive_ExtendedTriggerMessageResponseError(ExtendedTriggerMessageRequest?       Request,
                                                   ExtendedTriggerMessageResponse?      Response,
                                                   OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                  IWebSocketConnection           Connection,
+                                                  IMessageConnection             Connection,
                                                   SourceRouting                  Destination,
                                                   NetworkPath                    NetworkPath,
                                                   EventTracking_Id               EventTrackingId,

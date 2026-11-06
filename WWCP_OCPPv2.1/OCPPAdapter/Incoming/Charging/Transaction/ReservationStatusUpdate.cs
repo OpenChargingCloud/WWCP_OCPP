@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnReservationStatusUpdateRequestReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                           IEventSender                     Sender,
-                                                                          IWebSocketConnection             Connection,
+                                                                          IMessageConnection               Connection,
                                                                           ReservationStatusUpdateRequest   Request,
                                                                           CancellationToken                CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnReservationStatusUpdateResponseReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                            IEventSender                      Sender,
-                                                                           IWebSocketConnection?             Connection,
+                                                                           IMessageConnection?               Connection,
                                                                            ReservationStatusUpdateRequest?   Request,
                                                                            ReservationStatusUpdateResponse   Response,
                                                                            TimeSpan?                         Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnReservationStatusUpdateRequestErrorReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                                IEventSender                      Sender,
-                                                                               IWebSocketConnection              Connection,
+                                                                               IMessageConnection                Connection,
                                                                                ReservationStatusUpdateRequest?   Request,
                                                                                OCPP_JSONRequestErrorMessage      RequestErrorMessage,
                                                                                TimeSpan?                         Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnReservationStatusUpdateResponseErrorReceivedDelegate(DateTimeOffset                     Timestamp,
                                                                                 IEventSender                       Sender,
-                                                                                IWebSocketConnection               Connection,
+                                                                                IMessageConnection                 Connection,
                                                                                 ReservationStatusUpdateRequest?    Request,
                                                                                 ReservationStatusUpdateResponse?   Response,
                                                                                 OCPP_JSONResponseErrorMessage      ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnReservationStatusUpdateDelegate(DateTimeOffset                   Timestamp,
                                           IEventSender                     Sender,
-                                          IWebSocketConnection             Connection,
+                                          IMessageConnection               Connection,
                                           ReservationStatusUpdateRequest   Request,
                                           CancellationToken                CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_ReservationStatusUpdate(DateTimeOffset        RequestTimestamp,
-                                            IWebSocketConnection  WebSocketConnection,
+                                            IMessageConnection    WebSocketConnection,
                                             SourceRouting         Destination,
                                             NetworkPath           NetworkPath,
                                             EventTracking_Id      EventTrackingId,
@@ -314,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_ReservationStatusUpdateResponse(ReservationStatusUpdateRequest  Request,
                                                     JObject                         ResponseJSON,
-                                                    IWebSocketConnection            WebSocketConnection,
+                                                    IMessageConnection              WebSocketConnection,
                                                     SourceRouting               Destination,
                                                     NetworkPath                     NetworkPath,
                                                     EventTracking_Id                EventTrackingId,
@@ -418,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_ReservationStatusUpdateRequestError(ReservationStatusUpdateRequest  Request,
                                                         OCPP_JSONRequestErrorMessage    RequestErrorMessage,
-                                                        IWebSocketConnection            Connection,
+                                                        IMessageConnection              Connection,
                                                         SourceRouting               Destination,
                                                         NetworkPath                     NetworkPath,
                                                         EventTracking_Id                EventTrackingId,
@@ -507,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_ReservationStatusUpdateResponseError(ReservationStatusUpdateRequest?   Request,
                                                          ReservationStatusUpdateResponse?  Response,
                                                          OCPP_JSONResponseErrorMessage     ResponseErrorMessage,
-                                                         IWebSocketConnection              Connection,
+                                                         IMessageConnection                Connection,
                                                          SourceRouting                     Destination,
                                                          NetworkPath                       NetworkPath,
                                                          EventTracking_Id                  EventTrackingId,

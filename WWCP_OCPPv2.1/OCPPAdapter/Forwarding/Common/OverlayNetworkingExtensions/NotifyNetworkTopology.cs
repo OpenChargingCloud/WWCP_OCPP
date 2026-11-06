@@ -42,7 +42,7 @@
 
 //        OnNotifyNetworkTopologyMessageFilterDelegate(DateTimeOffset                 Timestamp,
 //                                                     IEventSender                   Sender,
-//                                                     IWebSocketConnection           Connection,
+//                                                     IMessageConnection             Connection,
 //                                                     NotifyNetworkTopologyMessage   Request,
 //                                                     CancellationToken              CancellationToken);
 
@@ -60,7 +60,7 @@
 
 //        OnNotifyNetworkTopologyMessageFilteredDelegate(DateTimeOffset                                     Timestamp,
 //                                                       IEventSender                                       Sender,
-//                                                       IWebSocketConnection                               Connection,
+//                                                       IMessageConnection                                 Connection,
 //                                                       NotifyNetworkTopologyMessage                       Request,
 //                                                       ForwardingDecision<NotifyNetworkTopologyMessage>   ForwardingDecision,
 //                                                       CancellationToken                                  CancellationToken);
@@ -86,7 +86,7 @@
 
 //            Forward_NotifyNetworkTopology(OCPP_JSONRequestMessage    JSONRequestMessage,
 //                                          OCPP_BinaryRequestMessage  BinaryRequestMessage,
-//                                          IWebSocketConnection       WebSocketConnection,
+//                                          IMessageConnection         WebSocketConnection,
 //                                          CancellationToken          CancellationToken   = default)
 
 //        {

@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGet15118EVCertificateRequestSentDelegate(DateTimeOffset                 Timestamp,
                                                                     IEventSender                   Sender,
-                                                                    IWebSocketConnection?          Connection,
+                                                                    IMessageConnection?            Connection,
                                                                     Get15118EVCertificateRequest   Request,
                                                                     SentMessageResults             SentMessageResult,
                                                                     CancellationToken              CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGet15118EVCertificateResponseSentDelegate(DateTimeOffset                  Timestamp,
                                                     IEventSender                    Sender,
-                                                    IWebSocketConnection?           Connection,
+                                                    IMessageConnection?             Connection,
                                                     Get15118EVCertificateRequest    Request,
                                                     Get15118EVCertificateResponse   Response,
                                                     TimeSpan                        Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGet15118EVCertificateRequestErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                         IEventSender                    Sender,
-                                                        IWebSocketConnection?           Connection,
+                                                        IMessageConnection?             Connection,
                                                         Get15118EVCertificateRequest?   Request,
                                                         OCPP_JSONRequestErrorMessage    RequestErrorMessage,
                                                         TimeSpan?                       Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGet15118EVCertificateResponseErrorSentDelegate(DateTimeOffset                   Timestamp,
                                                          IEventSender                     Sender,
-                                                         IWebSocketConnection?            Connection,
+                                                         IMessageConnection?              Connection,
                                                          Get15118EVCertificateRequest?    Request,
                                                          Get15118EVCertificateResponse?   Response,
                                                          OCPP_JSONResponseErrorMessage    ResponseErrorMessage,
@@ -268,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGet15118EVCertificateResponseSent(DateTimeOffset                 Timestamp,
                                                             IEventSender                   Sender,
-                                                            IWebSocketConnection?          Connection,
+                                                            IMessageConnection?            Connection,
                                                             Get15118EVCertificateRequest   Request,
                                                             Get15118EVCertificateResponse  Response,
                                                             TimeSpan                       Runtime,
@@ -301,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGet15118EVCertificateRequestErrorSent(DateTimeOffset                 Timestamp,
                                                                 IEventSender                   Sender,
-                                                                IWebSocketConnection?          Connection,
+                                                                IMessageConnection?            Connection,
                                                                 Get15118EVCertificateRequest?  Request,
                                                                 OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                 TimeSpan                       Runtime,
@@ -334,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGet15118EVCertificateResponseErrorSent(DateTimeOffset                  Timestamp,
                                                                  IEventSender                    Sender,
-                                                                 IWebSocketConnection?           Connection,
+                                                                 IMessageConnection?             Connection,
                                                                  Get15118EVCertificateRequest?   Request,
                                                                  Get15118EVCertificateResponse?  Response,
                                                                  OCPP_JSONResponseErrorMessage   ResponseErrorMessage,

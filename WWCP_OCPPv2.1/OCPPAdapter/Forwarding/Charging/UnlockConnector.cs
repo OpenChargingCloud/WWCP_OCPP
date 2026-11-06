@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnUnlockConnectorRequestFilterDelegate(DateTimeOffset           Timestamp,
                                                IEventSender             Sender,
-                                               IWebSocketConnection     Connection,
+                                               IMessageConnection       Connection,
                                                UnlockConnectorRequest   Request,
                                                CancellationToken        CancellationToken);
 
@@ -63,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnUnlockConnectorRequestFilteredDelegate(DateTimeOffset                                                        Timestamp,
                                                  IEventSender                                                          Sender,
-                                                 IWebSocketConnection                                                  Connection,
+                                                 IMessageConnection                                                    Connection,
                                                  UnlockConnectorRequest                                                Request,
                                                  RequestForwardingDecision<UnlockConnectorRequest, UnlockConnectorResponse>   ForwardingDecision,
                                                  CancellationToken                                                     CancellationToken);
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Forward_UnlockConnector(OCPP_JSONRequestMessage    JSONRequestMessage,
                                     OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                                    IWebSocketConnection       WebSocketConnection,
+                                    IMessageConnection         WebSocketConnection,
                                     CancellationToken          CancellationToken   = default)
 
         {

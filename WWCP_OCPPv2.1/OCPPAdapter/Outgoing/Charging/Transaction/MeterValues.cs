@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnMeterValuesRequestSentDelegate(DateTimeOffset          Timestamp,
                                                           IEventSender            Sender,
-                                                          IWebSocketConnection?   Connection,
+                                                          IMessageConnection?     Connection,
                                                           MeterValuesRequest      Request,
                                                           SentMessageResults      SentMessageResult,
                                                           CancellationToken       CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnMeterValuesResponseSentDelegate(DateTimeOffset         Timestamp,
                                           IEventSender           Sender,
-                                          IWebSocketConnection?  Connection,
+                                          IMessageConnection?    Connection,
                                           MeterValuesRequest     Request,
                                           MeterValuesResponse    Response,
                                           TimeSpan               Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnMeterValuesRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                               IEventSender                   Sender,
-                                              IWebSocketConnection?          Connection,
+                                              IMessageConnection?            Connection,
                                               MeterValuesRequest?            Request,
                                               OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                               TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnMeterValuesResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                IEventSender                    Sender,
-                                               IWebSocketConnection?           Connection,
+                                               IMessageConnection?             Connection,
                                                MeterValuesRequest?             Request,
                                                MeterValuesResponse?            Response,
                                                OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -270,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnMeterValuesResponseSent(DateTimeOffset        Timestamp,
                                                   IEventSender          Sender,
-                                                  IWebSocketConnection? Connection,
+                                                  IMessageConnection?   Connection,
                                                   MeterValuesRequest    Request,
                                                   MeterValuesResponse   Response,
                                                   TimeSpan              Runtime,
@@ -303,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnMeterValuesRequestErrorSent(DateTimeOffset                Timestamp,
                                                       IEventSender                  Sender,
-                                                      IWebSocketConnection?         Connection,
+                                                      IMessageConnection?           Connection,
                                                       MeterValuesRequest?           Request,
                                                       OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                       TimeSpan                      Runtime,
@@ -336,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnMeterValuesResponseErrorSent(DateTimeOffset                 Timestamp,
                                                        IEventSender                   Sender,
-                                                       IWebSocketConnection?          Connection,
+                                                       IMessageConnection?            Connection,
                                                        MeterValuesRequest?            Request,
                                                        MeterValuesResponse?           Response,
                                                        OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

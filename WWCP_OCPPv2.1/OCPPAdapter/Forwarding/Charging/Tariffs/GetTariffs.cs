@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetTariffsRequestFilterDelegate(DateTimeOffset         Timestamp,
                                           IEventSender           Sender,
-                                          IWebSocketConnection   Connection,
+                                          IMessageConnection     Connection,
                                           GetTariffsRequest      Request,
                                           CancellationToken      CancellationToken);
 
@@ -62,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetTariffsRequestFilteredDelegate(DateTimeOffset                                              Timestamp,
                                             IEventSender                                                Sender,
-                                            IWebSocketConnection                                        Connection,
+                                            IMessageConnection                                          Connection,
                                             GetTariffsRequest                                           Request,
                                             RequestForwardingDecision<GetTariffsRequest, GetTariffsResponse>   ForwardingDecision,
                                             CancellationToken                                           CancellationToken);
@@ -88,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Forward_GetTariffs(OCPP_JSONRequestMessage    JSONRequestMessage,
                                OCPP_BinaryRequestMessage  BinaryRequestMessage,
-                               IWebSocketConnection       WebSocketConnection,
+                               IMessageConnection         WebSocketConnection,
                                CancellationToken          CancellationToken   = default)
 
         {

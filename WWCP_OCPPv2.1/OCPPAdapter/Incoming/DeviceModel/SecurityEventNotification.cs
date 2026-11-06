@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSecurityEventNotificationRequestReceivedDelegate(DateTimeOffset                     Timestamp,
                                                                             IEventSender                       Sender,
-                                                                            IWebSocketConnection               Connection,
+                                                                            IMessageConnection                 Connection,
                                                                             SecurityEventNotificationRequest   Request,
                                                                             CancellationToken                  CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSecurityEventNotificationResponseReceivedDelegate(DateTimeOffset                      Timestamp,
                                                                              IEventSender                        Sender,
-                                                                             IWebSocketConnection?               Connection,
+                                                                             IMessageConnection?                 Connection,
                                                                              SecurityEventNotificationRequest?   Request,
                                                                              SecurityEventNotificationResponse   Response,
                                                                              TimeSpan?                           Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSecurityEventNotificationRequestErrorReceivedDelegate(DateTimeOffset                      Timestamp,
                                                                                  IEventSender                        Sender,
-                                                                                 IWebSocketConnection                Connection,
+                                                                                 IMessageConnection                  Connection,
                                                                                  SecurityEventNotificationRequest?   Request,
                                                                                  OCPP_JSONRequestErrorMessage        RequestErrorMessage,
                                                                                  TimeSpan?                           Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSecurityEventNotificationResponseErrorReceivedDelegate(DateTimeOffset                       Timestamp,
                                                                                   IEventSender                         Sender,
-                                                                                  IWebSocketConnection                 Connection,
+                                                                                  IMessageConnection                   Connection,
                                                                                   SecurityEventNotificationRequest?    Request,
                                                                                   SecurityEventNotificationResponse?   Response,
                                                                                   OCPP_JSONResponseErrorMessage        ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSecurityEventNotificationDelegate(DateTimeOffset                     Timestamp,
                                             IEventSender                       Sender,
-                                            IWebSocketConnection               Connection,
+                                            IMessageConnection                 Connection,
                                             SecurityEventNotificationRequest   Request,
                                             CancellationToken                  CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SecurityEventNotification(DateTimeOffset        RequestTimestamp,
-                                    IWebSocketConnection  WebSocketConnection,
+                                    IMessageConnection    WebSocketConnection,
                                     SourceRouting     Destination,
                                     NetworkPath           NetworkPath,
                                     EventTracking_Id      EventTrackingId,
@@ -314,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SecurityEventNotificationResponse(SecurityEventNotificationRequest  Request,
                                                       JObject                           ResponseJSON,
-                                                      IWebSocketConnection              WebSocketConnection,
+                                                      IMessageConnection                WebSocketConnection,
                                                       SourceRouting                 Destination,
                                                       NetworkPath                       NetworkPath,
                                                       EventTracking_Id                  EventTrackingId,
@@ -418,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SecurityEventNotificationRequestError(SecurityEventNotificationRequest  Request,
                                                           OCPP_JSONRequestErrorMessage      RequestErrorMessage,
-                                                          IWebSocketConnection              Connection,
+                                                          IMessageConnection                Connection,
                                                           SourceRouting                 Destination,
                                                           NetworkPath                       NetworkPath,
                                                           EventTracking_Id                  EventTrackingId,
@@ -507,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_SecurityEventNotificationResponseError(SecurityEventNotificationRequest?   Request,
                                                            SecurityEventNotificationResponse?  Response,
                                                            OCPP_JSONResponseErrorMessage       ResponseErrorMessage,
-                                                           IWebSocketConnection                Connection,
+                                                           IMessageConnection                  Connection,
                                                            SourceRouting                       Destination,
                                                            NetworkPath                         NetworkPath,
                                                            EventTracking_Id                    EventTrackingId,

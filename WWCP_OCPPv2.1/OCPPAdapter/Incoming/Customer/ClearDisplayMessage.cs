@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnClearDisplayMessageRequestReceivedDelegate(DateTimeOffset               Timestamp,
                                                                       IEventSender                 Sender,
-                                                                      IWebSocketConnection         Connection,
+                                                                      IMessageConnection           Connection,
                                                                       ClearDisplayMessageRequest   Request,
                                                                       CancellationToken            CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnClearDisplayMessageResponseReceivedDelegate(DateTimeOffset                Timestamp,
                                                                        IEventSender                  Sender,
-                                                                       IWebSocketConnection?         Connection,
+                                                                       IMessageConnection?           Connection,
                                                                        ClearDisplayMessageRequest?   Request,
                                                                        ClearDisplayMessageResponse   Response,
                                                                        TimeSpan?                     Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnClearDisplayMessageRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                            IEventSender                   Sender,
-                                                                           IWebSocketConnection           Connection,
+                                                                           IMessageConnection             Connection,
                                                                            ClearDisplayMessageRequest?    Request,
                                                                            OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                            TimeSpan?                      Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnClearDisplayMessageResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                             IEventSender                    Sender,
-                                                                            IWebSocketConnection            Connection,
+                                                                            IMessageConnection              Connection,
                                                                             ClearDisplayMessageRequest?     Request,
                                                                             ClearDisplayMessageResponse?    Response,
                                                                             OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnClearDisplayMessageDelegate(DateTimeOffset               Timestamp,
                                       IEventSender                 Sender,
-                                      IWebSocketConnection         Connection,
+                                      IMessageConnection           Connection,
                                       ClearDisplayMessageRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_ClearDisplayMessage(DateTimeOffset        RequestTimestamp,
-                                        IWebSocketConnection  WebSocketConnection,
+                                        IMessageConnection    WebSocketConnection,
                                         SourceRouting         Destination,
                                         NetworkPath           NetworkPath,
                                         EventTracking_Id      EventTrackingId,
@@ -316,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_ClearDisplayMessageResponse(ClearDisplayMessageRequest  Request,
                                                 JObject                     ResponseJSON,
-                                                IWebSocketConnection        WebSocketConnection,
+                                                IMessageConnection          WebSocketConnection,
                                                 SourceRouting           Destination,
                                                 NetworkPath                 NetworkPath,
                                                 EventTracking_Id            EventTrackingId,
@@ -422,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_ClearDisplayMessageRequestError(ClearDisplayMessageRequest    Request,
                                                     OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                    IWebSocketConnection          Connection,
+                                                    IMessageConnection            Connection,
                                                     SourceRouting                 Destination,
                                                     NetworkPath                   NetworkPath,
                                                     EventTracking_Id              EventTrackingId,
@@ -511,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_ClearDisplayMessageResponseError(ClearDisplayMessageRequest?    Request,
                                                      ClearDisplayMessageResponse?   Response,
                                                      OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                     IWebSocketConnection           Connection,
+                                                     IMessageConnection             Connection,
                                                      SourceRouting                  Destination,
                                                      NetworkPath                    NetworkPath,
                                                      EventTracking_Id               EventTrackingId,

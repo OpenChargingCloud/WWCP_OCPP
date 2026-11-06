@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetInstalledCertificateIdsRequestReceivedDelegate(DateTimeOffset                      Timestamp,
                                                                              IEventSender                        Sender,
-                                                                             IWebSocketConnection                Connection,
+                                                                             IMessageConnection                  Connection,
                                                                              GetInstalledCertificateIdsRequest   Request,
                                                                              CancellationToken                   CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetInstalledCertificateIdsResponseReceivedDelegate(DateTimeOffset                       Timestamp,
                                                                               IEventSender                         Sender,
-                                                                              IWebSocketConnection?                Connection,
+                                                                              IMessageConnection?                  Connection,
                                                                               GetInstalledCertificateIdsRequest?   Request,
                                                                               GetInstalledCertificateIdsResponse   Response,
                                                                               TimeSpan?                            Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetInstalledCertificateIdsRequestErrorReceivedDelegate(DateTimeOffset                       Timestamp,
                                                                                   IEventSender                         Sender,
-                                                                                  IWebSocketConnection                 Connection,
+                                                                                  IMessageConnection                   Connection,
                                                                                   GetInstalledCertificateIdsRequest?   Request,
                                                                                   OCPP_JSONRequestErrorMessage         RequestErrorMessage,
                                                                                   TimeSpan?                            Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetInstalledCertificateIdsResponseErrorReceivedDelegate(DateTimeOffset                        Timestamp,
                                                                                    IEventSender                          Sender,
-                                                                                   IWebSocketConnection                  Connection,
+                                                                                   IMessageConnection                    Connection,
                                                                                    GetInstalledCertificateIdsRequest?    Request,
                                                                                    GetInstalledCertificateIdsResponse?   Response,
                                                                                    OCPP_JSONResponseErrorMessage         ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetInstalledCertificateIdsDelegate(DateTimeOffset                      Timestamp,
                                              IEventSender                        Sender,
-                                             IWebSocketConnection                Connection,
+                                             IMessageConnection                  Connection,
                                              GetInstalledCertificateIdsRequest   Request,
                                              CancellationToken                   CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_GetInstalledCertificateIds(DateTimeOffset        RequestTimestamp,
-                                               IWebSocketConnection  WebSocketConnection,
+                                               IMessageConnection    WebSocketConnection,
                                                SourceRouting         Destination,
                                                NetworkPath           NetworkPath,
                                                EventTracking_Id      EventTrackingId,
@@ -320,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_GetInstalledCertificateIdsResponse(GetInstalledCertificateIdsRequest  Request,
                                                        JObject                            ResponseJSON,
-                                                       IWebSocketConnection               WebSocketConnection,
+                                                       IMessageConnection                 WebSocketConnection,
                                                        SourceRouting                  Destination,
                                                        NetworkPath                        NetworkPath,
                                                        EventTracking_Id                   EventTrackingId,
@@ -429,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_GetInstalledCertificateIdsRequestError(GetInstalledCertificateIdsRequest  Request,
                                                            OCPP_JSONRequestErrorMessage       RequestErrorMessage,
-                                                           IWebSocketConnection               Connection,
+                                                           IMessageConnection                 Connection,
                                                            SourceRouting                  Destination,
                                                            NetworkPath                        NetworkPath,
                                                            EventTracking_Id                   EventTrackingId,
@@ -518,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_GetInstalledCertificateIdsResponseError(GetInstalledCertificateIdsRequest?   Request,
                                                             GetInstalledCertificateIdsResponse?  Response,
                                                             OCPP_JSONResponseErrorMessage        ResponseErrorMessage,
-                                                            IWebSocketConnection                 Connection,
+                                                            IMessageConnection                   Connection,
                                                             SourceRouting                        Destination,
                                                             NetworkPath                          NetworkPath,
                                                             EventTracking_Id                     EventTrackingId,

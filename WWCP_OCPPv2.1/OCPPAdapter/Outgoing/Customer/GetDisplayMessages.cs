@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnGetDisplayMessagesRequestSentDelegate(DateTimeOffset              Timestamp,
                                                                  IEventSender                Sender,
-                                                                 IWebSocketConnection?       Connection,
+                                                                 IMessageConnection?         Connection,
                                                                  GetDisplayMessagesRequest   Request,
                                                                  SentMessageResults          SentMessageResult,
                                                                  CancellationToken           CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetDisplayMessagesResponseSentDelegate(DateTimeOffset               Timestamp,
                                                  IEventSender                 Sender,
-                                                 IWebSocketConnection?        Connection,
+                                                 IMessageConnection?          Connection,
                                                  GetDisplayMessagesRequest    Request,
                                                  GetDisplayMessagesResponse   Response,
                                                  TimeSpan                     Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetDisplayMessagesRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                      IEventSender                   Sender,
-                                                     IWebSocketConnection?          Connection,
+                                                     IMessageConnection?            Connection,
                                                      GetDisplayMessagesRequest?     Request,
                                                      OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                      TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnGetDisplayMessagesResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                       IEventSender                    Sender,
-                                                      IWebSocketConnection?           Connection,
+                                                      IMessageConnection?             Connection,
                                                       GetDisplayMessagesRequest?      Request,
                                                       GetDisplayMessagesResponse?     Response,
                                                       OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -267,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGetDisplayMessagesResponseSent(DateTimeOffset               Timestamp,
                                                          IEventSender                 Sender,
-                                                         IWebSocketConnection?        Connection,
+                                                         IMessageConnection?          Connection,
                                                          GetDisplayMessagesRequest    Request,
                                                          GetDisplayMessagesResponse   Response,
                                                          TimeSpan                     Runtime,
@@ -300,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGetDisplayMessagesRequestErrorSent(DateTimeOffset                Timestamp,
                                                              IEventSender                  Sender,
-                                                             IWebSocketConnection?         Connection,
+                                                             IMessageConnection?           Connection,
                                                              GetDisplayMessagesRequest?    Request,
                                                              OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                              TimeSpan                      Runtime,
@@ -333,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnGetDisplayMessagesResponseErrorSent(DateTimeOffset                 Timestamp,
                                                               IEventSender                   Sender,
-                                                              IWebSocketConnection?          Connection,
+                                                              IMessageConnection?            Connection,
                                                               GetDisplayMessagesRequest?     Request,
                                                               GetDisplayMessagesResponse?    Response,
                                                               OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnUpdateUserRoleRequestSentDelegate(DateTimeOffset          Timestamp,
                                                              IEventSender            Sender,
-                                                             IWebSocketConnection?   Connection,
+                                                             IMessageConnection?     Connection,
                                                              UpdateUserRoleRequest   Request,
                                                              SentMessageResults      SentMessageResult,
                                                              CancellationToken       CancellationToken);
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnUpdateUserRoleResponseSentDelegate(DateTimeOffset           Timestamp,
                                              IEventSender             Sender,
-                                             IWebSocketConnection?    Connection,
+                                             IMessageConnection?      Connection,
                                              UpdateUserRoleRequest    Request,
                                              UpdateUserRoleResponse   Response,
                                              TimeSpan                 Runtime,
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnUpdateUserRoleRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                  IEventSender                   Sender,
-                                                 IWebSocketConnection?          Connection,
+                                                 IMessageConnection?            Connection,
                                                  UpdateUserRoleRequest?         Request,
                                                  OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                  TimeSpan?                      Runtime,
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnUpdateUserRoleResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                   IEventSender                    Sender,
-                                                  IWebSocketConnection?           Connection,
+                                                  IMessageConnection?             Connection,
                                                   UpdateUserRoleRequest?          Request,
                                                   UpdateUserRoleResponse?         Response,
                                                   OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -264,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnUpdateUserRoleResponseSent(DateTimeOffset          Timestamp,
                                                      IEventSender            Sender,
-                                                     IWebSocketConnection?   Connection,
+                                                     IMessageConnection?     Connection,
                                                      UpdateUserRoleRequest   Request,
                                                      UpdateUserRoleResponse  Response,
                                                      TimeSpan                Runtime,
@@ -297,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnUpdateUserRoleRequestErrorSent(DateTimeOffset                Timestamp,
                                                          IEventSender                  Sender,
-                                                         IWebSocketConnection?         Connection,
+                                                         IMessageConnection?           Connection,
                                                          UpdateUserRoleRequest?        Request,
                                                          OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                          TimeSpan                      Runtime,
@@ -330,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnUpdateUserRoleResponseErrorSent(DateTimeOffset                 Timestamp,
                                                           IEventSender                   Sender,
-                                                          IWebSocketConnection?          Connection,
+                                                          IMessageConnection?            Connection,
                                                           UpdateUserRoleRequest?         Request,
                                                           UpdateUserRoleResponse?        Response,
                                                           OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

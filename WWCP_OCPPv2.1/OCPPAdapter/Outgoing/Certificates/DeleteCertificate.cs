@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnDeleteCertificateRequestSentDelegate(DateTimeOffset             Timestamp,
                                                                 IEventSender               Sender,
-                                                                IWebSocketConnection?      Connection,
+                                                                IMessageConnection?        Connection,
                                                                 DeleteCertificateRequest   Request,
                                                                 SentMessageResults         SentMessageResult,
                                                                 CancellationToken          CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteCertificateResponseSentDelegate(DateTimeOffset              Timestamp,
                                                 IEventSender                Sender,
-                                                IWebSocketConnection?       Connection,
+                                                IMessageConnection?         Connection,
                                                 DeleteCertificateRequest    Request,
                                                 DeleteCertificateResponse   Response,
                                                 TimeSpan                    Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteCertificateRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                     IEventSender                   Sender,
-                                                    IWebSocketConnection?          Connection,
+                                                    IMessageConnection?            Connection,
                                                     DeleteCertificateRequest?      Request,
                                                     OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                     TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnDeleteCertificateResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                      IEventSender                    Sender,
-                                                     IWebSocketConnection?           Connection,
+                                                     IMessageConnection?             Connection,
                                                      DeleteCertificateRequest?       Request,
                                                      DeleteCertificateResponse?      Response,
                                                      OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -269,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteCertificateResponseSent(DateTimeOffset             Timestamp,
                                                         IEventSender               Sender,
-                                                        IWebSocketConnection?      Connection,
+                                                        IMessageConnection?        Connection,
                                                         DeleteCertificateRequest   Request,
                                                         DeleteCertificateResponse  Response,
                                                         TimeSpan                   Runtime,
@@ -302,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteCertificateRequestErrorSent(DateTimeOffset                Timestamp,
                                                             IEventSender                  Sender,
-                                                            IWebSocketConnection?         Connection,
+                                                            IMessageConnection?           Connection,
                                                             DeleteCertificateRequest?     Request,
                                                             OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                             TimeSpan                      Runtime,
@@ -335,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnDeleteCertificateResponseErrorSent(DateTimeOffset                 Timestamp,
                                                              IEventSender                   Sender,
-                                                             IWebSocketConnection?          Connection,
+                                                             IMessageConnection?            Connection,
                                                              DeleteCertificateRequest?      Request,
                                                              DeleteCertificateResponse?     Response,
                                                              OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

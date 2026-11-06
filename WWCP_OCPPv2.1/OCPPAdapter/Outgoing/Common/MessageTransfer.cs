@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.WebSockets;
@@ -42,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="SentMessageResult">The result of the send message process.</param>
     public delegate Task OnMessageTransferMessageSentDelegate(DateTimeOffset           Timestamp,
                                                               IEventSender             Sender,
-                                                              IWebSocketConnection?    Connection,
+                                                              IMessageConnection?      Connection,
                                                               MessageTransferMessage   MessageTransferMessage,
                                                               SentMessageResults       SentMessageResult,
                                                               CancellationToken        CancellationToken);
@@ -62,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnMessageRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                           IEventSender                   Sender,
-                                          IWebSocketConnection?          Connection,
+                                          IMessageConnection?            Connection,
                                           MessageTransferMessage?        MessageTransferMessage,
                                           OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                           TimeSpan?                      Runtime,
@@ -177,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnMessageRequestErrorSent(DateTimeOffset                Timestamp,
                                                   IEventSender                  Sender,
-                                                  IWebSocketConnection?         Connection,
+                                                  IMessageConnection?           Connection,
                                                   MessageTransferMessage?       MessageTransferMessage,
                                                   OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                   TimeSpan                      Runtime,

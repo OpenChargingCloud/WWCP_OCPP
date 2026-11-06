@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -48,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNTSKERequestReceivedDelegate(DateTimeOffset         Timestamp,
                                                         IEventSender           Sender,
-                                                        IWebSocketConnection   Connection,
+                                                        IMessageConnection     Connection,
                                                         NTSKERequest           Request,
                                                         CancellationToken      CancellationToken);
 
@@ -65,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNTSKEResponseReceivedDelegate(DateTimeOffset          Timestamp,
                                                          IEventSender            Sender,
-                                                         IWebSocketConnection?   Connection,
+                                                         IMessageConnection?     Connection,
                                                          NTSKERequest?           Request,
                                                          NTSKEResponse           Response,
                                                          TimeSpan?               Runtime,
@@ -84,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNTSKERequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                              IEventSender                   Sender,
-                                                             IWebSocketConnection           Connection,
+                                                             IMessageConnection             Connection,
                                                              NTSKERequest?                  Request,
                                                              OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                              TimeSpan?                      Runtime,
@@ -104,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNTSKEResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                               IEventSender                    Sender,
-                                                              IWebSocketConnection            Connection,
+                                                              IMessageConnection              Connection,
                                                               NTSKERequest?                   Request,
                                                               NTSKEResponse?                  Response,
                                                               OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -127,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnNTSKEDelegate(DateTimeOffset         Timestamp,
                         IEventSender           Sender,
-                        IWebSocketConnection   Connection,
+                        IMessageConnection     Connection,
                         NTSKERequest           Request,
                         CancellationToken      CancellationToken);
 
@@ -153,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_NTSKE(DateTimeOffset        RequestTimestamp,
-                          IWebSocketConnection  WebSocketConnection,
+                          IMessageConnection    WebSocketConnection,
                           SourceRouting         Destination,
                           NetworkPath           NetworkPath,
                           EventTracking_Id      EventTrackingId,
@@ -319,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_NTSKEResponse(NTSKERequest          Request,
                                   JObject               ResponseJSON,
-                                  IWebSocketConnection  WebSocketConnection,
+                                  IMessageConnection    WebSocketConnection,
                                   SourceRouting         Destination,
                                   NetworkPath           NetworkPath,
                                   EventTracking_Id      EventTrackingId,
@@ -426,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_NTSKERequestError(NTSKERequest                  Request,
                                       OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                      IWebSocketConnection          Connection,
+                                      IMessageConnection            Connection,
                                       SourceRouting                 Destination,
                                       NetworkPath                   NetworkPath,
                                       EventTracking_Id              EventTrackingId,
@@ -515,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_NTSKEResponseError(NTSKERequest?                  Request,
                                        NTSKEResponse?                 Response,
                                        OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                       IWebSocketConnection           Connection,
+                                       IMessageConnection             Connection,
                                        SourceRouting                  Destination,
                                        NetworkPath                    NetworkPath,
                                        EventTracking_Id               EventTrackingId,

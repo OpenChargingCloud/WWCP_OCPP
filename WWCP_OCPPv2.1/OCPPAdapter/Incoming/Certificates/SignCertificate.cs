@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignCertificateRequestReceivedDelegate(DateTimeOffset           Timestamp,
                                                                   IEventSender             Sender,
-                                                                  IWebSocketConnection     Connection,
+                                                                  IMessageConnection       Connection,
                                                                   SignCertificateRequest   Request,
                                                                   CancellationToken        CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignCertificateResponseReceivedDelegate(DateTimeOffset            Timestamp,
                                                                    IEventSender              Sender,
-                                                                   IWebSocketConnection?     Connection,
+                                                                   IMessageConnection?       Connection,
                                                                    SignCertificateRequest?   Request,
                                                                    SignCertificateResponse   Response,
                                                                    TimeSpan?                 Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignCertificateRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                        IEventSender                   Sender,
-                                                                       IWebSocketConnection           Connection,
+                                                                       IMessageConnection             Connection,
                                                                        SignCertificateRequest?        Request,
                                                                        OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                        TimeSpan?                      Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignCertificateResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                         IEventSender                    Sender,
-                                                                        IWebSocketConnection            Connection,
+                                                                        IMessageConnection              Connection,
                                                                         SignCertificateRequest?         Request,
                                                                         SignCertificateResponse?        Response,
                                                                         OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSignCertificateDelegate(DateTimeOffset           Timestamp,
                                   IEventSender             Sender,
-                                  IWebSocketConnection     Connection,
+                                  IMessageConnection       Connection,
                                   SignCertificateRequest   Request,
                                   CancellationToken        CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SignCertificate(DateTimeOffset        RequestTimestamp,
-                                    IWebSocketConnection  WebSocketConnection,
+                                    IMessageConnection    WebSocketConnection,
                                     SourceRouting         Destination,
                                     NetworkPath           NetworkPath,
                                     EventTracking_Id      EventTrackingId,
@@ -316,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SignCertificateResponse(SignCertificateRequest  Request,
                                             JObject                 ResponseJSON,
-                                            IWebSocketConnection    WebSocketConnection,
+                                            IMessageConnection      WebSocketConnection,
                                             SourceRouting       Destination,
                                             NetworkPath             NetworkPath,
                                             EventTracking_Id        EventTrackingId,
@@ -422,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_SignCertificateRequestError(SignCertificateRequest        Request,
                                                 OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                                IWebSocketConnection          Connection,
+                                                IMessageConnection            Connection,
                                                 SourceRouting                 Destination,
                                                 NetworkPath                   NetworkPath,
                                                 EventTracking_Id              EventTrackingId,
@@ -511,7 +512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_SignCertificateResponseError(SignCertificateRequest?        Request,
                                                  SignCertificateResponse?       Response,
                                                  OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                                 IWebSocketConnection           Connection,
+                                                 IMessageConnection             Connection,
                                                  SourceRouting                  Destination,
                                                  NetworkPath                    NetworkPath,
                                                  EventTracking_Id               EventTrackingId,

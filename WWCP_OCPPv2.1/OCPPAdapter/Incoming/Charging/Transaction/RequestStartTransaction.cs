@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRequestStartTransactionRequestReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                           IEventSender                     Sender,
-                                                                          IWebSocketConnection             Connection,
+                                                                          IMessageConnection               Connection,
                                                                           RequestStartTransactionRequest   Request,
                                                                           CancellationToken                CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRequestStartTransactionResponseReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                            IEventSender                      Sender,
-                                                                           IWebSocketConnection?             Connection,
+                                                                           IMessageConnection?               Connection,
                                                                            RequestStartTransactionRequest?   Request,
                                                                            RequestStartTransactionResponse   Response,
                                                                            TimeSpan?                         Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRequestStartTransactionRequestErrorReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                                IEventSender                      Sender,
-                                                                               IWebSocketConnection              Connection,
+                                                                               IMessageConnection                Connection,
                                                                                RequestStartTransactionRequest?   Request,
                                                                                OCPP_JSONRequestErrorMessage      RequestErrorMessage,
                                                                                TimeSpan?                         Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnRequestStartTransactionResponseErrorReceivedDelegate(DateTimeOffset                     Timestamp,
                                                                                 IEventSender                       Sender,
-                                                                                IWebSocketConnection               Connection,
+                                                                                IMessageConnection                 Connection,
                                                                                 RequestStartTransactionRequest?    Request,
                                                                                 RequestStartTransactionResponse?   Response,
                                                                                 OCPP_JSONResponseErrorMessage      ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnRequestStartTransactionDelegate(DateTimeOffset                   Timestamp,
                                           IEventSender                     Sender,
-                                          IWebSocketConnection             Connection,
+                                          IMessageConnection               Connection,
                                           RequestStartTransactionRequest   Request,
                                           CancellationToken                CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_RequestStartTransaction(DateTimeOffset        RequestTimestamp,
-                                            IWebSocketConnection  WebSocketConnection,
+                                            IMessageConnection    WebSocketConnection,
                                             SourceRouting     Destination,
                                             NetworkPath           NetworkPath,
                                             EventTracking_Id      EventTrackingId,
@@ -346,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_RequestStartTransactionResponse(RequestStartTransactionRequest  Request,
                                                     JObject                         ResponseJSON,
-                                                    IWebSocketConnection            WebSocketConnection,
+                                                    IMessageConnection              WebSocketConnection,
                                                     SourceRouting                   Destination,
                                                     NetworkPath                     NetworkPath,
                                                     EventTracking_Id                EventTrackingId,
@@ -452,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_RequestStartTransactionRequestError(RequestStartTransactionRequest                  Request,
                                       OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                      IWebSocketConnection          Connection,
+                                      IMessageConnection            Connection,
                                       SourceRouting                 Destination,
                                       NetworkPath                   NetworkPath,
                                       EventTracking_Id              EventTrackingId,
@@ -541,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_RequestStartTransactionResponseError(RequestStartTransactionRequest?   Request,
                                                          RequestStartTransactionResponse?  Response,
                                                          OCPP_JSONResponseErrorMessage     ResponseErrorMessage,
-                                                         IWebSocketConnection              Connection,
+                                                         IMessageConnection                Connection,
                                                          SourceRouting                     Destination,
                                                          NetworkPath                       NetworkPath,
                                                          EventTracking_Id                  EventTrackingId,

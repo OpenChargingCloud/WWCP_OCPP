@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 
@@ -46,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSignedFirmwareStatusNotificationRequestSentDelegate(DateTimeOffset                           Timestamp,
                                                                                IEventSender                             Sender,
-                                                                               IWebSocketConnection?                    Connection,
+                                                                               IMessageConnection?                      Connection,
                                                                                SignedFirmwareStatusNotificationRequest  Request,
                                                                                SentMessageResults                       SentMessageResult,
                                                                                CancellationToken                        CancellationToken);
@@ -67,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnSignedFirmwareStatusNotificationResponseSentDelegate(DateTimeOffset                            Timestamp,
                                                                IEventSender                              Sender,
-                                                               IWebSocketConnection?                     Connection,
+                                                               IMessageConnection?                       Connection,
                                                                SignedFirmwareStatusNotificationRequest   Request,
                                                                SignedFirmwareStatusNotificationResponse  Response,
                                                                TimeSpan                                  Runtime,
@@ -90,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnSignedFirmwareStatusNotificationRequestErrorSentDelegate(DateTimeOffset                            Timestamp,
                                                                    IEventSender                              Sender,
-                                                                   IWebSocketConnection?                     Connection,
+                                                                   IMessageConnection?                       Connection,
                                                                    SignedFirmwareStatusNotificationRequest?  Request,
                                                                    OCPP_JSONRequestErrorMessage              RequestErrorMessage,
                                                                    TimeSpan?                                 Runtime,
@@ -114,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnSignedFirmwareStatusNotificationResponseErrorSentDelegate(DateTimeOffset                             Timestamp,
                                                                     IEventSender                               Sender,
-                                                                    IWebSocketConnection?                      Connection,
+                                                                    IMessageConnection?                        Connection,
                                                                     SignedFirmwareStatusNotificationRequest?   Request,
                                                                     SignedFirmwareStatusNotificationResponse?  Response,
                                                                     OCPP_JSONResponseErrorMessage              ResponseErrorMessage,
@@ -476,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnSignedFirmwareStatusNotificationResponseSent(DateTimeOffset                            Timestamp,
                                                                        IEventSender                              Sender,
-                                                                       IWebSocketConnection?                     Connection,
+                                                                       IMessageConnection?                       Connection,
                                                                        SignedFirmwareStatusNotificationRequest   Request,
                                                                        SignedFirmwareStatusNotificationResponse  Response,
                                                                        TimeSpan                                  Runtime,
@@ -509,7 +510,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnSignedFirmwareStatusNotificationRequestErrorSent(DateTimeOffset                            Timestamp,
                                                                            IEventSender                              Sender,
-                                                                           IWebSocketConnection?                     Connection,
+                                                                           IMessageConnection?                       Connection,
                                                                            SignedFirmwareStatusNotificationRequest?  Request,
                                                                            OCPP_JSONRequestErrorMessage              RequestErrorMessage,
                                                                            TimeSpan                                  Runtime,
@@ -542,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnSignedFirmwareStatusNotificationResponseErrorSent(DateTimeOffset                             Timestamp,
                                                                             IEventSender                               Sender,
-                                                                            IWebSocketConnection?                      Connection,
+                                                                            IMessageConnection?                        Connection,
                                                                             SignedFirmwareStatusNotificationRequest?   Request,
                                                                             SignedFirmwareStatusNotificationResponse?  Response,
                                                                             OCPP_JSONResponseErrorMessage              ResponseErrorMessage,

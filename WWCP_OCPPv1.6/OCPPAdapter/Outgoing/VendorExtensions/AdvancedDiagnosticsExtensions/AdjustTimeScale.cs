@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnAdjustTimeScaleRequestSentDelegate(DateTimeOffset           Timestamp,
                                                               IEventSender             Sender,
-                                                              IWebSocketConnection?    Connection,
+                                                              IMessageConnection?      Connection,
                                                               AdjustTimeScaleRequest   Request,
                                                               SentMessageResults       SentMessageResult,
                                                               CancellationToken        CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAdjustTimeScaleResponseSentDelegate(DateTimeOffset            Timestamp,
                                               IEventSender              Sender,
-                                              IWebSocketConnection?     Connection,
+                                              IMessageConnection?       Connection,
                                               AdjustTimeScaleRequest    Request,
                                               AdjustTimeScaleResponse   Response,
                                               TimeSpan                  Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAdjustTimeScaleRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                   IEventSender                   Sender,
-                                                  IWebSocketConnection?          Connection,
+                                                  IMessageConnection?            Connection,
                                                   AdjustTimeScaleRequest?        Request,
                                                   OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                   TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnAdjustTimeScaleResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                    IEventSender                    Sender,
-                                                   IWebSocketConnection?           Connection,
+                                                   IMessageConnection?             Connection,
                                                    AdjustTimeScaleRequest?         Request,
                                                    AdjustTimeScaleResponse?        Response,
                                                    OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -480,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnAdjustTimeScaleResponseSent(DateTimeOffset            Timestamp,
                                                       IEventSender              Sender,
-                                                      IWebSocketConnection?     Connection,
+                                                      IMessageConnection?       Connection,
                                                       AdjustTimeScaleRequest    Request,
                                                       AdjustTimeScaleResponse   Response,
                                                       TimeSpan                  Runtime,
@@ -513,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnAdjustTimeScaleRequestErrorSent(DateTimeOffset                Timestamp,
                                                           IEventSender                  Sender,
-                                                          IWebSocketConnection?         Connection,
+                                                          IMessageConnection?           Connection,
                                                           AdjustTimeScaleRequest?       Request,
                                                           OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                           TimeSpan                      Runtime,
@@ -546,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public Task SendOnAdjustTimeScaleResponseErrorSent(DateTimeOffset                 Timestamp,
                                                            IEventSender                   Sender,
-                                                           IWebSocketConnection?          Connection,
+                                                           IMessageConnection?            Connection,
                                                            AdjustTimeScaleRequest?        Request,
                                                            AdjustTimeScaleResponse?       Response,
                                                            OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

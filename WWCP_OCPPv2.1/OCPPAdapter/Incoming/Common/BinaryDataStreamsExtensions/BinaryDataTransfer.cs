@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnBinaryDataTransferRequestReceivedDelegate(DateTimeOffset              Timestamp,
                                                     IEventSender                Sender,
-                                                    IWebSocketConnection        Connection,
+                                                    IMessageConnection          Connection,
                                                     BinaryDataTransferRequest   Request,
                                                     CancellationToken           CancellationToken);
 
@@ -62,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnBinaryDataTransferResponseReceivedDelegate(DateTimeOffset               Timestamp,
                                                                       IEventSender                 Sender,
-                                                                      IWebSocketConnection?        Connection,
+                                                                      IMessageConnection?          Connection,
                                                                       BinaryDataTransferRequest?   Request,
                                                                       BinaryDataTransferResponse   Response,
                                                                       TimeSpan?                    Runtime,
@@ -81,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnBinaryDataTransferRequestErrorReceivedDelegate(DateTimeOffset                   Timestamp,
                                                                           IEventSender                     Sender,
-                                                                          IWebSocketConnection             Connection,
+                                                                          IMessageConnection               Connection,
                                                                           BinaryDataTransferRequest?       Request,
                                                                           OCPP_BinaryRequestErrorMessage   RequestErrorMessage,
                                                                           TimeSpan?                        Runtime,
@@ -101,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnBinaryDataTransferResponseErrorReceivedDelegate(DateTimeOffset                    Timestamp,
                                                                            IEventSender                      Sender,
-                                                                           IWebSocketConnection              Connection,
+                                                                           IMessageConnection                Connection,
                                                                            BinaryDataTransferRequest?        Request,
                                                                            BinaryDataTransferResponse?       Response,
                                                                            OCPP_BinaryResponseErrorMessage   ResponseErrorMessage,
@@ -124,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnBinaryDataTransferDelegate(DateTimeOffset              Timestamp,
                                      IEventSender                Sender,
-                                     IWebSocketConnection        Connection,
+                                     IMessageConnection          Connection,
                                      BinaryDataTransferRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -150,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_BinaryDataTransfer(DateTimeOffset        RequestTimestamp,
-                                       IWebSocketConnection  WebSocketConnection,
+                                       IMessageConnection    WebSocketConnection,
                                        SourceRouting         Destination,
                                        NetworkPath           NetworkPath,
                                        EventTracking_Id      EventTrackingId,
@@ -311,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_BinaryDataTransferResponse(BinaryDataTransferRequest  Request,
                                                Byte[]                     ResponseBytes,
-                                               IWebSocketConnection       WebSocketConnection,
+                                               IMessageConnection         WebSocketConnection,
                                                SourceRouting          Destination,
                                                NetworkPath                NetworkPath,
                                                EventTracking_Id           EventTrackingId,
@@ -413,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             Receive_BinaryDataTransferRequestError(BinaryDataTransferRequest       Request,
                                                    OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                                   IWebSocketConnection            Connection,
+                                                   IMessageConnection              Connection,
                                                    SourceRouting                   Destination,
                                                    NetworkPath                     NetworkPath,
                                                    EventTracking_Id                EventTrackingId,
@@ -502,7 +503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Receive_BinaryDataTransferResponseError(BinaryDataTransferRequest?       Request,
                                                     BinaryDataTransferResponse?      Response,
                                                     OCPP_BinaryResponseErrorMessage  ResponseErrorMessage,
-                                                    IWebSocketConnection             Connection,
+                                                    IMessageConnection               Connection,
                                                     SourceRouting                    Destination,
                                                     NetworkPath                      NetworkPath,
                                                     EventTracking_Id                 EventTrackingId,

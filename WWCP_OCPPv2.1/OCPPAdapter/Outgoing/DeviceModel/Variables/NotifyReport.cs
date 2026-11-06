@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnNotifyReportRequestSentDelegate(DateTimeOffset         Timestamp,
                                                            IEventSender?          Sender,
-                                                           IWebSocketConnection?  Connection,
+                                                           IMessageConnection?    Connection,
                                                            NotifyReportRequest    Request,
                                                            SentMessageResults     SentMessageResult,
                                                            CancellationToken      CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnNotifyReportResponseSentDelegate(DateTimeOffset         Timestamp,
                                            IEventSender           Sender,
-                                           IWebSocketConnection?  Connection,
+                                           IMessageConnection?    Connection,
                                            NotifyReportRequest    Request,
                                            NotifyReportResponse   Response,
                                            TimeSpan               Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnNotifyReportRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                IEventSender                   Sender,
-                                               IWebSocketConnection?          Connection,
+                                               IMessageConnection?            Connection,
                                                NotifyReportRequest?           Request,
                                                OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnNotifyReportResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                 IEventSender                    Sender,
-                                                IWebSocketConnection?           Connection,
+                                                IMessageConnection?             Connection,
                                                 NotifyReportRequest?            Request,
                                                 NotifyReportResponse?           Response,
                                                 OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -278,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnNotifyReportResponseSent(DateTimeOffset        Timestamp,
                                                    IEventSender          Sender,
-                                                   IWebSocketConnection? Connection,
+                                                   IMessageConnection?   Connection,
                                                    NotifyReportRequest   Request,
                                                    NotifyReportResponse  Response,
                                                    TimeSpan              Runtime,
@@ -311,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnNotifyReportRequestErrorSent(DateTimeOffset                Timestamp,
                                                        IEventSender                  Sender,
-                                                       IWebSocketConnection?         Connection,
+                                                       IMessageConnection?           Connection,
                                                        NotifyReportRequest?          Request,
                                                        OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                        TimeSpan                      Runtime,
@@ -344,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnNotifyReportResponseErrorSent(DateTimeOffset                 Timestamp,
                                                         IEventSender                   Sender,
-                                                        IWebSocketConnection?          Connection,
+                                                        IMessageConnection?            Connection,
                                                         NotifyReportRequest?           Request,
                                                         NotifyReportResponse?          Response,
                                                         OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

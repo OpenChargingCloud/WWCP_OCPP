@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSwipeRFIDCardRequestSentDelegate(DateTimeOffset          Timestamp,
                                                             IEventSender            Sender,
-                                                            IWebSocketConnection?   Connection,
+                                                            IMessageConnection?     Connection,
                                                             SwipeRFIDCardRequest    Request,
                                                             SentMessageResults      SentMessageResult,
                                                             CancellationToken       CancellationToken);
@@ -66,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSwipeRFIDCardResponseSentDelegate(DateTimeOffset          Timestamp,
                                             IEventSender            Sender,
-                                            IWebSocketConnection?   Connection,
+                                            IMessageConnection?     Connection,
                                             SwipeRFIDCardRequest    Request,
                                             SwipeRFIDCardResponse   Response,
                                             TimeSpan                Runtime,
@@ -89,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSwipeRFIDCardRequestErrorSentDelegate(DateTimeOffset                 Timestamp,
                                                 IEventSender                   Sender,
-                                                IWebSocketConnection?          Connection,
+                                                IMessageConnection?            Connection,
                                                 SwipeRFIDCardRequest?          Request,
                                                 OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                 TimeSpan?                      Runtime,
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         OnSwipeRFIDCardResponseErrorSentDelegate(DateTimeOffset                  Timestamp,
                                                  IEventSender                    Sender,
-                                                 IWebSocketConnection?           Connection,
+                                                 IMessageConnection?             Connection,
                                                  SwipeRFIDCardRequest?           Request,
                                                  SwipeRFIDCardResponse?          Response,
                                                  OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -484,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSwipeRFIDCardResponseSent(DateTimeOffset           Timestamp,
                                                      IEventSender             Sender,
-                                                     IWebSocketConnection?    Connection,
+                                                     IMessageConnection?      Connection,
                                                      SwipeRFIDCardRequest    Request,
                                                      SwipeRFIDCardResponse   Response,
                                                      TimeSpan                 Runtime,
@@ -517,7 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSwipeRFIDCardRequestErrorSent(DateTimeOffset                Timestamp,
                                                          IEventSender                  Sender,
-                                                         IWebSocketConnection?         Connection,
+                                                         IMessageConnection?           Connection,
                                                          SwipeRFIDCardRequest?        Request,
                                                          OCPP_JSONRequestErrorMessage  RequestErrorMessage,
                                                          TimeSpan                      Runtime,
@@ -550,7 +551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         public Task SendOnSwipeRFIDCardResponseErrorSent(DateTimeOffset                 Timestamp,
                                                           IEventSender                   Sender,
-                                                          IWebSocketConnection?          Connection,
+                                                          IMessageConnection?            Connection,
                                                           SwipeRFIDCardRequest?         Request,
                                                           SwipeRFIDCardResponse?        Response,
                                                           OCPP_JSONResponseErrorMessage  ResponseErrorMessage,

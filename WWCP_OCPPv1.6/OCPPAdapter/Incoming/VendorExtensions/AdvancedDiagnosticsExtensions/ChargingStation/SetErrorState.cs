@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -47,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetErrorStateRequestReceivedDelegate(DateTimeOffset         Timestamp,
                                                                 IEventSender           Sender,
-                                                                IWebSocketConnection   Connection,
+                                                                IMessageConnection     Connection,
                                                                 SetErrorStateRequest   Request,
                                                                 CancellationToken      CancellationToken);
 
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetErrorStateResponseReceivedDelegate(DateTimeOffset          Timestamp,
                                                                  IEventSender            Sender,
-                                                                 IWebSocketConnection?   Connection,
+                                                                 IMessageConnection?     Connection,
                                                                  SetErrorStateRequest?   Request,
                                                                  SetErrorStateResponse   Response,
                                                                  TimeSpan?               Runtime,
@@ -83,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetErrorStateRequestErrorReceivedDelegate(DateTimeOffset                 Timestamp,
                                                                      IEventSender                   Sender,
-                                                                     IWebSocketConnection           Connection,
+                                                                     IMessageConnection             Connection,
                                                                      SetErrorStateRequest?          Request,
                                                                      OCPP_JSONRequestErrorMessage   RequestErrorMessage,
                                                                      TimeSpan?                      Runtime,
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <param name="CancellationToken">An optional cancellation token.</param>
     public delegate Task OnSetErrorStateResponseErrorReceivedDelegate(DateTimeOffset                  Timestamp,
                                                                       IEventSender                    Sender,
-                                                                      IWebSocketConnection            Connection,
+                                                                      IMessageConnection              Connection,
                                                                       SetErrorStateRequest?           Request,
                                                                       SetErrorStateResponse?          Response,
                                                                       OCPP_JSONResponseErrorMessage   ResponseErrorMessage,
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         OnSetErrorStateDelegate(DateTimeOffset         Timestamp,
                                 IEventSender           Sender,
-                                IWebSocketConnection   Connection,
+                                IMessageConnection     Connection,
                                 SetErrorStateRequest   Request,
                                 CancellationToken      CancellationToken);
 
@@ -152,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public async Task<OCPP_Response>
 
             Receive_SetErrorState(DateTimeOffset        RequestTimestamp,
-                                  IWebSocketConnection  WebSocketConnection,
+                                  IMessageConnection    WebSocketConnection,
                                   SourceRouting         Destination,
                                   NetworkPath           NetworkPath,
                                   EventTracking_Id      EventTrackingId,
@@ -311,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_SetErrorStateResponse(SetErrorStateRequest  Request,
                                           JObject               ResponseJSON,
-                                          IWebSocketConnection  WebSocketConnection,
+                                          IMessageConnection    WebSocketConnection,
                                           SourceRouting         Destination,
                                           NetworkPath           NetworkPath,
                                           EventTracking_Id      EventTrackingId,
@@ -415,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_SetErrorStateRequestError(SetErrorStateRequest          Request,
                                               OCPP_JSONRequestErrorMessage  RequestErrorMessage,
-                                              IWebSocketConnection          Connection,
+                                              IMessageConnection            Connection,
                                               SourceRouting                 Destination,
                                               NetworkPath                   NetworkPath,
                                               EventTracking_Id              EventTrackingId,
@@ -494,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             Receive_SetErrorStateRequestError(SetErrorStateRequest             Request,
                                              OCPP_BinaryRequestErrorMessage  RequestErrorMessage,
-                                             IWebSocketConnection            Connection,
+                                             IMessageConnection              Connection,
                                              SourceRouting                   Destination,
                                              NetworkPath                     NetworkPath,
                                              EventTracking_Id                EventTrackingId,
@@ -583,7 +584,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             Receive_SetErrorStateResponseError(SetErrorStateRequest?          Request,
                                                SetErrorStateResponse?         Response,
                                                OCPP_JSONResponseErrorMessage  ResponseErrorMessage,
-                                               IWebSocketConnection           Connection,
+                                               IMessageConnection             Connection,
                                                SourceRouting                  Destination,
                                                NetworkPath                    NetworkPath,
                                                EventTracking_Id               EventTrackingId,

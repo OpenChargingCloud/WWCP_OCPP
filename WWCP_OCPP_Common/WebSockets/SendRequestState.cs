@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.WebSockets;
 
@@ -117,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// </summary>
         public DateTimeOffset?                   ResponseTimestamp             { get; set; } = ResponseTimestamp;
 
-        public IWebSocketConnection              WebSocketConnectionReceived   { get; set; }
+        public IMessageConnection                WebSocketConnectionReceived   { get; set; }
 
         /// <summary>
         /// The destination network node identification of the request
