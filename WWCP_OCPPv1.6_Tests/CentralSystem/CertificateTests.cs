@@ -108,23 +108,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task ARootOfAGroupIsInstalledListedAndDeleted_Test()
         {
 
-            using var root   = Root("Legal Time CA");
-            var hashes       = CertificateHashes.Of(root);
-            var to           = SourceRouting.To(chargePoint1!.Id);
+            using var root     = Root("Legal Time CA");
+            var hashes         = CertificateHashes.Of(root);
+            var centralSystem  = testCentralSystem01!;
+            var to             = SourceRouting.To(chargePoint1!.Id);
 
-            var installed    = await testCentralSystem01!.InstallCertificate(to, CertificateUse.NetworkTimeRootCertificate,
-                                                                              Certificate.Parse(root.ExportCertificatePem()),
-                                                                              CertificateGroup.Parse("legalCA"));
+            var installed      = await centralSystem.InstallCertificate(to, CertificateUse.NetworkTimeRootCertificate,
+                                                                         Certificate.Parse(root.ExportCertificatePem()),
+                                                                         CertificateGroup.Parse("legalCA"));
 
-            var listed       = await testCentralSystem01.GetInstalledCertificateIds(to, CertificateUse.NetworkTimeRootCertificate);
-            var otherType    = await testCentralSystem01.GetInstalledCertificateIds(to, CertificateUse.NameServerRootCertificate);
+            var listed         = await centralSystem.GetInstalledCertificateIds(to, CertificateUse.NetworkTimeRootCertificate);
+            var otherType      = await centralSystem.GetInstalledCertificateIds(to, CertificateUse.NameServerRootCertificate);
 
-            var deleted      = await testCentralSystem01.DeleteCertificate(to, new CertificateHashData(HashAlgorithms.SHA256,
-                                                                                                         hashes.IssuerNameHash,
-                                                                                                         hashes.IssuerKeyHash,
-                                                                                                         hashes.SerialNumber));
+            var deleted        = await centralSystem.DeleteCertificate(to, new CertificateHashData(HashAlgorithms.SHA256,
+                                                                                                     hashes.IssuerNameHash,
+                                                                                                     hashes.IssuerKeyHash,
+                                                                                                     hashes.SerialNumber));
 
-            var after        = await testCentralSystem01.GetInstalledCertificateIds(to, CertificateUse.NetworkTimeRootCertificate);
+            var after          = await centralSystem.GetInstalledCertificateIds(to, CertificateUse.NetworkTimeRootCertificate);
 
             Assert.Multiple(() => {
 
@@ -159,12 +160,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
             chargePoint1!.CertificateSources.Add(source);
 
-            using var names  = Root("Resolver CA");
-            using var time   = Root("Time CA");
-            var to           = SourceRouting.To(chargePoint1.Id);
+            using var names    = Root("Resolver CA");
+            using var time     = Root("Time CA");
+            var centralSystem  = testCentralSystem01!;
+            var to             = SourceRouting.To(chargePoint1.Id);
 
-            await testCentralSystem01!.InstallCertificate(to, CertificateUse.NameServerRootCertificate,  Certificate.Parse(names.ExportCertificatePem()), CertificateGroup.Parse("resolvers"));
-            await testCentralSystem01. InstallCertificate(to, CertificateUse.NetworkTimeRootCertificate, Certificate.Parse(time. ExportCertificatePem()));
+            await centralSystem.InstallCertificate(to, CertificateUse.NameServerRootCertificate,  Certificate.Parse(names.ExportCertificatePem()), CertificateGroup.Parse("resolvers"));
+            await centralSystem.InstallCertificate(to, CertificateUse.NetworkTimeRootCertificate, Certificate.Parse(time. ExportCertificatePem()));
 
             Assert.Multiple(() => {
                 Assert.That(source.Kept.Select(kept => (kept.Type, kept.Group, kept.Certificate.Thumbprint)),

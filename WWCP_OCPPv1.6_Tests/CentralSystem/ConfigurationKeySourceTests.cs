@@ -124,13 +124,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
             chargePoint1!.AddConfigurationKeySource(source);
 
-            var to      = SourceRouting.To(chargePoint1.Id);
-            var all     = await testCentralSystem01!.GetConfiguration(to);
-            var beyond  = await testCentralSystem01.GetConfiguration(to, [ "list.pin.3" ]);
+            var centralSystem  = testCentralSystem01!;
+            var to             = SourceRouting.To(chargePoint1.Id);
+            var all            = await centralSystem.GetConfiguration(to);
+            var beyond         = await centralSystem.GetConfiguration(to, [ "list.pin.3" ]);
 
             source.Servers.Add("c");
 
-            var grown   = await testCentralSystem01.GetConfiguration(to, [ "LIST.PIN.3" ]);
+            var grown          = await centralSystem.GetConfiguration(to, [ "LIST.PIN.3" ]);
 
             Assert.Multiple(() => {
 
@@ -164,12 +165,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
             chargePoint1!.AddConfigurationKeySource(source);
 
-            var to       = SourceRouting.To(chargePoint1.Id);
-            var pin      = await testCentralSystem01!.ChangeConfiguration(to, "list.pin.2", "beef");
-            var empty    = await testCentralSystem01.ChangeConfiguration(to, "list.servers", "");
-            var servers  = await testCentralSystem01.ChangeConfiguration(to, "list.servers", "x,y,z");
-            var own      = await testCentralSystem01.ChangeConfiguration(to, "changeMe", "later");
-            var unknown  = await testCentralSystem01.ChangeConfiguration(to, "list.nothing", "1");
+            var centralSystem  = testCentralSystem01!;
+            var to             = SourceRouting.To(chargePoint1.Id);
+            var pin            = await centralSystem.ChangeConfiguration(to, "list.pin.2", "beef");
+            var empty          = await centralSystem.ChangeConfiguration(to, "list.servers", "");
+            var servers        = await centralSystem.ChangeConfiguration(to, "list.servers", "x,y,z");
+            var own            = await centralSystem.ChangeConfiguration(to, "changeMe", "later");
+            var unknown        = await centralSystem.ChangeConfiguration(to, "list.nothing", "1");
 
             Assert.Multiple(() => {
                 Assert.That((pin.Status, empty.Status, servers.Status),
