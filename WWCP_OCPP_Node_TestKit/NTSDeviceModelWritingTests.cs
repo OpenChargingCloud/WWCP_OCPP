@@ -223,6 +223,54 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region AServersOffsetsAreCorrectedAsDelayAsymmetryAndDelayVarAsymmetrySay()
+
+        /// <summary>
+        /// DelayAsymmetry and DelayVarAsymmetry correct the offsets measured
+        /// with a server: in effect, written down, read back the same on every
+        /// machine - and kept by a change of anything else of the server. "0"
+        /// corrects nothing, and an asymmetry beyond a half is refused.
+        /// </summary>
+        [Test]
+        public async Task AServersOffsetsAreCorrectedAsDelayAsymmetryAndDelayVarAsymmetrySay()
+        {
+
+            var a        = station!.Node.NTSGroupOf("legal")!.Sources.Sources.Single(source => source.Hostname.ToString().StartsWith("ptbtime1."));
+
+            var set      = await Set(null, Client("ptb-a", "DelayAsymmetry", "-0.05"), Client("ptb-a", "DelayVarAsymmetry", "-0.5"));
+            var shift    = model.ClientValue("ptb-a", "DelayAsymmetry");
+            var written  = OnDisk("legal")?["servers"]?[0];
+            var source   = station.Node.NTSGroupOf("legal")!.Sources.Sources.Single(source => source.Hostname.Equals(a.Hostname));
+
+            var other    = await Set(null, Client("ptb-a", "Priority", "2"));
+            var kept     = OnDisk("legal")?["servers"]?[0]?.Value<Double>("delayVarAsymmetry");
+
+            var beyond   = await Set(null, Client("ptb-a", "DelayVarAsymmetry", "0.6"));
+            var zero     = await Set(null, Client("ptb-a", "DelayAsymmetry", "0"));
+
+            Assert.Multiple(() => {
+
+                Assert.That(StatusesOf(set),                               Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(shift,                                         Is.EqualTo("-0.05"));
+                Assert.That(written?.Value<Double>("delayAsymmetryMs"),    Is.EqualTo(-0.05).Within(1e-9));
+                Assert.That(written?.Value<Double>("delayVarAsymmetry"),   Is.EqualTo(-0.5));
+                Assert.That(source.DelayAsymmetry,                         Is.EqualTo(TimeSpan.FromMilliseconds(-0.05)));
+                Assert.That(source.DelayVarAsymmetry,                      Is.EqualTo(-0.5));
+
+                Assert.That(StatusesOf(other),                             Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(kept,                                          Is.EqualTo(-0.5),  "a change of the server's priority took it away");
+
+                Assert.That(StatusesOf(beyond),                            Is.All.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(StatusesOf(zero),                              Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(OnDisk("legal")?["servers"]?[0]?["delayAsymmetryMs"],  Is.Null,  "zero corrects nothing, and is written as nothing");
+                Assert.That(model.ClientValue("ptb-a", "DelayAsymmetry"),  Is.EqualTo("0"));
+
+            });
+
+        }
+
+        #endregion
+
         #region BothIntervalsAreTheOneTheNodeChecksAt()
 
         /// <summary>

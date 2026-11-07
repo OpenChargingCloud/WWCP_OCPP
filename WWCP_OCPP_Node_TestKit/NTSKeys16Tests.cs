@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             Assert.Multiple(() => {
 
                 Assert.That(keys,  Is.SupersetOf(new[] { "ntp.legal.minServers", "ntp.legal.authority", "ntske.legal.certificatePins.4", "ntp.local.servers" }));
-                Assert.That(keys,  Has.None.EqualTo("ntske.legal.certificatePins.5").And.None.EqualTo("ntp.local.authority").And.None.EqualTo("ntp.legal.delayAsym"));
+                Assert.That(keys,  Has.None.EqualTo("ntske.legal.certificatePins.5").And.None.EqualTo("ntp.local.authority").And.None.EqualTo("ntp.legal.preflight"));
 
                 Assert.That(Value("ntp.legal.servers"),         Is.EqualTo("ptbtime1.example.invalid,ptbtime2.example.invalid,ptbtime3.example.invalid,ptbtime4.example.invalid"));
                 Assert.That(Value("ntske.legal.ports"),         Is.EqualTo("4460,4460,4461,4462"));
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(Value("ntp.legal.mode"),            Is.EqualTo("NTSv4"));
 
                 Assert.That(Keys.Get("NTP.LEGAL.MINSERVERS")?.Key,  Is.EqualTo("ntp.legal.minServers"));
-                Assert.That(Keys.Get("ntp.legal.delayAsym"),        Is.Null);
+                Assert.That(Keys.Get("ntp.legal.preflight"),        Is.Null);
                 Assert.That(Keys.Get("ntske.legal.rootPins.5"),     Is.Null);
                 Assert.That(Keys.Get("ntp.grid.minServers"),        Is.Null,  "a group the station does not have");
 
@@ -228,6 +228,44 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(other,                        Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
                 Assert.That(cleared,                      Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
                 Assert.That(Value("ntske.legal.aead"),    Is.EqualTo(",,,"));
+
+            });
+
+        }
+
+        #endregion
+
+        #region TheDelayAsymmetriesAreListsPerServer()
+
+        /// <summary>
+        /// "ntp.&lt;group&gt;.delayAsym" and "delayVarAsym" are lists per
+        /// server, "0" where nothing is corrected, the last value holding for
+        /// the rest - read and written the same on every machine. An asymmetry
+        /// beyond a half is refused, as 2.1 refuses it.
+        /// </summary>
+        [Test]
+        public async Task TheDelayAsymmetriesAreListsPerServer()
+        {
+
+            var before   = Value("ntp.legal.delayAsym");
+
+            var set      = await Change("ntp.legal.delayAsym",    "-0.05, 0");
+            var after    = Value("ntp.legal.delayAsym");
+            var written  = OnDisk()?["servers"]?.Select(server => server is JObject entry ? entry["delayAsymmetryMs"]?.Value<Double>() : null).ToArray();
+
+            var beyond   = await Change("ntp.legal.delayVarAsym", "0.6");
+            var halves   = await Change("ntp.legal.delayVarAsym", "+0.5,0,-0.5");
+
+            Assert.Multiple(() => {
+
+                Assert.That(before,                                Is.EqualTo("0,0,0,0"));
+                Assert.That(set,                                   Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(after,                                 Is.EqualTo("-0.05,0,0,0"),  "the last value holds for the rest");
+                Assert.That(written?[0],                           Is.EqualTo(-0.05).Within(1e-9));
+                Assert.That(written?.Skip(1),                      Has.All.Null,  "zero corrects nothing, and is written as nothing");
+                Assert.That(beyond,                                Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                Assert.That(halves,                                Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(Value("ntp.legal.delayVarAsym"),       Is.EqualTo("0.5,0,-0.5,-0.5"));
 
             });
 

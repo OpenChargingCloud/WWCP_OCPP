@@ -111,6 +111,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("RootCAs",                 server       => TextOf     (Child(server["heldTo"], "rootGroup"))),
             ("AEADAlgorithm",           server       => AEADOf     (server["aead"], server["aeadAlgorithm"])),
             ("MinRefresh",              server       => RefreshOf  (server).Min),
+            ("DelayAsymmetry",          server       => NumberOf   (server["delayAsymmetryMs"])),
+            ("DelayVarAsymmetry",       server       => NumberOf   (server["delayVarAsymmetry"])),
             ("MaxRefresh",              server       => RefreshOf  (server).Max),
             ("Problem",                 server       => ProblemOf  (server["judgement"])),
             ("CertificateFingerprint",  server       => TextOf     (server["certificate"])),
@@ -431,6 +433,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     ((Int64) max.TotalSeconds).ToString(CultureInfo.InvariantCulture));
 
         }
+
+        /// <summary>
+        /// A number with no digits it does not need, the same on every machine,
+        /// or "0" for none: a correction not set corrects nothing.
+        /// </summary>
+        private static String NumberOf(JToken? Token)
+
+            => Token?.Type is JTokenType.Integer or JTokenType.Float
+                   ? Token.Value<Decimal>().ToString("0.######", CultureInfo.InvariantCulture)
+                   : "0";
 
         private static String IntegerOf(JToken? Token)
 

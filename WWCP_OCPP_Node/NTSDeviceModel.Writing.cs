@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         private static readonly String[] writableClientVariables = [
             "Enabled", "ServerURL", "ServerPort", "NTSKEServerPort", "Priority", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse",
-            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh"
+            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh", "DelayAsymmetry", "DelayVarAsymmetry"
         ];
 
         private static readonly String[] writableClockVariables = [
@@ -1332,6 +1332,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public String?       AEAD             { get; private set; }
             public UInt32?       MinRefresh       { get; private set; }
             public UInt32?       MaxRefresh       { get; private set; }
+            public Decimal?      DelayAsymmetry   { get; private set; }
+            public Decimal?      DelayVarAsymmetry { get; private set; }
             public JObject?      Shown            { get; private set; }
             public Boolean       Renamed          { get; private set; }
 
@@ -1365,7 +1367,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  // And when its key exchange is made again, where
                                  // its own entry sets that, by the same rule.
                                  MinRefresh       = JSON["minRefreshSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["minRefreshSeconds"]!.Value<UInt32>() : null,
-                                 MaxRefresh       = JSON["maxRefreshSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["maxRefreshSeconds"]!.Value<UInt32>() : null
+                                 MaxRefresh       = JSON["maxRefreshSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["maxRefreshSeconds"]!.Value<UInt32>() : null,
+                                 // And how its offsets are corrected.
+                                 DelayAsymmetry   = JSON["delayAsymmetryMs"] ?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayAsymmetryMs"]! .Value<Decimal>() : null,
+                                 DelayVarAsymmetry = JSON["delayVarAsymmetry"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayVarAsymmetry"]!.Value<Decimal>() : null
                              };
 
                 server.Key   = server.Id ?? $"#{Interlocked.Increment(ref made)}";
@@ -1408,6 +1413,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        AEAD             = AEAD,
                        MinRefresh       = MinRefresh,
                        MaxRefresh       = MaxRefresh,
+                       DelayAsymmetry   = DelayAsymmetry,
+                       DelayVarAsymmetry = DelayVarAsymmetry,
                        Shown            = Shown,
                        Renamed          = Renamed,
                        Key              = Key
@@ -1535,6 +1542,31 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             MaxRefresh = seconds;
                         break;
 
+                    // How its offsets are corrected: a number of milliseconds
+                    // added to each, and where a hold-up of the delays is, at most
+                    // a half either way; "" or 0 corrects nothing.
+                    case "delayasymmetry":
+                    case "delayvarasymmetry":
+                        var limit = Variable.Equals("DelayAsymmetry", StringComparison.OrdinalIgnoreCase)
+                                        ? (Decimal) NTSServerConfiguration.MaxDelayAsymmetryMs
+                                        : (Decimal) NTSServerConfiguration.MaxDelayVarAsymmetry;
+                        Decimal? correction = null;
+                        if (Value.Length > 0)
+                        {
+                            if (!Decimal.TryParse(Value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var number) ||
+                                number < -limit || number > limit)
+                            {
+                                Problem = $"{Where}: '{Value}' is not a number from {(-limit).ToString(CultureInfo.InvariantCulture)} to {limit.ToString(CultureInfo.InvariantCulture)}.";
+                                return false;
+                            }
+                            correction = number != 0 ? number : null;
+                        }
+                        if (Variable.Equals("DelayAsymmetry", StringComparison.OrdinalIgnoreCase))
+                            DelayAsymmetry = correction;
+                        else
+                            DelayVarAsymmetry = correction;
+                        break;
+
                 }
 
                 return true;
@@ -1592,6 +1624,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (AEAD is not null)                                          json["aead"]       = AEAD;
                 if (MinRefresh is UInt32 minRefresh)                           json["minRefreshSeconds"] = minRefresh;
                 if (MaxRefresh is UInt32 maxRefresh)                           json["maxRefreshSeconds"] = maxRefresh;
+                if (DelayAsymmetry    is Decimal shift)                        json["delayAsymmetryMs"]  = shift;
+                if (DelayVarAsymmetry is Decimal asymmetry)                    json["delayVarAsymmetry"] = asymmetry;
 
                 json.Merge(PinsJSON());
 

@@ -195,6 +195,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(model.ClientValue("ptb-a",    "MinRefresh"),              Is.EqualTo("43200"));
                 Assert.That(model.ClientValue("ptb-a",    "MaxRefresh"),              Is.EqualTo("86400"));
 
+                // Its offsets not corrected.
+                Assert.That(model.ClientValue("ptb-a",    "DelayAsymmetry"),          Is.EqualTo("0"));
+                Assert.That(model.ClientValue("ptb-a",    "DelayVarAsymmetry"),       Is.EqualTo("0"));
+
             });
 
         }
