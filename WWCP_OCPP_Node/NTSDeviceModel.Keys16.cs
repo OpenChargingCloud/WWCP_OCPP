@@ -59,9 +59,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// <para>
     /// OCPP 1.6 changes one key at a time, so minInterval and maxInterval each
     /// set the one interval the node checks at, where 2.1 has to set both at
-    /// once. Keys of the paper the node does not have - preflight, separate
-    /// NTS-KE servers, signed responses and the common "ntp.reboot.*" - are
-    /// not listed, and a change of one is NotSupported.
+    /// once. Keys of the paper the node does not have - separate NTS-KE
+    /// servers, signed responses and the common "ntp.reboot.*" - are not
+    /// listed, and a change of one is NotSupported.
     /// Groups cannot be made or taken away through 1.6.
     /// </para>
     /// <para>
@@ -100,6 +100,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("ntp.maxDeviation",         "MaxDeviation",     false,  ""),
             ("ntp.errorLogging",         "ErrorLogging",     false,  ""),
             ("ntp.maxErrors",            "MaxErrors",        false,  ""),
+            ("ntp.preflight",            "Preflight",        false,  ""),
             ("ntp.rootCAs",              "RootCAs",          true,   ""),
             ("ntp.delayAsym",            "DelayAsymmetry",   true,   "0"),
             ("ntp.delayVarAsym",         "DelayVarAsymmetry",true,   "0"),

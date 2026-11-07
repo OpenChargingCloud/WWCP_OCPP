@@ -88,6 +88,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("Timeout",             (json, group)    => SecondsOf  (Child(json["settings"], "timeoutSeconds"))),
             ("ErrorLogging",        (json, group)    => IntegerOf  (Child(json["settings"], "errorLogging"))),
             ("MaxErrors",           (json, group)    => IntegerOf  (Child(json["settings"], "maxErrors"))),
+            // A whole number of seconds, or "" for never - the node's false.
+            ("Preflight",           (json, group)    => IntegerOf  (Child(json["settings"], "preflightSeconds"))),
             ("Limited",             (json, group)    => BooleanOf  (Child(json["errors"],   "limited"))),
             ("ErrorsInARow",        (json, group)    => IntegerOf  (Child(json["errors"],   "inARow"))),
             ("LastCheck",           (json, group)    => DateTimeOf (group.LastCheck)),

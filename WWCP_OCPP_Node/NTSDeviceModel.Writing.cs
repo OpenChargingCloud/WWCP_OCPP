@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         private static readonly String[] writableGroupVariables = [
             "Enabled", "Clients", "MinServers", "MaxDeviation", "MinInterval", "MaxInterval", "Timeout", "ErrorLogging", "MaxErrors",
-            "LegalTimeAuthority", "LegalTimeTolerance", "LegalTimeMaxAge"
+            "LegalTimeAuthority", "LegalTimeTolerance", "LegalTimeMaxAge", "Preflight"
         ];
 
         private static readonly String[] writableClientVariables = [
@@ -118,7 +118,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ["MaxErrors"]           = "maxErrors",
             ["LegalTimeAuthority"]  = "legalTimeAuthority",
             ["LegalTimeTolerance"]  = "legalTimeToleranceSeconds",
-            ["LegalTimeMaxAge"]     = "legalTimeMaxAgeSeconds"
+            ["LegalTimeMaxAge"]     = "legalTimeMaxAgeSeconds",
+            ["Preflight"]           = "preflightSeconds"
         };
 
         private static readonly Regex groupInError   = new (@"nts\.groups\.([a-z][a-z0-9-]*)(?:\.servers\[(\d+)\])?", RegexOptions.CultureInvariant);
@@ -968,6 +969,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    "errorlogging"        => new JValue(Int64.  Parse(Value, CultureInfo.InvariantCulture)),
                    "maxerrors"           => new JValue(Int64.  Parse(Value, CultureInfo.InvariantCulture)),
                    "legaltimemaxage"     => new JValue(Int64.  Parse(Value, CultureInfo.InvariantCulture)),
+                   // "" is never, which the node writes as false.
+                   "preflight"           => Value.Length == 0
+                                                ? new JValue(false)
+                                                : new JValue(Int64.Parse(Value, CultureInfo.InvariantCulture)),
                    _                     => new JValue(Decimal.Parse(Value, CultureInfo.InvariantCulture))
                };
 

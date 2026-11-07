@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             Assert.Multiple(() => {
 
                 Assert.That(keys,  Is.SupersetOf(new[] { "ntp.legal.minServers", "ntp.legal.authority", "ntske.legal.certificatePins.4", "ntp.local.servers" }));
-                Assert.That(keys,  Has.None.EqualTo("ntske.legal.certificatePins.5").And.None.EqualTo("ntp.local.authority").And.None.EqualTo("ntp.legal.preflight"));
+                Assert.That(keys,  Has.None.EqualTo("ntske.legal.certificatePins.5").And.None.EqualTo("ntp.local.authority").And.None.EqualTo("ntp.legal.signedResponses"));
 
                 Assert.That(Value("ntp.legal.servers"),         Is.EqualTo("ptbtime1.example.invalid,ptbtime2.example.invalid,ptbtime3.example.invalid,ptbtime4.example.invalid"));
                 Assert.That(Value("ntske.legal.ports"),         Is.EqualTo("4460,4460,4461,4462"));
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(Value("ntp.legal.mode"),            Is.EqualTo("NTSv4"));
 
                 Assert.That(Keys.Get("NTP.LEGAL.MINSERVERS")?.Key,  Is.EqualTo("ntp.legal.minServers"));
-                Assert.That(Keys.Get("ntp.legal.preflight"),        Is.Null);
+                Assert.That(Keys.Get("ntp.legal.signedResponses"),  Is.Null);
                 Assert.That(Keys.Get("ntske.legal.rootPins.5"),     Is.Null);
                 Assert.That(Keys.Get("ntp.grid.minServers"),        Is.Null,  "a group the station does not have");
 
@@ -267,6 +267,34 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(halves,                                Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
                 Assert.That(Value("ntp.legal.delayVarAsym"),       Is.EqualTo("0.5,0,-0.5,-0.5"));
 
+            });
+
+        }
+
+        #endregion
+
+        #region ThePreflightIsTheGroups()
+
+        /// <summary>
+        /// "ntp.&lt;group&gt;.preflight" is the group's Preflight: "" where there
+        /// is none, a whole number of seconds set as 2.1 sets it, "" to take it
+        /// away again.
+        /// </summary>
+        [Test]
+        public async Task ThePreflightIsTheGroups()
+        {
+
+            var before   = Value("ntp.legal.preflight");
+            var set      = await Change("ntp.legal.preflight", "60");
+            var after    = Value("ntp.legal.preflight");
+            var cleared  = await Change("ntp.legal.preflight", "");
+
+            Assert.Multiple(() => {
+                Assert.That(before,                          Is.EqualTo(""));
+                Assert.That(set,                             Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(after,                           Is.EqualTo("60"));
+                Assert.That(cleared,                         Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(Value("ntp.legal.preflight"),    Is.EqualTo(""));
             });
 
         }

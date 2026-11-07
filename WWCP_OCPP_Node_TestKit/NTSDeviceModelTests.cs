@@ -131,6 +131,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(model.GroupValue("legal", "Timeout"),             Is.EqualTo("2.5"));
                 Assert.That(model.GroupValue("legal", "ErrorLogging"),        Is.EqualTo("3"));
                 Assert.That(model.GroupValue("legal", "MaxErrors"),           Is.EqualTo("10"));
+                Assert.That(model.GroupValue("legal", "Preflight"),           Is.EqualTo(""),  "never, where nothing says otherwise");
                 Assert.That(model.GroupValue("legal", "LegalTimeAuthority"),  Is.EqualTo("PTB"));
                 Assert.That(model.GroupValue("legal", "LegalTimeTolerance"),  Is.EqualTo("1"));
                 Assert.That(model.GroupValue("legal", "LegalTimeMaxAge"),     Is.EqualTo("3600"));
@@ -256,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(model.ClientValue    ("ptb-a",   "SignedResponses"), Is.Null);
                 Assert.That(model.ClientValue    ("ptb-a",   "NTSKEServerURL"),  Is.Null);
                 Assert.That(model.GroupValue     ("grid",    "Enabled"),         Is.Null);
-                Assert.That(model.GroupValue     ("legal",   "Preflight"),       Is.Null);
+                Assert.That(model.GroupValue     ("legal",   "NoSuchVariable"),  Is.Null);
                 Assert.That(model.ControllerValue("ClientGroups"),               Is.Null, "the controller's own, from the groups");
                 Assert.That(model.ClockValue     ("TimeZone"),                   Is.Null);
                 Assert.That(model.ClockValue     ("NtpServerUri", "first"),      Is.Null);

@@ -271,6 +271,38 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region APreflightIsSetAndTakenAwayAsAGroupsVariable()
+
+        /// <summary>
+        /// Preflight sets after how long without a round a group's servers are
+        /// first sent a query whose answer is ignored: in effect, written down,
+        /// read back; "" takes it away, which the node writes as false.
+        /// </summary>
+        [Test]
+        public async Task APreflightIsSetAndTakenAwayAsAGroupsVariable()
+        {
+
+            var set      = await Set(null, Group("legal", "Preflight", "60"));
+            var read     = model.GroupValue("legal", "Preflight");
+            var written  = OnDisk("legal")?["preflightSeconds"]?.Value<Int32>();
+            var inEffect = station!.Node.NTSGroupOf("legal")!.Preflight;
+
+            var unset    = await Set(null, Group("legal", "Preflight", ""));
+
+            Assert.Multiple(() => {
+                Assert.That(StatusesOf(set),                               Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(read,                                          Is.EqualTo("60"));
+                Assert.That(written,                                       Is.EqualTo(60));
+                Assert.That(inEffect,                                      Is.EqualTo(TimeSpan.FromSeconds(60)));
+                Assert.That(StatusesOf(unset),                             Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(OnDisk("legal")?["preflightSeconds"]?.Value<Boolean>(),  Is.False,  "never, written down as false");
+                Assert.That(model.GroupValue("legal", "Preflight"),        Is.EqualTo(""));
+            });
+
+        }
+
+        #endregion
+
         #region BothIntervalsAreTheOneTheNodeChecksAt()
 
         /// <summary>
