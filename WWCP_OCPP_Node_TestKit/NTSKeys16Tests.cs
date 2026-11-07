@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             Assert.Multiple(() => {
 
                 Assert.That(keys,  Is.SupersetOf(new[] { "ntp.legal.minServers", "ntp.legal.authority", "ntske.legal.certificatePins.4", "ntp.local.servers" }));
-                Assert.That(keys,  Has.None.EqualTo("ntske.legal.certificatePins.5").And.None.EqualTo("ntp.local.authority").And.None.EqualTo("ntp.legal.signedResponses"));
+                Assert.That(keys,  Has.None.EqualTo("ntske.legal.certificatePins.5").And.None.EqualTo("ntp.local.authority").And.None.EqualTo("ntp.reboot.allowJumps"));
 
                 Assert.That(Value("ntp.legal.servers"),         Is.EqualTo("ptbtime1.example.invalid,ptbtime2.example.invalid,ptbtime3.example.invalid,ptbtime4.example.invalid"));
                 Assert.That(Value("ntske.legal.ports"),         Is.EqualTo("4460,4460,4461,4462"));
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(Value("ntp.legal.mode"),            Is.EqualTo("NTSv4"));
 
                 Assert.That(Keys.Get("NTP.LEGAL.MINSERVERS")?.Key,  Is.EqualTo("ntp.legal.minServers"));
-                Assert.That(Keys.Get("ntp.legal.signedResponses"),  Is.Null);
+                Assert.That(Keys.Get("ntp.reboot.allowJumps"),      Is.Null);
                 Assert.That(Keys.Get("ntske.legal.rootPins.5"),     Is.Null);
                 Assert.That(Keys.Get("ntp.grid.minServers"),        Is.Null,  "a group the station does not have");
 
@@ -295,6 +295,38 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(after,                           Is.EqualTo("ke.example.invalid,,ke2.example.invalid,ke2.example.invalid"),  "the last value holds for the rest");
                 Assert.That(cleared,                         Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
                 Assert.That(Value("ntske.legal.servers"),    Is.EqualTo(",,,"));
+            });
+
+        }
+
+        #endregion
+
+        #region SignedResponsesAreTheGroupsInOnePointSix()
+
+        /// <summary>
+        /// "ntp.&lt;group&gt;.signedResponses" is the group's: "true" sets every
+        /// server's SignedResponses, and reads "true" only where every server is
+        /// asked; anything but true or false is refused.
+        /// </summary>
+        [Test]
+        public async Task SignedResponsesAreTheGroupsInOnePointSix()
+        {
+
+            var before   = Value("ntp.legal.signedResponses");
+            var set      = await Change("ntp.legal.signedResponses", "true");
+            var after    = Value("ntp.legal.signedResponses");
+            var each     = OnDisk()?["servers"]?.Select(server => server is JObject entry && entry.Value<Boolean>("signedResponses")).ToArray();
+            var refused  = await Change("ntp.legal.signedResponses", "yes");
+            var cleared  = await Change("ntp.legal.signedResponses", "false");
+
+            Assert.Multiple(() => {
+                Assert.That(before,                                 Is.EqualTo("false"));
+                Assert.That(set,                                    Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(after,                                  Is.EqualTo("true"));
+                Assert.That(each,                                   Has.All.True,  "every server of the group");
+                Assert.That(refused,                                Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                Assert.That(cleared,                                Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(Value("ntp.legal.signedResponses"),     Is.EqualTo("false"));
             });
 
         }

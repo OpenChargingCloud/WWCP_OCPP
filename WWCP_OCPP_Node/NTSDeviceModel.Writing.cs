@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         private static readonly String[] writableClientVariables = [
             "Enabled", "ServerURL", "ServerPort", "NTSKEServerPort", "Priority", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse",
-            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh", "DelayAsymmetry", "DelayVarAsymmetry", "NTSKEServerURL"
+            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh", "DelayAsymmetry", "DelayVarAsymmetry", "NTSKEServerURL", "SignedResponses"
         ];
 
         private static readonly String[] writableClockVariables = [
@@ -1340,6 +1340,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public Decimal?      DelayAsymmetry   { get; private set; }
             public Decimal?      DelayVarAsymmetry { get; private set; }
             public String?       NTSKEHostname    { get; private set; }
+            public Boolean       SignedResponses  { get; private set; }
             public JObject?      Shown            { get; private set; }
             public Boolean       Renamed          { get; private set; }
 
@@ -1378,7 +1379,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  DelayAsymmetry   = JSON["delayAsymmetryMs"] ?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayAsymmetryMs"]! .Value<Decimal>() : null,
                                  DelayVarAsymmetry = JSON["delayVarAsymmetry"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayVarAsymmetry"]!.Value<Decimal>() : null,
                                  // And where its keys come from.
-                                 NTSKEHostname    = JSON["ntsKEHostname"]?.Value<String>() is { Length: > 0 } keyExchange ? keyExchange.TrimEnd('.') : null
+                                 NTSKEHostname    = JSON["ntsKEHostname"]?.Value<String>() is { Length: > 0 } keyExchange ? keyExchange.TrimEnd('.') : null,
+                                 // And whether its responses are to be signed.
+                                 SignedResponses  = JSON["signedResponses"]?.Value<Boolean>() == true
                              };
 
                 server.Key   = server.Id ?? $"#{Interlocked.Increment(ref made)}";
@@ -1424,6 +1427,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        DelayAsymmetry   = DelayAsymmetry,
                        DelayVarAsymmetry = DelayVarAsymmetry,
                        NTSKEHostname    = NTSKEHostname,
+                       SignedResponses  = SignedResponses,
                        Shown            = Shown,
                        Renamed          = Renamed,
                        Key              = Key
@@ -1578,6 +1582,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     // The key exchange server its keys come from, as ServerURL
                     // names a server; "" - or the server itself - is the server.
+                    case "signedresponses":
+                        SignedResponses = String.Equals(Value, "true", StringComparison.OrdinalIgnoreCase);
+                        break;
+
                     case "ntskeserverurl":
                         if (Value.Length == 0)
                         {
@@ -1651,6 +1659,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (DelayAsymmetry    is Decimal shift)                        json["delayAsymmetryMs"]  = shift;
                 if (DelayVarAsymmetry is Decimal asymmetry)                    json["delayVarAsymmetry"] = asymmetry;
                 if (NTSKEHostname is not null)                                 json["ntsKEHostname"]     = NTSKEHostname;
+                if (SignedResponses)                                           json["signedResponses"]   = true;
 
                 json.Merge(PinsJSON());
 

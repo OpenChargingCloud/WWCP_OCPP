@@ -59,9 +59,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// <para>
     /// OCPP 1.6 changes one key at a time, so minInterval and maxInterval each
     /// set the one interval the node checks at, where 2.1 has to set both at
-    /// once. Keys of the paper the node does not have - signed responses and
-    /// the common "ntp.reboot.*" - are not listed, and a change of one is
-    /// NotSupported. "ntske.&lt;group&gt;.servers" is a list like "aead": an
+    /// once. Keys of the paper the node does not have - the common
+    /// "ntp.reboot.*" - are not listed, and a change of one is NotSupported.
+    /// "ntp.&lt;group&gt;.signedResponses" is the group's, where 2.1 has each
+    /// server's SignedResponses: true where every server is asked, and set on
+    /// every server. "ntske.&lt;group&gt;.servers" is a list like "aead": an
     /// empty entry is a server that is its own key exchange server.
     /// Groups cannot be made or taken away through 1.6.
     /// </para>
@@ -102,6 +104,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("ntp.errorLogging",         "ErrorLogging",     false,  ""),
             ("ntp.maxErrors",            "MaxErrors",        false,  ""),
             ("ntp.preflight",            "Preflight",        false,  ""),
+            ("ntp.signedResponses",      "SignedResponses",  false,  "false"),
             ("ntp.rootCAs",              "RootCAs",          true,   ""),
             ("ntp.delayAsym",            "DelayAsymmetry",   true,   "0"),
             ("ntp.delayVarAsym",         "DelayVarAsymmetry",true,   "0"),
@@ -220,6 +223,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
             else if (variable == "Mode")
                 value = "NTSv4";
 
+            // The group's in 1.6 and each server's in 2.1: true where every
+            // server of the group is asked.
+            else if (variable == "SignedResponses")
+                value = clients.Length > 0 && clients.All(client => ClientValue(client, variable) == "true") ? "true" : "false";
+
             else
                 value = GroupValue(group, variable);
 
@@ -269,6 +277,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return String.Equals(Value.Trim(), "NTSv4", StringComparison.OrdinalIgnoreCase)
                            ? OCPP16.ConfigurationStatus.Accepted
                            : OCPP16.ConfigurationStatus.Rejected;
+
+            // Every server of the group, as 2.1 sets each one.
+            else if (variable == "SignedResponses")
+            {
+
+                if (Value.Trim().ToLowerInvariant() is not ("true" or "false"))
+                    return OCPP16.ConfigurationStatus.Rejected;
+
+                foreach (var client in clients)
+                    entries.Add(ClientEntry(client, variable, Value.Trim().ToLowerInvariant()));
+
+            }
 
             else if (variable is "MinInterval" or "MaxInterval")
             {

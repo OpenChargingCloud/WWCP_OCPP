@@ -343,6 +343,45 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region AServerIsAskedForSignedResponsesAsSignedResponsesSays()
+
+        /// <summary>
+        /// SignedResponses asks a server for a signed response after every
+        /// measurement: in effect, written down, read back, kept by a change of
+        /// anything else of the server, and taken back by "false".
+        /// </summary>
+        [Test]
+        public async Task AServerIsAskedForSignedResponsesAsSignedResponsesSays()
+        {
+
+            var a        = station!.Node.NTSGroupOf("legal")!.Sources.Sources.Single(source => source.Hostname.ToString().StartsWith("ptbtime1."));
+
+            var set      = await Set(null, Client("ptb-a", "SignedResponses", "true"));
+            var read     = model.ClientValue("ptb-a", "SignedResponses");
+            var written  = OnDisk("legal")?["servers"]?[0]?.Value<Boolean>("signedResponses");
+            var source   = station.Node.NTSGroupOf("legal")!.Sources.Sources.Single(source => source.Hostname.Equals(a.Hostname));
+
+            var other    = await Set(null, Client("ptb-a", "Priority", "2"));
+            var kept     = OnDisk("legal")?["servers"]?[0]?.Value<Boolean>("signedResponses");
+
+            var unset    = await Set(null, Client("ptb-a", "SignedResponses", "false"));
+
+            Assert.Multiple(() => {
+                Assert.That(StatusesOf(set),                                Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(read,                                           Is.EqualTo("true"));
+                Assert.That(written,                                        Is.True);
+                Assert.That(source.SignedResponses,                         Is.True);
+                Assert.That(StatusesOf(other),                              Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(kept,                                           Is.True,  "a change of the server's priority took it away");
+                Assert.That(StatusesOf(unset),                              Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(OnDisk("legal")?["servers"]?[0]?["signedResponses"],  Is.Null);
+                Assert.That(model.ClientValue("ptb-a", "SignedResponses"),  Is.EqualTo("false"));
+            });
+
+        }
+
+        #endregion
+
         #region BothIntervalsAreTheOneTheNodeChecksAt()
 
         /// <summary>
