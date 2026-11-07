@@ -110,6 +110,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("TrustOnFirstUse",         server       => OptionOf   (Child(server["heldTo"], "trustOnFirstUse"), "None")),
             ("RootCAs",                 server       => TextOf     (Child(server["heldTo"], "rootGroup"))),
             ("AEADAlgorithm",           server       => AEADOf     (server["aead"], server["aeadAlgorithm"])),
+            ("MinRefresh",              server       => RefreshOf  (server).Min),
+            ("MaxRefresh",              server       => RefreshOf  (server).Max),
             ("Problem",                 server       => ProblemOf  (server["judgement"])),
             ("CertificateFingerprint",  server       => TextOf     (server["certificate"])),
             ("LastKeyExchange",         server       => DateTimeOf (server["lastExchange"])),
@@ -408,6 +410,28 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// A whole number, or "" for none.
         /// </summary>
+        /// <summary>
+        /// When the server's key exchange is made again, in whole seconds: what
+        /// its own entry sets, and the node's defaults for what it does not, by
+        /// the node's rule (NTSServerConfiguration.RefreshOf).
+        /// </summary>
+        private static (String Min, String Max) RefreshOf(JObject Server)
+        {
+
+            static TimeSpan? SecondsIn(JToken? Token)
+
+                => Token?.Type is JTokenType.Integer or JTokenType.Float
+                       ? TimeSpan.FromSeconds(Token.Value<Double>())
+                       : null;
+
+            var (min, max) = NTSServerConfiguration.RefreshOf(SecondsIn(Server["minRefreshSeconds"]),
+                                                              SecondsIn(Server["maxRefreshSeconds"]));
+
+            return (((Int64) min.TotalSeconds).ToString(CultureInfo.InvariantCulture),
+                    ((Int64) max.TotalSeconds).ToString(CultureInfo.InvariantCulture));
+
+        }
+
         private static String IntegerOf(JToken? Token)
 
             => Token?.Type is JTokenType.Integer or JTokenType.Float

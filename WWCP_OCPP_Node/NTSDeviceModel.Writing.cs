@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         private static readonly String[] writableClientVariables = [
             "Enabled", "ServerURL", "ServerPort", "NTSKEServerPort", "Priority", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse",
-            "RootCAs", "AEADAlgorithm"
+            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh"
         ];
 
         private static readonly String[] writableClockVariables = [
@@ -1330,6 +1330,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public String?       TrustOnFirstUse  { get; private set; }
             public String?       RootGroup        { get; private set; }
             public String?       AEAD             { get; private set; }
+            public UInt32?       MinRefresh       { get; private set; }
+            public UInt32?       MaxRefresh       { get; private set; }
             public JObject?      Shown            { get; private set; }
             public Boolean       Renamed          { get; private set; }
 
@@ -1359,7 +1361,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  // shows beside what was agreed on: carried
                                  // through every change of the list, or a
                                  // change of anything else would take it away.
-                                 AEAD             = JSON["aead"]?.Value<String>() is { Length: > 0 } aead ? aead : null
+                                 AEAD             = JSON["aead"]?.Value<String>() is { Length: > 0 } aead ? aead : null,
+                                 // And when its key exchange is made again, where
+                                 // its own entry sets that, by the same rule.
+                                 MinRefresh       = JSON["minRefreshSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["minRefreshSeconds"]!.Value<UInt32>() : null,
+                                 MaxRefresh       = JSON["maxRefreshSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["maxRefreshSeconds"]!.Value<UInt32>() : null
                              };
 
                 server.Key   = server.Id ?? $"#{Interlocked.Increment(ref made)}";
@@ -1400,6 +1406,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        TrustOnFirstUse  = TrustOnFirstUse,
                        RootGroup        = RootGroup,
                        AEAD             = AEAD,
+                       MinRefresh       = MinRefresh,
+                       MaxRefresh       = MaxRefresh,
                        Shown            = Shown,
                        Renamed          = Renamed,
                        Key              = Key
@@ -1509,6 +1517,24 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         }
                         break;
 
+                    // When its key exchange is made again, in seconds: set on its
+                    // entry, which the node holds to its bounds, and the latest
+                    // never before the earliest.
+                    case "minrefresh":
+                    case "maxrefresh":
+                        if (!UInt32.TryParse(Value, NumberStyles.None, CultureInfo.InvariantCulture, out var seconds) ||
+                            seconds < NTSServerConfiguration.MinRefreshSeconds ||
+                            seconds > NTSServerConfiguration.MaxRefreshSeconds)
+                        {
+                            Problem = $"{Where}: '{Value}' is not a number of seconds from {NTSServerConfiguration.MinRefreshSeconds} to {NTSServerConfiguration.MaxRefreshSeconds}.";
+                            return false;
+                        }
+                        if (Variable.Equals("MinRefresh", StringComparison.OrdinalIgnoreCase))
+                            MinRefresh = seconds;
+                        else
+                            MaxRefresh = seconds;
+                        break;
+
                 }
 
                 return true;
@@ -1564,6 +1590,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (NTPPort   is UInt16 ntpPort && ntpPort != DefaultNTPPort)   json["ntpPort"]    = ntpPort;
                 if (!Enabled)                                                  json["enabled"]    = false;
                 if (AEAD is not null)                                          json["aead"]       = AEAD;
+                if (MinRefresh is UInt32 minRefresh)                           json["minRefreshSeconds"] = minRefresh;
+                if (MaxRefresh is UInt32 maxRefresh)                           json["maxRefreshSeconds"] = maxRefresh;
 
                 json.Merge(PinsJSON());
 

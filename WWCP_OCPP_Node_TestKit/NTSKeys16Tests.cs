@@ -235,6 +235,43 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region TheRefreshIsAListPerServerInSeconds()
+
+        /// <summary>
+        /// "ntske.&lt;group&gt;.minRefresh" and "maxRefresh" are lists per
+        /// server in seconds, 43200 and 86400 where nothing sets another, the
+        /// last value holding for the rest. A maxRefresh before a server's
+        /// minRefresh is refused, as 2.1 refuses it.
+        /// </summary>
+        [Test]
+        public async Task TheRefreshIsAListPerServerInSeconds()
+        {
+
+            var min      = Value("ntske.legal.minRefresh");
+            var max      = Value("ntske.legal.maxRefresh");
+
+            var set      = await Change("ntske.legal.minRefresh", "3600,7200");
+            var after    = Value("ntske.legal.minRefresh");
+            var written  = OnDisk()?["servers"]?.Select(server => server is JObject entry ? entry["minRefreshSeconds"]?.Value<Double>() : null).ToArray();
+
+            var crossed  = await Change("ntske.legal.maxRefresh", "1800");
+
+            Assert.Multiple(() => {
+
+                Assert.That(min,                                   Is.EqualTo("43200,43200,43200,43200"));
+                Assert.That(max,                                   Is.EqualTo("86400,86400,86400,86400"));
+                Assert.That(set,                                   Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(after,                                 Is.EqualTo("3600,7200,7200,7200"),  "the last value holds for the rest");
+                Assert.That(written,                               Is.EqualTo(new Double?[] { 3600, 7200, 7200, 7200 }));
+                Assert.That(crossed,                               Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                Assert.That(Value("ntske.legal.maxRefresh"),       Is.EqualTo("86400,86400,86400,86400"));
+
+            });
+
+        }
+
+        #endregion
+
         #region ANewServerOffersWhatTheLastOnesEntryNames()
 
         /// <summary>

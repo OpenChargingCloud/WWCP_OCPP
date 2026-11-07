@@ -191,6 +191,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(model.ClientValue("ptb-a",    "AEADAlgorithm"),           Is.EqualTo(""));
                 Assert.That(model.ClientValue("ptb-a",    "RootCAs"),                 Is.EqualTo(""),  "held to no group of roots");
 
+                // A new key exchange after 12 to 24 hours, as nothing sets another.
+                Assert.That(model.ClientValue("ptb-a",    "MinRefresh"),              Is.EqualTo("43200"));
+                Assert.That(model.ClientValue("ptb-a",    "MaxRefresh"),              Is.EqualTo("86400"));
+
             });
 
         }
@@ -246,7 +250,6 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             Assert.Multiple(() => {
                 Assert.That(model.ClientValue    ("nobody",  "Enabled"),         Is.Null);
                 Assert.That(model.ClientValue    ("ptb-a",   "SignedResponses"), Is.Null);
-                Assert.That(model.ClientValue    ("ptb-a",   "MinRefresh"),      Is.Null);
                 Assert.That(model.ClientValue    ("ptb-a",   "NTSKEServerURL"),  Is.Null);
                 Assert.That(model.GroupValue     ("grid",    "Enabled"),         Is.Null);
                 Assert.That(model.GroupValue     ("legal",   "Preflight"),       Is.Null);

@@ -174,6 +174,55 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region AServerMakesItsKeyExchangeAgainAsMinAndMaxRefreshSay()
+
+        /// <summary>
+        /// MinRefresh and MaxRefresh set when a server's key exchange is made
+        /// again: in effect, written down in seconds, read back - and kept by a
+        /// change of anything else of the server. Less than a minute is refused,
+        /// and so is a MaxRefresh before the MinRefresh, which the node refuses.
+        /// </summary>
+        [Test]
+        public async Task AServerMakesItsKeyExchangeAgainAsMinAndMaxRefreshSay()
+        {
+
+            var a        = station!.Node.NTSGroupOf("legal")!.Sources.Sources.Single(source => source.Hostname.ToString().StartsWith("ptbtime1."));
+
+            var set      = await Set(null, Client("ptb-a", "MinRefresh", "3600"), Client("ptb-a", "MaxRefresh", "7200"));
+            var min      = model.ClientValue("ptb-a", "MinRefresh");
+            var max      = model.ClientValue("ptb-a", "MaxRefresh");
+            var written  = OnDisk("legal")?["servers"]?[0];
+            var source   = station.Node.NTSGroupOf("legal")!.Sources.Sources.Single(source => source.Hostname.Equals(a.Hostname));
+
+            var other    = await Set(null, Client("ptb-a", "Priority", "2"));
+            var kept     = OnDisk("legal")?["servers"]?[0]?.Value<Double>("minRefreshSeconds");
+
+            var short_   = await Set(null, Client("ptb-a", "MinRefresh", "59"));
+            var crossed  = await Set(null, Client("ptb-a", "MaxRefresh", "1800"));
+
+            Assert.Multiple(() => {
+
+                Assert.That(StatusesOf(set),                               Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(min,                                           Is.EqualTo("3600"));
+                Assert.That(max,                                           Is.EqualTo("7200"));
+                Assert.That(written?.Value<Double>("minRefreshSeconds"),   Is.EqualTo(3600));
+                Assert.That(written?.Value<Double>("maxRefreshSeconds"),   Is.EqualTo(7200));
+                Assert.That(source.MinRefresh,                             Is.EqualTo(TimeSpan.FromHours(1)));
+                Assert.That(source.MaxRefresh,                             Is.EqualTo(TimeSpan.FromHours(2)));
+
+                Assert.That(StatusesOf(other),                             Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(kept,                                          Is.EqualTo(3600),  "a change of the server's priority took it away");
+
+                Assert.That(StatusesOf(short_),                            Is.All.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(StatusesOf(crossed),                           Is.All.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(model.ClientValue("ptb-a", "MaxRefresh"),      Is.EqualTo("7200"),  "what was refused changed nothing");
+
+            });
+
+        }
+
+        #endregion
+
         #region BothIntervalsAreTheOneTheNodeChecksAt()
 
         /// <summary>
