@@ -303,6 +303,46 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region AServersKeysComeFromTheKeyExchangeServerNTSKEServerURLNames()
+
+        /// <summary>
+        /// NTSKEServerURL names the key exchange server a server's keys come
+        /// from: in effect, written down, read back - and kept by a change of
+        /// anything else of the server. "" and the server itself are the server.
+        /// </summary>
+        [Test]
+        public async Task AServersKeysComeFromTheKeyExchangeServerNTSKEServerURLNames()
+        {
+
+            var a        = station!.Node.NTSGroupOf("legal")!.Sources.Sources.Single(source => source.Hostname.ToString().StartsWith("ptbtime1."));
+
+            var set      = await Set(null, Client("ptb-a", "NTSKEServerURL", "ke.example.invalid"));
+            var read     = model.ClientValue("ptb-a", "NTSKEServerURL");
+            var written  = OnDisk("legal")?["servers"]?[0]?.Value<String>("ntsKEHostname");
+            var source   = station.Node.NTSGroupOf("legal")!.Sources.Sources.Single(source => source.Hostname.Equals(a.Hostname));
+
+            var other    = await Set(null, Client("ptb-a", "Priority", "2"));
+            var kept     = OnDisk("legal")?["servers"]?[0]?.Value<String>("ntsKEHostname");
+
+            var itself   = await Set(null, Client("ptb-a", "NTSKEServerURL", a.Hostname.Trimmed));
+            var gone     = OnDisk("legal")?["servers"]?[0]?["ntsKEHostname"];
+
+            Assert.Multiple(() => {
+                Assert.That(StatusesOf(set),                               Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(read,                                          Is.EqualTo("ke.example.invalid"));
+                Assert.That(written?.TrimEnd('.'),                         Is.EqualTo("ke.example.invalid"));
+                Assert.That(source.NTSKEHost?.Trimmed,                     Is.EqualTo("ke.example.invalid"));
+                Assert.That(StatusesOf(other),                             Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(kept?.TrimEnd('.'),                            Is.EqualTo("ke.example.invalid"),  "a change of the server's priority took it away");
+                Assert.That(StatusesOf(itself),                            Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(gone,                                          Is.Null,  "the server itself is no other key exchange server");
+                Assert.That(model.ClientValue("ptb-a", "NTSKEServerURL"),  Is.EqualTo(""));
+            });
+
+        }
+
+        #endregion
+
         #region BothIntervalsAreTheOneTheNodeChecksAt()
 
         /// <summary>

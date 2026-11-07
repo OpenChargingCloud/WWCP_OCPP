@@ -273,6 +273,34 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region TheKeyExchangeServersAreAListWhoseEmptyEntryIsTheServerItself()
+
+        /// <summary>
+        /// "ntske.&lt;group&gt;.servers" is a list per server like "aead": an
+        /// empty entry is a server that is its own key exchange server, not the
+        /// one before it.
+        /// </summary>
+        [Test]
+        public async Task TheKeyExchangeServersAreAListWhoseEmptyEntryIsTheServerItself()
+        {
+
+            var before   = Value("ntske.legal.servers");
+            var set      = await Change("ntske.legal.servers", "ke.example.invalid,,ke2.example.invalid");
+            var after    = Value("ntske.legal.servers");
+            var cleared  = await Change("ntske.legal.servers", "");
+
+            Assert.Multiple(() => {
+                Assert.That(before,                          Is.EqualTo(",,,"));
+                Assert.That(set,                             Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(after,                           Is.EqualTo("ke.example.invalid,,ke2.example.invalid,ke2.example.invalid"),  "the last value holds for the rest");
+                Assert.That(cleared,                         Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(Value("ntske.legal.servers"),    Is.EqualTo(",,,"));
+            });
+
+        }
+
+        #endregion
+
         #region ThePreflightIsTheGroups()
 
         /// <summary>

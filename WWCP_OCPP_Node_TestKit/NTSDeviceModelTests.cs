@@ -196,6 +196,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(model.ClientValue("ptb-a",    "MinRefresh"),              Is.EqualTo("43200"));
                 Assert.That(model.ClientValue("ptb-a",    "MaxRefresh"),              Is.EqualTo("86400"));
 
+                // Its own key exchange server.
+                Assert.That(model.ClientValue("ptb-a",    "NTSKEServerURL"),          Is.EqualTo(""));
+
                 // Its offsets not corrected.
                 Assert.That(model.ClientValue("ptb-a",    "DelayAsymmetry"),          Is.EqualTo("0"));
                 Assert.That(model.ClientValue("ptb-a",    "DelayVarAsymmetry"),       Is.EqualTo("0"));
@@ -255,7 +258,6 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             Assert.Multiple(() => {
                 Assert.That(model.ClientValue    ("nobody",  "Enabled"),         Is.Null);
                 Assert.That(model.ClientValue    ("ptb-a",   "SignedResponses"), Is.Null);
-                Assert.That(model.ClientValue    ("ptb-a",   "NTSKEServerURL"),  Is.Null);
                 Assert.That(model.GroupValue     ("grid",    "Enabled"),         Is.Null);
                 Assert.That(model.GroupValue     ("legal",   "NoSuchVariable"),  Is.Null);
                 Assert.That(model.ControllerValue("ClientGroups"),               Is.Null, "the controller's own, from the groups");

@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         private static readonly String[] writableClientVariables = [
             "Enabled", "ServerURL", "ServerPort", "NTSKEServerPort", "Priority", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse",
-            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh", "DelayAsymmetry", "DelayVarAsymmetry"
+            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh", "DelayAsymmetry", "DelayVarAsymmetry", "NTSKEServerURL"
         ];
 
         private static readonly String[] writableClockVariables = [
@@ -1339,6 +1339,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public UInt32?       MaxRefresh       { get; private set; }
             public Decimal?      DelayAsymmetry   { get; private set; }
             public Decimal?      DelayVarAsymmetry { get; private set; }
+            public String?       NTSKEHostname    { get; private set; }
             public JObject?      Shown            { get; private set; }
             public Boolean       Renamed          { get; private set; }
 
@@ -1375,7 +1376,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  MaxRefresh       = JSON["maxRefreshSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["maxRefreshSeconds"]!.Value<UInt32>() : null,
                                  // And how its offsets are corrected.
                                  DelayAsymmetry   = JSON["delayAsymmetryMs"] ?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayAsymmetryMs"]! .Value<Decimal>() : null,
-                                 DelayVarAsymmetry = JSON["delayVarAsymmetry"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayVarAsymmetry"]!.Value<Decimal>() : null
+                                 DelayVarAsymmetry = JSON["delayVarAsymmetry"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayVarAsymmetry"]!.Value<Decimal>() : null,
+                                 // And where its keys come from.
+                                 NTSKEHostname    = JSON["ntsKEHostname"]?.Value<String>() is { Length: > 0 } keyExchange ? keyExchange.TrimEnd('.') : null
                              };
 
                 server.Key   = server.Id ?? $"#{Interlocked.Increment(ref made)}";
@@ -1420,6 +1423,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        MaxRefresh       = MaxRefresh,
                        DelayAsymmetry   = DelayAsymmetry,
                        DelayVarAsymmetry = DelayVarAsymmetry,
+                       NTSKEHostname    = NTSKEHostname,
                        Shown            = Shown,
                        Renamed          = Renamed,
                        Key              = Key
@@ -1572,6 +1576,21 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             DelayVarAsymmetry = correction;
                         break;
 
+                    // The key exchange server its keys come from, as ServerURL
+                    // names a server; "" - or the server itself - is the server.
+                    case "ntskeserverurl":
+                        if (Value.Length == 0)
+                        {
+                            NTSKEHostname = null;
+                            break;
+                        }
+                        if (!TryParseServer(Value, Where, out var keyExchange, out var keyExchangePort, out Problem))
+                            return false;
+                        NTSKEHostname = String.Equals(keyExchange, Hostname, StringComparison.OrdinalIgnoreCase) ? null : keyExchange;
+                        if (keyExchangePort.HasValue)
+                            NTSKEPort = keyExchangePort;
+                        break;
+
                 }
 
                 return true;
@@ -1631,6 +1650,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (MaxRefresh is UInt32 maxRefresh)                           json["maxRefreshSeconds"] = maxRefresh;
                 if (DelayAsymmetry    is Decimal shift)                        json["delayAsymmetryMs"]  = shift;
                 if (DelayVarAsymmetry is Decimal asymmetry)                    json["delayVarAsymmetry"] = asymmetry;
+                if (NTSKEHostname is not null)                                 json["ntsKEHostname"]     = NTSKEHostname;
 
                 json.Merge(PinsJSON());
 

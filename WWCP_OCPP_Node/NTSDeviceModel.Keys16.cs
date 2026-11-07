@@ -59,9 +59,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// <para>
     /// OCPP 1.6 changes one key at a time, so minInterval and maxInterval each
     /// set the one interval the node checks at, where 2.1 has to set both at
-    /// once. Keys of the paper the node does not have - separate NTS-KE
-    /// servers, signed responses and the common "ntp.reboot.*" - are not
-    /// listed, and a change of one is NotSupported.
+    /// once. Keys of the paper the node does not have - signed responses and
+    /// the common "ntp.reboot.*" - are not listed, and a change of one is
+    /// NotSupported. "ntske.&lt;group&gt;.servers" is a list like "aead": an
+    /// empty entry is a server that is its own key exchange server.
     /// Groups cannot be made or taken away through 1.6.
     /// </para>
     /// <para>
@@ -105,6 +106,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("ntp.delayAsym",            "DelayAsymmetry",   true,   "0"),
             ("ntp.delayVarAsym",         "DelayVarAsymmetry",true,   "0"),
             ("ntske.ports",              "NTSKEServerPort",  true,   "4460"),
+            ("ntske.servers",            "NTSKEServerURL",   true,   ""),
             ("ntske.onPinMismatch",      "OnPinMismatch",    true,   "Refuse"),
             ("ntske.trustOnFirstUse",    "TrustOnFirstUse",  true,   "None"),
             ("ntske.aead",               "AEADAlgorithm",    true,   ""),
@@ -283,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             else if (perServer)
             {
 
-                if (!TryList(Value, clients.Length, DefaultOf(variable), out var values, EmptyIsUnset: variable == "AEADAlgorithm"))
+                if (!TryList(Value, clients.Length, DefaultOf(variable), out var values, EmptyIsUnset: variable is "AEADAlgorithm" or "NTSKEServerURL"))
                     return OCPP16.ConfigurationStatus.Rejected;
 
                 for (var index = 0; index < clients.Length; index++)
@@ -420,7 +422,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// given, a shorter list's last value holds for the rest, and a longer
         /// one is no list for it.
         /// </summary>
-        /// <param name="EmptyIsUnset">Whether an empty entry is a server for which nothing is set, rather than the one before it: for the AEAD algorithm, where "" offers every one.</param>
+        /// <param name="EmptyIsUnset">Whether an empty entry is a server for which nothing is set, rather than the one before it: for the AEAD algorithm, where "" offers every one, and the key exchange server, where "" is the server itself.</param>
         private static Boolean TryList(String                 Value,
                                        Int32?                 Count,
                                        String                 Default,

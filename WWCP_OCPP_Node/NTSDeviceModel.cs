@@ -106,6 +106,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("Mode",                    server       => "NTSv4"),
             ("Priority",                server       => IntegerOf  (server["priority"])),
             ("NTSKEServerPort",         server       => IntegerOf  (server["ntsKEPort"])),
+            // "" where the server is its own key exchange server.
+            ("NTSKEServerURL",          server       => HostOf     (server["ntsKEHostname"])),
             ("CertificatePins",         server       => PinsOf     (server["heldTo"], "certificates")),
             ("RootPins",                server       => PinsOf     (server["heldTo"], "roots")),
             ("OnPinMismatch",           server       => OptionOf   (Child(server["heldTo"], "onMismatch"),      "Refuse")),
