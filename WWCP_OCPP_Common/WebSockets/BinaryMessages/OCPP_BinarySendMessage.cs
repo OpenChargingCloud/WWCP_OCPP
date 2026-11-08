@@ -175,9 +175,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                 var stream                   = new MemoryStream(Binary);
 
-                // MessageType: CALL (Client-to-Server)
+                // MessageType: SEND - 6, as in JSON: a CALL is 2, and a SEND read as one is answered
                 var messageType              = stream.ReadByte();
-                if (messageType != 2)
+                if (messageType != 6)
                 {
                     ErrorResponse = $"The received message type '{messageType}' is invalid!";
                     return false;
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             }
             catch (Exception e)
             {
-                ErrorResponse = "The given binary representation of an OCPP WebSocket binary request message is invalid: " + e.Message;
+                ErrorResponse = "The given binary representation of an OCPP WebSocket binary send message is invalid: " + e.Message;
             }
 
             return false;
@@ -307,8 +307,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             var binaryStream = new MemoryStream();
 
-            // MessageType: CALL (Client-to-Server)
-            binaryStream.WriteByte(2);
+            // MessageType: SEND - 6, as in JSON, and not a CALL's 2
+            binaryStream.WriteByte(6);
 
             if (NetworkingMode == NetworkingMode.Standard)
             {
