@@ -407,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// <param name="RemoteCertificateValidator">Whether to believe the server's TLS certificate (HTTP WebSocket).</param>
         /// <param name="TLSProtocols">The TLS versions allowed (HTTP WebSocket).</param>
         /// <param name="Ssh">The SSH login: user name, keys, how the host key is checked (SSH) - its user name must be the URL's, where the URL has one.</param>
-        /// <param name="DNSClient">An optional DNS client (HTTP WebSocket).</param>
+        /// <param name="DNSClient">The DNS client the URL's host name is resolved with - over either transport; the node's by default. Never the resolver of the operating system.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">A cancellation token.</param>
         /// <exception cref="ArgumentException">The URL is neither a WebSocket URL nor "ssh://"; or it is "ssh://" and no SSH login was given.</exception>
@@ -441,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                     throw new ArgumentException($"'{RemoteURL}' is an ssh:// URL, and no SSH login was given.", nameof(Ssh));
 
                 var sshClient = NewOCPPSshClient(
-                                    WWCPSshClient.OptionsFrom(RemoteURL, Ssh, OCPPSshServer.OCPPSubsystem, Subprotocols, ReconnectPolicy, PingEvery),
+                                    WWCPSshClient.OptionsFrom(RemoteURL, Ssh, OCPPSshServer.OCPPSubsystem, Subprotocols, ReconnectPolicy, PingEvery, DNSClient ?? this.DNSClient),
                                     NetworkingMode,
                                     WWCPSshClient.ConnectAsFrom(RemoteURL),
                                     Description
@@ -531,6 +531,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// <param name="Subprotocols">The OCPP versions to offer, by preference; the node's own by default.</param>
         /// <param name="PingEvery">Every how long to send a PING; null for none.</param>
         /// <param name="Description">An optional description.</param>
+        /// <param name="DNSClient">The DNS client the URL's host name is resolved with; the node's by default. Never the resolver of the operating system.</param>
         /// <param name="CancellationToken">A cancellation token.</param>
         /// <returns>The connection. A failure is thrown - and, with the node's reconnect policy, tried again in the background.</returns>
         public Task<SshMessageConnection> ConnectOCPPSshClient(URL                              RemoteURL,
@@ -541,10 +542,11 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                IEnumerable<String>?             Subprotocols               = null,
                                                                TimeSpan?                        PingEvery                  = null,
                                                                I18NString?                      Description                = null,
+                                                               IDNSClient?                      DNSClient                  = null,
                                                                CancellationToken                CancellationToken          = default)
 
             => ConnectOCPPSshClient(
-                   WWCPSshClient.OptionsFrom(RemoteURL, Ssh, OCPPSshServer.OCPPSubsystem, Subprotocols, ReconnectPolicy, PingEvery),
+                   WWCPSshClient.OptionsFrom(RemoteURL, Ssh, OCPPSshServer.OCPPSubsystem, Subprotocols, ReconnectPolicy, PingEvery, DNSClient ?? this.DNSClient),
                    NextHopNetworkingNodeId,
                    RoutingNetworkingNodeIds,
                    NetworkingMode,

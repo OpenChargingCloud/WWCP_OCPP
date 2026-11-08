@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SSH;
 using org.GraphDefined.Vanaheimr.Hermod.SSH.Client;
@@ -434,6 +435,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
 
             // The URL's login and the SSH login's must not differ.
             await Assert.ThrowsAsync<ArgumentException>(() => chargingStation.ConnectOCPPClient(SshURL("GD-SSH-006"), Ssh: Login("somebody-else")));
+
+        }
+
+        #endregion
+
+        #region (class) LoopbackDNS
+
+        /// <summary>
+        /// A DNS client that answers every name with 127.0.0.1, and counts what it was asked.
+        /// </summary>
+        private sealed class LoopbackDNS : IDNSClient
+        {
+
+            private Int32 asked;
+
+            public Int32 Asked
+                => Volatile.Read(ref asked);
+
+            public Task<DNSInfo> Query(DomainName                           DomainName,
+                                       IEnumerable<DNSResourceRecordTypes>  ResourceRecordTypes,
+                                       TimeSpan?                            Timeout             = null,
+                                       Boolean?                             RecursionDesired    = true,
+                                       Boolean?                             ForceUpdate         = false,
+                                       CancellationToken                    CancellationToken   = default)
+
+                => Query(DNSServiceName.Parse(DomainName.FullName), ResourceRecordTypes, Timeout, RecursionDesired, ForceUpdate, CancellationToken);
+
+            public Task<DNSInfo> Query(DNSServiceName                       DNSServiceName,
+                                       IEnumerable<DNSResourceRecordTypes>  ResourceRecordTypes,
+                                       TimeSpan?                            Timeout             = null,
+                                       Boolean?                             RecursionDesired    = true,
+                                       Boolean?                             ForceUpdate         = false,
+                                       CancellationToken                    CancellationToken   = default)
+            {
+
+                Interlocked.Increment(ref asked);
+
+                return Task.FromResult(new DNSInfo(
+                           new DNSServerConfig(IPv4Address.Localhost, IPPort.Parse(53)),
+                           QueryId:                0,
+                           IsAuthoritativeAnswer:  true,
+                           IsTruncated:            false,
+                           RecursionDesired:       true,
+                           RecursionAvailable:     true,
+                           ResponseCode:           DNSResponseCodes.NoError,
+                           Answers:                ResourceRecordTypes.Contains(DNSResourceRecordTypes.A)
+                                                       ? [ new A(DNSServiceName, DNSQueryClasses.IN, TimeSpan.FromMinutes(1), IPv4Address.Localhost) ]
+                                                       : [],
+                           Authorities:            [],
+                           AdditionalRecords:      [],
+                           IsValid:                true,
+                           IsTimeout:              false,
+                           Timeout:                TimeSpan.FromSeconds(5),
+                           Runtime:                TimeSpan.Zero
+                       ));
+
+            }
+
+            public void Dispose()
+            { }
+
+            public ValueTask DisposeAsync()
+                => ValueTask.CompletedTask;
+
+        }
+
+        #endregion
+
+        #region AHostNameIsResolvedWithTheDNSClientGiven()
+
+        /// <summary>
+        /// The host name of an ssh:// URL is resolved with the DNS client handed to ConnectOCPPClient - a name
+        /// the resolver of the operating system does not know - as it is over a WebSocket.
+        /// </summary>
+        [Test]
+        public async Task AHostNameIsResolvedWithTheDNSClientGiven()
+        {
+
+            var chargingStation  = NewStation("GD-SSH-008");
+            var dns              = new LoopbackDNS();
+
+            // .invalid is a name no resolver of an operating system answers (RFC 6761).
+            var result           = await chargingStation.ConnectOCPPClient(
+                                             URL.Parse($"ssh://GD-SSH-008@csms.invalid:{listener!.LocalEndPoint.Port}"),
+                                             Ssh:        Login("GD-SSH-008"),
+                                             DNSClient:  dns
+                                         );
+
+            Assert.That(result.IsConnected,  Is.True, result.ToString());
+            Assert.That(dns.Asked,           Is.GreaterThan(0), "The DNS client given was not asked.");
 
         }
 
