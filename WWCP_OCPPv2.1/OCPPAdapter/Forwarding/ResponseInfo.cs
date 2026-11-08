@@ -30,6 +30,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// <summary>
     /// Information about expected OCPP responses.
     /// </summary>
+    /// <param name="RequestId">The request identification the request came with; it is forwarded under another, its key here.</param>
+    /// <param name="RequestContext">The JSON-LD context of the request.</param>
+    /// <param name="SourceNodeId">The networking node that sent the request, where its answer goes.</param>
+    /// <param name="Timeout">When an answer is no longer waited for.</param>
     public class ResponseInfo(Request_Id         RequestId,
                               JSONLDContext      RequestContext,
                               NetworkingNode_Id  SourceNodeId,

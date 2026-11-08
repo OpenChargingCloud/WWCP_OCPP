@@ -520,6 +520,29 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         #endregion
 
 
+        #region ChangeRequestId(NewRequestId)
+
+        /// <summary>
+        /// Change the request identification: what a networking node that forwards
+        /// this request sends it under, so that no two requests on its way share one.
+        /// </summary>
+        /// <param name="NewRequestId">The new request identification.</param>
+        public OCPP_JSONRequestMessage ChangeRequestId(Request_Id NewRequestId)
+
+            => new (RequestTimestamp,
+                    EventTrackingId,
+                    NetworkingMode,
+                    Destination,
+                    NetworkPath,
+                    NewRequestId,
+                    Action,
+                    Payload,
+                    RequestTimeout,
+                    ErrorMessage,
+                    CancellationToken);
+
+        #endregion
+
         #region ChangeNetworking(NewDestinationId = null, NewNetworkPath = null, NewNetworkingMode = null)
 
         /// <summary>

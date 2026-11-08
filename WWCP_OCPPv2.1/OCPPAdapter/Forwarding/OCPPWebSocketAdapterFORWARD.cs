@@ -588,15 +588,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (forwardingDecision.NewDestination is not null)
                     newJSONRequestMessage = newJSONRequestMessage.ChangeNetworking(forwardingDecision.NewDestination);
 
-                expectedResponses.TryAdd(
-                    newJSONRequestMessage.RequestId,
-                    new ResponseInfo(
-                        newJSONRequestMessage.RequestId,
-                        forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
-                        newJSONRequestMessage.NetworkPath.Source,
-                        newJSONRequestMessage.RequestTimeout
-                    )
-                );
+                // Sent on under a request identification of its own: see
+                // ForwardUnderAnIdOfItsOwn.
+                newJSONRequestMessage = newJSONRequestMessage.ChangeRequestId(
+                                            ForwardUnderAnIdOfItsOwn(
+                                                newJSONRequestMessage.RequestId,
+                                                forwardingDecision.RequestContext,
+                                                newJSONRequestMessage.NetworkPath.Source,
+                                                newJSONRequestMessage.RequestTimeout
+                                            )
+                                        );
 
                 var sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
                                                   newJSONRequestMessage,
@@ -638,15 +639,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       JSONRequestMessage.CancellationToken
                                                   );
 
-                expectedResponses.TryAdd(
-                    newJSONRequestMessage.RequestId,
-                    new ResponseInfo(
-                        newJSONRequestMessage.RequestId,
-                        forwardingDecision.   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
-                        newJSONRequestMessage.NetworkPath.Source,
-                        newJSONRequestMessage.RequestTimeout
-                    )
-                );
+                // Sent on under a request identification of its own: see
+                // ForwardUnderAnIdOfItsOwn.
+                newJSONRequestMessage = newJSONRequestMessage.ChangeRequestId(
+                                            ForwardUnderAnIdOfItsOwn(
+                                                newJSONRequestMessage.RequestId,
+                                                forwardingDecision.RequestContext,
+                                                newJSONRequestMessage.NetworkPath.Source,
+                                                newJSONRequestMessage.RequestTimeout
+                                            )
+                                        );
 
                 await parentNetworkingNode.OCPP.OUT.SendJSONRequest(
                           newJSONRequestMessage,
@@ -752,7 +754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         await parentNetworkingNode.OCPP.OUT.SendJSONResponse(
-                                  JSONResponseMessage.ChangeNetworking(
+                                  JSONResponseMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
                                       JSONResponseMessage.Destination.Next == NetworkingNode_Id.Zero
                                           ? SourceRouting.To(responseInfo.SourceNodeId)
                                           : JSONResponseMessage.Destination,
@@ -1207,15 +1209,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 if (forwardingDecision.NewDestination is not null)
                     newBinaryRequestMessage = newBinaryRequestMessage.ChangeNetworking(forwardingDecision.NewDestination);
 
-                expectedResponses.TryAdd(
-                    newBinaryRequestMessage.RequestId,
-                    new ResponseInfo(
-                        newBinaryRequestMessage.RequestId,
-                        forwardingDecision.     RequestContext ?? JSONLDContext.Parse("willnothappen!"),
-                        newBinaryRequestMessage.NetworkPath.Source,
-                        newBinaryRequestMessage.RequestTimeout
-                    )
-                );
+                // Sent on under a request identification of its own: see
+                // ForwardUnderAnIdOfItsOwn.
+                newBinaryRequestMessage = newBinaryRequestMessage.ChangeRequestId(
+                                              ForwardUnderAnIdOfItsOwn(
+                                                  newBinaryRequestMessage.RequestId,
+                                                  forwardingDecision.RequestContext,
+                                                  newBinaryRequestMessage.NetworkPath.Source,
+                                                  newBinaryRequestMessage.RequestTimeout
+                                              )
+                                          );
 
                 await parentNetworkingNode.OCPP.OUT.SendBinaryRequest(
                           newBinaryRequestMessage,
@@ -1247,15 +1250,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                       BinaryRequestMessage.CancellationToken
                                                   );
 
-                expectedResponses.TryAdd(
-                    newBinaryRequestMessage.RequestId,
-                    new ResponseInfo(
-                        newBinaryRequestMessage.RequestId,
-                        forwardingDecision.     RequestContext ?? JSONLDContext.Parse("willnothappen!"),
-                        newBinaryRequestMessage.NetworkPath.Source,
-                        newBinaryRequestMessage.RequestTimeout
-                    )
-                );
+                // Sent on under a request identification of its own: see
+                // ForwardUnderAnIdOfItsOwn.
+                newBinaryRequestMessage = newBinaryRequestMessage.ChangeRequestId(
+                                              ForwardUnderAnIdOfItsOwn(
+                                                  newBinaryRequestMessage.RequestId,
+                                                  forwardingDecision.RequestContext,
+                                                  newBinaryRequestMessage.NetworkPath.Source,
+                                                  newBinaryRequestMessage.RequestTimeout
+                                              )
+                                          );
 
                 await parentNetworkingNode.OCPP.OUT.SendBinaryRequest(
                           newBinaryRequestMessage
@@ -1316,7 +1320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     await parentNetworkingNode.OCPP.OUT.SendBinaryResponse(
-                              BinaryResponseMessage.ChangeNetworking(
+                              BinaryResponseMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
                                   BinaryResponseMessage.Destination.Next == NetworkingNode_Id.Zero
                                       ? SourceRouting.To(responseInfo.SourceNodeId)
                                       : BinaryResponseMessage.Destination,
@@ -1604,6 +1608,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+        #region (private) ForwardUnderAnIdOfItsOwn(RequestId, RequestContext, SourceNodeId, Timeout)
+
+        /// <summary>
+        /// The request identification a request this node forwards is sent on under:
+        /// one of this node's own, remembered with the identification the request came
+        /// with and the networking node that sent it.
+        /// </summary>
+        /// <remarks>
+        /// Every networking node numbers its requests from the same start, so the
+        /// stations behind a local controller ask with the same identifications as
+        /// each other, and as the controller itself, as often as not. Sent on under
+        /// theirs, two answers with one identification would come back over the same
+        /// connection, and in standard networking mode nothing in them says whose
+        /// each is. A random identification, which is never one of the numbers a node
+        /// gives its own requests, is unique here; the answer goes back under the
+        /// identification the request came with.
+        /// </remarks>
+        /// <param name="RequestId">The request identification the request came with.</param>
+        /// <param name="RequestContext">The JSON-LD context of the request, where the forwarding decision says one.</param>
+        /// <param name="SourceNodeId">The networking node that sent the request.</param>
+        /// <param name="Timeout">When an answer is no longer waited for.</param>
+        private Request_Id ForwardUnderAnIdOfItsOwn(Request_Id         RequestId,
+                                                    JSONLDContext?     RequestContext,
+                                                    NetworkingNode_Id  SourceNodeId,
+                                                    DateTimeOffset     Timeout)
+        {
+
+            var responseInfo = new ResponseInfo(
+                                   RequestId,
+                                   RequestContext ?? JSONLDContext.Parse("willnothappen!"),
+                                   SourceNodeId,
+                                   Timeout
+                               );
+
+            while (true)
+            {
+
+                var forwardedRequestId = Request_Id.NewRandom();
+
+                if (expectedResponses.TryAdd(forwardedRequestId, responseInfo))
+                    return forwardedRequestId;
+
+            }
+
+        }
+
+        #endregion
 
         #region GetForwardedNodeId(RequestId)
 

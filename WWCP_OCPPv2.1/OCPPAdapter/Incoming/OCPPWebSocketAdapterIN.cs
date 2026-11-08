@@ -609,24 +609,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         jsonResponseMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection.Role)
-                        {
-
-                            case ConnectionRole.Client:
-                                jsonResponseMessage = jsonResponseMessage.ChangeNetworking(
-                                                          SourceRouting.To(parentNetworkingNode.Id),
-                                                          jsonResponseMessage.NetworkPath.Append(sourceNodeId.Value)
-                                                      );
-                                break;
-
-                            case ConnectionRole.Server:
-                                jsonResponseMessage = jsonResponseMessage.ChangeNetworking(
-                                                          SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(jsonResponseMessage.RequestId) ?? parentNetworkingNode.Id),
-                                                          jsonResponseMessage.NetworkPath.Append(sourceNodeId.Value)
-                                                      );
-                                break;
-
-                        }
+                        // Whichever way the connection was made: an answer to a request
+                        // this node forwarded, under a request identification of its
+                        // own (see FORWARD), goes back to whoever asked, and every other
+                        // answer is this node's. A local controller's CSMS answers over
+                        // the controller's client connection, and there an answer to a
+                        // station's request used to be taken for the controller's own.
+                        jsonResponseMessage = jsonResponseMessage.ChangeNetworking(
+                                                  SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(jsonResponseMessage.RequestId) ?? parentNetworkingNode.Id),
+                                                  jsonResponseMessage.NetworkPath.Append(sourceNodeId.Value)
+                                              );
                     }
 
                     #endregion
@@ -1081,24 +1073,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         binaryResponseMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection.Role)
-                        {
-
-                            case ConnectionRole.Client:
-                                binaryResponseMessage = binaryResponseMessage.ChangeNetworking(
-                                                            SourceRouting.To(parentNetworkingNode.Id),
-                                                            binaryResponseMessage.NetworkPath.Append(sourceNodeId.Value)
-                                                        );
-                                break;
-
-                            case ConnectionRole.Server:
-                                binaryResponseMessage = binaryResponseMessage.ChangeNetworking(
-                                                            SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(binaryResponseMessage.RequestId) ?? parentNetworkingNode.Id),
-                                                            binaryResponseMessage.NetworkPath.Append(sourceNodeId.Value)
-                                                        );
-                                break;
-
-                        }
+                        // Whichever way the connection was made: an answer to a request
+                        // this node forwarded, under a request identification of its
+                        // own (see FORWARD), goes back to whoever asked, and every other
+                        // answer is this node's. A local controller's CSMS answers over
+                        // the controller's client connection, and there an answer to a
+                        // station's request used to be taken for the controller's own.
+                        binaryResponseMessage = binaryResponseMessage.ChangeNetworking(
+                                                    SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(binaryResponseMessage.RequestId) ?? parentNetworkingNode.Id),
+                                                    binaryResponseMessage.NetworkPath.Append(sourceNodeId.Value)
+                                                );
                     }
 
                     #endregion
