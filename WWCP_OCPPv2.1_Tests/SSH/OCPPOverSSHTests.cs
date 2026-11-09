@@ -499,6 +499,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
             public ValueTask DisposeAsync()
                 => ValueTask.CompletedTask;
 
+            public override String ToString()
+                => nameof(LoopbackDNS);
+
         }
 
         #endregion
