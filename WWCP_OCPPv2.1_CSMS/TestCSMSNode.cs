@@ -60,6 +60,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         ICSMSNode
     {
 
+        #region Properties
+
+        /// <summary>
+        /// What answers a charging station's SignCertificate request in place
+        /// of the test CA of this node: a PKI the request is sent on to, say.
+        /// Null for the test CA.
+        /// </summary>
+        /// <remarks>
+        /// A property rather than one more handler of OnSignCertificate: only
+        /// the first handler of a request is asked, and that is the one this
+        /// node adds for itself.
+        /// </remarks>
+        public OnSignCertificateDelegate?  SignCertificateProcessor    { get; set; }
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>
@@ -292,6 +308,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 cancellationToken) => {
 
                 DebugX.Log("OnSignCertificate: " + request.DestinationId);
+
+                if (SignCertificateProcessor is OnSignCertificateDelegate processor)
+                    return await processor(timestamp, sender, connection, request, cancellationToken);
 
                 // CSR
                 // CertificateType
