@@ -483,6 +483,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                 else if (OCPP_JSONRequestErrorMessage. TryParse(JSONMessage, out var jsonRequestErrorMessage,  out var requestErrorError,                                             sourceNodeId))
                 {
 
+                    #region Fix DestinationId and network path for standard networking connections
+
+                    // As for an answer: an error to a request this node forwarded,
+                    // under a request identification of its own (see FORWARD), goes
+                    // back to whoever asked, and every other error is this node's.
+                    if (jsonRequestErrorMessage.NetworkingMode   == NetworkingMode.Standard &&
+                        jsonRequestErrorMessage.Destination.Next == NetworkingNode_Id.Zero  &&
+                        sourceNodeId.HasValue)
+                    {
+                        jsonRequestErrorMessage = jsonRequestErrorMessage.ChangeNetworking(
+                                                      SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(jsonRequestErrorMessage.RequestId) ?? parentNetworkingNode.Id),
+                                                      jsonRequestErrorMessage.NetworkPath.Append(sourceNodeId.Value)
+                                                  );
+                    }
+
+                    #endregion
+
+
                     #region OnJSONRequestErrorMessageReceived
 
                     var logger = OnJSONRequestErrorMessageReceived;
@@ -511,7 +529,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     #endregion
 
-                    parentNetworkingNode.OCPP.ReceiveJSONRequestError(jsonRequestErrorMessage, WebSocketConnection);
+                    // An error to a request this node forwarded goes on to whoever
+                    // asked, see FORWARD; every other one is this node's own.
+                    if (jsonRequestErrorMessage.Destination.Next != parentNetworkingNode.Id &&
+                        jsonRequestErrorMessage.Destination.Next != NetworkingNode_Id.Zero  &&
+                       !parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonRequestErrorMessage.Destination.Next))
+                    {
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessJSONRequestErrorMessage(jsonRequestErrorMessage, WebSocketConnection);
+                    }
+
+                    else
+                        parentNetworkingNode.OCPP.ReceiveJSONRequestError(jsonRequestErrorMessage, WebSocketConnection);
 
                     // No response!
 
@@ -519,6 +547,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 else if (OCPP_JSONResponseErrorMessage.TryParse(JSONMessage, out var jsonResponseErrorMessage,                                                                        sourceNodeId))
                 {
+
+                    #region Fix DestinationId and network path for standard networking connections
+
+                    // As for an answer: an error to a request this node forwarded,
+                    // under a request identification of its own (see FORWARD), goes
+                    // back to whoever asked, and every other error is this node's.
+                    if (jsonResponseErrorMessage.NetworkingMode   == NetworkingMode.Standard &&
+                        jsonResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero  &&
+                        sourceNodeId.HasValue)
+                    {
+                        jsonResponseErrorMessage = jsonResponseErrorMessage.ChangeNetworking(
+                                                       SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(jsonResponseErrorMessage.RequestId) ?? parentNetworkingNode.Id),
+                                                       jsonResponseErrorMessage.NetworkPath.Append(sourceNodeId.Value)
+                                                   );
+                    }
+
+                    #endregion
+
 
                     #region OnJSONResponseErrorMessageReceived
 
@@ -548,7 +594,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     #endregion
 
-                    parentNetworkingNode.OCPP.ReceiveJSONResponseError(jsonResponseErrorMessage, WebSocketConnection);
+                    // An error to a request this node forwarded goes on to whoever
+                    // asked, see FORWARD; every other one is this node's own.
+                    if (jsonResponseErrorMessage.Destination.Next != parentNetworkingNode.Id &&
+                        jsonResponseErrorMessage.Destination.Next != NetworkingNode_Id.Zero  &&
+                       !parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonResponseErrorMessage.Destination.Next))
+                    {
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessJSONResponseErrorMessage(jsonResponseErrorMessage, WebSocketConnection);
+                    }
+
+                    else
+                        parentNetworkingNode.OCPP.ReceiveJSONResponseError(jsonResponseErrorMessage, WebSocketConnection);
 
                     // No response!
 
@@ -920,6 +976,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                 else if (OCPP_BinaryRequestErrorMessage. TryParse(BinaryMessage, out var binaryRequestErrorMessage,                                                                   sourceNodeId))
                 {
 
+                    #region Fix DestinationId and network path for standard networking connections
+
+                    // As for an answer: an error to a request this node forwarded,
+                    // under a request identification of its own (see FORWARD), goes
+                    // back to whoever asked, and every other error is this node's.
+                    if (binaryRequestErrorMessage.NetworkingMode   == NetworkingMode.Standard &&
+                        binaryRequestErrorMessage.Destination.Next == NetworkingNode_Id.Zero  &&
+                        sourceNodeId.HasValue)
+                    {
+                        binaryRequestErrorMessage = binaryRequestErrorMessage.ChangeNetworking(
+                                                        SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(binaryRequestErrorMessage.RequestId) ?? parentNetworkingNode.Id),
+                                                        binaryRequestErrorMessage.NetworkPath.Append(sourceNodeId.Value)
+                                                    );
+                    }
+
+                    #endregion
+
+
                     #region OnBinaryRequestErrorMessageReceived
 
                     await LogEvent(
@@ -935,7 +1009,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     #endregion
 
-                    parentNetworkingNode.OCPP.ReceiveBinaryRequestError(binaryRequestErrorMessage, WebSocketConnection);
+                    // An error to a request this node forwarded goes on to whoever
+                    // asked, see FORWARD; every other one is this node's own.
+                    if (binaryRequestErrorMessage.Destination.Next != parentNetworkingNode.Id &&
+                        binaryRequestErrorMessage.Destination.Next != NetworkingNode_Id.Zero  &&
+                       !parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryRequestErrorMessage.Destination.Next))
+                    {
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessBinaryRequestErrorMessage(binaryRequestErrorMessage, WebSocketConnection);
+                    }
+
+                    else
+                        parentNetworkingNode.OCPP.ReceiveBinaryRequestError(binaryRequestErrorMessage, WebSocketConnection);
 
                     // No response!
 
@@ -943,6 +1027,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 else if (OCPP_BinaryResponseErrorMessage.TryParse(BinaryMessage, out var binaryResponseErrorMessage,                                                                  sourceNodeId))
                 {
+
+                    #region Fix DestinationId and network path for standard networking connections
+
+                    // As for an answer: an error to a request this node forwarded,
+                    // under a request identification of its own (see FORWARD), goes
+                    // back to whoever asked, and every other error is this node's.
+                    if (binaryResponseErrorMessage.NetworkingMode   == NetworkingMode.Standard &&
+                        binaryResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero  &&
+                        sourceNodeId.HasValue)
+                    {
+                        binaryResponseErrorMessage = binaryResponseErrorMessage.ChangeNetworking(
+                                                         SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(binaryResponseErrorMessage.RequestId) ?? parentNetworkingNode.Id),
+                                                         binaryResponseErrorMessage.NetworkPath.Append(sourceNodeId.Value)
+                                                     );
+                    }
+
+                    #endregion
+
 
                     #region OnBinaryResponseErrorMessageReceived
 
@@ -959,7 +1061,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     #endregion
 
-                    parentNetworkingNode.OCPP.ReceiveBinaryResponseError(binaryResponseErrorMessage, WebSocketConnection);
+                    // An error to a request this node forwarded goes on to whoever
+                    // asked, see FORWARD; every other one is this node's own.
+                    if (binaryResponseErrorMessage.Destination.Next != parentNetworkingNode.Id &&
+                        binaryResponseErrorMessage.Destination.Next != NetworkingNode_Id.Zero  &&
+                       !parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryResponseErrorMessage.Destination.Next))
+                    {
+                        await parentNetworkingNode.OCPP.FORWARD.ProcessBinaryResponseErrorMessage(binaryResponseErrorMessage, WebSocketConnection);
+                    }
+
+                    else
+                        parentNetworkingNode.OCPP.ReceiveBinaryResponseError(binaryResponseErrorMessage, WebSocketConnection);
 
                     // No response!
 

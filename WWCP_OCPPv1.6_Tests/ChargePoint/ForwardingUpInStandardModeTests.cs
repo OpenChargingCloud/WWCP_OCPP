@@ -296,6 +296,134 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
         #endregion
 
+        #region (private) Waited(Started)
+
+        /// <summary>
+        /// How long a charge point waited for what came back: an error that is
+        /// lost on its way leaves it waiting for its whole request timeout.
+        /// </summary>
+        private static TimeSpan Waited(DateTimeOffset Started)
+            => Timestamp.Now - Started;
+
+        #endregion
+
+        #region ARequestError_ToAForwardedRequest_GoesBackToTheChargePointThatAsked()
+
+        /// <summary>
+        /// The central system answers a charge point's forwarded request with a
+        /// request error: the error goes back down to the charge point, under
+        /// its own request id, at once - rather than being taken by the node for
+        /// an error to a request of its own and dropped.
+        /// </summary>
+        /// <remarks>
+        /// Sent by the test rather than provoked: a 1.6 central system that
+        /// cannot read a request addresses its request error to nobody, and it
+        /// is never sent at all (OCPPWebSocketAdapterIN of 1.6 has no
+        /// AddressToSender, as 2.1 has).
+        /// </remarks>
+        [Test]
+        public async Task ARequestError_ToAForwardedRequest_GoesBackToTheChargePointThatAsked()
+        {
+
+            var cp1 = await AChargePointBelow("CP-STD-04");
+
+            // Before the central system answers the request itself, which then
+            // comes too late: the node has nobody waiting for it any more.
+            testCentralSystem01!.OCPP.IN.OnJSONRequestMessageReceived += async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.Action == "DataTransfer")
+                    await testCentralSystem01.OCPP.OUT.SendJSONRequestError(
+                              new OCPP_JSONRequestErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCentralSystem01.Id),
+                                  request.RequestId,
+                                  ResultCode.FormationViolation,
+                                  "The central system cannot read it!"
+                              )
+                          );
+
+            };
+
+            var started   = Timestamp.Now;
+
+            var transfer  = await cp1.TransferData(
+                                      VendorId:        Vendor_Id. GraphDefined,
+                                      MessageId:       Message_Id.GraphDefined_TestMessage,
+                                      Data:            "Hello world!",
+                                      RequestId:       Request_Id.Parse("4714"),
+                                      RequestTimeout:  TimeSpan.FromSeconds(10)
+                                  );
+
+            Assert.Multiple(() => {
+                Assert.That(transfer.Result.ResultCode,  Is.EqualTo(ResultCode.FormationViolation),  $"{transfer.Result}");
+                Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.Timeout), $"The central system's request error did not reach the charge point: {transfer.Result}");
+                Assert.That(transfer.Request.RequestId,  Is.EqualTo(Request_Id.Parse("4714")));
+                Assert.That(Waited(started),             Is.LessThan(TimeSpan.FromSeconds(5)));
+            });
+
+        }
+
+        #endregion
+
+        #region AResponseError_ToAForwardedRequest_GoesBackToTheChargePointThatAsked()
+
+        /// <summary>
+        /// The central system answers a charge point's forwarded request with a
+        /// response error: it goes back down to the charge point, as an answer
+        /// does, at once.
+        /// </summary>
+        [Test]
+        public async Task AResponseError_ToAForwardedRequest_GoesBackToTheChargePointThatAsked()
+        {
+
+            var cp1 = await AChargePointBelow("CP-STD-05");
+
+            // Before the central system answers the request itself, which then
+            // comes too late: the node has nobody waiting for it any more.
+            testCentralSystem01!.OCPP.IN.OnJSONRequestMessageReceived += async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.Action == "DataTransfer")
+                    await testCentralSystem01.OCPP.OUT.SendJSONResponseError(
+                              new OCPP_JSONResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCentralSystem01.Id),
+                                  request.RequestId,
+                                  ResultCode.InternalError,
+                                  "The central system could not answer it!"
+                              )
+                          );
+
+            };
+
+            var started   = Timestamp.Now;
+
+            var transfer  = await cp1.TransferData(
+                                      VendorId:        Vendor_Id. GraphDefined,
+                                      MessageId:       Message_Id.GraphDefined_TestMessage,
+                                      Data:            "Hello world!",
+                                      RequestId:       Request_Id.Parse("4715"),
+                                      RequestTimeout:  TimeSpan.FromSeconds(10)
+                                  );
+
+            // Not the CSMS's code: what the asker makes of a response error says
+            // GenericError, whoever sent it (Result.FromSendRequestState reads
+            // request errors only).
+            Assert.Multiple(() => {
+                Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.OK),      $"{transfer.Result}");
+                Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.Timeout), $"The central system's response error did not reach the charge point: {transfer.Result}");
+                Assert.That(Waited(started),             Is.LessThan(TimeSpan.FromSeconds(5)));
+            });
+
+        }
+
+        #endregion
+
     }
 
 }

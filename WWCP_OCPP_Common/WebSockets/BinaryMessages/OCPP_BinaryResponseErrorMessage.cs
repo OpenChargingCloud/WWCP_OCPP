@@ -561,6 +561,53 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
+        #region ChangeRequestId(NewRequestId)
+
+        /// <summary>
+        /// Change the request identification: back to the one the request was sent
+        /// with, where a networking node forwarded it under another.
+        /// </summary>
+        /// <param name="NewRequestId">The new request identification.</param>
+        public OCPP_BinaryResponseErrorMessage ChangeRequestId(Request_Id NewRequestId)
+
+            => new (ResponseTimestamp,
+                    EventTrackingId,
+                    NetworkingMode,
+                    Destination,
+                    NetworkPath,
+                    NewRequestId,
+                    ErrorCode,
+                    ErrorDescription,
+                    ErrorDetails,
+                    CancellationToken);
+
+        #endregion
+
+        #region ChangeNetworking(NewDestination = null, NewNetworkPath = null, NewNetworkingMode = null)
+
+        /// <summary>
+        /// Return a copy of this response error message, addressed differently.
+        /// </summary>
+        /// <param name="NewDestination">An optional new destination.</param>
+        /// <param name="NewNetworkPath">An optional new (source) network path.</param>
+        /// <param name="NewNetworkingMode">An optional new networking mode.</param>
+        public OCPP_BinaryResponseErrorMessage ChangeNetworking(SourceRouting?   NewDestination      = null,
+                                                                NetworkPath?     NewNetworkPath      = null,
+                                                                NetworkingMode?  NewNetworkingMode   = null)
+
+            => new (ResponseTimestamp,
+                    EventTrackingId,
+                    NewNetworkingMode ?? NetworkingMode,
+                    NewDestination    ?? Destination,
+                    NewNetworkPath    ?? NetworkPath,
+                    RequestId,
+                    ErrorCode,
+                    ErrorDescription,
+                    ErrorDetails,
+                    CancellationToken);
+
+        #endregion
+
         #region ToJSON()
 
         /// <summary>

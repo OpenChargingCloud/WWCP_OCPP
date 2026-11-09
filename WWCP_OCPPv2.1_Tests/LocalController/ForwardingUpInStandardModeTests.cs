@@ -416,6 +416,174 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
         #endregion
 
 
+        #region (private) Waited(Started)
+
+        /// <summary>
+        /// How long a station waited for what came back: an error that is lost
+        /// on its way leaves it waiting for its whole request timeout.
+        /// </summary>
+        private static TimeSpan Waited(DateTimeOffset Started)
+            => Timestamp.Now - Started;
+
+        #endregion
+
+        #region ARequestError_ToAForwardedRequest_GoesBackToTheStationThatAsked()
+
+        /// <summary>
+        /// The CSMS cannot read a station's request the controller forwarded,
+        /// and answers it with a request error: the error goes back down to the
+        /// station, under the station's own request id, at once - rather than
+        /// being taken by the controller for an error to a request of its own
+        /// and dropped, which left the station waiting out its timeout.
+        /// </summary>
+        [Test]
+        public async Task ARequestError_ToAForwardedRequest_GoesBackToTheStationThatAsked()
+        {
+
+            var cs1 = await AStation("CS-STD-07");
+
+            testCSMS1!.OCPP.CustomDataTransferRequestParser = (json, request) => throw new ArgumentException("This CSMS cannot read it!");
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferData(
+                                          VendorId:        Vendor_Id. GraphDefined,
+                                          MessageId:       Message_Id.GraphDefined_TestMessage,
+                                          Data:            "Hello world!",
+                                          RequestId:       Request_Id.Parse("4714"),
+                                          RequestTimeout:  TimeSpan.FromSeconds(10)
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,  Is.EqualTo(ResultCode.FormationViolation),  $"{transfer.Result}");
+                    Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.Timeout), $"The CSMS's request error did not reach the station: {transfer.Result}");
+                    Assert.That(transfer.Request.RequestId,  Is.EqualTo(Request_Id.Parse("4714")));
+                    Assert.That(Waited(started),             Is.LessThan(TimeSpan.FromSeconds(5)));
+                });
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.CustomDataTransferRequestParser = null;
+            }
+
+        }
+
+        #endregion
+
+        #region AResponseError_ToAForwardedRequest_GoesBackToTheStationThatAsked()
+
+        /// <summary>
+        /// The CSMS answers a station's forwarded request with a response error:
+        /// it goes back down to the station, as an answer does, at once.
+        /// </summary>
+        [Test]
+        public async Task AResponseError_ToAForwardedRequest_GoesBackToTheStationThatAsked()
+        {
+
+            var cs1 = await AStation("CS-STD-08");
+
+            // Before the CSMS answers the request itself, which then comes too
+            // late: the controller has nobody waiting for it any more.
+            OCPPv2_1.NetworkingNode.OnJSONRequestMessageReceivedDelegate answerWithAnError = async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.Action == "DataTransfer")
+                    await testCSMS1!.OCPP.OUT.SendJSONResponseError(
+                              new OCPP_JSONResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCSMS1.Id),
+                                  request.RequestId,
+                                  ResultCode.InternalError,
+                                  "The CSMS could not answer it!"
+                              )
+                          );
+
+            };
+
+            testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived += answerWithAnError;
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferData(
+                                          VendorId:        Vendor_Id. GraphDefined,
+                                          MessageId:       Message_Id.GraphDefined_TestMessage,
+                                          Data:            "Hello world!",
+                                          RequestId:       Request_Id.Parse("4715"),
+                                          RequestTimeout:  TimeSpan.FromSeconds(10)
+                                      );
+
+                // Not the CSMS's code: what the asker makes of a response error says
+                // GenericError, whoever sent it (Result.FromSendRequestState reads
+                // request errors only).
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.OK),      $"{transfer.Result}");
+                    Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.Timeout), $"The CSMS's response error did not reach the station: {transfer.Result}");
+                    Assert.That(Waited(started),             Is.LessThan(TimeSpan.FromSeconds(5)));
+                });
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived -= answerWithAnError;
+            }
+
+        }
+
+        #endregion
+
+        #region ARequestError_ToAForwardedBinaryRequest_GoesBackToTheStationThatAsked()
+
+        /// <summary>
+        /// The same for a binary request the CSMS cannot read, which it answers
+        /// - as it answers any request it cannot read - with a request error.
+        /// </summary>
+        [Test]
+        public async Task ARequestError_ToAForwardedBinaryRequest_GoesBackToTheStationThatAsked()
+        {
+
+            var cs1 = await AStation("CS-STD-09");
+
+            testCSMS1!.OCPP.CustomBinaryDataTransferRequestParser = (binary, request) => throw new ArgumentException("This CSMS cannot read it!");
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferBinaryData(
+                                          VendorId:             Vendor_Id. GraphDefined,
+                                          MessageId:            Message_Id.GraphDefined_TestMessage,
+                                          Data:                 "Hello world!".ToUTF8Bytes(),
+                                          RequestId:            Request_Id.Parse("4716"),
+                                          RequestTimeout:       TimeSpan.FromSeconds(10),
+                                          SerializationFormat:  SerializationFormats.BinaryTextIds
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,  Is.EqualTo(ResultCode.FormationViolation),  $"{transfer.Result}");
+                    Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.Timeout), $"The CSMS's request error did not reach the station: {transfer.Result}");
+                    Assert.That(Waited(started),             Is.LessThan(TimeSpan.FromSeconds(5)));
+                });
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.CustomBinaryDataTransferRequestParser = null;
+            }
+
+        }
+
+        #endregion
+
     }
 
 }

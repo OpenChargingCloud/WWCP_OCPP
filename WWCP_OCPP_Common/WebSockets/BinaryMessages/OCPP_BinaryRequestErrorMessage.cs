@@ -561,6 +561,28 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
+        #region ChangeRequestId(NewRequestId)
+
+        /// <summary>
+        /// Change the request identification: back to the one the request was sent
+        /// with, where a networking node forwarded it under another.
+        /// </summary>
+        /// <param name="NewRequestId">The new request identification.</param>
+        public OCPP_BinaryRequestErrorMessage ChangeRequestId(Request_Id NewRequestId)
+
+            => new (ResponseTimestamp,
+                    EventTrackingId,
+                    NetworkingMode,
+                    Destination,
+                    NetworkPath,
+                    NewRequestId,
+                    ErrorCode,
+                    ErrorDescription,
+                    ErrorDetails,
+                    CancellationToken);
+
+        #endregion
+
         #region ChangeNetworking(NewDestination = null, NewNetworkPath = null, NewNetworkingMode = null)
 
         /// <summary>
