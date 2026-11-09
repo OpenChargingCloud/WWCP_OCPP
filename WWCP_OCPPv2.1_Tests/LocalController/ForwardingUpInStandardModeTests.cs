@@ -362,6 +362,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 
         #endregion
 
+        #region AStationsHeartbeat_AndStatusNotification_ThroughTheController_AreAnsweredByTheCSMS()
+
+        /// <summary>
+        /// A heartbeat and a status notification - requests the controller has
+        /// no filter of its own for - are forwarded up and answered by the
+        /// CSMS, not turned away by the controller as "Filtered".
+        /// </summary>
+        [Test]
+        public async Task AStationsHeartbeat_AndStatusNotification_ThroughTheController_AreAnsweredByTheCSMS()
+        {
+
+            var cs1        = await AStation("CS-STD-06");
+            var atTheCSMS  = new ConcurrentQueue<String>();
+
+            OCPPv2_1.NetworkingNode.OnJSONRequestMessageReceivedDelegate seen = (timestamp, sender, connection, request, cancellationToken) => {
+                atTheCSMS.Enqueue(request.Action);
+                return Task.CompletedTask;
+            };
+
+            testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived += seen;
+
+            try
+            {
+
+                var heartbeat  = await cs1.SendHeartbeat(
+                                           RequestTimeout:  TimeSpan.FromSeconds(10)
+                                       );
+
+                var status     = await cs1.SendStatusNotification(
+                                           EVSEId:          EVSE_Id.     Parse(1),
+                                           ConnectorId:     Connector_Id.Parse(1),
+                                           Timestamp:       Timestamp.Now,
+                                           Status:          ConnectorStatus.Available,
+                                           RequestTimeout:  TimeSpan.FromSeconds(10)
+                                       );
+
+                Assert.Multiple(() => {
+                    Assert.That(heartbeat.Result.ResultCode,  Is.EqualTo(ResultCode.OK), $"The heartbeat: {heartbeat.Result}");
+                    Assert.That(status.   Result.ResultCode,  Is.EqualTo(ResultCode.OK), $"The status notification: {status.Result}");
+                    Assert.That(atTheCSMS,                    Does.Contain("Heartbeat"),          "The heartbeat did not reach the CSMS.");
+                    Assert.That(atTheCSMS,                    Does.Contain("StatusNotification"), "The status notification did not reach the CSMS.");
+                });
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived -= seen;
+            }
+
+        }
+
+        #endregion
+
+
     }
 
 }

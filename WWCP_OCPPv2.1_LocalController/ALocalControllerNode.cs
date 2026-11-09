@@ -30,6 +30,7 @@ using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
+using ForwardingDecisions = cloud.charging.open.protocols.OCPP.NetworkingNode.ForwardingDecisions;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
@@ -367,6 +368,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             // and so cannot reach this node's clock. Until a CSMS says
             // otherwise, the time this node was built is the best guess.
             CSMSTime = Now;
+
+            // A local controller forwards what is not for itself: every request
+            // and message no filter decides otherwise on. FORWARD's own default
+            // drops them, and a station behind the controller was told "Filtered"
+            // for whatever nobody had written a filter for - its heartbeats, its
+            // status notifications.
+            OCPP.FORWARD.DefaultForwardingDecision = ForwardingDecisions.FORWARD;
 
             if (VendorName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
