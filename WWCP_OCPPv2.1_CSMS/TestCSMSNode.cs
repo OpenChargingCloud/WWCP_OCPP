@@ -74,6 +74,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </remarks>
         public OnSignCertificateDelegate?  SignCertificateProcessor    { get; set; }
 
+        /// <summary>
+        /// What answers a charging station's GetCertificateStatus request in
+        /// place of this node's stand-in answer: the OCSP responder of a PKI
+        /// the request is sent on to, say. Null for the stand-in.
+        /// </summary>
+        /// <remarks>
+        /// A property for the reason SignCertificateProcessor is one.
+        /// </remarks>
+        public OnGetCertificateStatusDelegate?  GetCertificateStatusProcessor    { get; set; }
+
         #endregion
 
         #region Constructor(s)
@@ -255,6 +265,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                cancellationToken) => {
 
                 DebugX.Log("OnGetCertificateStatus: " + request.DestinationId);
+
+                if (GetCertificateStatusProcessor is OnGetCertificateStatusDelegate processor)
+                    return processor(timestamp, sender, connection, request, cancellationToken);
 
                 // OCSPRequestData
 
