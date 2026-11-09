@@ -198,6 +198,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                            Boolean?                                                        AllowRenegotiation               = null,
                                                                            Boolean?                                                        AllowTLSResume                   = null,
                                                                            TOTPConfig?                                                     TOTPConfig                       = null,
+                                                                           String?                                                         TOTPLogin                        = null,
 
                                                                            IPVersionPreference?                                            IPVersionPreference              = null,
                                                                            TimeSpan?                                                       ConnectTimeout                   = null,
@@ -262,6 +263,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                           AllowRenegotiation,
                                           AllowTLSResume,
                                           TOTPConfig,
+                                          TOTPLogin,
 
                                           IPVersionPreference,
                                           ConnectTimeout,
@@ -402,6 +404,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// <param name="Description">An optional description.</param>
         /// <param name="HTTPAuthentication">HTTP Basic credentials (HTTP WebSocket).</param>
         /// <param name="TOTPConfig">A one-time password configuration (HTTP WebSocket).</param>
+        /// <param name="TOTPLogin">The optional login under which the one-time password of the TOTP configuration goes in "Authorization: TOTP".</param>
         /// <param name="ClientCertificates">TLS client certificates (HTTP WebSocket).</param>
         /// <param name="ClientCertificateContext">A TLS client certificate context (HTTP WebSocket).</param>
         /// <param name="RemoteCertificateValidator">Whether to believe the server's TLS certificate (HTTP WebSocket).</param>
@@ -422,6 +425,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
                                                                      IHTTPAuthentication?                                            HTTPAuthentication           = null,
                                                                      TOTPConfig?                                                     TOTPConfig                   = null,
+                                                                     String?                                                         TOTPLogin                    = null,
                                                                      IEnumerable<X509Certificate2>?                                  ClientCertificates           = null,
                                                                      SslStreamCertificateContext?                                    ClientCertificateContext     = null,
                                                                      RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  RemoteCertificateValidator   = null,
@@ -492,6 +496,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                      ClientCertificateContext:    ClientCertificateContext,
                                      TLSProtocols:                TLSProtocols,
                                      TOTPConfig:                  TOTPConfig,
+                                     TOTPLogin:                   TOTPLogin,
                                      DNSClient:                   DNSClient,
                                      EventTrackingId:             EventTrackingId,
                                      CancellationToken:           CancellationToken

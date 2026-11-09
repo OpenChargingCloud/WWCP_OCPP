@@ -776,6 +776,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        Boolean?                                                        AllowRenegotiation               = null,
                                        Boolean?                                                        AllowTLSResume                   = null,
                                        TOTPConfig?                                                     TOTPConfig                       = null,
+                                       String?                                                         TOTPLogin                        = null,
 
                                        IPVersionPreference?                                            IPVersionPreference              = null,
                                        TimeSpan?                                                       ConnectTimeout                   = null,
@@ -836,6 +837,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    AllowRenegotiation,
                    AllowTLSResume,
                    TOTPConfig,
+                   TOTPLogin,
 
                    IPVersionPreference,
                    ConnectTimeout,
