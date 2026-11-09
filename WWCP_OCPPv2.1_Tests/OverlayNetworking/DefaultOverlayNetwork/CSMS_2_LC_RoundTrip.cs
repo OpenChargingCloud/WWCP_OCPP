@@ -69,6 +69,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                      ResetType:    ResetType.Immediate
                                  );
 
+            // The far side counts what it sent only once it is through with it,
+            // which may be after the answer has reached the test.
+            await Until(() => lcResetOut.Count >= 1 && lcJsonOut.Count >= 1 && csmsJsonIn.Count >= 1);
+
             Assert.Multiple(() => {
 
                 // Every hop, so a future failure says which one broke.

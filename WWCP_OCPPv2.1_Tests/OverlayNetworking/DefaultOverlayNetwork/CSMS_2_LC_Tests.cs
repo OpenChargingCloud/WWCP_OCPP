@@ -230,6 +230,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                        );
 
 
+                // The far side counts what it sent only once it is through with it,
+                // which may be after the answer has reached the test.
+                await Until(() => nnDataTransferResponsesSent.Count >= 1 && nnJSONResponseMessagesSent.Count >= 1);
+
                 Assert.Multiple(() => {
 
                     // Charging Station Request OUT
@@ -380,6 +384,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
                 var secureData  = response.Decrypt(CSMS.GetDecryptionKey(response.NetworkPath.Source, response.KeyId)).ToUTF8String();
 
+
+                // The far side counts what it sent only once it is through with it,
+                // which may be after the answer has reached the test.
+                await Until(() => nnSecureDataTransferResponsesSent.Count >= 1 && nnBinaryResponseMessagesSent.Count >= 1);
 
                 Assert.Multiple(() => {
 

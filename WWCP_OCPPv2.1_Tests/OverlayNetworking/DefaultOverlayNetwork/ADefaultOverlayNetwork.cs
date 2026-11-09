@@ -434,6 +434,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
         #endregion
 
+        #region (protected static) Until(Condition, Timeout = null)
+
+        /// <summary>
+        /// Wait until the given condition holds, 10 seconds at most.
+        /// The handlers counting what a node sent run after it was sent, and a
+        /// loaded machine may schedule them after the answer reached the test.
+        /// </summary>
+        /// <param name="Condition">The condition to wait for.</param>
+        /// <param name="Timeout">How long to wait at most, 10 seconds by default.</param>
+        protected static async Task Until(Func<Boolean>  Condition,
+                                          TimeSpan?      Timeout   = null)
+        {
+
+            var waited = System.Diagnostics.Stopwatch.StartNew();
+
+            while (!Condition() &&
+                   waited.Elapsed < (Timeout ?? TimeSpan.FromSeconds(10)))
+            {
+                await Task.Delay(5);
+            }
+
+        }
+
+        #endregion
+
         #region ShutdownOnce()
 
         [OneTimeTearDown]
