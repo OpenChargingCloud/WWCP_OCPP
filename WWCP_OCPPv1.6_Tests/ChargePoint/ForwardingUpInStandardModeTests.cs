@@ -411,18 +411,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                       RequestTimeout:  TimeSpan.FromSeconds(10)
                                   );
 
-            // Not the CSMS's code: what the asker makes of a response error says
-            // GenericError, whoever sent it (Result.FromSendRequestState reads
-            // request errors only).
+            // The central system's own code and description: Result.FromSendRequestState
+            // used to read request errors only, and made GenericError without a text of this.
             Assert.Multiple(() => {
-                Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.OK),      $"{transfer.Result}");
-                Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.Timeout), $"The central system's response error did not reach the charge point: {transfer.Result}");
-                Assert.That(Waited(started),             Is.LessThan(TimeSpan.FromSeconds(5)));
+                Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.InternalError),  $"{transfer.Result}");
+                Assert.That(transfer.Result.Description,  Is.EqualTo("The central system could not answer it!"));
+                Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
             });
 
         }
 
         #endregion
+
 
     }
 

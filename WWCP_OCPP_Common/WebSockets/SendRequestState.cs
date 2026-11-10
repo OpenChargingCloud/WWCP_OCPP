@@ -167,16 +167,22 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// No Errors.
         /// </summary>
+        /// <remarks>
+        /// Binary errors count as well. They did not: a binary request error left
+        /// HasErrors false, so whoever waited for the answer kept waiting until its
+        /// timeout, and IsValidBinaryRequestError never held.
+        /// </remarks>
         public Boolean                         NoErrors
-             => JSONRequestErrorMessage  is null &&
-                JSONResponseErrorMessage is null;
+             => JSONRequestErrorMessage    is null &&
+                JSONResponseErrorMessage   is null &&
+                BinaryRequestErrorMessage  is null &&
+                BinaryResponseErrorMessage is null;
 
         /// <summary>
         /// Errors occurred.
         /// </summary>
         public Boolean                         HasErrors
-             => JSONRequestErrorMessage  is not null ||
-                JSONResponseErrorMessage is not null;
+             => !NoErrors;
 
         #endregion
 

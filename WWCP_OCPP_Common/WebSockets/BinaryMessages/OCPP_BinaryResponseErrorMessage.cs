@@ -458,106 +458,67 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         #endregion
 
 
-        #region TryParse(JSONArray, out ErrorMessage, ImplicitSourceNodeId = null)
+        #region TryParse(Binary, out ResponseErrorMessage, out ErrorResponse, ImplicitSourceNodeId = null)
 
         /// <summary>
-        /// Try to parse the given text representation of an error message.
+        /// Try to parse the given binary representation of a response error message.
         /// </summary>
-        /// <param name="JSONArray">The JSON array to be parsed.</param>
-        /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="ResponseErrorMessage">The parsed OCPP binary response error message.</param>
+        /// <param name="ErrorResponse">Why the binary could not be parsed.</param>
         /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
-        public static Boolean TryParse(Byte[]                                                    JSONArray,
-                                       [NotNullWhen(true)] out OCPP_BinaryResponseErrorMessage?  ErrorMessage,
+        public static Boolean TryParse(Byte[]                                                    Binary,
+                                       [NotNullWhen(true)] out OCPP_BinaryResponseErrorMessage?  ResponseErrorMessage,
+                                       out String?                                               ErrorResponse,
                                        NetworkingNode_Id?                                        ImplicitSourceNodeId   = null)
         {
 
-            ErrorMessage = null;
-            return false;
+            ResponseErrorMessage = null;
 
-            // [
-            //     5,                         // MessageType: CALLRESULTERROR
-            //    "19223201",                 // RequestId from request
-            //    "<errorCode>",
-            //    "<errorDescription>",
-            //    {
-            //        <errorDetails>
-            //    }
-            // ]
-
-            // Error Code                    Description
-            // -----------------------------------------------------------------------------------------------
-            // NotImplemented                Requested Action is not known by receiver
-            // NotSupported                  Requested Action is recognized but not supported by the receiver
-            // InternalError                 An internal error occurred and the receiver was not able to process the requested Action successfully
-            // ProtocolError                 Payload for Action is incomplete
-            // SecurityError                 During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
-            // FormationViolation            Payload for Action is syntactically incorrect or not conform the PDU structure for Action
-            // PropertyConstraintViolation   Payload is syntactically correct but at least one field contains an invalid value
-            // OccurenceConstraintViolation  Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
-            // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
-            // GenericError                  Any other error not covered by the previous ones
-
-            try
+            if (!OCPP_BinaryErrorFrame.TryRead(Binary,
+                                               OCPP_BinaryErrorFrame.ResponseError,
+                                               ImplicitSourceNodeId,
+                                               out var error,
+                                               out ErrorResponse) ||
+                error is null)
             {
-
-                //if (JSONArray.Count            != 5                   ||
-                //    JSONArray[0].Type          != JTokenType.Integer  ||
-                //    JSONArray[0].Value<Byte>() != 5                   ||
-                //    JSONArray[1].Type          != JTokenType.String   ||
-                //    JSONArray[2].Type          != JTokenType.String   ||
-                //    JSONArray[3].Type          != JTokenType.String   ||
-                //    JSONArray[4].Type          != JTokenType.Object)
-                //{
-                //    return false;
-                //}
-
-                //if (!Request_Id. TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
-                //    return false;
-
-                //if (!ResultCode.TryParse(JSONArray[2]?.Value<String>() ?? "", out var wsErrorCode))
-                //    return false;
-
-                //var description = JSONArray[3]?.Value<String>();
-                //if (description is null)
-                //    return false;
-
-                //if (JSONArray[4] is not JObject details)
-                //    return false;
-
-                //ErrorMessage = new OCPP_BinaryResponseErrorMessage(
-                //                   Timestamp.Now,
-                //                   EventTracking_Id.New,
-                //                   NetworkingMode.Standard,
-                //                   NetworkingNode_Id.Zero,
-                //                   NetworkPath.Empty,
-                //                   requestId,
-                //                   wsErrorCode,
-                //                   description,
-                //                   details
-                //               );
-
-                return true;
-
-            }
-            catch (Exception e)
-            {
-
-                ErrorMessage = new OCPP_BinaryResponseErrorMessage(
-                                   Timestamp.Now,
-                                   EventTracking_Id.New,
-                                   NetworkingMode.Standard,
-                                   SourceRouting.Zero,
-                                   NetworkPath.Empty,
-                                   Request_Id.Zero,
-                                   ResultCode.InternalError,
-                                   e.Message
-                               );
-
                 return false;
-
             }
+
+            ResponseErrorMessage = new OCPP_BinaryResponseErrorMessage(
+                                      Timestamp.Now,
+                                      EventTracking_Id.New,
+                                      error.NetworkingMode,
+                                      error.Destination,
+                                      error.NetworkPath,
+                                      error.RequestId,
+                                      error.ErrorCode,
+                                      error.ErrorDescription,
+                                      error.ErrorDetails
+                                  );
+
+            return true;
 
         }
+
+        #endregion
+
+        #region TryParse(Binary, out ResponseErrorMessage, ImplicitSourceNodeId = null)
+
+        /// <summary>
+        /// Try to parse the given binary representation of a response error message.
+        /// </summary>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="ResponseErrorMessage">The parsed OCPP binary response error message.</param>
+        /// <param name="ImplicitSourceNodeId">An optional source networking node identification, e.g. from the HTTP WebSockets connection.</param>
+        public static Boolean TryParse(Byte[]                                                    Binary,
+                                       [NotNullWhen(true)] out OCPP_BinaryResponseErrorMessage?  ResponseErrorMessage,
+                                       NetworkingNode_Id?                                        ImplicitSourceNodeId   = null)
+
+            => TryParse(Binary,
+                        out ResponseErrorMessage,
+                        out _,
+                        ImplicitSourceNodeId);
 
         #endregion
 
@@ -638,7 +599,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
             // GenericError                  Any other error not covered by the previous ones
 
-            => new (4,
+            => new (5,
                     RequestId.ToString(),
                     ErrorCode.ToString(),
                     ErrorDescription,
@@ -646,15 +607,24 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
-        #region ToByteArray(Format = None)
+        #region ToByteArray()
 
         /// <summary>
-        /// Return a binary representation of this object.
+        /// Return a binary representation of this object: the layout is
+        /// described at OCPP_BinaryErrorFrame.
         /// </summary>
-        /// <param name="Format">A JSON format.</param>
-        public Byte[] ToByteArray(Formatting Format = Formatting.None)
+        public Byte[] ToByteArray()
 
-            => Encoding.UTF8.GetBytes(ToJSON().ToString(Format));
+            => OCPP_BinaryErrorFrame.Write(
+                   OCPP_BinaryErrorFrame.ResponseError,
+                   NetworkingMode,
+                   Destination,
+                   NetworkPath,
+                   RequestId,
+                   ErrorCode,
+                   ErrorDescription,
+                   ErrorDetails
+               );
 
         #endregion
 

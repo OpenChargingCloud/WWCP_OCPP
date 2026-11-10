@@ -97,15 +97,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        /// <summary>
+        /// The result of a request from whatever came back for it: the code,
+        /// description and details of an error, of whichever kind it is.
+        /// </summary>
+        /// <remarks>
+        /// Request errors only, JSON ones, used to be read here. A JSON response error
+        /// or a binary error of either kind left GenericError without any text, so
+        /// the asker could not tell what went wrong, nor that it was not a timeout.
+        /// </remarks>
+        /// <param name="SendRequestState">The state of a sent request.</param>
         public static Result FromSendRequestState(SendRequestState SendRequestState)
+        {
 
-            => new (
-                   SendRequestState.JSONRequestErrorMessage?.ErrorCode ?? ResultCode.GenericError,
-                   SendRequestState.JSONRequestErrorMessage?.ErrorDescription,
-                   SendRequestState.JSONRequestErrorMessage?.ErrorDetails,
-                   SendRequestState.JSONResponse?.           Payload,
-                   SendRequestState.BinaryResponse?.         Payload
-               );
+            var (errorCode, errorDescription, errorDetails) =
+
+                SendRequestState.JSONRequestErrorMessage    is OCPP_JSONRequestErrorMessage    jsonRequestError
+                    ? (jsonRequestError.   ErrorCode, jsonRequestError.   ErrorDescription, jsonRequestError.   ErrorDetails)
+
+                : SendRequestState.BinaryRequestErrorMessage  is OCPP_BinaryRequestErrorMessage  binaryRequestError
+                    ? (binaryRequestError. ErrorCode, binaryRequestError. ErrorDescription, binaryRequestError. ErrorDetails)
+
+                : SendRequestState.JSONResponseErrorMessage   is OCPP_JSONResponseErrorMessage   jsonResponseError
+                    ? (jsonResponseError.  ErrorCode, jsonResponseError.  ErrorDescription, jsonResponseError.  ErrorDetails)
+
+                : SendRequestState.BinaryResponseErrorMessage is OCPP_BinaryResponseErrorMessage binaryResponseError
+                    ? (binaryResponseError.ErrorCode, binaryResponseError.ErrorDescription, binaryResponseError.ErrorDetails)
+
+                : (ResultCode.GenericError, (String?) null, (JObject?) null);
+
+            return new (
+                       errorCode,
+                       errorDescription,
+                       errorDetails,
+                       SendRequestState.JSONResponse?.  Payload,
+                       SendRequestState.BinaryResponse?.Payload
+                   );
+
+        }
 
         public static Result FromErrorResponse(ResultCode  ResultCode,
                                                String?     Description      = null,

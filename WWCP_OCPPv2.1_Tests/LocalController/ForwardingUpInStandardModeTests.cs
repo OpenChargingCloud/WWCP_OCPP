@@ -521,13 +521,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                                           RequestTimeout:  TimeSpan.FromSeconds(10)
                                       );
 
-                // Not the CSMS's code: what the asker makes of a response error says
-                // GenericError, whoever sent it (Result.FromSendRequestState reads
-                // request errors only).
+                // The CSMS's own code and description: Result.FromSendRequestState used to
+                // read request errors only, and made GenericError without a text of this.
                 Assert.Multiple(() => {
-                    Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.OK),      $"{transfer.Result}");
-                    Assert.That(transfer.Result.ResultCode,  Is.Not.EqualTo(ResultCode.Timeout), $"The CSMS's response error did not reach the station: {transfer.Result}");
-                    Assert.That(Waited(started),             Is.LessThan(TimeSpan.FromSeconds(5)));
+                    Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.InternalError),  $"{transfer.Result}");
+                    Assert.That(transfer.Result.Description,  Is.EqualTo("The CSMS could not answer it!"));
+                    Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
                 });
 
             }
@@ -578,6 +577,138 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
             finally
             {
                 testCSMS1!.OCPP.CustomBinaryDataTransferRequestParser = null;
+            }
+
+        }
+
+        #endregion
+
+
+        #region ABinaryRequestError_ToAForwardedBinaryRequest_GoesBackToTheStationThatAsked()
+
+        /// <summary>
+        /// The CSMS answers a station's forwarded binary request with a binary request
+        /// error: the controller reads it as one, sends it on down, and the station hears
+        /// the CSMS's code and description at once.
+        /// </summary>
+        /// <remarks>
+        /// A binary error used to be written as JSON text into a binary frame. The
+        /// controller's binary parsers took it for nothing they knew, and the station
+        /// waited out its whole timeout.
+        /// </remarks>
+        [Test]
+        public async Task ABinaryRequestError_ToAForwardedBinaryRequest_GoesBackToTheStationThatAsked()
+        {
+
+            var cs1 = await AStation("CS-STD-10");
+
+            OCPPv2_1.NetworkingNode.OnBinaryRequestMessageReceivedDelegate answerWithABinaryError = async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.Action == "BinaryDataTransfer")
+                    await testCSMS1!.OCPP.OUT.SendBinaryRequestError(
+                              new OCPP_BinaryRequestErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCSMS1.Id),
+                                  request.RequestId,
+                                  ResultCode.SecurityError,
+                                  "The CSMS does not take this from you!"
+                              )
+                          );
+
+            };
+
+            testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived += answerWithABinaryError;
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferBinaryData(
+                                          VendorId:             Vendor_Id. GraphDefined,
+                                          MessageId:            Message_Id.GraphDefined_TestMessage,
+                                          Data:                 "Hello world!".ToUTF8Bytes(),
+                                          RequestId:            Request_Id.Parse("4720"),
+                                          RequestTimeout:       TimeSpan.FromSeconds(10),
+                                          SerializationFormat:  SerializationFormats.BinaryTextIds
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.SecurityError),  $"{transfer.Result}");
+                    Assert.That(transfer.Result.Description,  Is.EqualTo("The CSMS does not take this from you!"));
+                    Assert.That(transfer.Request.RequestId,   Is.EqualTo(Request_Id.Parse("4720")));
+                    Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
+                });
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived -= answerWithABinaryError;
+            }
+
+        }
+
+        #endregion
+
+        #region ABinaryResponseError_ToAForwardedBinaryRequest_GoesBackToTheStationThatAsked()
+
+        /// <summary>
+        /// The same for a binary response error: the station hears the CSMS's code and
+        /// description, as for a JSON one.
+        /// </summary>
+        [Test]
+        public async Task ABinaryResponseError_ToAForwardedBinaryRequest_GoesBackToTheStationThatAsked()
+        {
+
+            var cs1 = await AStation("CS-STD-11");
+
+            OCPPv2_1.NetworkingNode.OnBinaryRequestMessageReceivedDelegate answerWithABinaryError = async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.Action == "BinaryDataTransfer")
+                    await testCSMS1!.OCPP.OUT.SendBinaryResponseError(
+                              new OCPP_BinaryResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCSMS1.Id),
+                                  request.RequestId,
+                                  ResultCode.InternalError,
+                                  "The CSMS could not answer it!"
+                              )
+                          );
+
+            };
+
+            testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived += answerWithABinaryError;
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferBinaryData(
+                                          VendorId:             Vendor_Id. GraphDefined,
+                                          MessageId:            Message_Id.GraphDefined_TestMessage,
+                                          Data:                 "Hello world!".ToUTF8Bytes(),
+                                          RequestId:            Request_Id.Parse("4721"),
+                                          RequestTimeout:       TimeSpan.FromSeconds(10),
+                                          SerializationFormat:  SerializationFormats.BinaryTextIds
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.InternalError),  $"{transfer.Result}");
+                    Assert.That(transfer.Result.Description,  Is.EqualTo("The CSMS could not answer it!"));
+                    Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
+                });
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived -= answerWithABinaryError;
             }
 
         }
