@@ -73,6 +73,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Properties
 
         /// <summary>
+        /// Answers a TriggerMessage of CustomTrigger - "SignSSHKey" of the white
+        /// paper "OCPP over SSH", say - or null to leave it NotImplemented.
+        /// </summary>
+        public Func<CSMS.TriggerMessageRequest, Task<CS.TriggerMessageResponse?>>?  OnCustomTrigger  { get; set; }
+
+        /// <summary>
         /// The largest number of report data in one NotifyReport request;
         /// a longer report is sent in several parts.
         /// </summary>
@@ -2607,11 +2613,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region OnTriggerMessage
 
-            OCPP.IN.OnTriggerMessage += (timestamp,
-                                         sender,
-                                         connection,
-                                         request,
-                                         ct) => {
+            OCPP.IN.OnTriggerMessage += async (timestamp,
+                                               sender,
+                                               connection,
+                                               request,
+                                               ct) => {
+
+                // A CustomTrigger is the owner's to answer: "SignSSHKey" of the
+                // white paper "OCPP over SSH", say. None, and it is rejected.
+                if (request.RequestedMessage == MessageTrigger.CustomTrigger)
+                    return OnCustomTrigger is Func<CSMS.TriggerMessageRequest, Task<CS.TriggerMessageResponse?>> customTrigger &&
+                           await customTrigger(request) is CS.TriggerMessageResponse answered
+                               ? answered
+                               : new TriggerMessageResponse(request, TriggerMessageStatus.NotImplemented);
 
                 TriggerMessageResponse? response = null;
 
@@ -2702,7 +2716,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  TriggerMessageStatus.Rejected
                              );
 
-                return Task.FromResult(response);
+                return response;
 
             };
 
