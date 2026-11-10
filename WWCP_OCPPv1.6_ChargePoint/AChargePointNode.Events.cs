@@ -26,6 +26,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using QueuedMessage = cloud.charging.open.protocols.OCPP.QueuedMessage;
 using OfflineQueue  = cloud.charging.open.protocols.OCPP.OfflineQueue;
 using ResultCode    = cloud.charging.open.protocols.OCPP.ResultCode;
+using Outboxes      = cloud.charging.open.protocols.OCPP.Outboxes;
+
+using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -54,8 +58,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         private const String securityEventKind = "SecurityEventNotification";
 
-        private readonly SemaphoreSlim  flushing        = new (1, 1);
-        private          DateTimeOffset nextQueueTry;
+        /// <summary>
+        /// The security event that tells a back end how many messages waiting for it were let go.
+        /// </summary>
+        public  const String QueueOverflow     = "QueueOverflow";
+
+        private          Outboxes?      queues;
 
         #endregion
 
@@ -71,7 +79,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// How long to wait before the queue is tried again after the central
         /// system did not take a message.
         /// </summary>
-        public TimeSpan      OfflineQueueRetry     { get; set; } = TimeSpan.FromSeconds(30);
+        public TimeSpan      OfflineQueueRetry
+        {
+            get => Queues.Retry;
+            set => Queues.Retry = value;
+        }
 
         /// <summary>
         /// Whether what the queue holds waits rather than goes: queued all the
@@ -82,12 +94,63 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// For a charge point whose central system has not accepted its
         /// BootNotification yet, and which may tell it nothing else until then.
         /// </remarks>
-        public Boolean       HoldOfflineQueue      { get; set; }
+        public Boolean       HoldOfflineQueue
+        {
+            get => Queues.IsHeld(Queues.CSMS);
+            set => Queues.Hold  (Queues.CSMS, value);
+        }
 
         #endregion
 
 
-        #region QueueSecurityEventAsync(Type, TechInfo = null, Timestamp = null)
+        #region (private) Queues
+
+        /// <summary>
+        /// A queue for each destination this node tells things to: the one of its
+        /// central system is <see cref="OfflineQueue"/>.
+        /// </summary>
+        private Outboxes Queues
+
+            => LazyInitializer.EnsureInitialized(
+                   ref queues,
+                   () => new Outboxes(
+                             DefaultNextHopNetworkingNodeId,
+                             () => OfflineQueue,
+                             TrySendAsync,
+                             TellOfOverflowAsync,
+                             Clock
+                         )
+               );
+
+        #endregion
+
+        #region OfflineQueueFor(Destination) / HoldOfflineQueueFor(Destination, Held)
+
+        /// <summary>
+        /// The queue of what waits for the given destination: <see cref="OfflineQueue"/>
+        /// for the central system, and one of its own for any other back end - a successor,
+        /// during a migration - bounded by <see cref="Outboxes.OtherMaxMessages"/>
+        /// and <see cref="Outboxes.OtherMaxAge"/>.
+        /// </summary>
+        /// <param name="Destination">Where its messages go.</param>
+        public OfflineQueue OfflineQueueFor(NetworkingNode_Id Destination)
+            => Queues.QueueFor(Destination);
+
+        /// <summary>
+        /// Let what is queued for the given destination wait, or go again: for a
+        /// back end that has not accepted this station yet. For the central system, as
+        /// <see cref="HoldOfflineQueue"/>.
+        /// </summary>
+        /// <param name="Destination">Where its messages go.</param>
+        /// <param name="Held">Whether they wait.</param>
+        public void HoldOfflineQueueFor(NetworkingNode_Id  Destination,
+                                        Boolean            Held)
+
+            => Queues.Hold(Destination, Held);
+
+        #endregion
+
+        #region QueueSecurityEventAsync(Type, TechInfo = null, Timestamp = null, Destination = null)
 
         /// <summary>
         /// Send a security event, kept until the central system took it.
@@ -95,9 +158,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Type">What happened.</param>
         /// <param name="TechInfo">What a technician needs to know of it: cut at <see cref="MaxTechInfoLength"/> characters.</param>
         /// <param name="Timestamp">When it happened; now where null.</param>
-        public Task QueueSecurityEventAsync(SecurityEvent    Type,
-                                            String?          TechInfo    = null,
-                                            DateTimeOffset?  Timestamp   = null)
+        /// <param name="Destination">Whom to tell; the central system where null.</param>
+        public Task QueueSecurityEventAsync(SecurityEvent      Type,
+                                            String?            TechInfo      = null,
+                                            DateTimeOffset?    Timestamp     = null,
+                                            NetworkingNode_Id? Destination   = null)
         {
 
             if (Type.Text.Length > MaxSecurityEventTypeLength)
@@ -111,59 +176,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (TechInfo is not null)
                 payload["techInfo"] = TechInfo.Length > MaxTechInfoLength ? TechInfo[..MaxTechInfoLength] : TechInfo;
 
-            OfflineQueue.Enqueue(securityEventKind, payload, Evidence: true);
+            Queues.QueueFor(Destination ?? Queues.CSMS).Enqueue(securityEventKind, payload, Evidence: true);
 
-            return FlushOfflineQueueAsync();
+            return FlushOfflineQueueAsync(Destination);
 
         }
 
         #endregion
 
-        #region FlushOfflineQueueAsync()
+        #region FlushOfflineQueueAsync(Destination = null)
 
         /// <summary>
-        /// Send what the queue holds, oldest first, until the central system
-        /// does not take a message - which is tried again after
-        /// <see cref="OfflineQueueRetry"/>. Answers how many were taken.
+        /// Send what waits for the given destination - the central system where null -
+        /// oldest first, until it does not take a message, which is tried again
+        /// after <see cref="OfflineQueueRetry"/>. A back end that lost messages of
+        /// its queue for room or for age is told how many first. Answers how many
+        /// were taken.
         /// </summary>
-        public async Task<Int32> FlushOfflineQueueAsync()
-        {
+        /// <param name="Destination">Whom to tell; the central system where null.</param>
+        public Task<Int32> FlushOfflineQueueAsync(NetworkingNode_Id? Destination = null)
 
-            // Held: nothing goes, and nothing was refused either, so the queue
-            // is not put off until its next try.
-            if (HoldOfflineQueue)
-                return 0;
-
-            await flushing.WaitAsync();
-
-            try
-            {
-
-                var taken = 0;
-
-                while (OfflineQueue.Pending.FirstOrDefault() is QueuedMessage message)
-                {
-
-                    if (!await TrySendAsync(message))
-                    {
-                        nextQueueTry = Now + OfflineQueueRetry;
-                        break;
-                    }
-
-                    OfflineQueue.Remove(message);
-                    taken++;
-
-                }
-
-                return taken;
-
-            }
-            finally
-            {
-                flushing.Release();
-            }
-
-        }
+            => Queues.FlushAsync(Destination ?? Queues.CSMS);
 
         #endregion
 
@@ -171,27 +204,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region (private) RetryOfflineQueue()
 
         /// <summary>
-        /// Try the queue again, at the node's maintenance, where something waits
-        /// in it and its time to be tried again has come.
+        /// Try the queues again, at the node's maintenance, where something waits
+        /// in one and its time to be tried again has come.
         /// </summary>
         private void RetryOfflineQueue()
         {
 
-            if (HoldOfflineQueue || Now < nextQueueTry || OfflineQueue.Pending.Count == 0 || flushing.CurrentCount == 0)
-                return;
-
-            nextQueueTry = Now + OfflineQueueRetry;
-
-            _ = Task.Run(async () => {
-                    try
-                    {
-                        await FlushOfflineQueueAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.LogException(e, $"Charge point '{Id}': the offline queue");
-                    }
-                });
+            foreach (var destination in Queues.DueForRetry())
+                _ = Task.Run(async () => {
+                        try
+                        {
+                            await FlushOfflineQueueAsync(destination);
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.LogException(e, $"Charge point '{Id}': the offline queue of '{destination}'");
+                        }
+                    });
 
         }
 
@@ -203,7 +232,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send one message of the queue, answering whether the central system
         /// took it. A message of a kind nobody sends any more counts as taken.
         /// </summary>
-        private async Task<Boolean> TrySendAsync(QueuedMessage Message)
+        private async Task<Boolean> TrySendAsync(QueuedMessage      Message,
+                                                 NetworkingNode_Id  Destination)
         {
 
             if (Message.Kind != securityEventKind)
@@ -215,7 +245,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 var response = await this.SendSecurityEventNotification(
                                          SecurityEvent.Parse(Message.Payload.Value<String>("type") ?? ""),
                                          DateTimeOffset.Parse(Message.Payload.Value<String>("timestamp") ?? "", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                                         Message.Payload.Value<String>("techInfo")
+                                         Message.Payload.Value<String>("techInfo"),
+                                         Destination: SourceRouting.To(Destination)
                                      );
 
                 return response.Result.ResultCode == ResultCode.OK;
@@ -224,6 +255,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             catch (Exception e)
             {
                 DebugX.LogException(e, $"Charge point '{Id}': sending a queued {Message.Kind}");
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (private) TellOfOverflowAsync(Dropped, Destination)
+
+        /// <summary>
+        /// Tell the given destination how many messages of its queue were let go,
+        /// for room or for age, with a security event "QueueOverflow" - answering
+        /// whether it took it.
+        /// </summary>
+        private async Task<Boolean> TellOfOverflowAsync(Int64              Dropped,
+                                                        NetworkingNode_Id  Destination)
+        {
+
+            try
+            {
+
+                var response = await this.SendSecurityEventNotification(
+                                         SecurityEvent.Parse(QueueOverflow),
+                                         Now,
+                                         $"{Dropped} message(s) waiting for this back end were let go, for room or for age, while it could not be reached.",
+                                         Destination: SourceRouting.To(Destination)
+                                     );
+
+                return response.Result.ResultCode == ResultCode.OK;
+
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, $"Charge point '{Id}': telling '{Destination}' of messages let go");
                 return false;
             }
 

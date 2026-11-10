@@ -121,14 +121,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Task<Int32> CheckMonitorsAsync(Func<Component, Variable, Boolean>? Which = null);
 
         /// <summary>
-        /// Send a security event, kept until the CSMS took it.
+        /// Send a security event, kept until the CSMS took it - or another back
+        /// end, where one is given, in a queue of its own.
         /// </summary>
         /// <param name="Type">What happened.</param>
         /// <param name="TechInfo">What a technician needs to know of it.</param>
         /// <param name="Timestamp">When it happened; now where null.</param>
-        Task QueueSecurityEventAsync(SecurityEventType  Type,
-                                     String?            TechInfo    = null,
-                                     DateTimeOffset?    Timestamp   = null);
+        /// <param name="Destination">Whom to tell; the CSMS where null.</param>
+        Task QueueSecurityEventAsync(SecurityEventType    Type,
+                                     String?              TechInfo      = null,
+                                     DateTimeOffset?      Timestamp     = null,
+                                     NetworkingNode_Id?   Destination   = null);
 
     }
 

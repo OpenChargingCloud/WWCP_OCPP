@@ -17,6 +17,8 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
+
 using cloud.charging.open.protocols.OCPP;
 
 #endregion
@@ -61,14 +63,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         OfflineQueue OfflineQueue { get; }
 
         /// <summary>
-        /// Send a security event, kept until the central system took it.
+        /// Send a security event, kept until the central system took it - or
+        /// another back end, where one is given, in a queue of its own.
         /// </summary>
         /// <param name="Type">What happened.</param>
         /// <param name="TechInfo">What a technician needs to know of it.</param>
         /// <param name="Timestamp">When it happened; now where null.</param>
-        Task QueueSecurityEventAsync(SecurityEvent    Type,
-                                     String?          TechInfo    = null,
-                                     DateTimeOffset?  Timestamp   = null);
+        /// <param name="Destination">Whom to tell; the central system where null.</param>
+        Task QueueSecurityEventAsync(SecurityEvent        Type,
+                                     String?              TechInfo      = null,
+                                     DateTimeOffset?      Timestamp     = null,
+                                     NetworkingNode_Id?   Destination   = null);
 
     }
 
