@@ -104,6 +104,31 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
 
         #endregion
 
+        #region (protected) ComesFromItsCSMS(Connection)
+
+        /// <summary>
+        /// Whether what came over the given connection came from the CSMS this node
+        /// sends its own messages to, by <see cref="DefaultNextHopNetworkingNodeId"/>.
+        /// </summary>
+        /// <remarks>
+        /// A station connected to a second back end as well - a successor, during a
+        /// migration - registers with that one too, and is answered by it. Such an
+        /// answer is about that connection: the heartbeat interval it gives, or its
+        /// refusal, set on the node, changed the heartbeat to the node's CSMS. Where
+        /// nothing tells the connections apart - a connection this node accepted, one
+        /// without a client, no route by that name - it is taken to come from the
+        /// CSMS, as everything did before.
+        /// </remarks>
+        /// <param name="Connection">The connection something came over.</param>
+        protected Boolean ComesFromItsCSMS(IMessageConnection? Connection)
+
+            => Connection?.WWCPClientOf() is not IWWCPClient client                      ||
+               !Routing.LookupNetworkingNode(DefaultNextHopNetworkingNodeId, out var csms) ||
+               csms.Client is null                                                        ||
+               ReferenceEquals(csms.Client, client);
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>

@@ -688,6 +688,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             OCPP.IN.OnBootNotificationResponseReceived += (timestamp, sender, connection, request, response, runtime, ct) => {
 
+                // Only the CSMS this node sends its own messages to sets its heartbeat:
+                // a second back end it registered with as well answers about its own
+                // connection, and a refusal from there stopped the heartbeat to the first.
+                if (!ComesFromItsCSMS(connection))
+                    return Task.CompletedTask;
+
                 if (response.Status == RegistrationStatus.Accepted)
                 {
                     this.DisableSendHeartbeats  = false;
