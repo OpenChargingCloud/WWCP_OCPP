@@ -137,6 +137,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         public HashSet<NetworkingNode_Id>  AnycastIds    { get; } = [];
 
+        /// <summary>
+        /// Asked before a request for this node is processed, with the
+        /// connection it came over, its action and its JSON payload - none for a
+        /// binary one. A sentence, why it is not processed, keeps it from being
+        /// processed, and the asker is answered with a SecurityError that says
+        /// so; null lets it through. For a connection whose server is not
+        /// believed yet: one whose host key is on probation (white paper "OCPP
+        /// over SSH", section 10.4) executes nothing but a signed pin set.
+        /// </summary>
+        public Func<IMessageConnection, String, JObject?, String?>?  RequestGate  { get; set; }
+
         #endregion
 
         #region Events
@@ -334,6 +345,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// <param name="JSONMessage">The received JSON message.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
+        #region (private) RefusalOf(Connection, Action, Payload)
+
+        /// <summary>
+        /// Why the <see cref="RequestGate"/> keeps a request from being
+        /// processed - or null, where there is no gate or it lets it through. A
+        /// gate that fails keeps it, rather than let through what it was there
+        /// to stop.
+        /// </summary>
+        private String? RefusalOf(IMessageConnection  Connection,
+                                  String              Action,
+                                  JObject?            Payload)
+        {
+
+            if (RequestGate is not Func<IMessageConnection, String, JObject?, String?> gate)
+                return null;
+
+            try
+            {
+                return gate(Connection, Action, Payload);
+            }
+            catch (Exception exception)
+            {
+                return $"This node could not decide whether to process '{Action}': {exception.Message}";
+            }
+
+        }
+
+        #endregion
+
         public async Task ProcessJSONMessage(DateTimeOffset        MessageTimestamp,
                                              IMessageConnection    WebSocketConnection,
                                              NetworkingNode_Id?    sourceNodeId,
@@ -408,7 +448,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                         #region Try to call the matching 'incoming message processor'...
 
-                        if (incomingJSONMessageProcessorsLookup.TryGetValue(jsonRequestMessage.Action, out var methodInfo))
+                        if (RefusalOf(WebSocketConnection, jsonRequestMessage.Action, jsonRequestMessage.Payload) is String refusal)
+                            await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
+                                      new OCPP_JSONRequestErrorMessage(
+                                          Now,
+                                          EventTracking_Id.New,
+                                          NetworkingMode.Unknown,
+                                          SourceRouting.To(jsonRequestMessage.NetworkPath.Source),
+                                          NetworkPath.From(parentNetworkingNode.Id),
+                                          jsonRequestMessage.RequestId,
+                                          ResultCode.SecurityError,
+                                          refusal,
+                                          new JObject()
+                                      ),
+                                      WebSocketConnection
+                                  );
+
+                        else if (incomingJSONMessageProcessorsLookup.TryGetValue(jsonRequestMessage.Action, out var methodInfo))
                         {
 
                             var resultTask = methodInfo.Invoke(
@@ -906,7 +962,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                         #region Try to call the matching 'incoming message processor'
 
-                        if (incomingBinaryMessageProcessorsLookup.TryGetValue(binaryRequestMessage.Action, out var methodInfo))
+                        if (RefusalOf(WebSocketConnection, binaryRequestMessage.Action, null) is String refusal)
+                            await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
+                                      new OCPP_JSONRequestErrorMessage(
+                                          Now,
+                                          EventTracking_Id.New,
+                                          NetworkingMode.Unknown,
+                                          SourceRouting.To(binaryRequestMessage.NetworkPath.Source),
+                                          NetworkPath.From(parentNetworkingNode.Id),
+                                          binaryRequestMessage.RequestId,
+                                          ResultCode.SecurityError,
+                                          refusal,
+                                          new JObject()
+                                      ),
+                                      WebSocketConnection
+                                  );
+
+                        else if (incomingBinaryMessageProcessorsLookup.TryGetValue(binaryRequestMessage.Action, out var methodInfo))
                         {
 
                             var resultTask = methodInfo.Invoke(
