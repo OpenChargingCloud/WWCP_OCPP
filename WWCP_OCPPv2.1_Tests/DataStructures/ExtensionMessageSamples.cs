@@ -74,6 +74,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
             { "NTSKERequest",                         $$"""{ "aeadAlgorithm": "AES_256_GCM", "customData": {{Custom}} }""" },
             { "NTSKEResponse",                        $$"""{ "serverInfos": [ { "c2sKey": "AQID", "s2cKey": "BAUG", "cookies": [ "BwgJ" ], "urls": [ "https://time.example" ], "aeadAlgorithm": "AES_256_GCM" } ], "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
 
+            // NTS: synchronization and server tests on demand (Secure Time Synchronization, section 3.2.7);
+            // the outcome of a test is in NetworkTimeResultTests, as a sample has room for one of the two
+            { "SyncNetworkTimeRequest",               $$"""{ "requestId": 4711, "group": "legal", "customData": {{Custom}} }""" },
+            { "SyncNetworkTimeResponse",              $$"""{ "status": "Rejected", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
+            { "TestTimeServerRequest",                $$"""{ "requestId": 4712, "client": "ptb2", "customData": {{Custom}} }""" },
+            { "TestTimeServerResponse",               $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
+            { "NotifyNetworkTimeResultRequest",       $$"""{ "requestId": 4711, "generatedAt": "2026-11-10T14:03:12Z", "round": { "group": "legal", "ok": true, "duration": 3.021, "answered": 2, "required": 2, "offset": -0.00175, "spread": 0.0007, "deviationExceeded": false, "legalTime": false, "legalTimeReason": "OffBy", "error": "none", "clients": [ { "client": "ptb1", "host": "ptbtime1.ptb.de", "ok": true, "offset": -0.0021, "roundTrip": 0.0183, "keyExchange": "Reused", "preflight": true, "signedResponse": true, "error": "none" } ] }, "customData": {{Custom}} }""" },
+            { "NotifyNetworkTimeResultResponse",      $$"""{ "customData": {{Custom}} }""" },
+
             // Web payments: NotifyWebPaymentStarted is a message of OCPP 2.1, NotifyWebPaymentFailed a DataTransfer of the vendor "cloud.charging.open"
             { "NotifyWebPaymentFailedRequest",       $$"""{ "vendorId": "cloud.charging.open", "messageId": "NotifyWebPaymentFailed", "data": { "evseId": 1, "errorMessage": { "en": "declined" } }, "customData": {{Custom}} }""" },
             { "NotifyWebPaymentFailedResponse",       $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },

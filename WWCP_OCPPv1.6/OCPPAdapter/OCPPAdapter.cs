@@ -531,6 +531,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public CustomJObjectSerializerDelegate<TimeTravelRequest>?                                   CustomTimeTravelRequestSerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<TimeTravelResponse>?                                  CustomTimeTravelResponseSerializer                           { get; set; }
 
+        // NTS: synchronization and server tests on demand
+        public CustomJObjectSerializerDelegate<SyncNetworkTimeRequest>?                              CustomSyncNetworkTimeRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<SyncNetworkTimeResponse>?                             CustomSyncNetworkTimeResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<TestTimeServerRequest>?                               CustomTestTimeServerRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<TestTimeServerResponse>?                              CustomTestTimeServerResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CP.NotifyNetworkTimeResultRequest>?                   CustomNotifyNetworkTimeResultRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyNetworkTimeResultResponse>?                  CustomNotifyNetworkTimeResultResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<NetworkTimeStatusInfo>?                               CustomNetworkTimeStatusInfoSerializer                        { get; set; }
+
         //  CCS
         public CustomJObjectSerializerDelegate<AttachCableRequest>?                                  CustomAttachCableRequestSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<AttachCableResponse>?                                 CustomAttachCableResponseSerializer                          { get; set; }
@@ -950,6 +959,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public CustomJObjectParserDelegate<QueryDNSResponse>?                                          CustomQueryDNSResponseParser                             { get; set; }
         public CustomJObjectParserDelegate<TimeTravelRequest>?                                         CustomTimeTravelRequestParser                            { get; set; }
         public CustomJObjectParserDelegate<TimeTravelResponse>?                                        CustomTimeTravelResponseParser                           { get; set; }
+
+        // NTS: synchronization and server tests on demand
+        public CustomJObjectParserDelegate<SyncNetworkTimeRequest>?                                    CustomSyncNetworkTimeRequestParser                       { get; set; }
+        public CustomJObjectParserDelegate<SyncNetworkTimeResponse>?                                   CustomSyncNetworkTimeResponseParser                      { get; set; }
+        public CustomJObjectParserDelegate<TestTimeServerRequest>?                                     CustomTestTimeServerRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<TestTimeServerResponse>?                                    CustomTestTimeServerResponseParser                       { get; set; }
+        public CustomJObjectParserDelegate<CP.NotifyNetworkTimeResultRequest>?                         CustomNotifyNetworkTimeResultRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<CS.NotifyNetworkTimeResultResponse>?                        CustomNotifyNetworkTimeResultResponseParser              { get; set; }
 
         //  CCS
         public CustomJObjectParserDelegate<AttachCableRequest>?                                        CustomAttachCableRequestParser                           { get; set; }

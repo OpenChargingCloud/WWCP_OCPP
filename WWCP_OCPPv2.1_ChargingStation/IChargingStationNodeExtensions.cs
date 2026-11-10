@@ -2164,6 +2164,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region NotifyNetworkTimeResult               (NetworkTimeRequestId, GeneratedAt, Round = null, Test = null, ...)
+
+        /// <summary>
+        /// Tell the CSMS the outcome of a round or of a test it asked for with
+        /// SyncNetworkTime or TestTimeServer.
+        /// </summary>
+        /// <param name="NetworkTimeRequestId">The requestId of the request this is the outcome of.</param>
+        /// <param name="GeneratedAt">When the round or the test ended.</param>
+        /// <param name="Round">The outcome of a SyncNetworkTime.</param>
+        /// <param name="Test">The outcome of a TestTimeServer.</param>
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        ///
+        /// <param name="Destination">Whom to tell; the CSMS when none.</param>
+        ///
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CSMS.NotifyNetworkTimeResultResponse>
+
+            NotifyNetworkTimeResult(this IChargingStationNode  ChargingStation,
+
+                                    Int32                      NetworkTimeRequestId,
+                                    DateTimeOffset             GeneratedAt,
+                                    NetworkTimeRound?          Round                 = null,
+                                    TimeServerTest?            Test                  = null,
+                                    CustomData?                CustomData            = null,
+
+                                    SourceRouting?             Destination           = null,
+
+                                    IEnumerable<KeyPair>?      SignKeys              = null,
+                                    IEnumerable<SignInfo>?     SignInfos             = null,
+                                    IEnumerable<Signature>?    Signatures            = null,
+
+                                    Request_Id?                RequestId             = null,
+                                    DateTimeOffset?            RequestTimestamp      = null,
+                                    TimeSpan?                  RequestTimeout        = null,
+                                    EventTracking_Id?          EventTrackingId       = null,
+                                    SerializationFormats?      SerializationFormat   = null,
+                                    CancellationToken          CancellationToken     = default)
+
+
+                => ChargingStation.OCPP.OUT.NotifyNetworkTimeResult(
+                       new NotifyNetworkTimeResultRequest(
+
+                           Destination ?? SourceRouting.CSMS,
+
+                           NetworkTimeRequestId,
+                           GeneratedAt,
+                           Round,
+                           Test,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargingStation.NextRequestId,
+                           RequestTimestamp ?? ChargingStation.Now,
+                           RequestTimeout   ?? ChargingStation.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           SerializationFormat,
+                           CancellationToken
+
+                       )
+                   );
+
+        #endregion
+
 
     }
 

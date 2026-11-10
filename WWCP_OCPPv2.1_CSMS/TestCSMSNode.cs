@@ -1440,6 +1440,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #endregion
 
+            #region OnNotifyNetworkTimeResult
+
+            // The outcome of a SyncNetworkTime or TestTimeServer this CSMS sent:
+            // taken, and nothing else. Whoever wants it listens to
+            // OCPP.IN.OnNotifyNetworkTimeResultRequestReceived.
+            OCPP.IN.OnNotifyNetworkTimeResult += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  cancellationToken) => {
+
+                DebugX.Log($"CSMS '{Id}': Incoming NotifyNetworkTimeResult for request {request.NetworkTimeRequestId}!");
+
+                return Task.FromResult(
+                           new NotifyNetworkTimeResultResponse(
+                               Request:      request,
+                               Destination:  SourceRouting.To(request.NetworkPath.Source),
+                               NetworkPath:  NetworkPath.From(Id)
+                           )
+                       );
+
+            };
+
+            #endregion
+
             #endregion
 
             #region OnDataTransfer

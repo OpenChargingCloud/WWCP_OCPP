@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A Charge Point for testing.
     /// </summary>
-    public class TestChargePointNode : AChargePointNode,
+    public partial class TestChargePointNode : AChargePointNode,
                                        IChargePointNode,
                                        IQueryDNSNode
     {
@@ -1510,6 +1510,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             };
 
             #endregion
+
+            // SyncNetworkTime and TestTimeServer - see TestChargePointNode.NetworkTime.cs.
+            WireNetworkTimeOnDemand();
 
             #region OnTimeTravel
 

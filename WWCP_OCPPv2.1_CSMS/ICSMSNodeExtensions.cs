@@ -3529,6 +3529,130 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region SyncNetworkTime             (Destination, NetworkTimeRequestId, Group = null, ...)
+
+        /// <summary>
+        /// Have the charging station ask a group of its time servers now, in a
+        /// round like any other - section 3.2.7 of the white paper "Secure Time
+        /// Synchronization". The outcome follows in a NotifyNetworkTimeResult
+        /// request with the same requestId.
+        /// </summary>
+        /// <param name="Destination">The charging station.</param>
+        /// <param name="NetworkTimeRequestId">The requestId the NotifyNetworkTimeResult request will carry.</param>
+        /// <param name="Group">The group to ask; the legal one when none.</param>
+        ///
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.SyncNetworkTimeResponse>
+
+            SyncNetworkTime(this ICSMSNode           CSMS,
+                            SourceRouting            Destination,
+                            Int32                    NetworkTimeRequestId,
+                            String?                  Group                 = null,
+
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
+
+                            Request_Id?              RequestId             = null,
+                            DateTimeOffset?          RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.SyncNetworkTime(
+                       new SyncNetworkTimeRequest(
+                           Destination,
+                           NetworkTimeRequestId,
+                           Group,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? CSMS.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region TestTimeServer              (Destination, NetworkTimeRequestId, Client, ...)
+
+        /// <summary>
+        /// Have the charging station ask one of its time servers what a round
+        /// would ask it, step by step - section 3.2.7 of the white paper "Secure
+        /// Time Synchronization". The outcome follows in a NotifyNetworkTimeResult
+        /// request with the same requestId.
+        /// </summary>
+        /// <param name="Destination">The charging station.</param>
+        /// <param name="NetworkTimeRequestId">The requestId the NotifyNetworkTimeResult request will carry.</param>
+        /// <param name="Client">The client to test: an instance of NTPClientController.</param>
+        ///
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.TestTimeServerResponse>
+
+            TestTimeServer(this ICSMSNode           CSMS,
+                           SourceRouting            Destination,
+                           Int32                    NetworkTimeRequestId,
+                           String                   Client,
+
+                           IEnumerable<KeyPair>?    SignKeys              = null,
+                           IEnumerable<SignInfo>?   SignInfos             = null,
+                           IEnumerable<Signature>?  Signatures            = null,
+
+                           Request_Id?              RequestId             = null,
+                           DateTimeOffset?          RequestTimestamp      = null,
+                           TimeSpan?                RequestTimeout        = null,
+                           EventTracking_Id?        EventTrackingId       = null,
+                           SerializationFormats?    SerializationFormat   = null,
+                           CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.TestTimeServer(
+                       new TestTimeServerRequest(
+                           Destination,
+                           NetworkTimeRequestId,
+                           Client,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? CSMS.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
         #region TimeTravel                  (Destination, Timestamp, ...)
 
         /// <summary>

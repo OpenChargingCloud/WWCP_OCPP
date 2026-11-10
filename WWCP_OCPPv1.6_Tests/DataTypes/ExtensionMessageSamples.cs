@@ -58,6 +58,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.DataTypes
             { "GetExecutingEnvironmentResponse",      $$"""{ "status": "Accepted", "processId": 4711, "restartURL": "https://example.org/restart", "restartSecret": "secret", "customData": {{Custom}} }""" },
             { "QueryDNSRequest",                      $$"""{ "name": "ntske1.cpo.example", "recordTypes": [ "A", "AAAA" ], "server": 2, "customData": {{Custom}} }""" },
             { "QueryDNSResponse",                     $$"""{ "status": "Accepted", "reasonCode": "UnknownServer", "name": "1.2.0.192.in-addr.arpa.", "reverseLookupOf": "192.0.2.1", "recordTypes": [ "PTR", "TYPE65534" ], "server": 2, "answeredBy": "tls://[2001:db8::53]:853", "responseCode": "NoError", "authoritative": true, "truncated": false, "timedOut": false, "dnssec": "Insecure", "runtime": 38, "answers": [ { "name": "1.2.0.192.in-addr.arpa.", "type": "PTR", "ttl": 3600, "value": "resolver1.cpo.example." } ], "omittedAnswers": 3, "certificates": [ { "server": "2001:db8::53", "accepted": false, "status": "PinMismatch", "certificateFingerprint": "41C7", "rootFingerprint": "9D2E" } ], "error": "none", "customData": {{Custom}} }""" },
+
+            // NTS: synchronization and server tests on demand (Secure Time Synchronization, section 3.3.5)
+            { "SyncNetworkTimeRequest",               $$"""{ "requestId": 4711, "group": "legal", "customData": {{Custom}} }""" },
+            { "SyncNetworkTimeResponse",              $$"""{ "status": "Rejected", "statusInfo": { "reasonCode": "Busy", "additionalInfo": "A round runs." }, "customData": {{Custom}} }""" },
+            { "TestTimeServerRequest",                $$"""{ "requestId": 4712, "server": "ptbtime2.ptb.de", "group": "legal", "customData": {{Custom}} }""" },
+            { "TestTimeServerResponse",               $$"""{ "status": "Rejected", "statusInfo": { "reasonCode": "UnknownServer", "additionalInfo": "Not listed." }, "customData": {{Custom}} }""" },
+            { "NotifyNetworkTimeResultRequest",       $$"""{ "requestId": 4712, "generatedAt": "2026-11-10T14:04:01Z", "test": { "host": "ptbtime2.ptb.de", "ok": false, "failedAt": "TimeRequest", "duration": 3.096, "offset": 0.0012, "roundTrip": 0.019, "steps": [ { "elapsed": 0, "stage": "Configuration", "level": "Info", "text": "Asking." }, { "elapsed": 3.096, "stage": "TimeRequest", "level": "Error", "text": "No answer." } ] }, "customData": {{Custom}} }""" },
+            { "NotifyNetworkTimeResultResponse",      $$"""{ "customData": {{Custom}} }""" },
+
             { "TimeTravelRequest",                    $$"""{ "timestamp": "2026-10-09T12:00:00Z", "customData": {{Custom}} }""" },
             { "TimeTravelResponse",                   $$"""{ "status": "Accepted", "customData": {{Custom}} }""" }
 

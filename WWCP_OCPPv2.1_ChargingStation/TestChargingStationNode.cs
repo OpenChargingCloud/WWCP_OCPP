@@ -3385,6 +3385,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
 
+            // SyncNetworkTime and TestTimeServer - see TestChargingStationNode.NetworkTime.cs.
+            WireNetworkTimeOnDemand();
+
         }
 
     }

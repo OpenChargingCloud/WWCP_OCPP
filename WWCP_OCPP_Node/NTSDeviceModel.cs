@@ -584,7 +584,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// Why the time is not legal time, in the words of the valuesList of
         /// NTPController.LegalTimeReason, or "" while it is.
         /// </summary>
-        private static String ReasonOf(JToken? Token)
+        internal static String ReasonOf(JToken? Token)
 
             => TextOf(Token) switch {
                    "notClaimed"    => "NotClaimed",

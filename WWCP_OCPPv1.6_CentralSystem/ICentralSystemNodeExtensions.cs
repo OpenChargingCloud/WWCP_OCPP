@@ -2289,6 +2289,133 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region SyncNetworkTime             (Destination, NetworkTimeRequestId, Group = null, ...)
+
+        /// <summary>
+        /// Have the charge point ask a group of its time servers now, in a
+        /// round like any other - section 3.2.7 of the white paper "Secure Time
+        /// Synchronization". The outcome follows in a NotifyNetworkTimeResult
+        /// request with the same requestId.
+        /// </summary>
+        /// <param name="Destination">The charge point.</param>
+        /// <param name="NetworkTimeRequestId">The requestId the NotifyNetworkTimeResult request will carry.</param>
+        /// <param name="Group">The group to ask; the legal one when none.</param>
+        ///
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CP.SyncNetworkTimeResponse>
+
+            SyncNetworkTime(this ICentralSystemNode  CentralSystem,
+                            SourceRouting            Destination,
+                            Int32                    NetworkTimeRequestId,
+                            String?                  Group                 = null,
+
+                            IEnumerable<KeyPair>?    SignKeys              = null,
+                            IEnumerable<SignInfo>?   SignInfos             = null,
+                            IEnumerable<Signature>?  Signatures            = null,
+
+                            Request_Id?              RequestId             = null,
+                            DateTimeOffset?          RequestTimestamp      = null,
+                            TimeSpan?                RequestTimeout        = null,
+                            EventTracking_Id?        EventTrackingId       = null,
+                            SerializationFormats?    SerializationFormat   = null,
+                            CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.SyncNetworkTime(
+                       new SyncNetworkTimeRequest(
+                           Destination,
+                           NetworkTimeRequestId,
+                           Group,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? CentralSystem.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region TestTimeServer              (Destination, NetworkTimeRequestId, Server, Group = null, ...)
+
+        /// <summary>
+        /// Have the charge point ask one of its time servers what a round
+        /// would ask it, step by step - section 3.2.7 of the white paper "Secure
+        /// Time Synchronization". The outcome follows in a NotifyNetworkTimeResult
+        /// request with the same requestId.
+        /// </summary>
+        /// <param name="Destination">The charge point.</param>
+        /// <param name="NetworkTimeRequestId">The requestId the NotifyNetworkTimeResult request will carry.</param>
+        /// <param name="Server">The server to test: its name as ntp.&lt;group&gt;.servers lists it.</param>
+        /// <param name="Group">The group of the server; the legal one when none.</param>
+        ///
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CP.TestTimeServerResponse>
+
+            TestTimeServer(this ICentralSystemNode  CentralSystem,
+                           SourceRouting            Destination,
+                           Int32                    NetworkTimeRequestId,
+                           String                   Server,
+                           String?                  Group                 = null,
+
+                           IEnumerable<KeyPair>?    SignKeys              = null,
+                           IEnumerable<SignInfo>?   SignInfos             = null,
+                           IEnumerable<Signature>?  Signatures            = null,
+
+                           Request_Id?              RequestId             = null,
+                           DateTimeOffset?          RequestTimestamp      = null,
+                           TimeSpan?                RequestTimeout        = null,
+                           EventTracking_Id?        EventTrackingId       = null,
+                           SerializationFormats?    SerializationFormat   = null,
+                           CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.TestTimeServer(
+                       new TestTimeServerRequest(
+                           Destination,
+                           NetworkTimeRequestId,
+                           Server,
+                           Group,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? CentralSystem.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
         #region TimeTravel                  (Destination, Timestamp, ...)
 
         /// <summary>

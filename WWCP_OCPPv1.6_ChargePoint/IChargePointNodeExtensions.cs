@@ -1104,6 +1104,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region NotifyNetworkTimeResult    (NetworkTimeRequestId, GeneratedAt, Round = null, Test = null, ...)
+
+        /// <summary>
+        /// Tell the central system the outcome of a round or of a test it asked
+        /// for with SyncNetworkTime or TestTimeServer - section 3.3.5 of the
+        /// white paper "Secure Time Synchronization".
+        /// </summary>
+        /// <param name="NetworkTimeRequestId">The requestId of the request this is the outcome of.</param>
+        /// <param name="GeneratedAt">When the round or the test ended.</param>
+        /// <param name="Round">The outcome of a SyncNetworkTime.</param>
+        /// <param name="Test">The outcome of a TestTimeServer.</param>
+        /// <param name="Destination">Whom to tell; the central system when none.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object allowing to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="SerializationFormat">The optional serialization format for this request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<NotifyNetworkTimeResultResponse>
+
+            NotifyNetworkTimeResult(this IChargePointNode    ChargePoint,
+                                    Int32                    NetworkTimeRequestId,
+                                    DateTimeOffset           GeneratedAt,
+                                    NetworkTimeRound?        Round                 = null,
+                                    TimeServerTest?          Test                  = null,
+                                    SourceRouting?           Destination           = null,
+
+                                    IEnumerable<KeyPair>?    SignKeys              = null,
+                                    IEnumerable<SignInfo>?   SignInfos             = null,
+                                    IEnumerable<Signature>?  Signatures            = null,
+
+                                    CustomData?              CustomData            = null,
+
+                                    Request_Id?              RequestId             = null,
+                                    DateTimeOffset?          RequestTimestamp      = null,
+                                    TimeSpan?                RequestTimeout        = null,
+                                    EventTracking_Id?        EventTrackingId       = null,
+                                    SerializationFormats?    SerializationFormat   = null,
+                                    CancellationToken        CancellationToken     = default)
+
+
+                => ChargePoint.OCPP.OUT.NotifyNetworkTimeResult(
+                       new NotifyNetworkTimeResultRequest(
+                           Destination      ?? SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                           NetworkTimeRequestId,
+                           GeneratedAt,
+                           Round,
+                           Test,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? ChargePoint.NextRequestId,
+                           RequestTimestamp ?? ChargePoint.Now,
+                           RequestTimeout   ?? ChargePoint.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(ChargePoint.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
         #endregion
 
     }

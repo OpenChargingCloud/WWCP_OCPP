@@ -160,6 +160,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 deviceModelNode = Node;
 
+                // SyncNetworkTime and TestTimeServer, answered with the node's
+                // time servers - see DeviceModelBridge.NetworkTime.cs.
+                ServeNetworkTimeOnDemand(Node);
+
                 // A server or group a request names anew is made by the
                 // model, from the entries of the same request. The name
                 // servers' components come first, as a report lists them.
@@ -200,6 +204,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
             {
 
                 configurationKeysNode = ChargePoint;
+
+                // SyncNetworkTime and TestTimeServer, answered with the node's
+                // time servers - see DeviceModelBridge.NetworkTime.cs.
+                ServeNetworkTimeOnDemand(ChargePoint);
 
                 ChargePoint.CertificateSources.Add(DNSRootCertificates);
                 ChargePoint.AddConfigurationKeySource(DNS);

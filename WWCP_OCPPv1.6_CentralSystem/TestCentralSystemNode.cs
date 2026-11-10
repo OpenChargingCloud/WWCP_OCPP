@@ -919,6 +919,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
+            #region OnNotifyNetworkTimeResult
+
+            // The outcome of a SyncNetworkTime or TestTimeServer this central
+            // system sent: taken, and nothing else. Whoever wants it listens to
+            // OCPP.IN.OnNotifyNetworkTimeResultRequestReceived.
+            OCPP.IN.OnNotifyNetworkTimeResult += (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  cancellationToken) => {
+
+                DebugX.Log($"Central system '{Id}': Incoming NotifyNetworkTimeResult for request {request.NetworkTimeRequestId}!");
+
+                return Task.FromResult(
+                           new CS.NotifyNetworkTimeResultResponse(
+                               Request:      request,
+                               Destination:  SourceRouting.To(request.NetworkPath.Source),
+                               NetworkPath:  NetworkPath.From(Id)
+                           )
+                       );
+
+            };
+
+            #endregion
+
             #endregion
 
         }
