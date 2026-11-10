@@ -1709,27 +1709,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region (internal) ReceiveJSONResponseError   (JSONResponseErrorMessage,   WebSocketConnection)
 
+        /// <summary>
+        /// A response error for this node: about an answer this node sent, under the
+        /// id of the request that answer was to.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A response error - a CALLRESULTERROR in OCPP 2.1 - is "sent back on receipt
+        /// of a CALLRESULT that contains errors", under the id of that CALLRESULT (OCPP
+        /// 2.1 Edition 2, Part 4, 4.2.3 and 4.1.4). It answers no request of this node.
+        /// </para>
+        /// <para>
+        /// It used to be taken for the answer to this node's own request with its id -
+        /// which every node, numbering its requests from the same start, has as often as
+        /// not - and ended that request with the error.
+        /// </para>
+        /// <para>
+        /// Whoever wants to hear of it listens to IN.OnJSONResponseErrorMessageReceived.
+        /// </para>
+        /// </remarks>
         internal Boolean ReceiveJSONResponseError(OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,
                                                   IMessageConnection             WebSocketConnection)
         {
 
-            if (requests.TryGetValue(JSONResponseErrorMessage.RequestId, out var sendRequestState))
-            {
-
-                sendRequestState.ResponseTimestamp            = Now;
-                sendRequestState.JSONResponseErrorMessage     = JSONResponseErrorMessage;
-                sendRequestState.WebSocketConnectionReceived  = WebSocketConnection;
-                sendRequestState.DestinationReceived          = JSONResponseErrorMessage.Destination;
-                sendRequestState.NetworkPathReceived          = JSONResponseErrorMessage.NetworkPath;
-
-                //ToDo: This has to be forwarded actively, as it is not expected (async)!
-
-                return true;
-
-            }
-
-            DebugX.Log($"Received an unknown OCPP JSON response error message with identificaiton '{JSONResponseErrorMessage.RequestId}' within {NetworkingNode.Id}:{Environment.NewLine}'{JSONResponseErrorMessage.ToJSON().ToString(Formatting.None)}'!");
-            return false;
+            DebugX.Log($"{NetworkingNode.Id}: Its answer to the request '{JSONResponseErrorMessage.RequestId}' could not be processed: {JSONResponseErrorMessage.ErrorCode} '{JSONResponseErrorMessage.ErrorDescription}'!");
+            return true;
 
         }
 
@@ -1793,27 +1797,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region (internal) ReceiveBinaryResponseError (BinaryResponseErrorMessage, WebSocketConnection)
 
+        /// <summary>
+        /// A binary response error for this node: about an answer this node sent, under
+        /// the id of the request that answer was to - see ReceiveJSONResponseError.
+        /// </summary>
+        /// <remarks>
+        /// Whoever wants to hear of it listens to IN.OnBinaryResponseErrorMessageReceived.
+        /// </remarks>
         internal Boolean ReceiveBinaryResponseError(OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
                                                     IMessageConnection               WebSocketConnection)
         {
 
-            if (requests.TryGetValue(BinaryResponseErrorMessage.RequestId, out var sendRequestState))
-            {
-
-                sendRequestState.ResponseTimestamp            = Now;
-                sendRequestState.BinaryResponseErrorMessage   = BinaryResponseErrorMessage;
-                sendRequestState.WebSocketConnectionReceived  = WebSocketConnection;
-                sendRequestState.DestinationReceived          = BinaryResponseErrorMessage.Destination;
-                sendRequestState.NetworkPathReceived          = BinaryResponseErrorMessage.NetworkPath;
-
-                //ToDo: This has to be forwarded actively, as it is not expected (async)!
-
-                return true;
-
-            }
-
-            DebugX.Log($"Received an unknown OCPP Binary response error message with identificaiton '{BinaryResponseErrorMessage.RequestId}' within {NetworkingNode.Id}:{Environment.NewLine}'{BinaryResponseErrorMessage.ToByteArray().ToBase64()}'!");
-            return false;
+            DebugX.Log($"{NetworkingNode.Id}: Its answer to the binary request '{BinaryResponseErrorMessage.RequestId}' could not be processed: {BinaryResponseErrorMessage.ErrorCode} '{BinaryResponseErrorMessage.ErrorDescription}'!");
+            return true;
 
         }
 

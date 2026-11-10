@@ -476,21 +476,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 
         #endregion
 
-        #region AResponseError_ToAForwardedRequest_GoesBackToTheStationThatAsked()
+        #region AResponseError_IsNoAnswer_TheStationGetsTheCSMSsAnswer()
 
         /// <summary>
-        /// The CSMS answers a station's forwarded request with a response error:
-        /// it goes back down to the station, as an answer does, at once.
+        /// The CSMS sends a response error under the id of a station's request that the
+        /// controller forwarded, before it answers that request: the station gets the
+        /// CSMS's answer, not the error.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A response error - a CALLRESULTERROR in OCPP 2.1 - answers no request. It is
+        /// "sent back on receipt of a CALLRESULT that contains errors", and its id is the
+        /// one of that CALLRESULT (OCPP 2.1 Edition 2, Part 4, 4.2.3 and 4.1.4).
+        /// </para>
+        /// <para>
+        /// The controller used to take it for the answer to the request it had forwarded
+        /// under that id: the station heard the error, and the CSMS's answer after it
+        /// found nobody waiting.
+        /// </para>
+        /// </remarks>
         [Test]
-        public async Task AResponseError_ToAForwardedRequest_GoesBackToTheStationThatAsked()
+        public async Task AResponseError_IsNoAnswer_TheStationGetsTheCSMSsAnswer()
         {
 
             var cs1 = await AStation("CS-STD-08");
 
-            // Before the CSMS answers the request itself, which then comes too
-            // late: the controller has nobody waiting for it any more.
-            OCPPv2_1.NetworkingNode.OnJSONRequestMessageReceivedDelegate answerWithAnError = async (timestamp, sender, connection, request, cancellationToken) => {
+            OCPPv2_1.NetworkingNode.OnJSONRequestMessageReceivedDelegate anErrorFirst = async (timestamp, sender, connection, request, cancellationToken) => {
 
                 if (request.Action == "DataTransfer")
                     await testCSMS1!.OCPP.OUT.SendJSONResponseError(
@@ -502,39 +513,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                                   NetworkPath.From(testCSMS1.Id),
                                   request.RequestId,
                                   ResultCode.InternalError,
-                                  "The CSMS could not answer it!"
+                                  "This is no answer!"
                               )
                           );
 
             };
 
-            testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived += answerWithAnError;
+            testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived += anErrorFirst;
 
             try
             {
 
-                var started   = Timestamp.Now;
+                var transfer = await cs1.TransferData(
+                                         VendorId:        Vendor_Id. GraphDefined,
+                                         MessageId:       Message_Id.GraphDefined_TestMessage,
+                                         Data:            "Hello world!",
+                                         RequestId:       Request_Id.Parse("4715"),
+                                         RequestTimeout:  TimeSpan.FromSeconds(10)
+                                     );
 
-                var transfer  = await cs1.TransferData(
-                                          VendorId:        Vendor_Id. GraphDefined,
-                                          MessageId:       Message_Id.GraphDefined_TestMessage,
-                                          Data:            "Hello world!",
-                                          RequestId:       Request_Id.Parse("4715"),
-                                          RequestTimeout:  TimeSpan.FromSeconds(10)
-                                      );
-
-                // The CSMS's own code and description: Result.FromSendRequestState used to
-                // read request errors only, and made GenericError without a text of this.
                 Assert.Multiple(() => {
-                    Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.InternalError),  $"{transfer.Result}");
-                    Assert.That(transfer.Result.Description,  Is.EqualTo("The CSMS could not answer it!"));
-                    Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
+                    Assert.That(transfer.Result.ResultCode,  Is.EqualTo(ResultCode.OK),  $"{transfer.Result}");
+                    Assert.That(transfer.Data?.ToString(),   Is.EqualTo("!dlrow olleH"));
                 });
 
             }
             finally
             {
-                testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived -= answerWithAnError;
+                testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived -= anErrorFirst;
             }
 
         }
@@ -655,19 +661,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 
         #endregion
 
-        #region ABinaryResponseError_ToAForwardedBinaryRequest_GoesBackToTheStationThatAsked()
+        #region ABinaryResponseError_IsNoAnswer_TheStationGetsTheCSMSsAnswer()
 
         /// <summary>
-        /// The same for a binary response error: the station hears the CSMS's code and
-        /// description, as for a JSON one.
+        /// The same for a binary response error: the station gets the CSMS's answer to
+        /// its binary data transfer, not the error.
         /// </summary>
         [Test]
-        public async Task ABinaryResponseError_ToAForwardedBinaryRequest_GoesBackToTheStationThatAsked()
+        public async Task ABinaryResponseError_IsNoAnswer_TheStationGetsTheCSMSsAnswer()
         {
 
             var cs1 = await AStation("CS-STD-11");
 
-            OCPPv2_1.NetworkingNode.OnBinaryRequestMessageReceivedDelegate answerWithABinaryError = async (timestamp, sender, connection, request, cancellationToken) => {
+            OCPPv2_1.NetworkingNode.OnBinaryRequestMessageReceivedDelegate aBinaryErrorFirst = async (timestamp, sender, connection, request, cancellationToken) => {
 
                 if (request.Action == "BinaryDataTransfer")
                     await testCSMS1!.OCPP.OUT.SendBinaryResponseError(
@@ -679,38 +685,299 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                                   NetworkPath.From(testCSMS1.Id),
                                   request.RequestId,
                                   ResultCode.InternalError,
-                                  "The CSMS could not answer it!"
+                                  "This is no answer!"
                               )
                           );
 
             };
 
-            testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived += answerWithABinaryError;
+            testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived += aBinaryErrorFirst;
 
             try
             {
 
-                var started   = Timestamp.Now;
+                var data      = "Hello world!".ToUTF8Bytes();
 
                 var transfer  = await cs1.TransferBinaryData(
                                           VendorId:             Vendor_Id. GraphDefined,
                                           MessageId:            Message_Id.GraphDefined_TestMessage,
-                                          Data:                 "Hello world!".ToUTF8Bytes(),
+                                          Data:                 data,
                                           RequestId:            Request_Id.Parse("4721"),
                                           RequestTimeout:       TimeSpan.FromSeconds(10),
                                           SerializationFormat:  SerializationFormats.BinaryTextIds
                                       );
 
                 Assert.Multiple(() => {
-                    Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.InternalError),  $"{transfer.Result}");
-                    Assert.That(transfer.Result.Description,  Is.EqualTo("The CSMS could not answer it!"));
-                    Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
+                    Assert.That(transfer.Result.ResultCode,     Is.EqualTo(ResultCode.OK),  $"{transfer.Result}");
+                    Assert.That(transfer.Data?.ToUTF8String(),  Is.EqualTo(data.Reverse().ToUTF8String()));
                 });
 
             }
             finally
             {
-                testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived -= answerWithABinaryError;
+                testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived -= aBinaryErrorFirst;
+            }
+
+        }
+
+        #endregion
+
+        #region AStationsResponseError_ToAnAnswerOfTheCSMS_ReachesTheCSMS(Format)
+
+        /// <summary>
+        /// A station cannot read the CSMS's answer to a request the controller forwarded,
+        /// and says so with a response error, in JSON and in binary: the controller sends
+        /// it on to the CSMS, under the id the CSMS answered.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A response error goes from whoever asked to whoever answered (OCPP 2.1 Edition 2,
+        /// Part 4, 4.2.3), under the id of the answer it is about (4.1.4). The station's id
+        /// is not the CSMS's: the controller forwarded the request under one of its own.
+        /// </para>
+        /// <para>
+        /// The controller looked the station's id up among the requests it still waited
+        /// for an answer to, found none, and kept the error.
+        /// </para>
+        /// </remarks>
+        [TestCase("JSON")]
+        [TestCase("Binary")]
+        public async Task AStationsResponseError_ToAnAnswerOfTheCSMS_ReachesTheCSMS(String Format)
+        {
+
+            var cs1         = await AStation(Format == "JSON" ? "CS-STD-17" : "CS-STD-18");
+            var stationsId  = Request_Id.Parse(Format == "JSON" ? "4730" : "4731");
+
+            var answered    = new TaskCompletionSource<Request_Id>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var heard       = new TaskCompletionSource<(Request_Id RequestId, ResultCode ErrorCode, String? ErrorDescription)>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            OCPPv2_1.NetworkingNode.OnJSONRequestMessageReceivedDelegate         jsonAsked     = (timestamp, sender, connection, request, cancellationToken) => {
+                if (request.Action == "DataTransfer")
+                    answered.TrySetResult(request.RequestId);
+                return Task.CompletedTask;
+            };
+
+            OCPPv2_1.NetworkingNode.OnBinaryRequestMessageReceivedDelegate       binaryAsked   = (timestamp, sender, connection, request, cancellationToken) => {
+                if (request.Action == "BinaryDataTransfer")
+                    answered.TrySetResult(request.RequestId);
+                return Task.CompletedTask;
+            };
+
+            OCPPv2_1.NetworkingNode.OnJSONResponseErrorMessageReceivedDelegate   jsonHeard     = (timestamp, sender, connection, error, cancellationToken) => {
+                heard.TrySetResult((error.RequestId, error.ErrorCode, error.ErrorDescription));
+                return Task.CompletedTask;
+            };
+
+            OCPPv2_1.NetworkingNode.OnBinaryResponseErrorMessageReceivedDelegate binaryHeard   = (timestamp, sender, connection, error, cancellationToken) => {
+                heard.TrySetResult((error.RequestId, error.ErrorCode, error.ErrorDescription));
+                return Task.CompletedTask;
+            };
+
+            testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived           += jsonAsked;
+            testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived         += binaryAsked;
+            testCSMS1!.OCPP.IN.OnJSONResponseErrorMessageReceived     += jsonHeard;
+            testCSMS1!.OCPP.IN.OnBinaryResponseErrorMessageReceived   += binaryHeard;
+
+            try
+            {
+
+                if (Format == "JSON")
+                {
+
+                    var transfer = await cs1.TransferData(
+                                             VendorId:        Vendor_Id. GraphDefined,
+                                             MessageId:       Message_Id.GraphDefined_TestMessage,
+                                             Data:            "Hello world!",
+                                             RequestId:       stationsId,
+                                             RequestTimeout:  TimeSpan.FromSeconds(10)
+                                         );
+
+                    Assert.That(transfer.Result.ResultCode, Is.EqualTo(ResultCode.OK), $"{transfer.Result}");
+
+                    await cs1.OCPP.OUT.SendJSONResponseError(
+                              new OCPP_JSONResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.CSMS,
+                                  NetworkPath.From(cs1.Id),
+                                  stationsId,
+                                  ResultCode.FormationViolation,
+                                  "The station cannot read this answer!"
+                              )
+                          );
+
+                }
+
+                else
+                {
+
+                    var transfer = await cs1.TransferBinaryData(
+                                             VendorId:             Vendor_Id. GraphDefined,
+                                             MessageId:            Message_Id.GraphDefined_TestMessage,
+                                             Data:                 "Hello world!".ToUTF8Bytes(),
+                                             RequestId:            stationsId,
+                                             RequestTimeout:       TimeSpan.FromSeconds(10),
+                                             SerializationFormat:  SerializationFormats.BinaryTextIds
+                                         );
+
+                    Assert.That(transfer.Result.ResultCode, Is.EqualTo(ResultCode.OK), $"{transfer.Result}");
+
+                    await cs1.OCPP.OUT.SendBinaryResponseError(
+                              new OCPP_BinaryResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.CSMS,
+                                  NetworkPath.From(cs1.Id),
+                                  stationsId,
+                                  ResultCode.FormationViolation,
+                                  "The station cannot read this answer!"
+                              )
+                          );
+
+                }
+
+                var arrived = await Task.WhenAny(heard.Task, Task.Delay(TimeSpan.FromSeconds(5))) == heard.Task;
+
+                Assert.That(arrived, Is.True, "The station's response error did not reach the CSMS.");
+
+                Assert.Multiple(() => {
+                    Assert.That(heard.Task.Result.RequestId,         Is.EqualTo(answered.Task.Result), "Not under the id the CSMS answered.");
+                    Assert.That(heard.Task.Result.ErrorCode,         Is.EqualTo(ResultCode.FormationViolation));
+                    Assert.That(heard.Task.Result.ErrorDescription,  Is.EqualTo("The station cannot read this answer!"));
+                });
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived           -= jsonAsked;
+                testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived         -= binaryAsked;
+                testCSMS1!.OCPP.IN.OnJSONResponseErrorMessageReceived     -= jsonHeard;
+                testCSMS1!.OCPP.IN.OnBinaryResponseErrorMessageReceived   -= binaryHeard;
+            }
+
+        }
+
+        #endregion
+
+        #region AResponseError_DoesNotAnswerTheControllersOwnRequest(Format)
+
+        /// <summary>
+        /// The CSMS sends the controller a response error under the id of a request the
+        /// controller is still waiting for an answer to, in JSON and in binary: the
+        /// controller keeps waiting, and gets what the CSMS answers - here the refusal of
+        /// an action it does not know.
+        /// </summary>
+        /// <remarks>
+        /// A response error is about an answer the controller sent, under the id of the
+        /// request that answer was to. Every node numbers its requests from the same start,
+        /// so that id is one of the controller's own as often as not. The error used to
+        /// end the controller's own request with that id.
+        /// </remarks>
+        [TestCase("JSON")]
+        [TestCase("Binary")]
+        public async Task AResponseError_DoesNotAnswerTheControllersOwnRequest(String Format)
+        {
+
+            var requestId  = Request_Id.NewRandom();
+
+            OCPPv2_1.NetworkingNode.OnJSONRequestMessageReceivedDelegate   jsonErrorFirst    = async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.RequestId == requestId)
+                {
+
+                    await testCSMS1!.OCPP.OUT.SendJSONResponseError(
+                              new OCPP_JSONResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCSMS1.Id),
+                                  request.RequestId,
+                                  ResultCode.InternalError,
+                                  "This is no answer!"
+                              )
+                          );
+
+                    // Its answer only later: a node that still took the error for one
+                    // would have it, alone, long before.
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+
+                }
+
+            };
+
+            OCPPv2_1.NetworkingNode.OnBinaryRequestMessageReceivedDelegate binaryErrorFirst  = async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.RequestId == requestId)
+                {
+
+                    await testCSMS1!.OCPP.OUT.SendBinaryResponseError(
+                              new OCPP_BinaryResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCSMS1.Id),
+                                  request.RequestId,
+                                  ResultCode.InternalError,
+                                  "This is no answer!"
+                              )
+                          );
+
+                    // Its answer only later: a node that still took the error for one
+                    // would have it, alone, long before.
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+
+                }
+
+            };
+
+            testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived   += jsonErrorFirst;
+            testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived += binaryErrorFirst;
+
+            try
+            {
+
+                var state = Format == "JSON"
+
+                                ? await localController!.OCPP.OUT.SendJSONRequestAndWait(
+                                            new OCPP_JSONRequestMessage(
+                                                RequestTimestamp:  Timestamp.Now,
+                                                EventTrackingId:   EventTracking_Id.New,
+                                                NetworkingMode:    NetworkingMode.Standard,
+                                                Destination:       SourceRouting.CSMS,
+                                                NetworkPath:       NetworkPath.From(localController.Id),
+                                                RequestId:         requestId,
+                                                Action:            "NoSuchAction",
+                                                Payload:           new JObject(),
+                                                RequestTimeout:    Timestamp.Now + TimeSpan.FromSeconds(10)
+                                            )
+                                        )
+
+                                : await localController!.OCPP.OUT.SendBinaryRequestAndWait(
+                                            new OCPP_BinaryRequestMessage(
+                                                RequestTimestamp:  Timestamp.Now,
+                                                EventTrackingId:   EventTracking_Id.New,
+                                                NetworkingMode:    NetworkingMode.Standard,
+                                                Destination:       SourceRouting.CSMS,
+                                                NetworkPath:       NetworkPath.From(localController.Id),
+                                                RequestId:         requestId,
+                                                Action:            "NoSuchBinaryAction",
+                                                Payload:           "Hello world!".ToUTF8Bytes(),
+                                                RequestTimeout:    Timestamp.Now + TimeSpan.FromSeconds(10)
+                                            )
+                                        );
+
+                Assert.That(state.JSONRequestErrorMessage?.ErrorCode,  Is.EqualTo(ResultCode.ProtocolError),
+                            $"The CSMS's refusal was not what the controller got: {state.JSONRequestErrorMessage?.ErrorCode}");
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived   -= jsonErrorFirst;
+                testCSMS1!.OCPP.IN.OnBinaryRequestMessageReceived -= binaryErrorFirst;
             }
 
         }

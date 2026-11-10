@@ -298,6 +298,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         protected readonly  ConcurrentDictionary<Request_Id, ResponseInfo>  expectedResponses                   = [];
 
+        /// <summary>
+        /// An answer this node forwarded: the request id it came under, the
+        /// networking node that sent it, and until when it is remembered.
+        /// </summary>
+        protected readonly record struct ForwardedResponse(Request_Id         RequestId,
+                                                           NetworkingNode_Id  AnsweredBy,
+                                                           DateTimeOffset     KeptUntil);
+
+        /// <summary>
+        /// The answers this node forwarded, by the networking node each went to and
+        /// the request id it went under: where a response error about one goes on to.
+        /// </summary>
+        protected readonly  ConcurrentDictionary<(NetworkingNode_Id SentTo, Request_Id SentUnder), ForwardedResponse>  forwardedResponses  = [];
+
+        private             DateTimeOffset                                  forwardedResponsesCleanedUp;
+
         #endregion
 
         #region Properties
@@ -475,6 +491,93 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             return null;
 
         }
+
+        #region GetAnsweringNodeId(SentTo, RequestId)
+
+        /// <summary>
+        /// Whoever sent the answer this node forwarded to the given networking node
+        /// under the given request id, while it is remembered: where a response error
+        /// about that answer goes on to.
+        /// </summary>
+        /// <param name="SentTo">The networking node this node sent the answer on to.</param>
+        /// <param name="RequestId">The request id this node sent the answer on under.</param>
+        public NetworkingNode_Id? GetAnsweringNodeId(NetworkingNode_Id  SentTo,
+                                                     Request_Id         RequestId)
+
+            => forwardedResponses.TryGetValue((SentTo, RequestId), out var forwardedResponse) &&
+               forwardedResponse.KeptUntil >= Now
+
+                   ? forwardedResponse.AnsweredBy
+                   : null;
+
+        #endregion
+
+        #region (private) RememberForwardedResponse(SentTo, SentUnder, AnsweredBy, AnsweredUnder)
+
+        /// <summary>
+        /// Remember an answer this node forwards, for as long as this node waits for an
+        /// answer to a request of its own: a response error about it, which comes from
+        /// whoever asked under the request id this node sends the answer on under, then
+        /// finds its way to whoever answered.
+        /// </summary>
+        /// <param name="SentTo">The networking node this node sends the answer on to.</param>
+        /// <param name="SentUnder">The request id this node sends the answer on under.</param>
+        /// <param name="AnsweredBy">The networking node the answer came from.</param>
+        /// <param name="AnsweredUnder">The request id the answer came under.</param>
+        private void RememberForwardedResponse(NetworkingNode_Id  SentTo,
+                                               Request_Id         SentUnder,
+                                               NetworkingNode_Id  AnsweredBy,
+                                               Request_Id         AnsweredUnder)
+        {
+
+            if (AnsweredBy == NetworkingNode_Id.Zero)
+                return;
+
+            var now      = Now;
+            var keepFor  = parentNetworkingNode.OCPP.DefaultRequestTimeout;
+
+            // Most answers draw no response error: what is no longer
+            // remembered goes now and then, rather than piling up.
+            if (now >= forwardedResponsesCleanedUp + keepFor)
+            {
+
+                foreach (var remembered in forwardedResponses)
+                {
+                    if (remembered.Value.KeptUntil < now)
+                        forwardedResponses.TryRemove(remembered);
+                }
+
+                forwardedResponsesCleanedUp = now;
+
+            }
+
+            forwardedResponses[(SentTo, SentUnder)] = new ForwardedResponse(
+                                                          AnsweredUnder,
+                                                          AnsweredBy,
+                                                          now + keepFor
+                                                      );
+
+        }
+
+        #endregion
+
+        #region (private) TryTakeForwardedResponse(SentTo, SentUnder, out Forwarded)
+
+        /// <summary>
+        /// Take the answer this node forwarded to the given networking node under the
+        /// given request id: one response error about it is all there is.
+        /// </summary>
+        /// <param name="SentTo">The networking node this node sent the answer on to.</param>
+        /// <param name="SentUnder">The request id this node sent the answer on under.</param>
+        /// <param name="Forwarded">The answer, while it was still remembered.</param>
+        private Boolean TryTakeForwardedResponse(NetworkingNode_Id      SentTo,
+                                                 Request_Id             SentUnder,
+                                                 out ForwardedResponse  Forwarded)
+
+            => forwardedResponses.TryRemove((SentTo, SentUnder), out Forwarded) &&
+               Forwarded.KeptUntil >= Now;
+
+        #endregion
 
 
         #region ProcessJSONRequestMessage         (JSONRequestMessage,         WebSocketConnection)
@@ -771,6 +874,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     if (responseInfo.Timeout >= Now)
                     {
 
+                        // Before it goes: whoever asked may answer at once that it
+                        // cannot read it.
+                        RememberForwardedResponse(
+                            responseInfo.SourceNodeId,
+                            responseInfo.RequestId,
+                            JSONResponseMessage.NetworkPath.Source,
+                            JSONResponseMessage.RequestId
+                        );
+
                         await parentNetworkingNode.OCPP.OUT.SendJSONResponse(
                                   JSONResponseMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
                                       JSONResponseMessage.Destination.Next == NetworkingNode_Id.Zero
@@ -856,34 +968,58 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region ProcessJSONResponseErrorMessage   (JSONResponseErrorMessage,   WebSocketConnection)
 
+        /// <summary>
+        /// A response error about an answer this node forwarded goes on to whoever
+        /// answered, under the request id it answered.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A response error - a CALLRESULTERROR in OCPP 2.1 - goes from whoever asked to
+        /// whoever answered: it is "sent back on receipt of a CALLRESULT that contains
+        /// errors", under the id of that CALLRESULT (OCPP 2.1 Edition 2, Part 4, 4.2.3 and
+        /// 4.1.4). Here that id is the one this node sent the answer on under, which is the
+        /// asker's own; whoever answered knows the request by the id this node forwarded
+        /// it under.
+        /// </para>
+        /// <para>
+        /// It used to go the other way, to whoever had asked a request this node still
+        /// waited for an answer to, as if it were that answer.
+        /// </para>
+        /// </remarks>
         public async Task ProcessJSONResponseErrorMessage(OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage,
                                                           IMessageConnection             WebSocketConnection)
         {
 
-            if (expectedResponses.TryRemove(JSONResponseErrorMessage.RequestId, out var responseInfo))
+            if (TryTakeForwardedResponse(JSONResponseErrorMessage.NetworkPath.Source,
+                                         JSONResponseErrorMessage.RequestId,
+                                         out var forwardedResponse))
             {
 
-                // In time: sent on to whoever asked, under the request
-                // identification it asked with - as an answer is.
-                if (responseInfo.Timeout >= Now)
-                {
-
-                    await parentNetworkingNode.OCPP.OUT.SendJSONResponseError(
-                              JSONResponseErrorMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
-                                  JSONResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero
-                                      ? SourceRouting.To(responseInfo.SourceNodeId)
-                                      : JSONResponseErrorMessage.Destination,
-                                  JSONResponseErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
-                          );
-
-                }
-                else
-                    DebugX.Log($"Received a too late JSON response error message for request id '{JSONResponseErrorMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}'!");
+                await parentNetworkingNode.OCPP.OUT.SendJSONResponseError(
+                          JSONResponseErrorMessage.ChangeRequestId(forwardedResponse.RequestId).ChangeNetworking(
+                              JSONResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero
+                                  ? SourceRouting.To(forwardedResponse.AnsweredBy)
+                                  : JSONResponseErrorMessage.Destination,
+                              JSONResponseErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
+                          )
+                      );
 
             }
+
+            else if (ForwardUnknownResponses)
+            {
+
+                await parentNetworkingNode.OCPP.OUT.SendJSONResponseError(
+                          JSONResponseErrorMessage.ChangeNetworking(
+                              JSONResponseErrorMessage.Destination,
+                              JSONResponseErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
+                          )
+                      );
+
+            }
+
             else
-                DebugX.Log($"Received a JSON response error message for an unknown request id '{JSONResponseErrorMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}'!");
+                DebugX.Log($"Received a JSON response error message for request id '{JSONResponseErrorMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}', about no answer this node forwarded, or about one forwarded too long ago!");
 
         }
 
@@ -1356,6 +1492,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                 if (responseInfo.Timeout >= Now)
                 {
 
+                    // Before it goes: whoever asked may answer at once that it
+                    // cannot read it.
+                    RememberForwardedResponse(
+                        responseInfo.SourceNodeId,
+                        responseInfo.RequestId,
+                        BinaryResponseMessage.NetworkPath.Source,
+                        BinaryResponseMessage.RequestId
+                    );
+
                     await parentNetworkingNode.OCPP.OUT.SendBinaryResponse(
                               BinaryResponseMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
                                   BinaryResponseMessage.Destination.Next == NetworkingNode_Id.Zero
@@ -1414,34 +1559,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region ProcessBinaryResponseErrorMessage (BinaryResponseErrorMessage, WebSocketConnection)
 
+        /// <summary>
+        /// A binary response error about an answer this node forwarded goes on to whoever
+        /// answered, under the request id it answered - see ProcessJSONResponseErrorMessage.
+        /// </summary>
         public async Task ProcessBinaryResponseErrorMessage(OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage,
                                                             IMessageConnection               WebSocketConnection)
         {
 
-            if (expectedResponses.TryRemove(BinaryResponseErrorMessage.RequestId, out var responseInfo))
+            if (TryTakeForwardedResponse(BinaryResponseErrorMessage.NetworkPath.Source,
+                                         BinaryResponseErrorMessage.RequestId,
+                                         out var forwardedResponse))
             {
 
-                // In time: sent on to whoever asked, under the request
-                // identification it asked with - as an answer is.
-                if (responseInfo.Timeout >= Now)
-                {
-
-                    await parentNetworkingNode.OCPP.OUT.SendBinaryResponseError(
-                              BinaryResponseErrorMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
-                                  BinaryResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero
-                                      ? SourceRouting.To(responseInfo.SourceNodeId)
-                                      : BinaryResponseErrorMessage.Destination,
-                                  BinaryResponseErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
-                              )
-                          );
-
-                }
-                else
-                    DebugX.Log($"Received a too late binary response error message for request id '{BinaryResponseErrorMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}'!");
+                await parentNetworkingNode.OCPP.OUT.SendBinaryResponseError(
+                          BinaryResponseErrorMessage.ChangeRequestId(forwardedResponse.RequestId).ChangeNetworking(
+                              BinaryResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero
+                                  ? SourceRouting.To(forwardedResponse.AnsweredBy)
+                                  : BinaryResponseErrorMessage.Destination,
+                              BinaryResponseErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
+                          )
+                      );
 
             }
+
+            else if (ForwardUnknownResponses)
+            {
+
+                await parentNetworkingNode.OCPP.OUT.SendBinaryResponseError(
+                          BinaryResponseErrorMessage.ChangeNetworking(
+                              BinaryResponseErrorMessage.Destination,
+                              BinaryResponseErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
+                          )
+                      );
+
+            }
+
             else
-                DebugX.Log($"Received a binary response error message for an unknown request id '{BinaryResponseErrorMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}'!");
+                DebugX.Log($"Received a binary response error message for request id '{BinaryResponseErrorMessage.RequestId}' from '{WebSocketConnection.RemoteSocket}', about no answer this node forwarded, or about one forwarded too long ago!");
 
         }
 

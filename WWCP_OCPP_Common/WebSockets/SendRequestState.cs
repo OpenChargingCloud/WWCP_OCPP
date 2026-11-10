@@ -46,11 +46,15 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
     /// 
     /// <param name="JSONResponse">The JSON response message.</param>
     /// <param name="JSONRequestErrorMessage">An optional JSON request error message.</param>
-    /// <param name="JSONResponseErrorMessage">An optional JSON response error message.</param>
-    /// 
+    ///
     /// <param name="BinaryResponse">The binary response message.</param>
     /// <param name="BinaryRequestErrorMessage">An optional binary request error message.</param>
-    /// <param name="BinaryResponseErrorMessage">An optional binary response error message.</param>
+    /// <remarks>
+    /// A request is answered by a response or a request error, and by nothing else. A
+    /// response error is no answer: it is about a response, "sent back on receipt of a
+    /// CALLRESULT that contains errors" (OCPP 2.1 Edition 2, Part 4, 4.2.3), and has no
+    /// place here.
+    /// </remarks>
     public class SendRequestState(DateTimeOffset                  RequestTimestamp,
                                   SourceRouting                     Destination,
                                   NetworkPath                       NetworkPath,
@@ -64,11 +68,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                                   OCPP_JSONResponseMessage?         JSONResponse                 = null,
                                   OCPP_JSONRequestErrorMessage?     JSONRequestErrorMessage      = null,
-                                  OCPP_JSONResponseErrorMessage?    JSONResponseErrorMessage     = null,
 
                                   OCPP_BinaryResponseMessage?       BinaryResponse               = null,
-                                  OCPP_BinaryRequestErrorMessage?   BinaryRequestErrorMessage    = null,
-                                  OCPP_BinaryResponseErrorMessage?  BinaryResponseErrorMessage   = null)
+                                  OCPP_BinaryRequestErrorMessage?   BinaryRequestErrorMessage    = null)
 
     {
 
@@ -142,11 +144,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// </summary>
         public OCPP_JSONRequestErrorMessage?     JSONRequestErrorMessage       { get; set; } = JSONRequestErrorMessage;
 
-        /// <summary>
-        /// The optional JSON response error message.
-        /// </summary>
-        public OCPP_JSONResponseErrorMessage?    JSONResponseErrorMessage      { get; set; } = JSONResponseErrorMessage;
-
 
         /// <summary>
         /// The binary response message.
@@ -157,11 +154,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// The optional Binary request error message.
         /// </summary>
         public OCPP_BinaryRequestErrorMessage?   BinaryRequestErrorMessage     { get; set; } = BinaryRequestErrorMessage;
-
-        /// <summary>
-        /// The optional Binary response error message.
-        /// </summary>
-        public OCPP_BinaryResponseErrorMessage?  BinaryResponseErrorMessage    { get; set; } = BinaryResponseErrorMessage;
 
 
         /// <summary>
@@ -174,9 +166,7 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// </remarks>
         public Boolean                         NoErrors
              => JSONRequestErrorMessage    is null &&
-                JSONResponseErrorMessage   is null &&
-                BinaryRequestErrorMessage  is null &&
-                BinaryResponseErrorMessage is null;
+                BinaryRequestErrorMessage  is null;
 
         /// <summary>
         /// Errors occurred.
@@ -289,7 +279,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                     JSONResponse,
                     JSONRequestErrorMessage,
-                    null,
 
                     BinaryResponse);
 
@@ -324,7 +313,6 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                     JSONResponse,
                     JSONRequestErrorMessage,
-                    null,
 
                     BinaryResponse);
 

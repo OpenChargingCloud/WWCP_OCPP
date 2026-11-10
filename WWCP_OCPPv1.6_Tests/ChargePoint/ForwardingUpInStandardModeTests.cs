@@ -352,21 +352,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
         #endregion
 
-        #region AResponseError_ToAForwardedRequest_GoesBackToTheChargePointThatAsked()
+        #region AResponseError_IsNoAnswer_TheChargePointGetsTheCentralSystemsAnswer()
 
         /// <summary>
-        /// The central system answers a charge point's forwarded request with a
-        /// response error: it goes back down to the charge point, as an answer
-        /// does, at once.
+        /// The central system sends a response error under the id of a charge point's
+        /// request that the node forwarded, before it answers that request: the charge
+        /// point gets the central system's answer, not the error.
         /// </summary>
+        /// <remarks>
+        /// OCPP 1.6 has no response errors; this library sends them in 1.6 as OCPP 2.1
+        /// does its CALLRESULTERROR, which answers no request: it is "sent back on receipt
+        /// of a CALLRESULT that contains errors", under the id of that CALLRESULT (OCPP 2.1
+        /// Edition 2, Part 4, 4.2.3 and 4.1.4). The node used to take it for the answer to
+        /// the request it had forwarded under that id.
+        /// </remarks>
         [Test]
-        public async Task AResponseError_ToAForwardedRequest_GoesBackToTheChargePointThatAsked()
+        public async Task AResponseError_IsNoAnswer_TheChargePointGetsTheCentralSystemsAnswer()
         {
 
             var cp1 = await AChargePointBelow("CP-STD-05");
 
-            // Before the central system answers the request itself, which then
-            // comes too late: the node has nobody waiting for it any more.
             testCentralSystem01!.OCPP.IN.OnJSONRequestMessageReceived += async (timestamp, sender, connection, request, cancellationToken) => {
 
                 if (request.Action == "DataTransfer")
@@ -379,29 +384,204 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                   NetworkPath.From(testCentralSystem01.Id),
                                   request.RequestId,
                                   ResultCode.InternalError,
-                                  "The central system could not answer it!"
+                                  "This is no answer!"
                               )
                           );
 
             };
 
-            var started   = Timestamp.Now;
+            var transfer = await cp1.TransferData(
+                                     VendorId:        Vendor_Id. GraphDefined,
+                                     MessageId:       Message_Id.GraphDefined_TestMessage,
+                                     Data:            "Hello world!",
+                                     RequestId:       Request_Id.Parse("4715"),
+                                     RequestTimeout:  TimeSpan.FromSeconds(10)
+                                 );
 
-            var transfer  = await cp1.TransferData(
-                                      VendorId:        Vendor_Id. GraphDefined,
-                                      MessageId:       Message_Id.GraphDefined_TestMessage,
-                                      Data:            "Hello world!",
-                                      RequestId:       Request_Id.Parse("4715"),
-                                      RequestTimeout:  TimeSpan.FromSeconds(10)
-                                  );
-
-            // The central system's own code and description: Result.FromSendRequestState
-            // used to read request errors only, and made GenericError without a text of this.
             Assert.Multiple(() => {
-                Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.InternalError),  $"{transfer.Result}");
-                Assert.That(transfer.Result.Description,  Is.EqualTo("The central system could not answer it!"));
-                Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
+                Assert.That(transfer.Result.ResultCode,  Is.EqualTo(ResultCode.OK),  $"{transfer.Result}");
+                Assert.That(transfer.Data?.ToString(),   Is.EqualTo("!dlrow olleH"));
             });
+
+        }
+
+        #endregion
+
+        #region AChargePointsResponseError_ToAnAnswerOfTheCentralSystem_ReachesTheCentralSystem()
+
+        /// <summary>
+        /// A charge point cannot read the central system's answer to a request the node
+        /// forwarded, and says so with a response error: the node sends it on to the
+        /// central system, under the id the central system answered.
+        /// </summary>
+        /// <remarks>
+        /// The node forwarded the request under an id of its own. It looked the charge
+        /// point's id up among the requests it still waited for an answer to, found none,
+        /// and kept the error.
+        /// </remarks>
+        [Test]
+        public async Task AChargePointsResponseError_ToAnAnswerOfTheCentralSystem_ReachesTheCentralSystem()
+        {
+
+            var cp1             = await AChargePointBelow("CP-STD-09");
+            var chargePointsId  = Request_Id.Parse("4730");
+
+            var answered        = new TaskCompletionSource<Request_Id>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var heard           = new TaskCompletionSource<(Request_Id RequestId, ResultCode ErrorCode, String? ErrorDescription)>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            testCentralSystem01!.OCPP.IN.OnJSONRequestMessageReceived       += (timestamp, sender, connection, request, cancellationToken) => {
+                if (request.Action == "DataTransfer")
+                    answered.TrySetResult(request.RequestId);
+                return Task.CompletedTask;
+            };
+
+            testCentralSystem01!.OCPP.IN.OnJSONResponseErrorMessageReceived += (timestamp, sender, connection, error, cancellationToken) => {
+                heard.TrySetResult((error.RequestId, error.ErrorCode, error.ErrorDescription));
+                return Task.CompletedTask;
+            };
+
+            var transfer = await cp1.TransferData(
+                                     VendorId:        Vendor_Id. GraphDefined,
+                                     MessageId:       Message_Id.GraphDefined_TestMessage,
+                                     Data:            "Hello world!",
+                                     RequestId:       chargePointsId,
+                                     RequestTimeout:  TimeSpan.FromSeconds(10)
+                                 );
+
+            Assert.That(transfer.Result.ResultCode, Is.EqualTo(ResultCode.OK), $"{transfer.Result}");
+
+            await cp1.OCPP.OUT.SendJSONResponseError(
+                      new OCPP_JSONResponseErrorMessage(
+                          Timestamp.Now,
+                          EventTracking_Id.New,
+                          NetworkingMode.Standard,
+                          SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                          NetworkPath.From(cp1.Id),
+                          chargePointsId,
+                          ResultCode.FormationViolation,
+                          "The charge point cannot read this answer!"
+                      )
+                  );
+
+            var arrived = await Task.WhenAny(heard.Task, Task.Delay(TimeSpan.FromSeconds(5))) == heard.Task;
+
+            Assert.That(arrived, Is.True, "The charge point's response error did not reach the central system.");
+
+            Assert.Multiple(() => {
+                Assert.That(heard.Task.Result.RequestId,         Is.EqualTo(answered.Task.Result), "Not under the id the central system answered.");
+                Assert.That(heard.Task.Result.ErrorCode,         Is.EqualTo(ResultCode.FormationViolation));
+                Assert.That(heard.Task.Result.ErrorDescription,  Is.EqualTo("The charge point cannot read this answer!"));
+            });
+
+        }
+
+        #endregion
+
+        #region AResponseError_DoesNotAnswerTheNodesOwnRequest(Format)
+
+        /// <summary>
+        /// The central system sends the node a response error under the id of a request
+        /// the node is still waiting for an answer to, in JSON and in binary: the node
+        /// keeps waiting, and gets what the central system answers - here the refusal of
+        /// an action it does not know.
+        /// </summary>
+        /// <remarks>
+        /// A response error is about an answer the node sent, under the id of the request
+        /// that answer was to. Every node numbers its requests from the same start, so that
+        /// id is one of the node's own as often as not. The error used to end the node's
+        /// own request with that id.
+        /// </remarks>
+        [TestCase("JSON")]
+        [TestCase("Binary")]
+        public async Task AResponseError_DoesNotAnswerTheNodesOwnRequest(String Format)
+        {
+
+            var requestId = Request_Id.NewRandom();
+
+            testCentralSystem01!.OCPP.IN.OnJSONRequestMessageReceived   += async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.RequestId == requestId)
+                {
+
+                    await testCentralSystem01.OCPP.OUT.SendJSONResponseError(
+                              new OCPP_JSONResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCentralSystem01.Id),
+                                  request.RequestId,
+                                  ResultCode.InternalError,
+                                  "This is no answer!"
+                              )
+                          );
+
+                    // Its answer only later: a node that still took the error for one
+                    // would have it, alone, long before.
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+
+                }
+
+            };
+
+            testCentralSystem01!.OCPP.IN.OnBinaryRequestMessageReceived += async (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.RequestId == requestId)
+                {
+
+                    await testCentralSystem01.OCPP.OUT.SendBinaryResponseError(
+                              new OCPP_BinaryResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTracking_Id.New,
+                                  NetworkingMode.Standard,
+                                  SourceRouting.To(request.NetworkPath.Source),
+                                  NetworkPath.From(testCentralSystem01.Id),
+                                  request.RequestId,
+                                  ResultCode.InternalError,
+                                  "This is no answer!"
+                              )
+                          );
+
+                    // Its answer only later: a node that still took the error for one
+                    // would have it, alone, long before.
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+
+                }
+
+            };
+
+            var state = Format == "JSON"
+
+                            ? await forwarder!.OCPP.OUT.SendJSONRequestAndWait(
+                                        new OCPP_JSONRequestMessage(
+                                            RequestTimestamp:  Timestamp.Now,
+                                            EventTrackingId:   EventTracking_Id.New,
+                                            NetworkingMode:    NetworkingMode.Standard,
+                                            Destination:       SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                                            NetworkPath:       NetworkPath.From(forwarder.Id),
+                                            RequestId:         requestId,
+                                            Action:            "NoSuchAction",
+                                            Payload:           new JObject(),
+                                            RequestTimeout:    Timestamp.Now + TimeSpan.FromSeconds(10)
+                                        )
+                                    )
+
+                            : await forwarder!.OCPP.OUT.SendBinaryRequestAndWait(
+                                        new OCPP_BinaryRequestMessage(
+                                            RequestTimestamp:  Timestamp.Now,
+                                            EventTrackingId:   EventTracking_Id.New,
+                                            NetworkingMode:    NetworkingMode.Standard,
+                                            Destination:       SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                                            NetworkPath:       NetworkPath.From(forwarder.Id),
+                                            RequestId:         requestId,
+                                            Action:            "NoSuchBinaryAction",
+                                            Payload:           "Hello world!".ToUTF8Bytes(),
+                                            RequestTimeout:    Timestamp.Now + TimeSpan.FromSeconds(10)
+                                        )
+                                    );
+
+            Assert.That(state.JSONRequestErrorMessage?.ErrorCode,  Is.EqualTo(ResultCode.ProtocolError),
+                        $"The central system's refusal was not what the node got: {state.JSONRequestErrorMessage?.ErrorCode}");
 
         }
 

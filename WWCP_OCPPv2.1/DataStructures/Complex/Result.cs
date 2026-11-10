@@ -99,12 +99,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         /// <summary>
         /// The result of a request from whatever came back for it: the code,
-        /// description and details of an error, of whichever kind it is.
+        /// description and details of a request error, JSON or binary.
         /// </summary>
         /// <remarks>
-        /// Request errors only, JSON ones, used to be read here. A JSON response error
-        /// or a binary error of either kind left GenericError without any text, so
-        /// the asker could not tell what went wrong, nor that it was not a timeout.
+        /// Request errors only, JSON ones, used to be read here. A binary one left
+        /// GenericError without any text, so the asker could not tell what went
+        /// wrong, nor that it was not a timeout. A response error answers no
+        /// request (see SendRequestState) and is not read here.
         /// </remarks>
         /// <param name="SendRequestState">The state of a sent request.</param>
         public static Result FromSendRequestState(SendRequestState SendRequestState)
@@ -117,12 +118,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 : SendRequestState.BinaryRequestErrorMessage  is OCPP_BinaryRequestErrorMessage  binaryRequestError
                     ? (binaryRequestError. ErrorCode, binaryRequestError. ErrorDescription, binaryRequestError. ErrorDetails)
-
-                : SendRequestState.JSONResponseErrorMessage   is OCPP_JSONResponseErrorMessage   jsonResponseError
-                    ? (jsonResponseError.  ErrorCode, jsonResponseError.  ErrorDescription, jsonResponseError.  ErrorDetails)
-
-                : SendRequestState.BinaryResponseErrorMessage is OCPP_BinaryResponseErrorMessage binaryResponseError
-                    ? (binaryResponseError.ErrorCode, binaryResponseError.ErrorDescription, binaryResponseError.ErrorDetails)
 
                 : (ResultCode.GenericError, (String?) null, (JObject?) null);
 

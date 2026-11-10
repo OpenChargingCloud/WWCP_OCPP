@@ -784,15 +784,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Fix DestinationId and network path for standard networking connections
 
-                    // As for an answer: an error to a request this node forwarded,
-                    // under a request identification of its own (see FORWARD), goes
-                    // back to whoever asked, and every other error is this node's.
+                    // A response error about an answer this node forwarded goes on
+                    // to whoever answered, under the id it answered (see FORWARD);
+                    // every other one is about an answer of this node's own.
                     if (jsonResponseErrorMessage.NetworkingMode   == NetworkingMode.Standard &&
                         jsonResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
                         jsonResponseErrorMessage = jsonResponseErrorMessage.ChangeNetworking(
-                                                       SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(jsonResponseErrorMessage.RequestId) ?? parentNetworkingNode.Id),
+                                                       SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetAnsweringNodeId(sourceNodeId.Value, jsonResponseErrorMessage.RequestId) ?? parentNetworkingNode.Id),
                                                        jsonResponseErrorMessage.NetworkPath.Append(sourceNodeId.Value)
                                                    );
                     }
@@ -828,8 +828,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    // An error to a request this node forwarded goes on to whoever
-                    // asked, see FORWARD; every other one is this node's own.
+                    // About an answer this node forwarded: on to whoever answered,
+                    // see FORWARD; every other one is about an answer of this node's.
                     if (jsonResponseErrorMessage.Destination.Next != parentNetworkingNode.Id &&
                         jsonResponseErrorMessage.Destination.Next != NetworkingNode_Id.Zero  &&
                        !parentNetworkingNode.OCPP.IN.AnycastIds.Contains(jsonResponseErrorMessage.Destination.Next))
@@ -1312,15 +1312,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #region Fix DestinationId and network path for standard networking connections
 
-                    // As for an answer: an error to a request this node forwarded,
-                    // under a request identification of its own (see FORWARD), goes
-                    // back to whoever asked, and every other error is this node's.
+                    // A response error about an answer this node forwarded goes on
+                    // to whoever answered, under the id it answered (see FORWARD);
+                    // every other one is about an answer of this node's own.
                     if (binaryResponseErrorMessage.NetworkingMode   == NetworkingMode.Standard &&
                         binaryResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
                         binaryResponseErrorMessage = binaryResponseErrorMessage.ChangeNetworking(
-                                                         SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetForwardedNodeId(binaryResponseErrorMessage.RequestId) ?? parentNetworkingNode.Id),
+                                                         SourceRouting.To(parentNetworkingNode.OCPP.FORWARD.GetAnsweringNodeId(sourceNodeId.Value, binaryResponseErrorMessage.RequestId) ?? parentNetworkingNode.Id),
                                                          binaryResponseErrorMessage.NetworkPath.Append(sourceNodeId.Value)
                                                      );
                     }
@@ -1343,8 +1343,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
-                    // An error to a request this node forwarded goes on to whoever
-                    // asked, see FORWARD; every other one is this node's own.
+                    // About an answer this node forwarded: on to whoever answered,
+                    // see FORWARD; every other one is about an answer of this node's.
                     if (binaryResponseErrorMessage.Destination.Next != parentNetworkingNode.Id &&
                         binaryResponseErrorMessage.Destination.Next != NetworkingNode_Id.Zero  &&
                        !parentNetworkingNode.OCPP.IN.AnycastIds.Contains(binaryResponseErrorMessage.Destination.Next))
