@@ -173,6 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<   DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
         public CustomJObjectSerializerDelegate<CS.SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SignSSHKeyRequest>?                              CustomSignSSHKeyRequestSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<CS.Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<CS.GetCertificateStatusRequest>?                         CustomGetCertificateStatusRequestSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<CS.ReservationStatusUpdateRequest>?                      CustomReservationStatusUpdateRequestSerializer               { get; set; }
@@ -216,6 +217,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<   DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
         public CustomJObjectSerializerDelegate<CS.CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetInstalledSSHKeysResponse>?                           CustomGetInstalledSSHKeysResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DeleteSSHKeyResponse>?                           CustomDeleteSSHKeyResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.InstallSSHKeyResponse>?                           CustomInstallSSHKeyResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SSHKeySignedResponse>?                           CustomSSHKeySignedResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CS.InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<CS.GetInstalledCertificateIdsResponse>?                  CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
         public CustomJObjectSerializerDelegate<CS.DeleteCertificateResponse>?                           CustomDeleteCertificateResponseSerializer                    { get; set; }
@@ -283,6 +288,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<     DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
         public CustomJObjectSerializerDelegate<CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetInstalledSSHKeysRequest>?                       CustomGetInstalledSSHKeysRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DeleteSSHKeyRequest>?                       CustomDeleteSSHKeyRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.InstallSSHKeyRequest>?                       CustomInstallSSHKeyRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SSHKeySignedRequest>?                       CustomSSHKeySignedRequestSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.GetInstalledCertificateIdsRequest>?              CustomGetInstalledCertificateIdsRequestSerializer            { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.DeleteCertificateRequest>?                       CustomDeleteCertificateRequestSerializer                     { get; set; }
@@ -342,6 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public CustomJObjectSerializerDelegate<     DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
 
         public CustomJObjectSerializerDelegate<CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SignSSHKeyResponse>?                        CustomSignSSHKeyResponseSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.GetCertificateStatusResponse>?                   CustomGetCertificateStatusResponseSerializer                 { get; set; }
         //public CustomJObjectSerializerDelegate<CSMS.GetCRLResponse>?                                 CustomGetCRLResponseSerializer                               { get; set; }
@@ -593,7 +603,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         //spublic CustomJObjectParserDelegate<CS.  GetCRLRequest>?                               CustomGetCRLRequestParser                                { get; set; }
         //spublic CustomJObjectParserDelegate<CSMS.GetCRLResponse>?                              CustomGetCRLResponseParser                               { get; set; }
         public CustomJObjectParserDelegate<CS.  SignCertificateRequest>?                      CustomSignCertificateRequestParser                       { get; set; }
+        public CustomJObjectParserDelegate<CS.  SignSSHKeyRequest>?                      CustomSignSSHKeyRequestParser                       { get; set; }
         public CustomJObjectParserDelegate<CSMS.SignCertificateResponse>?                     CustomSignCertificateResponseParser                      { get; set; }
+        public CustomJObjectParserDelegate<CSMS.SignSSHKeyResponse>?                     CustomSignSSHKeyResponseParser                      { get; set; }
 
         #endregion
 
@@ -669,7 +681,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region Certificates
 
         public CustomJObjectParserDelegate<CSMS.CertificateSignedRequest>?                    CustomCertificateSignedRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<CSMS.GetInstalledSSHKeysRequest>?                    CustomGetInstalledSSHKeysRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<CSMS.DeleteSSHKeyRequest>?                    CustomDeleteSSHKeyRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<CSMS.InstallSSHKeyRequest>?                    CustomInstallSSHKeyRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<CSMS.SSHKeySignedRequest>?                    CustomSSHKeySignedRequestParser                     { get; set; }
         public CustomJObjectParserDelegate<CS.  CertificateSignedResponse>?                   CustomCertificateSignedResponseParser                    { get; set; }
+        public CustomJObjectParserDelegate<CS.  GetInstalledSSHKeysResponse>?                   CustomGetInstalledSSHKeysResponseParser                    { get; set; }
+        public CustomJObjectParserDelegate<CS.  DeleteSSHKeyResponse>?                   CustomDeleteSSHKeyResponseParser                    { get; set; }
+        public CustomJObjectParserDelegate<CS.  InstallSSHKeyResponse>?                   CustomInstallSSHKeyResponseParser                    { get; set; }
+        public CustomJObjectParserDelegate<CS.  SSHKeySignedResponse>?                   CustomSSHKeySignedResponseParser                    { get; set; }
         public CustomJObjectParserDelegate<CSMS.DeleteCertificateRequest>?                    CustomDeleteCertificateRequestParser                     { get; set; }
         public CustomJObjectParserDelegate<CS.  DeleteCertificateResponse>?                   CustomDeleteCertificateResponseParser                    { get; set; }
         public CustomJObjectParserDelegate<CSMS.GetInstalledCertificateIdsRequest>?           CustomGetInstalledCertificateIdsRequestParser            { get; set; }
