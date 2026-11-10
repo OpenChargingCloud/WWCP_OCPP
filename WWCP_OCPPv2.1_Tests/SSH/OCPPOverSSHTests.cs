@@ -519,9 +519,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
             var chargingStation  = NewStation("GD-SSH-008");
             var dns              = new LoopbackDNS();
 
-            // .invalid is a name no resolver of an operating system answers (RFC 6761).
+            // .test is a name no resolver of an operating system answers, and one a name resolution library
+            // hands to its DNS client as any other (RFC 6761 §6.2) - unlike .invalid, which it answers itself
+            // with "no such name" and asks no DNS client for (§6.4).
             var result           = await chargingStation.ConnectOCPPClient(
-                                             URL.Parse($"ssh://GD-SSH-008@csms.invalid:{listener!.LocalEndPoint.Port}"),
+                                             URL.Parse($"ssh://GD-SSH-008@csms.test:{listener!.LocalEndPoint.Port}"),
                                              Ssh:        Login("GD-SSH-008"),
                                              DNSClient:  dns
                                          );
