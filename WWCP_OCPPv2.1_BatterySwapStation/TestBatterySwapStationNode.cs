@@ -2556,17 +2556,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                               );
                     }
 
+                    // OCPP 2.0.1 and 2.1 list Heartbeat in MessageTriggerEnumType, and
+                    // F06 has the station answer a trigger for it as for any other.
+                    else if (request.RequestedMessage == MessageTrigger.Heartbeat)
+                    {
+                        await this.SendHeartbeat(
+                                  CustomData: null
+                              );
+                    }
 
                         // LogStatusNotification
                         // DiagnosticsStatusNotification
                         // FirmwareStatusNotification
-
-                        // Seems not to be allowed any more!
-                        //case MessageTriggers.Heartbeat:
-                        //    await this.SendHeartbeat(
-                        //              CustomData:   null
-                        //          );
-                        //    break;
 
                         // MeterValues
                         // SignChargingStationCertificate
@@ -2590,7 +2591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 if (request.RequestedMessage == MessageTrigger.BootNotification           ||
                     request.RequestedMessage == MessageTrigger.LogStatusNotification      ||
                     request.RequestedMessage == MessageTrigger.FirmwareStatusNotification ||
-                  //MessageTriggers.Heartbeat
+                    request.RequestedMessage == MessageTrigger.Heartbeat                  ||
                     request.RequestedMessage == MessageTrigger.SignChargingStationCertificate)
                 {
 
