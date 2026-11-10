@@ -263,6 +263,67 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         #endregion
 
 
+        #region (private) AddressToSender (RequestError, RequestNetworkPath)
+
+        /// <summary>
+        /// Return the given request error addressed at the node whose request caused it.
+        /// </summary>
+        /// <remarks>
+        /// A request error is built where the parsing failed. That place knows the request
+        /// identification and the action, but not who sent them, so every factory on
+        /// OCPP_JSONRequestErrorMessage fills in SourceRouting.Zero - and a message addressed
+        /// to nobody is dropped as "UnknownClient". The sender then waits out its whole
+        /// request timeout for an answer that was written and thrown away, and cannot tell a
+        /// rejected message from a lost one.
+        ///
+        /// The successful path two lines further up already does this: it answers with
+        /// SourceRouting.To(NetworkPath.Source). This gives the error path the same address.
+        /// </remarks>
+        /// <param name="RequestError">The request error to address.</param>
+        /// <param name="RequestNetworkPath">The network path of the request that caused it.</param>
+        private OCPP_JSONRequestErrorMessage AddressToSender(OCPP_JSONRequestErrorMessage  RequestError,
+                                                             NetworkPath                   RequestNetworkPath)
+        {
+
+            // Whoever built it knew where it should go: leave it alone.
+            if (RequestError.Destination.Next != NetworkingNode_Id.Zero)
+                return RequestError;
+
+            // An empty network path leaves us no better idea than the factory had.
+            if (RequestNetworkPath.Source == NetworkingNode_Id.Zero)
+                return RequestError;
+
+            return RequestError.ChangeNetworking(
+                       SourceRouting.To(RequestNetworkPath.Source),
+                       NetworkPath.From(parentNetworkingNode.Id)
+                   );
+
+        }
+
+        /// <summary>
+        /// Return the given binary request error addressed at the node whose request caused it.
+        /// </summary>
+        /// <param name="RequestError">The request error to address.</param>
+        /// <param name="RequestNetworkPath">The network path of the request that caused it.</param>
+        private OCPP_BinaryRequestErrorMessage AddressToSender(OCPP_BinaryRequestErrorMessage  RequestError,
+                                                               NetworkPath                     RequestNetworkPath)
+        {
+
+            if (RequestError.Destination.Next != NetworkingNode_Id.Zero)
+                return RequestError;
+
+            if (RequestNetworkPath.Source == NetworkingNode_Id.Zero)
+                return RequestError;
+
+            return RequestError.ChangeNetworking(
+                       SourceRouting.To(RequestNetworkPath.Source),
+                       NetworkPath.From(parentNetworkingNode.Id)
+                   );
+
+        }
+
+        #endregion
+
         #region ProcessJSONMessage   (MessageTimestamp, WebSocketConnection, JSONMessage,   EventTrackingId, CancellationToken)
 
         /// <summary>
@@ -373,13 +434,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse      (ocppResponse.JSONResponseMessage, WebSocketConnection);
 
                                 if (ocppResponse.JSONRequestErrorMessage   is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (ocppResponse.JSONRequestErrorMessage, WebSocketConnection);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (AddressToSender(ocppResponse.JSONRequestErrorMessage, jsonRequestMessage.NetworkPath), WebSocketConnection);
 
                                 if (ocppResponse.BinaryResponseMessage     is not null)
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage, WebSocketConnection);
 
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage, WebSocketConnection);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, jsonRequestMessage.NetworkPath), WebSocketConnection);
 
 
                                 // Notify about the result of the sent message
@@ -402,13 +463,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             DebugX.Log($"Undefined '{jsonRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
 
+                            // Back to whoever asked. Addressed to nobody, the refusal found
+                            // no way out over a connection this node accepted, and the asker
+                            // waited out its whole timeout.
                             await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                                       new OCPP_JSONRequestErrorMessage(
                                           Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.Unknown,
-                                          SourceRouting.Zero,
-                                          NetworkPath.Empty,
+                                          SourceRouting.To(jsonRequestMessage.NetworkPath.Source),
+                                          NetworkPath.From(parentNetworkingNode.Id),
                                           jsonRequestMessage.RequestId,
                                           ResultCode.ProtocolError,
                                           $"Received unknown OCPP '{jsonRequestMessage.Action}' JSON request message!",
@@ -693,7 +757,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.JSONRequestErrorMessage is not null)
-                                    sentMessageResult  = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(ocppResponse.JSONRequestErrorMessage, WebSocketConnection);
+                                    sentMessageResult  = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(AddressToSender(ocppResponse.JSONRequestErrorMessage, jsonSendMessage.NetworkPath), WebSocketConnection);
 
 
                                 // Notify about the result of the sent message
@@ -865,13 +929,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.JSONRequestErrorMessage   is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (ocppResponse.JSONRequestErrorMessage, WebSocketConnection);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (AddressToSender(ocppResponse.JSONRequestErrorMessage, binaryRequestMessage.NetworkPath), WebSocketConnection);
 
                                 if (ocppResponse.JSONResponseMessage       is not null)
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse      (ocppResponse.JSONResponseMessage, WebSocketConnection);
 
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage, WebSocketConnection);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, binaryRequestMessage.NetworkPath), WebSocketConnection);
 
                                 if (ocppResponse.BinaryResponseMessage     is not null)
                                     sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage, WebSocketConnection);
@@ -897,13 +961,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                             DebugX.Log($"Undefined '{binaryRequestMessage.Action}' binary request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
 
+                            // Back to whoever asked. Addressed to nobody, the refusal found
+                            // no way out over a connection this node accepted, and the asker
+                            // waited out its whole timeout.
                             await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                                       new OCPP_JSONRequestErrorMessage(
                                           Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.Unknown,
-                                          SourceRouting.Zero,
-                                          NetworkPath.Empty,
+                                          SourceRouting.To(binaryRequestMessage.NetworkPath.Source),
+                                          NetworkPath.From(parentNetworkingNode.Id),
                                           binaryRequestMessage.RequestId,
                                           ResultCode.ProtocolError,
                                           $"The OCPP message '{binaryRequestMessage.Action}' is unkown!",
@@ -976,7 +1043,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 }
 
-                else if (OCPP_BinaryRequestErrorMessage. TryParse(BinaryMessage, out var binaryRequestErrorMessage,                                                                   sourceNodeId))
+                else if (OCPP_BinaryRequestErrorMessage. TryParse(BinaryMessage, out var binaryRequestErrorMessage,  out var requestErrorParsingError,                               sourceNodeId))
                 {
 
                     #region Fix DestinationId and network path for standard networking connections
@@ -1028,7 +1095,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 }
 
-                else if (OCPP_BinaryResponseErrorMessage.TryParse(BinaryMessage, out var binaryResponseErrorMessage,                                                                  sourceNodeId))
+                else if (OCPP_BinaryResponseErrorMessage.TryParse(BinaryMessage, out var binaryResponseErrorMessage, out var responseErrorParsingError,                              sourceNodeId))
                 {
 
                     #region Fix DestinationId and network path for standard networking connections
@@ -1162,7 +1229,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(ocppResponse.BinaryRequestErrorMessage, WebSocketConnection);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, binarySendMessage.NetworkPath), WebSocketConnection);
 
 
                                 // Notify about the result of the sent message
@@ -1209,6 +1276,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                     }
 
                 }
+
+                // An error frame names its kind in its first byte: report why that kind
+                // could not be read, rather than why it is no SEND or no request.
+                else if (BinaryMessage.Length > 0 && BinaryMessage[0] == 4 && requestErrorParsingError  is not null)
+                    DebugX.Log($"Failed to parse a binary request error message within {nameof(OCPPWebSocketAdapterIN)}: '{requestErrorParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
+
+                else if (BinaryMessage.Length > 0 && BinaryMessage[0] == 5 && responseErrorParsingError is not null)
+                    DebugX.Log($"Failed to parse a binary response error message within {nameof(OCPPWebSocketAdapterIN)}: '{responseErrorParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
 
                 else if (requestParsingError  is not null)
                     DebugX.Log($"Failed to parse a binary request message within {nameof(OCPPWebSocketAdapterIN)}: '{requestParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");

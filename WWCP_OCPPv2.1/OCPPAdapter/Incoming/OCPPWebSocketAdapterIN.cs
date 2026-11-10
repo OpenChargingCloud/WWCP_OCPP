@@ -576,13 +576,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             DebugX.Log($"Undefined '{jsonRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
 
+                            // Back to whoever asked. Addressed to nobody, the refusal found
+                            // no way out over a connection this node accepted, and the asker
+                            // waited out its whole timeout.
                             await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                                       new OCPP_JSONRequestErrorMessage(
                                           Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.Unknown,
-                                          SourceRouting.Zero,
-                                          NetworkPath.Empty,
+                                          SourceRouting.To(jsonRequestMessage.NetworkPath.Source),
+                                          NetworkPath.From(parentNetworkingNode.Id),
                                           jsonRequestMessage.RequestId,
                                           ResultCode.ProtocolError,
                                           $"Received unknown OCPP '{jsonRequestMessage.Action}' JSON request message!",
@@ -1098,13 +1101,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             DebugX.Log($"Undefined '{binaryRequestMessage.Action}' binary request message handler within {nameof(OCPPWebSocketAdapterIN)}!");
 
+                            // Back to whoever asked. Addressed to nobody, the refusal found
+                            // no way out over a connection this node accepted, and the asker
+                            // waited out its whole timeout.
                             await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                                       new OCPP_JSONRequestErrorMessage(
                                           Now,
                                           EventTracking_Id.New,
                                           NetworkingMode.Unknown,
-                                          SourceRouting.Zero,
-                                          NetworkPath.Empty,
+                                          SourceRouting.To(binaryRequestMessage.NetworkPath.Source),
+                                          NetworkPath.From(parentNetworkingNode.Id),
                                           binaryRequestMessage.RequestId,
                                           ResultCode.ProtocolError,
                                           $"The OCPP message '{binaryRequestMessage.Action}' is unkown!",
@@ -1177,7 +1183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 }
 
-                else if (OCPP_BinaryRequestErrorMessage. TryParse(BinaryMessage, out var binaryRequestErrorMessage,                                                                   sourceNodeId))
+                else if (OCPP_BinaryRequestErrorMessage. TryParse(BinaryMessage, out var binaryRequestErrorMessage,  out var requestErrorParsingError,                               sourceNodeId))
                 {
 
                     #region Fix DestinationId and network path for standard networking connections
@@ -1229,7 +1235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 }
 
-                else if (OCPP_BinaryResponseErrorMessage.TryParse(BinaryMessage, out var binaryResponseErrorMessage,                                                                  sourceNodeId))
+                else if (OCPP_BinaryResponseErrorMessage.TryParse(BinaryMessage, out var binaryResponseErrorMessage, out var responseErrorParsingError,                              sourceNodeId))
                 {
 
                     #region Fix DestinationId and network path for standard networking connections
@@ -1414,6 +1420,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 // A frame that is none of the five kinds ends up here. Report every reason we
                 // have, and name the kind, so a dropped message does not look like a different
                 // one that failed - or like nothing at all.
+                // An error frame names its kind in its first byte: report why that kind
+                // could not be read, rather than why it is no SEND or no request.
+                else if (BinaryMessage.Length > 0 && BinaryMessage[0] == 4 && requestErrorParsingError  is not null)
+                    DebugX.Log($"Failed to parse a binary request error message within {nameof(OCPPWebSocketAdapterIN)}: '{requestErrorParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
+
+                else if (BinaryMessage.Length > 0 && BinaryMessage[0] == 5 && responseErrorParsingError is not null)
+                    DebugX.Log($"Failed to parse a binary response error message within {nameof(OCPPWebSocketAdapterIN)}: '{responseErrorParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
+
                 else if (sendParsingError     is not null)
                     DebugX.Log($"Failed to parse a binary send message within {nameof(OCPPWebSocketAdapterIN)}: '{sendParsingError}'{Environment.NewLine}'{BinaryMessage.ToBase64()}'!");
 

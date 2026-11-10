@@ -19,6 +19,8 @@
 
 using System.Collections.Concurrent;
 
+using Newtonsoft.Json.Linq;
+
 using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -940,6 +942,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
             {
                 localController!.OCPP.FORWARD.OnAnyBinaryRequestFilter -= reject;
             }
+
+        }
+
+        #endregion
+
+        #region AnUnknownAction_IsRefusedToTheControllerThatSentIt(Format)
+
+        /// <summary>
+        /// The controller asks its CSMS something the CSMS has no processor for, in JSON
+        /// and in binary: the refusal comes back over the connection the CSMS accepted, at
+        /// once.
+        /// </summary>
+        /// <remarks>
+        /// The refusal was addressed to nobody. Over a client connection that did not
+        /// matter (84b12cf2), but a server looks its connection up by the destination, and
+        /// found none for nobody.
+        /// </remarks>
+        [TestCase("JSON")]
+        [TestCase("Binary")]
+        public async Task AnUnknownAction_IsRefusedToTheControllerThatSentIt(String Format)
+        {
+
+            var started  = Timestamp.Now;
+
+            var state    = Format == "JSON"
+
+                               ? await localController!.OCPP.OUT.SendJSONRequestAndWait(
+                                           new OCPP_JSONRequestMessage(
+                                               RequestTimestamp:  Timestamp.Now,
+                                               EventTrackingId:   EventTracking_Id.New,
+                                               NetworkingMode:    NetworkingMode.Standard,
+                                               Destination:       SourceRouting.CSMS,
+                                               NetworkPath:       NetworkPath.From(localController.Id),
+                                               RequestId:         Request_Id.NewRandom(),
+                                               Action:            "NoSuchAction",
+                                               Payload:           new JObject(),
+                                               RequestTimeout:    Timestamp.Now + TimeSpan.FromSeconds(10)
+                                           )
+                                       )
+
+                               : await localController!.OCPP.OUT.SendBinaryRequestAndWait(
+                                           new OCPP_BinaryRequestMessage(
+                                               RequestTimestamp:  Timestamp.Now,
+                                               EventTrackingId:   EventTracking_Id.New,
+                                               NetworkingMode:    NetworkingMode.Standard,
+                                               Destination:       SourceRouting.CSMS,
+                                               NetworkPath:       NetworkPath.From(localController.Id),
+                                               RequestId:         Request_Id.NewRandom(),
+                                               Action:            "NoSuchBinaryAction",
+                                               Payload:           "Hello world!".ToUTF8Bytes(),
+                                               RequestTimeout:    Timestamp.Now + TimeSpan.FromSeconds(10)
+                                           )
+                                       );
+
+            Assert.Multiple(() => {
+                Assert.That(state.JSONRequestErrorMessage?.ErrorCode,  Is.EqualTo(ResultCode.ProtocolError),
+                            $"The CSMS's refusal did not reach the controller: {state.JSONRequestErrorMessage?.ErrorCode}");
+                Assert.That(Waited(started),                           Is.LessThan(TimeSpan.FromSeconds(5)));
+            });
 
         }
 

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -316,10 +318,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         /// an error to a request of its own and dropped.
         /// </summary>
         /// <remarks>
-        /// Sent by the test rather than provoked: a 1.6 central system that
-        /// cannot read a request addresses its request error to nobody, and it
-        /// is never sent at all (OCPPWebSocketAdapterIN of 1.6 has no
-        /// AddressToSender, as 2.1 has).
+        /// The central system itself cannot read the request. Its request error
+        /// used to be addressed to nobody - OCPPWebSocketAdapterIN of 1.6 had no
+        /// AddressToSender, as 2.1 has - and over the connection the central
+        /// system accepted it was never sent at all.
         /// </remarks>
         [Test]
         public async Task ARequestError_ToAForwardedRequest_GoesBackToTheChargePointThatAsked()
@@ -327,25 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
             var cp1 = await AChargePointBelow("CP-STD-04");
 
-            // Before the central system answers the request itself, which then
-            // comes too late: the node has nobody waiting for it any more.
-            testCentralSystem01!.OCPP.IN.OnJSONRequestMessageReceived += async (timestamp, sender, connection, request, cancellationToken) => {
-
-                if (request.Action == "DataTransfer")
-                    await testCentralSystem01.OCPP.OUT.SendJSONRequestError(
-                              new OCPP_JSONRequestErrorMessage(
-                                  Timestamp.Now,
-                                  EventTracking_Id.New,
-                                  NetworkingMode.Standard,
-                                  SourceRouting.To(request.NetworkPath.Source),
-                                  NetworkPath.From(testCentralSystem01.Id),
-                                  request.RequestId,
-                                  ResultCode.FormationViolation,
-                                  "The central system cannot read it!"
-                              )
-                          );
-
-            };
+            testCentralSystem01!.OCPP.CustomDataTransferRequestParser = (json, request) => throw new ArgumentException("The central system cannot read it!");
 
             var started   = Timestamp.Now;
 
@@ -498,6 +482,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 Assert.That(boot.Result.ResultCode,   Is.EqualTo(ResultCode.Filtered),  $"{boot.Result}");
                 Assert.That(boot.Result.Description,  Does.Contain("This node cannot read it!"));
                 Assert.That(Waited(started),          Is.LessThan(TimeSpan.FromSeconds(5)));
+            });
+
+        }
+
+        #endregion
+
+        #region AnUnknownAction_IsRefusedToTheNodeThatSentIt()
+
+        /// <summary>
+        /// The node asks its central system something the central system has no
+        /// processor for: the refusal comes back over the connection the central system
+        /// accepted, at once.
+        /// </summary>
+        /// <remarks>
+        /// The refusal was addressed to nobody. Over a client connection that did not
+        /// matter (84b12cf2), but a server looks its connection up by the destination, and
+        /// found none for nobody.
+        /// </remarks>
+        [Test]
+        public async Task AnUnknownAction_IsRefusedToTheNodeThatSentIt()
+        {
+
+            var started  = Timestamp.Now;
+
+            var state    = await forwarder!.OCPP.OUT.SendJSONRequestAndWait(
+                                     new OCPP_JSONRequestMessage(
+                                         RequestTimestamp:  Timestamp.Now,
+                                         EventTrackingId:   EventTracking_Id.New,
+                                         NetworkingMode:    NetworkingMode.Standard,
+                                         Destination:       SourceRouting.To(NetworkingNode_Id.CentralSystem),
+                                         NetworkPath:       NetworkPath.From(forwarder.Id),
+                                         RequestId:         Request_Id.NewRandom(),
+                                         Action:            "NoSuchAction",
+                                         Payload:           new JObject(),
+                                         RequestTimeout:    Timestamp.Now + TimeSpan.FromSeconds(10)
+                                     )
+                                 );
+
+            Assert.Multiple(() => {
+                Assert.That(state.JSONRequestErrorMessage?.ErrorCode,  Is.EqualTo(ResultCode.ProtocolError),
+                            $"The central system's refusal did not reach the node: {state.JSONRequestErrorMessage?.ErrorCode}");
+                Assert.That(Waited(started),                           Is.LessThan(TimeSpan.FromSeconds(5)));
             });
 
         }
