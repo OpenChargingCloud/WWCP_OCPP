@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static readonly String[] writableClientVariables = [
             "Enabled", "ServerURL", "ServerPort", "NTSKEServerPort", "Priority", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse",
             "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh", "DelayAsymmetry", "DelayVarAsymmetry", "NTSKEServerURL", "SignedResponses",
-            "Mode", "SSHPort", "SSHUserName", "SSHHostKeyPins", "SSHHostCAs"
+            "Mode", "SSHPort", "SSHUserName", "SSHHostKeyPins", "SSHHostCAs", "SSHUseOCPPConnection"
         ];
 
         private static readonly String[] writableClockVariables = [
@@ -639,8 +639,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 #region What is set of each server
 
                 // Mode first, whatever its place in the request: what a request
-                // sets beside it is set in the mode it switches to.
-                foreach (var item in byGroup.Where(item => item.Kind == Kind.Client).OrderBy(item => item.Is("Mode") ? 0 : 1))
+                // sets beside it is set in the mode it switches to. And whether
+                // it shares the connection of OCPP next, which decides whether
+                // an SSH port, a login and host keys of its own apply.
+                foreach (var item in byGroup.Where(item => item.Kind == Kind.Client).OrderBy(item => item.Is("Mode") ? 0 : item.Is("SSHUseOCPPConnection") ? 1 : 2))
                 {
 
                     var server = servers.FirstOrDefault(server => String.Equals(server.Id, item.Client, StringComparison.OrdinalIgnoreCase));
@@ -1350,6 +1352,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public List<String>  SSHHostKeyPins   { get; private set; } = [];
             public List<String>  SSHHostCAs       { get; private set; } = [];
             public String        SSHOnMismatch    { get; private set; } = "refuse";
+            public Boolean       SSHUseOCPPConnection { get; private set; }
             public JObject?      Shown            { get; private set; }
             public Boolean       Renamed          { get; private set; }
 
@@ -1400,7 +1403,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  SSHUser          = ssh?["user"]?.Value<String>() is { Length: > 0 } user ? user : null,
                                  SSHHostKeyPins   = ssh?["hostKeyPins"] is JArray hostKeyPins ? [.. hostKeyPins.Values<String>().OfType<String>()] : [],
                                  SSHHostCAs       = ssh?["hostCAs"]     is JArray hostCAs     ? [.. hostCAs.    Values<String>().OfType<String>()] : [],
-                                 SSHOnMismatch    = ssh?["onMismatch"]?.Value<String>() ?? "refuse"
+                                 SSHOnMismatch    = ssh?["onMismatch"]?.Value<String>() ?? "refuse",
+                                 SSHUseOCPPConnection = ssh?["useOCPPConnection"]?.Type == JTokenType.Boolean && ssh["useOCPPConnection"]!.Value<Boolean>()
                              };
 
                 server.Key   = server.Id ?? $"#{Interlocked.Increment(ref made)}";
@@ -1453,6 +1457,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        SSHHostKeyPins   = [.. SSHHostKeyPins],
                        SSHHostCAs       = [.. SSHHostCAs],
                        SSHOnMismatch    = SSHOnMismatch,
+                       SSHUseOCPPConnection = SSHUseOCPPConnection,
                        Shown            = Shown,
                        Renamed          = Renamed,
                        Key              = Key
@@ -1509,9 +1514,20 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     return false;
                 }
 
-                if (!OverSSH && variable is "sshport" or "sshusername" or "sshhostkeypins" or "sshhostcas")
+                if (!OverSSH && variable is "sshport" or "sshusername" or "sshhostkeypins" or "sshhostcas" or "sshuseocppconnection")
                 {
                     Problem = $"{Where} applies in the mode NTSv4SSH only: set Mode to NTSv4SSH in the same request.";
+                    return false;
+                }
+
+                // On the connection of OCPP, its port, its login and the host key
+                // OCPP holds it to are the server's: none of its own applies -
+                // but an empty list of them may be said.
+                if (SSHUseOCPPConnection && (variable is "sshport" or "sshusername" ||
+                                             variable is "sshhostkeypins" or "sshhostcas" && Value.Length > 0 ||
+                                             variable is "onpinmismatch" && !String.Equals(Value, "Refuse", StringComparison.OrdinalIgnoreCase)))
+                {
+                    Problem = $"{Where} does not apply with SSHUseOCPPConnection: the key exchange goes over the SSH connection of OCPP, with its port, its login and the host key OCPP holds it to.";
                     return false;
                 }
 
@@ -1557,7 +1573,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             SSHHostKeyPins   = [];
                             SSHHostCAs       = [];
                             SSHOnMismatch    = "refuse";
+                            SSHUseOCPPConnection = false;
                         }
+                        break;
+
+                    // One more channel of the SSH connection of OCPP to the
+                    // server's host (section 8.3 of the white paper), or one of its
+                    // own again. Switched to it, what only a connection of its own
+                    // has goes: its port, its login, its host keys and CAs.
+                    case "sshuseocppconnection":
+                        var shared = String.Equals(Value, "true", StringComparison.OrdinalIgnoreCase);
+                        if (shared && !SSHUseOCPPConnection)
+                        {
+                            SSHPort          = null;
+                            SSHUser          = null;
+                            SSHHostKeyPins   = [];
+                            SSHHostCAs       = [];
+                            SSHOnMismatch    = "refuse";
+                        }
+                        SSHUseOCPPConnection = shared;
                         break;
 
                     case "sshport":
@@ -1773,7 +1807,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (NTSKEHostname is not null)                                 json["ntsKEHostname"]     = NTSKEHostname;
                 if (SignedResponses)                                           json["signedResponses"]   = true;
 
-                if (OverSSH)
+                if (OverSSH && SSHUseOCPPConnection)
+                    json["ssh"] = new JObject(new JProperty("useOCPPConnection", true));
+
+                else if (OverSSH)
                 {
 
                     var ssh = new JObject();

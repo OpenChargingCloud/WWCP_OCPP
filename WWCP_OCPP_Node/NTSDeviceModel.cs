@@ -116,8 +116,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("SSHUserName",             server       => TextOf     (Child(server["ssh"], "user")) is { Length: > 0 } sshUser ? sshUser : NTSServerSSH.DefaultUser),
             ("SSHHostKeyPins",          server       => PinsOf     (server["ssh"], "hostKeyPins")),
             ("SSHHostCAs",              server       => PinsOf     (server["ssh"], "hostCAs")),
-            // The node's own key, whichever mode: a CSMS reads it before it
-            // switches a server to NTSv4SSH - see ClientValue.
+            // One more channel of the SSH connection of OCPP to its host.
+            ("SSHUseOCPPConnection",    server       => Child(server["ssh"], "useOCPPConnection")?.Type == JTokenType.Boolean &&
+                                                        Child(server["ssh"], "useOCPPConnection")!.Value<Boolean>() ? "true" : "false"),
+            // The node's own key, whichever mode, or OCPP's on the connection
+            // of OCPP: a CSMS reads it before it switches a server to NTSv4SSH
+            // - see ClientValue.
             ("SSHClientPublicKey",      server       => ""),
             ("SSHHostKeyFingerprint",   server       => TextOf     (server["sshHostKey"])),
             ("CertificatePins",         server       => PinsOf     (server["heldTo"], "certificates")),
@@ -306,9 +310,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             // The key this node signs in with at its time servers' SSH servers,
             // made at the first need: "" only where it can be had neither way,
-            // which the log says why.
+            // which the log says why. On the connection of OCPP, the key OCPP
+            // signs in with: no key of the node's own is made for it.
             if (String.Equals(Variable, "SSHClientPublicKey", StringComparison.OrdinalIgnoreCase))
-                return node.NTSKEClientPublicKey ?? "";
+                return Child(server["ssh"], "useOCPPConnection")?.Type == JTokenType.Boolean &&
+                       Child(server["ssh"], "useOCPPConnection")!.Value<Boolean>()
+                           ? node.OCPPOverSSH?.PublicKey() ?? ""
+                           : node.NTSKEClientPublicKey ?? "";
 
             return value(server);
 
