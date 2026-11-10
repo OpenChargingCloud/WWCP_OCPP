@@ -85,12 +85,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
             directory = Path.Combine(Path.GetTempPath(), "nts-on-demand-" + Guid.NewGuid().ToString("N")[..12]);
             Directory.CreateDirectory(directory);
 
-            var configFile = Path.Combine(directory, WWCPConfigFile.DefaultFileName);
-
             // The legal group switched off; a local one of one server, over TLS
             // at a port nobody listens on until a test says otherwise; and a
             // group whose one server never answers.
-            File.WriteAllText(configFile, $$"""
+            //
+            // With the name servers of BareNodes, from the documentation's
+            // ranges, where nothing answers: the servers here are addressed by
+            // their addresses, which a round asks no name server about. It used
+            // to ask them for the A and AAAA records of "127.0.0.1", and waited
+            // for them past the 20 s a test waits for what is told.
+            bridged = new BareNodes().New(directory, JObject.Parse($$"""
                 { "nts": { "groups": {
                     "legal": { "enabled": false, "servers": [ { "id": "ptb1", "hostname": "ptbtime1.example.invalid" } ] },
                     "local": { "enabled": true, "minServers": 1, "timeoutSeconds": 3,
@@ -98,20 +102,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
                     "grid":  { "enabled": true, "minServers": 1, "timeoutSeconds": 2,
                                "servers": [ { "id": "blackhole", "hostname": "192.0.2.1" } ] }
                 } } }
-                """);
-
-            // With the name resolution of the machine, as NTSv4SSHEndToEndTests
-            // has it: a round asks the name servers the node has, and those of
-            // BareNodes are written down from the documentation's ranges, where
-            // nothing answers.
-            bridged = new BareNode(new WWCPNode(
-                                       HTTPPort:          IPPort.Parse(TestPorts.Free()),
-                                       AccountsPath:      Path.Combine(directory, "accounts"),
-                                       ConfigFile:        new WWCPConfigFile(configFile),
-                                       CertificatesPath:  Path.Combine(directory, "certificates"),
-                                       LogToConsole:      false,
-                                       BridgeDebugLog:    false
-                                   ));
+                """));
 
         }
 
