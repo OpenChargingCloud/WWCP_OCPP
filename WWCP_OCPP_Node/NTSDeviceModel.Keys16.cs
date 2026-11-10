@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -79,6 +80,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// TimeAdjustmentReportingThreshold, and so the legal group's: listed
     /// where there is one, and "" for never, as in 2.1.
     /// </para>
+    /// <para>
+    /// A key exchange over SSH - section 7 of the white paper "NTS Key
+    /// Establishment over SSH" - has keys of its own: "ntp.&lt;group&gt;.mode"
+    /// is a list per server that takes NTSv4SSH as well, read as one value
+    /// where every server has it; "ntske.&lt;group&gt;.sshPorts",
+    /// "sshUserNames" and "sshUseOCPPConnection" are lists per server,
+    /// "ntske.&lt;group&gt;.sshHostKeyPins.n" and "sshHostCAs.n" the n-th
+    /// server's, and the common "ntske.sshClientPublicKey" is the key the node
+    /// signs in with, made at the first read, and read-only.
+    /// </para>
+    /// <para>
+    /// A list is written for the servers it applies to in their mode, and an
+    /// entry for any other is left alone, whatever it says: a port of NTS-KE
+    /// over TLS for a server over SSH, an SSH port for one over TLS or on the
+    /// connection of OCPP. A list that applies to none of the group's servers
+    /// is rejected, so that a central system learns to switch the mode first,
+    /// as 2.1 refuses those variables outside it. A server's own key of one
+    /// that does not apply to it may be emptied, which changes nothing.
+    /// </para>
     /// </remarks>
     public sealed partial class NTSDeviceModel : OCPP16.CP.IConfigurationKeySource
     {
@@ -94,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("ntp.enabled",              "Enabled",          false,  ""),
             ("ntp.servers",              "ServerURL",        true,   ""),
             ("ntp.ports",                "ServerPort",       true,   "123"),
-            ("ntp.mode",                 "Mode",             false,  "NTSv4"),
+            ("ntp.mode",                 "Mode",             true,   "NTSv4"),
             ("ntp.priority",             "Priority",         true,   "0"),
             ("ntp.minInterval",          "MinInterval",      false,  ""),
             ("ntp.maxInterval",          "MaxInterval",      false,  ""),
@@ -114,7 +134,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("ntske.trustOnFirstUse",    "TrustOnFirstUse",  true,   "None"),
             ("ntske.aead",               "AEADAlgorithm",    true,   ""),
             ("ntske.minRefresh",         "MinRefresh",       true,   "43200"),
-            ("ntske.maxRefresh",         "MaxRefresh",       true,   "86400")
+            ("ntske.maxRefresh",         "MaxRefresh",       true,   "86400"),
+            ("ntske.sshPorts",           "SSHPort",          true,   NTSServerSSH.DefaultPort.ToString(CultureInfo.InvariantCulture)),
+            ("ntske.sshUserNames",       "SSHUserName",      true,   NTSServerSSH.DefaultUser),
+            ("ntske.sshUseOCPPConnection", "SSHUseOCPPConnection", true, "false")
         ];
 
         /// <summary>
@@ -131,7 +154,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         private static readonly (String Key, String Variable)[] pinKeys16 = [
             ("ntske.certificatePins",    "CertificatePins"),
-            ("ntske.rootPins",           "RootPins")
+            ("ntske.rootPins",           "RootPins"),
+            ("ntske.sshHostKeyPins",     "SSHHostKeyPins"),
+            ("ntske.sshHostCAs",         "SSHHostCAs")
         ];
 
         /// <summary>
@@ -139,6 +164,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// TimeAdjustmentReportingThreshold.
         /// </summary>
         private const String thresholdKey16 = "ntp.timeAdjustmentReportingThreshold";
+
+        /// <summary>
+        /// The common key of the key the node signs in with at the SSH servers
+        /// of its time servers, SSHClientPublicKey: read-only.
+        /// </summary>
+        private const String clientKeyKey16 = "ntske.sshClientPublicKey";
+
+        /// <summary>
+        /// The modes a server's key exchange goes in, as 2.1 writes them.
+        /// </summary>
+        private static readonly String[] modes16 = [ "NTSv4", "NTSv4SSH" ];
 
         private static readonly Regex key16 = new (@"^(ntp|ntske)\.([a-z][a-z0-9-]*)\.([A-Za-z]+)(?:\.([1-9][0-9]*))?$",
                                                    RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
@@ -161,6 +197,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 if (node.NTSGroupOf(NTSGroup.LegalId) is not null)
                     keys.Add(thresholdKey16);
+
+                if (Groups.Any())
+                    keys.Add(clientKeyKey16);
 
                 foreach (var group in Groups)
                 {
@@ -201,6 +240,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
                            ? new OCPP16.ConfigurationKey(thresholdKey16, OCPP16.AccessRights.ReadWrite, ClockValue("TimeAdjustmentReportingThreshold") ?? "")
                            : null;
 
+            // The node's own key, whichever server asks for it, made at the
+            // first read as SSHClientPublicKey is: read-only, as in 2.1.
+            if (IsClientKeyKey(Key))
+                return Groups.Any()
+                           ? new OCPP16.ConfigurationKey(clientKeyKey16, OCPP16.AccessRights.ReadOnly, node.NTSKEClientPublicKey ?? "")
+                           : null;
+
             if (!TryKey(Key, out var group, out var name, out var variable, out var perServer, out var number))
                 return null;
 
@@ -217,11 +263,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             }
 
+            // A list per server, but one value where every server has it - as
+            // 1.6 wrote it before a key exchange went over SSH.
+            else if (variable == "Mode")
+            {
+                var modes = clients.Select(client => ClientValue(client, variable) ?? "NTSv4").ToArray();
+                value     = modes.Distinct().Count() > 1
+                                ? String.Join(",", modes)
+                                : modes.FirstOrDefault() ?? "NTSv4";
+            }
+
             else if (perServer)
                 value = String.Join(",", clients.Select(client => ClientValue(client, variable) ?? ""));
-
-            else if (variable == "Mode")
-                value = "NTSv4";
 
             // The group's in 1.6 and each server's in 2.1: true where every
             // server of the group is asked.
@@ -261,6 +314,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                             Sender,
                                             CancellationToken);
 
+            if (IsClientKeyKey(Key))
+                return Get(Key) is null
+                           ? null
+                           : OCPP16.ConfigurationStatus.Rejected;
+
             if (Get(Key) is null ||
                 !TryKey(Key, out var group, out _, out var variable, out var perServer, out var number))
             {
@@ -270,13 +328,40 @@ namespace cloud.charging.open.protocols.OCPP.Node
             var clients  = ClientsOf(group).ToArray();
             var entries  = new List<OCPP21.SetVariableData>();
 
+            // The n-th server's own key: refused where it does not apply in its
+            // mode, as 2.1 refuses it - but emptied, it changes nothing.
             if (number is Int32 n)
+            {
+
+                if (!AppliesTo(clients[n - 1], variable))
+                    return Value.Trim().Length == 0
+                               ? OCPP16.ConfigurationStatus.Accepted
+                               : OCPP16.ConfigurationStatus.Rejected;
+
                 entries.Add(ClientEntry(clients[n - 1], variable, Value.Trim()));
 
+            }
+
+            // Each server's mode, where it is another: switched, a server
+            // leaves behind what only the other mode has, as in 2.1.
             else if (variable == "Mode")
-                return String.Equals(Value.Trim(), "NTSv4", StringComparison.OrdinalIgnoreCase)
-                           ? OCPP16.ConfigurationStatus.Accepted
-                           : OCPP16.ConfigurationStatus.Rejected;
+            {
+
+                if (!TryList(Value, clients.Length, DefaultOf(variable), out var values))
+                    return OCPP16.ConfigurationStatus.Rejected;
+
+                for (var index = 0; index < clients.Length; index++)
+                {
+
+                    if (modes16.FirstOrDefault(mode => String.Equals(mode, values[index], StringComparison.OrdinalIgnoreCase)) is not String mode)
+                        return OCPP16.ConfigurationStatus.Rejected;
+
+                    if (ClientValue(clients[index], variable) != mode)
+                        entries.Add(ClientEntry(clients[index], variable, mode));
+
+                }
+
+            }
 
             // Every server of the group, as 2.1 sets each one.
             else if (variable == "SignedResponses")
@@ -308,8 +393,26 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (!TryList(Value, clients.Length, DefaultOf(variable), out var values, EmptyIsUnset: variable is "AEADAlgorithm" or "NTSKEServerURL"))
                     return OCPP16.ConfigurationStatus.Rejected;
 
+                if (variable == "SSHUseOCPPConnection")
+                {
+
+                    if (values.Any(value => value.ToLowerInvariant() is not ("true" or "false")))
+                        return OCPP16.ConfigurationStatus.Rejected;
+
+                    values = [.. values.Select(value => value.ToLowerInvariant())];
+
+                }
+
+                // Written for the servers it applies to in their mode, and
+                // refused where that is none of them.
+                var applies = clients.Select(client => AppliesTo(client, variable)).ToArray();
+
+                if (clients.Length > 0 && !applies.Any(applying => applying))
+                    return OCPP16.ConfigurationStatus.Rejected;
+
                 for (var index = 0; index < clients.Length; index++)
-                    entries.Add(ClientEntry(clients[index], variable, values[index]));
+                    if (applies[index])
+                        entries.Add(ClientEntry(clients[index], variable, values[index]));
 
             }
 
@@ -410,9 +513,27 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (Clients.Length > 0)
                 {
 
-                    foreach (var variable in new[] { "ServerPort", "NTSKEServerPort", "Priority", "RootCAs", "OnPinMismatch", "TrustOnFirstUse" })
-                        if (ClientValue(Clients[^1], variable) is String last && last.Length > 0)
+                    // Its key exchange as the last one's goes: over SSH, on
+                    // the connection of OCPP or one of its own, with the CAs
+                    // whose host certificates for its own name it believes -
+                    // but no host key the last one is pinned to.
+                    if (ClientValue(Clients[^1], "Mode") == "NTSv4SSH")
+                    {
+
+                        Entries.Add(ClientEntry(id, "Mode", "NTSv4SSH"));
+
+                        if (ClientValue(Clients[^1], "SSHUseOCPPConnection") == "true")
+                            Entries.Add(ClientEntry(id, "SSHUseOCPPConnection", "true"));
+
+                    }
+
+                    foreach (var variable in new[] { "ServerPort", "NTSKEServerPort", "Priority", "RootCAs", "OnPinMismatch", "TrustOnFirstUse", "SSHPort", "SSHUserName", "SSHHostCAs" })
+                        if (AppliesTo(Clients[^1], variable) &&
+                            ClientValue(Clients[^1], variable) is String last && last.Length > 0 &&
+                            (variable is not ("SSHPort" or "SSHUserName") || last != DefaultOf(variable)))
+                        {
                             Entries.Add(ClientEntry(id, variable, last));
+                        }
 
                     // The AEAD algorithm its entry offers, and not what
                     // AEADAlgorithm reads where it names none - the one its
@@ -544,11 +665,45 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private static) IsThresholdKey(Key)
+        #region (private) AppliesTo(Client, Variable)
+
+        /// <summary>
+        /// Whether a variable of a server applies to it in its mode: nothing of
+        /// TLS over SSH, nothing of SSH over TLS, and on the connection of OCPP
+        /// none of a connection of its own - section 7 of the white paper "NTS
+        /// Key Establishment over SSH".
+        /// </summary>
+        private Boolean AppliesTo(String  Client,
+                                  String  Variable)
+        {
+
+            var overSSH  = ClientValue(Client, "Mode")                 == "NTSv4SSH";
+            var shared   = overSSH &&
+                           ClientValue(Client, "SSHUseOCPPConnection") == "true";
+
+            return Variable switch {
+                "NTSKEServerPort" or "NTSKEServerURL" or "RootCAs" or
+                "CertificatePins" or "RootPins"       or "TrustOnFirstUse"  => !overSSH,
+                "SSHUseOCPPConnection"                                       =>  overSSH,
+                "SSHPort"         or "SSHUserName"    or
+                "SSHHostKeyPins"  or "SSHHostCAs"                            =>  overSSH && !shared,
+                "OnPinMismatch"                                              => !shared,
+                _                                                            =>  true
+            };
+
+        }
+
+        #endregion
+
+        #region (private static) IsThresholdKey(Key) / IsClientKeyKey(Key)
 
         private static Boolean IsThresholdKey(String Key)
 
             => String.Equals(Key.Trim(), thresholdKey16, StringComparison.OrdinalIgnoreCase);
+
+        private static Boolean IsClientKeyKey(String Key)
+
+            => String.Equals(Key.Trim(), clientKeyKey16, StringComparison.OrdinalIgnoreCase);
 
         #endregion
 

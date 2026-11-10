@@ -34,6 +34,7 @@ using cloud.charging.open.protocols.WWCP.Node;
 using cloud.charging.open.protocols.WWCP.Node.Configuration;
 using cloud.charging.open.protocols.WWCP.Node.TestKit;
 
+using OCPP16 = cloud.charging.open.protocols.OCPPv1_6;
 using OCPP21 = cloud.charging.open.protocols.OCPPv2_1;
 
 #endregion
@@ -213,6 +214,63 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
         #endregion
 
+
+        #region ACentralSystemOfOCPP16SwitchesATimeServerToNTSv4SSH()
+
+        /// <summary>
+        /// The same through the configuration keys of OCPP 1.6, one key at a
+        /// time: the key the station signs in with is the common
+        /// "ntske.sshClientPublicKey"; an SSH key before the mode is refused;
+        /// the mode, the port and the n-th server's host key, in that order -
+        /// and the station's next check of the time goes over SSH.
+        /// </summary>
+        [Test]
+        public async Task ACentralSystemOfOCPP16SwitchesATimeServerToNTSv4SSH()
+        {
+
+            var model      = new NTSDeviceModel(node!, Log: null);
+            OCPP16.CP.IConfigurationKeySource keys = model;
+
+            var clientKey  = keys.Get("ntske.sshClientPublicKey")?.Value;
+
+            Assert.That(clientKey, Does.StartWith("ssh-ed25519 "));
+
+            server = new NTSServer(
+                         NTSKEPort:           tlsPort,
+                         NTSPort:             ntpPort,
+                         MasterKeysFilePath:  null,
+                         SSHPort:             sshPort,
+                         SSHAuthenticator:    SshUserAuthenticator.ForAuthorizedKeys(SshPublicKey.Parse(clientKey!).Blob)
+                     );
+
+            await server.Start();
+
+            var hostKey    = SshFingerprint.Sha256(server.SSHHostKeys[0].PublicKeyBlob);
+
+            var early      = await keys.ChangeAsync("ntske.local.sshPorts",         sshPort.ToString(), "CS-16");
+            var mode       = await keys.ChangeAsync("ntp.local.mode",               "NTSv4SSH",         "CS-16");
+            var port       = await keys.ChangeAsync("ntske.local.sshPorts",         sshPort.ToString(), "CS-16");
+            var pin        = await keys.ChangeAsync("ntske.local.sshHostKeyPins.1", hostKey,            "CS-16");
+
+            var after      = await node!.SyncTimeAsync(node.NTSGroupOf("local")!);
+
+            Assert.Multiple(() => {
+
+                Assert.That(early,                                                         Is.EqualTo(OCPP16.ConfigurationStatus.Rejected), "an SSH key before the mode");
+                Assert.That((mode, port, pin),                                             Is.EqualTo((OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Accepted)));
+
+                Assert.That(after.Value<Boolean>("ok"),                                    Is.True,  after.ToString());
+                Assert.That(keys.Get("ntp.local.mode")?.Value,                             Is.EqualTo("NTSv4SSH"));
+                Assert.That(model.ClientValue("time-ssh", "SSHHostKeyFingerprint"),        Is.EqualTo(hostKey));
+                Assert.That(Int32.Parse(model.ClientValue("time-ssh", "Cookies") ?? "0"),  Is.GreaterThan(0));
+
+                Assert.That(node.Log.Recent(100, null, null).Select(entry => entry.Message), Has.Some.Contains("(by ocpp:CS-16)"));
+
+            });
+
+        }
+
+        #endregion
 
         #region (private static) Set(Model, params Variables)
 

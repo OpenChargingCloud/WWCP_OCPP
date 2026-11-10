@@ -50,6 +50,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         private const String  ARoot       = "9d2e4f6a8b0c1d3e5f7a9b1c3d5e7f9a0b2c4d6e8f0a1b3c5d7e9f1a2b4c6d8e";
         private const String  APin        = "0f1e2d3c4b5a69788796a5b4c3d2e1f00f1e2d3c4b5a69788796a5b4c3d2e1f0";
 
+        // SHA-256 fingerprints of SSH keys, as ssh-keygen -l writes them.
+        private const String  AHostKey    = "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        private const String  AHostCA     = "SHA256:BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBA";
+
         private String            directory  = "";
         private IBridgedNode?  station;
 
@@ -108,8 +112,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             Assert.Multiple(() => {
 
-                Assert.That(keys,  Is.SupersetOf(new[] { "ntp.legal.minServers", "ntp.legal.authority", "ntske.legal.certificatePins.4", "ntp.local.servers" }));
-                Assert.That(keys,  Has.None.EqualTo("ntske.legal.certificatePins.5").And.None.EqualTo("ntp.local.authority").And.None.EqualTo("ntp.reboot.allowJumps"));
+                Assert.That(keys,  Is.SupersetOf(new[] { "ntp.legal.minServers", "ntp.legal.authority", "ntske.legal.certificatePins.4", "ntp.local.servers",
+                                                         "ntske.legal.sshHostKeyPins.4", "ntske.legal.sshHostCAs.4", "ntske.local.sshPorts", "ntske.sshClientPublicKey" }));
+                Assert.That(keys,  Has.None.EqualTo("ntske.legal.certificatePins.5").And.None.EqualTo("ntp.local.authority").And.None.EqualTo("ntp.reboot.allowJumps").
+                                       And.None.EqualTo("ntske.legal.sshHostKeyPins.5"));
 
                 Assert.That(Value("ntp.legal.servers"),         Is.EqualTo("ptbtime1.example.invalid,ptbtime2.example.invalid,ptbtime3.example.invalid,ptbtime4.example.invalid"));
                 Assert.That(Value("ntske.legal.ports"),         Is.EqualTo("4460,4460,4461,4462"));
@@ -487,6 +493,222 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+
+        #region TheModeIsAListPerServerThatTakesNTSv4SSH()
+
+        /// <summary>
+        /// "ntp.&lt;group&gt;.mode" is a list per server that takes NTSv4SSH as
+        /// well, read as one value where every server has the same mode. A
+        /// server switched leaves behind what only the other mode has, as in
+        /// 2.1, and the servers left as they were keep theirs.
+        /// </summary>
+        [Test]
+        public async Task TheModeIsAListPerServerThatTakesNTSv4SSH()
+        {
+
+            var before      = Value("ntp.legal.mode");
+
+            var mixed       = await Change("ntp.legal.mode", "NTSv4, NTSv4SSH");
+            var afterMixed  = Value("ntp.legal.mode");
+            var overSSH     = OnDisk()?["servers"]?.Select(server => server is JObject entry && entry["ssh"] is JObject).ToArray();
+            var rootOfFirst = Value("ntske.legal.rootPins.1");
+            var keyPorts    = OnDisk()?["servers"]?.Select(server => server is JObject entry ? entry["ntsKEPort"]?.Value<Int32>() : null).ToArray();
+
+            var other       = await Change("ntp.legal.mode", "NTSv4SSH,NTPv4");
+            var back        = await Change("ntp.legal.mode", "ntsv4");
+
+            Assert.Multiple(() => {
+
+                Assert.That(before,                       Is.EqualTo("NTSv4"));
+                Assert.That(mixed,                        Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(afterMixed,                   Is.EqualTo("NTSv4,NTSv4SSH,NTSv4SSH,NTSv4SSH"),  "the last value holds for the rest");
+                Assert.That(overSSH,                      Is.EqualTo(new[] { false, true, true, true }));
+                Assert.That(rootOfFirst,                  Is.EqualTo(ARoot),  "the server left over TLS lost its pin");
+                Assert.That(keyPorts?.Skip(2),            Has.All.Null,       "a port of NTS-KE over TLS, over SSH");
+
+                Assert.That(other,                        Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                Assert.That(back,                         Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(Value("ntp.legal.mode"),      Is.EqualTo("NTSv4"));
+                Assert.That(OnDisk()?["servers"]?.OfType<JObject>().Where(entry => entry["ssh"] is not null), Is.Empty);
+
+            });
+
+        }
+
+        #endregion
+
+        #region TheKeysOfSSHApplyToTheServersOverSSH()
+
+        /// <summary>
+        /// A list of SSH is written for the servers over SSH, and a list of TLS
+        /// for the servers over TLS, an entry for any other left alone; the
+        /// n-th server's host key pins are refused where it goes over TLS, as
+        /// its certificate pins are where it goes over SSH - but emptied, they
+        /// change nothing.
+        /// </summary>
+        [Test]
+        public async Task TheKeysOfSSHApplyToTheServersOverSSH()
+        {
+
+            await Change("ntp.legal.mode", ",NTSv4SSH");
+
+            var port        = await Change("ntske.legal.sshPorts",           "2222");
+            var user        = await Change("ntske.legal.sshUserNames",       "time");
+            var tlsPorts    = await Change("ntske.legal.ports",              "4470");
+            var pin         = await Change("ntske.legal.sshHostKeyPins.2",   AHostKey);
+            var pinOfTLS    = await Change("ntske.legal.sshHostKeyPins.1",   AHostKey);
+            var emptied     = await Change("ntske.legal.sshHostKeyPins.1",   "");
+            var certOfSSH   = await Change("ntske.legal.certificatePins.2",  APin);
+
+            var servers     = OnDisk()?["servers"]?.OfType<JObject>().ToArray() ?? [];
+
+            Assert.Multiple(() => {
+
+                Assert.That((port, user, tlsPorts, pin, emptied), Is.EqualTo((OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Accepted,
+                                                                              OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Accepted)));
+                Assert.That((pinOfTLS, certOfSSH),                Is.EqualTo((OCPP16.ConfigurationStatus.Rejected, OCPP16.ConfigurationStatus.Rejected)));
+
+                Assert.That(Value("ntske.legal.sshPorts"),        Is.EqualTo("22,2222,2222,2222"));
+                Assert.That(Value("ntske.legal.sshUserNames"),    Is.EqualTo("ntske,time,time,time"));
+                Assert.That(Value("ntske.legal.sshHostKeyPins.2"),Is.EqualTo(AHostKey));
+                Assert.That(Value("ntske.legal.sshHostKeyPins.1"),Is.EqualTo(""));
+
+                Assert.That(servers[0]["ntsKEPort"]?.Value<Int32>(),          Is.EqualTo(4470));
+                Assert.That(servers[0]["ssh"],                                Is.Null);
+                Assert.That(servers.Skip(1).Select(server => server["ntsKEPort"]), Has.All.Null,  "a port of NTS-KE over TLS, over SSH");
+                Assert.That(servers[1]["ssh"]?["port"]?.Value<Int32>(),       Is.EqualTo(2222));
+                Assert.That(servers[1]["ssh"]?["user"]?.Value<String>(),      Is.EqualTo("time"));
+                Assert.That(servers[1]["ssh"]?["hostKeyPins"]?.Values<String>(), Is.EqualTo(new[] { AHostKey }));
+
+            });
+
+        }
+
+        #endregion
+
+        #region AKeyOfSSHIsRefusedWhereNoServerGoesOverSSH()
+
+        /// <summary>
+        /// A list of SSH for a group whose servers all go over TLS changes
+        /// nothing and is refused: the mode first, as 2.1 refuses those
+        /// variables outside NTSv4SSH.
+        /// </summary>
+        [Test]
+        public async Task AKeyOfSSHIsRefusedWhereNoServerGoesOverSSH()
+        {
+
+            var port    = await Change("ntske.legal.sshPorts",             "2222");
+            var shared  = await Change("ntske.legal.sshUseOCPPConnection", "true");
+
+            Assert.Multiple(() => {
+                Assert.That((port, shared),  Is.EqualTo((OCPP16.ConfigurationStatus.Rejected, OCPP16.ConfigurationStatus.Rejected)));
+                Assert.That(OnDisk()?["servers"]?.OfType<JObject>().Where(entry => entry["ssh"] is not null), Is.Empty);
+            });
+
+        }
+
+        #endregion
+
+        #region TheConnectionOfOCPPIsAListPerServer()
+
+        /// <summary>
+        /// "ntske.&lt;group&gt;.sshUseOCPPConnection" is a list per server of
+        /// true and false. A server on the connection of OCPP loses its pins
+        /// and is left alone by the lists of a connection of its own - its port,
+        /// its user, what a mismatch comes to.
+        /// </summary>
+        [Test]
+        public async Task TheConnectionOfOCPPIsAListPerServer()
+        {
+
+            await Change("ntp.legal.mode",                "NTSv4SSH");
+            await Change("ntske.legal.sshHostKeyPins.1",  AHostKey);
+            await Change("ntske.legal.sshHostKeyPins.2",  AHostKey);
+
+            var shared   = await Change("ntske.legal.sshUseOCPPConnection", "TRUE,false");
+            var notBool  = await Change("ntske.legal.sshUseOCPPConnection", "yes");
+            var ports    = await Change("ntske.legal.sshPorts",             "2200");
+            var record   = await Change("ntske.legal.onPinMismatch",        "Record");
+
+            var servers  = OnDisk()?["servers"]?.OfType<JObject>().ToArray() ?? [];
+
+            Assert.Multiple(() => {
+
+                Assert.That((shared, notBool, ports, record),         Is.EqualTo((OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Rejected,
+                                                                                  OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Accepted)));
+
+                Assert.That(Value("ntske.legal.sshUseOCPPConnection"), Is.EqualTo("true,false,false,false"));
+                Assert.That(Value("ntske.legal.sshHostKeyPins.1"),     Is.EqualTo(""),  "a pin of its own, on the connection of OCPP");
+                Assert.That(Value("ntske.legal.sshPorts"),             Is.EqualTo("22,2200,2200,2200"));
+                Assert.That(Value("ntske.legal.onPinMismatch"),        Does.StartWith("Refuse,Record"));
+
+                Assert.That(servers[0]["ssh"]?.ToString(Newtonsoft.Json.Formatting.None), Is.EqualTo("""{"useOCPPConnection":true}"""));
+                Assert.That(servers[1]["ssh"]?["port"]?.Value<Int32>(),        Is.EqualTo(2200));
+
+            });
+
+        }
+
+        #endregion
+
+        #region TheClientKeyIsACommonKeyAndReadOnly()
+
+        /// <summary>
+        /// "ntske.sshClientPublicKey" is the key the node signs in with at the
+        /// SSH servers of its time servers, made at the first read and the same
+        /// at every read after it: one for every group, and read-only.
+        /// </summary>
+        [Test]
+        public async Task TheClientKeyIsACommonKeyAndReadOnly()
+        {
+
+            var listed   = Keys.Keys.ToArray();
+            var key      = Keys.Get("NTSKE.SSHCLIENTPUBLICKEY");
+            var again    = Value("ntske.sshClientPublicKey");
+            var change   = await Change("ntske.sshClientPublicKey", "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOther other@example");
+
+            Assert.Multiple(() => {
+                Assert.That(listed,                Does.Contain("ntske.sshClientPublicKey"));
+                Assert.That(key?.Key,              Is.EqualTo("ntske.sshClientPublicKey"),  "named as the paper writes it");
+                Assert.That(key?.AccessRights,     Is.EqualTo(OCPP16.AccessRights.ReadOnly));
+                Assert.That(key?.Value,            Does.StartWith("ssh-ed25519 "));
+                Assert.That(again,                 Is.EqualTo(key?.Value));
+                Assert.That(change,                Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+            });
+
+        }
+
+        #endregion
+
+        #region ANewServerGoesAsTheLastOneGoes()
+
+        /// <summary>
+        /// A server added by the list of servers makes its key exchange as the
+        /// last one makes it: over SSH, at its port, believing host certificates
+        /// of its CAs - but pinned to none of its host keys.
+        /// </summary>
+        [Test]
+        public async Task ANewServerGoesAsTheLastOneGoes()
+        {
+
+            await Change("ntp.legal.mode",                ",,,NTSv4SSH");
+            await Change("ntske.legal.sshPorts",          "2222");
+            await Change("ntske.legal.sshHostKeyPins.4",  AHostKey);
+            await Change("ntske.legal.sshHostCAs.4",      AHostCA);
+
+            var grown  = await Change("ntp.legal.servers", "ptbtime1.example.invalid,ptbtime2.example.invalid,ptbtime3.example.invalid,ptbtime4.example.invalid,ptbtime5.example.invalid");
+
+            Assert.Multiple(() => {
+                Assert.That(grown,                                 Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+                Assert.That(Value("ntp.legal.mode"),               Is.EqualTo("NTSv4,NTSv4,NTSv4,NTSv4SSH,NTSv4SSH"));
+                Assert.That(Value("ntske.legal.sshPorts"),         Is.EqualTo("22,22,22,2222,2222"));
+                Assert.That(Value("ntske.legal.sshHostCAs.5"),     Is.EqualTo(AHostCA));
+                Assert.That(Value("ntske.legal.sshHostKeyPins.5"), Is.EqualTo(""),  "the new server took the last one's host key");
+            });
+
+        }
+
+        #endregion
 
         #region TheReportingThresholdIsTheCommonKey()
 
