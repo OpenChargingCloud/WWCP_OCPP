@@ -1081,6 +1081,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region Send    JSON   messages
 
+        #region (private) TransportFor (DestinationId, Over = null)
+
+        /// <summary>
+        /// The transport an answer goes out on: the client connection the request
+        /// it answers came over, or else the route to its destination.
+        /// </summary>
+        /// <remarks>
+        /// A node with two client connections that both lead to its CSMS - two back
+        /// ends of one OCPP version, during a migration - has one route by that name,
+        /// to whichever of them connected last. An answer looked up by name went
+        /// there, also when the request had come from the other one, which then
+        /// waited out its whole timeout for an answer the wrong back end had been
+        /// handed. A client connection has exactly one far end, and that is whoever
+        /// asked. A connection this node accepted belongs to a server and its many
+        /// connections, which finds the one of the destination by itself.
+        /// </remarks>
+        /// <param name="DestinationId">Where the answer is addressed to.</param>
+        /// <param name="Over">The connection the request came over, where known.</param>
+        private IOCPPMessageTransport? TransportFor(NetworkingNode_Id    DestinationId,
+                                                    IMessageConnection?  Over)
+        {
+
+            if (Over?.WWCPClientOf() is IOCPPMessageTransport client)
+                return client;
+
+            if (NetworkingNode.Routing.LookupNetworkingNode(DestinationId, out var reachability))
+                return reachability.Transport as IOCPPMessageTransport;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region (internal) SendJSONRequest          (JSONRequestMessage, SentMessageResultDelegate = null)
 
         internal async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage     JSONRequestMessage,
@@ -1266,18 +1300,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region (internal) SendJSONResponse         (JSONRequestMessage)
 
-        internal async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        internal async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage  JSONResponseMessage,
+                                                                IMessageConnection?       Over                  = null)
         {
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (NetworkingNode.Routing.LookupNetworkingNode(JSONResponseMessage.Destination.Next, out var reachability))
-            {
-
-                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendJSONResponse(JSONResponseMessage);
-
-            }
+            if (TransportFor(JSONResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendJSONResponse(JSONResponseMessage);
 
             return sentMessageResult;
 
@@ -1287,18 +1317,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region (internal) SendJSONRequestError     (JSONRequestErrorMessage)
 
-        internal async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        internal async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
+                                                                    IMessageConnection?           Over                      = null)
         {
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (NetworkingNode.Routing.LookupNetworkingNode(JSONRequestErrorMessage.Destination.Next, out var reachability))
-            {
-
-                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendJSONRequestError(JSONRequestErrorMessage);
-
-            }
+            if (TransportFor(JSONRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendJSONRequestError(JSONRequestErrorMessage);
 
             return sentMessageResult;
 
@@ -1526,18 +1552,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region (internal) SendBinaryResponse       (BinaryResponseMessage)
 
-        internal async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        internal async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage  BinaryResponseMessage,
+                                                                  IMessageConnection?         Over                    = null)
         {
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (NetworkingNode.Routing.LookupNetworkingNode(BinaryResponseMessage.Destination.Next, out var reachability))
-            {
-
-                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendBinaryResponse(BinaryResponseMessage);
-
-            }
+            if (TransportFor(BinaryResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendBinaryResponse(BinaryResponseMessage);
 
             return sentMessageResult;
 
@@ -1547,18 +1569,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region (internal) SendBinaryRequestError   (BinaryRequestErrorMessage)
 
-        internal async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        internal async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
+                                                                      IMessageConnection?             Over                        = null)
         {
 
             var sentMessageResult = SentMessageResult.UnknownClient();
 
-            if (NetworkingNode.Routing.LookupNetworkingNode(BinaryRequestErrorMessage.Destination.Next, out var reachability))
-            {
-
-                if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendBinaryRequestError(BinaryRequestErrorMessage);
-
-            }
+            if (TransportFor(BinaryRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendBinaryRequestError(BinaryRequestErrorMessage);
 
             return sentMessageResult;
 

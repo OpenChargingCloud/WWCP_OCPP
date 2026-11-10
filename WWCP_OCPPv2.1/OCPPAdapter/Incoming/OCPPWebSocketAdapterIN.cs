@@ -488,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 if (ocppResponse.JSONResponseMessage       is not null)
                                 {
 
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse(ocppResponse.JSONResponseMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse(ocppResponse.JSONResponseMessage, WebSocketConnection);
 
                                     if (sentMessageResult.Result != SentMessageResults.Success)
                                     {
@@ -503,7 +503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 if (ocppResponse.JSONRequestErrorMessage   is not null)
                                 {
 
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (AddressToSender(ocppResponse.JSONRequestErrorMessage, jsonRequestMessage.NetworkPath));
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (AddressToSender(ocppResponse.JSONRequestErrorMessage, jsonRequestMessage.NetworkPath), WebSocketConnection);
 
                                     if (sentMessageResult.Result != SentMessageResults.Success)
                                     {
@@ -518,7 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 if (ocppResponse.BinaryResponseMessage     is not null)
                                 {
 
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage, WebSocketConnection);
 
                                     if (sentMessageResult.Result != SentMessageResults.Success)
                                     {
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
                                 {
 
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, jsonRequestMessage.NetworkPath));
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, jsonRequestMessage.NetworkPath), WebSocketConnection);
 
                                     if (sentMessageResult.Result != SentMessageResults.Success)
                                     {
@@ -589,7 +589,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           new JObject(
                                               new JProperty("request", JSONMessage)
                                           )
-                                      )
+                                      ),
+                                      WebSocketConnection
                                   );
 
                         }
@@ -869,7 +870,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.JSONRequestErrorMessage is not null)
-                                    sentMessageResult  = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(AddressToSender(ocppResponse.JSONRequestErrorMessage, jsonSendMessage.NetworkPath));
+                                    sentMessageResult  = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(AddressToSender(ocppResponse.JSONRequestErrorMessage, jsonSendMessage.NetworkPath), WebSocketConnection);
 
 
                                 // Notify about the result of the sent message
@@ -905,7 +906,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           new JObject(
                                               new JProperty("request", JSONMessage)
                                           )
-                                      )
+                                      ),
+                                      WebSocketConnection
                                   );
 
                         }
@@ -1064,16 +1066,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.JSONRequestErrorMessage   is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (AddressToSender(ocppResponse.JSONRequestErrorMessage, binaryRequestMessage.NetworkPath));
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONRequestError  (AddressToSender(ocppResponse.JSONRequestErrorMessage, binaryRequestMessage.NetworkPath), WebSocketConnection);
 
                                 if (ocppResponse.JSONResponseMessage       is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse      (ocppResponse.JSONResponseMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendJSONResponse      (ocppResponse.JSONResponseMessage, WebSocketConnection);
 
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, binaryRequestMessage.NetworkPath));
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, binaryRequestMessage.NetworkPath), WebSocketConnection);
 
                                 if (ocppResponse.BinaryResponseMessage     is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage);
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryResponse    (ocppResponse.BinaryResponseMessage, WebSocketConnection);
 
 
                                 // Notify about the result of the sent message
@@ -1109,7 +1111,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           new JObject(
                                               new JProperty("request", BinaryMessage.ToBase64())
                                           )
-                                      )
+                                      ),
+                                      WebSocketConnection
                                   );
 
                         }
@@ -1360,7 +1363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 var ocppResponse = await ocppResponseTask;
 
                                 if (ocppResponse.BinaryRequestErrorMessage is not null)
-                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, binarySendMessage.NetworkPath));
+                                    sentMessageResult = await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(AddressToSender(ocppResponse.BinaryRequestErrorMessage, binarySendMessage.NetworkPath), WebSocketConnection);
 
 
                                 // Notify about the result of the sent message
@@ -1396,7 +1399,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           new JObject(
                                               new JProperty("request", BinaryMessage.ToBase64())
                                           )
-                                      )
+                                      ),
+                                      WebSocketConnection
                                   );
 
                         }

@@ -274,10 +274,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region SendJSONResponse         (JSONResponseMessage)
 
-        public async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage JSONResponseMessage)
+        public async Task<SentMessageResult> SendJSONResponse(OCPP_JSONResponseMessage  JSONResponseMessage,
+                                                              IMessageConnection?       Over                  = null)
         {
 
-            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONResponse(JSONResponseMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONResponse(JSONResponseMessage, Over);
 
             await NotifyJSONResponseMessageSent(
                       JSONResponseMessage,
@@ -292,10 +293,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region SendJSONRequestError     (JSONRequestErrorMessage)
 
-        public async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage JSONRequestErrorMessage)
+        public async Task<SentMessageResult> SendJSONRequestError(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
+                                                                  IMessageConnection?           Over                      = null)
         {
 
-            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONRequestError(JSONRequestErrorMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendJSONRequestError(JSONRequestErrorMessage, Over);
 
             await NotifyJSONRequestErrorSent(
                       JSONRequestErrorMessage,
@@ -406,10 +408,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region SendBinaryResponse       (BinaryResponseMessage)
 
-        public async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage BinaryResponseMessage)
+        public async Task<SentMessageResult> SendBinaryResponse(OCPP_BinaryResponseMessage  BinaryResponseMessage,
+                                                                IMessageConnection?         Over                    = null)
         {
 
-            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponse(BinaryResponseMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinaryResponse(BinaryResponseMessage, Over);
 
             await NotifyBinaryResponseMessageSent(
                       BinaryResponseMessage,
@@ -424,10 +427,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region SendBinaryRequestError   (BinaryRequestErrorMessage)
 
-        public async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage BinaryRequestErrorMessage)
+        public async Task<SentMessageResult> SendBinaryRequestError(OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage,
+                                                                    IMessageConnection?             Over                        = null)
         {
 
-            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequestError(BinaryRequestErrorMessage);
+            var sentMessageResult = await parentNetworkingNode.OCPP.SendBinaryRequestError(BinaryRequestErrorMessage, Over);
 
             await NotifyBinaryRequestErrorSent(
                       BinaryRequestErrorMessage,
