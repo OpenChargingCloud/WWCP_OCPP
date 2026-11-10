@@ -715,6 +715,236 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 
         #endregion
 
+        #region AForwardedRequest_IsCountedAsForwarded_AndNotAsDropped()
+
+        /// <summary>
+        /// A request the controller forwards counts as forwarded, and as nothing else.
+        /// </summary>
+        /// <remarks>
+        /// REPLACE used to begin a chain of its own after the FORWARD branch, whose last
+        /// else counted every forwarded request as dropped, too.
+        /// </remarks>
+        [Test]
+        public async Task AForwardedRequest_IsCountedAsForwarded_AndNotAsDropped()
+        {
+
+            var cs1        = await AStation("CS-STD-12");
+
+            var forwarded  = localController!.OCPP.FORWARD.ForwardedMessages;
+            var replaced   = localController!.OCPP.FORWARD.ReplacedMessages;
+            var rejected   = localController!.OCPP.FORWARD.RejectedMessages;
+            var dropped    = localController!.OCPP.FORWARD.DroppedMessages;
+
+            var boot       = await cs1.SendBootNotification(BootReason.PowerUp, RequestTimeout: TimeSpan.FromSeconds(10));
+
+            Assert.Multiple(() => {
+                Assert.That(boot.Result.ResultCode,                              Is.EqualTo(ResultCode.OK), $"{boot.Result}");
+                Assert.That(localController.OCPP.FORWARD.ForwardedMessages,     Is.EqualTo(forwarded + 1), "forwarded");
+                Assert.That(localController.OCPP.FORWARD.ReplacedMessages,      Is.EqualTo(replaced),      "replaced");
+                Assert.That(localController.OCPP.FORWARD.RejectedMessages,      Is.EqualTo(rejected),      "rejected");
+                Assert.That(localController.OCPP.FORWARD.DroppedMessages,       Is.EqualTo(dropped),       "dropped");
+            });
+
+        }
+
+        #endregion
+
+        #region ARequestTheControllerRejects_WithoutARejectResponse_IsRefusedToTheStation()
+
+        /// <summary>
+        /// A filter of the controller REJECTs a station's request without saying what to
+        /// answer: the station is told so at once, and the request counts as rejected.
+        /// </summary>
+        /// <remarks>
+        /// A REJECT without a reject response used to fall through to DROP: no answer,
+        /// and the station waited out its whole timeout.
+        /// </remarks>
+        [Test]
+        public async Task ARequestTheControllerRejects_WithoutARejectResponse_IsRefusedToTheStation()
+        {
+
+            var cs1 = await AStation("CS-STD-13");
+
+            OCPPv2_1.NetworkingNode.OnAnyJSONRequestFilterDelegate reject = (timestamp, sender, connection, request, cancellationToken) =>
+                Task.FromResult(
+                    request.Action == "DataTransfer"
+                        ? OCPPv2_1.NetworkingNode.RequestForwardingDecision.REJECT("Not through this controller!")
+                        : OCPPv2_1.NetworkingNode.RequestForwardingDecision.NEXT(request)
+                );
+
+            var rejected  = localController!.OCPP.FORWARD.RejectedMessages;
+            var dropped   = localController!.OCPP.FORWARD.DroppedMessages;
+
+            localController!.OCPP.FORWARD.OnAnyJSONRequestFilter += reject;
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferData(
+                                          VendorId:        Vendor_Id. GraphDefined,
+                                          MessageId:       Message_Id.GraphDefined_TestMessage,
+                                          Data:            "Hello world!",
+                                          RequestId:       Request_Id.Parse("4722"),
+                                          RequestTimeout:  TimeSpan.FromSeconds(10)
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,                       Is.EqualTo(ResultCode.Filtered),  $"{transfer.Result}");
+                    Assert.That(transfer.Result.Description,                      Is.EqualTo("Not through this controller!"));
+                    Assert.That(Waited(started),                                  Is.LessThan(TimeSpan.FromSeconds(5)));
+                    Assert.That(localController.OCPP.FORWARD.RejectedMessages,   Is.EqualTo(rejected + 1), "rejected");
+                    Assert.That(localController.OCPP.FORWARD.DroppedMessages,    Is.EqualTo(dropped),      "dropped");
+                });
+
+            }
+            finally
+            {
+                localController!.OCPP.FORWARD.OnAnyJSONRequestFilter -= reject;
+            }
+
+        }
+
+        #endregion
+
+        #region ARequestTheControllerCannotRead_IsRefusedToTheStation()
+
+        /// <summary>
+        /// The controller cannot read a station's request it was to forward: the station
+        /// is told so at once, with the reason.
+        /// </summary>
+        /// <remarks>
+        /// A forwarding processor that cannot read a request REJECTs it without a reject
+        /// response, which used to mean no answer at all.
+        /// </remarks>
+        [Test]
+        public async Task ARequestTheControllerCannotRead_IsRefusedToTheStation()
+        {
+
+            var cs1 = await AStation("CS-STD-14");
+
+            localController!.OCPP.CustomDataTransferRequestParser = (json, request) => throw new ArgumentException("This controller cannot read it!");
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferData(
+                                          VendorId:        Vendor_Id. GraphDefined,
+                                          MessageId:       Message_Id.GraphDefined_TestMessage,
+                                          Data:            "Hello world!",
+                                          RequestId:       Request_Id.Parse("4723"),
+                                          RequestTimeout:  TimeSpan.FromSeconds(10)
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.Filtered),  $"{transfer.Result}");
+                    Assert.That(transfer.Result.Description,  Does.Contain("This controller cannot read it!"));
+                    Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
+                });
+
+            }
+            finally
+            {
+                localController!.OCPP.CustomDataTransferRequestParser = null;
+            }
+
+        }
+
+        #endregion
+
+        #region AForwardedBinaryRequest_IsCountedAsForwarded_AndNotAsDropped()
+
+        /// <summary>
+        /// A binary request the controller forwards counts as forwarded, and as nothing else.
+        /// </summary>
+        /// <remarks>
+        /// Binary requests were not counted at all, and their REPLACE began a chain of its
+        /// own after the FORWARD branch, as for JSON requests.
+        /// </remarks>
+        [Test]
+        public async Task AForwardedBinaryRequest_IsCountedAsForwarded_AndNotAsDropped()
+        {
+
+            var cs1        = await AStation("CS-STD-15");
+
+            var forwarded  = localController!.OCPP.FORWARD.ForwardedMessages;
+            var dropped    = localController!.OCPP.FORWARD.DroppedMessages;
+
+            var transfer   = await cs1.TransferBinaryData(
+                                       VendorId:             Vendor_Id. GraphDefined,
+                                       MessageId:            Message_Id.GraphDefined_TestMessage,
+                                       Data:                 "Hello world!".ToUTF8Bytes(),
+                                       RequestTimeout:       TimeSpan.FromSeconds(10),
+                                       SerializationFormat:  SerializationFormats.BinaryTextIds
+                                   );
+
+            Assert.Multiple(() => {
+                Assert.That(transfer.Result.ResultCode,                          Is.EqualTo(ResultCode.OK), $"{transfer.Result}");
+                Assert.That(localController.OCPP.FORWARD.ForwardedMessages,     Is.EqualTo(forwarded + 1), "forwarded");
+                Assert.That(localController.OCPP.FORWARD.DroppedMessages,       Is.EqualTo(dropped),       "dropped");
+            });
+
+        }
+
+        #endregion
+
+        #region ABinaryRequestTheControllerRejects_WithoutARejectResponse_IsRefusedToTheStation()
+
+        /// <summary>
+        /// A filter of the controller REJECTs a station's binary request without saying
+        /// what to answer: the station is told so at once, with a binary request error.
+        /// </summary>
+        [Test]
+        public async Task ABinaryRequestTheControllerRejects_WithoutARejectResponse_IsRefusedToTheStation()
+        {
+
+            var cs1 = await AStation("CS-STD-16");
+
+            OCPPv2_1.NetworkingNode.OnAnyBinaryRequestFilterDelegate reject = (timestamp, sender, connection, request, cancellationToken) =>
+                Task.FromResult(
+                    request.Action == "BinaryDataTransfer"
+                        ? OCPPv2_1.NetworkingNode.RequestForwardingDecision.REJECT("Not through this controller!")
+                        : new OCPPv2_1.NetworkingNode.RequestForwardingDecision(OCPP.NetworkingNode.ForwardingDecisions.NEXT)
+                );
+
+            var rejected  = localController!.OCPP.FORWARD.RejectedMessages;
+
+            localController!.OCPP.FORWARD.OnAnyBinaryRequestFilter += reject;
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferBinaryData(
+                                          VendorId:             Vendor_Id. GraphDefined,
+                                          MessageId:            Message_Id.GraphDefined_TestMessage,
+                                          Data:                 "Hello world!".ToUTF8Bytes(),
+                                          RequestId:            Request_Id.Parse("4724"),
+                                          RequestTimeout:       TimeSpan.FromSeconds(10),
+                                          SerializationFormat:  SerializationFormats.BinaryTextIds
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,                       Is.EqualTo(ResultCode.Filtered),  $"{transfer.Result}");
+                    Assert.That(transfer.Result.Description,                      Is.EqualTo("Not through this controller!"));
+                    Assert.That(Waited(started),                                  Is.LessThan(TimeSpan.FromSeconds(5)));
+                    Assert.That(localController.OCPP.FORWARD.RejectedMessages,   Is.EqualTo(rejected + 1), "rejected");
+                });
+
+            }
+            finally
+            {
+                localController!.OCPP.FORWARD.OnAnyBinaryRequestFilter -= reject;
+            }
+
+        }
+
+        #endregion
+
     }
 
 }

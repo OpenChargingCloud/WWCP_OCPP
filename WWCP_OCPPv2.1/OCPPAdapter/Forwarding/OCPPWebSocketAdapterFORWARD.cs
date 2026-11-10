@@ -618,7 +618,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region REPLACE
 
-            if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
+            // One decision, one branch: FORWARD, REPLACE, REJECT and DROP exclude each
+            // other. REPLACE used to start a chain of its own, so a forwarded request
+            // fell through to DROP and was counted as dropped as well.
+            else if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
             {
 
                 Interlocked.Increment(ref replacedMessages);
@@ -661,8 +664,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region REJECT
 
-            else if (forwardingDecision.Result == ForwardingDecisions.REJECT &&
-                     forwardingDecision.JSONRejectResponse is not null)
+            // With a reject response or without one: the asker is told. Without one - a
+            // filter's plain REJECT, or a request this node could not read - it used to be
+            // dropped without a word, and the asker waited out its whole timeout.
+            else if (forwardingDecision.Result == ForwardingDecisions.REJECT)
             {
 
                 Interlocked.Increment(ref rejectedMessages);
@@ -1222,6 +1227,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (forwardingDecision.Result == ForwardingDecisions.FORWARD)
             {
 
+                Interlocked.Increment(ref forwardedMessages);
+
                 var newBinaryRequestMessage = BinaryRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id);
 
                 if (forwardingDecision.NewDestination is not null)
@@ -1249,8 +1256,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region REPLACE
 
-            if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
+            // One decision, one branch, as for JSON requests.
+            else if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
             {
+
+                Interlocked.Increment(ref replacedMessages);
 
                 var newBinaryRequestMessage = forwardingDecision.NewBinaryRequest is null
                                                 ? BinaryRequestMessage.AppendToNetworkPath(parentNetworkingNode.Id)
@@ -1289,9 +1299,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region REJECT
 
-            else if (forwardingDecision.Result == ForwardingDecisions.REJECT &&
-                     forwardingDecision.BinaryRejectResponse is not null)
+            // With a reject response or without one: the asker is told, as for JSON requests.
+            else if (forwardingDecision.Result == ForwardingDecisions.REJECT)
             {
+
+                Interlocked.Increment(ref rejectedMessages);
 
                 await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(
                           new OCPP_BinaryRequestErrorMessage(
@@ -1317,6 +1329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             else
             {
                 // Just ignore the request!
+                Interlocked.Increment(ref droppedMessages);
             }
 
             #endregion

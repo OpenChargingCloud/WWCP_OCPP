@@ -638,7 +638,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             #region REPLACE
 
-            if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
+            // One decision, one branch: FORWARD, REPLACE, REJECT and DROP exclude each other.
+            else if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
             {
 
                 var newJSONRequestMessage = forwardingDecision.NewJSONRequest is null
@@ -679,8 +680,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             #region REJECT
 
-            else if (forwardingDecision.Result == ForwardingDecisions.REJECT &&
-                     forwardingDecision.JSONRejectResponse is not null)
+            // With a reject response or without one: the asker is told. Without one - a
+            // filter's plain REJECT, or a request this node could not read - it used to be
+            // dropped without a word, and the asker waited out its whole timeout.
+            else if (forwardingDecision.Result == ForwardingDecisions.REJECT)
             {
 
                 await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
@@ -1264,7 +1267,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             #region REPLACE
 
-            if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
+            // One decision, one branch, as for JSON requests.
+            else if (forwardingDecision.Result == ForwardingDecisions.REPLACE)
             {
 
                 var newBinaryRequestMessage = forwardingDecision.NewBinaryRequest is null
@@ -1304,8 +1308,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             #region REJECT
 
-            else if (forwardingDecision.Result == ForwardingDecisions.REJECT &&
-                     forwardingDecision.BinaryRejectResponse is not null)
+            // With a reject response or without one: the asker is told, as for JSON requests.
+            else if (forwardingDecision.Result == ForwardingDecisions.REJECT)
             {
 
                 await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(

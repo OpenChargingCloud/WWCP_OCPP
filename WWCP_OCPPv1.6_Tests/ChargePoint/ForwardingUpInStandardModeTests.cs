@@ -424,6 +424,86 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         #endregion
 
 
+        #region ARequestTheNodeRejects_WithoutARejectResponse_IsRefusedToTheChargePoint()
+
+        /// <summary>
+        /// A filter of the node REJECTs a charge point's request without saying what to
+        /// answer: the charge point is told so at once.
+        /// </summary>
+        /// <remarks>
+        /// A REJECT without a reject response used to fall through to DROP: no answer,
+        /// and the charge point waited out its whole timeout.
+        /// </remarks>
+        [Test]
+        public async Task ARequestTheNodeRejects_WithoutARejectResponse_IsRefusedToTheChargePoint()
+        {
+
+            var cp1 = await AChargePointBelow("CP-STD-06");
+
+            forwarder!.OCPP.FORWARD.OnAnyJSONRequestFilter += (timestamp, sender, connection, request, cancellationToken) =>
+                Task.FromResult(
+                    request.Action == "DataTransfer"
+                        ? OCPPv1_6.NetworkingNode.RequestForwardingDecision.REJECT("Not through this node!")
+                        : OCPPv1_6.NetworkingNode.RequestForwardingDecision.NEXT(request)
+                );
+
+            var started   = Timestamp.Now;
+
+            var transfer  = await cp1.TransferData(
+                                      VendorId:        Vendor_Id. GraphDefined,
+                                      MessageId:       Message_Id.GraphDefined_TestMessage,
+                                      Data:            "Hello world!",
+                                      RequestId:       Request_Id.Parse("4722"),
+                                      RequestTimeout:  TimeSpan.FromSeconds(10)
+                                  );
+
+            Assert.Multiple(() => {
+                Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.Filtered),  $"{transfer.Result}");
+                Assert.That(transfer.Result.Description,  Is.EqualTo("Not through this node!"));
+                Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
+            });
+
+        }
+
+        #endregion
+
+        #region ARequestTheNodeCannotRead_IsRefusedToTheChargePoint()
+
+        /// <summary>
+        /// The node cannot read a charge point's request it was to forward: the charge
+        /// point is told so at once, with the reason.
+        /// </summary>
+        /// <remarks>
+        /// A BootNotification, because it is the one action 1.6 has a forwarding
+        /// processor for; that processor REJECTs what it cannot read without a reject
+        /// response, which used to mean no answer at all.
+        /// </remarks>
+        [Test]
+        public async Task ARequestTheNodeCannotRead_IsRefusedToTheChargePoint()
+        {
+
+            var cp1 = await AChargePointBelow("CP-STD-07");
+
+            forwarder!.OCPP.CustomBootNotificationRequestParser = (json, request) => throw new ArgumentException("This node cannot read it!");
+
+            var started  = Timestamp.Now;
+
+            var boot     = await cp1.SendBootNotification(
+                                     ChargePointSerialNumber:  "SN-07",
+                                     RequestId:                Request_Id.Parse("4723"),
+                                     RequestTimeout:           TimeSpan.FromSeconds(10)
+                                 );
+
+            Assert.Multiple(() => {
+                Assert.That(boot.Result.ResultCode,   Is.EqualTo(ResultCode.Filtered),  $"{boot.Result}");
+                Assert.That(boot.Result.Description,  Does.Contain("This node cannot read it!"));
+                Assert.That(Waited(started),          Is.LessThan(TimeSpan.FromSeconds(5)));
+            });
+
+        }
+
+        #endregion
+
     }
 
 }
