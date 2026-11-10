@@ -393,10 +393,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
 
                 else
+                {
+
                     response = ReportChargingProfilesResponse.FormationViolation(
                                    Request,
                                    errorResponse
                                );
+
+                    await TellTheAnswererItCannotBeRead(
+                              WebSocketConnection,
+                              NetworkPath,
+                              RequestId,
+                              EventTrackingId,
+                              Binary: false,
+                              errorResponse,
+                              CancellationToken
+                          );
+
+                }
 
             }
             catch (Exception e)

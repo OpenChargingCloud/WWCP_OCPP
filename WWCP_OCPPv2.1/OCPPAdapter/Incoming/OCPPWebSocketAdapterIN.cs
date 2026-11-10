@@ -31,6 +31,7 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
@@ -363,6 +364,94 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                        SourceRouting.To(RequestNetworkPath.Source),
                        NetworkPath.From(parentNetworkingNode.Id)
                    );
+
+        }
+
+        #endregion
+
+        #region (private) TellTheAnswererItCannotBeRead(Connection, NetworkPath, RequestId, EventTrackingId, Binary, Why, ...)
+
+        /// <summary>
+        /// Tell whoever answered a request of this node that its answer cannot be read:
+        /// a response error with FormationViolation, under the request id of the answer,
+        /// in the format the answer came in.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// "A CALLRESULTERROR is sent back on receipt of a CALLRESULT that contains errors to
+        /// notify the sender that the response could not be processed", under the id of that
+        /// CALLRESULT (OCPP 2.1 Edition 2, Part 4, 4.2.3 and 4.1.4). This node never sent one,
+        /// and whoever answered never heard that its answer was of no use.
+        /// </para>
+        /// <para>
+        /// Only over a connection that speaks OCPP 2.1. OCPP 2.0.1, which this node speaks as
+        /// well, has no CALLRESULTERROR: a system that gets a message type it does not know
+        /// ignores it at best.
+        /// </para>
+        /// </remarks>
+        /// <param name="Connection">The connection the answer came over.</param>
+        /// <param name="ResponseNetworkPath">The network path of the answer.</param>
+        /// <param name="RequestId">The request id of the answer.</param>
+        /// <param name="EventTrackingId">The event tracking identification of the request.</param>
+        /// <param name="Binary">Whether the answer was a binary one.</param>
+        /// <param name="Why">Why the answer cannot be read.</param>
+        /// <param name="CancellationToken">An optional cancellation token.</param>
+        private async Task TellTheAnswererItCannotBeRead(IMessageConnection?  Connection,
+                                                         NetworkPath          ResponseNetworkPath,
+                                                         Request_Id           RequestId,
+                                                         EventTracking_Id     EventTrackingId,
+                                                         Boolean              Binary,
+                                                         String?              Why,
+                                                         CancellationToken    CancellationToken)
+        {
+
+            if (Connection?.Subprotocol != Version.WebSocketSubProtocolId)
+                return;
+
+            // An empty network path leaves no idea where to.
+            if (ResponseNetworkPath.Source == NetworkingNode_Id.Zero)
+                return;
+
+            var description = $"The answer cannot be read: {(Why.IsNotNullOrEmpty() ? Why : "-")}";
+
+            try
+            {
+
+                if (Binary)
+                    await parentNetworkingNode.OCPP.OUT.SendBinaryResponseError(
+                              new OCPP_BinaryResponseErrorMessage(
+                                  Now,
+                                  EventTrackingId,
+                                  NetworkingMode.Unknown,
+                                  SourceRouting.To(ResponseNetworkPath.Source),
+                                  NetworkPath.From(parentNetworkingNode.Id),
+                                  RequestId,
+                                  ResultCode.FormationViolation,
+                                  description,
+                                  CancellationToken: CancellationToken
+                              )
+                          );
+
+                else
+                    await parentNetworkingNode.OCPP.OUT.SendJSONResponseError(
+                              new OCPP_JSONResponseErrorMessage(
+                                  Now,
+                                  EventTrackingId,
+                                  NetworkingMode.Unknown,
+                                  SourceRouting.To(ResponseNetworkPath.Source),
+                                  NetworkPath.From(parentNetworkingNode.Id),
+                                  RequestId,
+                                  ResultCode.FormationViolation,
+                                  description,
+                                  CancellationToken: CancellationToken
+                              )
+                          );
+
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(TellTheAnswererItCannotBeRead));
+            }
 
         }
 

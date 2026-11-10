@@ -366,10 +366,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 }
 
                 else
+                {
+
                     response = GetFileResponse.FormationViolation(
                                    Request,
                                    errorResponse
                                );
+
+                    await TellTheAnswererItCannotBeRead(
+                              WebSocketConnection,
+                              NetworkPath,
+                              RequestId,
+                              EventTrackingId,
+                              Binary: true,
+                              errorResponse,
+                              CancellationToken
+                          );
+
+                }
 
             }
             catch (Exception e)
