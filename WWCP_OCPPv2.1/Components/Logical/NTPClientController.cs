@@ -52,8 +52,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("Enabled",                     DataTypes.Boolean,     "Whether the client is asked. A disabled client keeps its configuration.",                                                                    Writable: true),
             new ("ServerURL",                   DataTypes.String,      "The server to ask, as a host name or an IP address: in mode NTSv4 the NTS-KE server, unless NTSKEServerURL names another one.",  MaxLimit: 253,                 Writable: true),
             new ("ServerPort",                  DataTypes.Integer,     "The NTP port; in mode NTSv4 the port the NTS-KE response names takes precedence.",                            MinLimit: 1,  MaxLimit: 65535,                 Writable: true),
-            new ("Mode",                        DataTypes.OptionList,  "NTSv4: NTS (RFC 8915). NTPv4TLS: NTP over TLS to a smart meter gateway. NTPv4: NTP without authentication, never for the legal group.",
-                                                                       ValuesList: [ "NTPv4", "NTSv4", "NTPv4TLS" ],                                                                                                 Writable: true),
+            new ("Mode",                        DataTypes.OptionList,  "NTSv4: NTS (RFC 8915). NTPv4TLS: NTP over TLS to a smart meter gateway. NTPv4: NTP without authentication, never for the legal group. " +
+                                                                       "NTSv4SSH: NTS with its key exchange over SSH (white paper \"NTS Key Establishment over SSH\").",
+                                                                       ValuesList: [ "NTPv4", "NTSv4", "NTPv4TLS", "NTSv4SSH" ],                                                                                     Writable: true),
             new ("Priority",                    DataTypes.Integer,     "Clients with lower values are asked first; clients with the same value together, and their answers must reach the quorum on their own.", MinLimit: 0, MaxLimit: 255, Writable: true),
             new ("DelayAsymmetry",              DataTypes.Decimal,     "A correction, in milliseconds, applied to the offsets measured with this server for known stable asymmetries of the delays.",                Writable: true, MayBeEmpty: true),
             new ("DelayVarAsymmetry",           DataTypes.Decimal,     "Where a measurement held up beyond the shortest of the last delays was held up, as chrony's asymmetry: -0.5 all on the way there, +0.5 all on the way back.", MinLimit: -0.5m, MaxLimit: 0.5m, Writable: true, MayBeEmpty: true),
@@ -70,7 +71,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("AEADAlgorithm",               DataTypes.OptionList,  "The one AEAD algorithm offered for the NTS authentication of NTP messages; empty offers every one, the server choosing.",
                                                                        ValuesList: [ "AES-SIV-CMAC-256", "AES-128-GCM-SIV" ],                                                                                        Writable: true, MayBeEmpty: true),
             new ("SignedResponses",             DataTypes.Boolean,     "Whether a digitally signed second response is requested.",                                                                                  Writable: true),
-            new ("Problem",                     DataTypes.Boolean,     "True while the last NTS-KE handshake with this server was refused, or its last exchange failed."),
+
+            // Mode NTSv4SSH, section 7 of the white paper "NTS Key Establishment over SSH".
+            new ("SSHPort",                     DataTypes.Integer,     "The SSH port of the NTS-KE server in mode NTSv4SSH.",                                          MinLimit: 1,  MaxLimit: 65535,                 Writable: true),
+            new ("SSHUserName",                 DataTypes.String,      "The user name of the SSH user authentication in mode NTSv4SSH.",                                              MaxLimit: 32,                  Writable: true),
+            new ("SSHHostKeyPins",              DataTypes.String,      "Comma separated SHA-256 fingerprints of the host keys the server may show, as SHA256:<base64> of ssh-keygen -l.",                         Writable: true, MaxItems: 16),
+            new ("SSHHostCAs",                  DataTypes.String,      "Comma separated SHA-256 fingerprints of the SSH CA keys that may sign the host certificate of the server.",                                 Writable: true, MaxItems: 4),
+            new ("SSHUseOCPPConnection",        DataTypes.Boolean,     "Whether the subsystem is opened as a channel of the SSH connection of OCPP.",                                                               Writable: true),
+            new ("SSHClientPublicKey",          DataTypes.String,      "The public key the charging station authenticates with, in the authorized_keys format of OpenSSH."),
+            new ("SSHHostKeyFingerprint",       DataTypes.String,      "The SHA-256 fingerprint of the host key the server showed at its last NTS-KE handshake over SSH."),
+
+            new ("Problem",                    DataTypes.Boolean,     "True while the last NTS-KE handshake with this server was refused, or its last exchange failed."),
             new ("CertificateFingerprint",      DataTypes.String,      "The SHA-256 fingerprint of the certificate the server showed at its last NTS-KE handshake."),
             new ("LastKeyExchange",             DataTypes.DateTime,    "When the last NTS-KE handshake with this server succeeded."),
             new ("Cookies",                     DataTypes.Integer,     "The number of unused NTS cookies held for this server.")

@@ -343,6 +343,155 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
+        #region AServerIsSwitchedToNTSv4SSHWithItsHostKeyInOneRequest()
+
+        /// <summary>
+        /// Mode NTSv4SSH - section 7 of the white paper "NTS Key Establishment
+        /// over SSH" - with its SSH port and host key in one request, whatever
+        /// their order in it: the server's key exchange goes over SSH, and what
+        /// only TLS had - its port of NTS-KE, the root it was pinned to, what a
+        /// mismatch came to, what it learned on first use - goes with it.
+        /// </summary>
+        [Test]
+        public async Task AServerIsSwitchedToNTSv4SSHWithItsHostKeyInOneRequest()
+        {
+
+            var results = await Set(OCPP21.DataConsistencyModel.ACID,
+                                    Client("ptb-a",    "SSHHostKeyPins",  APin + "="),
+                                    Client("ptb-a",    "SSHPort",         "2222"),
+                                    Client("ptb-a",    "OnPinMismatch",   "Record"),
+                                    Client("ptb-a",    "Mode",            "NTSv4SSH"),
+                                    Client("legal-3",  "Mode",            "NTSv4SSH"));
+
+            var servers = (JArray) OnDisk("legal")!["servers"]!;
+            var ptbA    = (JObject) servers.Single(server => server["id"]?.Value<String>() == "ptb-a");
+            var third   = servers[2];
+
+            Assert.Multiple(() => {
+
+                Assert.That(StatusesOf(results),                                   Is.All.EqualTo(OCPP21.SetVariableStatus.Accepted));
+
+                Assert.That(model.ClientValue("ptb-a",   "Mode"),                  Is.EqualTo("NTSv4SSH"));
+                Assert.That(model.ClientValue("ptb-a",   "SSHPort"),               Is.EqualTo("2222"));
+                Assert.That(model.ClientValue("ptb-a",   "SSHUserName"),           Is.EqualTo("ntske"));
+                Assert.That(model.ClientValue("ptb-a",   "SSHHostKeyPins"),        Is.EqualTo(APin), "the padding of the copy was kept");
+                Assert.That(model.ClientValue("ptb-a",   "SSHHostCAs"),            Is.EqualTo(""));
+                Assert.That(model.ClientValue("ptb-a",   "OnPinMismatch"),         Is.EqualTo("Record"));
+                Assert.That(model.ClientValue("ptb-a",   "TrustOnFirstUse"),       Is.EqualTo("None"));
+                Assert.That(model.ClientValue("ptb-a",   "RootPins"),              Is.EqualTo(""));
+                Assert.That(model.ClientValue("ptb-a",   "SSHHostKeyFingerprint"), Is.EqualTo(""), "a host key before any key exchange");
+                Assert.That(model.ClientValue("ptb-a",   "Problem"),               Is.EqualTo("false"));
+
+                Assert.That(JToken.DeepEquals(ptbA["ssh"], JObject.Parse($$"""{ "port": 2222, "hostKeyPins": [ "{{APin}}" ], "onMismatch": "record" }""")),
+                            Is.True, ptbA.ToString());
+                Assert.That(ptbA["rootFingerprint"],                               Is.Null, "a root it was pinned to, over SSH");
+                Assert.That(ptbA["trustOnFirstUse"],                               Is.Null);
+                Assert.That(ptbA["onMismatch"],                                    Is.Null);
+
+                Assert.That(third["ssh"],                                          Is.Not.Null);
+                Assert.That(third["ntsKEPort"],                                    Is.Null, "a port of NTS-KE over TLS, over SSH");
+                Assert.That(model.ClientValue("legal-3", "SSHPort"),               Is.EqualTo("22"));
+
+            });
+
+        }
+
+        #endregion
+
+        #region WhatOnlyTheOtherModeHasIsRefused()
+
+        /// <summary>
+        /// A variable of SSH outside NTSv4SSH, and one of TLS in it - a pin of a
+        /// certificate, a root, a port of NTS-KE, a host key learned on first use
+        /// - are refused, saying why, and change nothing; so is a host key that
+        /// is no SHA-256 fingerprint.
+        /// </summary>
+        [Test]
+        public async Task WhatOnlyTheOtherModeHasIsRefused()
+        {
+
+            var ofSSH    = await Set(null, Client("legal-2", "SSHPort", "2222"));
+
+            await Set(OCPP21.DataConsistencyModel.ACID, Client("legal-2", "Mode", "NTSv4SSH"));
+
+            var pins     = await Set(null, Client("legal-2", "CertificatePins", new String('a', 64)));
+            var port     = await Set(null, Client("legal-2", "NTSKEServerPort", "4461"));
+            var learn    = await Set(null, Client("legal-2", "TrustOnFirstUse", "Certificate"));
+            var notAPin  = await Set(null, Client("legal-2", "SSHHostKeyPins",  "ab:cd:ef"));
+            var cleared  = await Set(null, Client("legal-2", "CertificatePins", ""));
+
+            Assert.Multiple(() => {
+
+                Assert.That(ofSSH.  Single().AttributeStatus,                      Is.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(ofSSH.  Single().AttributeStatusInfo?.AdditionalInfo,  Does.Contain("applies in the mode NTSv4SSH only"));
+
+                Assert.That(pins.   Single().AttributeStatus,                      Is.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(pins.   Single().AttributeStatusInfo?.AdditionalInfo,  Does.Contain("does not apply in the mode NTSv4SSH"));
+                Assert.That(port.   Single().AttributeStatus,                      Is.EqualTo(OCPP21.SetVariableStatus.Rejected));
+                Assert.That(learn.  Single().AttributeStatusInfo?.AdditionalInfo,  Does.Contain("not learned on first use"));
+                Assert.That(notAPin.Single().AttributeStatusInfo?.AdditionalInfo,  Does.Contain("no SHA-256 fingerprint of an SSH key"));
+                Assert.That(cleared.Single().AttributeStatus,                      Is.EqualTo(OCPP21.SetVariableStatus.Accepted), "an empty list of what does not apply");
+
+                Assert.That(model.ClientValue("legal-2", "SSHHostKeyPins"),        Is.EqualTo(""));
+                Assert.That(model.ClientValue("legal-2", "CertificatePins"),       Is.EqualTo(""));
+
+            });
+
+        }
+
+        #endregion
+
+        #region AServerSwitchedBackToNTSv4LeavesSSHBehind()
+
+        /// <summary>
+        /// Mode NTSv4 again: its key exchange goes over TLS, and its SSH entry
+        /// is gone from the file.
+        /// </summary>
+        [Test]
+        public async Task AServerSwitchedBackToNTSv4LeavesSSHBehind()
+        {
+
+            await Set(OCPP21.DataConsistencyModel.ACID, Client("legal-2", "Mode", "NTSv4SSH"), Client("legal-2", "SSHHostKeyPins", APin));
+
+            var back = await Set(null, Client("legal-2", "Mode", "NTSv4"));
+
+            Assert.Multiple(() => {
+                Assert.That(back.Single().AttributeStatus,                         Is.EqualTo(OCPP21.SetVariableStatus.Accepted));
+                Assert.That(model.ClientValue("legal-2", "Mode"),                  Is.EqualTo("NTSv4"));
+                Assert.That(model.ClientValue("legal-2", "SSHHostKeyPins"),        Is.EqualTo(""));
+                Assert.That(((JArray) OnDisk("legal")!["servers"]!)[1]["ssh"],     Is.Null, "its SSH entry is still in the file");
+            });
+
+        }
+
+        #endregion
+
+        #region TheKeyTheStationSignsInWithIsReadByEveryServer()
+
+        /// <summary>
+        /// SSHClientPublicKey: the key this node signs in with at its time
+        /// servers' SSH servers, made at the first read and the same for every
+        /// server and every read after - what a CSMS enters at the NTS-KE
+        /// server before it switches a server to NTSv4SSH.
+        /// </summary>
+        [Test]
+        public void TheKeyTheStationSignsInWithIsReadByEveryServer()
+        {
+
+            var first  = model.ClientValue("ptb-a",   "SSHClientPublicKey");
+            var second = model.ClientValue("legal-2", "SSHClientPublicKey");
+
+            Assert.Multiple(() => {
+                Assert.That(first,                                      Does.StartWith("ssh-ed25519 "));
+                Assert.That(second,                                     Is.EqualTo(first));
+                Assert.That(File.Exists(station!.Node.NTSKEClientKeyPath), Is.True);
+                Assert.That(model.ClientValue("ptb-a", "SSHUseOCPPConnection"), Is.Null, "a variable not there yet was answered");
+            });
+
+        }
+
+        #endregion
+
         #region AServerIsAskedForSignedResponsesAsSignedResponsesSays()
 
         /// <summary>
@@ -996,7 +1145,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(MutabilityOf(node, "NTPClientGroupController",  "legal",  "MinServers"),       Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
                 Assert.That(MutabilityOf(node, "NTPClientGroupController",  "legal",  "LastCheck"),        Is.EqualTo(OCPP21.MutabilityTypes.ReadOnly));
                 Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "ServerURL"),        Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
-                Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "Mode"),             Is.EqualTo(OCPP21.MutabilityTypes.ReadOnly));
+                Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "Mode"),             Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "SSHHostKeyPins"),   Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "SSHClientPublicKey"), Is.EqualTo(OCPP21.MutabilityTypes.ReadOnly));
+                Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "SSHHostKeyFingerprint"), Is.EqualTo(OCPP21.MutabilityTypes.ReadOnly));
                 Assert.That(MutabilityOf(node, "ClockCtrlr",                null,     "DateTime"),         Is.EqualTo(OCPP21.MutabilityTypes.ReadOnly));
                 Assert.That(MutabilityOf(node, "ClockCtrlr",                null,     "TimeSource"),       Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
                 Assert.That(MutabilityOf(node, "ClockCtrlr",                null,     "TimeAdjustmentReportingThreshold"),  Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
@@ -1083,6 +1235,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             => JObject.Parse(File.ReadAllText(station!.Node.ConfigFile.Path))["nts"]?["groups"]?[Group] as JObject;
 
         #endregion
+
+        /// <summary>
+        /// A SHA-256 fingerprint of an SSH key, as ssh-keygen -l writes it.
+        /// </summary>
+        private static readonly String APin = "SHA256:" + new String('A', 43);
 
         #region (private static) Entries: Controller, Group, Client, Clock
 

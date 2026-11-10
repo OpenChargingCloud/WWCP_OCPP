@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(maxDeviation.VariableCharacteristics?.MaxLimit,                                 Is.EqualTo(3600m));
 
                 Assert.That(mode.VariableCharacteristics?.DataType,                                         Is.EqualTo(DataTypes.OptionList));
-                Assert.That(mode.VariableCharacteristics?.ValuesList,                                       Is.EqualTo(new[] { "NTPv4", "NTSv4", "NTPv4TLS" }));
+                Assert.That(mode.VariableCharacteristics?.ValuesList,                                       Is.EqualTo(new[] { "NTPv4", "NTSv4", "NTPv4TLS", "NTSv4SSH" }));
 
                 Assert.That(config.Status,                                                                  Is.Not.EqualTo(GenericDeviceModelStatus.Rejected));
                 Assert.That(configReport.Any(reportData => reportData.Component.Name.StartsWith("NTP")),    Is.False);
@@ -454,7 +454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(ValuesListOf(narrowed, "Mode"),           Is.EqualTo(new[] { "NTSv4", "NTPv4TLS" }));
                 Assert.That(ValuesListOf(narrowed, "AEADAlgorithm"),  Is.EqualTo(new[] { "AES-SIV-CMAC-256", "AES-128-GCM-SIV" }));
                 Assert.That(ValuesListOf(narrowed, "OnPinMismatch"),  Is.EqualTo(new[] { "Refuse", "Record", "Accept" }));
-                Assert.That(ValuesListOf(paper,    "Mode"),           Is.EqualTo(new[] { "NTPv4", "NTSv4", "NTPv4TLS" }));
+                Assert.That(ValuesListOf(paper,    "Mode"),           Is.EqualTo(new[] { "NTPv4", "NTSv4", "NTPv4TLS", "NTSv4SSH" }));
             });
 
         }

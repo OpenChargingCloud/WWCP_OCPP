@@ -103,15 +103,27 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("Enabled",                 server       => BooleanOf  (server["enabled"])),
             ("ServerURL",               server       => HostOf     (server["hostname"])),
             ("ServerPort",              server       => IntegerOf  (server["ntpPort"])),
-            ("Mode",                    server       => "NTSv4"),
+            // NTSv4SSH where its key exchange goes over SSH (section 7 of the
+            // white paper "NTS Key Establishment over SSH").
+            ("Mode",                    server       => IsOverSSH(server) ? "NTSv4SSH" : "NTSv4"),
             ("Priority",                server       => IntegerOf  (server["priority"])),
             ("NTSKEServerPort",         server       => IntegerOf  (server["ntsKEPort"])),
             // "" where the server is its own key exchange server.
             ("NTSKEServerURL",          server       => HostOf     (server["ntsKEHostname"])),
             ("SignedResponses",         server       => server["signedResponses"]?.Value<Boolean>() == true ? "true" : "false"),
+            // How its key exchange goes over SSH: the usual where it goes over TLS.
+            ("SSHPort",                 server       => IntegerOf  (Child(server["ssh"], "port")) is { Length: > 0 } sshPort ? sshPort : NTSServerSSH.DefaultPort.ToString(CultureInfo.InvariantCulture)),
+            ("SSHUserName",             server       => TextOf     (Child(server["ssh"], "user")) is { Length: > 0 } sshUser ? sshUser : NTSServerSSH.DefaultUser),
+            ("SSHHostKeyPins",          server       => PinsOf     (server["ssh"], "hostKeyPins")),
+            ("SSHHostCAs",              server       => PinsOf     (server["ssh"], "hostCAs")),
+            // The node's own key, whichever mode: a CSMS reads it before it
+            // switches a server to NTSv4SSH - see ClientValue.
+            ("SSHClientPublicKey",      server       => ""),
+            ("SSHHostKeyFingerprint",   server       => TextOf     (server["sshHostKey"])),
             ("CertificatePins",         server       => PinsOf     (server["heldTo"], "certificates")),
             ("RootPins",                server       => PinsOf     (server["heldTo"], "roots")),
-            ("OnPinMismatch",           server       => OptionOf   (Child(server["heldTo"], "onMismatch"),      "Refuse")),
+            // Over SSH, what a host key that is none it is held to comes to.
+            ("OnPinMismatch",           server       => OptionOf   (IsOverSSH(server) ? Child(server["ssh"], "onMismatch") : Child(server["heldTo"], "onMismatch"), "Refuse")),
             ("TrustOnFirstUse",         server       => OptionOf   (Child(server["heldTo"], "trustOnFirstUse"), "None")),
             ("RootCAs",                 server       => TextOf     (Child(server["heldTo"], "rootGroup"))),
             ("AEADAlgorithm",           server       => AEADOf     (server["aead"], server["aeadAlgorithm"])),
@@ -119,7 +131,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("DelayAsymmetry",          server       => NumberOf   (server["delayAsymmetryMs"])),
             ("DelayVarAsymmetry",       server       => NumberOf   (server["delayVarAsymmetry"])),
             ("MaxRefresh",              server       => RefreshOf  (server).Max),
-            ("Problem",                 server       => ProblemOf  (server["judgement"])),
+            // Over SSH, a host key that was refused.
+            ("Problem",                 server       => ProblemOf  (IsOverSSH(server) ? server["hostKeyJudgement"] : server["judgement"])),
             ("CertificateFingerprint",  server       => TextOf     (server["certificate"])),
             ("LastKeyExchange",         server       => DateTimeOf (server["lastExchange"])),
             ("Cookies",                 server       => IntegerOf  (server["cookies"]))
@@ -194,11 +207,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         IEnumerable<String> protocols.OCPPv2_1.INTPControllerSource.  ClientVariables
             => ClientVariables;
 
-        // The node asks its time servers by NTS only, so a CSMS is offered no
-        // other mode: neither NTPv4 nor NTPv4TLS.
+        // The node asks its time servers by NTS only, its key exchange over TLS
+        // or over SSH, so a CSMS is offered no other mode: neither NTPv4 nor
+        // NTPv4TLS.
         IEnumerable<String>? protocols.OCPPv2_1.INTPControllerSource. SupportedClientValues(String Variable)
             => String.Equals(Variable, "Mode", StringComparison.OrdinalIgnoreCase)
-                   ? [ "NTSv4" ]
+                   ? [ "NTSv4", "NTSv4SSH" ]
                    : null;
 
         IEnumerable<String> protocols.OCPPv2_1.IClockControllerSource.Variables
@@ -287,9 +301,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!clientVariableNamed.TryGetValue(Variable, out var value))
                 return null;
 
-            return ServerOf(Client) is JObject server
-                       ? value(server)
-                       : null;
+            if (ServerOf(Client) is not JObject server)
+                return null;
+
+            // The key this node signs in with at its time servers' SSH servers,
+            // made at the first need: "" only where it can be had neither way,
+            // which the log says why.
+            if (String.Equals(Variable, "SSHClientPublicKey", StringComparison.OrdinalIgnoreCase))
+                return node.NTSKEClientPublicKey ?? "";
+
+            return value(server);
 
         }
 
@@ -599,6 +620,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
             => Judgement is JObject judgement && judgement["accepted"]?.Type == JTokenType.Boolean && !judgement.Value<Boolean>("accepted")
                    ? "true"
                    : "false";
+
+        #endregion
+
+        #region (private static) IsOverSSH(Server)
+
+        /// <summary>
+        /// Whether the server's own entry has its key exchange go over SSH.
+        /// </summary>
+        private static Boolean IsOverSSH(JObject Server)
+            => Server["ssh"] is JObject;
 
         #endregion
 

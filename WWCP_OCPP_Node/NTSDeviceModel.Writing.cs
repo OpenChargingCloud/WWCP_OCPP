@@ -96,7 +96,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         private static readonly String[] writableClientVariables = [
             "Enabled", "ServerURL", "ServerPort", "NTSKEServerPort", "Priority", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse",
-            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh", "DelayAsymmetry", "DelayVarAsymmetry", "NTSKEServerURL", "SignedResponses"
+            "RootCAs", "AEADAlgorithm", "MinRefresh", "MaxRefresh", "DelayAsymmetry", "DelayVarAsymmetry", "NTSKEServerURL", "SignedResponses",
+            "Mode", "SSHPort", "SSHUserName", "SSHHostKeyPins", "SSHHostCAs"
         ];
 
         private static readonly String[] writableClockVariables = [
@@ -637,7 +638,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 #region What is set of each server
 
-                foreach (var item in byGroup.Where(item => item.Kind == Kind.Client))
+                // Mode first, whatever its place in the request: what a request
+                // sets beside it is set in the mode it switches to.
+                foreach (var item in byGroup.Where(item => item.Kind == Kind.Client).OrderBy(item => item.Is("Mode") ? 0 : 1))
                 {
 
                     var server = servers.FirstOrDefault(server => String.Equals(server.Id, item.Client, StringComparison.OrdinalIgnoreCase));
@@ -1341,6 +1344,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public Decimal?      DelayVarAsymmetry { get; private set; }
             public String?       NTSKEHostname    { get; private set; }
             public Boolean       SignedResponses  { get; private set; }
+            public Boolean       OverSSH          { get; private set; }
+            public UInt16?       SSHPort          { get; private set; }
+            public String?       SSHUser          { get; private set; }
+            public List<String>  SSHHostKeyPins   { get; private set; } = [];
+            public List<String>  SSHHostCAs       { get; private set; } = [];
+            public String        SSHOnMismatch    { get; private set; } = "refuse";
             public JObject?      Shown            { get; private set; }
             public Boolean       Renamed          { get; private set; }
 
@@ -1354,6 +1363,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             {
 
                 var heldTo = JSON["heldTo"] as JObject;
+                var ssh    = JSON["ssh"]    as JObject;
                 var server = new Server {
                                  Id               = JSON["id"]?.Value<String>(),
                                  Hostname         = (JSON["hostname"]?.Value<String>() ?? "").TrimEnd('.'),
@@ -1381,7 +1391,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  // And where its keys come from.
                                  NTSKEHostname    = JSON["ntsKEHostname"]?.Value<String>() is { Length: > 0 } keyExchange ? keyExchange.TrimEnd('.') : null,
                                  // And whether its responses are to be signed.
-                                 SignedResponses  = JSON["signedResponses"]?.Value<Boolean>() == true
+                                 SignedResponses  = JSON["signedResponses"]?.Value<Boolean>() == true,
+                                 // And its key exchange over SSH, where its entry
+                                 // has it go so: left out, the next change of
+                                 // anything would have it go over TLS.
+                                 OverSSH          = ssh is not null,
+                                 SSHPort          = ssh?["port"]?.Type == JTokenType.Integer ? ssh["port"]!.Value<UInt16>() : null,
+                                 SSHUser          = ssh?["user"]?.Value<String>() is { Length: > 0 } user ? user : null,
+                                 SSHHostKeyPins   = ssh?["hostKeyPins"] is JArray hostKeyPins ? [.. hostKeyPins.Values<String>().OfType<String>()] : [],
+                                 SSHHostCAs       = ssh?["hostCAs"]     is JArray hostCAs     ? [.. hostCAs.    Values<String>().OfType<String>()] : [],
+                                 SSHOnMismatch    = ssh?["onMismatch"]?.Value<String>() ?? "refuse"
                              };
 
                 server.Key   = server.Id ?? $"#{Interlocked.Increment(ref made)}";
@@ -1428,6 +1447,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        DelayVarAsymmetry = DelayVarAsymmetry,
                        NTSKEHostname    = NTSKEHostname,
                        SignedResponses  = SignedResponses,
+                       OverSSH          = OverSSH,
+                       SSHPort          = SSHPort,
+                       SSHUser          = SSHUser,
+                       SSHHostKeyPins   = [.. SSHHostKeyPins],
+                       SSHHostCAs       = [.. SSHHostCAs],
+                       SSHOnMismatch    = SSHOnMismatch,
                        Shown            = Shown,
                        Renamed          = Renamed,
                        Key              = Key
@@ -1468,7 +1493,29 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 Problem = null;
 
-                switch (Variable.ToLowerInvariant())
+                var variable = Variable.ToLowerInvariant();
+
+                // Over SSH, nothing of TLS applies: no port of NTS-KE over TLS,
+                // no other key exchange server, no certificate to be held to;
+                // and over TLS, nothing of SSH. Section 7 of the white paper
+                // "NTS Key Establishment over SSH".
+                if (OverSSH && (variable is "ntskeserverport" ||
+                                variable is "certificatepins" or "rootpins" or "rootcas" or "ntskeserverurl" && Value.Length > 0 ||
+                                variable is "trustonfirstuse" && !String.Equals(Value, "None", StringComparison.OrdinalIgnoreCase)))
+                {
+                    Problem = variable == "trustonfirstuse"
+                                  ? $"{Where}: an SSH host key is not learned on first use: pin it in SSHHostKeyPins, or name its CA in SSHHostCAs."
+                                  : $"{Where} does not apply in the mode NTSv4SSH, whose key exchange goes over SSH.";
+                    return false;
+                }
+
+                if (!OverSSH && variable is "sshport" or "sshusername" or "sshhostkeypins" or "sshhostcas")
+                {
+                    Problem = $"{Where} applies in the mode NTSv4SSH only: set Mode to NTSv4SSH in the same request.";
+                    return false;
+                }
+
+                switch (variable)
                 {
 
                     case "enabled":
@@ -1478,7 +1525,68 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     case "serverurl":
                         if (!TryParseServer(Value, Where, out var host, out var port, out Problem))
                             return false;
+                        if (OverSSH && port.HasValue)
+                        {
+                            Problem = $"{Where}: in the mode NTSv4SSH the server's SSH port is SSHPort, and an NTS-KE port over TLS does not apply.";
+                            return false;
+                        }
                         Rename(host, port);
+                        break;
+
+                    // Its key exchange over TLS or over SSH. Switched, what only
+                    // the other way had goes: a port of NTS-KE and pins of
+                    // certificates over SSH, a host key and an SSH port over TLS.
+                    case "mode":
+                        var overSSH = String.Equals(Value, "NTSv4SSH", StringComparison.OrdinalIgnoreCase);
+                        if (overSSH && !OverSSH)
+                        {
+                            OverSSH          = true;
+                            NTSKEPort        = null;
+                            NTSKEHostname    = null;
+                            Certificates     = [];
+                            Roots            = [];
+                            RootGroup        = null;
+                            TrustOnFirstUse  = null;
+                            OnMismatch       = "refuse";
+                        }
+                        else if (!overSSH && OverSSH)
+                        {
+                            OverSSH          = false;
+                            SSHPort          = null;
+                            SSHUser          = null;
+                            SSHHostKeyPins   = [];
+                            SSHHostCAs       = [];
+                            SSHOnMismatch    = "refuse";
+                        }
+                        break;
+
+                    case "sshport":
+                        SSHPort = UInt16.Parse(Value, CultureInfo.InvariantCulture);
+                        break;
+
+                    case "sshusername":
+                        SSHUser = Value.Length > 0 && Value != NTSServerSSH.DefaultUser ? Value : null;
+                        break;
+
+                    // SHA-256 fingerprints of keys, as ssh-keygen -l writes them:
+                    // "SHA256:" and 43 characters of base64.
+                    case "sshhostkeypins":
+                    case "sshhostcas":
+                        var fingerprints = new List<String>();
+                        foreach (var text in ListOf(Value))
+                        {
+                            if (!NTSServerSSH.TryParseFingerprint(text, out var fingerprint))
+                            {
+                                Problem = $"{Where}: '{text}' is no SHA-256 fingerprint of an SSH key, which ssh-keygen -l writes as \"SHA256:\" and 43 characters of base64.";
+                                return false;
+                            }
+                            if (!fingerprints.Contains(fingerprint))
+                                fingerprints.Add(fingerprint);
+                        }
+                        if (variable == "sshhostkeypins")
+                            SSHHostKeyPins = fingerprints;
+                        else
+                            SSHHostCAs     = fingerprints;
                         break;
 
                     case "serverport":
@@ -1501,8 +1609,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         Roots = ListOf(Value);
                         break;
 
+                    // Over SSH, what a host key that is none it is held to comes to.
                     case "onpinmismatch":
-                        OnMismatch = Value.ToLowerInvariant();
+                        if (OverSSH)
+                            SSHOnMismatch = Value.ToLowerInvariant();
+                        else
+                            OnMismatch    = Value.ToLowerInvariant();
                         break;
 
                     case "trustonfirstuse":
@@ -1660,6 +1772,22 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (DelayVarAsymmetry is Decimal asymmetry)                    json["delayVarAsymmetry"] = asymmetry;
                 if (NTSKEHostname is not null)                                 json["ntsKEHostname"]     = NTSKEHostname;
                 if (SignedResponses)                                           json["signedResponses"]   = true;
+
+                if (OverSSH)
+                {
+
+                    var ssh = new JObject();
+
+                    if (SSHPort is UInt16 sshPort)                             ssh["port"]         = sshPort;
+                    if (SSHUser is not null)                                   ssh["user"]         = SSHUser;
+                    if (SSHHostKeyPins.Count > 0)                              ssh["hostKeyPins"]  = new JArray(SSHHostKeyPins);
+                    if (SSHHostCAs.    Count > 0)                              ssh["hostCAs"]      = new JArray(SSHHostCAs);
+                    if (SSHOnMismatch != "refuse" &&
+                        SSHHostKeyPins.Count + SSHHostCAs.Count > 0)           ssh["onMismatch"]   = SSHOnMismatch;
+
+                    json["ssh"] = ssh;
+
+                }
 
                 json.Merge(PinsJSON());
 

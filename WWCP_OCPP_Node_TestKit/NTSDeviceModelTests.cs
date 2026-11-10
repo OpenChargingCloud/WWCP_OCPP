@@ -215,10 +215,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         #region ACSMSIsOfferedOnlyTheModeTheNodeHas()
 
         /// <summary>
-        /// The node asks its time servers by NTS only, so the valuesList of Mode
-        /// a CSMS reads is NTSv4 alone, for every server of every group (STS
-        /// 3.2.4: "The valuesList shall list only what the charging station
-        /// supports"). The other values lists stay the paper's.
+        /// The node asks its time servers by NTS only, its key exchange over TLS
+        /// or over SSH, so the valuesList of Mode a CSMS reads is NTSv4 and
+        /// NTSv4SSH, for every server of every group (STS 3.2.4: "The valuesList
+        /// shall list only what the charging station supports"). The other
+        /// values lists stay the paper's.
         /// </summary>
         [Test]
         public void ACSMSIsOfferedOnlyTheModeTheNodeHas()
@@ -237,8 +238,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             var node = station!.OCPPv2_1Node;
 
             Assert.Multiple(() => {
-                Assert.That(ValuesListOf(node, "ptb-a",    "Mode"),           Is.EqualTo(new[] { "NTSv4" }));
-                Assert.That(ValuesListOf(node, "local-1",  "Mode"),           Is.EqualTo(new[] { "NTSv4" }));
+                Assert.That(ValuesListOf(node, "ptb-a",    "Mode"),           Is.EqualTo(new[] { "NTSv4", "NTSv4SSH" }));
+                Assert.That(ValuesListOf(node, "local-1",  "Mode"),           Is.EqualTo(new[] { "NTSv4", "NTSv4SSH" }));
                 Assert.That(ValuesListOf(node, "ptb-a",    "AEADAlgorithm"),  Is.EqualTo(new[] { "AES-SIV-CMAC-256", "AES-128-GCM-SIV" }));
                 Assert.That(ValuesListOf(node, "ptb-a",    "OnPinMismatch"),  Is.EqualTo(new[] { "Refuse", "Record", "Accept" }));
             });
