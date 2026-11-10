@@ -161,6 +161,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 testCSMS1.OCPP.SignaturePolicy.AddSigningRule     (ResetRequest. DefaultJSONLDContext, requestKeyPair!);
                 testCSMS1.OCPP.SignaturePolicy.AddVerificationRule(ResetResponse.DefaultJSONLDContext);
 
+                // The CSMS wants the response signed, so the station signs it. An unsigned
+                // response used to pass that rule, because without signatures the default
+                // action of the policy decided, not the rule.
+                var responseKeyPair = ECCKeyPair.GenerateKeys()!;
+                chargingStation1.OCPP.SignaturePolicy.AddSigningRule(ResetResponse.DefaultJSONLDContext, responseKeyPair);
+
 
                 var resetType       = ResetType.Immediate;
                 var now             = Timestamp.Now;
@@ -172,6 +178,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 Assert.That(response.Result.ResultCode, Is.EqualTo(ResultCode.OK));
                 Assert.That(response.Status, Is.EqualTo(ResetStatus.Accepted));
+                Assert.That(response.Signatures.Count(), Is.EqualTo(1));
+                Assert.That(response.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
+                Assert.That(response.Signatures.First().KeyId, Is.EqualTo(responseKeyPair.PublicKeyBytes));
 
 
                 Assert.That(resetRequests.Count, Is.EqualTo(1));

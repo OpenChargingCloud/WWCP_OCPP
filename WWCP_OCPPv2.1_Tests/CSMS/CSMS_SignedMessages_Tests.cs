@@ -123,6 +123,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #endregion
 
 
+        #region AnUnsignedResetIsRefusedWhereTheStationWantsItSigned()
+
+        /// <summary>
+        /// A station whose policy wants Reset requests signed refuses one that carries no
+        /// signature. It used to accept it: without signatures, the default action of the
+        /// policy decided, not the rule.
+        /// </summary>
+        [Test]
+        public async Task AnUnsignedResetIsRefusedWhereTheStationWantsItSigned()
+        {
+
+            Assert.That(testCSMS1,        Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+
+            chargingStation1!.OCPP.SignaturePolicy.AddVerificationRule(ResetRequest.DefaultJSONLDContext,
+                                                                       VerificationRuleActions.VerifyAll);
+
+            var response = await testCSMS1!.Reset(
+                                     Destination:  SourceRouting.To(chargingStation1.Id),
+                                     ResetType:    ResetType.Immediate
+                                 );
+
+            Assert.That(response.Status, Is.EqualTo(ResetStatus.Rejected),
+                        "The station reset for an unsigned request although its policy wants Reset requests signed!");
+
+        }
+
+        #endregion
+
+        #region AResetSignedByAStrangerIsRefusedWhereTheStationNamesTheKey()
+
+        /// <summary>
+        /// A station whose rule names the key a Reset must be signed with refuses a Reset that
+        /// is validly signed by another key. It used to verify each signature against the key
+        /// the signature itself names, so any key passed.
+        /// </summary>
+        [Test]
+        public async Task AResetSignedByAStrangerIsRefusedWhereTheStationNamesTheKey()
+        {
+
+            Assert.That(testCSMS1,        Is.Not.Null);
+            Assert.That(chargingStation1, Is.Not.Null);
+
+            var trusted   = ECCKeyPair.GenerateKeys()!;
+            var stranger  = ECCKeyPair.GenerateKeys()!;
+
+            chargingStation1!.OCPP.SignaturePolicy.AddVerificationRules([
+                new VerificationRule(ResetRequest.DefaultJSONLDContext, 1, VerificationRuleActions.VerifyAll, trusted)
+            ]);
+
+            var byStranger  = await testCSMS1!.Reset(
+                                        Destination:  SourceRouting.To(chargingStation1.Id),
+                                        ResetType:    ResetType.Immediate,
+                                        SignInfos:    [ stranger.ToSignInfo1("mallory") ]
+                                    );
+
+            var byTrusted   = await testCSMS1!.Reset(
+                                        Destination:  SourceRouting.To(chargingStation1.Id),
+                                        ResetType:    ResetType.Immediate,
+                                        SignInfos:    [ trusted.ToSignInfo1("admin") ]
+                                    );
+
+            Assert.Multiple(() => {
+                Assert.That(byStranger.Status, Is.EqualTo(ResetStatus.Rejected),
+                            "The station reset for a request signed by a key its rule does not name!");
+                Assert.That(byTrusted. Status, Is.EqualTo(ResetStatus.Accepted),
+                            "The station refused a request signed by the key its rule names!");
+            });
+
+        }
+
+        #endregion
+
+
     }
 
 }

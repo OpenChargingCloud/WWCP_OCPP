@@ -134,13 +134,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             try
             {
 
+                // The rule wants SetVariables signed, so an unsigned request is refused before
+                // the role is even asked, and no entry of it is applied.
                 var unsigned = await SetSomeVariable();
 
-                Assert.Multiple(() => {
-                    Assert.That(unsigned.Result.ResultCode,                          Is.EqualTo(ResultCode.OK));
-                    Assert.That(unsigned.SetVariableResults.First().AttributeStatus,  Is.EqualTo(SetVariableStatus.Rejected),
-                                "An unsigned request got through although an admin role is configured!");
-                });
+                Assert.That(unsigned.SetVariableResults.Any(result => result.AttributeStatus == SetVariableStatus.Accepted), Is.False,
+                            "An unsigned request got through although an admin role is configured!");
 
                 // Signed, but by somebody who is not the admin: a valid signature is not the
                 // point, the key behind it is.

@@ -424,6 +424,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                 localController.OCPP.IN.     AnycastIds.      Add(NetworkingNode_Id.CSMS);
                 localController.OCPP.FORWARD.AnycastIdsDenied.Add(NetworkingNode_Id.CSMS);
 
+                // A BinaryDataTransfer arrives without signatures, signed or not: the binary
+                // parser of its response drops them, which is why the signature assertions below
+                // are commented out. The overlay network wants every OCPP message signed
+                // (VerifyAll), and such a rule refuses a message that carries no signature, so
+                // these two messages are let through unverified here, explicitly.
+                chargingStation.OCPP.SignaturePolicy.AddVerificationRule(BinaryDataTransferResponse.DefaultJSONLDContext,
+                                                                         VerificationRuleActions.AcceptUnverified);
+                localController.OCPP.SignaturePolicy.AddVerificationRule(BinaryDataTransferRequest. DefaultJSONLDContext,
+                                                                         VerificationRuleActions.AcceptUnverified);
+
 
                 var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.GraphDefined_TestMessage;
