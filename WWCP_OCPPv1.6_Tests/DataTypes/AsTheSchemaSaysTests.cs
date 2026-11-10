@@ -339,6 +339,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.DataTypes
 
         #endregion
 
+        #region QueryDNSRequest (extension)
+
+        /// <summary>
+        /// A name server is its place in dns.servers, counted from 1: a place of
+        /// 0, a negative one or one that is no whole number is a request that
+        /// cannot be read. Any place from 1 is read, though, and more than eight
+        /// record types too: a place behind the last server is the charge
+        /// point's to refuse with UnknownServer, and too many record types with
+        /// TooManyRecordTypes - answers, and no CALLERROR.
+        /// </summary>
+        [TestCase("""{ "name": "csms.example.org", "server": 0 }""",      false)]
+        [TestCase("""{ "name": "csms.example.org", "server": -1 }""",     false)]
+        [TestCase("""{ "name": "csms.example.org", "server": 1.5 }""",    false)]
+        [TestCase("""{ "name": "csms.example.org", "server": "1" }""",    false)]
+        [TestCase("""{ "name": "csms.example.org", "server": 1 }""",      true)]
+        [TestCase("""{ "name": "csms.example.org", "server": 70000 }""",  true)]
+        [TestCase("""{ "name": "csms.example.org", "recordTypes": [ "A", "AAAA", "CNAME", "MX", "NS", "PTR", "SOA", "SRV", "TXT" ] }""", true)]
+        public void QueryDNSRequest_WhatIsReadAndWhatIsNot(String JSON, Boolean IsRead)
+        {
+
+            Assert.That(CS.QueryDNSRequest.TryParse(JObject.Parse(JSON), requestId, destination, NetworkPath.Empty, out var request, out var errorResponse),
+                        Is.EqualTo(IsRead),
+                        errorResponse);
+
+            if (IsRead)
+            {
+
+                var cbor = CBORValue.Parse(request!.ToCBOR().ToByteArray());
+
+                Assert.That(CS.QueryDNSRequest.TryParseCBOR(cbor, requestId, destination, NetworkPath.Empty, out var fromCBOR, out errorResponse), Is.True, errorResponse);
+                Assert.That(JToken.DeepEquals(fromCBOR!.ToJSON(), request.ToJSON()), Is.True);
+
+            }
+
+        }
+
+        #endregion
+
     }
 
 }

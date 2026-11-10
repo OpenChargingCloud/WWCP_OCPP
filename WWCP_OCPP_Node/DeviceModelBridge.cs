@@ -174,6 +174,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 Node.AddComponent(new OCPPv2_1.NTPController  (NTS));
                 FollowNTSGroups(Node);
 
+                // QueryDNS, answered with the node's name resolution - see
+                // DeviceModelBridge.QueryDNS.cs.
+                if (Node is OCPPv2_1.IQueryDNSNode queryDNSNode)
+                    queryDNSNode.QueryDNSProcessor = (timestamp, sender, connection, request, cancellationToken) => QueryDNS(request, cancellationToken);
+
             }
         }
 
@@ -201,6 +206,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 ChargePoint.CertificateSources.Add(NTSRootCertificates);
                 ChargePoint.AddConfigurationKeySource(NTS);
+
+                // QueryDNS, answered with the node's name resolution - see
+                // DeviceModelBridge.QueryDNS.cs.
+                if (ChargePoint is OCPPv1_6.IQueryDNSNode queryDNSNode)
+                    queryDNSNode.QueryDNSProcessor = (timestamp, sender, connection, request, cancellationToken) => QueryDNS(request, cancellationToken);
 
             }
         }

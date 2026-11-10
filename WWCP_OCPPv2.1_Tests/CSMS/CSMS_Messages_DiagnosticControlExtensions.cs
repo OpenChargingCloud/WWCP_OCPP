@@ -249,6 +249,194 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #endregion
 
+        #region CentralSystem_QueryDNSRequest_Test()
+
+        /// <summary>
+        /// QueryDNS from the CSMS to a charging station whose name resolution
+        /// answers it: the request arrives as it was sent, and every property of
+        /// the answer comes back over the wire.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_QueryDNSRequest_Test()
+        {
+
+            Assert.That(testCSMS1,         Is.Not.Null);
+            Assert.That(chargingStation1,  Is.Not.Null);
+
+            var received = new List<QueryDNSRequest>();
+
+            chargingStation1!.QueryDNSProcessor = (timestamp, sender, connection, request, ct) => {
+
+                received.Add(request);
+
+                return Task.FromResult(
+                           new CS.QueryDNSResponse(
+                               request,
+                               GenericStatus.Accepted,
+                               QueriedName:      "ntske1.cpo.example.",
+                               RecordTypes:      request.RecordTypes,
+                               ServerId:         request.ServerId,
+                               AnsweredBy:       "tls://192.0.2.53:853",
+                               ResponseCode:     "NoError",
+                               Authoritative:    false,
+                               Truncated:        false,
+                               TimedOut:         false,
+                               DNSSEC:           "Secure",
+                               QueryRuntime:     TimeSpan.FromMilliseconds(38),
+                               Answers:          [ new DNSAnswer("ntske1.cpo.example.", "A", TimeSpan.FromHours(1), "198.51.100.123") ],
+                               OmittedAnswers:   2,
+                               Certificates:     [ new NameServerCertificate("192.0.2.53", true, "Accepted", "41C7", "9D2E") ]
+                           )
+                       );
+
+            };
+
+            try
+            {
+
+                var response = await testCSMS1!.QueryDNS(
+                                         Destination:  SourceRouting.To(chargingStation1.Id),
+                                         Name:         "ntske1.cpo.example",
+                                         RecordTypes:  [ "A", "AAAA" ],
+                                         ServerId:     "dns-1"
+                                     );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,          Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                     Is.EqualTo(GenericStatus.Accepted));
+                    Assert.That(response.QueriedName,                Is.EqualTo("ntske1.cpo.example."));
+                    Assert.That(response.RecordTypes,                Is.EqualTo(new[] { "A", "AAAA" }));
+                    Assert.That(response.ServerId,                   Is.EqualTo("dns-1"));
+                    Assert.That(response.AnsweredBy,                 Is.EqualTo("tls://192.0.2.53:853"));
+                    Assert.That(response.ResponseCode,               Is.EqualTo("NoError"));
+                    Assert.That(response.Authoritative,              Is.False);
+                    Assert.That(response.DNSSEC,                     Is.EqualTo("Secure"));
+                    Assert.That(response.QueryRuntime,               Is.EqualTo(TimeSpan.FromMilliseconds(38)));
+                    Assert.That(response.Answers,                    Is.EqualTo(new[] { new DNSAnswer("ntske1.cpo.example.", "A", TimeSpan.FromHours(1), "198.51.100.123") }));
+                    Assert.That(response.OmittedAnswers,             Is.EqualTo(2));
+                    Assert.That(response.Certificates,               Is.EqualTo(new[] { new NameServerCertificate("192.0.2.53", true, "Accepted", "41C7", "9D2E") }));
+
+                    Assert.That(received,                            Has.Count.EqualTo(1));
+                    Assert.That(received.First().Name,               Is.EqualTo("ntske1.cpo.example"));
+                    Assert.That(received.First().RecordTypes,        Is.EqualTo(new[] { "A", "AAAA" }));
+                    Assert.That(received.First().ServerId,           Is.EqualTo("dns-1"));
+                    Assert.That(received.First().DestinationId,      Is.EqualTo(chargingStation1.Id));
+
+                });
+
+            }
+            finally
+            {
+                chargingStation1.QueryDNSProcessor = null;
+            }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_QueryDNSRequest_WithoutNameResolution_Test()
+
+        /// <summary>
+        /// A charging station with nothing that resolves names answers Rejected,
+        /// with the reason code Disabled - and nothing else.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_QueryDNSRequest_WithoutNameResolution_Test()
+        {
+
+            Assert.That(testCSMS1,         Is.Not.Null);
+            Assert.That(chargingStation1,  Is.Not.Null);
+
+            var response = await testCSMS1!.QueryDNS(
+                                     Destination:  SourceRouting.To(chargingStation1!.Id),
+                                     Name:         "csms.example.org"
+                                 );
+
+            Assert.Multiple(() => {
+                Assert.That(response.Status,                  Is.EqualTo(GenericStatus.Rejected));
+                Assert.That(response.StatusInfo?.ReasonCode,  Is.EqualTo("Disabled"));
+                Assert.That(response.Error,                   Is.Not.Null.And.Not.Empty);
+                Assert.That(response.Answers,                 Is.Empty);
+                Assert.That(response.ResponseCode,            Is.Null);
+            });
+
+        }
+
+        #endregion
+
+        #region CentralSystem_QueryDNSRequest_NineRecordTypes_Test()
+
+        /// <summary>
+        /// More than eight record types are the charging station's to refuse,
+        /// with Rejected and the reason code TooManyRecordTypes, and not the
+        /// parser's: a request with nine is read, crosses the wire and reaches
+        /// whatever answers QueryDNS - and its answer comes back, and no CALLERROR.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_QueryDNSRequest_NineRecordTypes_Test()
+        {
+
+            Assert.That(testCSMS1,         Is.Not.Null);
+            Assert.That(chargingStation1,  Is.Not.Null);
+
+            var nine = new[] { "A", "AAAA", "CNAME", "MX", "NS", "PTR", "SOA", "SRV", "TXT" };
+
+            Assert.That(QueryDNSRequest.TryParse(new JObject(new JProperty("name",         "csms.example.org"),
+                                                             new JProperty("recordTypes",  new JArray(nine))),
+                                                 Request_Id.Parse("1"),
+                                                 SourceRouting.To(chargingStation1!.Id),
+                                                 NetworkPath.Empty,
+                                                 out var parsed,
+                                                 out var errorResponse),
+                        Is.True,
+                        errorResponse);
+
+            Assert.That(parsed!.RecordTypes, Is.EqualTo(nine));
+
+            var received = new List<QueryDNSRequest>();
+
+            // As the bridge of a WWCP node answers it: WWCPNode.TryParseRecordTypes
+            // refuses more than eight with TooManyRecordTypes.
+            chargingStation1.QueryDNSProcessor = (timestamp, sender, connection, request, ct) => {
+
+                received.Add(request);
+
+                return Task.FromResult(
+                           request.RecordTypes.Count() > 8
+                               ? CS.QueryDNSResponse.Rejected(request, "TooManyRecordTypes", "One query may ask for at most 8 record types.")
+                               : new CS.QueryDNSResponse(request, GenericStatus.Accepted)
+                       );
+
+            };
+
+            try
+            {
+
+                var response = await testCSMS1!.QueryDNS(
+                                         Destination:  SourceRouting.To(chargingStation1.Id),
+                                         Name:         "csms.example.org",
+                                         RecordTypes:  nine
+                                     );
+
+                Assert.Multiple(() => {
+                    Assert.That(response.Result.ResultCode,       Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                  Is.EqualTo(GenericStatus.Rejected));
+                    Assert.That(response.StatusInfo?.ReasonCode,  Is.EqualTo("TooManyRecordTypes"));
+                    Assert.That(received,                         Has.Count.EqualTo(1));
+                    Assert.That(received.First().RecordTypes,     Is.EqualTo(nine));
+                });
+
+            }
+            finally
+            {
+                chargingStation1.QueryDNSProcessor = null;
+            }
+
+        }
+
+        #endregion
+
         #region CentralSystem_GetPWMValueRequest_Test()
 
         /// <summary>

@@ -50,7 +50,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A charging station node for testing.
     /// </summary>
     public partial class TestChargingStationNode : AChargingStationNode,
-                                                   IChargingStationNode
+                                                   IChargingStationNode,
+                                                   IQueryDNSNode
     {
 
         #region Data
@@ -76,6 +77,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// a longer report is sent in several parts.
         /// </summary>
         public UInt16 ReportDataPerNotifyReport { get; set; } = 100;
+
+        /// <summary>
+        /// What answers a QueryDNS request: the name resolution of whatever this
+        /// station runs in. Without one, a QueryDNS is answered Rejected with
+        /// "Disabled", since nothing here resolves names that could be asked.
+        /// </summary>
+        public OnQueryDNSDelegate? QueryDNSProcessor { get; set; }
 
         #endregion
 
@@ -3242,6 +3250,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                Request:   request,
                                Status:    GenericStatus.Accepted
                            )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnQueryDNS
+
+            OCPP.IN.OnQueryDNS += async (timestamp,
+                                         sender,
+                                         connection,
+                                         request,
+                                         ct) => {
+
+                DebugX.Log($"Charging station '{Id}': Incoming QueryDNS!");
+
+                if (QueryDNSProcessor is OnQueryDNSDelegate processor)
+                    return await processor(timestamp, sender, connection, request, ct);
+
+                return QueryDNSResponse.Rejected(
+                           request,
+                           "Disabled",
+                           "This charging station has no name resolution that could be asked."
                        );
 
             };

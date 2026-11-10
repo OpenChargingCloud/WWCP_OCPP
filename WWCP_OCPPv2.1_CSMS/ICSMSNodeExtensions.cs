@@ -3466,6 +3466,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region QueryDNS                    (Destination, Name, RecordTypes = null, ServerId = null, ...)
+
+        /// <summary>
+        /// Have the charging station look a name up, the way it looks up names,
+        /// or ask one of its name servers alone.
+        /// </summary>
+        /// <param name="Destination">The charging station.</param>
+        /// <param name="Name">The domain name or IP address to look up.</param>
+        /// <param name="RecordTypes">The record types to ask for; none for A and AAAA, or PTR for an IP address.</param>
+        /// <param name="ServerId">The one name server to ask, as the instance of its DNSServerController.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request: at least the station's query timeout times its tries.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.QueryDNSResponse>
+
+            QueryDNS(this ICSMSNode           CSMS,
+                     SourceRouting            Destination,
+                     String                   Name,
+                     IEnumerable<String>?     RecordTypes           = null,
+                     String?                  ServerId              = null,
+
+                     IEnumerable<KeyPair>?    SignKeys              = null,
+                     IEnumerable<SignInfo>?   SignInfos             = null,
+                     IEnumerable<Signature>?  Signatures            = null,
+
+                     Request_Id?              RequestId             = null,
+                     DateTimeOffset?          RequestTimestamp      = null,
+                     TimeSpan?                RequestTimeout        = null,
+                     EventTracking_Id?        EventTrackingId       = null,
+                     SerializationFormats?    SerializationFormat   = null,
+                     CancellationToken        CancellationToken     = default)
+
+
+                => CSMS.OCPP.OUT.QueryDNS(
+                       new QueryDNSRequest(
+                           Destination,
+                           Name,
+                           RecordTypes,
+                           ServerId,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? CSMS.Now,
+                           RequestTimeout   ?? CSMS.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CSMS.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
         #region TimeTravel                  (Destination, Timestamp, ...)
 
         /// <summary>

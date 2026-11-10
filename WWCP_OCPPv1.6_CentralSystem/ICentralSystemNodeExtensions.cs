@@ -2030,6 +2030,69 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+        #region QueryDNS                    (Destination, Name, RecordTypes = null, Server = null, ...)
+
+        /// <summary>
+        /// Have the charge point look a name up, the way it looks up names,
+        /// or ask one of its name servers alone.
+        /// </summary>
+        /// <param name="Destination">The charge point.</param>
+        /// <param name="Name">The domain name or IP address to look up.</param>
+        /// <param name="RecordTypes">The record types to ask for; none for A and AAAA, or PTR for an IP address.</param>
+        /// <param name="Server">The one name server to ask, as the n-th server of the configuration key dns.servers, counted from 1.</param>
+        ///
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        ///
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request: at least the charge point's query timeout times its tries.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<QueryDNSResponse>
+
+            QueryDNS(this ICentralSystemNode  CentralSystem,
+                     SourceRouting            Destination,
+                     String                   Name,
+                     IEnumerable<String>?     RecordTypes           = null,
+                     UInt16?                  Server                = null,
+
+                     IEnumerable<KeyPair>?    SignKeys              = null,
+                     IEnumerable<SignInfo>?   SignInfos             = null,
+                     IEnumerable<Signature>?  Signatures            = null,
+
+                     Request_Id?              RequestId             = null,
+                     DateTime?                RequestTimestamp      = null,
+                     TimeSpan?                RequestTimeout        = null,
+                     EventTracking_Id?        EventTrackingId       = null,
+                     SerializationFormats?    SerializationFormat   = null,
+                     CancellationToken        CancellationToken     = default)
+
+
+                => CentralSystem.OCPP.OUT.QueryDNS(
+                       new QueryDNSRequest(
+                           Destination,
+                           Name,
+                           RecordTypes,
+                           Server,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           null,
+
+                           RequestId        ?? CentralSystem.NextRequestId,
+                           RequestTimestamp ?? CentralSystem.Now,
+                           RequestTimeout   ?? CentralSystem.OCPP.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.From(CentralSystem.Id),
+                           SerializationFormat,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
         #region SetCPVoltage                (Destination, Voltage, VoltageError = null, ProcessingDelay = null, TransitionTime = null, ...)
 
         /// <summary>

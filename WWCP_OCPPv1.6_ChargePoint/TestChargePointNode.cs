@@ -33,6 +33,7 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
+using cloud.charging.open.protocols.OCPPv1_6.NetworkingNode;
 using cloud.charging.open.protocols.OCPP;
 using Newtonsoft.Json.Linq;
 
@@ -45,7 +46,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// A Charge Point for testing.
     /// </summary>
     public class TestChargePointNode : AChargePointNode,
-                                       IChargePointNode
+                                       IChargePointNode,
+                                       IQueryDNSNode
     {
 
         #region Events
@@ -599,6 +601,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //  public CustomBinarySerializerDelegate <OCPP.Signature>?                                      CustomBinarySignatureSerializer                              { get; set; }
 
         #endregion
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// What answers a QueryDNS request: the name resolution of whatever this
+        /// charge point runs in. Without one, a QueryDNS is answered Rejected with
+        /// "Disabled", since nothing here resolves names that could be asked.
+        /// </summary>
+        public OnQueryDNSDelegate? QueryDNSProcessor { get; set; }
 
         #endregion
 
@@ -1660,6 +1673,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                request,
                                GenericStatus.Accepted
                            )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnQueryDNS
+
+            OCPP.IN.OnQueryDNS += async (timestamp,
+                                         sender,
+                                         connection,
+                                         request,
+                                         cancellationToken) => {
+
+                DebugX.Log($"ChargeBox[{Id}] Incoming QueryDNS request.");
+
+                if (QueryDNSProcessor is OnQueryDNSDelegate processor)
+                    return await processor(timestamp, sender, connection, request, cancellationToken);
+
+                return QueryDNSResponse.Rejected(
+                           request,
+                           "Disabled",
+                           "This charge point has no name resolution that could be asked."
                        );
 
             };

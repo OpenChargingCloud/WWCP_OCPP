@@ -97,6 +97,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
             { "SwipeRFIDCardResponse",                $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" },
             { "GetExecutingEnvironmentRequest",       $$"""{ "customData": {{Custom}} }""" },
             { "GetExecutingEnvironmentResponse",      $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "processId": 4711, "restartURL": "https://example.org/restart", "restartSecret": "secret", "customData": {{Custom}} }""" },
+            { "QueryDNSRequest",                      $$"""{ "name": "ntske1.cpo.example", "recordTypes": [ "A", "AAAA" ], "serverId": "dns-1", "customData": {{Custom}} }""" },
+            { "QueryDNSResponse",                     $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "name": "1.2.0.192.in-addr.arpa.", "reverseLookupOf": "192.0.2.1", "recordTypes": [ "PTR", "TYPE65534" ], "serverId": "dns-1", "answeredBy": "tls://[2001:db8::53]:853", "responseCode": "NoError", "authoritative": true, "truncated": false, "timedOut": false, "dnssec": "Insecure", "runtime": 38, "answers": [ { "name": "1.2.0.192.in-addr.arpa.", "type": "PTR", "ttl": 3600, "value": "resolver1.cpo.example." } ], "omittedAnswers": 3, "certificates": [ { "server": "2001:db8::53", "accepted": false, "status": "PinMismatch", "certificateFingerprint": "41C7", "rootFingerprint": "9D2E" } ], "error": "none", "customData": {{Custom}} }""" },
             { "TimeTravelRequest",                    $$"""{ "timestamp": "2026-10-09T12:00:00Z", "customData": {{Custom}} }""" },
             { "TimeTravelResponse",                   $$"""{ "status": "Accepted", "statusInfo": {{StatusInfo}}, "customData": {{Custom}} }""" }
 

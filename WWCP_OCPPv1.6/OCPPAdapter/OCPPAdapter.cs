@@ -526,6 +526,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public CustomJObjectSerializerDelegate<AdjustTimeScaleResponse>?                             CustomAdjustTimeScaleResponseSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<GetExecutingEnvironmentRequest>?                      CustomGetExecutingEnvironmentRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<GetExecutingEnvironmentResponse>?                     CustomGetExecutingEnvironmentResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<QueryDNSRequest>?                                     CustomQueryDNSRequestSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<QueryDNSResponse>?                                    CustomQueryDNSResponseSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<TimeTravelRequest>?                                   CustomTimeTravelRequestSerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<TimeTravelResponse>?                                  CustomTimeTravelResponseSerializer                           { get; set; }
 
@@ -944,6 +946,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public CustomJObjectParserDelegate<AdjustTimeScaleResponse>?                                   CustomAdjustTimeScaleResponseParser                      { get; set; }
         public CustomJObjectParserDelegate<GetExecutingEnvironmentRequest>?                            CustomGetExecutingEnvironmentRequestParser               { get; set; }
         public CustomJObjectParserDelegate<GetExecutingEnvironmentResponse>?                           CustomGetExecutingEnvironmentResponseParser              { get; set; }
+        public CustomJObjectParserDelegate<QueryDNSRequest>?                                           CustomQueryDNSRequestParser                              { get; set; }
+        public CustomJObjectParserDelegate<QueryDNSResponse>?                                          CustomQueryDNSResponseParser                             { get; set; }
         public CustomJObjectParserDelegate<TimeTravelRequest>?                                         CustomTimeTravelRequestParser                            { get; set; }
         public CustomJObjectParserDelegate<TimeTravelResponse>?                                        CustomTimeTravelResponseParser                           { get; set; }
 
