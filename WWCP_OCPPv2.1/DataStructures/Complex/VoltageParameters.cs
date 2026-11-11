@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            // In seconds - the TimeSpan itself was written, as "00:00:30".
                            HighVoltage_10Min_MeanTripDelay.HasValue
-                               ? new JProperty("hv10MinMeanTripDelay",   (Decimal) HighVoltage_10Min_MeanTripDelay.Value.TotalSeconds)
+                               ? new JProperty("hv10MinMeanTripDelay",   HighVoltage_10Min_MeanTripDelay.Value.TotalSeconds.AsDecimal())
                                : null,
 
                            PowerDuringCessation.HasValue

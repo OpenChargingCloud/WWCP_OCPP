@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.OCPPv2_1;
@@ -1111,7 +1112,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     var server = new TableServer(json.Value<String>("id") ?? "", json.Value<String>("address") ?? "") {
                                      Port             = json["port"]?.Type == JTokenType.Integer ? json.Value<UInt16>("port") : null,
                                      Transport        = json.Value<String>("transport") ?? "UDP",
-                                     QueryTimeout     = json["queryTimeoutSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? json.Value<Decimal>("queryTimeoutSeconds") : null,
+                                     QueryTimeout     = json["queryTimeoutSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? json["queryTimeoutSeconds"]!.AsDecimal() : null,
                                      CertificatePins  = ListOf(PinsOf(json, "certificateFingerprint")),
                                      RootPins         = ListOf(PinsOf(json, "rootFingerprint")),
                                      OnMismatch       = json.Value<String>("onMismatch")      ?? "refuse",

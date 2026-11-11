@@ -21,6 +21,7 @@ using System.Globalization;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Norn.Monitoring;
 using org.GraphDefined.Vanaheimr.Norn.NTS;
 
@@ -475,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static String NumberOf(JToken? Token)
 
             => Token?.Type is JTokenType.Integer or JTokenType.Float
-                   ? Token.Value<Decimal>().ToString("0.######", CultureInfo.InvariantCulture)
+                   ? Token.AsDecimal().ToString("0.######", CultureInfo.InvariantCulture)
                    : "0";
 
         private static String IntegerOf(JToken? Token)
@@ -491,7 +492,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static String SecondsOf(JToken? Token)
 
             => Token?.Type is JTokenType.Integer or JTokenType.Float
-                   ? Token.Value<Decimal>().ToString("0.###", CultureInfo.InvariantCulture)
+                   ? Token.AsDecimal().ToString("0.###", CultureInfo.InvariantCulture)
                    : "";
 
         /// <summary>
@@ -500,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static String SecondsOf(TimeSpan? Span)
 
             => Span.HasValue
-                   ? ((Decimal) Span.Value.TotalSeconds).ToString("0.###", CultureInfo.InvariantCulture)
+                   ? Span.Value.TotalSeconds.AsDecimal().ToString("0.###", CultureInfo.InvariantCulture)
                    : "";
 
         /// <summary>

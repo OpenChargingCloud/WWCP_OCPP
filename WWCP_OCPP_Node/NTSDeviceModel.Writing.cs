@@ -24,6 +24,8 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.OCPPv2_1;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.WWCP.Node;
@@ -1389,8 +1391,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  MinRefresh       = JSON["minRefreshSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["minRefreshSeconds"]!.Value<UInt32>() : null,
                                  MaxRefresh       = JSON["maxRefreshSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["maxRefreshSeconds"]!.Value<UInt32>() : null,
                                  // And how its offsets are corrected.
-                                 DelayAsymmetry   = JSON["delayAsymmetryMs"] ?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayAsymmetryMs"]! .Value<Decimal>() : null,
-                                 DelayVarAsymmetry = JSON["delayVarAsymmetry"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayVarAsymmetry"]!.Value<Decimal>() : null,
+                                 DelayAsymmetry   = JSON["delayAsymmetryMs"] ?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayAsymmetryMs"]! .AsDecimal() : null,
+                                 DelayVarAsymmetry = JSON["delayVarAsymmetry"]?.Type is JTokenType.Integer or JTokenType.Float ? JSON["delayVarAsymmetry"]!.AsDecimal() : null,
                                  // And where its keys come from.
                                  NTSKEHostname    = JSON["ntsKEHostname"]?.Value<String>() is { Length: > 0 } keyExchange ? keyExchange.TrimEnd('.') : null,
                                  // And whether its responses are to be signed.

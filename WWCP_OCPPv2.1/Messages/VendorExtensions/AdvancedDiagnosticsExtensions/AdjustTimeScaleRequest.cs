@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             var cbor = OCPPCBORExtensions.Map(
-                           ("scale",                     CBORValue.FromDecimal((Decimal) Scale)),
+                           ("scale",                     CBORValue.FromDecimal(Scale.AsDecimal())),
                            ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
                            ("customData",                CustomData?.ToCBOR())
                        );

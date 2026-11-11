@@ -21,6 +21,8 @@ using System.Globalization;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.Node
@@ -315,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static String SecondsOf(JToken? Token)
 
             => Token?.Type is JTokenType.Integer or JTokenType.Float
-                   ? Token.Value<Decimal>().ToString("0.###", CultureInfo.InvariantCulture)
+                   ? Token.AsDecimal().ToString("0.###", CultureInfo.InvariantCulture)
                    : "";
 
         /// <summary>

@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("t",            (Decimal) TimeOffset.TotalSeconds),
+                                 new JProperty("t",            TimeOffset.TotalSeconds.AsDecimal()),
                                  new JProperty("v",            Values),
 
                            CustomData is not null

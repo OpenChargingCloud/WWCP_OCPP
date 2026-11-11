@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                    JArray array  => new JArray(array.Select(Normalized)),
 
                    JValue value when value.Type is JTokenType.Integer or JTokenType.Float
-                                 => new JValue(Convert.ToDecimal(value.Value, CultureInfo.InvariantCulture)),
+                                 => new JValue(value.AsDecimal()),
 
                    JValue value when value.Type == JTokenType.Date
                                  => new JValue(((DateTimeOffset) (value.Value is DateTime dateTime ? new DateTimeOffset(dateTime) : (DateTimeOffset) value.Value!)).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")),

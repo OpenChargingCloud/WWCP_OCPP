@@ -1109,7 +1109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            MaxDuration.HasValue
-                               ? new JProperty("maxDuration",                (Decimal) MaxDuration.Value.TotalSeconds)
+                               ? new JProperty("maxDuration",                MaxDuration.Value.TotalSeconds.AsDecimal())
                                : null,
 
                            MaxPrice.HasValue

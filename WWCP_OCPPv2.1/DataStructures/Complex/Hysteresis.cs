@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            Delay.HasValue
-                               ? new JProperty("hysteresisDelay",      (Decimal) Delay.Value.TotalSeconds)
+                               ? new JProperty("hysteresisDelay",      Delay.Value.TotalSeconds.AsDecimal())
                                : null,
 
                            Gradient.HasValue

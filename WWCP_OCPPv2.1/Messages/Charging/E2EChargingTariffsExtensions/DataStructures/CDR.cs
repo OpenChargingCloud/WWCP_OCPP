@@ -605,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var totalChargingTimeCost  = chargingTimePrice is not null
                                              ? ApplyTaxRates(
-                                                   ((Decimal) billedChargingTime.TotalMinutes) * chargingTimePrice.PriceMinute,
+                                                   billedChargingTime.TotalMinutes.AsDecimal() * chargingTimePrice.PriceMinute,
                                                    ChargingTariff.ChargingTime!.TaxRates
                                                )
                                              : OCPPv2_1.Price.Zero;
@@ -622,7 +622,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var totalParkingCost       = idleTimePrice is not null
                                              ? ApplyTaxRates(
-                                                   ((Decimal) billedParkingTime.TotalMinutes) * idleTimePrice.PriceMinute,
+                                                   billedParkingTime.TotalMinutes.AsDecimal() * idleTimePrice.PriceMinute,
                                                    ChargingTariff.IdleTime!.TaxRates
                                                )
                                              : OCPPv2_1.Price.Zero;
@@ -747,7 +747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var unit        = MeteringValue.UnitOfMeasure?.Unit       ?? UnitOfMeasure.Wh;
             var multiplier  = MeteringValue.UnitOfMeasure?.Multiplier ?? 0;
 
-            var scale       = (Decimal) Math.Pow(10, multiplier);
+            var scale       = Math.Pow(10, multiplier).AsDecimal();
 
             if      (unit == UnitOfMeasure.Wh)
                 WattHours = MeteringValue.Value * scale;

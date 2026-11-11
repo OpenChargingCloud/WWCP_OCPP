@@ -741,7 +741,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private static Decimal? Seconds(Double? Milliseconds)
 
             => Milliseconds.HasValue
-                   ? Math.Round((Decimal) Milliseconds.Value / 1000m, 6)
+                   ? Math.Round(Milliseconds.Value.AsDecimal() / 1000m, 6)
                    : null;
 
         #endregion

@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Characteristics:  new VariableCharacteristics(
                                           DataType:    DataTypes.Integer,
                                           Unit:        UnitsOfMeasure.TimeSpan(),
-                                          MinLimit:    Convert.ToDecimal(Math.Ceiling(MinimumValidityTime.TotalSeconds))
+                                          MinLimit:    Math.Ceiling(MinimumValidityTime.TotalSeconds).AsDecimal()
                                       ),
 
                     Description:      I18NString.Create("The validity time of the time-based one-time passwords.")
@@ -442,8 +442,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Characteristics:  new VariableCharacteristics(
                                           DataType:    DataTypes.Integer,
                                           Unit:        UnitsOfMeasure.TimeSpan(),
-                                          MinLimit:    Convert.ToDecimal(Math.Ceiling(MinimumValidityTime.TotalSeconds)),
-                                          MaxLimit:    Convert.ToDecimal(Math.Ceiling(MaximumValidityTime.TotalSeconds))
+                                          MinLimit:    Math.Ceiling(MinimumValidityTime.TotalSeconds).AsDecimal(),
+                                          MaxLimit:    Math.Ceiling(MaximumValidityTime.TotalSeconds).AsDecimal()
                                       ),
 
                     Description:      I18NString.Create("The validity time of the time-based one-time passwords.")

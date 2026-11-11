@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <summary>
         /// The given percentage as a metrological value in %.
         /// </summary>
-        public static CBORValue ToCBOR(this PercentageDouble Value) => new MetrologicalValue((Decimal) Value.Value, UnitOfMeasure.Percent).ToCBOR();
+        public static CBORValue ToCBOR(this PercentageDouble Value) => new MetrologicalValue(Value.Value.AsDecimal(), UnitOfMeasure.Percent).ToCBOR();
 
 
         /// <summary>
