@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.That(response.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(response.Signatures.First().Name, Is.EqualTo("csms001"));
                 Assert.That(response.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a backend test!"));
-                Assert.That(response.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(now2.ToISO8601()));
+                Assert.That(response.Signatures.First().Timestamp?.ToUnixTimeSeconds(), Is.EqualTo(now2.ToUnixTimeSeconds()));
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
 
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.That(bootNotificationRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(bootNotificationRequests.First().Signatures.First().Name, Is.EqualTo("cs001"));
                 Assert.That(bootNotificationRequests.First().Signatures.First().Description?.FirstText(), Is.EqualTo("Just a charging station test!"));
-                Assert.That(bootNotificationRequests.First().Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(now1.ToISO8601()));
+                Assert.That(bootNotificationRequests.First().Signatures.First().Timestamp?.ToUnixTimeSeconds(), Is.EqualTo(now1.ToUnixTimeSeconds()));
 
             }
 

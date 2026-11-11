@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Name, Is.EqualTo("csms001"));
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Description?.FirstText(), Is.EqualTo("Just a backend test request!"));
-                Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(now1.ToISO8601()));
+                Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Timestamp?.ToUnixTimeSeconds(), Is.EqualTo(now1.ToUnixTimeSeconds()));
 
                 #endregion
 

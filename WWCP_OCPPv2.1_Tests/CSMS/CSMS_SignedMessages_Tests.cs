@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(resetRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(resetRequests.First().Signatures.First().Name, Is.EqualTo("ahzf"));
                 Assert.That(resetRequests.First().Signatures.First().Description?.FirstText(), Is.EqualTo("Just a test!"));
-                Assert.That(resetRequests.First().Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(now.ToISO8601()));
+                Assert.That(resetRequests.First().Signatures.First().Timestamp?.ToUnixTimeSeconds(), Is.EqualTo(now.ToUnixTimeSeconds()));
 
             }
 

@@ -1071,7 +1071,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                               DefaultForwardingDecision
                                           );
 
-            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
+            this.signaturePolicies.Add((SignaturePolicy ?? new SignaturePolicy()).BindTo(NetworkingNode.Id, cloud.charging.open.protocols.OCPPv1_6.Version.WebSocketSubProtocolId));
 
         }
 

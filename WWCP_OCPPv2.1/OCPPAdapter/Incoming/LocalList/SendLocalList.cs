@@ -196,7 +196,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
-                        out errorResponse))
+                        out errorResponse,
+                        ReceivedJSON: JSONRequest))
                     {
 
                         response = SendLocalListResponse.SignatureError(
@@ -360,7 +361,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                 parentNetworkingNode.OCPP.CustomCustomDataSerializer
                             ),
-                            out errorResponse
+                            out errorResponse,
+                            ReceivedJSON: ResponseJSON
                         ))
                     {
 

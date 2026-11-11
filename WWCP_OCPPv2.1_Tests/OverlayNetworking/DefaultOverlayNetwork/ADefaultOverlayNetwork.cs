@@ -146,6 +146,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
             csmsKeyPair = ECCKeyPair.GenerateKeys()!;
 
+            // The local controller sends what it forwards on under request ids of its own, so a
+            // signature binds a nonce instead of the message id (white paper "Signed OCPP
+            // Messages and Signer Roles", section 4.3).
+            CSMS.OCPP.SignaturePolicy.NonceInsteadOfMessageId = true;
+
             CSMS.OCPP.SignaturePolicy.AddVerificationRule(JSONContext.OCPP.Any,
                                                           VerificationRuleActions. VerifyAll);
 
@@ -222,6 +227,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             #region Define signature policy
 
             localControllerKeyPair = ECCKeyPair.GenerateKeys()!;
+
+            // As the CSMS: the local controller forwards under request ids of its own.
+            localController.OCPP.SignaturePolicy.NonceInsteadOfMessageId = true;
 
             localController.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
                                                                     KeyPair:                 localControllerKeyPair!,
@@ -340,6 +348,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             #region Define signature policy
 
             chargingStationKeyPair = ECCKeyPair.GenerateKeys()!;
+
+            // As the CSMS: the local controller forwards under request ids of its own.
+            chargingStation.OCPP.SignaturePolicy.NonceInsteadOfMessageId = true;
 
             chargingStation.OCPP.SignaturePolicy.AddSigningRule     (JSONContext.OCPP.Any,
                                                                      KeyPair:                 localControllerKeyPair!,

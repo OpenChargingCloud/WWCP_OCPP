@@ -47,6 +47,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public TRequest  Request    { get; }
 
+        /// <summary>
+        /// The request this response answers.
+        /// </summary>
+        public override IRequest?           RequestMessage
+            => Request;
+
         #endregion
 
         #region Constructor(s)
@@ -245,6 +251,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         [Mandatory]
         public Result                Result                 { get; }
+
+        /// <summary>
+        /// The request this response answers, where the response knows it.
+        /// </summary>
+        public virtual IRequest?            RequestMessage
+            => null;
 
         /// <summary>
         /// The timestamp of the response message.

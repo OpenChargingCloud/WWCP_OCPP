@@ -201,7 +201,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             //parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             //parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
-                        out errorResponse))
+                        out errorResponse,
+                        ReceivedJSON: JSONRequest))
                     {
 
                         response = SetDefaultE2EChargingTariffResponse.SignatureError(
@@ -356,7 +357,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                 parentNetworkingNode.OCPP.CustomStatusInfoSerializer,
                                 parentNetworkingNode.OCPP.CustomEVSEStatusInfoSerializer
                             ),
-                            out errorResponse
+                            out errorResponse,
+                            ReceivedJSON: ResponseJSON
                         ))
                     {
 

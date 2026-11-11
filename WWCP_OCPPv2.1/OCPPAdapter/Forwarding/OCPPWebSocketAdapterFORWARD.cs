@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             this.DefaultForwardingDecision  = DefaultForwardingDecision    ?? ForwardingDecisions.DROP;
             this.ForwardUnknownResponses    = ForwardUnknownResponses;
 
-            this.forwardingSignaturePolicies.Add(ForwardingSignaturePolicy ?? new SignaturePolicy());
+            this.forwardingSignaturePolicies.Add((ForwardingSignaturePolicy ?? new SignaturePolicy()).BindTo(NetworkingNode.Id, cloud.charging.open.protocols.OCPPv2_1.Version.WebSocketSubProtocolId));
 
             #region Reflect "Forward_XXX" messages and wire them...
 

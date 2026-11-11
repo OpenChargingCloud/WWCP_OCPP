@@ -1000,7 +1000,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               DefaultForwardingDecision
                                           );
 
-            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
+            this.signaturePolicies.Add((SignaturePolicy ?? new SignaturePolicy()).BindTo(NetworkingNode.Id, cloud.charging.open.protocols.OCPPv2_1.Version.WebSocketSubProtocolId));
 
         }
 

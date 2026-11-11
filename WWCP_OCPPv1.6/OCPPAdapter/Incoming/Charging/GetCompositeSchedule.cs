@@ -190,7 +190,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             parentNetworkingNode.OCPP.CustomSignatureSerializer,
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
-                        out errorResponse))
+                        out errorResponse,
+                        ReceivedJSON: JSONRequest))
                     {
 
                         response = GetCompositeScheduleResponse.SignatureError(
@@ -514,7 +515,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                 parentNetworkingNode.OCPP.CustomSignatureSerializer,
                                 parentNetworkingNode.OCPP.CustomCustomDataSerializer
                             ),
-                            out errorResponse
+                            out errorResponse,
+                            ReceivedJSON: ResponseJSON
                         ))
                     {
 
