@@ -418,6 +418,72 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
         #endregion
 
 
+        #region ARequestTheControllerHasNoProcessorFor_IsForwarded_AndNotRefused()
+
+        /// <summary>
+        /// A NotifyNetworkTimeResult - a request the controller has no forwarding processor
+        /// for - goes the way of the controller's default decision, forward, and the station
+        /// gets the CSMS's answer.
+        /// </summary>
+        /// <remarks>
+        /// The controller used to refuse it first, with InternalError "Undefined
+        /// 'NotifyNetworkTimeResult' JSON request message handler!", and then forward it
+        /// all the same: the station took the refusal for the answer, and the CSMS's real
+        /// one after it found nobody waiting. So for every JSON request of OCPP 2.1 without
+        /// a processor of its own, the NTS and DNS messages among them.
+        /// </remarks>
+        [Test]
+        public async Task ARequestTheControllerHasNoProcessorFor_IsForwarded_AndNotRefused()
+        {
+
+            var cs1        = await AStation("CS-STD-19");
+            var atTheCSMS  = new TaskCompletionSource<Int32>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            OCPPv2_1.NetworkingNode.OnNotifyNetworkTimeResultRequestReceivedDelegate told = (timestamp, sender, connection, request, cancellationToken) => {
+                atTheCSMS.TrySetResult(request.NetworkTimeRequestId);
+                return Task.CompletedTask;
+            };
+
+            testCSMS1!.OCPP.IN.OnNotifyNetworkTimeResultRequestReceived += told;
+
+            try
+            {
+
+                var result  = await cs1.NotifyNetworkTimeResult(
+                                        NetworkTimeRequestId:  4740,
+                                        GeneratedAt:           Timestamp.Now,
+                                        Round:                 new NetworkTimeRound(
+                                                                   Group:      "legal",
+                                                                   OK:         true,
+                                                                   Duration:   0.021m,
+                                                                   Answered:   1,
+                                                                   Required:   1,
+                                                                   Clients:    [ new NetworkTimeClient("ptbtime1.ptb.de", true, "ptb1", -0.0021m, 0.0183m, NetworkTimeClient.ReusedKeyExchange) ],
+                                                                   Offset:     -0.0021m,
+                                                                   LegalTime:  true
+                                                               ),
+                                        RequestTimeout:        TimeSpan.FromSeconds(10)
+                                    );
+
+                var arrived = await Task.WhenAny(atTheCSMS.Task, Task.Delay(TimeSpan.FromSeconds(5))) == atTheCSMS.Task;
+
+                Assert.Multiple(() => {
+                    Assert.That(result.Result.ResultCode,  Is.EqualTo(ResultCode.OK),  $"The station did not get the CSMS's answer: {result.Result}");
+                    Assert.That(arrived,                   Is.True,                    "The request did not reach the CSMS.");
+                    Assert.That(arrived ? atTheCSMS.Task.Result : 0,  Is.EqualTo(4740));
+                });
+
+            }
+            finally
+            {
+                testCSMS1!.OCPP.IN.OnNotifyNetworkTimeResultRequestReceived -= told;
+            }
+
+        }
+
+        #endregion
+
+
         #region (private) Waited(Started)
 
         /// <summary>

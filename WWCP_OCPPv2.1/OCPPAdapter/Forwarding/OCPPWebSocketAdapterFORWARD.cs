@@ -546,26 +546,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         forwardingDecision = await forwardingDecisionTask;
 
                     else
-                        await HandleErrorsAndSendRequestError(
-                                  nameof(forwardingMessageProcessorsLookup),
-                                  JSONRequestMessage,
-                                  ResultCode.InternalError,
-                                  $"Invalid result type for a '{JSONRequestMessage.Action}' JSON request message handler!"
-                              );
+                        DebugX.Log($"Invalid result type for a '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}!");
 
                 }
 
                 #endregion
 
-                #region ...or error!
+                #region ...or the default decision
 
+                // No processor of its own: the default decision below says what happens,
+                // as for a binary request and in OCPP 1.6. A refusal used to go to whoever
+                // asked first, and the request on all the same when the default is FORWARD:
+                // the asker took the refusal for the answer, and the real one after it found
+                // nobody waiting. So for SyncNetworkTime, TestTimeServer, QueryDNS and
+                // NotifyNetworkTimeResult through a local controller.
                 else
-                    await HandleErrorsAndSendRequestError(
-                              nameof(forwardingMessageProcessorsLookup),
-                              JSONRequestMessage,
-                              ResultCode.InternalError,
-                              $"Undefined '{JSONRequestMessage.Action}' JSON request message handler!"
-                          );
+                    DebugX.Log($"Undefined '{JSONRequestMessage.Action}' JSON request message handler within {nameof(OCPPWebSocketAdapterFORWARD)}, the default decision {DefaultForwardingDecision} applies!");
 
                 #endregion
 
