@@ -221,16 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             try
             {
 
-                var nonce = new Byte[16]; // 128-bit Nonce
-                Array.Copy(BitConverter.GetBytes(Nonce),   0, nonce, 0, 8);
-                Array.Copy(BitConverter.GetBytes(Counter), 0, nonce, 8, 8);
-
-                var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
-                cipher.Init(true, new ParametersWithIV(new KeyParameter(Key), nonce));
-
-                var ciphertext = new Byte[cipher.GetOutputSize(Payload.Length)];
-                int length = cipher.ProcessBytes(Payload, 0, Payload.Length, ciphertext, 0);
-                cipher.DoFinal(ciphertext, length);
+                var ciphertext = SecureDataTransferMethods.Encrypt(Parameter, KeyId, Key, Nonce, Counter, Payload);
 
                 return new SecureDataTransferRequest(
 
@@ -272,21 +263,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Key">A cryptographic key</param>
         public Byte[] Decrypt(Byte[] Key)
+
+            => SecureDataTransferMethods.Decrypt(Parameter, KeyId, Key, Nonce, Counter, Ciphertext);
+
+
+        /// <summary>
+        /// Decrypt the ciphertext, or null when the method is unknown or, for AES-GCM,
+        /// the tag does not verify: the ciphertext or the header was changed, or the key is another.
+        /// </summary>
+        /// <param name="Key">The key of KeyId.</param>
+        public Byte[]? TryDecrypt(Byte[] Key)
         {
-
-            var nonce = new Byte[16]; // 128-bit Nonce
-            Array.Copy(BitConverter.GetBytes(Nonce),   0, nonce, 0, 8);
-            Array.Copy(BitConverter.GetBytes(Counter), 0, nonce, 8, 8);
-
-            var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
-            cipher.Init(false, new ParametersWithIV(new KeyParameter(Key), nonce));
-
-            var plaintext = new Byte[cipher.GetOutputSize(Ciphertext.Length)];
-            var length    = cipher.ProcessBytes(Ciphertext, 0, Ciphertext.Length, plaintext, 0);
-            cipher.DoFinal(plaintext, length);
-
-            return plaintext;
-
+            try
+            {
+                return SecureDataTransferMethods.Decrypt(Parameter, KeyId, Key, Nonce, Counter, Ciphertext);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion

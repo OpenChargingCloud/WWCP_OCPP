@@ -244,16 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             try
             {
 
-                var nonce = new Byte[16]; // 128-bit Nonce
-                Array.Copy(BitConverter.GetBytes(Nonce),   0, nonce, 0, 8);
-                Array.Copy(BitConverter.GetBytes(Counter), 0, nonce, 8, 8);
-
-                var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
-                cipher.Init(true, new ParametersWithIV(new KeyParameter(Key), nonce));
-
-                var ciphertext = new Byte[cipher.GetOutputSize(Payload.Length)];
-                int length = cipher.ProcessBytes(Payload, 0, Payload.Length, ciphertext, 0);
-                cipher.DoFinal(ciphertext, length);
+                var ciphertext = SecureDataTransferMethods.Encrypt(Parameter, KeyId, Key, Nonce, Counter, Payload);
 
                 return new SecureDataTransferResponse(
 
@@ -303,18 +294,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           "There is no ciphertext to decrypt! A SecureDataTransfer response can legitimately carry none, e.g. when it timed out or was rejected, so check Ciphertext before calling Decrypt(...)."
                       );
 
-            var nonce = new Byte[16]; // 128-bit Nonce
-            Array.Copy(BitConverter.GetBytes(Nonce   ?? 0), 0, nonce, 0, 8);
-            Array.Copy(BitConverter.GetBytes(Counter ?? 0), 0, nonce, 8, 8);
+            return SecureDataTransferMethods.Decrypt(Parameter ?? 0, KeyId ?? 0, Key, Nonce ?? 0, Counter ?? 0, Ciphertext);
 
-            var cipher = new BufferedBlockCipher(new SicBlockCipher(new AesEngine()));
-            cipher.Init(false, new ParametersWithIV(new KeyParameter(Key), nonce));
+        }
 
-            var plaintext = new Byte[cipher.GetOutputSize(Ciphertext.Length)];
-            var length    = cipher.ProcessBytes(Ciphertext, 0, Ciphertext.Length, plaintext, 0);
-            cipher.DoFinal(plaintext, length);
 
-            return plaintext;
+        /// <summary>
+        /// Decrypt the ciphertext, or null when there is none, the method is unknown or, for
+        /// AES-GCM, the tag does not verify: the ciphertext or the header was changed, or the
+        /// key is another.
+        /// </summary>
+        /// <param name="Key">The key of KeyId.</param>
+        public Byte[]? TryDecrypt(Byte[] Key)
+        {
+
+            if (Ciphertext is null)
+                return null;
+
+            try
+            {
+                return SecureDataTransferMethods.Decrypt(Parameter ?? 0, KeyId ?? 0, Key, Nonce ?? 0, Counter ?? 0, Ciphertext);
+            }
+            catch
+            {
+                return null;
+            }
 
         }
 

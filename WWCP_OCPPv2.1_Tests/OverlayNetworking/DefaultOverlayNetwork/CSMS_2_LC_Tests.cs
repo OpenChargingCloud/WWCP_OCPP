@@ -469,6 +469,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
         #endregion
 
+        #region CSMS_2_LC_TransferSecureData_AESGCM_Test()
+
+        /// <summary>
+        /// SecureDataTransfer with AES-GCM over the network: the local controller decrypts and
+        /// authenticates, and answers by the method of the request (white paper "Signed OCPP
+        /// Messages and Signer Roles", section 2.6).
+        /// </summary>
+        [Test]
+        public async Task CSMS_2_LC_TransferSecureData_AESGCM_Test()
+        {
+
+            Assert.That(localController, Is.Not.Null);
+            Assert.That(CSMS,            Is.Not.Null);
+
+            var data        = "Hello world!";
+            var response    = await CSMS!.TransferSecureData(
+                                        Destination:  SourceRouting.To(localController!.Id),
+                                        Parameter:    SecureDataTransferMethods.AES_GCM,
+                                        KeyId:        1,
+                                        Payload:      data.ToUTF8Bytes()
+                                    );
+
+            Assert.Multiple(() => {
+                Assert.That(response.Result.ResultCode,  Is.EqualTo(ResultCode.OK));
+                Assert.That(response.Status,             Is.EqualTo(SecureDataTransferStatus.Accepted));
+                Assert.That(response.Parameter,          Is.EqualTo(SecureDataTransferMethods.AES_GCM));
+                Assert.That(response.Ciphertext?.Length, Is.EqualTo(data.Length + SecureDataTransferMethods.TagSize));
+                Assert.That(response.TryDecrypt(CSMS.GetDecryptionKey(response.NetworkPath.Source, response.KeyId))?.ToUTF8String(),
+                            Is.EqualTo(data.Reverse()));
+            });
+
+        }
+
+        #endregion
+
+        #region CSMS_2_LC_TransferSecureData_UnknownMethod_Test()
+
+        /// <summary>
+        /// A SecureDataTransfer whose parameter names no method is answered "Rejected".
+        /// </summary>
+        [Test]
+        public async Task CSMS_2_LC_TransferSecureData_UnknownMethod_Test()
+        {
+
+            Assert.That(localController, Is.Not.Null);
+            Assert.That(CSMS,            Is.Not.Null);
+
+            var response = await CSMS!.OCPP.OUT.SecureDataTransfer(
+                               new SecureDataTransferRequest(
+                                   Destination:  SourceRouting.To(localController!.Id),
+                                   Parameter:    7,
+                                   KeyId:        1,
+                                   Nonce:        CSMS.GetEncryptionNonce(localController.Id, 1),
+                                   Counter:      1,
+                                   Ciphertext:   "no method knows these bytes"u8.ToArray(),
+                                   RequestId:    CSMS.NextRequestId,
+                                   NetworkPath:  NetworkPath.From(CSMS.Id)
+                               )
+                           );
+
+            Assert.Multiple(() => {
+                Assert.That(response.Status,     Is.EqualTo(SecureDataTransferStatus.Rejected));
+                Assert.That(response.Ciphertext, Is.Null.Or.Empty);
+            });
+
+        }
+
+        #endregion
+
 
         #region CSMS_2_LC_SendEncryptedReset_Test1()
 

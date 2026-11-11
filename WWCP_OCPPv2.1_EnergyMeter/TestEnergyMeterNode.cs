@@ -350,18 +350,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                 // MessageId
                 // Data
 
-                var secureData          = request.Decrypt(GetDecryptionKey(request.NetworkPath.Source, request.KeyId)).ToUTF8String();
+                // Null for a method this node does not know, or an AES-GCM tag that does not verify.
+                var plaintext           = request.TryDecrypt(GetDecryptionKey(request.NetworkPath.Source, request.KeyId));
+                var secureData          = plaintext?.ToUTF8String();
                 var responseSecureData  = secureData?.Reverse();
                 var keyId               = (UInt16) 1;
 
                 return Task.FromResult(
-                           request.Ciphertext is not null
+                           plaintext is not null
 
                                ? SecureDataTransferResponse.Encrypt(
                                      Request:                request,
                                      Status:                 SecureDataTransferStatus.Accepted,
                                      Destination:            SourceRouting.To(request.NetworkPath.Source),
-                                     Parameter:              0,
+                                     Parameter:              request.Parameter,
                                      KeyId:                  keyId,
                                      Key:                    GetEncryptionKey    (request.NetworkPath.Source, keyId),
                                      Nonce:                  GetEncryptionNonce  (request.NetworkPath.Source, keyId),
