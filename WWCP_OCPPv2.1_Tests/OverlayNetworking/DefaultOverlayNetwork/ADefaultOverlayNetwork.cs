@@ -33,6 +33,7 @@ using cloud.charging.open.protocols.OCPPv2_1.LocalController;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -103,7 +104,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
 
         #region Properties
 
+        /// <summary>
+        /// How the charging station and the local controller write their messages:
+        /// what the charging station offers the local controller.
+        /// </summary>
+        protected virtual MessageEncodings Downlink
+            => MessageEncodings.JSON;
 
+        /// <summary>
+        /// How the local controller and the CSMS write their messages: what the local
+        /// controller offers the CSMS.
+        /// </summary>
+        protected virtual MessageEncodings Uplink
+            => MessageEncodings.JSON;
+
+        #endregion
+
+        #region (private static) Agreed(Encoding)
+
+        private static String Agreed(MessageEncodings Encoding)
+
+            => Encoding == MessageEncodings.JSON
+                   ? Version.WebSocketSubProtocolId
+                   : Version.WebSocketSubProtocolIdCBOR;
+
+        #endregion
+
+        #region TheConnectionsSpeakWhatTheyShall()
+
+        /// <summary>
+        /// Both connections agreed on what the fixture asked for - or a fixture for
+        /// CBOR ran its tests over JSON, and proved nothing.
+        /// </summary>
+        [Test]
+        public void TheConnectionsSpeakWhatTheyShall()
+        {
+
+            Assert.Multiple(() => {
+
+                Assert.That(chargingStation!.WWCPWebSocketClients.OfType<WWCPWebSocketClient>().Single().WebSocketClientConnection?.Subprotocol,
+                            Is.EqualTo(Agreed(Downlink)),
+                            "Between the charging station and the local controller");
+
+                Assert.That(localController!.WWCPWebSocketClients.OfType<WWCPWebSocketClient>().Single().WebSocketClientConnection?.Subprotocol,
+                            Is.EqualTo(Agreed(Uplink)),
+                            "Between the local controller and the CSMS");
+
+            });
+
+        }
 
         #endregion
 
@@ -263,6 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                                      NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                                      RemoteURL:                URL.Parse($"http://127.0.0.1:{csmsWSServer.IPPort}/{localController.Id}"),
                                                      HTTPAuthentication:       HTTPBasicAuthentication.Create(localController.Id.ToString(), "1234abcd"),
+                                                     SecWebSocketProtocols:    OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Uplink),
                                                      DisableWebSocketPings:    true,
                                                      NetworkingMode:           NetworkingMode.OverlayNetwork
                                                  );
@@ -282,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             Assert.That(connectionSetupResponse1.Server, Is.EqualTo($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API"));
             Assert.That(connectionSetupResponse1.Connection, Is.EqualTo(ConnectionType.Upgrade));
             Assert.That(connectionSetupResponse1.Upgrade, Is.EqualTo("websocket"));
-            Assert.That(connectionSetupResponse1.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId), Is.True);
+            Assert.That(connectionSetupResponse1.SecWebSocketProtocol!.Contains(Agreed(Uplink)), Is.True);
             Assert.That(connectionSetupResponse1.SecWebSocketVersion, Is.EqualTo("13"));
 
             #endregion
@@ -371,6 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                                       NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                                       RemoteURL:                URL.Parse("http://127.0.0.1:" + lcOCPPWebSocketServer.IPPort.ToString() + "/" + chargingStation.Id),
                                                       HTTPAuthentication:       HTTPBasicAuthentication.Create(chargingStation.Id.ToString(), "1234abcd"),
+                                                      SecWebSocketProtocols:    OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Downlink),
                                                       DisableWebSocketPings:    true
                                                   );
 
@@ -389,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
             Assert.That(connectionSetupResponse2.Server, Is.EqualTo($"GraphDefined OCPP {Version.String} Networking Node HTTP/WebSocket/JSON API"));
             Assert.That(connectionSetupResponse2.Connection, Is.EqualTo(ConnectionType.Upgrade));
             Assert.That(connectionSetupResponse2.Upgrade, Is.EqualTo("websocket"));
-            Assert.That(connectionSetupResponse2.SecWebSocketProtocol!.Contains(Version.WebSocketSubProtocolId), Is.True);
+            Assert.That(connectionSetupResponse2.SecWebSocketProtocol!.Contains(Agreed(Downlink)), Is.True);
             Assert.That(connectionSetupResponse2.SecWebSocketVersion, Is.EqualTo("13"));
 
             #endregion

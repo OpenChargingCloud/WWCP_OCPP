@@ -77,9 +77,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         /// <summary>
         /// The actions whose answer is a message of the binary format of the
-        /// BinaryDataStreams extension. That format is not spoken over a CBOR
-        /// connection, and its messages have no CBOR form yet: over CBOR such a
-        /// request is answered with a request error.
+        /// BinaryDataStreams extension. Over a CBOR connection such an answer is a
+        /// CBOR message whose payload is a byte string - the bytes its class wrote -
+        /// and nothing is translated.
         /// </summary>
         private static readonly String[] AnsweredInTheBinaryFormat = [ "GetFile" ];
 
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                 Assert.Pass($"'{Action}' is a message without an answer.");
 
             if (AnsweredInTheBinaryFormat.Contains(Action))
-                Assert.Pass($"'{Action}' is answered in the binary format, which has no CBOR form yet.");
+                Assert.Pass($"'{Action}' is answered in the binary format, which crosses CBOR as a byte string.");
 
             Assert.Multiple(() => {
                 Assert.That(OCPPMessagesAsCBOR.KnowsRequest (Action),  Is.True, $"The request of '{Action}' is not translated between JSON and CBOR.");
@@ -170,21 +170,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
-        #region AnActionNobodyKnows_IsNotTranslated()
+        #region AnActionNobodyKnows_IsCarriedBlind()
 
+        /// <summary>
+        /// A request nobody here has a class for - on its way through a node that only
+        /// forwards it - is what its JSON says, value by value, and so is its response.
+        /// </summary>
         [Test]
-        public void AnActionNobodyKnows_IsNotTranslated()
+        public void AnActionNobodyKnows_IsCarriedBlind()
         {
 
+            var asked     = new JObject(
+                                new JProperty("text",    "hello"),
+                                new JProperty("number",  23),
+                                new JProperty("when",    "2026-11-12T10:00:00.000Z"),
+                                new JProperty("list",    new JArray(1, "two", new JObject(new JProperty("three", true))))
+                            );
+
+            var answered  = new JObject(
+                                new JProperty("status",  "Accepted"),
+                                new JProperty("nested",  new JObject(new JProperty("value", 4.2m)))
+                            );
+
+            Assert.That(OCPPMessagesAsCBOR.KnowsRequest("NobodyKnowsThis"), Is.False);
+
+            Assert.That(OCPPMessagesAsCBOR.TryRequestToCBOR("NobodyKnowsThis", asked, requestId, destination, NetworkPath.Empty, out var cbor, out var sent, out var e1),
+                        Is.True, e1);
+
+            Assert.That(OCPPMessagesAsCBOR.TryRequestToJSON("NobodyKnowsThis", CBORValue.Parse(cbor.ToByteArray()), requestId, destination, NetworkPath.Empty, out var json, out var received, out var e2),
+                        Is.True, e2);
+
             Assert.Multiple(() => {
-
-                Assert.That(OCPPMessagesAsCBOR.TryRequestToCBOR("NobodyKnowsThis", [], requestId, destination, NetworkPath.Empty, out _, out _, out var e1),  Is.False);
-                Assert.That(e1,  Does.Contain("NobodyKnowsThis"));
-
-                Assert.That(OCPPMessagesAsCBOR.TryRequestToJSON("NobodyKnowsThis", CBORValue.FromMap([]), requestId, destination, NetworkPath.Empty, out _, out _, out var e2),  Is.False);
-                Assert.That(e2,  Does.Contain("NobodyKnowsThis"));
-
+                Assert.That(sent,      Is.Null, "There is no request of a class nobody has");
+                Assert.That(received,  Is.Null);
+                Assert.That(JToken.DeepEquals(json, asked), Is.True, json!.ToString(Newtonsoft.Json.Formatting.None));
             });
+
+            Assert.That(OCPPMessagesAsCBOR.TryResponseToCBOR("NobodyKnowsThis", received, answered, requestId, destination, NetworkPath.Empty, out var responseCBOR, out var e3),
+                        Is.True, e3);
+
+            Assert.That(OCPPMessagesAsCBOR.TryResponseToJSON("NobodyKnowsThis", sent, CBORValue.Parse(responseCBOR.ToByteArray()), requestId, destination, NetworkPath.Empty, out var responseJSON, out var e4),
+                        Is.True, e4);
+
+            Assert.That(JToken.DeepEquals(responseJSON, answered), Is.True, responseJSON!.ToString(Newtonsoft.Json.Formatting.None));
+
+        }
+
+        #endregion
+
+        #region WhatIsNoMap_IsNotCarriedBlind()
+
+        [Test]
+        public void WhatIsNoMap_IsNotCarriedBlind()
+        {
+
+            Assert.That(OCPPMessagesAsCBOR.TryRequestToJSON("NobodyKnowsThis", CBORValue.FromText("hello"), requestId, destination, NetworkPath.Empty, out _, out _, out var errorResponse),
+                        Is.False);
+
+            Assert.That(errorResponse, Does.Contain("NobodyKnowsThis"));
 
         }
 

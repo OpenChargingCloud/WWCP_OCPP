@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -77,6 +78,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// How the charging stations and the local controller write their messages:
+        /// what a charging station offers the local controller.
+        /// </summary>
+        protected virtual MessageEncodings Downlink
+            => MessageEncodings.JSON;
+
+        /// <summary>
+        /// How the local controller and the CSMS write their messages: what the local
+        /// controller offers the CSMS.
+        /// </summary>
+        protected virtual MessageEncodings Uplink
+            => MessageEncodings.JSON;
+
+        #endregion
+
+        #region TheConnectionsSpeakWhatTheyShall()
+
+        /// <summary>
+        /// Both sides of the local controller agreed on what the fixture asked for - or
+        /// a fixture for CBOR ran its tests over JSON, and proved nothing.
+        /// </summary>
+        [Test]
+        public async Task TheConnectionsSpeakWhatTheyShall()
+        {
+
+            var station = await AStation("CS-STD-00");
+
+            static String Agreed(MessageEncodings Encoding)
+                => Encoding == MessageEncodings.JSON
+                       ? Version.WebSocketSubProtocolId
+                       : Version.WebSocketSubProtocolIdCBOR;
+
+            Assert.Multiple(() => {
+
+                Assert.That(station.         WWCPWebSocketClients.OfType<WWCPWebSocketClient>().Single().WebSocketClientConnection?.Subprotocol,
+                            Is.EqualTo(Agreed(Downlink)),
+                            "Between a charging station and the local controller");
+
+                Assert.That(localController!.WWCPWebSocketClients.OfType<WWCPWebSocketClient>().Single().WebSocketClientConnection?.Subprotocol,
+                            Is.EqualTo(Agreed(Uplink)),
+                            "Between the local controller and the CSMS");
+
+            });
+
+        }
+
+        #endregion
+
         #region SetupOnce() / StopTheStations() / StopTheController()
 
         [OneTimeSetUp]
@@ -109,6 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                                      NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                      RemoteURL:                URL.Parse($"http://127.0.0.1:{testBackendWebSockets1!.IPPort}/{localController.Id}"),
                                      HTTPAuthentication:       HTTPBasicAuthentication.Create(localController.Id.ToString(), Password),
+                                     SecWebSocketProtocols:    OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Uplink),
                                      DisableWebSocketPings:    true,
                                      NetworkingMode:           NetworkingMode.Standard
                                  );
@@ -169,6 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
                                      NextHopNetworkingNodeId:  NetworkingNode_Id.CSMS,
                                      RemoteURL:                URL.Parse($"http://127.0.0.1:{localControllerServer.IPPort}/{station.Id}"),
                                      HTTPAuthentication:       HTTPBasicAuthentication.Create(station.Id.ToString(), Password),
+                                     SecWebSocketProtocols:    OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Downlink),
                                      DisableWebSocketPings:    true
                                  );
 

@@ -350,6 +350,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.Common
 
         #endregion
 
+        #region ABinaryPayload_IsAByteString()
+
+        /// <summary>
+        /// A message of the binary format of the BinaryDataStreams extension is a CBOR
+        /// message as every other, whose payload is a byte string: the bytes its class
+        /// wrote.
+        /// </summary>
+        [Test]
+        public void ABinaryPayload_IsAByteString()
+        {
+
+            var bytes  = new Byte[] { 0x00, 0x01, 0x02, 0xfe, 0xff };
+
+            var array  = CBORValue.FromArray(
+                             CBORValue.FromUInt64(2),
+                             CBORValue.FromText  ("4711"),
+                             CBORValue.FromText  ("BinaryDataTransfer"),
+                             CBORValue.FromBytes (bytes)
+                         );
+
+            Assert.That(OCPP_CBORFrame.TryParse(array.ToByteArray(), out var parsed, out var e1),  Is.True, e1);
+            Assert.That(OCPP_CBORFrame.TrySplit(parsed, out var header, out var last, out var e2), Is.True, e2);
+            Assert.That(OCPP_CBORRequestMessage.TryParse(parsed, out var request, out var e3),     Is.True, e3);
+
+            Assert.Multiple(() => {
+                Assert.That(header,                                Has.Count.EqualTo(4));
+                Assert.That(last.TryGetBytes(out var payload),     Is.True);
+                Assert.That(payload,                               Is.EqualTo(bytes));
+                Assert.That(request!.Action,                       Is.EqualTo("BinaryDataTransfer"));
+                Assert.That(request.Payload.TryGetBytes(out var p), Is.True);
+                Assert.That(p,                                     Is.EqualTo(bytes));
+            });
+
+        }
+
+        #endregion
+
         #region WhatIsNoFrame_IsRefused()
 
         [Test]
@@ -384,7 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.Common
                 Assert.That(e2,                                                         Does.Contain("at least 3"));
 
                 Assert.That(OCPP_CBORResponseMessage.TryParse(noMapAtItsEnd, out _, out var e3), Is.False);
-                Assert.That(e3,                                                         Does.Contain("not a map"));
+                Assert.That(e3,                                                         Does.Contain("neither a map nor a byte string"));
 
                 Assert.That(OCPP_CBORRequestMessage.TryParse(aBooleanInIt,  out _, out var e4),  Is.False);
                 Assert.That(e4,                                                         Does.Contain("position 1"));

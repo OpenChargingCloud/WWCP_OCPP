@@ -346,14 +346,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         /// <summary>
         /// The CBOR of the request of the given action, from its JSON, and the request itself.
+        ///
+        /// An action nobody here has a class for - a message of a vendor, or of a version
+        /// this node does not know, on its way through a node that forwards it - is
+        /// carried blind: as what its JSON says, value by value. There is no request
+        /// then, and its response is carried the same way.
         /// </summary>
+        /// <param name="Request">The request as its class read it, or null for a request that is carried blind.</param>
         public static Boolean TryRequestToCBOR(String                           Action,
                                                JObject                          JSON,
                                                Request_Id                       RequestId,
                                                SourceRouting                    Destination,
                                                NetworkPath                      NetworkPath,
                                                out CBORValue                    CBOR,
-                                               [NotNullWhen(true)]  out Object? Request,
+                                               out Object?                      Request,
                                                [NotNullWhen(false)] out String? ErrorResponse)
         {
 
@@ -361,10 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Request  = null;
 
             if (!requests.TryGetValue(Action, out var forms))
-            {
-                ErrorResponse = $"The OCPP message '{Action}' has no CBOR form!";
-                return false;
-            }
+                return TryBlindCBOR(Action, JSON, out CBOR, out ErrorResponse);
 
             if (!Read(forms, forms.TryParse, JSON, null, RequestId, Destination, NetworkPath, out Request, out ErrorResponse))
                 return false;
@@ -379,14 +382,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         /// <summary>
         /// The JSON of the request of the given action, from its CBOR, and the request itself.
+        /// An action nobody here has a class for is read blind, as it was written.
         /// </summary>
+        /// <param name="Request">The request as its class read it, or null for a request that is carried blind.</param>
         public static Boolean TryRequestToJSON(String                            Action,
                                                CBORValue                         CBOR,
                                                Request_Id                        RequestId,
                                                SourceRouting                     Destination,
                                                NetworkPath                       NetworkPath,
                                                [NotNullWhen(true)]  out JObject? JSON,
-                                               [NotNullWhen(true)]  out Object?  Request,
+                                               out Object?                       Request,
                                                [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
@@ -394,10 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             Request  = null;
 
             if (!requests.TryGetValue(Action, out var forms))
-            {
-                ErrorResponse = $"The OCPP message '{Action}' has no CBOR form!";
-                return false;
-            }
+                return TryBlindJSON(Action, CBOR, out JSON, out ErrorResponse);
 
             if (!Read(forms, forms.TryParseCBOR, CBOR, null, RequestId, Destination, NetworkPath, out Request, out ErrorResponse))
                 return false;
@@ -414,10 +416,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The CBOR of the response of the given action, from its JSON.
         /// </summary>
         /// <param name="Action">The action of the request.</param>
-        /// <param name="Request">The request that is answered, as TryReadRequest or TryRequestToJSON gave it.</param>
+        /// <param name="Request">The request that is answered, as TryReadRequest or TryRequestToJSON gave it: null for a request that was carried blind, whose response is carried blind as well.</param>
         /// <param name="JSON">The JSON of the response.</param>
         public static Boolean TryResponseToCBOR(String                           Action,
-                                                Object                           Request,
+                                                Object?                          Request,
                                                 JObject                          JSON,
                                                 Request_Id                       RequestId,
                                                 SourceRouting                    Destination,
@@ -427,6 +429,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             CBOR = default;
+
+            if (Request is null)
+                return TryBlindCBOR(Action, JSON, out CBOR, out ErrorResponse);
 
             if (!responses.TryGetValue(Action, out var forms))
             {
@@ -449,10 +454,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// The JSON of the response of the given action, from its CBOR.
         /// </summary>
         /// <param name="Action">The action of the request.</param>
-        /// <param name="Request">The request that is answered, as TryReadRequest or TryRequestToJSON gave it.</param>
+        /// <param name="Request">The request that is answered, as TryReadRequest or TryRequestToJSON gave it: null for a request that was carried blind, whose response is read blind as well.</param>
         /// <param name="CBOR">The CBOR of the response.</param>
         public static Boolean TryResponseToJSON(String                            Action,
-                                                Object                            Request,
+                                                Object?                           Request,
                                                 CBORValue                         CBOR,
                                                 Request_Id                        RequestId,
                                                 SourceRouting                     Destination,
@@ -462,6 +467,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             JSON = null;
+
+            if (Request is null)
+                return TryBlindJSON(Action, CBOR, out JSON, out ErrorResponse);
 
             if (!responses.TryGetValue(Action, out var forms))
             {
@@ -564,6 +572,72 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+
+        #region (private static) TryBlindCBOR(Action, JSON, out CBOR, out ErrorResponse)
+
+        /// <summary>
+        /// What the given JSON says, value by value: texts, numbers and truth values,
+        /// with nothing of what CBOR could say better.
+        /// </summary>
+        private static Boolean TryBlindCBOR(String                           Action,
+                                            JObject                          JSON,
+                                            out CBORValue                    CBOR,
+                                            [NotNullWhen(false)] out String? ErrorResponse)
+        {
+
+            try
+            {
+                CBOR           = CBORJSON.ToCBOR(JSON);
+                ErrorResponse  = null;
+                return true;
+            }
+            catch (Exception e)
+            {
+                CBOR           = default;
+                ErrorResponse  = $"The OCPP message '{Action}' could not be written as CBOR: {e.Message}";
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (private static) TryBlindJSON(Action, CBOR, out JSON, out ErrorResponse)
+
+        /// <summary>
+        /// What the given CBOR says, value by value.
+        /// </summary>
+        private static Boolean TryBlindJSON(String                            Action,
+                                            CBORValue                         CBOR,
+                                            [NotNullWhen(true)]  out JObject? JSON,
+                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            try
+            {
+
+                JSON = CBORJSON.ToJSON(CBOR) as JObject;
+
+                if (JSON is not null)
+                {
+                    ErrorResponse = null;
+                    return true;
+                }
+
+                ErrorResponse = $"The OCPP message '{Action}' is no CBOR map!";
+                return false;
+
+            }
+            catch (Exception e)
+            {
+                JSON           = null;
+                ErrorResponse  = $"The OCPP message '{Action}' could not be read from CBOR: {e.Message}";
+                return false;
+            }
+
+        }
+
+        #endregion
 
         #region (private static) TryWriteCBOR(Forms, Message, out CBOR, out ErrorResponse)
 

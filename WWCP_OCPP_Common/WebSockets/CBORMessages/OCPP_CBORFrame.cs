@@ -91,7 +91,8 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         /// <summary>
         /// Try to take the given CBOR array apart: into what stands in front of its
         /// last item, as the JSON array of the same message with an empty object in
-        /// its last place, and that last item, which must be a map.
+        /// its last place, and that last item, which must be a map - or a byte string,
+        /// the payload of a message of the binary format.
         /// </summary>
         /// <param name="CBORArray">The CBOR array of an OCPP message.</param>
         /// <param name="Header">The JSON array of the same message, its last item an empty object.</param>
@@ -122,9 +123,11 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             Last = items[^1];
 
-            if (Last.Kind != CBORValueKind.Map)
+            // A map, or the bytes of a message of the binary format.
+            if (Last.Kind != CBORValueKind.Map &&
+                Last.Kind != CBORValueKind.ByteString)
             {
-                ErrorResponse = "The last item of the given CBOR array is not a map!";
+                ErrorResponse = "The last item of the given CBOR array is neither a map nor a byte string!";
                 return false;
             }
 

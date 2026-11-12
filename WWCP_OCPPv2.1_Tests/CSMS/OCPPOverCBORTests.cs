@@ -469,7 +469,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             Assert.Multiple(() => {
                 Assert.That(errors[broken]. ErrorCode,  Is.EqualTo(ResultCode.FormationViolation));
-                Assert.That(errors[unknown].ErrorCode,  Is.EqualTo(ResultCode.NotImplemented));
+                // Read blind, and answered as an unknown action in JSON is.
+                Assert.That(errors[unknown].ErrorCode,  Is.EqualTo(ResultCode.ProtocolError));
                 Assert.That(frames.Text(),              Is.Zero, "Text frames over a CBOR connection");
             });
 
