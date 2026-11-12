@@ -613,6 +613,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public OnQueryDNSDelegate? QueryDNSProcessor { get; set; }
 
+        /// <summary>
+        /// Answers a Reset - the owner of this node knows what a restart is, and
+        /// whether something is charging that it waits for - or null to leave
+        /// it to this node, which accepts it and does nothing.
+        /// </summary>
+        public Func<ResetRequest, CancellationToken, Task<ResetResponse?>>?  OnResetByOwner  { get; set; }
+
         #endregion
 
         #region Constructor(s)
@@ -1264,19 +1271,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnReset
 
-            OCPP.IN.OnReset += (timestamp,
-                                sender,
-                                connection,
-                                request,
-                                cancellationToken) => {
+            OCPP.IN.OnReset += async (timestamp,
+                                      sender,
+                                      connection,
+                                      request,
+                                      cancellationToken) => {
+
+                // The owner's to answer, where it has an answer: this node
+                // restarts nothing by itself.
+                if (OnResetByOwner is Func<ResetRequest, CancellationToken, Task<ResetResponse?>> owner &&
+                    await owner(request, cancellationToken) is ResetResponse answered)
+                    return answered;
 
                 DebugX.Log($"ChargeBox[{Id}] Incoming '{request.ResetType}' reset request accepted.");
 
-                return Task.FromResult(
-                           new ResetResponse(
-                               request,
-                               ResetStatus.Accepted
-                           )
+                return new ResetResponse(
+                           request,
+                           ResetStatus.Accepted
                        );
 
             };

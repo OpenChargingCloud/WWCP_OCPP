@@ -87,6 +87,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public Func<CSMS.CertificateSignedRequest, CancellationToken, Task<CS.CertificateSignedResponse?>>?  OnCertificateSignedByOwner  { get; set; }
 
         /// <summary>
+        /// Answers a Reset - the owner of this node knows what a restart is, and
+        /// whether something is charging that it waits for - or null to leave
+        /// it to this node, which accepts it and does nothing.
+        /// </summary>
+        public Func<CSMS.ResetRequest, CancellationToken, Task<CS.ResetResponse?>>?  OnResetByOwner  { get; set; }
+
+        /// <summary>
         /// Answers a TriggerMessage of SignChargingStationCertificate,
         /// SignV2GCertificate, SignV2G20Certificate or SignCombinedCertificate -
         /// the owner of this node makes the key and sends the SignCertificate -
@@ -2808,6 +2815,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
+
+                // The owner's to answer, where it has an answer: this node
+                // restarts nothing by itself.
+                if (OnResetByOwner is Func<CSMS.ResetRequest, CancellationToken, Task<CS.ResetResponse?>> owner &&
+                    await owner(request, ct) is CS.ResetResponse answered)
+                    return answered;
 
                 // ResetType
 
