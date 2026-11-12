@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
     /// <summary>
     /// The web payments controller, the dynamic QR codes of OCPP 2.1: time-based one-time passwords valid for as little as
     /// one second, so that a code passed on from the display, by BLE or by NFC is soon stale, made with a shared secret
-    /// Hermod's TOTP generator takes.
+    /// Hermod's TOTP generator takes, and its variables read as they were set.
     /// </summary>
     [TestFixture]
     public class WebPaymentsCtrlrTests
@@ -161,6 +161,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.That(withWhitespace.      ErrorMessage,  Is.EqualTo("The shared secret for the time-based one-time password algorithm must not contain any whitespace characters!"));
                 Assert.That(tooShortAtBSS.       Status,        Is.EqualTo(SetVariableStatus.Rejected));
 
+            }
+
+        }
+
+        #endregion
+
+
+        #region GetVariables_ReadWhatSetVariablesSet_Test()
+
+        /// <summary>
+        /// What SetVariables set is what GetVariables reads: the validity time and the length of the TOTPs as they are now,
+        /// not as they were when the controller was made, and EnableNFC as itself, not as EnableQRCodes.
+        /// </summary>
+        [Test]
+        public void GetVariables_ReadWhatSetVariablesSet_Test()
+        {
+
+            static String?[] SetAndRead(ComponentConfig Controller)
+            {
+
+                var variables = Controller.VariableConfigs.ToDictionary(variable => variable.Name);
+
+                variables["ValidityTime"].ValueSetter!("60",   "30");
+                variables["Length"].      ValueSetter!("8",    "12");
+                variables["EnableNFC"].   ValueSetter!("true", "false");
+
+                return [
+                    variables["ValidityTime"]. ValueGetter!(),
+                    variables["Length"].       ValueGetter!(),
+                    variables["EnableNFC"].    ValueGetter!(),
+                    variables["EnableQRCodes"].ValueGetter!()
+                ];
+
+            }
+
+            var chargingStation     = new WebPaymentsCtrlr();
+            var batterySwapStation  = new BSS.WebPaymentsCtrlr();
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(SetAndRead(chargingStation),     Is.EqualTo(new[] { "60", "8", "true", "false" }));
+                Assert.That(SetAndRead(batterySwapStation),  Is.EqualTo(new[] { "60", "8", "true", "false" }));
+                Assert.That(chargingStation.ValidityTime,    Is.EqualTo(TimeSpan.FromSeconds(60)));
+                Assert.That(chargingStation.Length,          Is.EqualTo(8));
+                Assert.That(chargingStation.EnableNFC,       Is.True);
             }
 
         }

@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 new VariableConfig(
 
                     Name:             "ValidityTime",
-                    ValueGetter:      this.ValidityTime.TotalSeconds.ToString,
+                    ValueGetter:      () => this.ValidityTime.TotalSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     ValueSetter:      (newV, oldV) => {
 
                                           if (UInt32.TryParse(newV, out var time))
@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 new VariableConfig(
 
                     Name:             "Length",
-                    ValueGetter:      this.Length.ToString,
+                    ValueGetter:      () => this.Length.ToString(),
                     ValueSetter:      (newV, oldV) => {
 
                                           if (Byte.TryParse(newV, out var length))
@@ -766,7 +766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 new VariableConfig(
 
                     Name:             "EnableNFC",
-                    ValueGetter:      () => this.EnableQRCodes
+                    ValueGetter:      () => this.EnableNFC
                                                 ? "true"
                                                 : "false",
                     ValueSetter:      (newV, oldV) => {
