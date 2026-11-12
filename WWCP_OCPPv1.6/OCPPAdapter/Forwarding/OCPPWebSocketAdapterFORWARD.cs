@@ -904,9 +904,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                         await parentNetworkingNode.OCPP.OUT.SendJSONResponse(
                                   JSONResponseMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
-                                      JSONResponseMessage.Destination.Next == NetworkingNode_Id.Zero
-                                          ? SourceRouting.To(responseInfo.SourceNodeId)
-                                          : JSONResponseMessage.Destination,
+                                      // To whoever asked, whatever the answer names: it is not the answerer's to choose.
+                                      SourceRouting.To(responseInfo.SourceNodeId),
                                       JSONResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
                                   )
                               );
@@ -966,9 +965,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
                               JSONRequestErrorMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
-                                  JSONRequestErrorMessage.Destination.Next == NetworkingNode_Id.Zero
-                                      ? SourceRouting.To(responseInfo.SourceNodeId)
-                                      : JSONRequestErrorMessage.Destination,
+                                  // To whoever asked, whatever the answer names: it is not the answerer's to choose.
+                                  SourceRouting.To(responseInfo.SourceNodeId),
                                   JSONRequestErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
                               )
                           );
@@ -1016,9 +1014,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 await parentNetworkingNode.OCPP.OUT.SendJSONResponseError(
                           JSONResponseErrorMessage.ChangeRequestId(forwardedResponse.RequestId).ChangeNetworking(
-                              JSONResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero
-                                  ? SourceRouting.To(forwardedResponse.AnsweredBy)
-                                  : JSONResponseErrorMessage.Destination,
+                              // To whoever answered, whatever the error names: it is not the asker's to choose.
+                              SourceRouting.To(forwardedResponse.AnsweredBy),
                               JSONResponseErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
                           )
                       );
@@ -1541,9 +1538,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     await parentNetworkingNode.OCPP.OUT.SendBinaryResponse(
                               BinaryResponseMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
-                                  BinaryResponseMessage.Destination.Next == NetworkingNode_Id.Zero
-                                      ? SourceRouting.To(responseInfo.SourceNodeId)
-                                      : BinaryResponseMessage.Destination,
+                                  // To whoever asked, whatever the answer names: it is not the answerer's to choose.
+                                  SourceRouting.To(responseInfo.SourceNodeId),
                                   BinaryResponseMessage.NetworkPath.Append(parentNetworkingNode.Id)
                               )
                           );
@@ -1576,9 +1572,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(
                               BinaryRequestErrorMessage.ChangeRequestId(responseInfo.RequestId).ChangeNetworking(
-                                  BinaryRequestErrorMessage.Destination.Next == NetworkingNode_Id.Zero
-                                      ? SourceRouting.To(responseInfo.SourceNodeId)
-                                      : BinaryRequestErrorMessage.Destination,
+                                  // To whoever asked, whatever the answer names: it is not the answerer's to choose.
+                                  SourceRouting.To(responseInfo.SourceNodeId),
                                   BinaryRequestErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
                               )
                           );
@@ -1612,9 +1607,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 await parentNetworkingNode.OCPP.OUT.SendBinaryResponseError(
                           BinaryResponseErrorMessage.ChangeRequestId(forwardedResponse.RequestId).ChangeNetworking(
-                              BinaryResponseErrorMessage.Destination.Next == NetworkingNode_Id.Zero
-                                  ? SourceRouting.To(forwardedResponse.AnsweredBy)
-                                  : BinaryResponseErrorMessage.Destination,
+                              // To whoever answered, whatever the error names: it is not the asker's to choose.
+                              SourceRouting.To(forwardedResponse.AnsweredBy),
                               BinaryResponseErrorMessage.NetworkPath.Append(parentNetworkingNode.Id)
                           )
                       );
