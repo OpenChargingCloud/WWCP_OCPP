@@ -378,12 +378,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         #region AOneTimePasswordBoundToTLSIsNotSent(Over)
 
         /// <summary>
-        /// A one-time password bound to the TLS session cannot be made, over
-        /// none of them: the station says so, and asks nobody.
+        /// A one-time password bound to the TLS session cannot be made where
+        /// that is an SslStream, or may come to be one: over HTTP/1.1 and
+        /// HTTP/2, and where the server is left the choice. The station says
+        /// so, and asks nobody.
         /// </summary>
         [TestCase(WebSocketHTTPVersion.HTTP1_1)]
         [TestCase(WebSocketHTTPVersion.HTTP2)]
-        [TestCase(WebSocketHTTPVersion.HTTP3)]
+        [TestCase(WebSocketHTTPVersion.Auto)]
         public async Task AOneTimePasswordBoundToTLSIsNotSent(WebSocketHTTPVersion Over)
         {
 
@@ -394,6 +396,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             Assert.Multiple(() => {
                 Assert.That(refusal!.Message,  Is.EqualTo(TOTPConfig.TLSChannelBindingNotAvailable));
                 Assert.That(openedOver,        Is.Empty,  "The CSMS was asked all the same.");
+            });
+
+        }
+
+        #endregion
+
+        #region AOneTimePasswordBoundToItsConnectionIsLetInOverHTTP3(TheCSMSAsksForIt)
+
+        /// <summary>
+        /// Over HTTP/3 the TLS of the connection exports what a password is
+        /// bound with: the station binds it, the CSMS verifies it with its
+        /// side of the same connection - whether it asks for the binding or
+        /// would have taken a raw password too - and OCPP goes both ways.
+        /// </summary>
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task AOneTimePasswordBoundToItsConnectionIsLetInOverHTTP3(Boolean TheCSMSAsksForIt)
+        {
+
+            ACSMS(WithTLS: true);
+
+            server!.ClientTOTPConfig[Station] = new TOTPConfig(sharedSecret, UseTLSExporterMaterial: TheCSMSAsksForIt);
+
+            var sent = new ConcurrentQueue<HTTPTOTPAuthentication>();
+
+            server.OnHTTPRequest += (timestamp, sender, request, cancellationToken) => {
+                if (request.Authorization is HTTPTOTPAuthentication totp)
+                    sent.Enqueue(totp);
+                return Task.CompletedTask;
+            };
+
+            var response = await Dial(WebSocketHTTPVersion.HTTP3, BoundToTLS: true);
+
+            Assert.That(response.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols), response.EntirePDU);
+
+            Assert.That(SpinWait.SpinUntil(() => !openedOver.IsEmpty, TimeSpan.FromSeconds(10)), Is.True,
+                        "The CSMS took no WebSocket.");
+
+            var boot   = await chargingStation!.SendBootNotification(
+                                   BootReason:  BootReason.PowerUp
+                               );
+
+            var reset  = await csms!.Reset(
+                                   Destination:  SourceRouting.To(chargingStation.Id),
+                                   ResetType:    ResetType.OnIdle
+                               );
+
+            var (before, now, next, _, _) = TOTPGenerator.GenerateTOTPs(sharedSecret);
+
+            Assert.Multiple(() => {
+                Assert.That(openedOver,               Is.EqualTo(new[] { HTTPVersion.HTTP_3_0 }));
+                Assert.That(sent.First().Type,        Is.EqualTo(TOTPHTTPHeaderType.TLSChannelBinding),  "the password does not say it is bound");
+                Assert.That(new[] { before, now, next },  Has.None.EqualTo(sent.First().TOTP),            "the password sent as bound is the unbound one");
+                Assert.That(boot. Result.ResultCode,  Is.EqualTo(ResultCode.OK),                         "the station's BootNotification: " + boot. Result.Description);
+                Assert.That(boot. Status,             Is.EqualTo(RegistrationStatus.Accepted));
+                Assert.That(reset.Result.ResultCode,  Is.EqualTo(ResultCode.OK),                         "the CSMS's Reset: "              + reset.Result.Description);
+            });
+
+        }
+
+        #endregion
+
+        #region ACSMSAskingForTheBindingTakesNoRawPassword(Over)
+
+        /// <summary>
+        /// A CSMS that knows a station by a password bound to its connection
+        /// takes no raw one, over none of them - over HTTP/1.1 and HTTP/2
+        /// such a station cannot come at all, which is what was asked for.
+        /// </summary>
+        [TestCase(WebSocketHTTPVersion.HTTP1_1)]
+        [TestCase(WebSocketHTTPVersion.HTTP2)]
+        [TestCase(WebSocketHTTPVersion.HTTP3)]
+        public async Task ACSMSAskingForTheBindingTakesNoRawPassword(WebSocketHTTPVersion Over)
+        {
+
+            ACSMS(WithTLS: true);
+
+            server!.ClientTOTPConfig[Station] = new TOTPConfig(sharedSecret, UseTLSExporterMaterial: true);
+
+            var response = await Dial(Over);
+
+            Assert.Multiple(() => {
+                Assert.That(response.HTTPStatusCode,  Is.EqualTo(HTTPStatusCode.Unauthorized),  response.EntirePDU);
+                Assert.That(openedOver,               Is.Empty,                                 "The CSMS took a WebSocket.");
             });
 
         }
