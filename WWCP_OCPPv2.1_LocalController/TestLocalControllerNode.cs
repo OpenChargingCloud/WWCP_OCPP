@@ -996,6 +996,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #region OnGetVariables
 
+            // Who may read and set which of the controller's own variables is decided entry
+            // by entry, by the resource of each entry's component, as a charging station
+            // decides its own: the policy table decides neither request as a whole. In the
+            // mode "Off" of the policy, the default, every entry is answered as before. A
+            // request for a station behind the controller never meets this: FORWARD has it,
+            // and its own forwarding policy.
+            OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("SetVariables");
+            OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("GetVariables");
+
             OCPP.IN.OnGetVariables += (timestamp,
                                        sender,
                                        connection,
@@ -1006,8 +1015,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     new CS.GetVariablesResponse(
                         Request:     request,
                         Results:     DeviceModel.GetVariables(
-                                         request.VariableData,
-                                         (name, evse) => GetComponentConfigs(name, evse)
+                                         request,
+                                         (name, evse) => GetComponentConfigs(name, evse),
+                                         OCPP.SignaturePolicy
                                      ),
                         CustomData:  null
                     )
@@ -1055,6 +1065,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     SetVariableResults:  await DeviceModel.SetVariablesAsync(
                                                    request,
                                                    (name, evse) => GetComponentConfigs(name, evse),
+                                                   OCPP.SignaturePolicy,
                                                    ct,
                                                    NewInstanceOf
                                                ),

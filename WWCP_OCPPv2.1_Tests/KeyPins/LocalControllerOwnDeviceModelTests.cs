@@ -24,6 +24,7 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -346,6 +347,122 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.KeyPins
                                                                          Does.Contain("certificates:edit"));
                 Assert.That(tlsServer.Current,                           Is.EqualTo(pinA));
             });
+
+        }
+
+        #endregion
+
+        #region Variables_ToTheController_AreDecidedEntryByEntry_Test()
+
+        /// <summary>
+        /// A signed SetVariables or GetVariables addressed to the local controller is decided entry by
+        /// entry, by the resource of each entry's component, as a charging station decides its own: the
+        /// entry outside the signer's rights is "Rejected" with "NotAuthorized", the other one is applied,
+        /// and with ACID none of the request is.
+        /// </summary>
+        /// <remarks>
+        /// The controller's own Device Model used to answer every entry the request as a whole was let
+        /// through for: a signer that may change the configuration changed the name servers as well.
+        /// </remarks>
+        [Test]
+        public async Task Variables_ToTheController_AreDecidedEntryByEntry_Test()
+        {
+
+            var keyPair            = ECCKeyPair.GenerateKeys()!;
+            var role               = UserRole_Id.Parse("configurator");
+            var policy             = localController1!.OCPP.SignaturePolicy;
+            var permissionsBefore  = policy.PermissionsOfRole;
+            var tableBefore        = policy.ActionPermissions.ToArray();
+
+            policy.AddVerificationRule(SetVariablesRequest.DefaultJSONLDContext, VerificationRuleActions.VerifyAll);
+            policy.AddVerificationRule(GetVariablesRequest.DefaultJSONLDContext, VerificationRuleActions.VerifyAll);
+
+            localController1.UserRoles.Add(new UserRole(Id: role, KeyPairs: [ keyPair ]));
+
+            // May change and read what the controller is made of, but not how it resolves names.
+            policy.PermissionsOfRole  = name => name == role.ToString()
+                                                    ? [ "configuration:edit", "configuration:read" ]
+                                                    : [];
+
+            // A row for the whole request, which the signer does not hold: with the entries decided
+            // one by one it decides nothing.
+            policy.AddActionPermissions([
+                ActionPermission.Needs("SetVariables", "signatures:edit"),
+                ActionPermission.Needs("GetVariables", "signatures:read")
+            ]);
+
+            policy.Mode               = MessagePolicyModes.Enforce;
+
+            static SetVariableData TheNameServers()
+
+                => new (
+                       Component:        new Component(Name: "DNSClientController"),
+                       Variable:         new Variable (Name: "Servers"),
+                       AttributeValue:   "192.0.2.53"
+                   );
+
+            async Task<SetVariablesResponse> SetBoth(DataConsistencyModel? Model)
+
+                => await testCSMS1!.SetVariables(
+                             Destination:            SourceRouting.To(localController1.Id),
+                             VariableData:           [ TheNameServers(), Entry("ActiveKeyPin", pinB) ],
+                             DataConsistencyModel:   Model,
+                             SignInfos:              [ keyPair.ToSignInfo1("configurator") ]
+                         );
+
+            try
+            {
+
+                var asOneChange  = await SetBoth(DataConsistencyModel.ACID);
+                var switchedNot  = tlsServer!.Switches.Count;
+
+                var independent  = await SetBoth(null);
+
+                var read         = await testCSMS1!.GetVariables(
+                                             Destination:    SourceRouting.To(localController1.Id),
+                                             VariableData:   [
+                                                                 new GetVariableData(
+                                                                     Component:  new Component(Name: "DNSClientController"),
+                                                                     Variable:   new Variable (Name: "Servers")
+                                                                 ),
+                                                                 Asked("KeyPins")
+                                                             ],
+                                             SignInfos:      [ keyPair.ToSignInfo1("configurator") ]
+                                         );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(asOneChange.SetVariableResults.Select(result => result.AttributeStatus),
+                                Is.All.EqualTo(SetVariableStatus.Rejected),                                      "With ACID a part of the request was applied!");
+                    Assert.That(asOneChange.SetVariableResults.Select(result => result.AttributeStatusInfo?.ReasonCode),
+                                Is.All.EqualTo("NotAuthorized"));
+                    Assert.That(switchedNot,                                                                  Is.EqualTo(0));
+
+                    Assert.That(independent.Result.ResultCode,                                                Is.EqualTo(OCPP.ResultCode.OK));
+                    Assert.That(independent.SetVariableResults.First().AttributeStatus,                       Is.EqualTo(SetVariableStatus.Rejected),
+                                "An entry outside the signer's rights was looked at!");
+                    Assert.That(independent.SetVariableResults.First().AttributeStatusInfo?.ReasonCode,       Is.EqualTo("NotAuthorized"));
+                    Assert.That(independent.SetVariableResults.First().AttributeStatusInfo?.AdditionalInfo,   Does.Contain("dns:edit"));
+                    Assert.That(independent.SetVariableResults.Last(). AttributeStatus,                       Is.EqualTo(SetVariableStatus.Accepted),
+                                "The entry within the signer's rights was refused with the other one!");
+                    Assert.That(tlsServer.Switches.Select(@switch => @switch.Pin),                            Is.EqualTo(new[] { pinB }));
+
+                    Assert.That(read.Results.First().AttributeStatus,                                         Is.EqualTo(GetVariableStatus.Rejected));
+                    Assert.That(read.Results.First().AttributeStatusInfo?.ReasonCode,                         Is.EqualTo("NotAuthorized"));
+                    Assert.That(read.Results.First().AttributeStatusInfo?.AdditionalInfo,                     Does.Contain("dns:read"));
+                    Assert.That(read.Results.Last(). AttributeStatus,                                         Is.EqualTo(GetVariableStatus.Accepted));
+
+                });
+
+            }
+            finally
+            {
+                localController1.UserRoles.Clear();
+                policy.Mode               = MessagePolicyModes.Off;
+                policy.PermissionsOfRole  = permissionsBefore;
+                policy.ClearActionPermissions();
+                policy.AddActionPermissions(tableBefore);
+            }
 
         }
 
