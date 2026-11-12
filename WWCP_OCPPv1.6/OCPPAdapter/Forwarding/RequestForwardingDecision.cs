@@ -107,6 +107,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         public Byte[]?                     BinaryRejectResponse      { get; }
 
         /// <summary>
+        /// Whether a filter gave the reject response, as what to answer: it is
+        /// then sent as the response to the request. The one a forwarding
+        /// processor makes up where a filter gave none is not - a response of
+        /// an action without a status would read as if the request was taken -
+        /// and the asker is told with a request error instead.
+        /// </summary>
+        public Boolean                     RejectResponseGiven       { get; internal set; }
+
+        /// <summary>
         /// The REJECT message sent back to the sender.
         /// </summary>
         public String                      RejectMessage             { get; }
@@ -240,6 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             this.JSONRejectResponse  = JSONRejectResponse;
             this.RequestContext      = RequestContext;
             this.RejectMessage       = RejectMessage ?? DefaultREJECTMessage;
+            this.RejectDetails       = RejectDetails;
             this.LogMessage          = LogMessage    ?? DefaultLogMessage;
 
         }

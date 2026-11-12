@@ -631,6 +631,56 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
         #endregion
 
+        #region ARequestTheNodeRejects_WithARejectResponse_TheChargePointGetsThatResponse()
+
+        /// <summary>
+        /// A filter of the node REJECTs a charge point's request and says what to
+        /// answer: the charge point gets that response, as the answer to its request.
+        /// </summary>
+        /// <remarks>
+        /// The reject response of a filter was never sent: every REJECT went as a request
+        /// error "Filtered", and what the filter had made was thrown away.
+        /// </remarks>
+        [Test]
+        public async Task ARequestTheNodeRejects_WithARejectResponse_TheChargePointGetsThatResponse()
+        {
+
+            var cp1 = await AChargePointBelow("CP-STD-11");
+
+            forwarder!.OCPP.FORWARD.OnAnyJSONRequestFilter += (timestamp, sender, connection, request, cancellationToken) =>
+                Task.FromResult(
+                    request.Action == "DataTransfer"
+                        ? new OCPPv1_6.NetworkingNode.RequestForwardingDecision(
+                              OCPP.NetworkingNode.ForwardingDecisions.REJECT,
+                              new JObject(
+                                  new JProperty("status",  "Rejected"),
+                                  new JProperty("data",    "Not through this node!")
+                              )
+                          )
+                        : OCPPv1_6.NetworkingNode.RequestForwardingDecision.NEXT(request)
+                );
+
+            var started   = Timestamp.Now;
+
+            var transfer  = await cp1.TransferData(
+                                      VendorId:        Vendor_Id. GraphDefined,
+                                      MessageId:       Message_Id.GraphDefined_TestMessage,
+                                      Data:            "Hello world!",
+                                      RequestId:       Request_Id.Parse("4731"),
+                                      RequestTimeout:  TimeSpan.FromSeconds(10)
+                                  );
+
+            Assert.Multiple(() => {
+                Assert.That(transfer.Result.ResultCode,   Is.EqualTo(ResultCode.OK),  $"{transfer.Result}");
+                Assert.That(transfer.Status,              Is.EqualTo(DataTransferStatus.Rejected));
+                Assert.That(transfer.Data?.ToString(),    Is.EqualTo("Not through this node!"));
+                Assert.That(Waited(started),              Is.LessThan(TimeSpan.FromSeconds(5)));
+            });
+
+        }
+
+        #endregion
+
         #region ARequestTheNodeCannotRead_IsRefusedToTheChargePoint()
 
         /// <summary>

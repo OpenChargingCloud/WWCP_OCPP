@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                         );
 
                     //ToDo: Find a good result!
-                    forwardingDecision = results.First();
+                    forwardingDecision = WithItsRejectResponseGiven(results.First());
 
                 }
                 catch (Exception e)
@@ -684,20 +684,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 Interlocked.Increment(ref rejectedMessages);
 
-                await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
-                          new OCPP_JSONRequestErrorMessage(
-                              Now,
-                              JSONRequestMessage.EventTrackingId,
-                              NetworkingMode.Unknown,
-                              SourceRouting.To  (JSONRequestMessage.NetworkPath.Source),
-                              NetworkPath.  From(parentNetworkingNode.Id),
-                              JSONRequestMessage.RequestId,
-                              ResultCode.Filtered,
-                              forwardingDecision.RejectMessage,
-                              forwardingDecision.RejectDetails,
-                              JSONRequestMessage.CancellationToken
-                          )
-                      );
+                // What a filter gave as the answer is the answer, under the request's
+                // identification. It was never sent: every REJECT went as a request error,
+                // and the response the filter had made was thrown away.
+                if (forwardingDecision.RejectResponseGiven &&
+                    forwardingDecision.JSONRejectResponse is JObject rejectResponse)
+                    await parentNetworkingNode.OCPP.OUT.SendJSONResponse(
+                              new OCPP_JSONResponseMessage(
+                                  Now,
+                                  JSONRequestMessage.EventTrackingId,
+                                  NetworkingMode.Unknown,
+                                  SourceRouting.To  (JSONRequestMessage.NetworkPath.Source),
+                                  NetworkPath.  From(parentNetworkingNode.Id),
+                                  JSONRequestMessage.RequestId,
+                                  rejectResponse,
+                                  JSONRequestMessage.CancellationToken
+                              )
+                          );
+
+                else
+                    await parentNetworkingNode.OCPP.OUT.SendJSONRequestError(
+                              new OCPP_JSONRequestErrorMessage(
+                                  Now,
+                                  JSONRequestMessage.EventTrackingId,
+                                  NetworkingMode.Unknown,
+                                  SourceRouting.To  (JSONRequestMessage.NetworkPath.Source),
+                                  NetworkPath.  From(parentNetworkingNode.Id),
+                                  JSONRequestMessage.RequestId,
+                                  ResultCode.Filtered,
+                                  forwardingDecision.RejectMessage,
+                                  forwardingDecision.RejectDetails,
+                                  JSONRequestMessage.CancellationToken
+                              )
+                          );
 
             }
 
@@ -1174,7 +1193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                         );
 
                     //ToDo: Find a good result!
-                    forwardingDecision = results.First();
+                    forwardingDecision = WithItsRejectResponseGiven(results.First());
 
                 }
                 catch (Exception e)
@@ -1350,20 +1369,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 Interlocked.Increment(ref rejectedMessages);
 
-                await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(
-                          new OCPP_BinaryRequestErrorMessage(
-                              Now,
-                              BinaryRequestMessage.EventTrackingId,
-                              NetworkingMode.Unknown,
-                              SourceRouting.To(BinaryRequestMessage.NetworkPath.Source),
-                              NetworkPath.From(parentNetworkingNode.Id),
-                              BinaryRequestMessage.RequestId,
-                              ResultCode.Filtered,
-                              forwardingDecision.RejectMessage,
-                              forwardingDecision.RejectDetails,
-                              BinaryRequestMessage.CancellationToken
-                          )
-                      );
+                // What a filter gave as the answer is the answer, under the request's
+                // identification. It was never sent: every REJECT went as a request error,
+                // and the response the filter had made was thrown away.
+                if (forwardingDecision.RejectResponseGiven &&
+                    forwardingDecision.BinaryRejectResponse is Byte[] rejectResponse)
+                    await parentNetworkingNode.OCPP.OUT.SendBinaryResponse(
+                              new OCPP_BinaryResponseMessage(
+                                  Now,
+                                  BinaryRequestMessage.EventTrackingId,
+                                  NetworkingMode.Unknown,
+                                  SourceRouting.To  (BinaryRequestMessage.NetworkPath.Source),
+                                  NetworkPath.  From(parentNetworkingNode.Id),
+                                  BinaryRequestMessage.RequestId,
+                                  rejectResponse,
+                                  BinaryRequestMessage.CancellationToken
+                              )
+                          );
+
+                else
+                    await parentNetworkingNode.OCPP.OUT.SendBinaryRequestError(
+                              new OCPP_BinaryRequestErrorMessage(
+                                  Now,
+                                  BinaryRequestMessage.EventTrackingId,
+                                  NetworkingMode.Unknown,
+                                  SourceRouting.To(BinaryRequestMessage.NetworkPath.Source),
+                                  NetworkPath.From(parentNetworkingNode.Id),
+                                  BinaryRequestMessage.RequestId,
+                                  ResultCode.Filtered,
+                                  forwardingDecision.RejectMessage,
+                                  forwardingDecision.RejectDetails,
+                                  BinaryRequestMessage.CancellationToken
+                              )
+                          );
 
             }
 
@@ -1915,6 +1953,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (private static) WithItsRejectResponseGiven(Decision)
+
+        /// <summary>
+        /// The decision of a filter, marked where it REJECTs with a response of
+        /// its own: that response is what the asker gets. A decision a
+        /// forwarding processor makes afterwards is not marked, whatever
+        /// response it makes up.
+        /// </summary>
+        private static T WithItsRejectResponseGiven<T>(T Decision)
+        {
+
+            if (Decision is RequestForwardingDecision { Result: ForwardingDecisions.REJECT } decision &&
+               (decision.JSONRejectResponse is not null || decision.BinaryRejectResponse is not null))
+                decision.RejectResponseGiven = true;
+
+            return Decision;
+
+        }
+
+        #endregion
+
         #region (private) CallFilter (Filter, FilterHandler, ...)
 
         private async Task<T?> CallFilter<TDelegate, T>(TDelegate?                                         Filter,
@@ -1934,7 +1993,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     var handler = Filter.GetInvocationList().OfType<TDelegate>().FirstOrDefault();
 
                     if (handler is not null)
-                        return await FilterHandler(handler);
+                        return WithItsRejectResponseGiven(await FilterHandler(handler));
 
                 }
                 catch (Exception e)

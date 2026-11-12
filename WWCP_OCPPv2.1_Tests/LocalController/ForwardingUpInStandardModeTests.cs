@@ -1143,6 +1143,247 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.LocalController
 
         #endregion
 
+        #region ARequestTheControllerRejects_WithARejectResponse_TheStationGetsThatResponse()
+
+        /// <summary>
+        /// A filter of the controller REJECTs a station's request and says what to
+        /// answer: the station gets that response, as the answer to its request, and the
+        /// request counts as rejected.
+        /// </summary>
+        /// <remarks>
+        /// The reject response of a filter was never sent: every REJECT went as a request
+        /// error "Filtered", and what the filter had made was thrown away.
+        /// </remarks>
+        [Test]
+        public async Task ARequestTheControllerRejects_WithARejectResponse_TheStationGetsThatResponse()
+        {
+
+            var cs1 = await AStation("CS-STD-21");
+
+            OCPPv2_1.NetworkingNode.OnAnyJSONRequestFilterDelegate reject = (timestamp, sender, connection, request, cancellationToken) =>
+                Task.FromResult(
+                    request.Action == "DataTransfer"
+                        ? new OCPPv2_1.NetworkingNode.RequestForwardingDecision(
+                              OCPP.NetworkingNode.ForwardingDecisions.REJECT,
+                              new JObject(
+                                  new JProperty("status",  "Rejected"),
+                                  new JProperty("data",    "Not through this controller!")
+                              )
+                          )
+                        : OCPPv2_1.NetworkingNode.RequestForwardingDecision.NEXT(request)
+                );
+
+            var rejected   = localController!.OCPP.FORWARD.RejectedMessages;
+            var forwarded  = localController!.OCPP.FORWARD.ForwardedMessages;
+
+            localController!.OCPP.FORWARD.OnAnyJSONRequestFilter += reject;
+
+            try
+            {
+
+                var started   = Timestamp.Now;
+
+                var transfer  = await cs1.TransferData(
+                                          VendorId:        Vendor_Id. GraphDefined,
+                                          MessageId:       Message_Id.GraphDefined_TestMessage,
+                                          Data:            "Hello world!",
+                                          RequestId:       Request_Id.Parse("4731"),
+                                          RequestTimeout:  TimeSpan.FromSeconds(10)
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,                       Is.EqualTo(ResultCode.OK),  $"{transfer.Result}");
+                    Assert.That(transfer.Status,                                  Is.EqualTo(DataTransferStatus.Rejected));
+                    Assert.That(transfer.Data?.ToString(),                        Is.EqualTo("Not through this controller!"));
+                    Assert.That(Waited(started),                                  Is.LessThan(TimeSpan.FromSeconds(5)));
+                    Assert.That(localController.OCPP.FORWARD.RejectedMessages,   Is.EqualTo(rejected + 1), "rejected");
+                    Assert.That(localController.OCPP.FORWARD.ForwardedMessages,  Is.EqualTo(forwarded),    "forwarded");
+                });
+
+            }
+            finally
+            {
+                localController!.OCPP.FORWARD.OnAnyJSONRequestFilter -= reject;
+            }
+
+        }
+
+        #endregion
+
+        #region ARequestTheFilterOfItsActionRejects_WithARejectResponse_TheStationGetsThatResponse()
+
+        /// <summary>
+        /// The same of the filter of one action, which REJECTs with a response object
+        /// and its JSON: a Heartbeat, answered by the controller with a time of its own.
+        /// </summary>
+        [Test]
+        public async Task ARequestTheFilterOfItsActionRejects_WithARejectResponse_TheStationGetsThatResponse()
+        {
+
+            var cs1         = await AStation("CS-STD-22");
+            var longAgo     = new DateTimeOffset(2001, 2, 3, 4, 5, 6, TimeSpan.Zero);
+            var forwarded   = localController!.OCPP.FORWARD.ForwardedMessages;
+
+            OCPPv2_1.NetworkingNode.OnHeartbeatRequestFilterDelegate reject = (timestamp, sender, connection, request, cancellationToken) => {
+
+                var response = new OCPPv2_1.CSMS.HeartbeatResponse(
+                                   request,
+                                   longAgo
+                               );
+
+                return Task.FromResult(
+                           OCPPv2_1.NetworkingNode.RequestForwardingDecision<HeartbeatRequest, OCPPv2_1.CSMS.HeartbeatResponse>.REJECT(
+                               request,
+                               response,
+                               response.ToJSON()
+                           )
+                       );
+
+            };
+
+            localController!.OCPP.FORWARD.OnHeartbeatRequestFilter += reject;
+
+            try
+            {
+
+                var heartbeat  = await cs1.SendHeartbeat(
+                                           RequestTimeout:  TimeSpan.FromSeconds(10)
+                                       );
+
+                Assert.Multiple(() => {
+                    Assert.That(heartbeat.Result.ResultCode,                      Is.EqualTo(ResultCode.OK),  $"{heartbeat.Result}");
+                    Assert.That(heartbeat.CurrentTime,                            Is.EqualTo(longAgo));
+                    Assert.That(localController.OCPP.FORWARD.ForwardedMessages,  Is.EqualTo(forwarded),      "forwarded");
+                });
+
+            }
+            finally
+            {
+                localController!.OCPP.FORWARD.OnHeartbeatRequestFilter -= reject;
+            }
+
+        }
+
+        #endregion
+
+        #region ARequestTheFilterOfItsActionRejects_WithoutARejectResponse_IsRefused_AndNotAnsweredWithAMadeUpResponse()
+
+        /// <summary>
+        /// The filter of one action REJECTs without a response: the forwarding processor
+        /// makes one up for its own books, and that one is not sent. The station is told
+        /// with a request error.
+        /// </summary>
+        /// <remarks>
+        /// The made-up response of a Heartbeat is a time, and that of a MeterValues an
+        /// empty object: either would read as if the request was taken.
+        /// </remarks>
+        [Test]
+        public async Task ARequestTheFilterOfItsActionRejects_WithoutARejectResponse_IsRefused_AndNotAnsweredWithAMadeUpResponse()
+        {
+
+            var cs1 = await AStation("CS-STD-23");
+
+            OCPPv2_1.NetworkingNode.OnHeartbeatRequestFilterDelegate reject = (timestamp, sender, connection, request, cancellationToken) =>
+                Task.FromResult(
+                    OCPPv2_1.NetworkingNode.RequestForwardingDecision<HeartbeatRequest, OCPPv2_1.CSMS.HeartbeatResponse>.REJECT(
+                        request,
+                        "Not this one, and nothing to say to it!"
+                    )
+                );
+
+            localController!.OCPP.FORWARD.OnHeartbeatRequestFilter += reject;
+
+            try
+            {
+
+                var heartbeat  = await cs1.SendHeartbeat(
+                                           RequestTimeout:  TimeSpan.FromSeconds(10)
+                                       );
+
+                Assert.That(heartbeat.Result.ResultCode,   Is.EqualTo(ResultCode.Filtered),  $"{heartbeat.Result}");
+
+            }
+            finally
+            {
+                localController!.OCPP.FORWARD.OnHeartbeatRequestFilter -= reject;
+            }
+
+        }
+
+        #endregion
+
+        #region ABinaryRequestTheControllerRejects_WithARejectResponse_TheStationGetsThatResponse()
+
+        /// <summary>
+        /// A filter of the controller REJECTs a station's binary request and says what
+        /// to answer: the station gets that binary response.
+        /// </summary>
+        [Test]
+        public async Task ABinaryRequestTheControllerRejects_WithARejectResponse_TheStationGetsThatResponse()
+        {
+
+            var cs1 = await AStation("CS-STD-24");
+
+            OCPPv2_1.NetworkingNode.OnAnyBinaryRequestFilterDelegate reject = (timestamp, sender, connection, request, cancellationToken) => {
+
+                if (request.Action != "BinaryDataTransfer" ||
+                    !OCPPv2_1.NetworkingNode.BinaryDataTransferRequest.TryParse(request.Payload,
+                                                                                request.RequestId,
+                                                                                request.Destination,
+                                                                                request.NetworkPath,
+                                                                                out var transferRequest,
+                                                                                out _))
+                {
+                    return Task.FromResult(new OCPPv2_1.NetworkingNode.RequestForwardingDecision(OCPP.NetworkingNode.ForwardingDecisions.NEXT));
+                }
+
+                return Task.FromResult(
+                           new OCPPv2_1.NetworkingNode.RequestForwardingDecision(
+                               OCPP.NetworkingNode.ForwardingDecisions.REJECT,
+                               new OCPPv2_1.NetworkingNode.BinaryDataTransferResponse(
+                                   transferRequest,
+                                   BinaryDataTransferStatus.Rejected,
+                                   "Not through this controller!",
+                                   "Not here!".ToUTF8Bytes()
+                               ).ToBinary()
+                           )
+                       );
+
+            };
+
+            var rejected  = localController!.OCPP.FORWARD.RejectedMessages;
+
+            localController!.OCPP.FORWARD.OnAnyBinaryRequestFilter += reject;
+
+            try
+            {
+
+                var transfer  = await cs1.TransferBinaryData(
+                                          VendorId:             Vendor_Id. GraphDefined,
+                                          MessageId:            Message_Id.GraphDefined_TestMessage,
+                                          Data:                 "Hello world!".ToUTF8Bytes(),
+                                          RequestId:            Request_Id.Parse("4734"),
+                                          RequestTimeout:       TimeSpan.FromSeconds(10),
+                                          SerializationFormat:  SerializationFormats.BinaryTextIds
+                                      );
+
+                Assert.Multiple(() => {
+                    Assert.That(transfer.Result.ResultCode,                       Is.EqualTo(ResultCode.OK),  $"{transfer.Result}");
+                    Assert.That(transfer.Status,                                  Is.EqualTo(BinaryDataTransferStatus.Rejected));
+                    Assert.That(transfer.Data?.ToUTF8String(),                    Is.EqualTo("Not here!"));
+                    Assert.That(localController.OCPP.FORWARD.RejectedMessages,   Is.EqualTo(rejected + 1), "rejected");
+                });
+
+            }
+            finally
+            {
+                localController!.OCPP.FORWARD.OnAnyBinaryRequestFilter -= reject;
+            }
+
+        }
+
+        #endregion
+
         #region ARequestTheControllerCannotRead_IsRefusedToTheStation()
 
         /// <summary>

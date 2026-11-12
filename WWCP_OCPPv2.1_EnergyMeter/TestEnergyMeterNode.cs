@@ -497,6 +497,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.EnergyMeter
                                        Result: Result.Filtered("This message is not allowed!")
                                    );
 
+                    // The response is sent to whoever asked, as this node's answer: signed
+                    // by this node, as its signature policy says, like any answer of its own.
+                    OCPP.SignaturePolicy.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            true,
+                            OCPP.CustomDataTransferResponseSerializer,
+                            OCPP.CustomStatusInfoSerializer,
+                            OCPP.CustomSignatureSerializer,
+                            OCPP.CustomCustomDataSerializer
+                        ),
+                        out _
+                    );
+
                     return Task.FromResult(
                                new RequestForwardingDecision<DataTransferRequest, DataTransferResponse>(
                                    request,

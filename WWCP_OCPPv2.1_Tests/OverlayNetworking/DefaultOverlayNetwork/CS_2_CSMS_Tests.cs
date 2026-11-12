@@ -523,9 +523,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                     Assert.That(csDataTransferResponse.Request.RequestId,                 Is.EqualTo(csDataTransferRequest.RequestId));
 
 
-                    // Result
-                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.Filtered));
+                    // Result: the reject response the networking node's filter gave is the
+                    // answer, signed by that node - a response like any other, whose status
+                    // says no. It used to be thrown away for a request error "Filtered".
+                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK), $"{response.Result}");
                     Assert.That(response.Status,                                          Is.EqualTo(DataTransferStatus.Rejected));
+                    Assert.That(response.Signatures.Any(),                                Is.True, "The reject response is not signed!");
+                    Assert.That(csmsDataTransferRequests.Count,                           Is.EqualTo(0), "The rejected request reached the CSMS!");
                     //Assert.That(response.Data?.ToString(),                                Is.EqualTo(data.Reverse()));
 
                 });
