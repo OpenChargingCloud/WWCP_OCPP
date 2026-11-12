@@ -27,7 +27,9 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
+using cloud.charging.open.protocols.OCPPv1_6.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint;
 
 #endregion
@@ -88,6 +90,97 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     Assert.That(resetRequests.First().DestinationId,   Is.EqualTo(chargePoint1.Id));
                     Assert.That(resetRequests.First().ResetType,       Is.EqualTo(resetType));
 
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_Reset_WhileThePolicyIsEnforced_Test()
+
+        /// <summary>
+        /// A charge point whose signature policy is enforced answers a reset
+        /// nobody signed with a CALLERROR SecurityError that names the permission
+        /// that was missing, and not with a ResetResponse (white paper "Signed
+        /// OCPP Messages and Signer Roles", section 5.4). With the policy off
+        /// again, the reset is accepted as before.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_Reset_WhileThePolicyIsEnforced_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null)
+            {
+
+                var policy         = chargePoint1.OCPP.SignaturePolicy;
+                var requestErrors  = new System.Collections.Concurrent.ConcurrentQueue<OCPP_JSONRequestErrorMessage>();
+                var responses      = new System.Collections.Concurrent.ConcurrentQueue<OCPP_JSONResponseMessage>();
+
+                OnJSONRequestErrorMessageSentDelegate requestErrorSent = (timestamp, sender, connection, requestError, result, ct) => {
+                    requestErrors.Enqueue(requestError);
+                    return Task.CompletedTask;
+                };
+
+                OnJSONResponseMessageSentDelegate responseSent = (timestamp, sender, connection, response, result, ct) => {
+                    responses.Enqueue(response);
+                    return Task.CompletedTask;
+                };
+
+                chargePoint1.OCPP.OUT.OnJSONRequestErrorMessageSent  += requestErrorSent;
+                chargePoint1.OCPP.OUT.OnJSONResponseMessageSent      += responseSent;
+
+                policy.Mode = cloud.charging.open.protocols.WWCP.MessagePolicyModes.Enforce;
+
+                try
+                {
+
+                    var refused  = await testCentralSystem01.Reset(
+                                             Destination:  SourceRouting.To(chargePoint1.Id),
+                                             ResetType:    ResetType.Hard
+                                         );
+
+                    var error    = requestErrors.FirstOrDefault(requestError => requestError.RequestId == refused.Request.RequestId);
+
+                    Assert.Multiple(() => {
+
+                        Assert.That(refused.Result.ResultCode,     Is.EqualTo(ResultCode.SecurityError));
+                        Assert.That(refused.Result.Description,    Does.Contain("reset-immediate:run"));
+                        Assert.That(refused.Status,                Is.EqualTo(ResetStatus.Rejected));
+
+                        Assert.That(error,                         Is.Not.Null,   "No CALLERROR was sent for the reset nobody signed!");
+                        Assert.That(error?.ErrorCode,              Is.EqualTo(ResultCode.SecurityError));
+                        Assert.That(error?.ErrorDescription,       Is.EqualTo(refused.Result.Description));
+
+                        Assert.That(responses.Any(response => response.RequestId == refused.Request.RequestId),   Is.False,   "A refused reset was answered with a response, too!");
+
+                    });
+
+                }
+                finally
+                {
+                    policy.Mode = cloud.charging.open.protocols.WWCP.MessagePolicyModes.Off;
+                    chargePoint1.OCPP.OUT.OnJSONRequestErrorMessageSent  -= requestErrorSent;
+                    chargePoint1.OCPP.OUT.OnJSONResponseMessageSent      -= responseSent;
+                }
+
+                var afterwards = await testCentralSystem01.Reset(
+                                           Destination:  SourceRouting.To(chargePoint1.Id),
+                                           ResetType:    ResetType.Hard
+                                       );
+
+                Assert.Multiple(() => {
+                    Assert.That(afterwards.Result.ResultCode,   Is.EqualTo(ResultCode.OK));
+                    Assert.That(afterwards.Status,              Is.EqualTo(ResetStatus.Accepted));
                 });
 
             }

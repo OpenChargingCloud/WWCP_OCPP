@@ -234,6 +234,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     response ??= UpdateDynamicScheduleResponse.Failed(request);
 
+                    // A request that is refused is answered with a CALLERROR SecurityError.
+                    if (SecurityErrorFor(response.Result, EventTrackingId, NetworkPath, RequestId) is OCPP_Response securityError)
+                        return securityError;
+
 
                     #region Sign response message
 

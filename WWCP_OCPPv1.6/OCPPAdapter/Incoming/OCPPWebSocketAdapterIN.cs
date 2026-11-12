@@ -374,6 +374,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #endregion
 
+        #region (private) SecurityErrorFor(Result, EventTrackingId, NetworkPath, RequestId)
+
+        /// <summary>
+        /// The answer to a request the signature policy refused: a CALLERROR
+        /// SecurityError that says why, and neither the response of its action
+        /// nor a signature (white paper "Signed OCPP Messages and Signer
+        /// Roles", section 5.4). Its handler was not called. Null for a
+        /// request that was not refused, which is answered as its handler says.
+        /// </summary>
+        /// <param name="Result">The result of the response the request would be answered with.</param>
+        /// <param name="EventTrackingId">The event tracking identification of the request.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="RequestId">The identification of the request.</param>
+        private OCPP_Response? SecurityErrorFor(Result            Result,
+                                                EventTracking_Id  EventTrackingId,
+                                                NetworkPath       NetworkPath,
+                                                WWCP.Request_Id   RequestId)
+
+            => Result.ResultCode == ResultCode.SecurityError
+
+                   ? OCPP_Response.JSONRequestError(
+                         EventTrackingId,
+                         SourceRouting.To(NetworkPath.Source),
+                         NetworkPath.From(parentNetworkingNode.Id),
+                         RequestId,
+                         null,
+                         ResultCode.SecurityError,
+                         Result.Description,
+                         new JObject()
+                     )
+
+                   : null;
+
+        #endregion
+
         public async Task ProcessJSONMessage(DateTimeOffset        MessageTimestamp,
                                              IMessageConnection    WebSocketConnection,
                                              NetworkingNode_Id?    sourceNodeId,
