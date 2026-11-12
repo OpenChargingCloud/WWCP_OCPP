@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Collections.Concurrent;
 using System.Security.Cryptography;
 
 using Newtonsoft.Json.Linq;
@@ -34,6 +35,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.NetworkingNode;
 
 #endregion
@@ -48,9 +50,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                    ILocalControllerNode
     {
 
+        #region Data
+
+        /// <summary>
+        /// The reports of this local controller's own Device Model accepted by GetBaseReport or
+        /// GetReport, until their response is sent: the NotifyReport requests follow it. Keyed by the
+        /// request itself.
+        /// </summary>
+        private readonly ConcurrentDictionary<Object, IReadOnlyList<ReportData>> pendingReports = new (ReferenceEqualityComparer.Instance);
+
+        #endregion
+
         #region Properties
 
         public HashSet<NetworkingNode_Id>  AllowedChargingStations    { get; } = [];
+
+        /// <summary>
+        /// The largest number of report data in one NotifyReport request of this local controller's
+        /// own report; a longer report is sent in several parts.
+        /// </summary>
+        public UInt16                      ReportDataPerNotifyReport  { get; set; } = 100;
+
+        #endregion
+
+
+        #region (private) SendPendingReport(Request, ReportRequestId, Destination, SentMessageResult)
+
+        /// <summary>
+        /// Send the report of this local controller's own Device Model accepted for the given request,
+        /// now that its response is out.
+        /// </summary>
+        /// <remarks>
+        /// The response of a report forwarded for a station is sent by this node too, and is not
+        /// among the pending ones: the station sends its own report.
+        /// </remarks>
+        /// <param name="Request">The GetBaseReport or GetReport request.</param>
+        /// <param name="ReportRequestId">The request id the NotifyReport requests refer to.</param>
+        /// <param name="Destination">Whom to send the report to.</param>
+        /// <param name="SentMessageResult">How sending the response went.</param>
+        private void SendPendingReport(Object              Request,
+                                       Int32               ReportRequestId,
+                                       SourceRouting       Destination,
+                                       SentMessageResults  SentMessageResult)
+        {
+
+            if (!pendingReports.TryRemove(Request, out var reportData) ||
+                SentMessageResult != SentMessageResults.Success)
+            {
+                return;
+            }
+
+            // Not awaited here: this runs while the response is being sent, and the
+            // answers to the NotifyReport requests come in over that same connection.
+            _ = Task.Run(async () => {
+
+                try
+                {
+
+                    var generatedAt = Now;
+
+                    await DeviceModel.SendReportAsync(
+                              reportData,
+                              ReportDataPerNotifyReport,
+                              (sequenceNumber, part, toBeContinued) => this.NotifyReport(
+                                                                           NotifyReportRequestId:   ReportRequestId,
+                                                                           SequenceNumber:          sequenceNumber,
+                                                                           GeneratedAt:             generatedAt.UtcDateTime,
+                                                                           ReportData:              part,
+                                                                           ToBeContinued:           toBeContinued,
+                                                                           Destination:             Destination
+                                                                       )
+                          );
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"Local controller '{Id}': NotifyReport {ReportRequestId}");
+                }
+
+            });
+
+        }
 
         #endregion
 
@@ -784,9 +864,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #region DeviceModel
 
+            // Two paths that never meet. OCPP.IN sees only the requests addressed to this
+            // local controller itself - the adapter compares the destination with this node's
+            // id (or an anycast id it accepts) before any handler runs - and answers them from
+            // this node's own Device Model (ALocalControllerNode.DeviceModel.cs). OCPP.FORWARD
+            // sees only the requests for others, and hands them on unchanged to the station
+            // they name, which answers them from its own Device Model under its own rules.
+
             #region Variables
 
             #region OnGetBaseReport
+
+            OCPP.IN.OnGetBaseReport += (timestamp,
+                                        sender,
+                                        connection,
+                                        request,
+                                        ct) => {
+
+                var (status, reportData) = DeviceModel.BaseReport(
+                                               AllComponentConfigs,
+                                               request.ReportBase
+                                           );
+
+                // The report follows the response, see OnGetBaseReportResponseSent.
+                if (status == GenericDeviceModelStatus.Accepted)
+                    pendingReports[request] = reportData;
+
+                return Task.FromResult(
+                           new CS.GetBaseReportResponse(
+                               Request:      request,
+                               Status:       status,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            OCPP.OUT.OnGetBaseReportResponseSent += (timestamp,
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     response,
+                                                     runtime,
+                                                     sentMessageResult,
+                                                     ct) => {
+
+                SendPendingReport(
+                    request,
+                    (Int32) request.GetBaseReportRequestId,
+                    SourceRouting.To(request.NetworkPath.Source),
+                    sentMessageResult
+                );
+
+                return Task.CompletedTask;
+
+            };
+
 
             OCPP.FORWARD.OnGetBaseReportRequestFilter +=
                 (timestamp, sender, connection, request, ct) =>
@@ -801,6 +935,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #region OnGetReport
 
+            OCPP.IN.OnGetReport += (timestamp,
+                                    sender,
+                                    connection,
+                                    request,
+                                    ct) => {
+
+                var (status, reportData) = DeviceModel.Report(
+                                               AllComponentConfigs,
+                                               request.ComponentCriteria,
+                                               request.ComponentVariables
+                                           );
+
+                // The report follows the response, see OnGetReportResponseSent.
+                if (status == GenericDeviceModelStatus.Accepted)
+                    pendingReports[request] = reportData;
+
+                return Task.FromResult(
+                           new CS.GetReportResponse(
+                               Request:      request,
+                               Status:       status,
+                               StatusInfo:   null,
+                               CustomData:   null
+                           )
+                       );
+
+            };
+
+            OCPP.OUT.OnGetReportResponseSent += (timestamp,
+                                                 sender,
+                                                 connection,
+                                                 request,
+                                                 response,
+                                                 runtime,
+                                                 sentMessageResult,
+                                                 ct) => {
+
+                SendPendingReport(
+                    request,
+                    request.GetReportRequestId,
+                    SourceRouting.To(request.NetworkPath.Source),
+                    sentMessageResult
+                );
+
+                return Task.CompletedTask;
+
+            };
+
+
             OCPP.FORWARD.OnGetReportRequestFilter +=
                 (timestamp, sender, connection, request, ct) =>
 
@@ -813,6 +995,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #endregion
 
             #region OnGetVariables
+
+            OCPP.IN.OnGetVariables += (timestamp,
+                                       sender,
+                                       connection,
+                                       request,
+                                       ct) =>
+
+                Task.FromResult(
+                    new CS.GetVariablesResponse(
+                        Request:     request,
+                        Results:     DeviceModel.GetVariables(
+                                         request.VariableData,
+                                         (name, evse) => GetComponentConfigs(name, evse)
+                                     ),
+                        CustomData:  null
+                    )
+                );
+
 
             OCPP.FORWARD.OnGetVariablesRequestFilter +=
                 (timestamp, sender, connection, request, ct) =>
@@ -839,6 +1039,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
             #endregion
 
             #region OnSetVariables
+
+            // Each entry reaches the source of its component together with the whole request -
+            // its sender by the network path, and its signatures - so that a source can check
+            // the right a variable needs: EVQICtrlr[TLSServer].ActiveKeyPin is meant to need
+            // "certificates:edit" ("Signed OCPP Messages and Signer Roles", Q12).
+            OCPP.IN.OnSetVariables += async (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             ct) =>
+
+                new CS.SetVariablesResponse(
+                    Request:             request,
+                    SetVariableResults:  await DeviceModel.SetVariablesAsync(
+                                                   request,
+                                                   (name, evse) => GetComponentConfigs(name, evse),
+                                                   ct,
+                                                   NewInstanceOf
+                                               ),
+                    CustomData:          null
+                );
+
 
             OCPP.FORWARD.OnSetVariablesRequestFilter +=
                 (timestamp, sender, connection, request, ct) =>
