@@ -157,10 +157,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         /// <summary>
         /// Set the monitors of the given SetVariableMonitoring request, each
-        /// decided by itself: a monitor tells of the value of its variable, so
-        /// one on a variable the signers of the request may not read is
-        /// "Rejected" with the reason code "NotAuthorized" (white paper "Signed
-        /// OCPP Messages and Signer Roles", section 5.2).
+        /// decided by itself: a monitor changes what the station does with
+        /// its variable, so one on a variable the signers of the request may
+        /// not edit is "Rejected" with the reason code "NotAuthorized" (white
+        /// paper "Signed OCPP Messages and Signer Roles", section 5.2).
         /// </summary>
         /// <param name="Request">A SetVariableMonitoring request whose signatures are verified.</param>
         /// <param name="ComponentConfigs">The components of the station.</param>
@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            data.Variable. Name,
                            data.Component.Instance,
                            (Int32?) data.Component.EVSE?.Id.Value,
-                           "read",
+                           "edit",
                            out var reason
                        )
                            ? Set([ data ], ComponentConfigs)

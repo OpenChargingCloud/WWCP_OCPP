@@ -40,8 +40,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     /// <summary>
     /// GetBaseReport, GetReport and SetVariableMonitoring are decided variable
     /// by variable, as GetVariables and SetVariables are: a report leaves out
-    /// what its signers may not read, and a monitor on such a variable is
-    /// refused by itself (white paper "Signed OCPP Messages and Signer Roles",
+    /// what its signers may not read, and a monitor on a variable they may
+    /// not edit is refused by itself (white paper "Signed OCPP Messages and Signer Roles",
     /// sections 5.2 and 5.3).
     /// </summary>
     /// <remarks>
@@ -58,6 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         private readonly ConcurrentQueue<NotifyReportRequest>  parts    = new();
         private readonly KeyPair                               keyPair  = ECCKeyPair.GenerateKeys()!;
+        private readonly KeyPair                               reader   = ECCKeyPair.GenerateKeys()!;
 
         private static Int32 lastReportId = 4700;
 
@@ -131,11 +132,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #region WhatTheSignerMayNotReadIsNeitherReportedNorMonitored()
 
         /// <summary>
-        /// A signer who may read the configuration, but not what belongs to the
-        /// security of the station: its base report is the whole one without
-        /// that component, a report of one of its variables is empty, a monitor
-        /// on it is refused and one on another variable is not. Nobody's report
-        /// is empty altogether.
+        /// A signer who may read and edit the configuration, but not what
+        /// belongs to the security of the station: its base report is the whole
+        /// one without that component, a report of one of its variables is
+        /// empty, a monitor on it is refused and one on another variable is
+        /// not. Nobody's report is empty altogether, and who may only read sets
+        /// no monitor at all.
         /// </summary>
         [Test]
         public async Task WhatTheSignerMayNotReadIsNeitherReportedNorMonitored()
@@ -175,12 +177,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(open,   Is.Not.Empty);
                 });
 
-                chargingStation1.UserRoles.Add(new UserRole(Id: role, KeyPairs: [ keyPair ]));
+                chargingStation1.UserRoles.Add(new UserRole(Id: role,                         KeyPairs: [ keyPair ]));
+                chargingStation1.UserRoles.Add(new UserRole(Id: UserRole_Id.Parse("viewer"),  KeyPairs: [ reader  ]));
 
                 policy.ResourceOfComponent  = component => component == Secret ? "security" : "configuration";
                 policy.PermissionsOfRole    = name => name == role.ToString()
-                                                          ? [ "configuration:read" ]
-                                                          : [];
+                                                          ? [ "configuration:read", "configuration:edit" ]
+                                                          : name == "viewer"
+                                                                ? [ "*:read" ]
+                                                                : [];
                 policy.Mode                 = MessagePolicyModes.Enforce;
 
                 var ofTheSigner   = await BaseReport(signed);
@@ -189,7 +194,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var ofTheSecret   = await Report(secret[0].Component, secret[0].Variable, signed);
                 var ofTheOpen     = await Report(open  [0].Component, open  [0].Variable, signed);
 
-                var monitors      = await testCSMS1.SetVariableMonitoring(
+                async Task<SetVariableMonitoringResponse> Monitors(IEnumerable<SignInfo> SignInfos)
+
+                    => await testCSMS1.SetVariableMonitoring(
                                               Destination:      SourceRouting.To(chargingStation1.Id),
                                               MonitoringData:   [
                                                                     new SetMonitoringData(
@@ -207,8 +214,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                         Variable:      open[0].Variable
                                                                     )
                                                                 ],
-                                              SignInfos:        signed
+                                              SignInfos:        SignInfos
                                           );
+
+                var monitors      = await Monitors(signed);
+                var ofTheReader   = await Monitors([ reader.ToSignInfo1("viewer") ]);
 
                 Assert.Multiple(() => {
 
@@ -230,8 +240,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(monitors.SetMonitoringResults.Count(),                                   Is.EqualTo(2));
                     Assert.That(monitors.SetMonitoringResults.First().Status,                            Is.EqualTo(SetMonitoringStatus.Rejected));
                     Assert.That(monitors.SetMonitoringResults.First().StatusInfo?.ReasonCode,            Is.EqualTo("NotAuthorized"));
-                    Assert.That(monitors.SetMonitoringResults.First().StatusInfo?.AdditionalInfo,        Does.Contain("security:read"));
+                    Assert.That(monitors.SetMonitoringResults.First().StatusInfo?.AdditionalInfo,        Does.Contain("security:edit"));
                     Assert.That(monitors.SetMonitoringResults.Last(). StatusInfo?.ReasonCode,            Is.Not.EqualTo("NotAuthorized"),   "A monitor its signer may set was refused with the other one!");
+
+                    // Reading a variable is not enough to have it watched.
+                    Assert.That(ofTheReader.SetMonitoringResults.Select(result => result.Status),                   Is.All.EqualTo(SetMonitoringStatus.Rejected));
+                    Assert.That(ofTheReader.SetMonitoringResults.Select(result => result.StatusInfo?.ReasonCode),   Is.All.EqualTo("NotAuthorized"));
+                    Assert.That(ofTheReader.SetMonitoringResults.Last().StatusInfo?.AdditionalInfo,                 Does.Contain("configuration:edit"));
 
                 });
 
