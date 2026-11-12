@@ -444,6 +444,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             this.forwardingSignaturePolicies.Add((ForwardingSignaturePolicy ?? new SignaturePolicy()).BindTo(NetworkingNode.Id, cloud.charging.open.protocols.OCPPv2_1.Version.WebSocketSubProtocolId));
 
+            // A COSE signature signs the CBOR of a message, which its class writes.
+            foreach (var forwardingSignaturePolicy in forwardingSignaturePolicies)
+                forwardingSignaturePolicy.CBORPayloadOf ??= OCPPMessagesAsCBOR.SignedPayloadOf;
+
             #region Reflect "Forward_XXX" messages and wire them...
 
             foreach (var methodInfo in typeof(OCPPWebSocketAdapterFORWARD).

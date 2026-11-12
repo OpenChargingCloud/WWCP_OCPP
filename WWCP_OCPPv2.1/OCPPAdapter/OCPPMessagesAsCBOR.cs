@@ -74,6 +74,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         private static readonly Dictionary<String, Forms> responses  = [];
         private static readonly Dictionary<String, Forms> messages   = [];
 
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Forms?> formsByType = [];
+
         #endregion
 
         #region Properties
@@ -290,6 +292,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    Message,
                    [.. Method.GetParameters().Select(parameter => parameter.DefaultValue)]
                );
+
+        #endregion
+
+
+        #region SignedPayloadOf(Message)
+
+        /// <summary>
+        /// What a COSE signature of the given message signs: its CBOR without its
+        /// signatures, in the deterministic encoding of RFC 8949, section 4.2.1 - or
+        /// null for a message whose class does not read and write both forms.
+        ///
+        /// It is the CBOR of the message as its class reads it from its JSON, not of
+        /// the object a node happens to hold: a point in time is whole milliseconds on
+        /// the wire, and a sender that signed the ticks it had in memory would sign
+        /// what no receiver ever sees. So the bytes are the same on every node that
+        /// has the class of the message, however the message reached it, and a COSE
+        /// signature is verified behind a JSON connection as well as behind a CBOR one.
+        /// </summary>
+        /// <param name="Message">A message.</param>
+        public static Byte[]? SignedPayloadOf(ISignableMessage Message)
+        {
+
+            var request  = Message is IResponse answer
+                               ? answer.RequestMessage as IRequest
+                               : null;
+
+            // A response is read together with its request: without it there is nothing
+            // to remember for the responses that come with theirs.
+            var forms    = Message is IResponse && request is null
+                               ? FormsOf(Message.GetType(), null)
+                               : formsByType.GetOrAdd(
+                                     Message.GetType(),
+                                     type => FormsOf(type, request?.GetType())
+                                 );
+
+            if (forms is null)
+                return null;
+
+            var (id, destination, networkPath) = Message switch {
+                                                     IRequest  asked    => (asked.  RequestId,  asked.  Destination,  asked.  NetworkPath),
+                                                     IResponse          => (request?.RequestId ?? Request_Id.Zero, request?.Destination ?? SourceRouting.Zero, request?.NetworkPath ?? NetworkPath.Empty),
+                                                     IMessage  sent     => (sent.   MessageId,  sent.   Destination,  sent.   NetworkPath),
+                                                     _                  => (Request_Id.Zero,    SourceRouting.Zero,   NetworkPath.Empty)
+                                                 };
+
+            if (!TryWriteJSON(forms, Message, out var json, out _))
+                return null;
+
+            // The signatures sign nothing of each other, and are not read for this.
+            json.Remove("signatures");
+
+            if (!Read        (forms, forms.TryParse, json, request, id, destination, networkPath, out var asRead, out _) ||
+                !TryWriteCBOR(forms, asRead, out var cbor, out _)                                                        ||
+                cbor.Kind != CBORValueKind.Map)
+            {
+                return null;
+            }
+
+            return CBORValue.FromMap(
+                       cbor.AsMap().Where(entry => !(entry.Key.TryGetText(out var key) && key == "signatures"))
+                   ).ToByteArray(CBORWriterOptions.Canonical);
+
+        }
 
         #endregion
 

@@ -1004,6 +1004,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             this.signaturePolicies.Add((SignaturePolicy ?? new SignaturePolicy()).BindTo(NetworkingNode.Id, cloud.charging.open.protocols.OCPPv2_1.Version.WebSocketSubProtocolId));
 
+            // A COSE signature signs the CBOR of a message, which its class writes.
+            foreach (var signaturePolicy in signaturePolicies)
+                signaturePolicy.CBORPayloadOf ??= OCPPMessagesAsCBOR.SignedPayloadOf;
+
         }
 
         #endregion

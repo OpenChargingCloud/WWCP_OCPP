@@ -56,6 +56,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #endregion
 
+        #region SignatureFormats
+
+        /// <summary>
+        /// Which signatures the nodes of this fixture write: the JWS over the JSON of a
+        /// message, unless a fixture runs its tests with COSE signatures.
+        /// </summary>
+        protected virtual cloud.charging.open.protocols.WWCP.SignatureFormats SignatureFormats
+            => cloud.charging.open.protocols.WWCP.SignatureFormats.JWS;
+
+        #endregion
+
 
         #region Charging Station #1 Data
 
@@ -1072,6 +1083,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation3WebSocketClient.OnJSONMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => chargingStation3MessagesInHand.Finished();
                 chargingStation3WebSocketClient.OnBinaryMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => connection.SpeaksCBOR() ? chargingStation3MessagesInHand.Finished() : Task.CompletedTask;
 
+            }
+
+            #endregion
+
+            #region The signatures the nodes write
+
+            foreach (var signaturePolicy in new[] {
+                                                testCSMS1?.       OCPP.SignaturePolicy,
+                                                testCSMS2?.       OCPP.SignaturePolicy,
+                                                testCSMS3?.       OCPP.SignaturePolicy,
+                                                chargingStation1?.OCPP.SignaturePolicy,
+                                                chargingStation2?.OCPP.SignaturePolicy,
+                                                chargingStation3?.OCPP.SignaturePolicy
+                                            })
+            {
+                if (signaturePolicy is not null)
+                    signaturePolicy.Formats = SignatureFormats;
             }
 
             #endregion

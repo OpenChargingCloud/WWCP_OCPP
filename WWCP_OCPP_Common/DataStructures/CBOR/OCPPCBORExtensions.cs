@@ -776,7 +776,12 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="Signature">A cryptographic signature.</param>
         public static CBORValue ToCBOR(this Signature Signature)
 
-            => Signature.IsJWS
+            => Signature.IsCOSE
+
+                   // A COSE signature is the COSE_Sign1 it is: nothing is wrapped around it.
+                   ? CBORValue.Parse(Signature.COSE)
+
+             : Signature.IsJWS
 
                    ? Map(
                          ("protected",  CBORValue.FromText (Signature.Protected ?? "")),
@@ -818,9 +823,16 @@ namespace cloud.charging.open.protocols.OCPP
 
             Signature = null;
 
+            // A COSE signature: a COSE_Sign1, an array with or without its tag 18.
+            if (CBOR.Kind == CBORValueKind.Tagged ||
+                CBOR.Kind == CBORValueKind.Array)
+            {
+                return Signature.TryParseCOSE(CBOR.ToByteArray(), out Signature, out ErrorResponse);
+            }
+
             if (CBOR.Kind != CBORValueKind.Map)
             {
-                ErrorResponse = "The given CBOR representation of a signature is not a map!";
+                ErrorResponse = "The given CBOR representation of a signature is neither a map nor a COSE_Sign1!";
                 return false;
             }
 
