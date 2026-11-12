@@ -376,6 +376,139 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
 
         #endregion
 
+        #region ASenderGateDropsEveryKindOfMessage_BeforeAnythingIsDoneWithIt()
+
+        /// <summary>
+        /// The sender gate of a node is asked of every request and every send message that comes in - JSON and
+        /// binary - with the node the connection is known by and the network path the message names. What it
+        /// refuses is not answered, not processed, and raises no event; a gate that fails drops as well. What
+        /// it lets through goes on as before.
+        /// </summary>
+        [Test]
+        public async Task ASenderGateDropsEveryKindOfMessage_BeforeAnythingIsDoneWithIt()
+        {
+
+            var chargingStation  = await ConnectedStation("GD-SENDER-GATE");
+            var asked            = new System.Collections.Concurrent.ConcurrentQueue<String>();
+            var received         = new System.Collections.Concurrent.ConcurrentQueue<String>();
+            var fails            = false;
+            var refuses          = true;
+
+            // What the CSMS took in from this station: nothing it was not to.
+            testCSMS1!.OCPP.IN.OnJSONRequestMessageReceived   += (timestamp, sender, connection, message, cancellationToken) => { if (message.NetworkPath.Source == chargingStation.Id) received.Enqueue(message.Action); return Task.CompletedTask; };
+            testCSMS1.OCPP.IN. OnJSONSendMessageReceived      += (timestamp, sender, connection, message, cancellationToken) => { if (message.NetworkPath.Source == chargingStation.Id) received.Enqueue(message.Action); return Task.CompletedTask; };
+            testCSMS1.OCPP.IN. OnBinaryRequestMessageReceived += (timestamp, sender, connection, message, cancellationToken) => { if (message.NetworkPath.Source == chargingStation.Id) received.Enqueue(message.Action); return Task.CompletedTask; };
+            testCSMS1.OCPP.IN. OnBinarySendMessageReceived    += (timestamp, sender, connection, message, cancellationToken) => { if (message.NetworkPath.Source == chargingStation.Id) received.Enqueue(message.Action); return Task.CompletedTask; };
+
+            testCSMS1.OCPP.IN.SenderGate = (connection, node, path, action) => {
+
+                if (path.Source != chargingStation.Id)
+                    return null;
+
+                asked.Enqueue($"{node} {String.Join(",", path)} {action}");
+
+                if (fails)
+                    throw new InvalidOperationException("the gate failed");
+
+                return refuses ? "Not in this name." : null;
+
+            };
+
+            try
+            {
+
+                Task<SendRequestState> Heartbeat()
+
+                    => chargingStation.OCPP.OUT.SendJSONRequestAndWait(
+                           new OCPP_JSONRequestMessage(
+                               RequestTimestamp:  Timestamp.Now,
+                               EventTrackingId:   EventTracking_Id.New,
+                               NetworkingMode:    NetworkingMode.Standard,
+                               Destination:       SourceRouting.CSMS,
+                               NetworkPath:       NetworkPath.From(chargingStation.Id),
+                               RequestId:         Request_Id.NewRandom(),
+                               Action:            "Heartbeat",
+                               Payload:           new JObject(),
+                               RequestTimeout:    Timestamp.Now + TimeSpan.FromSeconds(2)
+                           )
+                       );
+
+                var jsonRequest    = await Heartbeat();
+
+                await chargingStation.OCPP.OUT.SendJSONSendMessage(
+                          new OCPP_JSONSendMessage(
+                              Timestamp.Now,
+                              EventTracking_Id.New,
+                              NetworkingMode.Standard,
+                              SourceRouting.CSMS,
+                              NetworkPath.From(chargingStation.Id),
+                              Request_Id.NewRandom(),
+                              "DataTransfer",
+                              new JObject(new JProperty("vendorId", "GraphDefined"))
+                          )
+                      );
+
+                var binaryRequest  = await chargingStation.OCPP.OUT.SendBinaryRequestAndWait(
+                                         new OCPP_BinaryRequestMessage(
+                                             Timestamp.Now,
+                                             EventTracking_Id.New,
+                                             NetworkingMode.Standard,
+                                             SourceRouting.CSMS,
+                                             NetworkPath.From(chargingStation.Id),
+                                             Request_Id.NewRandom(),
+                                             "BinaryDataTransfer",
+                                             [ 1, 2, 3 ],
+                                             Timestamp.Now + TimeSpan.FromSeconds(2)
+                                         )
+                                     );
+
+                await chargingStation.OCPP.OUT.SendBinarySendMessage(
+                          new OCPP_BinarySendMessage(
+                              Timestamp.Now,
+                              EventTracking_Id.New,
+                              NetworkingMode.Standard,
+                              SourceRouting.CSMS,
+                              NetworkPath.From(chargingStation.Id),
+                              Request_Id.NewRandom(),
+                              "BinaryDataTransfer",
+                              [ 4, 5, 6 ]
+                          )
+                      );
+
+                var until = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(10);
+                while (asked.Count < 4 && DateTimeOffset.UtcNow < until)
+                    await Task.Delay(10);
+
+                fails              = true;
+                var whenItFails    = await Heartbeat();
+
+                fails              = false;
+                refuses            = false;
+                var letThrough     = await Heartbeat();
+
+                Assert.Multiple(() => {
+                    Assert.That(asked.Take(4),                    Is.EqualTo(new[] { "GD-SENDER-GATE GD-SENDER-GATE Heartbeat",
+                                                                                     "GD-SENDER-GATE GD-SENDER-GATE DataTransfer",
+                                                                                     "GD-SENDER-GATE GD-SENDER-GATE BinaryDataTransfer",
+                                                                                     "GD-SENDER-GATE GD-SENDER-GATE BinaryDataTransfer" }));
+                    Assert.That(jsonRequest.  JSONResponse,       Is.Null, "a JSON request the gate refused was answered");
+                    Assert.That(jsonRequest.  JSONRequestErrorMessage?.ErrorCode, Is.EqualTo(ResultCode.Timeout), "a JSON request the gate refused was answered with an error, not left unanswered");
+                    Assert.That(binaryRequest.BinaryResponse,     Is.Null, "a binary request the gate refused was answered");
+                    Assert.That(whenItFails.  JSONResponse,       Is.Null, "a request was taken where the gate failed");
+                    Assert.That(letThrough.   JSONResponse,       Is.Not.Null, "a request the gate let through was not answered");
+                    Assert.That(received,                         Is.EqualTo(new[] { "Heartbeat" }), "the CSMS took in what the gate refused");
+                });
+
+            }
+            finally
+            {
+                testCSMS1.OCPP.IN.SenderGate = null;
+            }
+
+        }
+
+        #endregion
+
     }
 
 }
