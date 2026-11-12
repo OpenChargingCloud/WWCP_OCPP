@@ -280,6 +280,95 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #endregion
 
+
+        #region Limits_ReadAsTheyAre_Test()
+
+        /// <summary>
+        /// The limits of the device data and of the monitoring controller, and the lifecycle phase of the vulnerability
+        /// management controller, read as they are now, not as they were when the controller was made.
+        /// </summary>
+        [Test]
+        public void Limits_ReadAsTheyAre_Test()
+        {
+
+            static String? Read(ComponentConfig Controller, String Name, String? Instance = null)
+
+                => Controller.VariableConfigs.First(variable => variable.Name == Name && variable.Instance == Instance).ValueGetter!();
+
+            var deviceData       = new DeviceDataCtrlr(
+                                       new DeviceDataCtrlr.BytesPerMessageClass { GetReport = 1, GetVariables = 2, SetVariables = 3 },
+                                       new DeviceDataCtrlr.ItemsPerMessageClass { GetReport = 4, GetVariables = 5, SetVariables = 6 },
+                                       new DeviceDataCtrlr.ValueSizeClass()
+                                   );
+
+            var deviceDataBSS    = new BSS.DeviceDataCtrlr(
+                                       new BSS.DeviceDataCtrlr.BytesPerMessageClass { GetReport = 1, GetVariables = 2, SetVariables = 3 },
+                                       new BSS.DeviceDataCtrlr.ItemsPerMessageClass { GetReport = 4, GetVariables = 5, SetVariables = 6 },
+                                       new BSS.DeviceDataCtrlr.ValueSizeClass()
+                                   );
+
+            var monitoring       = new MonitoringCtrlr(
+                                       new MonitoringCtrlr.ItemsPerMessageClass { SetVariableMonitoring = 7 },
+                                       new MonitoringCtrlr.BytesPerMessageClass { SetVariableMonitoring = 8 }
+                                   );
+
+            var monitoringBSS    = new BSS.MonitoringCtrlr(
+                                       new BSS.MonitoringCtrlr.ItemsPerMessageClass { SetVariableMonitoring = 7 },
+                                       new BSS.MonitoringCtrlr.BytesPerMessageClass { SetVariableMonitoring = 8 }
+                                   );
+
+            var vulnerabilities  = new VulnerabilityManagementCtrlr(
+                                       VulnerabilityManagement.LifecyclePhase.Supported,
+                                       "",
+                                       [],
+                                       []
+                                   );
+
+            deviceData.     BytesPerMessage.GetReport              = 11;
+            deviceData.     BytesPerMessage.GetVariables           = 12;
+            deviceData.     BytesPerMessage.SetVariables           = 13;
+            deviceData.     ItemsPerMessage.GetReport              = 14;
+            deviceData.     ItemsPerMessage.GetVariables           = 15;
+            deviceData.     ItemsPerMessage.SetVariables           = 16;
+            deviceDataBSS.  BytesPerMessage.GetReport              = 11;
+            deviceDataBSS.  BytesPerMessage.GetVariables           = 12;
+            deviceDataBSS.  BytesPerMessage.SetVariables           = 13;
+            deviceDataBSS.  ItemsPerMessage.GetReport              = 14;
+            deviceDataBSS.  ItemsPerMessage.GetVariables           = 15;
+            deviceDataBSS.  ItemsPerMessage.SetVariables           = 16;
+            monitoring.     ItemsPerMessage.SetVariableMonitoring  = 17;
+            monitoring.     BytesPerMessage.SetVariableMonitoring  = 18;
+            monitoringBSS.  ItemsPerMessage.SetVariableMonitoring  = 17;
+            monitoringBSS.  BytesPerMessage.SetVariableMonitoring  = 18;
+            vulnerabilities.LifecyclePhase                         = VulnerabilityManagement.LifecyclePhase.EndOfLife;
+
+            using (Assert.EnterMultipleScope())
+            {
+
+                foreach (var controller in new ComponentConfig[] { deviceData, deviceDataBSS })
+                {
+                    Assert.That(Read(controller, "BytesPerMessage", "GetReport"),     Is.EqualTo("11"));
+                    Assert.That(Read(controller, "BytesPerMessage", "GetVariables"),  Is.EqualTo("12"));
+                    Assert.That(Read(controller, "BytesPerMessage", "SetVariables"),  Is.EqualTo("13"));
+                    Assert.That(Read(controller, "ItemsPerMessage", "GetReport"),     Is.EqualTo("14"));
+                    Assert.That(Read(controller, "ItemsPerMessage", "GetVariables"),  Is.EqualTo("15"));
+                    Assert.That(Read(controller, "ItemsPerMessage", "SetVariables"),  Is.EqualTo("16"));
+                }
+
+                foreach (var controller in new ComponentConfig[] { monitoring, monitoringBSS })
+                {
+                    Assert.That(Read(controller, "ItemsPerMessage", "SetVariableMonitoring"),  Is.EqualTo("17"));
+                    Assert.That(Read(controller, "BytesPerMessage", "SetVariableMonitoring"),  Is.EqualTo("18"));
+                }
+
+                Assert.That(Read(vulnerabilities, "LifecyclePhase"),  Is.EqualTo(VulnerabilityManagement.LifecyclePhase.EndOfLife.ToString()));
+
+            }
+
+        }
+
+        #endregion
+
     }
 
 }

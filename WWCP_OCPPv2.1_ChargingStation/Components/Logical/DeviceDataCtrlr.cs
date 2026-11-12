@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "BytesPerMessage",
                     Instance:         "GetReport",
-                    ValueGetter:      this.BytesPerMessage.GetReport.ToString,
+                    ValueGetter:      () => this.BytesPerMessage.GetReport.ToString(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "BytesPerMessage",
                     Instance:         "GetVariables",
-                    ValueGetter:      this.BytesPerMessage.GetVariables.ToString,
+                    ValueGetter:      () => this.BytesPerMessage.GetVariables.ToString(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "BytesPerMessage",
                     Instance:         "SetVariables",
-                    ValueGetter:      this.BytesPerMessage.SetVariables.ToString,
+                    ValueGetter:      () => this.BytesPerMessage.SetVariables.ToString(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "ItemsPerMessage",
                     Instance:         "GetReport",
-                    ValueGetter:      this.ItemsPerMessage.GetReport.ToString,
+                    ValueGetter:      () => this.ItemsPerMessage.GetReport.ToString(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "ItemsPerMessage",
                     Instance:         "GetVariables",
-                    ValueGetter:      this.ItemsPerMessage.GetVariables.ToString,
+                    ValueGetter:      () => this.ItemsPerMessage.GetVariables.ToString(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Name:             "ItemsPerMessage",
                     Instance:         "SetVariables",
-                    ValueGetter:      this.ItemsPerMessage.SetVariables.ToString,
+                    ValueGetter:      () => this.ItemsPerMessage.SetVariables.ToString(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly
