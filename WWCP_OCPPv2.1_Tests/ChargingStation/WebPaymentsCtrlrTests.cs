@@ -167,6 +167,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #endregion
 
+        #region SharedSecret_IsWriteOnly_Test()
+
+        /// <summary>
+        /// The shared secret is written, never read: whoever may read the variables of a station would else make its
+        /// TOTPs without standing in front of it. The validity time and the length stay readable.
+        /// </summary>
+        [Test]
+        public void SharedSecret_IsWriteOnly_Test()
+        {
+
+            static MutabilityTypes?[] MutabilitiesOf(ComponentConfig Controller, params String[] Variables)
+
+                => [.. Variables.Select(name => Controller.VariableConfigs.First(variable => variable.Name == name).Attributes?.Mutability)];
+
+            using (Assert.EnterMultipleScope())
+            {
+
+                Assert.That(MutabilitiesOf(new WebPaymentsCtrlr(),     "SharedSecret", "ValidityTime", "Length"),
+                            Is.EqualTo(new MutabilityTypes?[] { MutabilityTypes.WriteOnly, MutabilityTypes.ReadWrite, MutabilityTypes.ReadWrite }));
+
+                Assert.That(MutabilitiesOf(new BSS.WebPaymentsCtrlr(), "SharedSecret", "ValidityTime", "Length"),
+                            Is.EqualTo(new MutabilityTypes?[] { MutabilityTypes.WriteOnly, MutabilityTypes.ReadWrite, MutabilityTypes.ReadWrite }));
+
+            }
+
+        }
+
+        #endregion
+
 
         #region GetVariables_ReadWhatSetVariablesSet_Test()
 

@@ -500,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                                       },
 
                     Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
+                                          Mutability:  MutabilityTypes.WriteOnly
                                       ),
 
                     Characteristics:  new VariableCharacteristics(
