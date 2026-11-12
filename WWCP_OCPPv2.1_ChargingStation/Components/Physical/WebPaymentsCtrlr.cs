@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The minimal validity time of the time-based one-time password (TOTP) algorithm.
         /// </summary>
-        public static readonly TimeSpan  MinimumValidityTime         = TimeSpan.FromSeconds(6);
+        public static readonly TimeSpan  MinimumValidityTime         = TimeSpan.FromSeconds(1);
 
         /// <summary>
         /// The default validity time of the time-based one-time password (TOTP) algorithm.
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 throw new ArgumentException($"The given TOTP version '{TOTPVersion}' is not supported!", nameof(TOTPVersion));
 
             if (this.ValidityTime < MinimumValidityTime)
-                throw new ArgumentException($"The validity time of the TOTP must be at least {MinimumValidityTime.TotalSeconds} seconds!", nameof(ValidityTime));
+                throw new ArgumentException($"The validity time of the TOTP must be at least {MinimumValidityTime.TotalSeconds} second{(MinimumValidityTime.TotalSeconds == 1 ? "" : "s")}!", nameof(ValidityTime));
 
 
             if (this.SharedSecret.Length < MinimumSharedSecretLength)
@@ -414,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                                   return new ValueSetterResponse(
                                                              newV,
-                                                             $"The validity time of the time-based one-time passwords must be at least {MinimumValidityTime.TotalSeconds} seconds!"
+                                                             $"The validity time of the time-based one-time passwords must be at least {MinimumValidityTime.TotalSeconds} second{(MinimumValidityTime.TotalSeconds == 1 ? "" : "s")}!"
                                                          );
 
                                               }
