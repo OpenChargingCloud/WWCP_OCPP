@@ -79,6 +79,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public Func<CSMS.TriggerMessageRequest, Task<CS.TriggerMessageResponse?>>?  OnCustomTrigger  { get; set; }
 
         /// <summary>
+        /// Answers a CertificateSigned - the owner of this node keeps the key the
+        /// certificate was asked for, and decides whether it is the one - or
+        /// null to leave it to this node, which keeps no key and only looks
+        /// whether a certificate was sent.
+        /// </summary>
+        public Func<CSMS.CertificateSignedRequest, CancellationToken, Task<CS.CertificateSignedResponse?>>?  OnCertificateSignedByOwner  { get; set; }
+
+        /// <summary>
+        /// Answers a TriggerMessage of SignChargingStationCertificate,
+        /// SignV2GCertificate, SignV2G20Certificate or SignCombinedCertificate -
+        /// the owner of this node makes the key and sends the SignCertificate -
+        /// or null to leave it to this node, which accepts the first and sends
+        /// nothing.
+        /// </summary>
+        public Func<CSMS.TriggerMessageRequest, Task<CS.TriggerMessageResponse?>>?  OnSignCertificateTrigger  { get; set; }
+
+        /// <summary>
         /// The largest number of report data in one NotifyReport request;
         /// a longer report is sent in several parts.
         /// </summary>
@@ -348,26 +365,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region OnCertificateSigned
 
-            OCPP.IN.OnCertificateSigned += (timestamp,
-                                            sender,
-                                            connection,
-                                            request,
-                                            ct) => {
+            OCPP.IN.OnCertificateSigned += async (timestamp,
+                                                  sender,
+                                                  connection,
+                                                  request,
+                                                  ct) => {
 
                 DebugX.Log($"Charging station '{Id}': Incoming CertificateSigned request{(request.CertificateType.HasValue ? $"(certificate type: {request.CertificateType.Value})" : "")}!");
 
-                // CertificateChain
-                // CertificateType
+                // The owner has the key it was asked for, and says whether this
+                // is its certificate. Without an owner nothing is kept.
+                if (OnCertificateSignedByOwner is Func<CSMS.CertificateSignedRequest, CancellationToken, Task<CS.CertificateSignedResponse?>> owner &&
+                    await owner(request, ct) is CS.CertificateSignedResponse answered)
+                {
+                    return answered;
+                }
 
-                return Task.FromResult(
-                           new CertificateSignedResponse(
-                               Request:      request,
-                               Status:       request.CertificateChain.FirstOrDefault()?.Parsed is not null
-                                                 ? CertificateSignedStatus.Accepted
-                                                 : CertificateSignedStatus.Rejected,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
+                return new CertificateSignedResponse(
+                           Request:      request,
+                           Status:       request.CertificateChain.FirstOrDefault()?.Parsed is not null
+                                             ? CertificateSignedStatus.Accepted
+                                             : CertificateSignedStatus.Rejected,
+                           StatusInfo:   null,
+                           CustomData:   null
                        );
 
             };
@@ -2638,6 +2658,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            await customTrigger(request) is CS.TriggerMessageResponse answered
                                ? answered
                                : new TriggerMessageResponse(request, TriggerMessageStatus.NotImplemented);
+
+                // A certificate is asked for by whoever keeps the key: the owner.
+                if ((request.RequestedMessage == MessageTrigger.SignChargingStationCertificate ||
+                     request.RequestedMessage == MessageTrigger.SignV2GCertificate             ||
+                     request.RequestedMessage == MessageTrigger.SignV2G20Certificate           ||
+                     request.RequestedMessage == MessageTrigger.SignCombinedCertificate)       &&
+                    OnSignCertificateTrigger is Func<CSMS.TriggerMessageRequest, Task<CS.TriggerMessageResponse?>> signCertificateTrigger &&
+                    await signCertificateTrigger(request) is CS.TriggerMessageResponse asked)
+                {
+                    return asked;
+                }
 
                 TriggerMessageResponse? response = null;
 
