@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The minimum length of the shared secret for the time-based one-time password (TOTP) algorithm.
         /// </summary>
-        public const           Byte      MinimumSharedSecretLength   = 8;
+        public const           Byte      MinimumSharedSecretLength   = 16;
 
         /// <summary>
         /// The default length of the shared secret for the time-based one-time password (TOTP) algorithm.
@@ -247,6 +247,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (this.SharedSecret.Length > MaximumSharedSecretLength)
                 throw new ArgumentException($"The length of the shared secret for the time-based one-time password algorithm must be at most {MaximumSharedSecretLength} characters!", nameof(SharedSecret));
+
+            if (this.SharedSecret.Any(Char.IsWhiteSpace))
+                throw new ArgumentException("The shared secret for the time-based one-time password algorithm must not contain any whitespace characters!", nameof(SharedSecret));
 
 
             if (this.Length < MinimumLength)
@@ -475,6 +478,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                   return new ValueSetterResponse(
                                                              newV,
                                                              $"The length of the shared secret for the time-based one-time password algorithm must be at most {MaximumSharedSecretLength} characters!"
+                                                         );
+
+                                              if (newV.Any(Char.IsWhiteSpace))
+                                                  return new ValueSetterResponse(
+                                                             newV,
+                                                             "The shared secret for the time-based one-time password algorithm must not contain any whitespace characters!"
                                                          );
 
                                               this.SharedSecret = newV;
