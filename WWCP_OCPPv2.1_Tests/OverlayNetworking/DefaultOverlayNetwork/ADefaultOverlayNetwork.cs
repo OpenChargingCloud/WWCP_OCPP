@@ -118,6 +118,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
         protected virtual MessageEncodings Uplink
             => MessageEncodings.JSON;
 
+        /// <summary>
+        /// The networking mode the local controller dials the CSMS in: the overlay network, unless a fixture
+        /// says otherwise.
+        /// </summary>
+        protected virtual NetworkingMode UplinkNetworkingMode
+            => NetworkingMode.OverlayNetwork;
+
         #endregion
 
         #region (private static) Agreed(Encoding)
@@ -314,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.OverlayNetworking.Overlay
                                                      HTTPAuthentication:       HTTPBasicAuthentication.Create(localController.Id.ToString(), "1234abcd"),
                                                      SecWebSocketProtocols:    OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Uplink),
                                                      DisableWebSocketPings:    true,
-                                                     NetworkingMode:           NetworkingMode.OverlayNetwork
+                                                     NetworkingMode:           UplinkNetworkingMode
                                                  );
 
             Assert.That(connectionSetupResponse1, Is.Not.Null);
