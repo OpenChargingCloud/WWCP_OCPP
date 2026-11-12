@@ -84,6 +84,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </remarks>
         public OnGetCertificateStatusDelegate?  GetCertificateStatusProcessor    { get; set; }
 
+        /// <summary>
+        /// What answers a charging station's Authorize request in place of
+        /// this node's own list of tokens and the three tokens it accepts for
+        /// testing: the tokens an operator really knows, say. Null for the
+        /// node's own.
+        /// </summary>
+        /// <remarks>
+        /// A property for the reason SignCertificateProcessor is one.
+        /// </remarks>
+        public OnAuthorizeDelegate?  AuthorizeProcessor    { get; set; }
+
         #endregion
 
         #region Constructor(s)
@@ -470,6 +481,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     connection,
                                     request,
                                     cancellationToken) => {
+
+                if (AuthorizeProcessor is OnAuthorizeDelegate processor)
+                    return processor(timestamp, sender, connection, request, cancellationToken);
 
                 // IdToken
                 // Certificate

@@ -66,6 +66,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         public HashSet<NetworkingNode_Id>  AllowedChargingStations    { get; } = [];
 
         /// <summary>
+        /// What decides on a charging station's Authorize request in place of
+        /// AllowedChargingStations: a controller that knows its stations by
+        /// their logins, say, and forwards for whoever signed in. Null for the
+        /// list.
+        /// </summary>
+        /// <remarks>
+        /// A property rather than one more handler of OnAuthorizeRequestFilter:
+        /// only the first filter of a request is asked, and that is the one
+        /// this node adds for itself.
+        /// </remarks>
+        public OnAuthorizeRequestFilterDelegate?  AuthorizeRequestFilter    { get; set; }
+
+        /// <summary>
         /// The largest number of report data in one NotifyReport request of this local controller's
         /// own report; a longer report is sent in several parts.
         /// </summary>
@@ -1186,11 +1199,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                                       request,
                                                       cancellationToken) =>
 
-                Task.FromResult(
-                    AllowedChargingStations.Contains(request.NetworkPath.Source)
-                        ? RequestForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
-                        : RequestForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.REJECT (request, "Unauthorized!")
-                );
+                AuthorizeRequestFilter is OnAuthorizeRequestFilterDelegate filter
+
+                    ? filter(timestamp, sender, connection, request, cancellationToken)
+
+                    : Task.FromResult(
+                          AllowedChargingStations.Contains(request.NetworkPath.Source)
+                              ? RequestForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.FORWARD(request)
+                              : RequestForwardingDecision<CS.AuthorizeRequest, AuthorizeResponse>.REJECT (request, "Unauthorized!")
+                      );
 
             #endregion
 
