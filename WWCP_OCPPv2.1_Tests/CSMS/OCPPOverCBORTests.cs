@@ -29,6 +29,8 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
@@ -42,10 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     /// A charging station that offers both gets CBOR from a CSMS that speaks it and
     /// JSON from one that does not; one that offers CBOR alone is not connected to
     /// a CSMS without it. Over a connection that agreed on CBOR a message goes out
-    /// as CBOR in a binary frame, in both directions, and is read as that at the far
-    /// end - which, as long as the message processors do not serve CBOR, answers a
-    /// request with a request error in CBOR. Over a connection that agreed on JSON
-    /// no CBOR message goes out at all.
+    /// as CBOR in a binary frame, in both directions, is read as that at the far end
+    /// and answered in CBOR - by the same processors that answer it in JSON. Over a
+    /// connection that agreed on JSON no CBOR message goes out at all.
     /// </summary>
     [TestFixture]
     public class OCPPOverCBORTests : ACSMSTests
@@ -92,6 +93,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                     Description:             I18NString.Create($"{testCSMS1.Id} HTTP WebSocket Server with CBOR"),
                                     RequireAuthentication:   true,
                                     SecWebSocketProtocols:   OCPPSubprotocols.Offer(versions, MessageEncodings.Auto),
+                                    DisableWebSocketPings:   true,
+                                    AutoStart:               true
+                                );
+
+        #endregion
+
+        #region (private) ACSMSThatSpeaksJSONAlone()
+
+        /// <summary>
+        /// A WebSocket server of the CSMS that is handed the JSON subprotocols alone.
+        /// </summary>
+        private OCPPWebSocketServer ACSMSThatSpeaksJSONAlone()
+
+            => cborWebSockets = testCSMS1!.AttachWebSocketServer(
+                                    TCPPort:                 null,
+                                    Description:             I18NString.Create($"{testCSMS1.Id} HTTP WebSocket Server without CBOR"),
+                                    RequireAuthentication:   true,
+                                    SecWebSocketProtocols:   versions,
                                     DisableWebSocketPings:   true,
                                     AutoStart:               true
                                 );
@@ -173,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task OfferingBoth_FallsBackToJSONWhereTheCSMSDoesNot()
         {
 
-            var upgrade = await Connect("GD-CBOR-002", testBackendWebSockets1!, MessageEncodings.Auto);
+            var upgrade = await Connect("GD-CBOR-002", ACSMSThatSpeaksJSONAlone(), MessageEncodings.Auto);
 
             Assert.Multiple(() => {
                 Assert.That(upgrade.HTTPStatusCode,  Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
@@ -207,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         public async Task OfferingCBORAlone_IsNotConnectedToACSMSWithoutIt()
         {
 
-            var upgrade = await Connect("GD-CBOR-004", testBackendWebSockets1!, MessageEncodings.CBOR);
+            var upgrade = await Connect("GD-CBOR-004", ACSMSThatSpeaksJSONAlone(), MessageEncodings.CBOR);
 
             Assert.That(upgrade.HTTPStatusCode,  Is.Not.EqualTo(HTTPStatusCode.SwitchingProtocols));
 
@@ -216,8 +235,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #endregion
 
 
+        #region AServerTakesCBORByItself()
+
+        /// <summary>
+        /// The WebSocket server every CSMS of these tests has was handed no
+        /// subprotocols at all, and takes "ocpp2.1cbor" from whoever offers it.
+        /// </summary>
+        [Test]
+        public async Task AServerTakesCBORByItself()
+        {
+
+            var upgrade = await Connect("GD-CBOR-008", testBackendWebSockets1!, MessageEncodings.Auto);
+
+            Assert.Multiple(() => {
+                Assert.That(upgrade.HTTPStatusCode,  Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
+                Assert.That(AgreedOn,                Is.EqualTo(Version.WebSocketSubProtocolIdCBOR));
+            });
+
+        }
+
+        #endregion
+
+
+        #region (private) Frames(Server)
+
+        /// <summary>
+        /// Count the frames between the charging station and the given server, by kind.
+        /// </summary>
+        private (Func<Int32> Text, Func<List<Byte[]>> AtTheCSMS, Func<List<Byte[]>> AtTheStation) Frames(OCPPWebSocketServer Server)
+        {
+
+            var text          = 0;
+            var atTheCSMS     = new List<Byte[]>();
+            var atTheStation  = new List<Byte[]>();
+            var client        = chargingStation!.OCPPWebSocketClients.Single();
+
+            Server.OnJSONMessageReceived   += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, jsonMessage, cancellationToken) => {
+                Interlocked.Increment(ref text);
+                return Task.CompletedTask;
+            };
+
+            client.OnJSONMessageReceived   += (timestamp, webSocketClient, connection, eventTrackingId, messageTimestamp, sourceNodeId, jsonMessage, cancellationToken) => {
+                Interlocked.Increment(ref text);
+                return Task.CompletedTask;
+            };
+
+            Server.OnBinaryMessageReceived += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) => {
+                lock (atTheCSMS)
+                    atTheCSMS.Add(binaryMessage);
+                return Task.CompletedTask;
+            };
+
+            client.OnBinaryMessageReceived += (timestamp, webSocketClient, connection, eventTrackingId, messageTimestamp, sourceNodeId, binaryMessage, cancellationToken) => {
+                lock (atTheStation)
+                    atTheStation.Add(binaryMessage);
+                return Task.CompletedTask;
+            };
+
+            return (() => text,
+                    () => { lock (atTheCSMS)    return [.. atTheCSMS];    },
+                    () => { lock (atTheStation) return [.. atTheStation]; });
+
+        }
+
+        #endregion
+
         #region ARequestOfTheStation_GoesOutAsCBORAndIsAnsweredInCBOR()
 
+        /// <summary>
+        /// The charging station sends its BootNotification the way it always does. It
+        /// crosses the wire as a CBOR request in a binary frame, the CSMS processes it
+        /// as it processes every BootNotification, and its answer comes back as a CBOR
+        /// response - with nothing in a text frame on the way.
+        /// </summary>
         [Test]
         public async Task ARequestOfTheStation_GoesOutAsCBORAndIsAnsweredInCBOR()
         {
@@ -226,42 +316,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             var upgrade   = await Connect("GD-CBOR-005", server, MessageEncodings.Auto);
 
             Assert.That(upgrade.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
+            Assert.That(AgreedOn,               Is.EqualTo(Version.WebSocketSubProtocolIdCBOR));
 
-            var atTheCSMS     = new TaskCompletionSource<Byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
-            var atTheStation  = new TaskCompletionSource<Byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var frames    = Frames(server);
+            var seen      = new List<BootNotificationRequest>();
 
-            server.OnBinaryMessageReceived += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) => {
-                atTheCSMS.TrySetResult(binaryMessage);
+            testCSMS1!.OCPP.IN.OnBootNotificationRequestReceived += (timestamp, sender, connection, request, cancellationToken) => {
+                lock (seen)
+                    seen.Add(request);
                 return Task.CompletedTask;
             };
 
-            var client = chargingStation!.OCPPWebSocketClients.Single();
+            var response  = await chargingStation!.SendBootNotification(BootReason.PowerUp);
 
-            client.OnBinaryMessageReceived += (timestamp, webSocketClient, connection, eventTrackingId, messageTimestamp, sourceNodeId, binaryMessage, cancellationToken) => {
-                atTheStation.TrySetResult(binaryMessage);
-                return Task.CompletedTask;
-            };
+            Assert.That(response.Result.ResultCode, Is.EqualTo(ResultCode.OK), response.Result.Description);
 
-            var requestId  = Request_Id.NewRandom();
-            var sent       = await client.SendCBORRequest(AHeartbeat(chargingStation.Id, NetworkingNode_Id.CSMS, requestId));
-
-            Assert.That(sent.Result, Is.EqualTo(SentMessageResults.Success));
-
-            var received   = await atTheCSMS.   Task.WaitAsync(TimeSpan.FromSeconds(10));
-            var answer     = await atTheStation.Task.WaitAsync(TimeSpan.FromSeconds(10));
-
-            Assert.That(OCPP_CBORFrame.TryParse(received, out var requestArray, out var e1),  Is.True, e1);
-            Assert.That(OCPP_CBORRequestMessage.TryParse(requestArray, out var request, out var e2), Is.True, e2);
-
-            Assert.That(OCPP_CBORFrame.TryParse(answer,   out var answerArray,  out var e3),  Is.True, e3);
-            Assert.That(OCPP_CBORRequestErrorMessage.TryParse(answerArray, out var requestError, out var e4), Is.True, e4);
+            var atTheCSMS     = frames.AtTheCSMS();
+            var atTheStation  = frames.AtTheStation();
 
             Assert.Multiple(() => {
-                Assert.That(request!.RequestId,             Is.EqualTo(requestId));
-                Assert.That(request.Action,                 Is.EqualTo("Heartbeat"));
-                Assert.That(requestError!.RequestId,        Is.EqualTo(requestId));
-                Assert.That(requestError.ErrorCode,         Is.EqualTo(ResultCode.NotImplemented));
-                Assert.That(requestError.ErrorDescription,  Does.Contain("Heartbeat"));
+                Assert.That(response.Status,       Is.EqualTo(RegistrationStatus.Accepted));
+                Assert.That(seen,                  Has.Count.EqualTo(1));
+                Assert.That(seen[0].Reason,        Is.EqualTo(BootReason.PowerUp));
+                Assert.That(frames.Text(),         Is.Zero, "Text frames over a CBOR connection");
+                Assert.That(atTheCSMS,             Has.Count.EqualTo(1));
+                Assert.That(atTheStation,          Has.Count.EqualTo(1));
+            });
+
+            Assert.That(OCPP_CBORFrame.TryParse(atTheCSMS[0],    out var requestArray,  out var e1),  Is.True, e1);
+            Assert.That(OCPP_CBORRequestMessage. TryParse(requestArray,  out var request,     out var e2), Is.True, e2);
+
+            Assert.That(OCPP_CBORFrame.TryParse(atTheStation[0], out var responseArray, out var e3),  Is.True, e3);
+            Assert.That(OCPP_CBORResponseMessage.TryParse(responseArray, out var cborResponse, out var e4), Is.True, e4);
+
+            Assert.Multiple(() => {
+                Assert.That(request!.Action,           Is.EqualTo("BootNotification"));
+                Assert.That(cborResponse!.RequestId,   Is.EqualTo(request.RequestId));
+                // What CBOR says better than JSON is said that way: the time of the CSMS
+                // is a tagged point in time, not a text.
+                Assert.That(cborResponse.Payload.ToDiagnosticString(), Does.Not.Contain("\"20"));
             });
 
         }
@@ -270,6 +363,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
         #region ARequestOfTheCSMS_GoesOutAsCBORAndIsAnsweredInCBOR()
 
+        /// <summary>
+        /// The other way round: the CSMS asks the charging station to reset.
+        /// </summary>
         [Test]
         public async Task ARequestOfTheCSMS_GoesOutAsCBORAndIsAnsweredInCBOR()
         {
@@ -280,26 +376,101 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             Assert.That(upgrade.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
             Assert.That(AgreedOn,               Is.EqualTo(Version.WebSocketSubProtocolIdCBOR));
 
-            var atTheCSMS = new TaskCompletionSource<Byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var frames    = Frames(server);
+            var seen      = new List<ResetRequest>();
 
-            server.OnBinaryMessageReceived += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) => {
-                atTheCSMS.TrySetResult(binaryMessage);
+            chargingStation!.OCPP.IN.OnResetRequestReceived += (timestamp, sender, connection, request, cancellationToken) => {
+                lock (seen)
+                    seen.Add(request);
                 return Task.CompletedTask;
             };
 
-            var requestId  = Request_Id.NewRandom();
-            var sent       = await server.SendCBORRequest(AHeartbeat(testCSMS1!.Id, chargingStation!.Id, requestId));
+            var response  = await testCSMS1!.Reset(
+                                      Destination:  SourceRouting.To(chargingStation.Id),
+                                      ResetType:    ResetType.OnIdle
+                                  );
 
-            Assert.That(sent.Result, Is.EqualTo(SentMessageResults.Success));
-
-            var answer     = await atTheCSMS.Task.WaitAsync(TimeSpan.FromSeconds(10));
-
-            Assert.That(OCPP_CBORFrame.TryParse(answer, out var answerArray, out var e1), Is.True, e1);
-            Assert.That(OCPP_CBORRequestErrorMessage.TryParse(answerArray, out var requestError, out var e2), Is.True, e2);
+            Assert.That(response.Result.ResultCode, Is.EqualTo(ResultCode.OK), response.Result.Description);
 
             Assert.Multiple(() => {
-                Assert.That(requestError!.RequestId,  Is.EqualTo(requestId));
-                Assert.That(requestError.ErrorCode,   Is.EqualTo(ResultCode.NotImplemented));
+                Assert.That(seen,                    Has.Count.EqualTo(1));
+                Assert.That(seen[0].ResetType,       Is.EqualTo(ResetType.OnIdle));
+                Assert.That(frames.Text(),           Is.Zero, "Text frames over a CBOR connection");
+                Assert.That(frames.AtTheStation(),   Has.Count.EqualTo(1));
+                Assert.That(frames.AtTheCSMS(),      Has.Count.EqualTo(1));
+            });
+
+        }
+
+        #endregion
+
+        #region ARequestThatCannotBeRead_IsAnsweredWithARequestError()
+
+        /// <summary>
+        /// A CBOR request whose payload is not what its action asks for is answered
+        /// with a request error in CBOR, and one of an action nobody knows as well:
+        /// whoever asked does not wait out its timeout.
+        /// </summary>
+        [Test]
+        public async Task ARequestThatCannotBeRead_IsAnsweredWithARequestError()
+        {
+
+            var server    = ACSMSThatSpeaksCBOR();
+            var upgrade   = await Connect("GD-CBOR-009", server, MessageEncodings.CBOR);
+
+            Assert.That(upgrade.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
+
+            var frames    = Frames(server);
+            var client    = chargingStation!.OCPPWebSocketClients.Single();
+
+            var broken    = Request_Id.NewRandom();
+            var unknown   = Request_Id.NewRandom();
+
+            // A BootNotification without its charging station and its reason.
+            Assert.That((await client.SendCBORRequest(new OCPP_CBORRequestMessage(
+                                                          Timestamp.Now,
+                                                          EventTracking_Id.New,
+                                                          NetworkingMode.Standard,
+                                                          SourceRouting.To(NetworkingNode_Id.CSMS),
+                                                          NetworkPath.From(chargingStation.Id),
+                                                          broken,
+                                                          "BootNotification",
+                                                          CBORValue.FromMap([])
+                                                      ))).Result,
+                        Is.EqualTo(SentMessageResults.Success));
+
+            Assert.That((await client.SendCBORRequest(new OCPP_CBORRequestMessage(
+                                                          Timestamp.Now,
+                                                          EventTracking_Id.New,
+                                                          NetworkingMode.Standard,
+                                                          SourceRouting.To(NetworkingNode_Id.CSMS),
+                                                          NetworkPath.From(chargingStation.Id),
+                                                          unknown,
+                                                          "NobodyKnowsThis",
+                                                          CBORValue.FromMap([])
+                                                      ))).Result,
+                        Is.EqualTo(SentMessageResults.Success));
+
+            var until = Timestamp.Now + TimeSpan.FromSeconds(10);
+
+            while (frames.AtTheStation().Count < 2 && Timestamp.Now < until)
+                await Task.Delay(25);
+
+            var errors = new Dictionary<Request_Id, OCPP_CBORRequestErrorMessage>();
+
+            foreach (var frame in frames.AtTheStation())
+            {
+                Assert.That(OCPP_CBORFrame.TryParse(frame, out var array, out var e1), Is.True, e1);
+                Assert.That(OCPP_CBORRequestErrorMessage.TryParse(array, out var error, out var e2), Is.True, e2);
+                errors[error!.RequestId] = error;
+            }
+
+            Assert.That(errors.Keys, Is.EquivalentTo(new[] { broken, unknown }));
+
+            Assert.Multiple(() => {
+                Assert.That(errors[broken]. ErrorCode,  Is.EqualTo(ResultCode.FormationViolation));
+                Assert.That(errors[unknown].ErrorCode,  Is.EqualTo(ResultCode.NotImplemented));
+                Assert.That(frames.Text(),              Is.Zero, "Text frames over a CBOR connection");
             });
 
         }

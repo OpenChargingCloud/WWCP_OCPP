@@ -53,6 +53,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         private readonly        ComponentConfigStore                                 componentConfigs                = new();
         private readonly        ConcurrentDictionary<Request_Id, SendRequestState>   requests                        = [];
+        private readonly        ConcurrentDictionary<Request_Id, CBORExchange>       cborRequestsSent                = [];
+        private readonly        ConcurrentDictionary<(IMessageConnection, Request_Id), CBORExchange>  cborRequestsReceived  = [];
         private readonly        HashSet<SignaturePolicy>                             signaturePolicies               = [];
         private                 Int64                                                internalRequestId               = 800000;
 
@@ -1165,6 +1167,378 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region CBOR at the edge
+
+        #region (class) CBORExchange
+
+        /// <summary>
+        /// A request that crossed a CBOR connection, kept until it is answered: its
+        /// response is read and written together with it.
+        /// </summary>
+        /// <param name="Action">The action of the request.</param>
+        /// <param name="Request">The request, as its class read it.</param>
+        /// <param name="Until">When nobody waits for its answer any more.</param>
+        internal sealed record CBORExchange(String          Action,
+                                            Object          Request,
+                                            DateTimeOffset  Until);
+
+        #endregion
+
+        #region (private) Forget(Exchanges)
+
+        /// <summary>
+        /// Let go of the requests nobody waits for any more.
+        /// </summary>
+        private void Forget<TKey>(ConcurrentDictionary<TKey, CBORExchange> Exchanges)
+            where TKey : notnull
+        {
+
+            if (Exchanges.Count < 64)
+                return;
+
+            var now = Now;
+
+            foreach (var exchange in Exchanges)
+                if (exchange.Value.Until < now)
+                    Exchanges.TryRemove(exchange.Key, out _);
+
+        }
+
+        #endregion
+
+        #region (internal) RememberCBORRequestReceived(Connection, RequestId, Action, Request, Until)
+
+        /// <summary>
+        /// Remember a request that arrived as CBOR, for the response to it.
+        /// </summary>
+        internal void RememberCBORRequestReceived(IMessageConnection  Connection,
+                                                  Request_Id          RequestId,
+                                                  String              Action,
+                                                  Object              Request,
+                                                  DateTimeOffset      Until)
+        {
+
+            Forget(cborRequestsReceived);
+
+            cborRequestsReceived[(Connection, RequestId)] = new CBORExchange(
+                                                                Action,
+                                                                Request,
+                                                                Until > Now ? Until : Now + DefaultRequestTimeout
+                                                            );
+
+        }
+
+        #endregion
+
+        #region (private)  TryTakeCBORRequestReceived (Over, RequestId, out Exchange)
+
+        /// <summary>
+        /// The request that arrived as CBOR over the given connection - or, where the
+        /// connection is not known, the first one of that identification.
+        /// </summary>
+        private Boolean TryTakeCBORRequestReceived(IMessageConnection?                        Over,
+                                                   Request_Id                                 RequestId,
+                                                   [NotNullWhen(true)] out CBORExchange?      Exchange)
+        {
+
+            if (Over is not null && cborRequestsReceived.TryRemove((Over, RequestId), out Exchange))
+                return true;
+
+            foreach (var key in cborRequestsReceived.Keys)
+                if (key.Item2 == RequestId && cborRequestsReceived.TryRemove(key, out Exchange))
+                    return true;
+
+            Exchange = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (internal) TryTakeCBORRequestSent     (RequestId, out Exchange)
+
+        /// <summary>
+        /// The request this node sent as CBOR under the given identification.
+        /// </summary>
+        internal Boolean TryTakeCBORRequestSent(Request_Id                             RequestId,
+                                                [NotNullWhen(true)] out CBORExchange?  Exchange)
+
+            => cborRequestsSent.TryRemove(RequestId, out Exchange);
+
+        #endregion
+
+        #region (private static) NotAsCBOR(Why)
+
+        private static SentMessageResult NotAsCBOR(String? Why)
+
+            => SentMessageResult.TransmissionFailed(
+                   new InvalidOperationException(Why ?? "The message could not be written as CBOR!")
+               );
+
+        #endregion
+
+
+        #region (private) SendRequest      (Transport, JSONRequestMessage)
+
+        /// <summary>
+        /// Send the given request the way its connection speaks: as JSON, or as the CBOR
+        /// its class writes.
+        /// </summary>
+        private async Task<SentMessageResult> SendRequest(IOCPPMessageTransport    Transport,
+                                                          OCPP_JSONRequestMessage  JSONRequestMessage)
+        {
+
+            if (!Transport.SpeaksCBORTo(JSONRequestMessage.Destination.Next))
+                return await Transport.SendJSONRequest(JSONRequestMessage);
+
+            if (!OCPPMessagesAsCBOR.TryRequestToCBOR(
+                     JSONRequestMessage.Action,
+                     JSONRequestMessage.Payload,
+                     JSONRequestMessage.RequestId,
+                     JSONRequestMessage.Destination,
+                     JSONRequestMessage.NetworkPath,
+                     out var cbor,
+                     out var request,
+                     out var errorResponse
+                 ))
+            {
+                return NotAsCBOR(errorResponse);
+            }
+
+            // Before it is sent: its answer may be here before the sending returns.
+            Forget(cborRequestsSent);
+
+            cborRequestsSent[JSONRequestMessage.RequestId] = new CBORExchange(
+                                                                 JSONRequestMessage.Action,
+                                                                 request,
+                                                                 JSONRequestMessage.RequestTimeout
+                                                             );
+
+            var sentMessageResult = await Transport.SendCBORRequest(
+                                              new OCPP_CBORRequestMessage(
+                                                  JSONRequestMessage.RequestTimestamp,
+                                                  JSONRequestMessage.EventTrackingId,
+                                                  JSONRequestMessage.NetworkingMode,
+                                                  JSONRequestMessage.Destination,
+                                                  JSONRequestMessage.NetworkPath,
+                                                  JSONRequestMessage.RequestId,
+                                                  JSONRequestMessage.Action,
+                                                  cbor,
+                                                  JSONRequestMessage.RequestTimeout,
+                                                  JSONRequestMessage.ErrorMessage,
+                                                  JSONRequestMessage.CancellationToken
+                                              )
+                                          );
+
+            if (sentMessageResult.Result != SentMessageResults.Success)
+                cborRequestsSent.TryRemove(JSONRequestMessage.RequestId, out _);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (private) SendResponse     (Transport, JSONResponseMessage, Over)
+
+        /// <summary>
+        /// Send the given response the way its connection speaks. As CBOR it is written
+        /// together with the request it answers - which arrived as CBOR, and was kept.
+        /// </summary>
+        private async Task<SentMessageResult> SendResponse(IOCPPMessageTransport     Transport,
+                                                           OCPP_JSONResponseMessage  JSONResponseMessage,
+                                                           IMessageConnection?       Over)
+        {
+
+            if (!Transport.SpeaksCBORTo(JSONResponseMessage.Destination.Next))
+                return await Transport.SendJSONResponse(JSONResponseMessage);
+
+            String? errorResponse;
+
+            if (!TryTakeCBORRequestReceived(Over, JSONResponseMessage.RequestId, out var asked))
+                errorResponse = $"The request '{JSONResponseMessage.RequestId}' is not known any more, so its response can not be written as CBOR!";
+
+            else if (OCPPMessagesAsCBOR.TryResponseToCBOR(
+                         asked.Action,
+                         asked.Request,
+                         JSONResponseMessage.Payload,
+                         JSONResponseMessage.RequestId,
+                         JSONResponseMessage.Destination,
+                         JSONResponseMessage.NetworkPath,
+                         out var cbor,
+                         out errorResponse
+                     ))
+            {
+                return await Transport.SendCBORResponse(
+                                 new OCPP_CBORResponseMessage(
+                                     JSONResponseMessage.ResponseTimestamp,
+                                     JSONResponseMessage.EventTrackingId,
+                                     JSONResponseMessage.NetworkingMode,
+                                     JSONResponseMessage.Destination,
+                                     JSONResponseMessage.NetworkPath,
+                                     JSONResponseMessage.RequestId,
+                                     cbor,
+                                     JSONResponseMessage.CancellationToken
+                                 )
+                             );
+            }
+
+            // Whoever asked is told, instead of waiting out its timeout.
+            await Transport.SendCBORRequestError(
+                      new OCPP_CBORRequestErrorMessage(
+                          Now,
+                          JSONResponseMessage.EventTrackingId,
+                          JSONResponseMessage.NetworkingMode,
+                          JSONResponseMessage.Destination,
+                          JSONResponseMessage.NetworkPath,
+                          JSONResponseMessage.RequestId,
+                          ResultCode.InternalError,
+                          errorResponse
+                      )
+                  );
+
+            return NotAsCBOR(errorResponse);
+
+        }
+
+        #endregion
+
+        #region (private) SendRequestError (Transport, JSONRequestErrorMessage, Over)
+
+        private Task<SentMessageResult> SendRequestError(IOCPPMessageTransport         Transport,
+                                                         OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
+                                                         IMessageConnection?           Over)
+        {
+
+            if (!Transport.SpeaksCBORTo(JSONRequestErrorMessage.Destination.Next))
+                return Transport.SendJSONRequestError(JSONRequestErrorMessage);
+
+            // The request is answered with this.
+            TryTakeCBORRequestReceived(Over, JSONRequestErrorMessage.RequestId, out _);
+
+            return Transport.SendCBORRequestError(
+                       OCPP_CBORRequestErrorMessage.From(JSONRequestErrorMessage)
+                   );
+
+        }
+
+        #endregion
+
+        #region (private) SendResponseError(Transport, JSONResponseErrorMessage)
+
+        private static Task<SentMessageResult> SendResponseError(IOCPPMessageTransport          Transport,
+                                                                 OCPP_JSONResponseErrorMessage  JSONResponseErrorMessage)
+
+            => Transport.SpeaksCBORTo(JSONResponseErrorMessage.Destination.Next)
+                   ? Transport.SendCBORResponseError(OCPP_CBORResponseErrorMessage.From(JSONResponseErrorMessage))
+                   : Transport.SendJSONResponseError(JSONResponseErrorMessage);
+
+        #endregion
+
+        #region (private) SendSendMessage  (Transport, JSONSendMessage)
+
+        /// <summary>
+        /// Send the given message without an answer the way its connections speak. A
+        /// broadcast goes out both ways: a server may have connections of both kinds.
+        /// </summary>
+        private async Task<SentMessageResult> SendSendMessage(IOCPPMessageTransport  Transport,
+                                                              OCPP_JSONSendMessage   JSONSendMessage)
+        {
+
+            var speaksCBOR   = Transport.SpeaksCBORTo(JSONSendMessage.Destination.Next);
+            var isBroadcast  = JSONSendMessage.Destination.Next == NetworkingNode_Id.Broadcast;
+
+            SentMessageResult? sentMessageResult = null;
+
+            if (!speaksCBOR || isBroadcast)
+                sentMessageResult = await Transport.SendJSONSendMessage(JSONSendMessage);
+
+            if (speaksCBOR)
+            {
+
+                if (!OCPPMessagesAsCBOR.TryMessageToCBOR(
+                         JSONSendMessage.Action,
+                         JSONSendMessage.Payload,
+                         JSONSendMessage.MessageId,
+                         JSONSendMessage.Destination,
+                         JSONSendMessage.NetworkPath,
+                         out var cbor,
+                         out var errorResponse
+                     ))
+                {
+                    return sentMessageResult ?? NotAsCBOR(errorResponse);
+                }
+
+                var sentAsCBOR = await Transport.SendCBORSendMessage(
+                                           new OCPP_CBORSendMessage(
+                                               JSONSendMessage.MessageTimestamp,
+                                               JSONSendMessage.EventTrackingId,
+                                               JSONSendMessage.NetworkingMode,
+                                               JSONSendMessage.Destination,
+                                               JSONSendMessage.NetworkPath,
+                                               JSONSendMessage.MessageId,
+                                               JSONSendMessage.Action,
+                                               cbor,
+                                               JSONSendMessage.ErrorMessage,
+                                               JSONSendMessage.CancellationToken
+                                           )
+                                       );
+
+                if (sentMessageResult is null || sentAsCBOR.Result == SentMessageResults.Success)
+                    sentMessageResult = sentAsCBOR;
+
+            }
+
+            return sentMessageResult ?? SentMessageResult.UnknownClient();
+
+        }
+
+        #endregion
+
+        #region (private) BinaryOverCBOR   (Transport, Destination, What, RequestId = null)
+
+        /// <summary>
+        /// Why a message of the binary format does not go over a connection that agreed
+        /// on a CBOR subprotocol - or null, where the connection is none of those.
+        ///
+        /// The binary format of the BinaryDataStreams extension is not spoken there, and
+        /// its messages have no CBOR form yet. Whoever asked for what a binary response
+        /// would have answered is told, instead of waiting out its timeout.
+        /// </summary>
+        private async Task<SentMessageResult?> BinaryOverCBOR(IOCPPMessageTransport  Transport,
+                                                              SourceRouting          Destination,
+                                                              NetworkPath            NetworkPath,
+                                                              String                 What,
+                                                              Request_Id?            AnswerTo   = null)
+        {
+
+            if (!Transport.SpeaksCBORTo(Destination.Next))
+                return null;
+
+            var why = $"The {What} has no CBOR form yet, and the connection speaks CBOR only!";
+
+            if (AnswerTo.HasValue)
+                await Transport.SendCBORRequestError(
+                          new OCPP_CBORRequestErrorMessage(
+                              Now,
+                              EventTracking_Id.New,
+                              NetworkingMode.Unknown,
+                              Destination,
+                              NetworkPath,
+                              AnswerTo.Value,
+                              ResultCode.NotImplemented,
+                              why
+                          )
+                      );
+
+            return NotAsCBOR(why);
+
+        }
+
+        #endregion
+
+        #endregion
+
         #region (internal) SendJSONRequest          (JSONRequestMessage, SentMessageResultDelegate = null)
 
         internal async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage     JSONRequestMessage,
@@ -1177,7 +1551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendJSONRequest(JSONRequestMessage);
+                    sentMessageResult = await SendRequest(ocppTransport, JSONRequestMessage);
 
             }
 
@@ -1354,7 +1728,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (TransportFor(JSONResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
-                sentMessageResult = await ocppTransport.SendJSONResponse(JSONResponseMessage);
+                sentMessageResult = await SendResponse(ocppTransport, JSONResponseMessage, Over);
 
             return sentMessageResult;
 
@@ -1371,7 +1745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (TransportFor(JSONRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
-                sentMessageResult = await ocppTransport.SendJSONRequestError(JSONRequestErrorMessage);
+                sentMessageResult = await SendRequestError(ocppTransport, JSONRequestErrorMessage, Over);
 
             return sentMessageResult;
 
@@ -1390,7 +1764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendJSONResponseError(JSONResponseErrorMessage);
+                    sentMessageResult = await SendResponseError(ocppTransport, JSONResponseErrorMessage);
 
             }
 
@@ -1415,11 +1789,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 foreach (var webSocketClient in NetworkingNode.Routing.AllWebSocketClients)
                     if (webSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                        sentMessageResult = await ocppWebSocketClient.SendJSONSendMessage(JSONSendMessage);
+                        sentMessageResult = await SendSendMessage(ocppWebSocketClient, JSONSendMessage);
 
                 foreach (var webSocketServer in NetworkingNode.Routing.AllWebSocketServers)
                     if (webSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                        sentMessageResult = await ocppWebSocketServer.SendJSONSendMessage(JSONSendMessage);
+                        sentMessageResult = await SendSendMessage(ocppWebSocketServer, JSONSendMessage);
 
                 sentMessageResult = SentMessageResult.Broadcast();
 
@@ -1431,7 +1805,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendJSONSendMessage(JSONSendMessage);
+                    sentMessageResult = await SendSendMessage(ocppTransport, JSONSendMessage);
 
             }
 
@@ -1567,7 +1941,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendBinaryRequest(BinaryRequestMessage);
+                    sentMessageResult = await BinaryOverCBOR(ocppTransport, BinaryRequestMessage.Destination, BinaryRequestMessage.NetworkPath, "binary request")
+                                     ?? await ocppTransport.SendBinaryRequest(BinaryRequestMessage);
 
             }
 
@@ -1713,7 +2088,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (TransportFor(BinaryResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
-                sentMessageResult = await ocppTransport.SendBinaryResponse(BinaryResponseMessage);
+                sentMessageResult = await BinaryOverCBOR(ocppTransport, BinaryResponseMessage.Destination, BinaryResponseMessage.NetworkPath, "binary response", BinaryResponseMessage.RequestId)
+                                     ?? await ocppTransport.SendBinaryResponse(BinaryResponseMessage);
 
             return sentMessageResult;
 
@@ -1730,7 +2106,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (TransportFor(BinaryRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
-                sentMessageResult = await ocppTransport.SendBinaryRequestError(BinaryRequestErrorMessage);
+                sentMessageResult = await BinaryOverCBOR(ocppTransport, BinaryRequestErrorMessage.Destination, BinaryRequestErrorMessage.NetworkPath, "binary request error")
+                                     ?? await ocppTransport.SendBinaryRequestError(BinaryRequestErrorMessage);
 
             return sentMessageResult;
 
@@ -1749,7 +2126,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendBinaryResponseError(BinaryResponseErrorMessage);
+                    sentMessageResult = await BinaryOverCBOR(ocppTransport, BinaryResponseErrorMessage.Destination, BinaryResponseErrorMessage.NetworkPath, "binary response error")
+                                     ?? await ocppTransport.SendBinaryResponseError(BinaryResponseErrorMessage);
 
             }
 
@@ -1771,7 +2149,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendBinarySendMessage(BinarySendMessage);
+                    sentMessageResult = await BinaryOverCBOR(ocppTransport, BinarySendMessage.Destination, BinarySendMessage.NetworkPath, "binary message")
+                                     ?? await ocppTransport.SendBinarySendMessage(BinarySendMessage);
 
             }
 

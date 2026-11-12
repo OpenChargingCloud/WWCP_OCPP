@@ -535,7 +535,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           RequireAuthentication,
                                           SecWebSocketProtocols ?? [
                                                                       "ocpp2.0.1",
-                                                                       Version.WebSocketSubProtocolId
+                                                                       Version.WebSocketSubProtocolId,
+                                                                       Version.WebSocketSubProtocolIdCBOR
                                                                    ],
                                           SubprotocolSelector,
                                           DisableWebSocketPings,
@@ -622,6 +623,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         protected override IEnumerable<String> DefaultOCPPSubprotocols
             => [ Version.WebSocketSubProtocolId, "ocpp2.0.1" ];
+
+        /// <summary>
+        /// A server takes OCPP 2.1 as CBOR as well: whoever calls chooses between the two.
+        /// </summary>
+        protected override IEnumerable<String> DefaultOCPPServerSubprotocols
+            => [ Version.WebSocketSubProtocolId, "ocpp2.0.1", Version.WebSocketSubProtocolIdCBOR ];
 
         /// <summary>
         /// A JSON message that came over SSH goes where one over an HTTP WebSocket goes.

@@ -96,6 +96,13 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             => [];
 
         /// <summary>
+        /// The subprotocols a server of this node takes over SSH - where a caller names none. More than
+        /// it offers as a client: whoever calls decides how it wants to be spoken to.
+        /// </summary>
+        protected virtual IEnumerable<String> DefaultOCPPServerSubprotocols
+            => DefaultOCPPSubprotocols;
+
+        /// <summary>
         /// Whom a connection to a CSMS reaches, where a caller names nobody: "CSMS" in OCPP 2.0.1 and 2.1,
         /// "CentralSystem" in OCPP 1.6 - by that name a node sends to its CSMS.
         /// </summary>
@@ -644,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             var sshServer = new OCPPSshServer(
                                 this,
                                 Subsystem,
-                                Subprotocols ?? DefaultOCPPSubprotocols,
+                                Subprotocols ?? DefaultOCPPServerSubprotocols,
                                 MaxMessageSize,
                                 PingEvery
                             );

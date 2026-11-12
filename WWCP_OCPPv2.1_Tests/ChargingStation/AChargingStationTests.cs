@@ -32,6 +32,8 @@ using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.LocalController;
 
+using cloud.charging.open.protocols.OCPP.WebSockets;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
@@ -42,6 +44,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
     /// </summary>
     public abstract class AChargingStationTests : ALocalControllerTests
     {
+
+        #region Encoding
+
+        /// <summary>
+        /// How the charging stations of this fixture ask to be spoken to: JSON,
+        /// unless a fixture runs its tests over CBOR.
+        /// </summary>
+        protected virtual MessageEncodings Encoding
+            => MessageEncodings.JSON;
+
+        #endregion
+
 
         #region Charging Station #1 Data
 
@@ -267,6 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                    NextHopNetworkingNodeId:   NetworkingNode_Id.CSMS,
                                    RemoteURL:                 URL.Parse("http://127.0.0.1:" + (lcOCPPWebSocketServer1?.IPPort ?? testBackendWebSockets1?.IPPort).ToString() + "/" + chargingStation1.Id),
                                    HTTPAuthentication:        HTTPBasicAuthentication.Create(chargingStation1.Id.ToString(), "1234abcd"),
+                                   SecWebSocketProtocols:     OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId, "ocpp2.0.1" ], Encoding),
                                    DisableWebSocketPings:     true
                                ).GetAwaiter().GetResult();
 
@@ -340,6 +355,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 };
 
+                chargingStation1WebSocketClient.OnBinaryMessageSent   += (timestamp,
+                                                                          client,
+                                                                          connection,
+                                                                          eventTrackingId,
+                                                                          messageTimestamp,
+                                                                          binaryMessage,
+                                                                          sentStatus,
+                                                                          ct) => {
+
+                    // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                    if (!CBORFrames.TryAsJSON(connection, binaryMessage, out var message))
+                        return Task.CompletedTask;
+
+                    switch (message[0].Value<Byte>())
+                    {
+
+                        case 2: // JSON Request Message
+                            chargingStation1WebSocketJSONRequestsSent.      Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 3: // JSON Response Message
+                            chargingStation1WebSocketJSONResponsesSent.     Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 4: // JSON Request Error Message
+                            chargingStation1WebSocketJSONRequestErrorsSent. Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 5: // JSON Response Error Message
+                            chargingStation1WebSocketJSONResponseErrorsSent.Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 6: // JSON Send Message
+                            chargingStation1WebSocketJSONSendMessagesSent.  Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                    }
+
+                    return Task.CompletedTask;
+
+                };
+
 
                 chargingStation1WebSocketClient.OnJSONMessageReceived += (timestamp,
                                                                           client,
@@ -379,9 +436,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 };
 
+                chargingStation1WebSocketClient.OnBinaryMessageReceived += (timestamp,
+                                                                          client,
+                                                                          connection,
+                                                                          eventTrackingId,
+                                                                          messageTimestamp,
+                                                                          sourceNodeId,
+                                                                          binaryMessage,
+                                                                          ct) => {
+
+                    // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                    if (!CBORFrames.TryAsJSON(connection, binaryMessage, out var message))
+                        return Task.CompletedTask;
+
+                    switch (message[0].Value<Byte>())
+                    {
+
+                        case 2: // JSON Request Message
+                            chargingStation1WebSocketJSONRequestsReceived.      Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 3: // JSON Response Message
+                            chargingStation1WebSocketJSONResponsesReceived.     Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 4: // JSON Request Error Message
+                            chargingStation1WebSocketJSONRequestErrorsReceived. Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 5: // JSON Response Error Message
+                            chargingStation1WebSocketJSONResponseErrorsReceived.Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 6: // JSON Send Message
+                            chargingStation1WebSocketJSONSendMessagesReceived.  Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                    }
+
+                    return Task.CompletedTask;
+
+                };
+
                 // After the counting above, and after the station's own handler,
                 // which was subscribed when the client was made.
                 chargingStation1WebSocketClient.OnJSONMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => chargingStation1MessagesInHand.Finished();
+                chargingStation1WebSocketClient.OnBinaryMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => connection.SpeaksCBOR() ? chargingStation1MessagesInHand.Finished() : Task.CompletedTask;
 
             }
 
@@ -469,6 +569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                    NextHopNetworkingNodeId:   NetworkingNode_Id.CSMS,
                                    RemoteURL:                 URL.Parse("http://127.0.0.1:" + testBackendWebSockets1.IPPort.ToString() + "/" + chargingStation2.Id),
                                    HTTPAuthentication:        HTTPBasicAuthentication.Create(chargingStation2.Id.ToString(), "1234abcd"),
+                                   SecWebSocketProtocols:     OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId, "ocpp2.0.1" ], Encoding),
                                    DisableWebSocketPings:     true
                                ).GetAwaiter().GetResult();
 
@@ -542,6 +643,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 };
 
+                chargingStation2WebSocketClient.OnBinaryMessageSent   += (timestamp,
+                                                                          client,
+                                                                          connection,
+                                                                          eventTrackingId,
+                                                                          messageTimestamp,
+                                                                          binaryMessage,
+                                                                          sentStatus,
+                                                                          ct) => {
+
+                    // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                    if (!CBORFrames.TryAsJSON(connection, binaryMessage, out var message))
+                        return Task.CompletedTask;
+
+                    switch (message[0].Value<Byte>())
+                    {
+
+                        case 2: // JSON Request Message
+                            chargingStation2WebSocketJSONRequestsSent.      Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 3: // JSON Response Message
+                            chargingStation2WebSocketJSONResponsesSent.     Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 4: // JSON Request Error Message
+                            chargingStation2WebSocketJSONRequestErrorsSent. Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 5: // JSON Response Error Message
+                            chargingStation2WebSocketJSONResponseErrorsSent.Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 6: // JSON Send Message
+                            chargingStation2WebSocketJSONSendMessagesSent.  Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                    }
+
+                    return Task.CompletedTask;
+
+                };
+
 
                 chargingStation2WebSocketClient.OnJSONMessageReceived += (timestamp,
                                                                           client,
@@ -581,7 +724,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 };
 
+                chargingStation2WebSocketClient.OnBinaryMessageReceived += (timestamp,
+                                                                          client,
+                                                                          connection,
+                                                                          eventTrackingId,
+                                                                          messageTimestamp,
+                                                                          sourceNodeId,
+                                                                          binaryMessage,
+                                                                          ct) => {
+
+                    // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                    if (!CBORFrames.TryAsJSON(connection, binaryMessage, out var message))
+                        return Task.CompletedTask;
+
+                    switch (message[0].Value<Byte>())
+                    {
+
+                        case 2: // JSON Request Message
+                            chargingStation2WebSocketJSONRequestsReceived.      Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 3: // JSON Response Message
+                            chargingStation2WebSocketJSONResponsesReceived.     Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 4: // JSON Request Error Message
+                            chargingStation2WebSocketJSONRequestErrorsReceived. Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 5: // JSON Response Error Message
+                            chargingStation2WebSocketJSONResponseErrorsReceived.Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 6: // JSON Send Message
+                            chargingStation2WebSocketJSONSendMessagesReceived.  Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                    }
+
+                    return Task.CompletedTask;
+
+                };
+
                 chargingStation2WebSocketClient.OnJSONMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => chargingStation2MessagesInHand.Finished();
+                chargingStation2WebSocketClient.OnBinaryMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => connection.SpeaksCBOR() ? chargingStation2MessagesInHand.Finished() : Task.CompletedTask;
 
             }
 
@@ -685,6 +871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                          NextHopNetworkingNodeId:   NetworkingNode_Id.CSMS,
                                          RemoteURL:                 URL.Parse("http://127.0.0.1:" + (lcOCPPWebSocketServer1?.IPPort ?? testBackendWebSockets1?.IPPort).ToString() + "/" + chargingStation3.Id),
                                          HTTPAuthentication:        HTTPBasicAuthentication.Create(chargingStation3.Id.ToString(), "1234abcd"),
+                                         SecWebSocketProtocols:     OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId, "ocpp2.0.1" ], Encoding),
                                          DisableWebSocketPings:     true
                                      );
 
@@ -759,6 +946,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 };
 
+                chargingStation3WebSocketClient.OnBinaryMessageSent   += (timestamp,
+                                                                          client,
+                                                                          connection,
+                                                                          eventTrackingId,
+                                                                          messageTimestamp,
+                                                                          binaryMessage,
+                                                                          sentStatus,
+                                                                          ct) => {
+
+                    // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                    if (!CBORFrames.TryAsJSON(connection, binaryMessage, out var message))
+                        return Task.CompletedTask;
+
+                    switch (message[0].Value<Byte>())
+                    {
+
+                        case 2: // JSON Request Message
+                            chargingStation3WebSocketJSONRequestsSent.      Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 3: // JSON Response Message
+                            chargingStation3WebSocketJSONResponsesSent.     Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 4: // JSON Request Error Message
+                            chargingStation3WebSocketJSONRequestErrorsSent. Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 5: // JSON Response Error Message
+                            chargingStation3WebSocketJSONResponseErrorsSent.Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 6: // JSON Send Message
+                            chargingStation3WebSocketJSONSendMessagesSent.  Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                    }
+
+                    return Task.CompletedTask;
+
+                };
+
 
                 chargingStation3WebSocketClient.OnJSONMessageReceived += (timestamp,
                                                                           client,
@@ -798,7 +1027,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 };
 
+                chargingStation3WebSocketClient.OnBinaryMessageReceived += (timestamp,
+                                                                          client,
+                                                                          connection,
+                                                                          eventTrackingId,
+                                                                          messageTimestamp,
+                                                                          sourceNodeId,
+                                                                          binaryMessage,
+                                                                          ct) => {
+
+                    // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                    if (!CBORFrames.TryAsJSON(connection, binaryMessage, out var message))
+                        return Task.CompletedTask;
+
+                    switch (message[0].Value<Byte>())
+                    {
+
+                        case 2: // JSON Request Message
+                            chargingStation3WebSocketJSONRequestsReceived.      Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 3: // JSON Response Message
+                            chargingStation3WebSocketJSONResponsesReceived.     Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 4: // JSON Request Error Message
+                            chargingStation3WebSocketJSONRequestErrorsReceived. Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 5: // JSON Response Error Message
+                            chargingStation3WebSocketJSONResponseErrorsReceived.Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                        case 6: // JSON Send Message
+                            chargingStation3WebSocketJSONSendMessagesReceived.  Add(new LogJSONRequest(messageTimestamp, message));
+                            break;
+
+                    }
+
+                    return Task.CompletedTask;
+
+                };
+
                 chargingStation3WebSocketClient.OnJSONMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => chargingStation3MessagesInHand.Finished();
+                chargingStation3WebSocketClient.OnBinaryMessageReceived += (timestamp, client, connection, eventTrackingId, messageTimestamp, sourceNodeId, message, ct) => connection.SpeaksCBOR() ? chargingStation3MessagesInHand.Finished() : Task.CompletedTask;
 
             }
 

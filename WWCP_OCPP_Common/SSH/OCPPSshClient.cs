@@ -124,6 +124,17 @@ namespace cloud.charging.open.protocols.OCPP.SSH
 
         #endregion
 
+        #region SpeaksCBORTo(Destination)
+
+        /// <summary>
+        /// Whether the connection of this client agreed on a CBOR subprotocol.
+        /// </summary>
+        /// <param name="Destination">The next networking node on the way: a client has one far end.</param>
+        public Boolean SpeaksCBORTo(NetworkingNode_Id Destination)
+            => Connection.SpeaksCBOR();
+
+        #endregion
+
         #region Send CBOR messages
 
         /// <summary>

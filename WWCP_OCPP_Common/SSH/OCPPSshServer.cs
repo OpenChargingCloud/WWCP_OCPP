@@ -95,6 +95,10 @@ namespace cloud.charging.open.protocols.OCPP.SSH
                 foreach (var connection in GetConnectionsFor(Destination))
                 {
 
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (connection.SpeaksCBOR())
+                        continue;
+
                     var sentMessageResult = await SendJSONMessage(
                                                       connection,
                                                       Build(NetworkingModeOf(connection)),
@@ -138,6 +142,10 @@ namespace cloud.charging.open.protocols.OCPP.SSH
 
                 foreach (var connection in GetConnectionsFor(Destination))
                 {
+
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (connection.SpeaksCBOR())
+                        continue;
 
                     var sentMessageResult = await SendBinaryMessage(
                                                       connection,
@@ -288,6 +296,17 @@ namespace cloud.charging.open.protocols.OCPP.SSH
                           BinarySendMessage.MessageTimestamp,
                           BinarySendMessage.EventTrackingId,
                           BinarySendMessage.CancellationToken);
+
+        #endregion
+
+        #region SpeaksCBORTo(Destination)
+
+        /// <summary>
+        /// Whether a connection of the given networking node agreed on a CBOR subprotocol.
+        /// </summary>
+        /// <param name="Destination">The next networking node on the way.</param>
+        public Boolean SpeaksCBORTo(NetworkingNode_Id Destination)
+            => GetConnectionsFor(Destination).Any(connection => connection.SpeaksCBOR());
 
         #endregion
 

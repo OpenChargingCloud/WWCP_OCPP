@@ -319,6 +319,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
+            testBackendWebSockets1.OnBinaryMessageSent   += (timestamp,
+                                                             webSocketServer,
+                                                             webSocketConnection,
+                                                             messageTimestamp,
+                                                             eventTrackingId,
+                                                             binaryMessage,
+                                                             sentStatus,
+                                                             cancellationToken) => {
+
+                // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                    return Task.CompletedTask;
+
+                switch (message[0].Value<Byte>())
+                {
+
+                    case 2: // JSON Request Message
+                        csms1WebSocketJSONRequestsSent.      Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 3: // JSON Response Message
+                        csms1WebSocketJSONResponsesSent.     Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 4: // JSON Request Error Message
+                        csms1WebSocketJSONRequestErrorsSent. Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 5: // JSON Response Error Message
+                        csms1WebSocketJSONResponseErrorsSent.Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 6: // JSON Send Message
+                        csms1WebSocketJSONSendMessagesSent.  Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                }
+
+                return Task.CompletedTask;
+
+            };
+
             testBackendWebSockets1.OnJSONMessageReceived += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
@@ -327,6 +369,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                              sourceNodeId,
                                                              message,
                                                              cancellationToken) => {
+
+                switch (message[0].Value<Byte>())
+                {
+
+                    case 2: // JSON Request Message
+                        csms1WebSocketJSONRequestsReceived.      Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 3: // JSON Response Message
+                        csms1WebSocketJSONResponsesReceived.     Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 4: // JSON Request Error Message
+                        csms1WebSocketJSONRequestErrorsReceived. Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 5: // JSON Response Error Message
+                        csms1WebSocketJSONResponseErrorsReceived.Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 6: // JSON Send Message
+                        csms1WebSocketJSONSendMessagesReceived.  Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                }
+
+                return Task.CompletedTask;
+
+            };
+
+            testBackendWebSockets1.OnBinaryMessageReceived += (timestamp,
+                                                             webSocketServer,
+                                                             webSocketConnection,
+                                                             messageTimestamp,
+                                                             eventTrackingId,
+                                                             sourceNodeId,
+                                                             binaryMessage,
+                                                             cancellationToken) => {
+
+                // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                    return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())
                 {
@@ -522,6 +606,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
+            testBackendWebSockets2.OnBinaryMessageSent   += (timestamp,
+                                                             webSocketServer,
+                                                             webSocketConnection,
+                                                             messageTimestamp,
+                                                             eventTrackingId,
+                                                             binaryMessage,
+                                                             sentStatus,
+                                                             cancellationToken) => {
+
+                // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                    return Task.CompletedTask;
+
+                switch (message[0].Value<Byte>())
+                {
+
+                    case 2: // JSON Request Message
+                        csms2WebSocketJSONRequestsSent.      Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 3: // JSON Response Message
+                        csms2WebSocketJSONResponsesSent.     Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 4: // JSON Request Error Message
+                        csms2WebSocketJSONRequestErrorsSent. Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 5: // JSON Response Error Message
+                        csms2WebSocketJSONResponseErrorsSent.Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 6: // JSON Send Message
+                        csms2WebSocketJSONSendMessagesSent.  Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                }
+
+                return Task.CompletedTask;
+
+            };
+
             testBackendWebSockets2.OnJSONMessageReceived += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
@@ -530,6 +656,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                              sourceNodeId,
                                                              message,
                                                              cancellationToken) => {
+
+                switch (message[0].Value<Byte>())
+                {
+
+                    case 2: // JSON Request Message
+                        csms2WebSocketJSONRequestsReceived.      Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 3: // JSON Response Message
+                        csms2WebSocketJSONResponsesReceived.     Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 4: // JSON Request Error Message
+                        csms2WebSocketJSONRequestErrorsReceived. Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 5: // JSON Response Error Message
+                        csms2WebSocketJSONResponseErrorsReceived.Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 6: // JSON Send Message
+                        csms2WebSocketJSONSendMessagesReceived.  Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                }
+
+                return Task.CompletedTask;
+
+            };
+
+            testBackendWebSockets2.OnBinaryMessageReceived += (timestamp,
+                                                             webSocketServer,
+                                                             webSocketConnection,
+                                                             messageTimestamp,
+                                                             eventTrackingId,
+                                                             sourceNodeId,
+                                                             binaryMessage,
+                                                             cancellationToken) => {
+
+                // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                    return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())
                 {
@@ -719,6 +887,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
+            testBackendWebSockets3.OnBinaryMessageSent   += (timestamp,
+                                                             webSocketServer,
+                                                             webSocketConnection,
+                                                             messageTimestamp,
+                                                             eventTrackingId,
+                                                             binaryMessage,
+                                                             sentStatus,
+                                                             cancellationToken) => {
+
+                // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                    return Task.CompletedTask;
+
+                switch (message[0].Value<Byte>())
+                {
+
+                    case 2: // JSON Request Message
+                        csms3WebSocketJSONRequestsSent.      Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 3: // JSON Response Message
+                        csms3WebSocketJSONResponsesSent.     Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 4: // JSON Request Error Message
+                        csms3WebSocketJSONRequestErrorsSent. Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 5: // JSON Response Error Message
+                        csms3WebSocketJSONResponseErrorsSent.Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 6: // JSON Send Message
+                        csms3WebSocketJSONSendMessagesSent.  Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                }
+
+                return Task.CompletedTask;
+
+            };
+
             testBackendWebSockets3.OnJSONMessageReceived += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
@@ -727,6 +937,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                              sourceNodeId,
                                                              message,
                                                              cancellationToken) => {
+
+                switch (message[0].Value<Byte>())
+                {
+
+                    case 2: // JSON Request Message
+                        csms3WebSocketJSONRequestsReceived.      Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 3: // JSON Response Message
+                        csms3WebSocketJSONResponsesReceived.     Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 4: // JSON Request Error Message
+                        csms3WebSocketJSONRequestErrorsReceived. Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 5: // JSON Response Error Message
+                        csms3WebSocketJSONResponseErrorsReceived.Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                    case 6: // JSON Send Message
+                        csms3WebSocketJSONSendMessagesReceived.  Add(new LogJSONRequest(messageTimestamp, message));
+                        break;
+
+                }
+
+                return Task.CompletedTask;
+
+            };
+
+            testBackendWebSockets3.OnBinaryMessageReceived += (timestamp,
+                                                             webSocketServer,
+                                                             webSocketConnection,
+                                                             messageTimestamp,
+                                                             eventTrackingId,
+                                                             sourceNodeId,
+                                                             binaryMessage,
+                                                             cancellationToken) => {
+
+                // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
+                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                    return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())
                 {

@@ -767,9 +767,28 @@ namespace cloud.charging.open.protocols.OCPP
         /// The given cryptographic signature as CBOR: the keys of its JSON object,
         /// its key identification and value as byte strings - what the JSON has
         /// to encode as text - and what is not its default only.
+        ///
+        /// A signature of the JWS form keeps that form: its protected header as the
+        /// text that was signed, its unprotected header as a map, its value as a byte
+        /// string. It is a signature over the JSON of its message, and is verified
+        /// against that JSON wherever the message is read from CBOR.
         /// </summary>
         /// <param name="Signature">A cryptographic signature.</param>
         public static CBORValue ToCBOR(this Signature Signature)
+
+            => Signature.IsJWS
+
+                   ? Map(
+                         ("protected",  CBORValue.FromText (Signature.Protected ?? "")),
+                         ("header",     Signature.Header is not null
+                                            ? (CBORValue?) CBORJSON.ToCBOR(Signature.Header)
+                                            : null),
+                         ("signature",  CBORValue.FromBytes(Signature.Value))
+                     )
+
+                   : ToCBORByKey(Signature);
+
+        private static CBORValue ToCBORByKey(Signature Signature)
 
             => Map(
                    ("keyId",           CBORValue.FromBytes(Signature.KeyId)),
@@ -804,6 +823,46 @@ namespace cloud.charging.open.protocols.OCPP
                 ErrorResponse = "The given CBOR representation of a signature is not a map!";
                 return false;
             }
+
+            #region A signature of the JWS form
+
+            if (CBOR.TryGetValue(CBORValue.FromText("protected"), out var protectedHeader))
+            {
+
+                if (!protectedHeader.TryGetText(out var protectedText))
+                {
+                    ErrorResponse = "The protected header of the signature is not a text!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBytes("signature", "signature value", out var jwsValue, out ErrorResponse))
+                    return false;
+
+                var jws = new JObject(
+                              new JProperty("protected",  protectedText)
+                          );
+
+                if (CBOR.TryGetValue(CBORValue.FromText("header"), out var header))
+                {
+
+                    if (CBORJSON.ToJSON(header) is not JObject headerJSON)
+                    {
+                        ErrorResponse = "The header of the signature is not a map!";
+                        return false;
+                    }
+
+                    jws.Add("header", headerJSON);
+
+                }
+
+                jws.Add("signature", JWS.Base64URL(jwsValue));
+
+                // Read as what its JSON says, so that both forms have one reader.
+                return Signature.TryParse(jws, out Signature, out ErrorResponse);
+
+            }
+
+            #endregion
 
             if (!CBOR.ParseMandatoryBytes("keyId", "key identification", out var keyId, out ErrorResponse) ||
                 !CBOR.ParseMandatoryBytes("value", "signature value",    out var value, out ErrorResponse))

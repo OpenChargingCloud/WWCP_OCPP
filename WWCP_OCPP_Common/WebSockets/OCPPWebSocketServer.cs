@@ -168,6 +168,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 foreach (var webSocketConnection in GetConnectionsFor(JSONRequestMessage.Destination.Next))
                 {
 
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
+
                     JSONRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                             ?? NetworkingMode.Standard;
 
@@ -212,6 +216,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                 foreach (var webSocketConnection in GetConnectionsFor(JSONResponseMessage.Destination.Next))
                 {
+
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
 
                     JSONResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                              ?? NetworkingMode.Standard;
@@ -258,6 +266,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 foreach (var webSocketConnection in GetConnectionsFor(JSONRequestErrorMessage.Destination.Next))
                 {
 
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
+
                     JSONRequestErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                                  ?? NetworkingMode.Standard;
 
@@ -303,6 +315,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 foreach (var webSocketConnection in GetConnectionsFor(JSONResponseErrorMessage.Destination.Next))
                 {
 
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
+
                     JSONResponseErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                                   ?? NetworkingMode.Standard;
 
@@ -347,6 +363,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                 foreach (var webSocketConnection in GetConnectionsFor(JSONSendMessage.Destination.Next))
                 {
+
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
 
                     JSONSendMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                          ?? NetworkingMode.Standard;
@@ -394,6 +414,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 foreach (var webSocketConnection in GetConnectionsFor(BinaryRequestMessage.Destination.Next))
                 {
 
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
+
                     BinaryRequestMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                               ?? NetworkingMode.Standard;
 
@@ -438,6 +462,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                 foreach (var webSocketConnection in GetConnectionsFor(BinaryResponseMessage.Destination.Next))
                 {
+
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
 
                     BinaryResponseMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                                ?? NetworkingMode.Standard;
@@ -484,6 +512,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 foreach (var webSocketConnection in GetConnectionsFor(BinaryRequestErrorMessage.Destination.Next))
                 {
 
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
+
                     BinaryRequestErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                                    ?? NetworkingMode.Standard;
 
@@ -529,6 +561,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
                 foreach (var webSocketConnection in GetConnectionsFor(BinaryResponseErrorMessage.Destination.Next))
                 {
 
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
+
                     BinaryResponseErrorMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                                     ?? NetworkingMode.Standard;
 
@@ -573,6 +609,10 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
                 foreach (var webSocketConnection in GetConnectionsFor(BinarySendMessage.Destination.Next))
                 {
+
+                    // A connection that agreed on a CBOR subprotocol carries CBOR, and nothing else.
+                    if (webSocketConnection.SpeaksCBOR())
+                        continue;
 
                     BinarySendMessage.NetworkingMode = webSocketConnection.TryGetCustomDataAs<NetworkingMode>(WebSocketKeys.NetworkingMode)
                                                            ?? NetworkingMode.Standard;
@@ -664,6 +704,17 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             return Task.CompletedTask;
 
         }
+
+        #endregion
+
+        #region SpeaksCBORTo(Destination)
+
+        /// <summary>
+        /// Whether a connection of the given networking node agreed on a CBOR subprotocol.
+        /// </summary>
+        /// <param name="Destination">The next networking node on the way.</param>
+        public Boolean SpeaksCBORTo(NetworkingNode_Id Destination)
+            => GetConnectionsFor(Destination).Any(webSocketConnection => webSocketConnection.SpeaksCBOR());
 
         #endregion
 

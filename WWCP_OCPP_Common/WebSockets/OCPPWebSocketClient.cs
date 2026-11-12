@@ -553,6 +553,17 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
+        #region SpeaksCBORTo(Destination)
+
+        /// <summary>
+        /// Whether the connection of this client agreed on a CBOR subprotocol.
+        /// </summary>
+        /// <param name="Destination">The next networking node on the way: a client has one far end.</param>
+        public Boolean SpeaksCBORTo(NetworkingNode_Id Destination)
+            => webSocketClientConnection.SpeaksCBOR();
+
+        #endregion
+
         #region Send CBOR messages
 
         /// <summary>

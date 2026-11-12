@@ -45,6 +45,13 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         Task<SentMessageResult> SendBinaryResponseError (OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
         Task<SentMessageResult> SendBinarySendMessage   (OCPP_BinarySendMessage           BinarySendMessage);
 
+        /// <summary>
+        /// Whether what is sent to the given networking node goes over a connection that agreed
+        /// on a CBOR subprotocol - and so has to be sent as CBOR, and as nothing else.
+        /// </summary>
+        /// <param name="Destination">The next networking node on the way.</param>
+        Boolean                 SpeaksCBORTo            (NetworkingNode_Id                Destination);
+
         Task<SentMessageResult> SendCBORRequest         (OCPP_CBORRequestMessage          CBORRequestMessage);
         Task<SentMessageResult> SendCBORResponse        (OCPP_CBORResponseMessage         CBORResponseMessage);
         Task<SentMessageResult> SendCBORRequestError    (OCPP_CBORRequestErrorMessage     CBORRequestErrorMessage);
