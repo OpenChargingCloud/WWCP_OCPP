@@ -203,6 +203,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
                         SignedBy);
         }
 
+        private static (ClearChargingProfileRequest, JObject) AClearing(ChargingProfilePurpose? Purpose, params KeyPair[] SignedBy)
+        {
+            var requestId = NextRequestId;
+            return Sent(new ClearChargingProfileRequest(
+                            toTheStation,
+                            ChargingProfileId:         Purpose.HasValue ? null : ChargingProfile_Id.NewRandom,
+                            ChargingProfileCriteria:   Purpose.HasValue ? new ClearChargingProfile(ChargingProfilePurpose: Purpose) : null,
+                            RequestId:                 requestId
+                        ),
+                        (request, withContext) => request.ToJSON(withContext),
+                        json => ClearChargingProfileRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                        SignedBy);
+        }
+
         /// <summary>
         /// Whether the station's adapter would hand the request to its handler.
         /// </summary>
@@ -227,6 +241,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
             => Accepts(Station, Sent, request => request.ToJSON(true), out ErrorResponse);
 
         private static Boolean Accepts(SignaturePolicy Station, (SetChargingProfileRequest, JObject) Sent, out String? ErrorResponse)
+            => Accepts(Station, Sent, request => request.ToJSON(true), out ErrorResponse);
+
+        private static Boolean Accepts(SignaturePolicy Station, (ClearChargingProfileRequest, JObject) Sent, out String? ErrorResponse)
             => Accepts(Station, Sent, request => request.ToJSON(true), out ErrorResponse);
 
         #endregion
@@ -433,6 +450,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
 
                 Assert.That(Accepts(station, AChargingProfile(ChargingProfilePurpose.ChargingStationExternalConstraints, admin),     out var external),    Is.False, "A CSMS set external constraints!");
                 Assert.That(external, Does.Contain("External constraints"));
+
+            });
+
+        }
+
+        #endregion
+
+        #region ClearingIsJudgedByThePurposeItNames()
+
+        /// <summary>
+        /// Clearing needs what setting needs, but for the two purposes a CSMS does not
+        /// name among its criteria: external constraints and local generation (OCPP 2.1,
+        /// K10.FR.06). A profile of local generation the CSMS has set goes by its
+        /// identification, which needs both rights.
+        /// </summary>
+        [Test]
+        public void ClearingIsJudgedByThePurposeItNames()
+        {
+
+            var cpo        = ECCKeyPair.GenerateKeys()!;
+            var installer  = ECCKeyPair.GenerateKeys()!;
+            var admin      = ECCKeyPair.GenerateKeys()!;
+            var station    = AStation(MessagePolicyModes.Enforce, [ (cpo, "cpo"), (installer, "installer"), (admin, "systemadmin") ]);
+
+            Assert.Multiple(() => {
+
+                Assert.That(Accepts(station, AClearing(ChargingProfilePurpose.TxDefaultProfile,                   cpo),       out var ofASession),  Is.True,  ofASession);
+                Assert.That(Accepts(station, AClearing(ChargingProfilePurpose.ChargingStationMaxProfile,          cpo),       out var stationMax),  Is.False, "The operator cleared what the station may draw!");
+                Assert.That(stationMax, Does.Contain("power:edit"));
+                Assert.That(Accepts(station, AClearing(ChargingProfilePurpose.ChargingStationMaxProfile,          installer), out var byInstaller), Is.True,  byInstaller);
+
+                Assert.That(Accepts(station, AClearing(ChargingProfilePurpose.ChargingStationExternalConstraints, admin),     out var external),    Is.False, "A CSMS cleared external constraints!");
+                Assert.That(external, Does.Contain("External constraints"));
+                Assert.That(Accepts(station, AClearing(ChargingProfilePurpose.LocalGeneration,                    admin),     out var local),       Is.False, "A CSMS cleared local generation by its purpose!");
+                Assert.That(local,    Does.Contain("Local generation"));
+
+                // Setting it stays the installer's, and so does clearing it by its identification.
+                Assert.That(Accepts(station, AChargingProfile(ChargingProfilePurpose.LocalGeneration,             installer), out var set),         Is.True,  set);
+                Assert.That(Accepts(station, AClearing(null,                                                      installer), out var byId),        Is.True,  byId);
+                Assert.That(Accepts(station, AClearing(null,                                                      cpo),       out var byIdOfCPO),   Is.False, "The operator cleared a profile whose purpose nobody knows!");
 
             });
 

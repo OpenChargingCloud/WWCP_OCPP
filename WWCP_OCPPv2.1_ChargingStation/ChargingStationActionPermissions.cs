@@ -53,6 +53,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         private const String ExternalConstraints       = "External constraints come from an energy management system or the grid operator, not from a CSMS";
 
+        private const String NotClearedByCriteria      = "Local generation is not cleared by its purpose: a CSMS clears a profile it has set by its identification";
+
         /// <summary>
         /// The table.
         /// </summary>
@@ -95,10 +97,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    new ActionPermission    ("SetChargingProfile",      [ "session:run", "power:edit" ]),
 
                    // Clearing needs what the profiles it would clear need: without a purpose
-                   // among its criteria that is all of them.
+                   // among its criteria that is all of them. A CSMS names neither external
+                   // constraints nor local generation among them (OCPP 2.1, K10.FR.06).
                    ActionPermission.Needs  ("ClearChargingProfile",    "session:run",          FieldCondition.In   (CriteriaPurpose, ofASession)),
-                   ActionPermission.Needs  ("ClearChargingProfile",    "power:edit",           FieldCondition.In   (CriteriaPurpose, ofTheStation)),
+                   ActionPermission.Needs  ("ClearChargingProfile",    "power:edit",           FieldCondition.Equal(CriteriaPurpose, "ChargingStationMaxProfile")),
                    ActionPermission.Refuses("ClearChargingProfile",    ExternalConstraints,    FieldCondition.Equal(CriteriaPurpose, "ChargingStationExternalConstraints")),
+                   ActionPermission.Refuses("ClearChargingProfile",    NotClearedByCriteria,   FieldCondition.Equal(CriteriaPurpose, "LocalGeneration")),
                    new ActionPermission    ("ClearChargingProfile",    [ "session:run", "power:edit" ]),
 
                    new ActionPermission    ("UpdateFirmware",
