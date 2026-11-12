@@ -276,6 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                        X509RevocationMode?                                             CertificateRevocationCheckMode   = null,
                                        Boolean?                                                        EnforceTLS                       = null,
                                        IEnumerable<SslApplicationProtocol>?                            ApplicationProtocols             = null,
+                                       WebSocketHTTPVersion?                                           WebSocketOver                    = null,
                                        Boolean?                                                        AllowRenegotiation               = null,
                                        Boolean?                                                        AllowTLSResume                   = null,
                                        TOTPConfig?                                                     TOTPConfig                       = null,
@@ -367,6 +368,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                           LoggerFactory
 
                                       );
+
+            // Over HTTP/1.1 and its Upgrade unless said otherwise: over HTTP/2 and its
+            // extended CONNECT (RFC 8441), or over whichever of the two the server chooses.
+            if (WebSocketOver.HasValue)
+                ocppWebSocketClient.WebSocketOver = WebSocketOver.Value;
 
             #endregion
 
