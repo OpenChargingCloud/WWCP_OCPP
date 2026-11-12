@@ -228,6 +228,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             ForwardingSignaturePolicy
                         );
 
+            // Who a key belongs to: the roles of this node. The policy table asks for them
+            // (white paper "Signed OCPP Messages and Signer Roles", section 5.1).
+            this.OCPP.SignaturePolicy.SignerRolesOf ??= signature => [.. UserRoles.
+                                                                             Where (userRole => userRole.KeyPairs.Any(keyPair => signature.KeyId.SequenceEqual(keyPair.PublicKeyBytes))).
+                                                                             Select(userRole => userRole.Id.ToString())];
+
         }
 
         #endregion

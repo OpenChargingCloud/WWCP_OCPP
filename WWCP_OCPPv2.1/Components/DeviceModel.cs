@@ -19,6 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
@@ -68,6 +69,124 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                     ComponentConfigLookupDelegate  ComponentConfigs)
 
             => [.. VariableData.Select(getVariableData => GetVariable(getVariableData, ComponentConfigs))];
+
+        #endregion
+
+        #region GetVariables        (Request, ComponentConfigs, SignaturePolicy)
+
+        /// <summary>
+        /// Read the variables of the given GetVariables request, each entry
+        /// decided by itself: one the signers of the request may not read is
+        /// "Rejected" with the reason code "NotAuthorized" (white paper "Signed
+        /// OCPP Messages and Signer Roles", section 5.2).
+        /// </summary>
+        /// <param name="Request">A GetVariables request whose signatures are verified.</param>
+        /// <param name="ComponentConfigs">The lookup of the node's component configurations.</param>
+        /// <param name="SignaturePolicy">The node's signature policy.</param>
+        public static IReadOnlyList<GetVariableResult> GetVariables(GetVariablesRequest            Request,
+                                                                    ComponentConfigLookupDelegate  ComponentConfigs,
+                                                                    SignaturePolicy                SignaturePolicy)
+
+            => [.. Request.VariableData.Select(getVariableData =>
+                       SignaturePolicy.DecideVariable(
+                           Request,
+                           getVariableData.Component.Name,
+                           getVariableData.Variable. Name,
+                           getVariableData.Component.Instance,
+                           (Int32?) getVariableData.Component.EVSE?.Id.Value,
+                           "read",
+                           out var reason
+                       )
+                           ? GetVariable(getVariableData, ComponentConfigs)
+                           : new GetVariableResult(
+                                 AttributeStatus:       GetVariableStatus.Rejected,
+                                 Component:             getVariableData.Component,
+                                 Variable:              getVariableData.Variable,
+                                 AttributeType:         getVariableData.AttributeType,
+                                 AttributeStatusInfo:   new StatusInfo("NotAuthorized", reason)
+                             ))];
+
+        #endregion
+
+        #region SetVariablesAsync   (Request, ComponentConfigs, SignaturePolicy, CancellationToken = default, NewInstances = null)
+
+        /// <summary>
+        /// Set the variables of the given SetVariables request, each entry
+        /// decided by itself: one the signers of the request may not edit is
+        /// "Rejected" with the reason code "NotAuthorized", and the rest is
+        /// applied as the data consistency model of the request says - with
+        /// ACID and BASE the request is one change, and none of it is applied
+        /// (white paper "Signed OCPP Messages and Signer Roles", section 5.2).
+        /// </summary>
+        /// <param name="Request">A SetVariables request whose signatures are verified.</param>
+        /// <param name="ComponentConfigs">The lookup of the node's component configurations.</param>
+        /// <param name="SignaturePolicy">The node's signature policy.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
+        /// <param name="NewInstances">Where an instance the node does not have is asked for.</param>
+        public static async Task<IReadOnlyList<SetVariableResult>> SetVariablesAsync(SetVariablesRequest            Request,
+                                                                                    ComponentConfigLookupDelegate  ComponentConfigs,
+                                                                                    SignaturePolicy                SignaturePolicy,
+                                                                                    CancellationToken              CancellationToken   = default,
+                                                                                    NewInstanceLookupDelegate?     NewInstances        = null)
+        {
+
+            var entries  = Request.VariableData.ToArray();
+            var refused  = new String?[entries.Length];
+
+            for (var i = 0; i < entries.Length; i++)
+                if (!SignaturePolicy.DecideVariable(
+                         Request,
+                         entries[i].Component.Name,
+                         entries[i].Variable. Name,
+                         entries[i].Component.Instance,
+                         (Int32?) entries[i].Component.EVSE?.Id.Value,
+                         "edit",
+                         out var reason
+                     ))
+                    refused[i] = reason;
+
+            if (refused.All(reason => reason is null))
+                return await SetVariablesAsync(Request, ComponentConfigs, CancellationToken, NewInstances).ConfigureAwait(false);
+
+            var model = Request.DataConsistencyModel ?? DataConsistencyModel.IndependentRequests;
+
+            if (model == DataConsistencyModel.ACID || model == DataConsistencyModel.BASE)
+                return [.. entries.Select((setVariableData, i) => Refused(setVariableData,
+                                                                          "NotAuthorized",
+                                                                          refused[i] ?? $"Another entry of this request is not authorized, and with '{model}' the request is one change!"))];
+
+            // A request has at least one entry: when none is left, nothing is set.
+            var applied  = refused.All(reason => reason is not null)
+                               ? []
+                               : await SetVariablesAsync(
+                                           new SetVariablesRequest(
+                                               Request.Destination,
+                                               entries.Where((setVariableData, i) => refused[i] is null),
+                                               Request.DataConsistencyModel,
+                                               Signatures:        Request.Signatures,
+                                               CustomData:        Request.CustomData,
+                                               RequestId:         Request.RequestId,
+                                               RequestTimestamp:  Request.RequestTimestamp,
+                                               RequestTimeout:    Request.RequestTimeout,
+                                               EventTrackingId:   Request.EventTrackingId,
+                                               NetworkPath:       Request.NetworkPath
+                                           ),
+                                           ComponentConfigs,
+                                           CancellationToken,
+                                           NewInstances
+                                       ).ConfigureAwait(false);
+
+            var results  = new List<SetVariableResult>();
+            var next     = 0;
+
+            for (var i = 0; i < entries.Length; i++)
+                results.Add(refused[i] is String reason
+                                ? Refused(entries[i], "NotAuthorized", reason)
+                                : applied[next++]);
+
+            return results;
+
+        }
 
         #endregion
 

@@ -218,6 +218,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
         {
 
+            #region The policy table (white paper "Signed OCPP Messages and Signer Roles", chapter 5)
+
+            // What this node's signature policy needs to hold a signer against the policy
+            // table. Nothing of it is looked at while the mode of the policy is "Off".
+            OCPP.SignaturePolicy.IncomingDirection  ??= "CSMS->CS";
+
+            // The roles of a test node are its user roles, and only the admin may do anything:
+            // a real station asks its node's role model instead.
+            OCPP.SignaturePolicy.PermissionsOfRole  ??= role => role == BatterySwapStationSettings.UserRoles.Admin.ToString()
+                                                                    ? [ "*:read", "*:edit", "*:run" ]
+                                                                    : [];
+
+            OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("SetVariables");
+            OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("GetVariables");
+
+            #endregion
+
+
             this.OnQRCodeChanged += (timestamp, chargingStation, evseId, qrCodeURL, remainingTime, endTime, ct) => {
                 DebugX.Log($"New QR-Code URL for EVSE '{chargingStation.Id}/{evseId}': {qrCodeURL} ({(UInt32) remainingTime.TotalSeconds} sec.)");
                 return Task.CompletedTask;
@@ -2328,42 +2346,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                 DebugX.Log($"Charging station '{Id}': {request.VariableData.Count()} SetVariables request(s)");
 
-                #region Require 'admin' user role / digital signature
-
-                // User roles are our own extension to OCPP, not part of the standard. A node
-                // that has none configured must not turn that into a lock: every request would
-                // be signed by nobody, carry no role, and be refused - which is what a standard
-                // conforming client sends, and SetVariables would be unusable for all of them.
-                // Only enforce the role once somebody has actually configured roles to enforce.
-
-                var userRoles = GetValidUserRolesFor(request);
-
-                if (UserRoles.Count != 0 &&
-                    userRoles.IsMissing(BatterySwapStationSettings.UserRoles.Admin))
-                    return new SetVariablesResponse(
-                               Request:             request,
-                               SetVariableResults:  request.VariableData.Select(
-                                                        setVariableData => new SetVariableResult(
-                                                                               AttributeStatus:       SetVariableStatus.Rejected,
-                                                                               Component:             setVariableData.Component,
-                                                                               Variable:              setVariableData.Variable,
-                                                                               AttributeType:         setVariableData.AttributeType,
-                                                                               AttributeStatusInfo:   new StatusInfo(
-                                                                                                          "error",
-                                                                                                          $"Access denied!"
-                                                                                                      )
-                                                                           )
-                                                    ),
-                               CustomData:          null
-                           );
-
-                #endregion
+                // Who may set what is for the policy table, entry by entry: the signature
+                // policy of this node decides each of them (DeviceModel.SetVariablesAsync).
+                // In its mode "Off", the default, every entry is applied as before.
 
                 return new SetVariablesResponse(
                            Request:             request,
                            SetVariableResults:  await DeviceModel.SetVariablesAsync(
                                                           request,
                                                           (name, evse) => GetComponentConfigs(name, evse),
+                                                          OCPP.SignaturePolicy,
                                                           ct
                                                       ),
                            CustomData:          null
@@ -2387,8 +2379,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                            new GetVariablesResponse(
                                Request:     request,
                                Results:     DeviceModel.GetVariables(
-                                                request.VariableData,
-                                                (name, evse) => GetComponentConfigs(name, evse)
+                                                request,
+                                                (name, evse) => GetComponentConfigs(name, evse),
+                                                OCPP.SignaturePolicy
                                             ),
                                CustomData:  null
                            )

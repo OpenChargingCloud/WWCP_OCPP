@@ -46,9 +46,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     /// the check asked for the admin role unconditionally. Nothing in the repository ever
     /// created a UserRole, so SetVariables was unusable for every caller there is.
     ///
-    /// These two tests pin down both halves of the rule, and they live in their own fixture:
+    /// These tests pin down both halves of the rule, and they live in their own fixture:
     /// registering a role mutates the charging station, and CSMS_Messages_Tests shares one
     /// across some fifty tests that expect it ungated.
+    ///
+    /// Since phase 3 of the white paper "Signed OCPP Messages and Signer Roles" the gate is
+    /// the policy table of the station's signature policy, and no longer a check written into
+    /// the handler: it is looked at once the mode of the policy is "Enforce", and it decides
+    /// each entry of a request by itself.
     /// </remarks>
     [TestFixture]
     public class SetVariablesUserRoleTests : AChargingStationTests
@@ -131,6 +136,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 )
             );
 
+            chargingStation1.OCPP.SignaturePolicy.Mode = MessagePolicyModes.Enforce;
+
             try
             {
 
@@ -169,6 +176,97 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             {
                 // The charging station outlives this test method.
                 chargingStation1.UserRoles.Clear();
+                chargingStation1.OCPP.SignaturePolicy.Mode = MessagePolicyModes.Off;
+            }
+
+        }
+
+        #endregion
+
+        #region AnEntryTheSignerMayNotEditIsRefusedByItselfAndTheOtherIsApplied()
+
+        /// <summary>
+        /// A request with entries of different sensitivity is one request, and each entry
+        /// is decided by itself: the one outside the signer's rights is "Rejected" with the
+        /// reason code "NotAuthorized", the other one is applied. With ACID the request is
+        /// one change, and none of it is applied.
+        /// </summary>
+        [Test]
+        public async Task AnEntryTheSignerMayNotEditIsRefusedByItselfAndTheOtherIsApplied()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCSMS1,        Is.Not.Null);
+                Assert.That(chargingStation1, Is.Not.Null);
+            });
+
+            var keyPair            = ECCKeyPair.GenerateKeys()!;
+            var role               = UserRole_Id.Parse("configurator");
+            var policy             = chargingStation1!.OCPP.SignaturePolicy;
+            var permissionsBefore  = policy.PermissionsOfRole;
+
+            chargingStation1.UserRoles.Add(new UserRole(Id: role, KeyPairs: [ keyPair ]));
+
+            // May edit what the station is made of, but not how it resolves names.
+            policy.PermissionsOfRole  = name => name == role.ToString()
+                                                    ? [ "configuration:edit" ]
+                                                    : [];
+            policy.Mode               = MessagePolicyModes.Enforce;
+
+            async Task<SetVariablesResponse> SetBoth(DataConsistencyModel? Model)
+
+                => await testCSMS1!.SetVariables(
+                             Destination:            SourceRouting.To(chargingStation1.Id),
+                             VariableData:           [
+                                                         new SetVariableData(
+                                                             Component:        new Component(Name: "DNSClientController"),
+                                                             Variable:         new Variable (Name: "Servers"),
+                                                             AttributeValue:   "192.0.2.53"
+                                                         ),
+                                                         new SetVariableData(
+                                                             Component:        new Component(Name: "SecurityCtrlr"),
+                                                             Variable:         new Variable (Name: "OrganizationName"),
+                                                             AttributeValue:   "Open Charging Cloud by GraphDefined GmbH"
+                                                         )
+                                                     ],
+                             DataConsistencyModel:   Model,
+                             SignInfos:              [ keyPair.ToSignInfo1("configurator") ]
+                         );
+
+            try
+            {
+
+                var independent = await SetBoth(null);
+
+                Assert.Multiple(() => {
+                    Assert.That(independent.Result.ResultCode,                                                Is.EqualTo(ResultCode.OK));
+                    Assert.That(independent.SetVariableResults.Count(),                                       Is.EqualTo(2));
+                    Assert.That(independent.SetVariableResults.First().Component.Name,                        Is.EqualTo("DNSClientController"));
+                    Assert.That(independent.SetVariableResults.First().AttributeStatus,                       Is.EqualTo(SetVariableStatus.Rejected),
+                                "An entry outside the signer's rights was applied!");
+                    Assert.That(independent.SetVariableResults.First().AttributeStatusInfo?.ReasonCode,       Is.EqualTo("NotAuthorized"));
+                    Assert.That(independent.SetVariableResults.First().AttributeStatusInfo?.AdditionalInfo,   Does.Contain("dns:edit"));
+                    Assert.That(independent.SetVariableResults.Last(). Component.Name,                        Is.EqualTo("SecurityCtrlr"));
+                    Assert.That(independent.SetVariableResults.Last(). AttributeStatus,                       Is.EqualTo(SetVariableStatus.Accepted),
+                                "The entry within the signer's rights was refused with the other one!");
+                });
+
+                var asOneChange = await SetBoth(DataConsistencyModel.ACID);
+
+                Assert.Multiple(() => {
+                    Assert.That(asOneChange.SetVariableResults.Select(result => result.AttributeStatus),
+                                Is.All.EqualTo(SetVariableStatus.Rejected),
+                                "With ACID a part of the request was applied!");
+                    Assert.That(asOneChange.SetVariableResults.Select(result => result.AttributeStatusInfo?.ReasonCode),
+                                Is.All.EqualTo("NotAuthorized"));
+                });
+
+            }
+            finally
+            {
+                chargingStation1.UserRoles.Clear();
+                policy.Mode               = MessagePolicyModes.Off;
+                policy.PermissionsOfRole  = permissionsBefore;
             }
 
         }
