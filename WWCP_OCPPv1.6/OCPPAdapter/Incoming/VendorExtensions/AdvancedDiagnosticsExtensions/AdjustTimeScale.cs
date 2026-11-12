@@ -191,7 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
                         out errorResponse,
-                        ReceivedJSON: JSONRequest))
+                        ReceivedJSON: JSONRequest,
+                        Connection: ConnectionRightsOf(WebSocketConnection)))
                     {
 
                         response = AdjustTimeScaleResponse.SignatureError(

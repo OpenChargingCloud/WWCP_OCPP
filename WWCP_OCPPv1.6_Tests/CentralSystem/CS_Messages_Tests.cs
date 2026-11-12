@@ -221,6 +221,69 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
         #endregion
 
+        #region CentralSystem_Reset_OverAConnectionThatDoesNotAcceptIt_Test()
+
+        /// <summary>
+        /// The first step of the decision chain: a charge point whose signature
+        /// policy is enforced refuses a reset that came over a connection whose
+        /// peer is only asked for its configuration, before anybody asks who
+        /// signed it (white paper "Signed OCPP Messages and Signer Roles",
+        /// section 5.1).
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_Reset_OverAConnectionThatDoesNotAcceptIt_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null)
+            {
+
+                var policy = chargePoint1.OCPP.SignaturePolicy;
+
+                chargePoint1.OCPP.IN.RightsOfConnection = connection => new cloud.charging.open.protocols.WWCP.ConnectionRights("secondary", Actions: [ "GetConfiguration" ]);
+                policy.Mode = cloud.charging.open.protocols.WWCP.MessagePolicyModes.Enforce;
+
+                try
+                {
+
+                    var refused = await testCentralSystem01.Reset(
+                                            Destination:  SourceRouting.To(chargePoint1.Id),
+                                            ResetType:    ResetType.Hard
+                                        );
+
+                    Assert.Multiple(() => {
+                        Assert.That(refused.Result.ResultCode,    Is.EqualTo(ResultCode.SecurityError));
+                        Assert.That(refused.Result.Description,   Does.Contain("the rights of the connection 'secondary' do not accept it"));
+                        Assert.That(refused.Status,               Is.EqualTo(ResetStatus.Rejected));
+                    });
+
+                }
+                finally
+                {
+                    policy.Mode = cloud.charging.open.protocols.WWCP.MessagePolicyModes.Off;
+                    chargePoint1.OCPP.IN.RightsOfConnection = null;
+                }
+
+                var afterwards = await testCentralSystem01.Reset(
+                                           Destination:  SourceRouting.To(chargePoint1.Id),
+                                           ResetType:    ResetType.Hard
+                                       );
+
+                Assert.That(afterwards.Status, Is.EqualTo(ResetStatus.Accepted));
+
+            }
+
+        }
+
+        #endregion
+
         #region CentralSystem_Reset_UnknownChargeBox_Test()
 
         /// <summary>
