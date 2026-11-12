@@ -19,6 +19,7 @@
 
 using System.Globalization;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
@@ -151,6 +152,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region Set(Request, ComponentConfigs, SignaturePolicy)
+
+        /// <summary>
+        /// Set the monitors of the given SetVariableMonitoring request, each
+        /// decided by itself: a monitor tells of the value of its variable, so
+        /// one on a variable the signers of the request may not read is
+        /// "Rejected" with the reason code "NotAuthorized" (white paper "Signed
+        /// OCPP Messages and Signer Roles", section 5.2).
+        /// </summary>
+        /// <param name="Request">A SetVariableMonitoring request whose signatures are verified.</param>
+        /// <param name="ComponentConfigs">The components of the station.</param>
+        /// <param name="SignaturePolicy">The node's signature policy.</param>
+        public IReadOnlyList<SetMonitoringResult> Set(SetVariableMonitoringRequest   Request,
+                                                      ComponentConfigLookupDelegate  ComponentConfigs,
+                                                      SignaturePolicy                SignaturePolicy)
+
+            => [.. Request.MonitoringData.SelectMany(data =>
+                       SignaturePolicy.DecideVariable(
+                           Request,
+                           data.Component.Name,
+                           data.Variable. Name,
+                           data.Component.Instance,
+                           (Int32?) data.Component.EVSE?.Id.Value,
+                           "read",
+                           out var reason
+                       )
+                           ? Set([ data ], ComponentConfigs)
+                           : [
+                                 new SetMonitoringResult(
+                                     SetMonitoringStatus.Rejected,
+                                     data.MonitorType,
+                                     data.Severity,
+                                     data.Component,
+                                     data.Variable,
+                                     data.VariableMonitoringId,
+                                     new StatusInfo("NotAuthorized", reason)
+                                 )
+                             ])];
+
+        #endregion
 
         #region Set(MonitoringData, ComponentConfigs)
 

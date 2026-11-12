@@ -455,6 +455,86 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region BaseReport          (Request, ComponentConfigs, SignaturePolicy)
+
+        /// <summary>
+        /// The report data of the predefined report the given GetBaseReport
+        /// request asks for, each variable decided by itself: one the signers
+        /// of the request may not read is left out (white paper "Signed OCPP
+        /// Messages and Signer Roles", sections 5.2 and 5.3).
+        /// </summary>
+        /// <param name="Request">A GetBaseReport request whose signatures are verified.</param>
+        /// <param name="ComponentConfigs">All component configurations of the node.</param>
+        /// <param name="SignaturePolicy">The node's signature policy.</param>
+        public static (GenericDeviceModelStatus Status, IReadOnlyList<ReportData> ReportData)
+
+            BaseReport(GetBaseReportRequest          Request,
+                       IEnumerable<ComponentConfig>  ComponentConfigs,
+                       SignaturePolicy               SignaturePolicy)
+
+            => ReadableBy(Request, BaseReport(ComponentConfigs, Request.ReportBase), SignaturePolicy);
+
+        #endregion
+
+        #region Report              (Request, ComponentConfigs, SignaturePolicy)
+
+        /// <summary>
+        /// The report data the given GetReport request asks for, each variable
+        /// decided by itself: one the signers of the request may not read is
+        /// left out (white paper "Signed OCPP Messages and Signer Roles",
+        /// sections 5.2 and 5.3).
+        /// </summary>
+        /// <param name="Request">A GetReport request whose signatures are verified.</param>
+        /// <param name="ComponentConfigs">All component configurations of the node.</param>
+        /// <param name="SignaturePolicy">The node's signature policy.</param>
+        public static (GenericDeviceModelStatus Status, IReadOnlyList<ReportData> ReportData)
+
+            Report(GetReportRequest              Request,
+                   IEnumerable<ComponentConfig>  ComponentConfigs,
+                   SignaturePolicy               SignaturePolicy)
+
+            => ReadableBy(Request, Report(ComponentConfigs, Request.ComponentCriteria, Request.ComponentVariables), SignaturePolicy);
+
+        #endregion
+
+        #region (private) ReadableBy(Request, Report, SignaturePolicy)
+
+        /// <summary>
+        /// What of a report the signers of its request may read. A report of
+        /// which nothing is left is an empty result set: whoever may read
+        /// nothing learns no more than that.
+        /// </summary>
+        private static (GenericDeviceModelStatus Status, IReadOnlyList<ReportData> ReportData)
+
+            ReadableBy(IRequest                                                                Request,
+                       (GenericDeviceModelStatus Status, IReadOnlyList<ReportData> ReportData)  Report,
+                       SignaturePolicy                                                         SignaturePolicy)
+
+        {
+
+            if (Report.Status != GenericDeviceModelStatus.Accepted)
+                return Report;
+
+            IReadOnlyList<ReportData> readable = [.. Report.ReportData.Where(reportData =>
+                                                         SignaturePolicy.DecideVariable(
+                                                             Request,
+                                                             reportData.Component.Name,
+                                                             reportData.Variable. Name,
+                                                             reportData.Component.Instance,
+                                                             (Int32?) reportData.Component.EVSE?.Id.Value,
+                                                             "read",
+                                                             out _
+                                                         ))];
+
+            return (readable.Count > 0
+                        ? GenericDeviceModelStatus.Accepted
+                        : GenericDeviceModelStatus.EmptyResultSet,
+                    readable);
+
+        }
+
+        #endregion
+
         #region SendReportAsync     (ReportData, PartSize, SendPart)
 
         /// <summary>

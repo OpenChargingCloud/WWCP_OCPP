@@ -346,8 +346,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             if (!OCPP.SignaturePolicy.ActionPermissions.Any())
                 OCPP.SignaturePolicy.AddActionPermissions(ChargingStationActionPermissions.Default());
 
-            OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("SetVariables");
-            OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("GetVariables");
+            foreach (var action in ChargingStationActionPermissions.ActionsDecidedPerEntry)
+                OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add(action);
 
             #endregion
 
@@ -2312,7 +2312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 return Task.FromResult(
                            new SetVariableMonitoringResponse(
                                Request:                request,
-                               SetMonitoringResults:   VariableMonitors.Set(request.MonitoringData, (name, evse) => GetComponentConfigs(name, evse)),
+                               SetMonitoringResults:   VariableMonitors.Set(request, (name, evse) => GetComponentConfigs(name, evse), OCPP.SignaturePolicy),
                                CustomData:             null
                            )
                        );
@@ -2358,8 +2358,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 DebugX.Log($"Charging station '{Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}, {request.ReportBase}).");
 
                 var (status, reportData) = DeviceModel.BaseReport(
+                                               request,
                                                AllComponentConfigs,
-                                               request.ReportBase
+                                               OCPP.SignaturePolicy
                                            );
 
                 // The report follows the response, see OnGetBaseReportResponseSent.
@@ -2410,9 +2411,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 DebugX.Log($"Charging station '{Id}': Incoming GetReport request ({request.GetReportRequestId}).");
 
                 var (status, reportData) = DeviceModel.Report(
+                                               request,
                                                AllComponentConfigs,
-                                               request.ComponentCriteria,
-                                               request.ComponentVariables
+                                               OCPP.SignaturePolicy
                                            );
 
                 // The report follows the response, see OnGetReportResponseSent.

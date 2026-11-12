@@ -42,6 +42,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         private const String RequestedMessage  = "requestedMessage";
 
         /// <summary>
+        /// The actions a charging station decides entry by entry, and not as a
+        /// whole: what is written, read, reported and monitored is a variable
+        /// of a component, and the component says which resource it belongs to.
+        /// </summary>
+        public static readonly IReadOnlyList<String> ActionsDecidedPerEntry = [
+                                                                                 "SetVariables",
+                                                                                 "GetVariables",
+                                                                                 "GetBaseReport",
+                                                                                 "GetReport",
+                                                                                 "SetVariableMonitoring"
+                                                                             ];
+
+        /// <summary>
         /// Charging profiles that are the operator's everyday load management.
         /// </summary>
         private static readonly String[] ofASession    = [ "TxProfile", "TxDefaultProfile", "PriorityCharging" ];

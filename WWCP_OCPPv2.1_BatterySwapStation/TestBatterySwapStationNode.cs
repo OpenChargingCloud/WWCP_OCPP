@@ -232,6 +232,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
             OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("SetVariables");
             OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("GetVariables");
+            OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("GetBaseReport");
+            OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add("GetReport");
 
             #endregion
 
@@ -2256,8 +2258,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 DebugX.Log($"Charging station '{Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}, {request.ReportBase}).");
 
                 var (status, reportData) = DeviceModel.BaseReport(
+                                               request,
                                                AllComponentConfigs,
-                                               request.ReportBase
+                                               OCPP.SignaturePolicy
                                            );
 
                 // The report follows the response, see OnGetBaseReportResponseSent.
@@ -2308,9 +2311,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
                 DebugX.Log($"Charging station '{Id}': Incoming GetReport request ({request.GetReportRequestId}).");
 
                 var (status, reportData) = DeviceModel.Report(
+                                               request,
                                                AllComponentConfigs,
-                                               request.ComponentCriteria,
-                                               request.ComponentVariables
+                                               OCPP.SignaturePolicy
                                            );
 
                 // The report follows the response, see OnGetReportResponseSent.
