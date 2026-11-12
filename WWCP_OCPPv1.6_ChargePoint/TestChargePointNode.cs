@@ -734,6 +734,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
+            #region The policy table (white paper "Signed OCPP Messages and Signer Roles", chapter 5)
+
+            // What this node's signature policy needs to hold a signer against the policy
+            // table. Nothing of it is looked at while the mode of the policy is "Off".
+            OCPP.SignaturePolicy.IncomingDirection  ??= "CSMS->CS";
+
+            // The roles of a test node are its user roles, and only the admin may do anything:
+            // a real charge point asks its node's role model instead.
+            OCPP.SignaturePolicy.PermissionsOfRole  ??= role => role == "admin"
+                                                                    ? [ "*:read", "*:edit", "*:run" ]
+                                                                    : [];
+
+            if (!OCPP.SignaturePolicy.ActionPermissions.Any())
+                OCPP.SignaturePolicy.AddActionPermissions(ChargePointActionPermissions.Default());
+
+            foreach (var action in ChargePointActionPermissions.ActionsDecidedPerKey)
+                OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add(action);
+
+            #endregion
+
             // No keys of its own: a key every charge point brought along, a password among them, would be known to all.
             foreach (var configurationKey in ConfigurationKeys ?? [])
                 this.Configuration.TryAdd(configurationKey.Key, configurationKey.Value);
@@ -1310,6 +1330,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 var configurationKeys  = new List<ConfigurationKey>();
                 var unknownKeys        = new List<String>();
 
+                // A key the signers of the request may not read is not shown to them: asked
+                // for by name it is unknown, and among all keys it is left out.
+                Boolean mayBeRead(String key)
+                    => OCPP.SignaturePolicy.DecideVariable(request, ChargePointActionPermissions.ComponentOfKey(key), key, null, null, "read", out _);
+
                 // No keys asked for means all of them: those of the sources,
                 // computed now, and the charge point's own.
                 if (request.Keys.Any())
@@ -1317,7 +1342,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     foreach (var key in request.Keys)
                     {
 
-                        if (ConfigurationKeySources.Select(source => source.Get(key)).FirstOrDefault(found => found is not null) is ConfigurationKey fromSource)
+                        if (!mayBeRead(key))
+                            unknownKeys.Add(key);
+                        else if (ConfigurationKeySources.Select(source => source.Get(key)).FirstOrDefault(found => found is not null) is ConfigurationKey fromSource)
                             configurationKeys.Add(Shown(fromSource));
 
                         else if (Configuration.TryGetValue(key, out var configurationData))
@@ -1339,10 +1366,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     foreach (var source in ConfigurationKeySources)
                         foreach (var key in source.Keys)
-                            if (source.Get(key) is ConfigurationKey fromSource)
+                            if (mayBeRead(key) && source.Get(key) is ConfigurationKey fromSource)
                                 configurationKeys.Add(Shown(fromSource));
 
-                    foreach (var configuration in Configuration)
+                    foreach (var configuration in Configuration.Where(configuration => mayBeRead(configuration.Key)))
                         configurationKeys.Add(
                             ToConfigurationKey(
                                 configuration.Key,
@@ -1372,6 +1399,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     cancellationToken) => {
 
                 DebugX.Log($"ChargeBox[{Id}] Incoming change configuration for '{request.Key}' with value '{request.Value}'.");
+
+                // A key the signers of the request may not change stays as it is.
+                if (!OCPP.SignaturePolicy.DecideVariable(request, ChargePointActionPermissions.ComponentOfKey(request.Key), request.Key, null, null, "edit", out _))
+                    return new ChangeConfigurationResponse(
+                               request,
+                               ConfigurationStatus.Rejected
+                           );
 
                 // A source that knows the key answers for it.
                 foreach (var source in ConfigurationKeySources)

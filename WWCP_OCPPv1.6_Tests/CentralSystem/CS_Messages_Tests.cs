@@ -706,6 +706,95 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
         #endregion
 
+        #region CentralSystem_Configuration_WhileThePolicyIsEnforced_Test()
+
+        /// <summary>
+        /// A charge point whose signature policy is enforced neither changes nor
+        /// shows a key to a request nobody signed: the key stays as it is, and is
+        /// unknown when asked for (white paper "Signed OCPP Messages and Signer
+        /// Roles", section 5.3). With the policy off again, both work as before.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_Configuration_WhileThePolicyIsEnforced_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null)
+            {
+
+                var key    = "changeMe";
+                var policy = chargePoint1.OCPP.SignaturePolicy;
+
+                policy.Mode = cloud.charging.open.protocols.WWCP.MessagePolicyModes.Enforce;
+
+                try
+                {
+
+                    var changed  = await testCentralSystem01.ChangeConfiguration(
+                                             Destination:  SourceRouting.To(chargePoint1.Id),
+                                             Key:          key,
+                                             Value:        "by nobody"
+                                         );
+
+                    var named    = await testCentralSystem01.GetConfiguration(
+                                             Destination:  SourceRouting.To(chargePoint1.Id),
+                                             Keys:         [ key ]
+                                         );
+
+                    var all      = await testCentralSystem01.GetConfiguration(
+                                             Destination:  SourceRouting.To(chargePoint1.Id)
+                                         );
+
+                    Assert.Multiple(() => {
+
+                        Assert.That(changed.Result.ResultCode,          Is.EqualTo(ResultCode.OK));
+                        Assert.That(changed.Status,                     Is.EqualTo(ConfigurationStatus.Rejected), "A key was changed by a request nobody signed!");
+
+                        Assert.That(named.Result.ResultCode,            Is.EqualTo(ResultCode.OK));
+                        Assert.That(named.ConfigurationKeys,            Is.Empty,                                "A key was shown to a request nobody signed!");
+                        Assert.That(named.UnknownKeys,                  Is.EqualTo(new[] { key }));
+
+                        Assert.That(all.Result.ResultCode,              Is.EqualTo(ResultCode.OK));
+                        Assert.That(all.ConfigurationKeys,              Is.Empty,                                "The keys were shown to a request nobody signed!");
+
+                    });
+
+                }
+                finally
+                {
+                    policy.Mode = cloud.charging.open.protocols.WWCP.MessagePolicyModes.Off;
+                }
+
+                var afterwards  = await testCentralSystem01.GetConfiguration(
+                                            Destination:  SourceRouting.To(chargePoint1.Id),
+                                            Keys:         [ key ]
+                                        );
+
+                var changedNow  = await testCentralSystem01.ChangeConfiguration(
+                                            Destination:  SourceRouting.To(chargePoint1.Id),
+                                            Key:          key,
+                                            Value:        "now!!!"
+                                        );
+
+                Assert.Multiple(() => {
+                    Assert.That(afterwards.ConfigurationKeys.Count(),               Is.EqualTo(1));
+                    Assert.That(afterwards.ConfigurationKeys.First().Value,         Is.Not.EqualTo("by nobody"));
+                    Assert.That(changedNow.Status,                                  Is.EqualTo(ConfigurationStatus.Accepted));
+                });
+
+            }
+
+        }
+
+        #endregion
+
         #region CentralSystem_GetConfiguration_WriteOnlyKey_Test()
 
         /// <summary>
