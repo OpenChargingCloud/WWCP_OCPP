@@ -95,6 +95,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #endregion
 
+        #region ValidityTime_OverOneHour_Test()
+
+        /// <summary>
+        /// A validity time of one hour is the most: a longer one is refused, by the constructor and by SetVariables, at a
+        /// charging station and at a battery swap station, so that a TOTP read off a display is not good for days.
+        /// </summary>
+        [Test]
+        public void ValidityTime_OverOneHour_Test()
+        {
+
+            var oneHour             = new WebPaymentsCtrlr().VariableConfigs.First(variable => variable.Name == "ValidityTime").ValueSetter!("3600", "30");
+            var refusedByCSMS       = new WebPaymentsCtrlr().VariableConfigs.First(variable => variable.Name == "ValidityTime").ValueSetter!("3601", "30");
+            var refusedByCSMSAtBSS  = new BSS.WebPaymentsCtrlr().VariableConfigs.First(variable => variable.Name == "ValidityTime").ValueSetter!("86400", "30");
+
+            using (Assert.EnterMultipleScope())
+            {
+
+                Assert.That(WebPaymentsCtrlr.    MaximumValidityTime,  Is.EqualTo(TimeSpan.FromHours(1)));
+                Assert.That(BSS.WebPaymentsCtrlr.MaximumValidityTime,  Is.EqualTo(TimeSpan.FromHours(1)));
+
+                Assert.That(new WebPaymentsCtrlr(ValidityTime: TimeSpan.FromHours(1)).ValidityTime,  Is.EqualTo(TimeSpan.FromHours(1)));
+
+                Assert.That(() => new WebPaymentsCtrlr    (ValidityTime: TimeSpan.FromSeconds(3601)),
+                            Throws.ArgumentException.With.Message.StartsWith("The validity time of the TOTP must be at most 3600 seconds!"));
+
+                Assert.That(() => new BSS.WebPaymentsCtrlr(ValidityTime: TimeSpan.FromDays(1)),
+                            Throws.ArgumentException.With.Message.StartsWith("The validity time of the TOTP must be at most 3600 seconds!"));
+
+                Assert.That(oneHour.             Status,        Is.EqualTo(SetVariableStatus.Accepted));
+                Assert.That(refusedByCSMS.       Status,        Is.EqualTo(SetVariableStatus.Rejected));
+                Assert.That(refusedByCSMS.       ErrorMessage,  Is.EqualTo("The validity time of the time-based one-time passwords must be at most 3600 seconds!"));
+                Assert.That(refusedByCSMSAtBSS.  Status,        Is.EqualTo(SetVariableStatus.Rejected));
+
+            }
+
+        }
+
+        #endregion
+
 
         #region SharedSecret_TheLeastHermodTakes_Test()
 
