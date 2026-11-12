@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
@@ -95,6 +96,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                 Assert.That(fromCBOR.Test,                                   Is.EqualTo(request.Test));
 
             });
+
+        }
+
+        #endregion
+
+        #region ARoundSaysHowManyOfItsServersAgree()
+
+        /// <summary>
+        /// "agreeing" of NetworkTimeRoundType, section 3.2.7 of the white paper:
+        /// read and written where it is given, as JSON and through CBOR, and
+        /// left out where all the answers agree.
+        /// </summary>
+        [Test]
+        public void ARoundSaysHowManyOfItsServersAgree()
+        {
+
+            NetworkTimeRound Round(Int32? Agreeing)
+                => new (Group:              "legal",
+                        OK:                 true,
+                        Duration:           3.021m,
+                        Answered:           4,
+                        Required:           2,
+                        Clients:            [ new NetworkTimeClient("ptbtime1.ptb.de", true, "ptb1", -0.0021m, 0.0183m, NetworkTimeClient.ReusedKeyExchange) ],
+                        Offset:             0.012m,
+                        Spread:             89.99m,
+                        DeviationExceeded:  true,
+                        Agreeing:           Agreeing);
+
+            var outvoted  = Round(3);
+            var json      = outvoted.ToJSON();
+
+            Assert.That(NetworkTimeRound.TryParse    (json,                                                   out var fromJSON, out var jsonError), Is.True, jsonError);
+            Assert.That(NetworkTimeRound.TryParseCBOR(CBORValue.Parse(outvoted.ToCBOR().ToByteArray()),       out var fromCBOR, out var cborError), Is.True, cborError);
+
+            Assert.Multiple(() => {
+
+                Assert.That(json.Value<Int32?>("agreeing"),   Is.EqualTo(3));
+                Assert.That(json.Properties().Select(property => property.Name).Take(6),
+                                                              Is.EqualTo(new[] { "group", "ok", "duration", "answered", "required", "agreeing" }));
+
+                Assert.That(fromJSON!.Agreeing,               Is.EqualTo(3));
+                Assert.That(fromCBOR!.Agreeing,               Is.EqualTo(3));
+                Assert.That(fromJSON,                         Is.EqualTo(outvoted));
+                Assert.That(fromCBOR,                         Is.EqualTo(outvoted));
+
+                Assert.That(outvoted,                         Is.Not.EqualTo(Round(2)));
+                Assert.That(outvoted,                         Is.Not.EqualTo(Round(null)));
+
+                // All of them agree: nothing to say.
+                Assert.That(Round(null).ToJSON()["agreeing"], Is.Null);
+
+            });
+
+            Assert.That(NetworkTimeRound.TryParse(Round(null).ToJSON(), out var unanimous, out var error), Is.True, error);
+            Assert.That(unanimous!.Agreeing,                  Is.Null);
 
         }
 

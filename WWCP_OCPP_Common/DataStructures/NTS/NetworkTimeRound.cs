@@ -70,7 +70,19 @@ namespace cloud.charging.open.protocols.OCPP
         public Int32                             Required             { get; }
 
         /// <summary>
-        /// The offset of the clock against the time of the round, in seconds.
+        /// How many of the answers that count agree: the largest set of them
+        /// within MaxDeviation of one another. Absent when all of them do.
+        /// </summary>
+        /// <remarks>
+        /// Section 3.2.3 of the white paper, "Agreement": a round whose answers
+        /// lie further apart than MaxDeviation has a time only when a majority
+        /// of them, at least MinServers, agree - and this is how many did.
+        /// </remarks>
+        public Int32?                            Agreeing             { get; }
+
+        /// <summary>
+        /// The offset of the clock against the time of the round, in seconds:
+        /// the median of the answers that agree.
         /// </summary>
         public Decimal?                          Offset               { get; }
 
@@ -124,6 +136,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="LegalTime">Legal group only: NTPController.LegalTime after the round.</param>
         /// <param name="LegalTimeReason">Legal group only: NTPController.LegalTimeReason after the round.</param>
         /// <param name="Error">Why the round produced no time.</param>
+        /// <param name="Agreeing">How many of the answers that count agree, when not all of them do.</param>
         public NetworkTimeRound(String                           Group,
                                 Boolean                          OK,
                                 Decimal                          Duration,
@@ -135,7 +148,8 @@ namespace cloud.charging.open.protocols.OCPP
                                 Boolean?                         DeviationExceeded   = null,
                                 Boolean?                         LegalTime           = null,
                                 String?                          LegalTimeReason     = null,
-                                String?                          Error               = null)
+                                String?                          Error               = null,
+                                Int32?                           Agreeing            = null)
         {
 
             this.Group              = Group;
@@ -150,6 +164,7 @@ namespace cloud.charging.open.protocols.OCPP
             this.LegalTime          = LegalTime;
             this.LegalTimeReason    = LegalTimeReason;
             this.Error              = Error;
+            this.Agreeing           = Agreeing;
 
             unchecked
             {
@@ -165,6 +180,7 @@ namespace cloud.charging.open.protocols.OCPP
                           (this.DeviationExceeded?.GetHashCode() ?? 0) *  5 ^
                           (this.LegalTime?.        GetHashCode() ?? 0) *  3 ^
                           (this.LegalTimeReason?.  GetHashCode() ?? 0) *  2 ^
+                          (this.Agreeing?.         GetHashCode() ?? 0) * 37 ^
                           (this.Error?.            GetHashCode() ?? 0);
 
             }
@@ -205,6 +221,9 @@ namespace cloud.charging.open.protocols.OCPP
                     return false;
 
                 if (!JSON.ParseMandatory    ("required",  "quorum",                  out Int32   required,  out ErrorResponse))
+                    return false;
+
+                if (JSON.ParseOptional("agreeing",           "answers that agree",  out Int32?   agreeing,           out ErrorResponse) && ErrorResponse is not null)
                     return false;
 
                 if (JSON.ParseOptional("offset",             "offset",              out Decimal? offset,             out ErrorResponse) && ErrorResponse is not null)
@@ -248,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPP
                 }
 
                 Round = new NetworkTimeRound(group, ok, duration, answered, required, clients,
-                                             offset, spread, deviationExceeded, legalTime, legalTimeReason, error);
+                                             offset, spread, deviationExceeded, legalTime, legalTimeReason, error, agreeing);
 
                 ErrorResponse = null;
                 return true;
@@ -279,6 +298,7 @@ namespace cloud.charging.open.protocols.OCPP
                                                    new JProperty("duration",           Duration),
                                                    new JProperty("answered",           Answered),
                                                    new JProperty("required",           Required),
+                   Agreeing          is not null ? new JProperty("agreeing",           Agreeing.Value)          : null,
                    Offset            is not null ? new JProperty("offset",             Offset.Value)            : null,
                    Spread            is not null ? new JProperty("spread",             Spread.Value)            : null,
                    DeviationExceeded is not null ? new JProperty("deviationExceeded",  DeviationExceeded.Value) : null,
@@ -331,6 +351,9 @@ namespace cloud.charging.open.protocols.OCPP
                 if (!CBOR.ParseMandatoryInt64  ("required",  "quorum",                     out var required,  out ErrorResponse))
                     return false;
 
+                CBOR.ParseOptionalInt64  ("agreeing",           "answers that agree",  out var agreeing,           out ErrorResponse);
+                if (ErrorResponse is not null) return false;
+
                 CBOR.ParseOptionalDecimal("offset",             "offset",              out var offset,             out ErrorResponse);
                 if (ErrorResponse is not null) return false;
 
@@ -359,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPP
                 }
 
                 Round = new NetworkTimeRound(group, ok, duration, (Int32) answered, (Int32) required, clients,
-                                             offset, spread, deviationExceeded, legalTime, legalTimeReason, error);
+                                             offset, spread, deviationExceeded, legalTime, legalTimeReason, error, (Int32?) agreeing);
 
                 ErrorResponse = null;
                 return true;
@@ -390,6 +413,7 @@ namespace cloud.charging.open.protocols.OCPP
                    ("duration",           OCPPCBORExtensions.Number(Duration)),
                    ("answered",           OCPPCBORExtensions.Int   (Answered)),
                    ("required",           OCPPCBORExtensions.Int   (Required)),
+                   ("agreeing",           OCPPCBORExtensions.Int   (Agreeing)),
                    ("offset",             OCPPCBORExtensions.Number(Offset)),
                    ("spread",             OCPPCBORExtensions.Number(Spread)),
                    ("deviationExceeded",  OCPPCBORExtensions.Flag  (DeviationExceeded)),
@@ -427,6 +451,7 @@ namespace cloud.charging.open.protocols.OCPP
                Duration.Equals(Round.Duration) &&
                Answered.Equals(Round.Answered) &&
                Required.Equals(Round.Required) &&
+               Agreeing.Equals(Round.Agreeing) &&
 
                Offset.           Equals(Round.Offset)            &&
                Spread.           Equals(Round.Spread)            &&

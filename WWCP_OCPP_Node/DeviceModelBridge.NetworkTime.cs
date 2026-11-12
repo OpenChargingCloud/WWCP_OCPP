@@ -634,7 +634,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        DeviationExceeded:  groupJSON?.Value<Boolean?>("deviationExceeded"),
                        LegalTime:          legal,
                        LegalTimeReason:    legal == false && reason?.Length > 0 ? reason : null,
-                       Error:              Result.Value<Boolean>("ok") ? null : Result.Value<String>("error")
+                       Error:              Result.Value<Boolean>("ok") ? null : Result.Value<String>("error"),
+
+                       // Said only where it says something: "Absent when it equals answered".
+                       Agreeing:           groupJSON?.Value<Int32?>("agreeing") is Int32 agreeing &&
+                                           agreeing != (groupJSON?.Value<Int32?>("answered") ?? 0)
+                                               ? agreeing
+                                               : null
 
                    );
 
@@ -669,7 +675,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     Round.DeviationExceeded,
                     Round.LegalTime,
                     Round.LegalTimeReason,
-                    Round.Error);
+                    Round.Error,
+                    Round.Agreeing);
 
         #endregion
 
