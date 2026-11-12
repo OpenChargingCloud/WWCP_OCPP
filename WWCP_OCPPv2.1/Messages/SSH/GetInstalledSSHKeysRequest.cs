@@ -334,6 +334,170 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out GetInstalledSSHKeysRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a GetInstalledSSHKeys request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="GetInstalledSSHKeysRequest">The GetInstalledSSHKeys request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomGetInstalledSSHKeysRequestParser">A delegate to read custom GetInstalledSSHKeys requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                              CBOR,
+                                           Request_Id                                             RequestId,
+                                           SourceRouting                                          Destination,
+                                           NetworkPath                                            NetworkPath,
+                                           [NotNullWhen(true)]  out GetInstalledSSHKeysRequest?   GetInstalledSSHKeysRequest,
+                                           [NotNullWhen(false)] out String?                       ErrorResponse,
+                                           DateTimeOffset?                                        RequestTimestamp                         = null,
+                                           TimeSpan?                                              RequestTimeout                           = null,
+                                           EventTracking_Id?                                      EventTrackingId                          = null,
+                                           CustomCBORParserDelegate<GetInstalledSSHKeysRequest>?  CustomGetInstalledSSHKeysRequestParser   = null)
+        {
+
+            try
+            {
+
+                GetInstalledSSHKeysRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a GetInstalledSSHKeys request is not a map!";
+                    return false;
+                }
+
+                NetworkingNode_Id? NetworkingNodeId = null;
+
+                if (CBOR.ParseOptionalText("networkingNodeId",
+                                           "networking node identification",
+                                           out var NetworkingNodeIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
+                        return false;
+
+                    if (!NetworkingNode_Id.TryParse(NetworkingNodeIdText!, out var networkingNodeId))
+                    {
+                        ErrorResponse = $"Invalid networking node identification '{NetworkingNodeIdText}'!";
+                        return false;
+                    }
+
+                    NetworkingNodeId = networkingNodeId;
+
+                }
+
+                SSHKeyPurpose? Purpose = null;
+
+                if (CBOR.ParseOptionalText("purpose",
+                                           "SSH key purpose",
+                                           out var PurposeText,
+                                           out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
+                        return false;
+
+                    if (!SSHKeyPurposeExtensions.TryParse(PurposeText!, out var purpose))
+                    {
+                        ErrorResponse = $"Invalid SSH key purpose '{PurposeText}'!";
+                        return false;
+                    }
+
+                    Purpose = purpose;
+
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                GetInstalledSSHKeysRequest = new GetInstalledSSHKeysRequest(
+
+                                                 Destination,
+                                                 NetworkingNodeId,
+                                                 Purpose,
+
+                                                 null,
+                                                 null,
+                                                 Signatures,
+
+                                                 CustomData,
+
+                                                 RequestId,
+                                                 RequestTimestamp,
+                                                 RequestTimeout,
+                                                 EventTrackingId,
+                                                 NetworkPath
+
+                                             );
+
+                if (CustomGetInstalledSSHKeysRequestParser is not null)
+                    GetInstalledSSHKeysRequest = CustomGetInstalledSSHKeysRequestParser(CBOR,
+                                                                                        GetInstalledSSHKeysRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                GetInstalledSSHKeysRequest = null;
+                ErrorResponse = "The given CBOR representation of a GetInstalledSSHKeys request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomGetInstalledSSHKeysRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this GetInstalledSSHKeys request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomGetInstalledSSHKeysRequestSerializer">A delegate to serialize custom GetInstalledSSHKeys requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<GetInstalledSSHKeysRequest>? CustomGetInstalledSSHKeysRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("networkingNodeId",          OCPPCBORExtensions.Text(NetworkingNodeId?.ToString())),
+                           ("purpose",                   OCPPCBORExtensions.Text(Purpose?.AsText())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomGetInstalledSSHKeysRequestSerializer is not null
+                       ? CustomGetInstalledSSHKeysRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

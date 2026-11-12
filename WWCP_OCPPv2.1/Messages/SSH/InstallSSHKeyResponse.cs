@@ -374,6 +374,162 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region (static) TryParseCBOR(Request, CBOR, ..., out InstallSSHKeyResponse, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an InstallSSHKey response - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="Request">The request leading to this response.</param>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="InstallSSHKeyResponse">The InstallSSHKey response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="CustomInstallSSHKeyResponseParser">A delegate to read custom InstallSSHKey responses.</param>
+        public static Boolean TryParseCBOR(InstallSSHKeyRequest                              Request,
+                                           CBORValue                                         CBOR,
+                                           SourceRouting                                     Destination,
+                                           NetworkPath                                       NetworkPath,
+                                           [NotNullWhen(true)]  out InstallSSHKeyResponse?   InstallSSHKeyResponse,
+                                           [NotNullWhen(false)] out String?                  ErrorResponse,
+                                           DateTimeOffset?                                   ResponseTimestamp                   = null,
+                                           CustomCBORParserDelegate<InstallSSHKeyResponse>?  CustomInstallSSHKeyResponseParser   = null)
+        {
+
+            try
+            {
+
+                InstallSSHKeyResponse = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an InstallSSHKey response is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("status",
+                                             "status",
+                                             out var StatusText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!GenericStatusExtensions.TryParse(StatusText, out var Status))
+                {
+                    ErrorResponse = $"Invalid status '{StatusText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("statusInfo",
+                                   "detailed status info",
+                                   OCPPv2_1.StatusInfo.TryParseCBOR,
+                                   out StatusInfo? StatusInfo,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<String>("hostKeys",
+                                               "host keys",
+                                               (CBORValue item, out String? text, out String? errorResponse) => {
+                                                   text          = item.Kind == CBORValueKind.TextString ? item.AsText() : null;
+                                                   errorResponse = text is null ? "A host key is a text!" : null;
+                                                   return text is not null;
+                                               },
+                                               out var HostKeys,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                InstallSSHKeyResponse = new InstallSSHKeyResponse(
+
+                                            Request,
+                                            Status,
+                                            StatusInfo,
+                                            HostKeys,
+
+                                            null,
+                                            ResponseTimestamp,
+
+                                            Destination,
+                                            NetworkPath,
+
+                                            null,
+                                            null,
+                                            Signatures,
+
+                                            CustomData
+
+                                        );
+
+                if (CustomInstallSSHKeyResponseParser is not null)
+                    InstallSSHKeyResponse = CustomInstallSSHKeyResponseParser(CBOR,
+                                                                              InstallSSHKeyResponse);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                InstallSSHKeyResponse = null;
+                ErrorResponse = "The given CBOR representation of an InstallSSHKey response is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomInstallSSHKeyResponseSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this InstallSSHKey response: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomInstallSSHKeyResponseSerializer">A delegate to serialize custom InstallSSHKey responses.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<InstallSSHKeyResponse>? CustomInstallSSHKeyResponseSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("status",                    CBORValue.FromText(Status.AsText())),
+                           ("statusInfo",                StatusInfo?.ToCBOR()),
+                           ("hostKeys",                  OCPPCBORExtensions.Array(HostKeys, hostKey => CBORValue.FromText(hostKey))),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomInstallSSHKeyResponseSerializer is not null
+                       ? CustomInstallSSHKeyResponseSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Static methods
 

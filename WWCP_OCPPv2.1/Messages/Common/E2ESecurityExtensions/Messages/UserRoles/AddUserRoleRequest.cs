@@ -331,6 +331,136 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out AddUserRoleRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an AddUserRole request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="AddUserRoleRequest">The AddUserRole request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomAddUserRoleRequestParser">A delegate to read custom AddUserRole requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                      CBOR,
+                                           Request_Id                                     RequestId,
+                                           SourceRouting                                  Destination,
+                                           NetworkPath                                    NetworkPath,
+                                           [NotNullWhen(true)]  out AddUserRoleRequest?   AddUserRoleRequest,
+                                           [NotNullWhen(false)] out String?               ErrorResponse,
+                                           DateTimeOffset?                                RequestTimestamp                 = null,
+                                           TimeSpan?                                      RequestTimeout                   = null,
+                                           EventTracking_Id?                              EventTrackingId                  = null,
+                                           CustomCBORParserDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestParser   = null)
+        {
+
+            try
+            {
+
+                AddUserRoleRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of an AddUserRole request is not a map!";
+                    return false;
+                }
+
+                // The key of the user role is "signaturePolicy", as within the JSON object.
+                if (!CBOR.ParseMandatory("signaturePolicy",
+                                         "user role",
+                                         CBORExtensions.TryParseUserRole,
+                                         out UserRole? UserRole,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                AddUserRoleRequest = new AddUserRoleRequest(
+
+                                         Destination,
+                                         UserRole,
+
+                                         null,
+                                         null,
+                                         Signatures,
+
+                                         CustomData,
+
+                                         RequestId,
+                                         RequestTimestamp,
+                                         RequestTimeout,
+                                         EventTrackingId,
+                                         NetworkPath
+
+                                     );
+
+                if (CustomAddUserRoleRequestParser is not null)
+                    AddUserRoleRequest = CustomAddUserRoleRequestParser(CBOR,
+                                                                        AddUserRoleRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                AddUserRoleRequest = null;
+                ErrorResponse = "The given CBOR representation of an AddUserRole request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomAddUserRoleRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this AddUserRole request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomAddUserRoleRequestSerializer">A delegate to serialize custom AddUserRole requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<AddUserRoleRequest>? CustomAddUserRoleRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("signaturePolicy",           UserRole.ToCBOR()),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomAddUserRoleRequestSerializer is not null
+                       ? CustomAddUserRoleRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

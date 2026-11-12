@@ -45,6 +45,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public const            String      WebSocketSubProtocolId   = "ocpp2.1";
 
+        /// <summary>
+        /// The HTTP WebSocket subprotocol of this OCPP version with every message as CBOR in a binary frame.
+        /// </summary>
+        public const            String      WebSocketSubProtocolIdCBOR   = "ocpp2.1cbor";
+
     }
 
 }

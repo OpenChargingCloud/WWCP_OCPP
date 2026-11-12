@@ -327,6 +327,150 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out DeleteSSHKeyRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a DeleteSSHKey request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="DeleteSSHKeyRequest">The DeleteSSHKey request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomDeleteSSHKeyRequestParser">A delegate to read custom DeleteSSHKey requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                       CBOR,
+                                           Request_Id                                      RequestId,
+                                           SourceRouting                                   Destination,
+                                           NetworkPath                                     NetworkPath,
+                                           [NotNullWhen(true)]  out DeleteSSHKeyRequest?   DeleteSSHKeyRequest,
+                                           [NotNullWhen(false)] out String?                ErrorResponse,
+                                           DateTimeOffset?                                 RequestTimestamp                  = null,
+                                           TimeSpan?                                       RequestTimeout                    = null,
+                                           EventTracking_Id?                               EventTrackingId                   = null,
+                                           CustomCBORParserDelegate<DeleteSSHKeyRequest>?  CustomDeleteSSHKeyRequestParser   = null)
+        {
+
+            try
+            {
+
+                DeleteSSHKeyRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a DeleteSSHKey request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("networkingNodeId",
+                                             "networking node identification",
+                                             out var NetworkingNodeIdText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!NetworkingNode_Id.TryParse(NetworkingNodeIdText, out var NetworkingNodeId))
+                {
+                    ErrorResponse = $"Invalid networking node identification '{NetworkingNodeIdText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("keyFingerprint",
+                                             "keyFingerprint",
+                                             out var KeyFingerprint,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                DeleteSSHKeyRequest = new DeleteSSHKeyRequest(
+
+                                          Destination,
+                                          NetworkingNodeId,
+                                          KeyFingerprint.Trim(),
+
+                                          null,
+                                          null,
+                                          Signatures,
+
+                                          CustomData,
+
+                                          RequestId,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
+                                          NetworkPath
+
+                                      );
+
+                if (CustomDeleteSSHKeyRequestParser is not null)
+                    DeleteSSHKeyRequest = CustomDeleteSSHKeyRequestParser(CBOR,
+                                                                          DeleteSSHKeyRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DeleteSSHKeyRequest = null;
+                ErrorResponse = "The given CBOR representation of a DeleteSSHKey request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomDeleteSSHKeyRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this DeleteSSHKey request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomDeleteSSHKeyRequestSerializer">A delegate to serialize custom DeleteSSHKey requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<DeleteSSHKeyRequest>? CustomDeleteSSHKeyRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("networkingNodeId",          CBORValue.FromText(NetworkingNodeId.ToString())),
+                           ("keyFingerprint",            CBORValue.FromText(KeyFingerprint)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomDeleteSSHKeyRequestSerializer is not null
+                       ? CustomDeleteSSHKeyRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

@@ -21,6 +21,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -221,6 +223,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomSecurityEventSerializer is not null
                        ? CustomSecurityEventSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSecurityEventSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this security event type: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSecurityEventSerializer">A delegate to serialize security event types.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SecurityEventType>? CustomSecurityEventSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("text",         CBORValue.FromText(Text)),
+                           ("description",  OCPPCBORExtensions.Text(Description)),
+                           ("isCritical",   OCPPCBORExtensions.Flag(IsCritical))
+                       );
+
+            return CustomSecurityEventSerializer is not null
+                       ? CustomSecurityEventSerializer(this, cbor)
+                       : cbor;
 
         }
 

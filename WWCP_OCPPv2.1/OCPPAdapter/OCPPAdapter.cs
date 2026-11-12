@@ -1448,6 +1448,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Send    binary messages
 
+        #region (internal) SendCBORRequest          (CBORRequestMessage)
+
+        /// <summary>
+        /// Send (and forget) the given CBOR request message along the route to its destination.
+        /// </summary>
+        /// <param name="CBORRequestMessage">A CBOR request message.</param>
+        internal async Task<SentMessageResult> SendCBORRequest(OCPP_CBORRequestMessage CBORRequestMessage)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORRequestMessage.Destination.Next, null) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORRequest(CBORRequestMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (internal) SendCBORResponse         (CBORResponseMessage,     Over = null)
+
+        /// <summary>
+        /// Send the given CBOR response message: over the client connection its request
+        /// came over, or else along the route to its destination.
+        /// </summary>
+        /// <param name="CBORResponseMessage">A CBOR response message.</param>
+        /// <param name="Over">The connection the request came over, where known.</param>
+        internal async Task<SentMessageResult> SendCBORResponse(OCPP_CBORResponseMessage  CBORResponseMessage,
+                                                                IMessageConnection?       Over   = null)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORResponse(CBORResponseMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (internal) SendCBORRequestError     (CBORRequestErrorMessage, Over = null)
+
+        /// <summary>
+        /// Send the given CBOR request error message: over the client connection its request
+        /// came over, or else along the route to its destination.
+        /// </summary>
+        /// <param name="CBORRequestErrorMessage">A CBOR request error message.</param>
+        /// <param name="Over">The connection the request came over, where known.</param>
+        internal async Task<SentMessageResult> SendCBORRequestError(OCPP_CBORRequestErrorMessage  CBORRequestErrorMessage,
+                                                                    IMessageConnection?           Over   = null)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORRequestError(CBORRequestErrorMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (internal) SendCBORResponseError    (CBORResponseErrorMessage)
+
+        /// <summary>
+        /// Send the given CBOR response error message along the route to its destination.
+        /// </summary>
+        /// <param name="CBORResponseErrorMessage">A CBOR response error message.</param>
+        internal async Task<SentMessageResult> SendCBORResponseError(OCPP_CBORResponseErrorMessage CBORResponseErrorMessage)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORResponseErrorMessage.Destination.Next, null) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORResponseError(CBORResponseErrorMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (internal) SendCBORSendMessage      (CBORSendMessage)
+
+        /// <summary>
+        /// Send (and forget) the given CBOR send message along the route to its destination.
+        /// </summary>
+        /// <param name="CBORSendMessage">A CBOR send message.</param>
+        internal async Task<SentMessageResult> SendCBORSendMessage(OCPP_CBORSendMessage CBORSendMessage)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORSendMessage.Destination.Next, null) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORSendMessage(CBORSendMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+
         #region (internal) SendBinaryRequest        (BinaryRequestMessage, SentMessageResultDelegate = null)
 
         internal async Task<SentMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage   BinaryRequestMessage,

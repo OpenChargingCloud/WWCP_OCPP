@@ -21,7 +21,10 @@ using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -92,6 +95,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    new JProperty("purpose",           Purpose.AsText()),
                    new JProperty("publicKey",         PublicKey),
                    new JProperty("keyFingerprint",    KeyFingerprint)
+               );
+
+        /// <summary>
+        /// Try to read the given CBOR representation of an installed SSH key - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="InstalledSSHKey">The installed SSH key.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                  CBOR,
+                                           [NotNullWhen(true)]  out InstalledSSHKey?  InstalledSSHKey,
+                                           [NotNullWhen(false)] out String?           ErrorResponse)
+        {
+
+            InstalledSSHKey = null;
+
+            if (CBOR.Kind != CBORValueKind.Map)
+            {
+                ErrorResponse = "The given CBOR representation of an installed SSH key is not a map!";
+                return false;
+            }
+
+            if (!CBOR.ParseMandatoryText("networkingNodeId", "networking node identification", out var networkingNodeIdText, out ErrorResponse) ||
+                !NetworkingNode_Id.TryParse(networkingNodeIdText, out var networkingNodeId))
+            {
+                ErrorResponse = "An installed SSH key needs a valid 'networkingNodeId'!";
+                return false;
+            }
+
+            if (!CBOR.ParseMandatoryText("purpose", "SSH key purpose", out var purposeText, out ErrorResponse) ||
+                !SSHKeyPurposeExtensions.TryParse(purposeText, out var purpose))
+            {
+                ErrorResponse = "An installed SSH key needs a 'purpose': OCPP, NTS or SFTP!";
+                return false;
+            }
+
+            if (!CBOR.ParseMandatoryText("publicKey", "public key", out var publicKey, out ErrorResponse) ||
+                publicKey.Trim().Length == 0)
+            {
+                ErrorResponse = "An installed SSH key needs its 'publicKey'!";
+                return false;
+            }
+
+            if (!CBOR.ParseMandatoryText("keyFingerprint", "key fingerprint", out var keyFingerprint, out ErrorResponse) ||
+                keyFingerprint.Trim().Length == 0)
+            {
+                ErrorResponse = "An installed SSH key needs its 'keyFingerprint'!";
+                return false;
+            }
+
+            InstalledSSHKey  = new InstalledSSHKey(networkingNodeId, purpose, publicKey.Trim(), keyFingerprint.Trim());
+            ErrorResponse    = null;
+            return true;
+
+        }
+
+        /// <summary>
+        /// The CBOR representation of this installed SSH key: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        public CBORValue ToCBOR()
+
+            => OCPPCBORExtensions.Map(
+                   ("networkingNodeId",  CBORValue.FromText(NetworkingNodeId.ToString())),
+                   ("purpose",           CBORValue.FromText(Purpose.AsText())),
+                   ("publicKey",         CBORValue.FromText(PublicKey)),
+                   ("keyFingerprint",    CBORValue.FromText(KeyFingerprint))
                );
 
     }

@@ -449,6 +449,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region ToCBOR(CustomNotifyWebPaymentFailedRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyWebPaymentFailed request: the
+        /// DataTransfer it is, which carries the fields in its "data".
+        /// </summary>
+        /// <param name="CustomNotifyWebPaymentFailedRequestSerializer">A delegate to serialize custom NotifyWebPaymentFailed requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyWebPaymentFailedRequest>? CustomNotifyWebPaymentFailedRequestSerializer = null)
+        {
+
+            var cbor = base.ToCBOR();
+
+            return CustomNotifyWebPaymentFailedRequestSerializer is not null
+                       ? CustomNotifyWebPaymentFailedRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

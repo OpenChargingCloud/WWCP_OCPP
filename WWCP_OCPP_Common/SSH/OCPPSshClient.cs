@@ -124,6 +124,104 @@ namespace cloud.charging.open.protocols.OCPP.SSH
 
         #endregion
 
+        #region Send CBOR messages
+
+        /// <summary>
+        /// Send a CBOR message over the connection of this client - where it agreed on a
+        /// CBOR subprotocol. A connection that speaks JSON is no way for a CBOR message.
+        /// </summary>
+        private Task<SentMessageResult> SendCBOR(Func<NetworkingMode, Byte[]>  Build,
+                                                 DateTimeOffset                MessageTimestamp,
+                                                 EventTracking_Id              EventTrackingId,
+                                                 CancellationToken             CancellationToken)
+
+            => Connection.SpeaksCBOR()
+
+                   ? SendBinaryMessage(
+                         Build(this.NetworkingMode),
+                         MessageTimestamp,
+                         EventTrackingId,
+                         CancellationToken
+                     )
+
+                   : Task.FromResult(
+                         SentMessageResult.TransmissionFailed(
+                             new InvalidOperationException($"The connection agreed on '{Connection?.Subprotocol ?? "no subprotocol"}', which is not CBOR!")
+                         )
+                     );
+
+        /// <summary>
+        /// Send (and forget) the given CBOR OCPP request message.
+        /// </summary>
+        /// <param name="CBORRequestMessage">A CBOR OCPP request message.</param>
+        public Task<SentMessageResult> SendCBORRequest(OCPP_CBORRequestMessage CBORRequestMessage)
+
+            => SendCBOR(networkingMode => {
+                            CBORRequestMessage.NetworkingMode = networkingMode;
+                            return CBORRequestMessage.ToByteArray();
+                        },
+                        CBORRequestMessage.RequestTimestamp,
+                        CBORRequestMessage.EventTrackingId,
+                        CBORRequestMessage.CancellationToken);
+
+        /// <summary>
+        /// Send (and forget) the given CBOR OCPP response message.
+        /// </summary>
+        /// <param name="CBORResponseMessage">A CBOR OCPP response message.</param>
+        public Task<SentMessageResult> SendCBORResponse(OCPP_CBORResponseMessage CBORResponseMessage)
+
+            => SendCBOR(networkingMode => {
+                            CBORResponseMessage.NetworkingMode = networkingMode;
+                            return CBORResponseMessage.ToByteArray();
+                        },
+                        CBORResponseMessage.ResponseTimestamp,
+                        CBORResponseMessage.EventTrackingId,
+                        CBORResponseMessage.CancellationToken);
+
+        /// <summary>
+        /// Send (and forget) the given CBOR OCPP request error message.
+        /// </summary>
+        /// <param name="CBORRequestErrorMessage">A CBOR OCPP request error message.</param>
+        public Task<SentMessageResult> SendCBORRequestError(OCPP_CBORRequestErrorMessage CBORRequestErrorMessage)
+
+            => SendCBOR(networkingMode => {
+                            CBORRequestErrorMessage.NetworkingMode = networkingMode;
+                            return CBORRequestErrorMessage.ToByteArray();
+                        },
+                        CBORRequestErrorMessage.ResponseTimestamp,
+                        CBORRequestErrorMessage.EventTrackingId,
+                        CBORRequestErrorMessage.CancellationToken);
+
+        /// <summary>
+        /// Send (and forget) the given CBOR OCPP response error message.
+        /// </summary>
+        /// <param name="CBORResponseErrorMessage">A CBOR OCPP response error message.</param>
+        public Task<SentMessageResult> SendCBORResponseError(OCPP_CBORResponseErrorMessage CBORResponseErrorMessage)
+
+            => SendCBOR(networkingMode => {
+                            CBORResponseErrorMessage.NetworkingMode = networkingMode;
+                            return CBORResponseErrorMessage.ToByteArray();
+                        },
+                        CBORResponseErrorMessage.ResponseTimestamp,
+                        CBORResponseErrorMessage.EventTrackingId,
+                        CBORResponseErrorMessage.CancellationToken);
+
+        /// <summary>
+        /// Send (and forget) the given CBOR OCPP send message.
+        /// </summary>
+        /// <param name="CBORSendMessage">A CBOR OCPP send message.</param>
+        public Task<SentMessageResult> SendCBORSendMessage(OCPP_CBORSendMessage CBORSendMessage)
+
+            => SendCBOR(networkingMode => {
+                            CBORSendMessage.NetworkingMode = networkingMode;
+                            return CBORSendMessage.ToByteArray();
+                        },
+                        CBORSendMessage.MessageTimestamp,
+                        CBORSendMessage.EventTrackingId,
+                        CBORSendMessage.CancellationToken);
+
+        #endregion
+
     }
 
 }

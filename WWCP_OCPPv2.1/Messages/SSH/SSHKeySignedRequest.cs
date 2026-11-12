@@ -356,6 +356,160 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region (static) TryParseCBOR(CBOR, ..., out SSHKeySignedRequest, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a SSHKeySigned request - the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="SSHKeySignedRequest">The SSHKeySigned request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CustomSSHKeySignedRequestParser">A delegate to read custom SSHKeySigned requests.</param>
+        public static Boolean TryParseCBOR(CBORValue                                       CBOR,
+                                           Request_Id                                      RequestId,
+                                           SourceRouting                                   Destination,
+                                           NetworkPath                                     NetworkPath,
+                                           [NotNullWhen(true)]  out SSHKeySignedRequest?   SSHKeySignedRequest,
+                                           [NotNullWhen(false)] out String?                ErrorResponse,
+                                           DateTimeOffset?                                 RequestTimestamp                  = null,
+                                           TimeSpan?                                       RequestTimeout                    = null,
+                                           EventTracking_Id?                               EventTrackingId                   = null,
+                                           CustomCBORParserDelegate<SSHKeySignedRequest>?  CustomSSHKeySignedRequestParser   = null)
+        {
+
+            try
+            {
+
+                SSHKeySignedRequest = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a SSHKeySigned request is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("purpose",
+                                             "SSH key purpose",
+                                             out var PurposeText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!SSHKeyPurposeExtensions.TryParse(PurposeText, out var Purpose))
+                {
+                    ErrorResponse = $"Invalid SSH key purpose '{PurposeText}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("publicKey",
+                                             "publicKey",
+                                             out var PublicKey,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalText("certificate",
+                                       "certificate",
+                                       out var Certificate,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                               "cryptographic signatures",
+                                               OCPPCBORExtensions.TryParseSignature,
+                                               out var Signatures,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                SSHKeySignedRequest = new SSHKeySignedRequest(
+
+                                          Destination,
+                                          Purpose,
+                                          PublicKey.Trim(),
+                                          Certificate,
+
+                                          null,
+                                          null,
+                                          Signatures,
+
+                                          CustomData,
+
+                                          RequestId,
+                                          RequestTimestamp,
+                                          RequestTimeout,
+                                          EventTrackingId,
+                                          NetworkPath
+
+                                      );
+
+                if (CustomSSHKeySignedRequestParser is not null)
+                    SSHKeySignedRequest = CustomSSHKeySignedRequestParser(CBOR,
+                                                                          SSHKeySignedRequest);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SSHKeySignedRequest = null;
+                ErrorResponse = "The given CBOR representation of a SSHKeySigned request is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomSSHKeySignedRequestSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this SSHKeySigned request: the keys of its
+        /// JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomSSHKeySignedRequestSerializer">A delegate to serialize custom SSHKeySigned requests.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<SSHKeySignedRequest>? CustomSSHKeySignedRequestSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("purpose",                   CBORValue.FromText(Purpose.AsText())),
+                           ("publicKey",                 CBORValue.FromText(PublicKey)),
+                           ("certificate",               OCPPCBORExtensions.Text(Certificate)),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomSSHKeySignedRequestSerializer is not null
+                       ? CustomSSHKeySignedRequestSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
 
         #region Operator overloading
 

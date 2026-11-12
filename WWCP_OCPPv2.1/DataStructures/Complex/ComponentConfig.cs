@@ -25,6 +25,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.WWCP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -34,6 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A component configuration.
     /// </summary>
     public class ComponentConfig : ACustomData,
+                                   ICBORSerializable<ComponentConfig>,
                                    IEquatable<ComponentConfig>
     {
 
@@ -380,6 +383,185 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return CustomComponentConfigSerializer is not null
                        ? CustomComponentConfigSerializer(this, json)
                        : json;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCBOR(CBOR, out ComponentConfig, out ErrorResponse, CustomComponentConfigParser = null)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a component configuration.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ComponentConfig">The component configuration.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseCBOR(CBORValue                                        CBOR,
+                                           [NotNullWhen(true)]  out ComponentConfig?  ComponentConfig,
+                                           [NotNullWhen(false)] out String?                 ErrorResponse)
+
+            => TryParseCBOR(CBOR,
+                            out ComponentConfig,
+                            out ErrorResponse,
+                            null);
+
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a component configuration.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="ComponentConfig">The component configuration.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomComponentConfigParser">An optional delegate to read custom component configurations.</param>
+        public static Boolean TryParseCBOR(CBORValue                                             CBOR,
+                                           [NotNullWhen(true)]  out ComponentConfig?       ComponentConfig,
+                                           [NotNullWhen(false)] out String?                      ErrorResponse,
+                                           CustomCBORParserDelegate<ComponentConfig>?  CustomComponentConfigParser)
+        {
+
+            try
+            {
+
+                ComponentConfig = default;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a component configuration is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("name",
+                                             "component name",
+                                             out var Name,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                // "type" is read where there is no "instance", as with JSON.
+                if (!CBOR.ParseOptionalText("instance",
+                                            "instance",
+                                            out var Instance,
+                                            out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
+                        return false;
+
+                    CBOR.ParseOptionalText("type",
+                                           "type",
+                                           out Instance,
+                                           out ErrorResponse);
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("evse",
+                                   "EVSE",
+                                   OCPPv2_1.EVSE.TryParseCBOR,
+                                   out EVSE? EVSE,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<VariableConfig>("variableConfigs",
+                                               "variable configs",
+                                               VariableConfig.TryParseCBOR,
+                                               out var VariableConfigs,
+                                               out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("description",
+                                   "component description",
+                                   (CBORValue cbor, [NotNullWhen(true)] out I18NString? text, [NotNullWhen(false)] out String? errorResponse) => I18NString.TryParse(cbor, out text, out errorResponse),
+                                   out I18NString? Description,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                ComponentConfig = new ComponentConfig(
+                                      Name,
+                                      Instance,
+                                      EVSE,
+                                      VariableConfigs,
+                                      Description,
+                                      CustomData
+                                  );
+
+                if (CustomComponentConfigParser is not null)
+                    ComponentConfig = CustomComponentConfigParser(CBOR,
+                                                                  ComponentConfig);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ComponentConfig  = default;
+                ErrorResponse  = "The given CBOR representation of a component configuration is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) ICBORSerializable<ComponentConfig>.TryParse(CBOR, out ComponentConfig, out ErrorResponse)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a component configuration - see TryParseCBOR(),
+        /// which is not called TryParse, so that a method group of TryParse stays the JSON one.
+        /// </summary>
+        static Boolean ICBORSerializable<ComponentConfig>.TryParse(CBORValue                         CBOR,
+                                                                   out ComponentConfig               Value,
+                                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+            var result = TryParseCBOR(CBOR, out var value, out ErrorResponse);
+            Value = value!;
+            return result;
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomComponentConfigSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this component configuration: the keys of
+        /// its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomComponentConfigSerializer">A delegate to serialize custom component configurations.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<ComponentConfig>? CustomComponentConfigSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("name",             CBORValue.FromText(Name)),
+                           ("instance",         OCPPCBORExtensions.Text(Instance)),
+                           ("evse",             EVSE?.ToCBOR()),
+                           ("variableConfigs",  OCPPCBORExtensions.Array(VariableConfigs, variableConfig => variableConfig.ToCBOR())),
+                           ("description",      Description is not null && Description.IsNotNullOrEmpty() ? (CBORValue?) Description.ToCBOR() : null),
+                           ("customData",       CustomData?.ToCBOR())
+                       );
+
+            return CustomComponentConfigSerializer is not null
+                       ? CustomComponentConfigSerializer(this, cbor)
+                       : cbor;
 
         }
 

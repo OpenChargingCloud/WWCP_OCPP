@@ -45,6 +45,12 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         Task<SentMessageResult> SendBinaryResponseError (OCPP_BinaryResponseErrorMessage  BinaryResponseErrorMessage);
         Task<SentMessageResult> SendBinarySendMessage   (OCPP_BinarySendMessage           BinarySendMessage);
 
+        Task<SentMessageResult> SendCBORRequest         (OCPP_CBORRequestMessage          CBORRequestMessage);
+        Task<SentMessageResult> SendCBORResponse        (OCPP_CBORResponseMessage         CBORResponseMessage);
+        Task<SentMessageResult> SendCBORRequestError    (OCPP_CBORRequestErrorMessage     CBORRequestErrorMessage);
+        Task<SentMessageResult> SendCBORResponseError   (OCPP_CBORResponseErrorMessage    CBORResponseErrorMessage);
+        Task<SentMessageResult> SendCBORSendMessage     (OCPP_CBORSendMessage             CBORSendMessage);
+
     }
 
 }
