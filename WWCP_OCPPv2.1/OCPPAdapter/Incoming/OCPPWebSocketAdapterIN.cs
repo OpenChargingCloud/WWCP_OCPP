@@ -150,6 +150,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public Func<IMessageConnection, String, JObject?, String?>?  RequestGate  { get; set; }
 
         /// <summary>
+        /// Asked for every request for this node, with the connection it came
+        /// over: what that connection may carry, whoever signed the request -
+        /// the permissions of its role, and the requests the rights profile of
+        /// its peer accepts. Null, or a null answer, for a connection that may
+        /// carry anything its signers may do. The signature policy holds a
+        /// request against it first, and then asks who signed (white paper
+        /// "Signed OCPP Messages and Signer Roles", section 5.1); it is not
+        /// looked at while the mode of the policy is "Off".
+        /// </summary>
+        public Func<IMessageConnection, cloud.charging.open.protocols.WWCP.ConnectionRights?>?  RightsOfConnection  { get; set; }
+
+        /// <summary>
         /// Asked of every request and every send message that comes in - JSON
         /// or binary, for this node or to be forwarded - before anything is
         /// done with it, with the connection it came over, the node that
@@ -512,6 +524,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             catch (Exception exception)
             {
                 return $"This node could not decide whether to process '{Action}': {exception.Message}";
+            }
+
+        }
+
+        #endregion
+
+        #region (private) ConnectionRightsOf(Connection)
+
+        /// <summary>
+        /// What the given connection may carry, as <see cref="RightsOfConnection"/>
+        /// says - or null, where nobody says. A node that fails to say lets
+        /// nothing over the connection, rather than everything.
+        /// </summary>
+        private cloud.charging.open.protocols.WWCP.ConnectionRights? ConnectionRightsOf(IMessageConnection Connection)
+        {
+
+            if (RightsOfConnection is not Func<IMessageConnection, cloud.charging.open.protocols.WWCP.ConnectionRights?> rightsOf)
+                return null;
+
+            try
+            {
+                return rightsOf(Connection);
+            }
+            catch (Exception exception)
+            {
+                DebugX.LogException(exception, $"Networking node '{parentNetworkingNode.Id}': asking what a connection may carry");
+                return cloud.charging.open.protocols.WWCP.ConnectionRights.Nothing("unknown");
             }
 
         }

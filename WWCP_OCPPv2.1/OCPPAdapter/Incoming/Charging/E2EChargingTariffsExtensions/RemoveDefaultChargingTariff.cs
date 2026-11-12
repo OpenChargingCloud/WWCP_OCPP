@@ -191,7 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomCustomDataSerializer
                         ),
                         out errorResponse,
-                        ReceivedJSON: JSONRequest))
+                        ReceivedJSON: JSONRequest,
+                        Connection: ConnectionRightsOf(WebSocketConnection)))
                     {
 
                         response = RemoveDefaultChargingTariffResponse.SignatureError(

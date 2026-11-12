@@ -191,7 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             parentNetworkingNode.OCPP.CustomBinarySignatureSerializer,
                             IncludeSignatures: false
                         ),
-                        out errorResponse))
+                        out errorResponse,
+                        Connection: ConnectionRightsOf(WebSocketConnection)))
                     {
 
                         response = SecureDataTransferResponse.SignatureError(

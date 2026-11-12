@@ -59,6 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
         /// </summary>
         private readonly ConcurrentDictionary<Object, IReadOnlyList<ReportData>> pendingReports = new (ReferenceEqualityComparer.Instance);
 
+        /// <summary>
+        /// The actions a local controller decides variable by variable for its own Device Model, and
+        /// not as a whole: what is written, read and reported is a variable of a component, and the
+        /// component says which resource it belongs to. A charging station decides
+        /// SetVariableMonitoring so as well; a local controller sets no monitors over OCPP yet.
+        /// </summary>
+        public static readonly IReadOnlyList<String> ActionsDecidedPerEntry = [
+                                                                                 "SetVariables",
+                                                                                 "GetVariables",
+                                                                                 "GetBaseReport",
+                                                                                 "GetReport"
+                                                                             ];
+
         #endregion
 
         #region Properties
@@ -886,6 +899,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
 
             #region Variables
 
+            #region The controller's own Device Model, decided variable by variable
+
+            // Who may read, set and be told which of the controller's own variables is decided
+            // variable by variable, by the resource of each one's component, as a charging
+            // station decides its own: the policy table decides none of these requests as a
+            // whole. A report leaves out what the signers may not read, and one of which
+            // nothing is left is an EmptyResultSet. In the mode "Off" of the policy, the
+            // default, everything is answered as before. A request for a station behind the
+            // controller never meets this: FORWARD has it, and its own forwarding policy.
+            foreach (var action in ActionsDecidedPerEntry)
+                OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add(action);
+
+            #endregion
+
             #region OnGetBaseReport
 
             OCPP.IN.OnGetBaseReport += (timestamp,
@@ -895,8 +922,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                         ct) => {
 
                 var (status, reportData) = DeviceModel.BaseReport(
+                                               request,
                                                AllComponentConfigs,
-                                               request.ReportBase
+                                               OCPP.SignaturePolicy
                                            );
 
                 // The report follows the response, see OnGetBaseReportResponseSent.
@@ -955,9 +983,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                                     ct) => {
 
                 var (status, reportData) = DeviceModel.Report(
+                                               request,
                                                AllComponentConfigs,
-                                               request.ComponentCriteria,
-                                               request.ComponentVariables
+                                               OCPP.SignaturePolicy
                                            );
 
                 // The report follows the response, see OnGetReportResponseSent.
@@ -1019,8 +1047,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     new CS.GetVariablesResponse(
                         Request:     request,
                         Results:     DeviceModel.GetVariables(
-                                         request.VariableData,
-                                         (name, evse) => GetComponentConfigs(name, evse)
+                                         request,
+                                         (name, evse) => GetComponentConfigs(name, evse),
+                                         OCPP.SignaturePolicy
                                      ),
                         CustomData:  null
                     )
@@ -1068,6 +1097,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
                     SetVariableResults:  await DeviceModel.SetVariablesAsync(
                                                    request,
                                                    (name, evse) => GetComponentConfigs(name, evse),
+                                                   OCPP.SignaturePolicy,
                                                    ct,
                                                    NewInstanceOf
                                                ),

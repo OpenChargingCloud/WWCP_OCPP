@@ -168,6 +168,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         private void TellOfPolicyViolation(PolicyViolation Violation)
         {
 
+            // What a connection may not carry is no fault of a signature, and section 5.4
+            // names no security event for it: whoever asked is told with the SecurityError.
+            if (Violation.Kind == PolicyViolationKinds.ConnectionNotAuthorized)
+                return;
+
             if (!violationsTold.TryAdd(Violation.Message, Violation))
                 return;
 

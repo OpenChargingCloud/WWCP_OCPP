@@ -24,6 +24,7 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -351,6 +352,122 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.KeyPins
 
         #endregion
 
+        #region Variables_ToTheController_AreDecidedEntryByEntry_Test()
+
+        /// <summary>
+        /// A signed SetVariables or GetVariables addressed to the local controller is decided entry by
+        /// entry, by the resource of each entry's component, as a charging station decides its own: the
+        /// entry outside the signer's rights is "Rejected" with "NotAuthorized", the other one is applied,
+        /// and with ACID none of the request is.
+        /// </summary>
+        /// <remarks>
+        /// The controller's own Device Model used to answer every entry the request as a whole was let
+        /// through for: a signer that may change the configuration changed the name servers as well.
+        /// </remarks>
+        [Test]
+        public async Task Variables_ToTheController_AreDecidedEntryByEntry_Test()
+        {
+
+            var keyPair            = ECCKeyPair.GenerateKeys()!;
+            var role               = UserRole_Id.Parse("configurator");
+            var policy             = localController1!.OCPP.SignaturePolicy;
+            var permissionsBefore  = policy.PermissionsOfRole;
+            var tableBefore        = policy.ActionPermissions.ToArray();
+
+            policy.AddVerificationRule(SetVariablesRequest.DefaultJSONLDContext, VerificationRuleActions.VerifyAll);
+            policy.AddVerificationRule(GetVariablesRequest.DefaultJSONLDContext, VerificationRuleActions.VerifyAll);
+
+            localController1.UserRoles.Add(new UserRole(Id: role, KeyPairs: [ keyPair ]));
+
+            // May change and read what the controller is made of, but not how it resolves names.
+            policy.PermissionsOfRole  = name => name == role.ToString()
+                                                    ? [ "configuration:edit", "configuration:read" ]
+                                                    : [];
+
+            // A row for the whole request, which the signer does not hold: with the entries decided
+            // one by one it decides nothing.
+            policy.AddActionPermissions([
+                ActionPermission.Needs("SetVariables", "signatures:edit"),
+                ActionPermission.Needs("GetVariables", "signatures:read")
+            ]);
+
+            policy.Mode               = MessagePolicyModes.Enforce;
+
+            static SetVariableData TheNameServers()
+
+                => new (
+                       Component:        new Component(Name: "DNSClientController"),
+                       Variable:         new Variable (Name: "Servers"),
+                       AttributeValue:   "192.0.2.53"
+                   );
+
+            async Task<SetVariablesResponse> SetBoth(DataConsistencyModel? Model)
+
+                => await testCSMS1!.SetVariables(
+                             Destination:            SourceRouting.To(localController1.Id),
+                             VariableData:           [ TheNameServers(), Entry("ActiveKeyPin", pinB) ],
+                             DataConsistencyModel:   Model,
+                             SignInfos:              [ keyPair.ToSignInfo1("configurator") ]
+                         );
+
+            try
+            {
+
+                var asOneChange  = await SetBoth(DataConsistencyModel.ACID);
+                var switchedNot  = tlsServer!.Switches.Count;
+
+                var independent  = await SetBoth(null);
+
+                var read         = await testCSMS1!.GetVariables(
+                                             Destination:    SourceRouting.To(localController1.Id),
+                                             VariableData:   [
+                                                                 new GetVariableData(
+                                                                     Component:  new Component(Name: "DNSClientController"),
+                                                                     Variable:   new Variable (Name: "Servers")
+                                                                 ),
+                                                                 Asked("KeyPins")
+                                                             ],
+                                             SignInfos:      [ keyPair.ToSignInfo1("configurator") ]
+                                         );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(asOneChange.SetVariableResults.Select(result => result.AttributeStatus),
+                                Is.All.EqualTo(SetVariableStatus.Rejected),                                      "With ACID a part of the request was applied!");
+                    Assert.That(asOneChange.SetVariableResults.Select(result => result.AttributeStatusInfo?.ReasonCode),
+                                Is.All.EqualTo("NotAuthorized"));
+                    Assert.That(switchedNot,                                                                  Is.EqualTo(0));
+
+                    Assert.That(independent.Result.ResultCode,                                                Is.EqualTo(OCPP.ResultCode.OK));
+                    Assert.That(independent.SetVariableResults.First().AttributeStatus,                       Is.EqualTo(SetVariableStatus.Rejected),
+                                "An entry outside the signer's rights was looked at!");
+                    Assert.That(independent.SetVariableResults.First().AttributeStatusInfo?.ReasonCode,       Is.EqualTo("NotAuthorized"));
+                    Assert.That(independent.SetVariableResults.First().AttributeStatusInfo?.AdditionalInfo,   Does.Contain("dns:edit"));
+                    Assert.That(independent.SetVariableResults.Last(). AttributeStatus,                       Is.EqualTo(SetVariableStatus.Accepted),
+                                "The entry within the signer's rights was refused with the other one!");
+                    Assert.That(tlsServer.Switches.Select(@switch => @switch.Pin),                            Is.EqualTo(new[] { pinB }));
+
+                    Assert.That(read.Results.First().AttributeStatus,                                         Is.EqualTo(GetVariableStatus.Rejected));
+                    Assert.That(read.Results.First().AttributeStatusInfo?.ReasonCode,                         Is.EqualTo("NotAuthorized"));
+                    Assert.That(read.Results.First().AttributeStatusInfo?.AdditionalInfo,                     Does.Contain("dns:read"));
+                    Assert.That(read.Results.Last(). AttributeStatus,                                         Is.EqualTo(GetVariableStatus.Accepted));
+
+                });
+
+            }
+            finally
+            {
+                localController1.UserRoles.Clear();
+                policy.Mode               = MessagePolicyModes.Off;
+                policy.PermissionsOfRole  = permissionsBefore;
+                policy.ClearActionPermissions();
+                policy.AddActionPermissions(tableBefore);
+            }
+
+        }
+
+        #endregion
+
         #region GetReport_ToTheController_ReportsItsOwnComponent_Test()
 
         /// <summary>
@@ -396,6 +513,107 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.KeyPins
                                                                                                Is.EqualTo(new[] { "ActiveKeyPin" }));
 
             });
+
+        }
+
+        #endregion
+
+
+        #region Reports_OfTheController_LeaveOutWhatTheSignersMayNotRead_Test()
+
+        /// <summary>
+        /// A signed GetReport or GetBaseReport addressed to the local controller is decided variable by
+        /// variable, as a charging station's: a signer who may read the configuration is told the keys of
+        /// the station port; a signer who may read the name servers and nothing else is not - its report
+        /// of them is an EmptyResultSet, and its base report leaves them out. A row of the table for the
+        /// whole request decides nothing.
+        /// </summary>
+        [Test]
+        public async Task Reports_OfTheController_LeaveOutWhatTheSignersMayNotRead_Test()
+        {
+
+            var configurator       = ECCKeyPair.GenerateKeys()!;
+            var nameServers        = ECCKeyPair.GenerateKeys()!;
+            var policy             = localController1!.OCPP.SignaturePolicy;
+            var permissionsBefore  = policy.PermissionsOfRole;
+            var tableBefore        = policy.ActionPermissions.ToArray();
+
+            policy.AddVerificationRule(GetReportRequest.    DefaultJSONLDContext, VerificationRuleActions.VerifyAll);
+            policy.AddVerificationRule(GetBaseReportRequest.DefaultJSONLDContext, VerificationRuleActions.VerifyAll);
+
+            localController1.UserRoles.Add(new UserRole(Id: UserRole_Id.Parse("configurator"), KeyPairs: [ configurator ]));
+            localController1.UserRoles.Add(new UserRole(Id: UserRole_Id.Parse("nameservers"),  KeyPairs: [ nameServers  ]));
+
+            policy.PermissionsOfRole  = name => name switch {
+                                                    "configurator"  => [ "configuration:read" ],
+                                                    "nameservers"   => [ "dns:read" ],
+                                                    _               => []
+                                                };
+
+            policy.AddActionPermissions([
+                ActionPermission.Needs("GetReport",      "signatures:read"),
+                ActionPermission.Needs("GetBaseReport",  "signatures:read")
+            ]);
+
+            policy.Mode               = MessagePolicyModes.Enforce;
+
+            async Task<(GenericDeviceModelStatus Status, List<ReportData> Data)> ReportOfTheKeys(Int32 RequestId, KeyPair SignedBy)
+            {
+
+                var parts     = NotifyReportsOf(RequestId);
+                var response  = await testCSMS1!.GetReport(
+                                          Destination:          SourceRouting.To(localController1.Id),
+                                          GetReportRequestId:   RequestId,
+                                          ComponentCriteria:    [],
+                                          ComponentVariables:   [ new ComponentVariable(Component: new Component(Name: nameof(EVQICtrlr))) ],
+                                          SignInfos:            [ SignedBy.ToSignInfo1() ]
+                                      );
+
+                return (response.Status, response.Status == GenericDeviceModelStatus.Accepted ? await CompleteReport(parts) : []);
+
+            }
+
+            try
+            {
+
+                var ofTheConfigurator  = await ReportOfTheKeys(4911, configurator);
+                var ofTheNameServers   = await ReportOfTheKeys(4912, nameServers);
+
+                var baseParts          = NotifyReportsOf(4913);
+                var baseReport         = await testCSMS1!.GetBaseReport(
+                                                   Destination:              SourceRouting.To(localController1.Id),
+                                                   GetBaseReportRequestId:   4913,
+                                                   ReportBase:               ReportBase.FullInventory,
+                                                   SignInfos:                [ nameServers.ToSignInfo1() ]
+                                               );
+                var baseData           = baseReport.Status == GenericDeviceModelStatus.Accepted
+                                             ? await CompleteReport(baseParts)
+                                             : [];
+
+                Assert.Multiple(() => {
+
+                    Assert.That(ofTheConfigurator.Status,                                    Is.EqualTo(GenericDeviceModelStatus.Accepted));
+                    Assert.That(ofTheConfigurator.Data.Select(data => data.Variable.Name),  Is.SupersetOf(new[] { "KeyPins", "ActiveKeyPin" }));
+
+                    Assert.That(ofTheNameServers. Status,                                    Is.EqualTo(GenericDeviceModelStatus.EmptyResultSet),
+                                "A signer who may not read the keys of the station port was told them!");
+
+                    Assert.That(baseReport.Result.ResultCode,                                Is.EqualTo(OCPP.ResultCode.OK), baseReport.Result.Description);
+                    Assert.That(baseReport.Status,                                           Is.AnyOf(GenericDeviceModelStatus.Accepted, GenericDeviceModelStatus.EmptyResultSet));
+                    Assert.That(baseData.Select(data => data.Component.Name),               Has.None.EqualTo(nameof(EVQICtrlr)),
+                                "The base report told a signer the keys it may not read!");
+
+                });
+
+            }
+            finally
+            {
+                localController1.UserRoles.Clear();
+                policy.Mode               = MessagePolicyModes.Off;
+                policy.PermissionsOfRole  = permissionsBefore;
+                policy.ClearActionPermissions();
+                policy.AddActionPermissions(tableBefore);
+            }
 
         }
 
