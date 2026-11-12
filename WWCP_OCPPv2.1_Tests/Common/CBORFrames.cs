@@ -55,15 +55,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             if (!Connection.SpeaksCBOR())
                 return false;
 
-            if (!OCPP_CBORFrame.TryParse(Frame, out var cborArray, out _) ||
-                !OCPP_CBORFrame.TrySplit(cborArray, out var header, out var last, out _))
-            {
+            if (!OCPP_CBORFrame.TryAsJSON(Frame, out var json, out _))
                 return false;
-            }
 
-            header[header.Count - 1] = CBORJSON.ToJSON(last);
-
-            JSON = header;
+            JSON = json;
             return true;
 
         }

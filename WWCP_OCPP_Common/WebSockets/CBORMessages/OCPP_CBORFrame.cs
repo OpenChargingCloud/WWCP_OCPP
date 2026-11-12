@@ -233,6 +233,51 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         #endregion
 
+        #region TryAsJSON(Frame, out JSON, out ErrorResponse)
+
+        /// <summary>
+        /// The given frame of a CBOR connection as the JSON array it stands for: what
+        /// a log shows, and what somebody reads. Its payload is what the CBOR says,
+        /// value by value - a point in time and a number are what CBOR has for them,
+        /// and the bytes of a message of the binary format are a text (base64url).
+        ///
+        /// It is for showing. What a node works on is the JSON its adapter writes
+        /// through the class of the message, and tells of in its events.
+        /// </summary>
+        /// <param name="Frame">The bytes of a binary frame.</param>
+        /// <param name="JSON">The JSON array the frame stands for.</param>
+        /// <param name="ErrorResponse">Why the frame is no OCPP message.</param>
+        public static Boolean TryAsJSON(Byte[]                            Frame,
+                                        [NotNullWhen(true)]  out JArray?  JSON,
+                                        [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            JSON = null;
+
+            if (!TryParse(Frame,     out var cborArray, out ErrorResponse) ||
+                !TrySplit(cborArray, out var header, out var last, out ErrorResponse))
+            {
+                return false;
+            }
+
+            try
+            {
+                header[header.Count - 1] = CBORJSON.ToJSON(last);
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = "The payload of the given CBOR array can not be shown as JSON: " + e.Message;
+                return false;
+            }
+
+            JSON           = header;
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
     }
 
 }

@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -74,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         /// Connected to the first back end, which is its CSMS, and to the second,
         /// each under a name of its own.
         /// </summary>
-        private async Task<TestChargingStationNode> AStationConnectedToBoth(String Id)
+        protected async Task<TestChargingStationNode> AStationConnectedToBoth(String Id)
         {
 
             chargingStation = new TestChargingStationNode(
@@ -98,6 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                         RoutingNetworkingNodeIds:  csmsToo ? [ NetworkingNode_Id.CSMS ] : null,
                                         RemoteURL:                 URL.Parse($"http://127.0.0.1:{server.IPPort}/{chargingStation.Id}"),
                                         HTTPAuthentication:        HTTPBasicAuthentication.Create(chargingStation.Id.ToString(), "1234abcd"),
+                                        SecWebSocketProtocols:     OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Encoding),
                                         DisableWebSocketPings:     true
                                     );
 

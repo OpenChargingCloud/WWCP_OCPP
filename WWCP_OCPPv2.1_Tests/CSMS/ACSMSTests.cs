@@ -44,6 +44,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     public abstract class ACSMSTests
     {
 
+        #region Encoding
+
+        /// <summary>
+        /// How the charging stations of this fixture ask to be spoken to: JSON,
+        /// unless a fixture runs its tests over CBOR.
+        /// </summary>
+        protected virtual MessageEncodings Encoding
+            => MessageEncodings.JSON;
+
+        #endregion
+
         #region Data
 
         protected DNSClient?                    dnsClient;
