@@ -519,6 +519,107 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.KeyPins
         #endregion
 
 
+        #region Reports_OfTheController_LeaveOutWhatTheSignersMayNotRead_Test()
+
+        /// <summary>
+        /// A signed GetReport or GetBaseReport addressed to the local controller is decided variable by
+        /// variable, as a charging station's: a signer who may read the configuration is told the keys of
+        /// the station port; a signer who may read the name servers and nothing else is not - its report
+        /// of them is an EmptyResultSet, and its base report leaves them out. A row of the table for the
+        /// whole request decides nothing.
+        /// </summary>
+        [Test]
+        public async Task Reports_OfTheController_LeaveOutWhatTheSignersMayNotRead_Test()
+        {
+
+            var configurator       = ECCKeyPair.GenerateKeys()!;
+            var nameServers        = ECCKeyPair.GenerateKeys()!;
+            var policy             = localController1!.OCPP.SignaturePolicy;
+            var permissionsBefore  = policy.PermissionsOfRole;
+            var tableBefore        = policy.ActionPermissions.ToArray();
+
+            policy.AddVerificationRule(GetReportRequest.    DefaultJSONLDContext, VerificationRuleActions.VerifyAll);
+            policy.AddVerificationRule(GetBaseReportRequest.DefaultJSONLDContext, VerificationRuleActions.VerifyAll);
+
+            localController1.UserRoles.Add(new UserRole(Id: UserRole_Id.Parse("configurator"), KeyPairs: [ configurator ]));
+            localController1.UserRoles.Add(new UserRole(Id: UserRole_Id.Parse("nameservers"),  KeyPairs: [ nameServers  ]));
+
+            policy.PermissionsOfRole  = name => name switch {
+                                                    "configurator"  => [ "configuration:read" ],
+                                                    "nameservers"   => [ "dns:read" ],
+                                                    _               => []
+                                                };
+
+            policy.AddActionPermissions([
+                ActionPermission.Needs("GetReport",      "signatures:read"),
+                ActionPermission.Needs("GetBaseReport",  "signatures:read")
+            ]);
+
+            policy.Mode               = MessagePolicyModes.Enforce;
+
+            async Task<(GenericDeviceModelStatus Status, List<ReportData> Data)> ReportOfTheKeys(Int32 RequestId, KeyPair SignedBy)
+            {
+
+                var parts     = NotifyReportsOf(RequestId);
+                var response  = await testCSMS1!.GetReport(
+                                          Destination:          SourceRouting.To(localController1.Id),
+                                          GetReportRequestId:   RequestId,
+                                          ComponentCriteria:    [],
+                                          ComponentVariables:   [ new ComponentVariable(Component: new Component(Name: nameof(EVQICtrlr))) ],
+                                          SignInfos:            [ SignedBy.ToSignInfo1() ]
+                                      );
+
+                return (response.Status, response.Status == GenericDeviceModelStatus.Accepted ? await CompleteReport(parts) : []);
+
+            }
+
+            try
+            {
+
+                var ofTheConfigurator  = await ReportOfTheKeys(4911, configurator);
+                var ofTheNameServers   = await ReportOfTheKeys(4912, nameServers);
+
+                var baseParts          = NotifyReportsOf(4913);
+                var baseReport         = await testCSMS1!.GetBaseReport(
+                                                   Destination:              SourceRouting.To(localController1.Id),
+                                                   GetBaseReportRequestId:   4913,
+                                                   ReportBase:               ReportBase.FullInventory,
+                                                   SignInfos:                [ nameServers.ToSignInfo1() ]
+                                               );
+                var baseData           = baseReport.Status == GenericDeviceModelStatus.Accepted
+                                             ? await CompleteReport(baseParts)
+                                             : [];
+
+                Assert.Multiple(() => {
+
+                    Assert.That(ofTheConfigurator.Status,                                    Is.EqualTo(GenericDeviceModelStatus.Accepted));
+                    Assert.That(ofTheConfigurator.Data.Select(data => data.Variable.Name),  Is.SupersetOf(new[] { "KeyPins", "ActiveKeyPin" }));
+
+                    Assert.That(ofTheNameServers. Status,                                    Is.EqualTo(GenericDeviceModelStatus.EmptyResultSet),
+                                "A signer who may not read the keys of the station port was told them!");
+
+                    Assert.That(baseReport.Result.ResultCode,                                Is.EqualTo(OCPP.ResultCode.OK), baseReport.Result.Description);
+                    Assert.That(baseReport.Status,                                           Is.AnyOf(GenericDeviceModelStatus.Accepted, GenericDeviceModelStatus.EmptyResultSet));
+                    Assert.That(baseData.Select(data => data.Component.Name),               Has.None.EqualTo(nameof(EVQICtrlr)),
+                                "The base report told a signer the keys it may not read!");
+
+                });
+
+            }
+            finally
+            {
+                localController1.UserRoles.Clear();
+                policy.Mode               = MessagePolicyModes.Off;
+                policy.PermissionsOfRole  = permissionsBefore;
+                policy.ClearActionPermissions();
+                policy.AddActionPermissions(tableBefore);
+            }
+
+        }
+
+        #endregion
+
+
         #region SetVariables_ForAStationBehindTheController_IsForwardedUntouched_Test()
 
         /// <summary>
