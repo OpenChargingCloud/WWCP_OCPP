@@ -112,6 +112,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
 
         #region (private) Helpers
 
+        /// <summary>
+        /// What the charging stations of this fixture offer when they sign in:
+        /// what the node offers by itself, unless the fixture runs over CBOR.
+        /// </summary>
+        private IEnumerable<String>? Offered
+
+            => Encoding == MessageEncodings.JSON
+                   ? null
+                   : OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId, "ocpp2.0.1" ], Encoding);
+
+        /// <summary>
+        /// What a connection of this fixture agrees on.
+        /// </summary>
+        protected String AgreedOn
+
+            => Encoding == MessageEncodings.JSON
+                   ? Version.WebSocketSubProtocolId
+                   : Version.WebSocketSubProtocolIdCBOR;
+
         private TestChargingStationNode NewStation(String Id)
 
             => station = new TestChargingStationNode(
@@ -144,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
         {
 
             var chargingStation  = NewStation(Id);
-            var result           = await chargingStation.ConnectOCPPClient(SshURL(Id), Ssh: Login(Id));
+            var result           = await chargingStation.ConnectOCPPClient(SshURL(Id), Subprotocols: Offered, Ssh: Login(Id));
 
             Assert.That(result.IsConnected, Is.True, result.ToString());
 
@@ -218,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
                 Assert.That(bootCameOver,                 Is.InstanceOf<ISshMessageConnection>());
                 Assert.That(bootCameOver!.Transport,      Is.EqualTo(MessageTransport.SSH));
                 Assert.That(bootCameOver.Role,            Is.EqualTo(ConnectionRole.Server));
-                Assert.That(bootCameOver.Subprotocol,     Is.EqualTo(Version.WebSocketSubProtocolId));
+                Assert.That(bootCameOver.Subprotocol,     Is.EqualTo(AgreedOn));
                 Assert.That(((ISshMessageConnection) bootCameOver).Username, Is.EqualTo("GD-SSH-001"));
 
                 // The station's route to its CSMS is the SSH client.
@@ -313,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
                                                   MaxDelay:      TimeSpan.FromMilliseconds(200)
                                               );
 
-            var result      = await chargingStation.ConnectOCPPClient(SshURL("GD-SSH-004"), Ssh: Login("GD-SSH-004"));
+            var result      = await chargingStation.ConnectOCPPClient(SshURL("GD-SSH-004"), Subprotocols: Offered, Ssh: Login("GD-SSH-004"));
 
             Assert.That(result.IsConnected, Is.True, result.ToString());
 
@@ -348,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
         {
 
             var chargingStation  = NewStation("GD-SSH-008");
-            var result           = await chargingStation.ConnectOCPPClient(SshURL("GD-SSH-008"), NetworkingMode: NetworkingMode.OverlayNetwork, Ssh: Login("GD-SSH-008"));
+            var result           = await chargingStation.ConnectOCPPClient(SshURL("GD-SSH-008"), NetworkingMode: NetworkingMode.OverlayNetwork, Subprotocols: Offered, Ssh: Login("GD-SSH-008"));
 
             Assert.That(result.IsConnected, Is.True, result.ToString());
 
@@ -389,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
             {
 
                 var chargingStation  = NewStation(stationId.ToString());
-                var result           = await chargingStation.ConnectOCPPClient(SshURL("LC-SSH-01", ConnectAs: stationId.ToString()), Ssh: Login("LC-SSH-01"));
+                var result           = await chargingStation.ConnectOCPPClient(SshURL("LC-SSH-01", ConnectAs: stationId.ToString()), Subprotocols: Offered, Ssh: Login("LC-SSH-01"));
 
                 Assert.That(result.IsConnected, Is.True, result.ToString());
 
@@ -422,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
 
             var chargingStation  = NewStation("GD-SSH-006");
 
-            var stranger         = await chargingStation.ConnectOCPPClient(SshURL("GD-SSH-006"), Ssh: Login("GD-SSH-006", strangerKey));
+            var stranger         = await chargingStation.ConnectOCPPClient(SshURL("GD-SSH-006"), Subprotocols: Offered, Ssh: Login("GD-SSH-006", strangerKey));
 
             Assert.That(stranger.IsConnected,  Is.False);
             Assert.That(stranger.Transport,    Is.EqualTo(MessageTransport.SSH));
@@ -434,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
             await Assert.ThrowsAsync<ArgumentException>(() => chargingStation.ConnectOCPPClient(URL.Parse("ftp://127.0.0.1/GD-SSH-006")));
 
             // The URL's login and the SSH login's must not differ.
-            await Assert.ThrowsAsync<ArgumentException>(() => chargingStation.ConnectOCPPClient(SshURL("GD-SSH-006"), Ssh: Login("somebody-else")));
+            await Assert.ThrowsAsync<ArgumentException>(() => chargingStation.ConnectOCPPClient(SshURL("GD-SSH-006"), Subprotocols: Offered, Ssh: Login("somebody-else")));
 
         }
 
