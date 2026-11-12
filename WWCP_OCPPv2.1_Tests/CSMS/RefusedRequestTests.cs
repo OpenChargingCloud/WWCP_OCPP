@@ -40,8 +40,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
     /// <summary>
     /// A request the signature policy refuses is answered with a CALLERROR
-    /// SecurityError that says why, and not with the response of its action
-    /// (white paper "Signed OCPP Messages and Signer Roles", section 5.4).
+    /// SecurityError that says why, and not with the response of its action,
+    /// and the CSMS is told of it with a security event (white paper "Signed
+    /// OCPP Messages and Signer Roles", section 5.4).
     /// </summary>
     /// <remarks>
     /// A fixture of its own: a role and an enforced policy change the charging
@@ -51,6 +52,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     [TestFixture]
     public class RefusedRequestTests : AChargingStationTests
     {
+
+        #region (private) Until(Condition)
+
+        /// <summary>
+        /// A security event is sent after the request it tells of was answered:
+        /// wait for it, but not for ever.
+        /// </summary>
+        private static async Task Until(Func<Boolean> Condition)
+        {
+
+            var patience = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+
+            while (!Condition() && DateTime.UtcNow < patience)
+                await Task.Delay(20);
+
+        }
+
+        #endregion
+
 
         #region ARefusedRequestIsAnsweredWithASecurityError()
 
@@ -75,6 +95,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             var requestErrors  = new ConcurrentQueue<OCPP_JSONRequestErrorMessage>();
             var responses      = new ConcurrentQueue<OCPP_JSONResponseMessage>();
+            var securityEvents = new ConcurrentQueue<SecurityEventNotificationRequest>();
+
+            OnSecurityEventNotificationRequestReceivedDelegate securityEventReceived = (timestamp, sender, connection, request, ct) => {
+                securityEvents.Enqueue(request);
+                return Task.CompletedTask;
+            };
 
             OnJSONRequestErrorMessageSentDelegate requestErrorSent = (timestamp, sender, connection, requestError, result, ct) => {
                 requestErrors.Enqueue(requestError);
@@ -95,6 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             chargingStation1.OCPP.OUT.OnJSONRequestErrorMessageSent  += requestErrorSent;
             chargingStation1.OCPP.OUT.OnJSONResponseMessageSent      += responseSent;
+            testCSMS1!.OCPP.IN.OnSecurityEventNotificationRequestReceived += securityEventReceived;
 
             policy.Mode = MessagePolicyModes.Enforce;
 
@@ -115,6 +142,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var errorUnsigned  = requestErrors.FirstOrDefault(requestError => requestError.RequestId == unsigned.   Request.RequestId);
                 var errorStranger  = requestErrors.FirstOrDefault(requestError => requestError.RequestId == byAStranger.Request.RequestId);
+
+                await Until(() => securityEvents.Count >= 2);
+                await Task.Delay(200);   // ...and a third one would be one too many.
 
                 Assert.Multiple(() => {
 
@@ -141,6 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     Assert.That(errorStranger?.ErrorDescription,         Does.Not.Contain(stranger.PublicKeyBytes.ToBase64()));
                     Assert.That(errorStranger?.ErrorDescription,         Does.Not.Contain(stranger.PublicKeyBytes.ToHexString()));
 
+                    // The CSMS is told of both, and of nothing else.
+                    Assert.That(securityEvents.Select(securityEvent => securityEvent.Type),
+                                Is.EquivalentTo(new[] { SecurityEventType.MessageSignatureMissing, SecurityEventType.MessageSignerUnknown }));
+                    Assert.That(securityEvents.Select(securityEvent => securityEvent.TechInfo),
+                                Has.All.StartsWith("Reset: ").And.All.Contains("reset:run"));
+
                     // The admin is answered as ever.
                     Assert.That(byTheAdmin.Result.ResultCode,            Is.EqualTo(ResultCode.OK),   byTheAdmin.Result.Description);
                     Assert.That(byTheAdmin.Status,                       Is.EqualTo(ResetStatus.Accepted));
@@ -157,6 +193,108 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation1.UserRoles.Clear();
                 chargingStation1.OCPP.OUT.OnJSONRequestErrorMessageSent  -= requestErrorSent;
                 chargingStation1.OCPP.OUT.OnJSONResponseMessageSent      -= responseSent;
+                testCSMS1.OCPP.IN.OnSecurityEventNotificationRequestReceived -= securityEventReceived;
+            }
+
+        }
+
+        #endregion
+
+        #region ARequestIsToldOfOnceHoweverManyOfItsEntriesAreRefused()
+
+        /// <summary>
+        /// A SetVariables whose two entries are both refused is one request
+        /// somebody without the right signed, and one security event. A reset
+        /// the policy only observes is executed, and told of all the same.
+        /// </summary>
+        [Test]
+        public async Task ARequestIsToldOfOnceHoweverManyOfItsEntriesAreRefused()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCSMS1,        Is.Not.Null);
+                Assert.That(chargingStation1, Is.Not.Null);
+            });
+
+            var keyPair            = ECCKeyPair.GenerateKeys()!;
+            var role               = UserRole_Id.Parse("reader");
+            var policy             = chargingStation1!.OCPP.SignaturePolicy;
+            var permissionsBefore  = policy.PermissionsOfRole;
+            var securityEvents     = new ConcurrentQueue<SecurityEventNotificationRequest>();
+
+            OnSecurityEventNotificationRequestReceivedDelegate securityEventReceived = (timestamp, sender, connection, request, ct) => {
+                securityEvents.Enqueue(request);
+                return Task.CompletedTask;
+            };
+
+            chargingStation1.UserRoles.Add(new UserRole(Id: role, KeyPairs: [ keyPair ]));
+
+            // Known to the station, and may change nothing.
+            policy.PermissionsOfRole  = name => name == role.ToString()
+                                                    ? [ "*:read" ]
+                                                    : [];
+
+            testCSMS1!.OCPP.IN.OnSecurityEventNotificationRequestReceived += securityEventReceived;
+
+            try
+            {
+
+                policy.Mode = MessagePolicyModes.Enforce;
+
+                var both = await testCSMS1.SetVariables(
+                                     Destination:   SourceRouting.To(chargingStation1.Id),
+                                     VariableData:  [
+                                                        new SetVariableData(
+                                                            Component:        new Component(Name: "DNSClientController"),
+                                                            Variable:         new Variable (Name: "Servers"),
+                                                            AttributeValue:   "192.0.2.53"
+                                                        ),
+                                                        new SetVariableData(
+                                                            Component:        new Component(Name: "SecurityCtrlr"),
+                                                            Variable:         new Variable (Name: "OrganizationName"),
+                                                            AttributeValue:   "Open Charging Cloud by GraphDefined GmbH"
+                                                        )
+                                                    ],
+                                     SignInfos:     [ keyPair.ToSignInfo1("reader") ]
+                                 );
+
+                await Until(() => securityEvents.Count >= 1);
+                await Task.Delay(200);
+
+                Assert.Multiple(() => {
+                    Assert.That(both.Result.ResultCode,                                           Is.EqualTo(ResultCode.OK));
+                    Assert.That(both.SetVariableResults.Select(result => result.AttributeStatus), Is.All.EqualTo(SetVariableStatus.Rejected));
+                    Assert.That(securityEvents.Select(securityEvent => securityEvent.Type),       Is.EqualTo(new[] { SecurityEventType.MessageSignerNotAuthorized }),
+                                "A request was told of once per entry, or not at all!");
+                    Assert.That(securityEvents.First().TechInfo,                                  Does.StartWith("SetVariables: "));
+                });
+
+                // Observed only: executed, and told of.
+                policy.Mode = MessagePolicyModes.Observe;
+
+                var observed = await testCSMS1.Reset(
+                                         Destination:   SourceRouting.To(chargingStation1.Id),
+                                         ResetType:     ResetType.OnIdle
+                                     );
+
+                await Until(() => securityEvents.Count >= 2);
+
+                Assert.Multiple(() => {
+                    Assert.That(observed.Result.ResultCode,          Is.EqualTo(ResultCode.OK),   observed.Result.Description);
+                    Assert.That(observed.Status,                     Is.EqualTo(ResetStatus.Accepted));
+                    Assert.That(securityEvents.Count,                Is.EqualTo(2));
+                    Assert.That(securityEvents.Last().Type,          Is.EqualTo(SecurityEventType.MessageSignatureMissing));
+                    Assert.That(securityEvents.Last().TechInfo,      Does.StartWith("Reset, executed all the same: "));
+                });
+
+            }
+            finally
+            {
+                // The charging station outlives this test method.
+                policy.Mode               = MessagePolicyModes.Off;
+                policy.PermissionsOfRole  = permissionsBefore;
+                chargingStation1.UserRoles.Clear();
+                testCSMS1.OCPP.IN.OnSecurityEventNotificationRequestReceived -= securityEventReceived;
             }
 
         }

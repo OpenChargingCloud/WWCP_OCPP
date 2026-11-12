@@ -350,6 +350,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
 
         #endregion
 
+        #region AViolationSaysWhatWasWrongWithTheSignatures()
+
+        /// <summary>
+        /// Each refusal is reported once, with what was wrong: no signature, a
+        /// key nobody knows, a signer without the right, a signature that does
+        /// not hold, and one that was seen before. These are the security events
+        /// of section 5.4.
+        /// </summary>
+        [Test]
+        public void AViolationSaysWhatWasWrongWithTheSignatures()
+        {
+
+            var support     = ECCKeyPair.GenerateKeys()!;
+            var stranger    = ECCKeyPair.GenerateKeys()!;
+            var station     = AStation(MessagePolicyModes.Enforce, [ (support, "support") ]);
+            var violations  = new List<PolicyViolation>();
+
+            station.OnPolicyViolation += violations.Add;
+
+            (ResetRequest, JObject) Tampered()
+            {
+                var (signed, onTheWire)  = AReset(ResetType.OnIdle, support);
+                onTheWire["type"]        = "Immediate";
+                return (ResetRequest.Parse(onTheWire, signed.RequestId, toTheStation, NetworkPath.Empty), onTheWire);
+            }
+
+            var sentOnce = AReset(ResetType.OnIdle, support);
+
+            Assert.Multiple(() => {
+
+                Assert.That(Accepts(station, AReset(ResetType.Immediate),            out _),             Is.False);
+                Assert.That(Accepts(station, AReset(ResetType.OnIdle,    stranger),  out _),             Is.False);
+                Assert.That(Accepts(station, AReset(ResetType.Immediate, support),   out _),             Is.False);
+                Assert.That(Accepts(station, Tampered(),                             out _),             Is.False);
+                Assert.That(Accepts(station, sentOnce,                               out var accepted),  Is.True,   accepted);
+                Assert.That(Accepts(station, sentOnce,                               out _),             Is.False,  "A request was accepted twice!");
+
+                Assert.That(violations.Select(violation => violation.Kind),
+                            Is.EqualTo(new[] {
+                                PolicyViolationKinds.SignatureMissing,
+                                PolicyViolationKinds.SignerUnknown,
+                                PolicyViolationKinds.SignerNotAuthorized,
+                                PolicyViolationKinds.SignatureInvalid,
+                                PolicyViolationKinds.Replayed
+                            }));
+
+                Assert.That(violations.Select(violation => violation.Refused),   Is.All.True);
+                Assert.That(violations.Select(violation => violation.Action),    Is.All.EqualTo("Reset"));
+                Assert.That(violations.Select(violation => violation.Message),   Is.All.InstanceOf<ResetRequest>());
+
+            });
+
+        }
+
+        #endregion
+
         #endregion
 
         #region The station's table: what each action needs

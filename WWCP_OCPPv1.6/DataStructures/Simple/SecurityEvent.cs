@@ -356,6 +356,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                             false);
 
         /// <summary>
+        /// A request carried no signature, and needed one (Signed OCPP Messages and Signer Roles, section 5.4).
+        /// </summary>
+        public readonly static SecurityEvent MessageSignatureMissing                = new ("MessageSignatureMissing",
+                                                                                           "A request carried no signature, and needed one (Signed OCPP Messages and Signer Roles, section 5.4).",
+                                                                                            true);
+
+        /// <summary>
+        /// A signature of a request did not hold: it was broken, signed another frame, or was of a format that is not accepted (Signed OCPP Messages and Signer Roles, section 5.4).
+        /// </summary>
+        public readonly static SecurityEvent MessageSignatureInvalid                = new ("MessageSignatureInvalid",
+                                                                                           "A signature of a request did not hold: it was broken, signed another frame, or was of a format that is not accepted (Signed OCPP Messages and Signer Roles, section 5.4).",
+                                                                                            true);
+
+        /// <summary>
+        /// The signatures of a request held, and no key behind them is known to this node (Signed OCPP Messages and Signer Roles, section 5.4).
+        /// </summary>
+        public readonly static SecurityEvent MessageSignerUnknown                   = new ("MessageSignerUnknown",
+                                                                                           "The signatures of a request held, and no key behind them is known to this node (Signed OCPP Messages and Signer Roles, section 5.4).",
+                                                                                            true);
+
+        /// <summary>
+        /// The signers of a request are known, and may not do what it asked for (Signed OCPP Messages and Signer Roles, section 5.4).
+        /// </summary>
+        public readonly static SecurityEvent MessageSignerNotAuthorized             = new ("MessageSignerNotAuthorized",
+                                                                                           "The signers of a request are known, and may not do what it asked for (Signed OCPP Messages and Signer Roles, section 5.4).",
+                                                                                            true);
+
+        /// <summary>
+        /// A signature of a request was seen before within its validity (Signed OCPP Messages and Signer Roles, section 5.4).
+        /// </summary>
+        public readonly static SecurityEvent MessageReplayed                        = new ("MessageReplayed",
+                                                                                           "A signature of a request was seen before within its validity (Signed OCPP Messages and Signer Roles, section 5.4).",
+                                                                                            true);
+
+        /// <summary>
+        /// A signature of a request was made too far in the future, or its validity had passed (Signed OCPP Messages and Signer Roles, section 5.4).
+        /// </summary>
+        public readonly static SecurityEvent MessageSignatureExpired                = new ("MessageSignatureExpired",
+                                                                                           "A signature of a request was made too far in the future, or its validity had passed (Signed OCPP Messages and Signer Roles, section 5.4).",
+                                                                                            true);
+
+        /// <summary>
         /// The legal group of time servers reached MaxErrors: the station keeps no legal time until a round of it produces a time again (Secure Time Synchronization, section 3.2.6).
         /// </summary>
         public readonly static SecurityEvent LegalTimeLimited                       = new ("LegalTimeLimited",

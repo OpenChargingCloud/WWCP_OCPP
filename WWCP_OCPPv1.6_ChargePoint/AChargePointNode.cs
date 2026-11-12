@@ -604,6 +604,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             // otherwise, the time this node was built is the best guess.
             CSMSTime = Now;
 
+            // Whatever the signature policy finds wrong with a request, the central system is told.
+            OCPP.SignaturePolicy.OnPolicyViolation += TellOfPolicyViolation;
+
             if (ChargeBoxId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ChargeBoxId),        "The given charge box identification must not be null or empty!");
 

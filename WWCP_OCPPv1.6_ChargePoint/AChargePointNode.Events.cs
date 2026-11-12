@@ -59,6 +59,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         private const String securityEventKind = "SecurityEventNotification";
 
         /// <summary>
+        /// The requests a violation of the signature policy was told of: one
+        /// security event per request, however many of its entries were refused.
+        /// </summary>
+        private readonly System.Runtime.CompilerServices.ConditionalWeakTable<ISignableMessage, Object> violationsTold = [];
+
+        /// <summary>
         /// The security event that tells a back end how many messages waiting for it were let go.
         /// </summary>
         public  const String QueueOverflow     = "QueueOverflow";
@@ -147,6 +153,51 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                         Boolean            Held)
 
             => Queues.Hold(Destination, Held);
+
+        #endregion
+
+        #region (private) TellOfPolicyViolation(Violation)
+
+        /// <summary>
+        /// Tell the central system of a request that was not signed as the signature
+        /// policy wants it, refused or executed all the same: a security event
+        /// of the kind of the violation, whose techInfo names the action and
+        /// the reason (white paper "Signed OCPP Messages and Signer Roles",
+        /// section 5.4). A request is told of once.
+        /// </summary>
+        private void TellOfPolicyViolation(PolicyViolation Violation)
+        {
+
+            if (!violationsTold.TryAdd(Violation.Message, Violation))
+                return;
+
+            var type = Violation.Kind switch {
+                           PolicyViolationKinds.SignatureMissing     => SecurityEvent.MessageSignatureMissing,
+                           PolicyViolationKinds.SignatureInvalid     => SecurityEvent.MessageSignatureInvalid,
+                           PolicyViolationKinds.SignerUnknown        => SecurityEvent.MessageSignerUnknown,
+                           PolicyViolationKinds.Replayed             => SecurityEvent.MessageReplayed,
+                           PolicyViolationKinds.SignatureExpired     => SecurityEvent.MessageSignatureExpired,
+                           _                                         => SecurityEvent.MessageSignerNotAuthorized
+                       };
+
+            try
+            {
+
+                _ = QueueSecurityEventAsync(
+                        type,
+                        $"{Violation.Action}{(Violation.Refused ? "" : ", executed all the same")}: {Violation.Reason}"
+                    ).ContinueWith(
+                        task => DebugX.LogException(task.Exception!, $"Charge point '{Id}': telling of a '{type}'"),
+                        TaskContinuationOptions.OnlyOnFaulted
+                    );
+
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, $"Charge point '{Id}': telling of a '{type}'");
+            }
+
+        }
 
         #endregion
 

@@ -704,6 +704,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             // otherwise, the time this node was built is the best guess.
             CSMSTime = Now;
 
+            // Whatever the signature policy finds wrong with a request, the CSMS is told.
+            OCPP.SignaturePolicy.OnPolicyViolation += TellOfPolicyViolation;
+
             if (VendorName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
 

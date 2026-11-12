@@ -103,9 +103,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         /// <summary>
         /// A charge point whose signature policy is enforced answers a reset
         /// nobody signed with a CALLERROR SecurityError that names the permission
-        /// that was missing, and not with a ResetResponse (white paper "Signed
-        /// OCPP Messages and Signer Roles", section 5.4). With the policy off
-        /// again, the reset is accepted as before.
+        /// that was missing, and not with a ResetResponse, and tells the central
+        /// system of it with a security event (white paper "Signed OCPP Messages
+        /// and Signer Roles", section 5.4). All its keys asked for by nobody are
+        /// one request, and one event. With the policy off again, the reset is
+        /// accepted as before.
         /// </summary>
         [Test]
         public async Task CentralSystem_Reset_WhileThePolicyIsEnforced_Test()
@@ -125,6 +127,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 var policy         = chargePoint1.OCPP.SignaturePolicy;
                 var requestErrors  = new System.Collections.Concurrent.ConcurrentQueue<OCPP_JSONRequestErrorMessage>();
                 var responses      = new System.Collections.Concurrent.ConcurrentQueue<OCPP_JSONResponseMessage>();
+                var securityEvents = new System.Collections.Concurrent.ConcurrentQueue<CP.SecurityEventNotificationRequest>();
+
+                OnSecurityEventNotificationRequestReceivedDelegate securityEventReceived = (timestamp, sender, connection, request, ct) => {
+                    securityEvents.Enqueue(request);
+                    return Task.CompletedTask;
+                };
+
+                async Task Until(Func<Boolean> condition)
+                {
+                    var patience = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+                    while (!condition() && DateTime.UtcNow < patience)
+                        await Task.Delay(20);
+                }
 
                 OnJSONRequestErrorMessageSentDelegate requestErrorSent = (timestamp, sender, connection, requestError, result, ct) => {
                     requestErrors.Enqueue(requestError);
@@ -138,6 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 chargePoint1.OCPP.OUT.OnJSONRequestErrorMessageSent  += requestErrorSent;
                 chargePoint1.OCPP.OUT.OnJSONResponseMessageSent      += responseSent;
+                testCentralSystem01.OCPP.IN.OnSecurityEventNotificationRequestReceived += securityEventReceived;
 
                 policy.Mode = cloud.charging.open.protocols.WWCP.MessagePolicyModes.Enforce;
 
@@ -151,6 +167,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                     var error    = requestErrors.FirstOrDefault(requestError => requestError.RequestId == refused.Request.RequestId);
 
+                    await Until(() => securityEvents.Count >= 1);
+
+                    var allKeys  = await testCentralSystem01.GetConfiguration(
+                                             Destination:  SourceRouting.To(chargePoint1.Id)
+                                         );
+
+                    await Until(() => securityEvents.Count >= 2);
+                    await Task.Delay(200);   // ...and a third one would be one too many.
+
                     Assert.Multiple(() => {
 
                         Assert.That(refused.Result.ResultCode,     Is.EqualTo(ResultCode.SecurityError));
@@ -163,6 +188,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                         Assert.That(responses.Any(response => response.RequestId == refused.Request.RequestId),   Is.False,   "A refused reset was answered with a response, too!");
 
+                        // The central system is told of the reset, and once of the keys nobody may read.
+                        Assert.That(allKeys.ConfigurationKeys,                                     Is.Empty);
+                        Assert.That(securityEvents.Select(securityEvent => securityEvent.Type),    Is.EqualTo(new[] { SecurityEvent.MessageSignatureMissing, SecurityEvent.MessageSignatureMissing }));
+                        Assert.That(securityEvents.First().TechInfo,                               Does.StartWith("Reset: ").And.Contain("reset-immediate:run"));
+                        Assert.That(securityEvents.Last(). TechInfo,                               Does.StartWith("GetConfiguration: "));
+
                     });
 
                 }
@@ -171,6 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     policy.Mode = cloud.charging.open.protocols.WWCP.MessagePolicyModes.Off;
                     chargePoint1.OCPP.OUT.OnJSONRequestErrorMessageSent  -= requestErrorSent;
                     chargePoint1.OCPP.OUT.OnJSONResponseMessageSent      -= responseSent;
+                    testCentralSystem01.OCPP.IN.OnSecurityEventNotificationRequestReceived -= securityEventReceived;
                 }
 
                 var afterwards = await testCentralSystem01.Reset(
