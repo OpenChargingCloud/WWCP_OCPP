@@ -94,6 +94,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    ActionPermission.Needs  ("GetLog",                  "log:read"),
 
+                   // The monitoring of the station as a whole: which monitors there are, and
+                   // taking them away or setting how much of them is reported. Setting one
+                   // monitor is decided by its variable, see ActionsDecidedPerEntry.
+                   ActionPermission.Needs  ("GetMonitoringReport",     "monitoring:read"),
+                   ActionPermission.Needs  ("ClearVariableMonitoring", "monitoring:edit"),
+                   ActionPermission.Needs  ("SetMonitoringBase",       "monitoring:edit"),
+                   ActionPermission.Needs  ("SetMonitoringLevel",      "monitoring:edit"),
+
                    ActionPermission.Needs  ("SyncNetworkTime",         "nts:run"),
                    ActionPermission.Needs  ("TestTimeServer",          "nts:run"),
 

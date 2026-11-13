@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                     Name:             "ItemsPerMessage",
                     Instance:         "SetVariableMonitoring",
-                    ValueGetter:      this.ItemsPerMessage.SetVariableMonitoring.ToString,
+                    ValueGetter:      () => this.ItemsPerMessage.SetVariableMonitoring.ToString(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.BSS
 
                     Name:             "BytesPerMessage",
                     Instance:         "SetVariableMonitoring",
-                    ValueGetter:      this.BytesPerMessage.SetVariableMonitoring.ToString,
+                    ValueGetter:      () => this.BytesPerMessage.SetVariableMonitoring.ToString(),
 
                     Attributes:       new VariableAttribute(
                                           Mutability:  MutabilityTypes.ReadOnly

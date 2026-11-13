@@ -241,6 +241,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (this.ValidityTime < MinimumValidityTime)
                 throw new ArgumentException($"The validity time of the TOTP must be at least {MinimumValidityTime.TotalSeconds} second{(MinimumValidityTime.TotalSeconds == 1 ? "" : "s")}!", nameof(ValidityTime));
 
+            if (this.ValidityTime > MaximumValidityTime)
+                throw new ArgumentException($"The validity time of the TOTP must be at most {MaximumValidityTime.TotalSeconds} seconds!", nameof(ValidityTime));
+
 
             if (this.SharedSecret.Length < MinimumSharedSecretLength)
                 throw new ArgumentException($"The length of the shared secret for the time-based one-time password algorithm must be at least {MinimumSharedSecretLength} characters!", nameof(SharedSecret));
@@ -409,6 +412,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                                   var newValidityTime = TimeSpan.FromSeconds(time);
 
+                                                  if (newValidityTime > MaximumValidityTime)
+                                                      return new ValueSetterResponse(
+                                                                 newV,
+                                                                 $"The validity time of the time-based one-time passwords must be at most {MaximumValidityTime.TotalSeconds} seconds!"
+                                                             );
+
                                                   if (newValidityTime >= MinimumValidityTime)
                                                   {
                                                       this.ValidityTime = newValidityTime;
@@ -500,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       },
 
                     Attributes:       new VariableAttribute(
-                                          Mutability:  MutabilityTypes.ReadWrite
+                                          Mutability:  MutabilityTypes.WriteOnly
                                       ),
 
                     Characteristics:  new VariableCharacteristics(

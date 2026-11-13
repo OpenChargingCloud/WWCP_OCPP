@@ -554,6 +554,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
 
         #endregion
 
+        #region ASignatureFormat_IsSaidOfAnSSHConnection()
+
+        /// <summary>
+        /// Which signatures a message gets is said of an ssh:// connection as of a
+        /// WebSocket: of its client, and of the node at its far end. Two charging
+        /// stations of one policy, the connection of the first says COSE, the node at
+        /// the far end of the second's both - and a CSMS that answers the first in COSE.
+        /// </summary>
+        [Test]
+        public async Task ASignatureFormat_IsSaidOfAnSSHConnection()
+        {
+
+            var first    = NewStation("GD-SSH-011");
+            var result   = await first.ConnectOCPPClient(SshURL("GD-SSH-011"), Subprotocols: Offered, Ssh: Login("GD-SSH-011"));
+
+            Assert.That(result.IsConnected,  Is.True, result.ToString());
+            Assert.That(result.Client,       Is.Not.Null);
+
+            await Until(() => sshServer!.ConnectedNetworkingNodeIds.Contains(first.Id), "Registering 'GD-SSH-011'");
+
+            static String FormatsOf(IEnumerable<Signature> Signatures)
+                => String.Join("+", Signatures.Select(signature => signature.IsCOSE ? "COSE" : "JWS").Order());
+
+            var received = new ConcurrentList<BootNotificationRequest>();
+
+            OnBootNotificationRequestReceivedDelegate seeBoot = (timestamp, sender, connection, request, ct) => {
+                received.TryAdd(request);
+                return Task.CompletedTask;
+            };
+
+            testCSMS1!.OCPP.IN.OnBootNotificationRequestReceived += seeBoot;
+
+            try
+            {
+
+                testCSMS1.OCPP.SignaturePolicy.AddSigningRule(OCPPv2_1.CSMS.BootNotificationResponse.DefaultJSONLDContext, ECCKeyPair.GenerateKeys()!);
+
+                // Of the client the station connected with, and of the station by its name.
+                first.    OCPP.SetSignatureFormats(result.Client!, SignatureFormats.COSE);
+                testCSMS1.OCPP.SetSignatureFormats(first.Id,       SignatureFormats.COSE);
+
+                Assert.That(first.OCPP.SignatureFormatsFor(NetworkingNode_Id.CSMS),  Is.EqualTo(SignatureFormats.COSE),
+                            "What was said of the SSH client is not what its route to the CSMS says.");
+
+                var boot1 = await first.SendBootNotification(
+                                      BootReason:  BootReason.PowerUp,
+                                      SignInfos:   [ ECCKeyPair.GenerateKeys()!.ToSignInfo1("ahzf", I18NString.Create("Just a test!"), Timestamp.Now) ]
+                                  );
+
+                // Saying nothing again is what the policy says.
+                first.    OCPP.SetSignatureFormats(result.Client!, null);
+                testCSMS1.OCPP.SetSignatureFormats(first.Id,       null);
+
+                var boot2 = await first.SendBootNotification(
+                                      BootReason:  BootReason.PowerUp,
+                                      SignInfos:   [ ECCKeyPair.GenerateKeys()!.ToSignInfo1("ahzf", I18NString.Create("Just a test!"), Timestamp.Now) ]
+                                  );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(boot1.Result.ResultCode,                              Is.EqualTo(ResultCode.OK), boot1.Result.ToString());
+                    Assert.That(boot2.Result.ResultCode,                              Is.EqualTo(ResultCode.OK), boot2.Result.ToString());
+
+                    Assert.That(received.Select(request => FormatsOf(request.Signatures)),  Is.EqualTo(new[] { "COSE", "JWS" }));
+
+                    Assert.That(FormatsOf(boot1.Signatures),                          Is.EqualTo("COSE"));
+                    Assert.That(FormatsOf(boot2.Signatures),                          Is.EqualTo("JWS"));
+
+                    Assert.That(first.OCPP.SignatureFormatsFor(NetworkingNode_Id.CSMS),  Is.Null);
+
+                });
+
+            }
+            finally
+            {
+                testCSMS1.OCPP.IN.OnBootNotificationRequestReceived -= seeBoot;
+                testCSMS1.OCPP.SetSignatureFormats(first.Id, null);
+            }
+
+        }
+
+        #endregion
+
         #region ConnectOCPPClientOverAWebSocket()
 
         /// <summary>
