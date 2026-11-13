@@ -80,7 +80,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("onPinMismatch",       "OnPinMismatch",       true),
             ("hostKeyFingerprint",  "HostKeyFingerprint",  false),
             ("connected",           "Connected",           false),
-            ("problem",             "Problem",             false)
+            ("problem",             "Problem",             false),
+
+            // What the peer may be used for as a file server.
+            ("fileTransfers",           "FileTransfers",           true),
+            ("fileTransferUsers",       "FileTransferUsers",       true),
+            ("uploadPaths",             "UploadPaths",             true),
+            ("downloadPaths",           "DownloadPaths",           true),
+            ("fileTransferConnection",  "FileTransferConnection",  true),
+            ("fileTransferPublicKeys",  "FileTransferPublicKeys",  false),
+            ("fileTransferKeyStates",   "FileTransferKeyStates",   false)
         ];
 
         private static readonly Regex peerKey16  = new ("^sshPeer\\.([A-Za-z0-9][A-Za-z0-9._-]{0,31})\\.([A-Za-z]+)$",

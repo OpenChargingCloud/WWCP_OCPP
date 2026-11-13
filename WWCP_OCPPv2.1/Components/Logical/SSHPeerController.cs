@@ -129,7 +129,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("OnPinMismatch",       DataTypes.OptionList,  "What a host key that neither a pin nor a CA vouches for leads to.",                                                  ValuesList: [ "Refuse", "Record", "Accept" ],            Writable: true),
             new ("HostKeyFingerprint",  DataTypes.String,      "The SHA-256 fingerprint of the host key the peer showed at the last handshake."),
             new ("Connected",           DataTypes.Boolean,     "Whether the SSH connection to the peer lasts now: it is made when something first needs it."),
-            new ("Problem",             DataTypes.Boolean,     "True while the host key the peer showed last was refused.")
+            new ("Problem",             DataTypes.Boolean,     "True while the host key the peer showed last was refused."),
+
+            // What the peer may be used for as a file server: the white paper
+            // "SFTP for Logfile Uploads and Firmware Downloads", section 8.1.
+            new ("FileTransfers",           DataTypes.MemberList,  "The directions this peer may be used in as a file server, whatever the file is; empty: it is none.",                ValuesList: [ "Upload", "Download" ],                    Writable: true, MayBeEmpty: true),
+            new ("FileTransferUsers",       DataTypes.String,      "Comma separated logins a request for a file transfer may name; empty: only UserName, or the node's own.",                                                                     Writable: true, MayBeEmpty: true, MaxItems: 8),
+            new ("UploadPaths",             DataTypes.String,      "Comma separated directories an upload may go to, each with everything below it; {id} stands for the node's identity. Empty: none.",                                          Writable: true, MayBeEmpty: true, MaxItems: 8),
+            new ("DownloadPaths",           DataTypes.String,      "Comma separated directories a download may come from, each with everything below it; {id} stands for the node's identity. Empty: none.",                                     Writable: true, MayBeEmpty: true, MaxItems: 8),
+            new ("FileTransferConnection",  DataTypes.OptionList,  "Shared: a request under the login of the node's connection to this peer goes as one more channel of it. Dedicated: every transfer has a connection of its own.", ValuesList: [ "Dedicated", "Shared" ], Writable: true),
+            new ("FileTransferPublicKeys",  DataTypes.String,      "The public keys the node signs in with for file transfers at this peer, one per login, comma separated: each a line of authorized_keys whose comment is <login>@<peer>."),
+            new ("FileTransferKeyStates",   DataTypes.String,      "Whether the key of each login is used, comma separated as <login>=Confirmed or <login>=Unconfirmed: a key is used only once somebody confirmed that the file server holds it.")
 
         ];
 

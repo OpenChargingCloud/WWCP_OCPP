@@ -26,11 +26,24 @@ using cloud.charging.open.protocols.OCPPv2_1;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.WWCP.Node;
 using cloud.charging.open.protocols.WWCP.Node.Configuration;
+using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.Node
 {
+
+    /// <summary>
+    /// Whether a signer of pin sets the node believes signed the given
+    /// SetVariables request, which writes the SSH peers of the node.
+    /// </summary>
+    /// <param name="Request">The request; null where it is not known.</param>
+    /// <param name="Signer">Who signed it.</param>
+    /// <param name="Why">Why it is not taken as signed.</param>
+    public delegate Boolean SSHPeerSignatureCheck(SetVariablesRequest?                                              Request,
+                                                  [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]  out String?  Signer,
+                                                  [System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out String?  Why);
+
 
     /// <summary>
     /// The SSH peers of a node as the OCPP Device Model has them:
@@ -67,8 +80,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         private static readonly String[] nodeVariables          = [ "Peers", "ClientPublicKey" ];
         private static readonly String[] writableNodeVariables  = [ "Peers" ];
-        private static readonly String[] peerVariables          = [ "Address", "Port", "UserName", "HostKeyPins", "HostCAs", "OnPinMismatch", "HostKeyFingerprint", "Connected", "Problem" ];
-        private static readonly String[] writablePeerVariables  = [ "Address", "Port", "UserName", "HostKeyPins", "HostCAs", "OnPinMismatch" ];
+        private static readonly String[] peerVariables          = [ "Address", "Port", "UserName", "HostKeyPins", "HostCAs", "OnPinMismatch", "HostKeyFingerprint", "Connected", "Problem",
+                                                                    "FileTransfers", "FileTransferUsers", "UploadPaths", "DownloadPaths", "FileTransferConnection", "FileTransferPublicKeys", "FileTransferKeyStates" ];
+        private static readonly String[] writablePeerVariables  = [ "Address", "Port", "UserName", "HostKeyPins", "HostCAs", "OnPinMismatch",
+                                                                    "FileTransfers", "FileTransferUsers", "UploadPaths", "DownloadPaths", "FileTransferConnection" ];
 
         private static readonly Regex    peerId                 = new ("^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$", RegexOptions.CultureInvariant);
 
@@ -100,6 +115,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The component whose instances a SetVariables request may add.
         /// </summary>
         public IEnumerable<String>  NewInstanceComponents    => [ Component ];
+
+        /// <summary>
+        /// Who says whether a signer of pin sets the node believes signed a
+        /// request that writes the SSH peers. The peers say who a host is
+        /// believed by and where the node's files may go, so over OCPP they
+        /// are written by a signed request and by no other. Without anybody
+        /// to say so there is no signer, and nothing is written over OCPP at
+        /// all: a node that knows no signer is not the way around one.
+        /// </summary>
+        public SSHPeerSignatureCheck?  SignedBy              { get; set; }
 
         #endregion
 
@@ -154,6 +179,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        "hostkeyfingerprint"  => judgement?.Shown ?? "",
                        "connected"           => node.SSHPeerTo(entry.Address)?.Connection.Current is not null ? "true" : "false",
                        "problem"             => judgement is { Accepted: false } ? "true" : "false",
+
+                       // What it may be used for as a file server.
+                       "filetransfers"           => String.Join(",", new[] { (FileTransferDirections.Upload,   "Upload"),
+                                                                             (FileTransferDirections.Download, "Download") }.
+                                                                         Where (direction => entry.FileTransfers?.Allows(direction.Item1) == true).
+                                                                         Select(direction => direction.Item2)),
+                       "filetransferusers"       => String.Join(",", entry.FileTransfers?.Logins        ?? []),
+                       "uploadpaths"             => String.Join(",", entry.FileTransfers?.UploadPaths   ?? []),
+                       "downloadpaths"           => String.Join(",", entry.FileTransfers?.DownloadPaths ?? []),
+                       "filetransferconnection"  => entry.FileTransfers?.IsShared == true ? "Shared" : "Dedicated",
+
+                       // The keys are the node's, one per login, made when they are first read:
+                       // what a CSMS enters at the file server.
+                       "filetransferpublickeys"  => String.Join(",", node.FileTransferLogins(entry.Id).
+                                                                          Select(login => node.FileTransferPublicKey(entry.Id, login)).
+                                                                          Where (line  => line is not null)),
+                       "filetransferkeystates"   => String.Join(",", node.FileTransferLogins(entry.Id).
+                                                                          Select(login => $"{login}={(node.IsFileTransferKeyConfirmed(entry.Id, login) ? "Confirmed" : "Unconfirmed")}")),
+
                        _                     => null
                    };
 
@@ -220,6 +264,24 @@ namespace cloud.charging.open.protocols.OCPP.Node
             var results = new SetVariableResult?[Entries.Count];
             var atomic  = DataConsistencyModel == DataConsistencyModel.ACID ||
                           DataConsistencyModel == DataConsistencyModel.BASE;
+
+            // Signed by a signer of pin sets the node believes, or not written: checked
+            // before anything is changed, and not under the lock of the node.
+            String? unsigned = null;
+
+            if (SignedBy is not SSHPeerSignatureCheck signedBy)
+                unsigned = "This node believes no signer of pin sets, so its SSH peers are not written over OCPP: they are set on the node itself.";
+            else if (!signedBy(Entries.FirstOrDefault()?.Request, out var signer, out var why))
+                unsigned = why;
+            else
+                log?.Invoke($"A request that writes the SSH peers of this node was signed by {signer}.");
+
+            if (unsigned is not null)
+            {
+                for (var i = 0; i < Entries.Count; i++)
+                    results[i] = Result(Entries[i], SetVariableStatus.Rejected, "Unsigned", unsigned.Length > 1024 ? unsigned[..1024] : unsigned);
+                return results!;
+            }
 
             await oneRequestAtATime.WaitAsync(CancellationToken);
 
@@ -320,6 +382,34 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public List<String>  CAs         { get; set; } = [];
             public String        OnMismatch  { get; set; } = "refuse";
 
+            // What the peer may be used for as a file server, as its entry has it: carried
+            // through every change of the peers, or it would be lost at the first one.
+            public JObject?      FileTransfers  { get; set; }
+
+            /// <summary>
+            /// Set one of the lists of "fileTransfers", and let go of the whole
+            /// object where nothing is left that it says.
+            /// </summary>
+            public void SetFileTransfers(String Name, JToken? Value)
+            {
+
+                var json = FileTransfers ?? new JObject(new JProperty("directions", new JArray()));
+
+                if (Value is null || Value is JArray { Count: 0 })
+                    json.Remove(Name);
+                else
+                    json[Name] = Value;
+
+                if (json["directions"] is null)
+                    json["directions"] = new JArray();
+
+                // A peer that is allowed nothing and says nothing else is no file server.
+                FileTransfers = json.Count == 1 && json["directions"] is JArray { Count: 0 }
+                                    ? null
+                                    : json;
+
+            }
+
             public JObject ToJSON()
             {
 
@@ -333,6 +423,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (Pins.Count > 0)          json.Add("hostKeyPins",  new JArray(Pins));
                 if (CAs. Count > 0)          json.Add("hostCAs",      new JArray(CAs));
                 if (OnMismatch != "refuse")  json.Add("onMismatch",   OnMismatch);
+                if (FileTransfers is not null) json.Add("fileTransfers", FileTransfers.DeepClone());
 
                 return json;
 
@@ -348,7 +439,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                              User        = peer.User,
                                              Pins        = [.. peer.Trust.Pins],
                                              CAs         = [.. peer.Trust.CAs],
-                                             OnMismatch  = peer.Trust.OnMismatch.AsText()
+                                             OnMismatch  = peer.Trust.OnMismatch.AsText(),
+                                             FileTransfers  = peer.FileTransfers?.ToJSON()
                                          })];
 
         #endregion
@@ -477,6 +569,24 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 case "onpinmismatch":
                     row.OnMismatch  = value.Trim().ToLowerInvariant();
+                    break;
+
+                // What it may be used for as a file server: said as lists here, kept as the
+                // "fileTransfers" object of its entry, and checked as that is read.
+                case "filetransfers":
+                    row.SetFileTransfers("directions",    new JArray(ListOf(value).Select(direction => direction.ToLowerInvariant())));
+                    break;
+                case "filetransferusers":
+                    row.SetFileTransfers("users",         new JArray(ListOf(value)));
+                    break;
+                case "uploadpaths":
+                    row.SetFileTransfers("uploadPaths",   new JArray(ListOf(value)));
+                    break;
+                case "downloadpaths":
+                    row.SetFileTransfers("downloadPaths", new JArray(ListOf(value)));
+                    break;
+                case "filetransferconnection":
+                    row.SetFileTransfers("connection",    value.Trim().Equals("Shared", StringComparison.OrdinalIgnoreCase) ? "shared" : null);
                     break;
 
             }

@@ -78,6 +78,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             station    = Nodes.New(directory, configuration);
             model      = new SSHPeerDeviceModel(station.Node);
 
+            // Whoever writes the peers over OCPP has signed it: here, everybody has.
+            station.Bridge.SSHPeers.SignedBy = (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
+                signer  = "the test";
+                why     = null;
+                return true;
+            };
+
         }
 
         [TearDown]
@@ -357,6 +364,211 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         private static OCPP21.SetVariableStatus[] StatusesOf(IEnumerable<OCPP21.SetVariableResult> Results)
 
             => [.. Results.Select(result => result.AttributeStatus)];
+
+        #endregion
+
+        #region File servers, and who may write the peers
+
+        private static readonly OCPP21.SetVariableStatus Accepted = OCPP21.SetVariableStatus.Accepted;
+        private static readonly OCPP21.SetVariableStatus Rejected = OCPP21.SetVariableStatus.Rejected;
+
+        private JObject? FileTransfersOnDisk(String Peer = "lc")
+            => ((JArray) OnDisk()["ssh"]!["peers"]!).OfType<JObject>().
+                   First(peer => peer.Value<String>("id") == Peer)["fileTransfers"] as JObject;
+
+        private String? Shown(String Variable, String Peer = "lc")
+            => station!.Bridge.SSHPeers.PeerValue(Peer, Variable);
+
+        /// <summary>
+        /// A peer becomes a file server by what its variables say, kept as the
+        /// "fileTransfers" object of its entry; and the keys the node signs in
+        /// with there are read from the same component.
+        /// </summary>
+        [Test]
+        public async Task APeerIsAFileServerByWhatItsVariablesSay()
+        {
+
+            Assert.That(Shown("FileTransfers"),           Is.EqualTo(""),          "a peer is no file server by being a peer");
+            Assert.That(Shown("FileTransferConnection"),  Is.EqualTo("Dedicated"));
+            Assert.That(Shown("FileTransferPublicKeys"),  Is.EqualTo(""));
+            Assert.That(station!.Node.FileServers,        Is.Empty);
+
+            var results = await Set(OCPP21.DataConsistencyModel.ACID,
+                                    ("lc", "FileTransfers",           "Upload,Download"),
+                                    ("lc", "FileTransferUsers",       "cs001,cs001-fw"),
+                                    ("lc", "UploadPaths",             "/upload/{id}"),
+                                    ("lc", "DownloadPaths",           "/firmware/"),
+                                    ("lc", "FileTransferConnection",  "Shared"));
+
+            Assert.That(StatusesOf(results), Is.All.EqualTo(Accepted),
+                        String.Join(" | ", results.Select(result => result.AttributeStatusInfo?.AdditionalInfo)));
+
+            Assert.That(FileTransfersOnDisk()!.ToString(Newtonsoft.Json.Formatting.None),
+                        Is.EqualTo("""{"directions":["upload","download"],"users":["cs001","cs001-fw"],"uploadPaths":["/upload/{id}/"],"downloadPaths":["/firmware/"],"connection":"shared"}"""));
+
+            Assert.That(Shown("FileTransfers"),           Is.EqualTo("Upload,Download"));
+            Assert.That(Shown("FileTransferUsers"),       Is.EqualTo("cs001,cs001-fw"));
+            Assert.That(Shown("UploadPaths"),             Is.EqualTo("/upload/{id}/"));
+            Assert.That(Shown("DownloadPaths"),           Is.EqualTo("/firmware/"));
+            Assert.That(Shown("FileTransferConnection"),  Is.EqualTo("Shared"));
+
+            Assert.That(station.Node.FileServers.Select(fileServer => fileServer.Id), Is.EqualTo(new[] { "lc" }));
+
+            // A key per login, made by the node: the list a CSMS enters at the file server.
+            var keys = Shown("FileTransferPublicKeys")!.Split(',');
+
+            Assert.That(keys,                             Has.Length.EqualTo(2));
+            Assert.That(keys,                             Is.All.StartsWith("ssh-ed25519 "));
+            Assert.That(keys[0],                          Does.EndWith(" cs001@lc"));
+            Assert.That(keys[1],                          Does.EndWith(" cs001-fw@lc"));
+            Assert.That(keys[0].Split(' ')[1],            Is.Not.EqualTo(keys[1].Split(' ')[1]));
+
+            Assert.That(Shown("FileTransferKeyStates"),   Is.EqualTo("cs001=Unconfirmed,cs001-fw=Unconfirmed"));
+
+            Assert.That(station.Node.ConfirmFileTransferKey("lc", "cs001", keys[0]), Is.Null);
+
+            Assert.That(Shown("FileTransferKeyStates"),   Is.EqualTo("cs001=Confirmed,cs001-fw=Unconfirmed"));
+
+        }
+
+        /// <summary>
+        /// What a peer may be used for is carried through every change of the
+        /// peers - of this one and of another - and is gone only when a request
+        /// empties it.
+        /// </summary>
+        [Test]
+        public async Task WhatAPeerMayBeUsedForOutlivesEveryOtherChange()
+        {
+
+            Assert.That(StatusesOf(await Set(OCPP21.DataConsistencyModel.ACID,
+                                             ("lc", "FileTransfers",  "Upload"),
+                                             ("lc", "UploadPaths",    "/upload/"))),
+                        Is.All.EqualTo(Accepted));
+
+            // Another variable of the same peer.
+            Assert.That(StatusesOf(await Set(null, ("lc", "HostKeyPins", $"{PinA},{PinB}"))), Is.All.EqualTo(Accepted));
+            Assert.That(FileTransfersOnDisk()?["uploadPaths"]?.Values<String>(), Is.EqualTo(new[] { "/upload/" }));
+
+            // Another peer added.
+            Assert.That(StatusesOf(await Set(OCPP21.DataConsistencyModel.ACID,
+                                             (null,   "Peers",        "lc,time"),
+                                             ("time", "Address",      "time.example"),
+                                             ("time", "HostKeyPins",  PinB))),
+                        Is.All.EqualTo(Accepted));
+
+            Assert.That(FileTransfersOnDisk()?["directions"]?.Values<String>(), Is.EqualTo(new[] { "upload" }));
+            Assert.That(FileTransfersOnDisk("time"),                             Is.Null);
+            Assert.That(station!.Node.FileServers.Select(fileServer => fileServer.Id), Is.EqualTo(new[] { "lc" }));
+
+            // Emptied, it is no file server, and its entry says nothing of it.
+            Assert.That(StatusesOf(await Set(OCPP21.DataConsistencyModel.ACID,
+                                             ("lc", "FileTransfers",  ""),
+                                             ("lc", "UploadPaths",    ""))),
+                        Is.All.EqualTo(Accepted));
+
+            Assert.That(FileTransfersOnDisk(),     Is.Null);
+            Assert.That(station.Node.FileServers,  Is.Empty);
+
+        }
+
+        /// <summary>
+        /// What a peer may be used for is checked as its entry is read.
+        /// </summary>
+        [Test]
+        public async Task WhatAFileServerCannotBeIsRefused()
+        {
+
+            foreach (var (variable, value) in new[] {
+                         ("FileTransfers",           "Sideways"),
+                         ("UploadPaths",             "upload/"),
+                         ("DownloadPaths",           "/firmware/../etc/"),
+                         ("FileTransferUsers",       "-rf"),
+                         ("FileTransferConnection",  "Both"),
+                         ("FileTransferPublicKeys",  "ssh-ed25519 AAAA mine"),
+                         ("FileTransferKeyStates",   "cs001=Confirmed")
+                     })
+            {
+
+                var results = await Set(null, ("lc", variable, value));
+
+                Assert.That(StatusesOf(results), Is.All.EqualTo(Rejected), $"{variable} = '{value}'");
+
+            }
+
+            Assert.That(FileTransfersOnDisk(), Is.Null);
+
+        }
+
+        /// <summary>
+        /// The peers say who a host is believed by and where the node's files
+        /// may go: over OCPP they are written by a request a signer of pin sets
+        /// signed, and by no other - neither a peer nor what it may be used for.
+        /// </summary>
+        [Test]
+        public async Task OnlyASignedRequestWritesThePeers()
+        {
+
+            var before = OnDisk().ToString();
+
+            (String? Peer, String Variable, String Value)[][] writes = [
+                [ ("lc", "HostKeyPins", PinB) ],
+                [ ("lc", "Address", "elsewhere.example") ],
+                [ ("lc", "FileTransfers", "Upload"), ("lc", "UploadPaths", "/upload/") ],
+                [ (null, "Peers", "") ],
+                [ (null, "Peers", "lc,time"), ("time", "Address", "time.example"), ("time", "HostKeyPins", PinB) ]
+            ];
+
+            // A node that knows no signer writes nothing over OCPP: it is not the way around one.
+            station!.Bridge.SSHPeers.SignedBy = null;
+
+            foreach (var write in writes)
+            {
+
+                var results = await Set(OCPP21.DataConsistencyModel.ACID, write);
+
+                Assert.That(StatusesOf(results),                                               Is.All.EqualTo(Rejected));
+                Assert.That(results.Select(result => result.AttributeStatusInfo?.ReasonCode),  Is.All.EqualTo("Unsigned"));
+
+            }
+
+            // A request no signer the node believes signed.
+            OCPP21.CSMS.SetVariablesRequest? asked = null;
+
+            station.Bridge.SSHPeers.SignedBy = (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
+                asked   = request;
+                signer  = null;
+                why     = "None of the request's signatures is a valid one of a signer this node believes.";
+                return false;
+            };
+
+            foreach (var write in writes)
+            {
+
+                var results = await Set(null, write);
+
+                Assert.That(StatusesOf(results),                                                   Is.All.EqualTo(Rejected));
+                Assert.That(results.Select(result => result.AttributeStatusInfo?.ReasonCode),      Is.All.EqualTo("Unsigned"));
+                Assert.That(results.Select(result => result.AttributeStatusInfo?.AdditionalInfo),  Is.All.Contains("None of the request's signatures"));
+
+            }
+
+            Assert.That(asked,                Is.Not.Null);
+            Assert.That(OnDisk().ToString(),  Is.EqualTo(before), "nothing was written");
+
+            // Reading is nobody's secret.
+            Assert.That(Shown("HostKeyPins"), Is.EqualTo(PinA));
+
+            // Signed, it is written.
+            station.Bridge.SSHPeers.SignedBy = (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
+                signer  = "the security officer";
+                why     = null;
+                return true;
+            };
+
+            Assert.That(StatusesOf(await Set(null, ("lc", "HostKeyPins", PinB))), Is.All.EqualTo(Accepted));
+            Assert.That(Shown("HostKeyPins"), Is.EqualTo(PinB));
+
+        }
 
         #endregion
 

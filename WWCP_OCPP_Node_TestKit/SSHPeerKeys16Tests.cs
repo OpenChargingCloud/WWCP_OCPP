@@ -24,6 +24,7 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using OCPP16 = cloud.charging.open.protocols.OCPPv1_6;
+using OCPP21 = cloud.charging.open.protocols.OCPPv2_1;
 
 #endregion
 
@@ -62,6 +63,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             configuration["ssh"] = JObject.Parse($$"""{ "peers": [ { "id": "lc", "address": "lc.example", "user": "cs001", "hostKeyPins": [ "{{PinA}}" ] } ] }""");
 
             station    = Nodes.New(directory, configuration);
+
+            // Whoever writes the peers over OCPP has signed it: here, everybody has.
+            station.Bridge.SSHPeers.SignedBy = (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
+                signer  = "the test";
+                why     = null;
+                return true;
+            };
 
         }
 
@@ -111,7 +119,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(Keys.Keys, Is.EqualTo(new[] {
                                            "sshPeers", "sshPeers.clientPublicKey",
                                            "sshPeer.lc.url", "sshPeer.lc.hostKeyPins", "sshPeer.lc.hostCAs", "sshPeer.lc.onPinMismatch",
-                                           "sshPeer.lc.hostKeyFingerprint", "sshPeer.lc.connected", "sshPeer.lc.problem"
+                                           "sshPeer.lc.hostKeyFingerprint", "sshPeer.lc.connected", "sshPeer.lc.problem",
+                                           "sshPeer.lc.fileTransfers", "sshPeer.lc.fileTransferUsers", "sshPeer.lc.uploadPaths", "sshPeer.lc.downloadPaths",
+                                           "sshPeer.lc.fileTransferConnection", "sshPeer.lc.fileTransferPublicKeys", "sshPeer.lc.fileTransferKeyStates"
                                        }));
 
                 Assert.That(Value("sshPeers"),                         Is.EqualTo("lc"));
@@ -268,6 +278,85 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(OnDisk().Count,                            Is.Zero);
                 Assert.That(station!.Node.SSHPeers,                    Is.Empty);
             });
+
+        }
+
+        #endregion
+
+        #region File servers, and who may write the peers
+
+        /// <summary>
+        /// What a peer may be used for as a file server has keys of its own,
+        /// read and written like the variables of OCPP 2.1.
+        /// </summary>
+        [Test]
+        public async Task APeerIsAFileServerByItsKeys()
+        {
+
+            Assert.That(Keys.Keys, Is.SupersetOf(new[] {
+                                       "sshPeer.lc.fileTransfers", "sshPeer.lc.fileTransferUsers", "sshPeer.lc.uploadPaths", "sshPeer.lc.downloadPaths",
+                                       "sshPeer.lc.fileTransferConnection", "sshPeer.lc.fileTransferPublicKeys", "sshPeer.lc.fileTransferKeyStates"
+                                   }));
+
+            Assert.That(Value("sshPeer.lc.fileTransfers"),                               Is.EqualTo(""));
+            Assert.That(Keys.Get("sshPeer.lc.fileTransfers")?.AccessRights,              Is.EqualTo(OCPP16.AccessRights.ReadWrite));
+            Assert.That(Keys.Get("sshPeer.lc.fileTransferPublicKeys")?.AccessRights,     Is.EqualTo(OCPP16.AccessRights.ReadOnly));
+
+            Assert.That(await Change("sshPeer.lc.fileTransfers",  "Upload"),      Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+            Assert.That(await Change("sshPeer.lc.uploadPaths",    "/upload/{id}"), Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+
+            Assert.That(Value("sshPeer.lc.fileTransfers"),           Is.EqualTo("Upload"));
+            Assert.That(Value("sshPeer.lc.uploadPaths"),             Is.EqualTo("/upload/{id}/"));
+            Assert.That(Value("sshPeer.lc.fileTransferConnection"),  Is.EqualTo("Dedicated"));
+
+            Assert.That(OnDisk()[0]["fileTransfers"]!.ToString(Newtonsoft.Json.Formatting.None),
+                        Is.EqualTo("""{"directions":["upload"],"uploadPaths":["/upload/{id}/"]}"""));
+
+            // The key of the peer's login, and whether it is used.
+            Assert.That(Value("sshPeer.lc.fileTransferPublicKeys"),  Does.StartWith("ssh-ed25519 ").And.EndWith(" cs001@lc"));
+            Assert.That(Value("sshPeer.lc.fileTransferKeyStates"),   Is.EqualTo("cs001=Unconfirmed"));
+
+            Assert.That(await Change("sshPeer.lc.fileTransferPublicKeys", "ssh-ed25519 AAAA mine"), Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+            Assert.That(await Change("sshPeer.lc.uploadPaths",            "upload/"),               Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+
+            // Another key of the peer changed: what it may be used for is still there.
+            Assert.That(await Change("sshPeer.lc.hostKeyPins", $"{PinA},{PinB}"), Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
+            Assert.That(Value("sshPeer.lc.uploadPaths"),             Is.EqualTo("/upload/{id}/"));
+
+        }
+
+        /// <summary>
+        /// A ChangeConfiguration of OCPP 1.6 brings no signature here, so with a
+        /// signer that checks one, no key of the peers is written over OCPP 1.6.
+        /// </summary>
+        [Test]
+        public async Task WithoutASignatureNoKeyOfThePeersIsWritten()
+        {
+
+            var before = OnDisk().ToString();
+
+            foreach (var check in new SSHPeerSignatureCheck?[] {
+                         null,
+                         (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
+                             signer  = null;
+                             why     = request?.Signatures.Any() == true ? "not believed" : "not signed";
+                             return false;
+                         }
+                     })
+            {
+
+                ((SSHPeerDeviceModel) Keys).SignedBy = check;
+
+                Assert.That(await Change("sshPeer.lc.hostKeyPins",    PinB),                                Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                Assert.That(await Change("sshPeer.lc.url",            "ssh://cs001@elsewhere.example"),     Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                Assert.That(await Change("sshPeer.lc.fileTransfers",  "Upload"),                            Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                Assert.That(await Change("sshPeer.new.url",           $"ssh://new.example#{PinB}"),         Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+                Assert.That(await Change("sshPeers",                  ""),                                  Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
+
+            }
+
+            Assert.That(OnDisk().ToString(),            Is.EqualTo(before), "nothing was written");
+            Assert.That(Value("sshPeer.lc.hostKeyPins"), Is.EqualTo(PinA),  "and everything is still read");
 
         }
 

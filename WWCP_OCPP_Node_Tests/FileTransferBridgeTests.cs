@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -154,16 +155,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
             station = new BareNodes().New(Path.Combine(directory, "station"),
                                           JObject.Parse("""{ "nts": { "groups": { "legal": { "enabled": false } } }, "ssh": { "enabled": false } }"""));
 
-            Assert.That(station.Node.SetFileServers([
-                            new SSHFileServer("files",
-                                              "127.0.0.1",
-                                              Login,
-                                              new NTSServerSSH(Port ?? this.Port, HostKeyPins: [ Pin ?? this.Pin ]),
-                                              new SSHFileTransfers(FileTransferDirections.Upload | FileTransferDirections.Download,
-                                                                   UploadPaths:    [ "/upload/" ],
-                                                                   DownloadPaths:  [ "/firmware/" ]))
-                        ]),
-                        Is.Null);
+            // The file server is an SSH peer of the station's configuration that says what it may be used for.
+            var held = await station.Node.TryUpdateSSHPeers(peers => new JArray(
+                                 new SSHPeerConfiguration("files",
+                                                          DomainName.Parse("127.0.0.1"),
+                                                          Login,
+                                                          new NTSServerSSH(Port ?? this.Port, HostKeyPins: [ Pin ?? this.Pin ]),
+                                                          new SSHFileTransfers(FileTransferDirections.Upload | FileTransferDirections.Download,
+                                                                               UploadPaths:    [ "/upload/" ],
+                                                                               DownloadPaths:  [ "/firmware/" ])).ToJSON()
+                             ));
+
+            Assert.That(held.Error, Is.Null);
 
             var line  = station.Node.FileTransferPublicKey("files", Login);
             var added = await server.AuthorizeSSHKey(Login, line!);
