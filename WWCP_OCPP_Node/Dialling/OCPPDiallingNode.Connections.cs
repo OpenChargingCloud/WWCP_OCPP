@@ -212,8 +212,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </remarks>
         public Int32 OCPPWebSocketClientCount
 
-            => Node16.OCPPWebSocketClients.Count() +
-               Node21.OCPPWebSocketClients.Count();
+            => Nodes.Sum(node => node.OCPPWebSocketClients.Count());
 
         #endregion
 
@@ -605,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (client is IWWCPClient itsClient)
                 {
                     if (Connection.OCPPVersion == OCPPVersion.OCPP1_6)
-                        Node16.OCPP.SetSignatureFormats(itsClient, Connection.SignatureFormats);
+                        Node16!.OCPP.SetSignatureFormats(itsClient, Connection.SignatureFormats);
                     else
                         Node21.OCPP.SetSignatureFormats(itsClient, Connection.SignatureFormats);
                 }
@@ -720,9 +719,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </remarks>
         protected WebSocketClient? ClientOf(ConnectionEntry Connection)
 
-            => (Connection.OCPPVersion == OCPPVersion.OCPP1_6
-                    ? Node16.OCPPWebSocketClients
-                    : Node21.OCPPWebSocketClients).
+            => (NodeOrNoneOf(Connection.OCPPVersion)?.OCPPWebSocketClients ?? []).
                OfType<WebSocketClient>().
                LastOrDefault(one => one.RemoteURL == Connection.URL);
 
@@ -736,8 +733,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         public String? HTTPVersionInUseAt(URL URL)
 
-            => Node16.OCPPWebSocketClients.
-                    Concat(Node21.OCPPWebSocketClients).
+            => Nodes.SelectMany(node => node.OCPPWebSocketClients).
                     OfType<WebSocketClient>().
                     LastOrDefault(one => one.RemoteURL == URL) is { Connected: true, HTTPVersionInUse: HTTPVersion over }
 
@@ -755,7 +751,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         public cloud.charging.open.protocols.WWCP.SignatureFormats? SignatureFormatsOf(ConnectionEntry Connection)
 
             => Connection.OCPPVersion == OCPPVersion.OCPP1_6
-                   ? Node16.OCPP.SignatureFormatsFor(NextHopOf(Connection))
+                   ? Node16!.OCPP.SignatureFormatsFor(NextHopOf(Connection))
                    : Node21.OCPP.SignatureFormatsFor(NextHopOf(Connection));
 
         #endregion
@@ -801,8 +797,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         public String? SubprotocolInUseAt(URL URL)
 
-            => Node16.OCPPWebSocketClients.
-                    Concat(Node21.OCPPWebSocketClients).
+            => Nodes.SelectMany(node => node.OCPPWebSocketClients).
                     OfType<WWCPWebSocketClient>().
                     LastOrDefault(one => one.RemoteURL == URL) is { Connected: true } client
 
@@ -817,6 +812,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The OCPP node that speaks the given version.
         /// </summary>
         protected OCPPCommon.NetworkingNode.AOCPPNetworkingNode NodeOf(OCPPVersion Version)
+
+            => NodeOrNoneOf(Version)
+                   ?? throw new InvalidOperationException($"This {NodeWording.Noun} does not speak {ConnectionEntry.AsText(Version)}.");
+
+        /// <summary>
+        /// The OCPP node that speaks the given version, or none where this
+        /// node does not speak it.
+        /// </summary>
+        protected OCPPCommon.NetworkingNode.AOCPPNetworkingNode? NodeOrNoneOf(OCPPVersion Version)
 
             => Version == OCPPVersion.OCPP1_6
                    ? Node16
@@ -1092,7 +1096,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (client is not null)
             {
                 if (Connection.OCPPVersion == OCPPVersion.OCPP1_6)
-                    Node16.OCPP.SetSignatureFormats(client, Connection.SignatureFormats);
+                    Node16!.OCPP.SetSignatureFormats(client, Connection.SignatureFormats);
                 else
                     Node21.OCPP.SetSignatureFormats(client, Connection.SignatureFormats);
             }
@@ -3041,9 +3045,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // Nothing more is asked of a CSMS, nor waited for.
             EndRegistrations(Node16, Node21);
 
-            foreach (var client in Node16.OCPPWebSocketClients.OfType<WebSocketClient>().
-                                   Concat(Node21.OCPPWebSocketClients.OfType<WebSocketClient>()).
-                                   ToArray())
+            foreach (var client in Nodes.SelectMany(node => node.OCPPWebSocketClients).
+                                         OfType<WebSocketClient>().
+                                         ToArray())
             {
                 try
                 {
@@ -3055,7 +3059,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 }
             }
 
-            foreach (var sshClient in Node16.WWCPSshClients.Concat(Node21.WWCPSshClients))
+            foreach (var sshClient in Nodes.SelectMany(node => node.WWCPSshClients).ToArray())
                 await LetGo(sshClient, $"This {NodeWording.Noun} hangs up.");
 
             lock (dialled)

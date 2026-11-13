@@ -81,9 +81,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected abstract OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?  Node16    { get; }
 
         /// <summary>
-        /// The node that speaks OCPP 2.1 for this one, where it has one.
+        /// The node that speaks OCPP 2.1 for this one.
         /// </summary>
-        protected abstract OCPPv2_1.NetworkingNode.AOCPPNetworkingNode?  Node21    { get; }
+        protected abstract OCPPv2_1.NetworkingNode.AOCPPNetworkingNode   Node21    { get; }
+
+        /// <summary>
+        /// The OCPP nodes this one has: the one for OCPP 2.1, and before it
+        /// the one for OCPP 1.6 where it speaks that.
+        /// </summary>
+        protected IEnumerable<OCPP.NetworkingNode.AOCPPNetworkingNode> Nodes
+
+            => Node16 is OCPPv1_6.NetworkingNode.AOCPPNetworkingNode node16
+                   ? [ node16, Node21 ]
+                   : [ Node21 ];
 
         #endregion
 
