@@ -178,6 +178,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 Node.AddComponent(new OCPPv2_1.NTPController  (NTS));
                 FollowNTSGroups(Node);
 
+                // GetLog and UpdateFirmware, answered with the node's file
+                // transfers - see DeviceModelBridge.FileTransfers.cs.
+                ServeFileTransfers(Node);
+
                 // QueryDNS, answered with the node's name resolution - see
                 // DeviceModelBridge.QueryDNS.cs.
                 if (Node is OCPPv2_1.IQueryDNSNode queryDNSNode)
@@ -214,6 +218,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 ChargePoint.CertificateSources.Add(NTSRootCertificates);
                 ChargePoint.AddConfigurationKeySource(NTS);
+
+                // The security events of the node's file transfers are told
+                // to a central system as well.
+                _ = FileTransfers;
 
                 // QueryDNS, answered with the node's name resolution - see
                 // DeviceModelBridge.QueryDNS.cs.

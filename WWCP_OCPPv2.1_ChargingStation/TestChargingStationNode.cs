@@ -51,7 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     public partial class TestChargingStationNode : AChargingStationNode,
                                                    IChargingStationNode,
-                                                   IQueryDNSNode
+                                                   IQueryDNSNode,
+                                                   IFileTransferNode
     {
 
         #region Data
@@ -114,6 +115,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// "Disabled", since nothing here resolves names that could be asked.
         /// </summary>
         public OnQueryDNSDelegate? QueryDNSProcessor { get; set; }
+
+        /// <summary>
+        /// What answers a GetLog request: whoever moves the files of the WWCP
+        /// node this station runs in. Without one, a GetLog is answered as it
+        /// always was here: Accepted, and nothing is uploaded.
+        /// </summary>
+        public OnGetLogDelegate? GetLogProcessor { get; set; }
+
+        /// <summary>
+        /// What answers an UpdateFirmware request: whoever moves the files of
+        /// the WWCP node this station runs in. Without one, an UpdateFirmware
+        /// is answered as it always was here: Accepted, and nothing is fetched.
+        /// </summary>
+        public OnUpdateFirmwareDelegate? UpdateFirmwareProcessor { get; set; }
+
+        /// <summary>
+        /// Tell the CSMS how the upload of a log goes.
+        /// </summary>
+        public Task SendLogStatus(UploadLogStatus    Status,
+                                  Int32?             LogRequestId,
+                                  CancellationToken  CancellationToken   = default)
+
+            => this.SendLogStatusNotification(Status, LogRequestId, CancellationToken: CancellationToken);
+
+        /// <summary>
+        /// Tell the CSMS how the download of a firmware image goes.
+        /// </summary>
+        public Task SendFirmwareStatus(FirmwareStatus     Status,
+                                       Int32?             UpdateFirmwareRequestId,
+                                       CancellationToken  CancellationToken   = default)
+
+            => this.SendFirmwareStatusNotification(Status, UpdateFirmwareRequestId, CancellationToken: CancellationToken);
 
         #endregion
 
@@ -2605,6 +2638,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  request,
                                  ct) => {
 
+                if (GetLogProcessor is OnGetLogDelegate processor)
+                    return processor(timestamp, sender, connection, request, ct);
+
                 DebugX.Log($"Charging station '{Id}': Incoming GetLog request ({request.LogRequestId}) accepted.");
 
                 // LogType
@@ -2902,6 +2938,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          connection,
                                          request,
                                          ct) => {
+
+                if (UpdateFirmwareProcessor is OnUpdateFirmwareDelegate processor)
+                    return processor(timestamp, sender, connection, request, ct);
 
                 DebugX.Log($"Charging station '{Id}': Incoming UpdateFirmware request ({request.UpdateFirmwareRequestId}) for '" + request.Firmware.FirmwareURL + "'.");
 
