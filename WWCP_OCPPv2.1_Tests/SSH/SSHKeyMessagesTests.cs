@@ -163,12 +163,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
             var to             = SourceRouting.To(NetworkingNode_Id.Parse("lc01"));
             var cs001          = NetworkingNode_Id.Parse("cs001");
 
-            var signSSHKey     = new SignSSHKeyRequest         (to, SSHKeyPurpose.OCPP, PublicKey);
+            var signSSHKey     = new SignSSHKeyRequest         (to, SSHKeyPurpose.Station, PublicKey);
             var sshKeySigned   = new SSHKeySignedRequest       (to, SSHKeyPurpose.NTS,  PublicKey, Certificate: "ssh-ed25519-cert-v01@openssh.com AAAA");
             var installSSHKey  = new InstallSSHKeyRequest      (to, cs001, SSHKeyPurpose.SFTP, PublicKey);
             var deleteSSHKey   = new DeleteSSHKeyRequest       (to, cs001, "SHA256:hOEj1ea61PSArpO3/qj2Drlp024D2eiJ7DJQNNLl+hU");
             var getAll         = new GetInstalledSSHKeysRequest(to);
-            var getSome        = new GetInstalledSSHKeysRequest(to, cs001, SSHKeyPurpose.OCPP);
+            var getSome        = new GetInstalledSSHKeysRequest(to, cs001, SSHKeyPurpose.Station);
 
             Assert.Multiple(() => {
 
@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
 
             var installed = new InstallSSHKeyResponse(installSSHKey, GenericStatus.Accepted, HostKeys: [ "SHA256:host1", "SHA256:host2" ]);
             var listed    = new GetInstalledSSHKeysResponse(getAll, GenericStatus.Accepted,
-                                                            Keys:      [ new InstalledSSHKey(cs001, SSHKeyPurpose.OCPP, PublicKey, "SHA256:key1") ],
+                                                            Keys:      [ new InstalledSSHKey(cs001, SSHKeyPurpose.Station, PublicKey, "SHA256:key1") ],
                                                             HostKeys:  [ "SHA256:host1" ]);
             var refused   = new DeleteSSHKeyResponse(deleteSSHKey, GenericStatus.Rejected, new StatusInfo("NotFound", "No such key of cs001."));
 
@@ -245,18 +245,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
             {
 
                 var signResponse   = await chargingStation.OCPP.OUT.SignSSHKey(new SignSSHKeyRequest(SourceRouting.To(NetworkingNode_Id.CSMS),
-                                                                                                     SSHKeyPurpose.OCPP,
+                                                                                                     SSHKeyPurpose.Station,
                                                                                                      PublicKey));
 
                 var signedResponse = await testCSMS1.OCPP.OUT.SSHKeySigned(new SSHKeySignedRequest(SourceRouting.To(chargingStation.Id),
-                                                                                                   SSHKeyPurpose.OCPP,
+                                                                                                   SSHKeyPurpose.Station,
                                                                                                    PublicKey));
 
                 Assert.Multiple(() => {
                     Assert.That(signResponse.Result.ResultCode,    Is.EqualTo(ResultCode.OK), signResponse.Result.ToString());
                     Assert.That(signResponse.Status,               Is.EqualTo(GenericStatus.Accepted));
                     Assert.That(signed?.PublicKey,                 Is.EqualTo(PublicKey));
-                    Assert.That(signed?.Purpose,                   Is.EqualTo(SSHKeyPurpose.OCPP));
+                    Assert.That(signed?.Purpose,                   Is.EqualTo(SSHKeyPurpose.Station));
                     Assert.That(signedResponse.Result.ResultCode,  Is.EqualTo(ResultCode.OK), signedResponse.Result.ToString());
                     Assert.That(signedResponse.Status,             Is.EqualTo(GenericStatus.Accepted));
                     Assert.That(confirmed?.PublicKey,              Is.EqualTo(PublicKey));
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
                                     : new DeleteSSHKeyResponse(request, GenericStatus.Rejected, new StatusInfo("NotFound")));
 
             var to         = SourceRouting.To(node.Id);
-            var installed  = await testCSMS1!.OCPP.OUT.InstallSSHKey      (new InstallSSHKeyRequest      (to, cs001, SSHKeyPurpose.OCPP, PublicKey));
+            var installed  = await testCSMS1!.OCPP.OUT.InstallSSHKey      (new InstallSSHKeyRequest      (to, cs001, SSHKeyPurpose.Station, PublicKey));
             var listed     = await testCSMS1.  OCPP.OUT.GetInstalledSSHKeys(new GetInstalledSSHKeysRequest(to, cs001));
             var deleted    = await testCSMS1.  OCPP.OUT.DeleteSSHKey       (new DeleteSSHKeyRequest       (to, cs001, "SHA256:key1"));
             var again      = await testCSMS1.  OCPP.OUT.DeleteSSHKey       (new DeleteSSHKeyRequest       (to, cs001, "SHA256:key1"));
@@ -504,6 +504,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
             {
                 testCSMS1.OCPP.IN.SenderGate = null;
             }
+
+        }
+
+        #endregion
+
+
+        #region TheKeyOfTheStation_IsCalledStation_AndWasCalledOCPP
+
+        /// <summary>
+        /// The purpose of the station's own key is "Station": the key it signs in with on the SSH
+        /// connection to a peer, which OCPP is one channel of. It was called "OCPP" when that connection
+        /// was taken for OCPP's, and a message that still says so is read as it was meant; what is
+        /// written says "Station". The words are read as written, in no other case.
+        /// </summary>
+        [Test]
+        public void TheKeyOfTheStation_IsCalledStation_AndWasCalledOCPP()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(SSHKeyPurpose.Station.AsText(),               Is.EqualTo("Station"));
+                Assert.That(SSHKeyPurposeExtensions.TryParse("Station"),  Is.EqualTo(SSHKeyPurpose.Station));
+                Assert.That(SSHKeyPurposeExtensions.TryParse("OCPP"),     Is.EqualTo(SSHKeyPurpose.Station));
+                Assert.That(SSHKeyPurposeExtensions.TryParse(" OCPP "),   Is.EqualTo(SSHKeyPurpose.Station));
+                Assert.That(SSHKeyPurposeExtensions.TryParse("station"),  Is.Null);
+                Assert.That(SSHKeyPurposeExtensions.TryParse("ocpp"),     Is.Null);
+                Assert.That(SSHKeyPurposeExtensions.TryParse("NTS"),      Is.EqualTo(SSHKeyPurpose.NTS));
+                Assert.That(SSHKeyPurposeExtensions.TryParse("SFTP"),     Is.EqualTo(SSHKeyPurpose.SFTP));
+                Assert.That(() => SSHKeyPurposeExtensions.Parse("Shell"), Throws.ArgumentException.With.Message.Contain("Station, NTS or SFTP"));
+            });
 
         }
 

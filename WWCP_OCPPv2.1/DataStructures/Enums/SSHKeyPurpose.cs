@@ -25,13 +25,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
-        /// Parse the given text as the purpose of an SSH key: "OCPP", "NTS" or "SFTP", as written.
+        /// Parse the given text as the purpose of an SSH key: "Station", "NTS" or "SFTP", as written -
+        /// and "OCPP", which "Station" was called before.
         /// </summary>
         public static SSHKeyPurpose Parse(String Text)
 
             => TryParse(Text, out var purpose)
                    ? purpose
-                   : throw new ArgumentException($"'{Text}' is no purpose of an SSH key: it is OCPP, NTS or SFTP.", nameof(Text));
+                   : throw new ArgumentException($"'{Text}' is no purpose of an SSH key: it is Station, NTS or SFTP.", nameof(Text));
 
         /// <summary>
         /// Try to parse the given text as the purpose of an SSH key.
@@ -43,15 +44,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    : null;
 
         /// <summary>
-        /// Try to parse the given text as the purpose of an SSH key: "OCPP", "NTS" or "SFTP", as written.
+        /// Try to parse the given text as the purpose of an SSH key: "Station", "NTS" or "SFTP", as
+        /// written. "OCPP" is read as "Station": the key was called after its first user before, when
+        /// the connection it signs in on was taken for OCPP's.
         /// </summary>
         public static Boolean TryParse(String Text, out SSHKeyPurpose Purpose)
         {
             switch (Text?.Trim())
             {
 
+                case "Station":
                 case "OCPP":
-                    Purpose = SSHKeyPurpose.OCPP;
+                    Purpose = SSHKeyPurpose.Station;
                     return true;
 
                 case "NTS":
@@ -63,21 +67,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return true;
 
                 default:
-                    Purpose = SSHKeyPurpose.OCPP;
+                    Purpose = SSHKeyPurpose.Station;
                     return false;
 
             }
         }
 
         /// <summary>
-        /// The purpose as it is written: "OCPP", "NTS" or "SFTP".
+        /// The purpose as it is written: "Station", "NTS" or "SFTP".
         /// </summary>
         public static String AsText(this SSHKeyPurpose Purpose)
 
             => Purpose switch {
                    SSHKeyPurpose.NTS   => "NTS",
                    SSHKeyPurpose.SFTP  => "SFTP",
-                   _                   => "OCPP"
+                   _                   => "Station"
                };
 
     }
@@ -91,12 +95,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
-        /// The subsystem ocpp@open.charging.cloud.
+        /// The station's own key: the one it signs in with on the SSH connection it keeps to an SSH
+        /// peer, which OCPP, the key exchange of a time server and name resolution are channels of
+        /// (white paper "OCPP over SSH", section 7.2). Called "OCPP" before.
         /// </summary>
-        OCPP,
+        Station,
 
         /// <summary>
-        /// The subsystem ntske/1@open.charging.cloud of the white paper "NTS-over-SSH".
+        /// The subsystem ntske/1@open.charging.cloud of the white paper "NTS-over-SSH", where the key
+        /// exchange has an SSH connection of its own.
         /// </summary>
         NTS,
 

@@ -89,6 +89,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         public DNSRootCertificates  DNSRootCertificates    { get; }
 
+        /// <summary>
+        /// What OCPP reads and changes of the SSH peers: the hosts the node
+        /// keeps one SSH connection to each.
+        /// </summary>
+        public SSHPeerDeviceModel   SSHPeers               { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -119,6 +125,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                            sentence => Node.Log.Notice(sentence, "dns", "ocpp"),
                                                            () => LegalTimeNamesOf(Node));
             this.DNSRootCertificates  = new DNSRootCertificates(Node, NamesToKeepResolving, () => LegalTimeNamesOf(Node));
+            this.SSHPeers             = new SSHPeerDeviceModel(Node, sentence => Node.Log.Notice(sentence, "ssh", "peers", "ocpp"));
 
             // The components first, so that a monitor asked about a change
             // below finds the component the change made.
@@ -126,6 +133,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Node.OnNTSGroupRemoved          += (group, origin)          => FollowNTSGroups();
             Node.OnNTSGroupChanged          += (group, changes, origin) => FollowNTSGroups();
             Node.OnDNSConfigurationChanged  += (changes, origin)        => FollowDNSServers();
+            Node.OnSSHPeersChanged          += ()                       => FollowSSHPeers();
 
             FollowNTSEvents();
             FollowDNSEvents();
@@ -171,6 +179,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 Node.CertificateSources.Add(DNSRootCertificates);
                 Node.AddComponent(new OCPPv2_1.DNSClientController(DNS));
                 FollowDNSServers(Node);
+
+                // The hosts the node keeps one SSH connection to each, which a
+                // time or a name server shares with SSHConnection Shared.
+                Node.AddNewInstancesSource(SSHPeers);
+                Node.AddComponent(new OCPPv2_1.SSHPeerController(SSHPeers));
+                FollowSSHPeers(Node);
 
                 Node.AddNewInstancesSource(NTS);
                 Node.CertificateSources.Add(NTSRootCertificates);
@@ -223,6 +237,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 // to a central system as well.
                 _ = FileTransfers;
 
+                // The SSH peers: "sshPeers" and the keys of each peer.
+                ChargePoint.AddConfigurationKeySource(SSHPeers);
+
                 // QueryDNS, answered with the node's name resolution - see
                 // DeviceModelBridge.QueryDNS.cs.
                 if (ChargePoint is OCPPv1_6.IQueryDNSNode queryDNSNode)
@@ -273,6 +290,43 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// added, taken away or given other ids among them, once it let go of
         /// its configuration, so that what is read here is what was saved.
         /// </remarks>
+        private void FollowSSHPeers()
+        {
+            lock (componentsLock)
+            {
+                if (deviceModelNode is not null)
+                    FollowSSHPeers(deviceModelNode);
+            }
+        }
+
+        /// <summary>
+        /// Have the Device Model show the SSH peers the node has now: an
+        /// instance of SSHPeerController for each, and none for one that is no
+        /// peer any more.
+        /// </summary>
+        private void FollowSSHPeers(OCPPv2_1.IDeviceModelNode Node)
+        {
+
+            var peers = SSHPeers.PeerIds.
+                            Distinct(StringComparer.OrdinalIgnoreCase).
+                            ToArray ();
+
+            foreach (var shown in Node.GetComponentConfigs(nameof(OCPPv2_1.SSHPeerController)).OfType<OCPPv2_1.SSHPeerController>().ToArray())
+                if (shown.Peer is String peer && !peers.Contains(peer, StringComparer.OrdinalIgnoreCase))
+                    Node.RemoveComponent(shown.Name, shown.Instance);
+
+            foreach (var peer in peers)
+            {
+                try
+                {
+                    Node.AddComponent(new OCPPv2_1.SSHPeerController(SSHPeers, peer));
+                }
+                catch (ArgumentException)
+                { }
+            }
+
+        }
+
         private void FollowDNSServers()
         {
             lock (componentsLock)

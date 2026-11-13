@@ -32,6 +32,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
     [TestFixture] public class DNSDeviceModelOnABareNode         : DNSDeviceModelTests          { protected override IBridgedNodes Nodes { get; } = new BareNodes(); }
     [TestFixture] public class DNSDeviceModelWritingOnABareNode  : DNSDeviceModelWritingTests   { protected override IBridgedNodes Nodes { get; } = new BareNodes(); }
+    [TestFixture] public class SSHPeerDeviceModelOnABareNode : SSHPeerDeviceModelTests { protected override IBridgedNodes Nodes { get; } = new BareNodes(); }
+    [TestFixture] public class SSHPeerKeys16OnABareNode : SSHPeerKeys16Tests { protected override IBridgedNodes Nodes { get; } = new BareNodes(); }
     [TestFixture] public class DNSEquivalenceOnABareNode         : DNSEquivalenceTests          { protected override IBridgedNodes Nodes { get; } = new BareNodes(); }
     [TestFixture] public class DNSEventsOnABareNode              : DNSEventsTests               { protected override IBridgedNodes Nodes { get; } = new BareNodes(); }
     [TestFixture] public class DNSKeys16OnABareNode              : DNSKeys16Tests               { protected override IBridgedNodes Nodes { get; } = new BareNodes(); }

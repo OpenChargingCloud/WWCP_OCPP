@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         #region SignSSHKey
 
         private static OCPPv2_1.CS.SignSSHKeyRequest SignSSHKeyRequest()
-            => new (destination, SSHKeyPurpose.OCPP, PublicKey, Signatures: Signatures(), CustomData: Custom(), RequestId: requestId);
+            => new (destination, SSHKeyPurpose.Station, PublicKey, Signatures: Signatures(), CustomData: Custom(), RequestId: requestId);
 
         [Test]
         public void SignSSHKeyRequest_AsCBOR()
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
             AreTheSame(again!.ToJSON(), request.ToJSON());
 
-            Assert.That(again.Purpose,          Is.EqualTo(SSHKeyPurpose.OCPP));
+            Assert.That(again.Purpose,          Is.EqualTo(SSHKeyPurpose.Station));
             Assert.That(again.PublicKey,        Is.EqualTo(PublicKey));
             Assert.That(again.Signatures.Count, Is.EqualTo(1));
             Assert.That(again.CustomData,       Is.Not.Null);
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                                GenericStatus.Accepted,
                                Info(),
                                [
-                                   new InstalledSSHKey(cs001,                            SSHKeyPurpose.OCPP, PublicKey, Fingerprint),
+                                   new InstalledSSHKey(cs001,                            SSHKeyPurpose.Station, PublicKey, Fingerprint),
                                    new InstalledSSHKey(NetworkingNode_Id.Parse("cs002"), SSHKeyPurpose.SFTP, PublicKey, "SHA256:key2")
                                ],
                                [ "SHA256:host1", "SHA256:host2" ],
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void GetInstalledSSHKeysResponse_WithoutItsStatus_IsRefused()
         {
 
-            var cbor = OCPPCBORExtensions.Map(("keys", CBORValue.FromArray([ new InstalledSSHKey(cs001, SSHKeyPurpose.OCPP, PublicKey, Fingerprint).ToCBOR() ])));
+            var cbor = OCPPCBORExtensions.Map(("keys", CBORValue.FromArray([ new InstalledSSHKey(cs001, SSHKeyPurpose.Station, PublicKey, Fingerprint).ToCBOR() ])));
 
             Assert.That(OCPPv2_1.CS.GetInstalledSSHKeysResponse.TryParseCBOR(GetInstalledSSHKeysRequest(), Read(cbor), destination, NetworkPath.Empty, out var response, out var errorResponse), Is.False);
             Assert.That(response,      Is.Null);
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         #region SSHKeySigned
 
         private static OCPPv2_1.CSMS.SSHKeySignedRequest SSHKeySignedRequest()
-            => new (destination, SSHKeyPurpose.OCPP, PublicKey, Certificate, Signatures: Signatures(), CustomData: Custom(), RequestId: requestId);
+            => new (destination, SSHKeyPurpose.Station, PublicKey, Certificate, Signatures: Signatures(), CustomData: Custom(), RequestId: requestId);
 
         [Test]
         public void SSHKeySignedRequest_AsCBOR()
@@ -381,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
             AreTheSame(again!.ToJSON(), request.ToJSON());
 
-            Assert.That(again.Purpose,     Is.EqualTo(SSHKeyPurpose.OCPP));
+            Assert.That(again.Purpose,     Is.EqualTo(SSHKeyPurpose.Station));
             Assert.That(again.PublicKey,   Is.EqualTo(PublicKey));
             Assert.That(again.Certificate, Is.EqualTo(Certificate));
 
