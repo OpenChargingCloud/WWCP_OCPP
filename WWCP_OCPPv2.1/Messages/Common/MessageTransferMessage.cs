@@ -367,6 +367,156 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region (static) TryParseCBOR(CBOR, MessageId, Destination, NetworkPath, out MessageTransferMessage, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a MessageTransfer message - the
+        /// keys of its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="MessageId">The message identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="MessageTransferMessage">The MessageTransfer message.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="MessageTimestamp">An optional message timestamp.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this message with other events.</param>
+        /// <param name="CustomMessageTransferMessageParser">A delegate to read custom MessageTransfer messages.</param>
+        public static Boolean TryParseCBOR(CBORValue                                          CBOR,
+                                           Request_Id                                         MessageId,
+                                           SourceRouting                                      Destination,
+                                           NetworkPath                                        NetworkPath,
+                                           [NotNullWhen(true)]  out MessageTransferMessage?   MessageTransferMessage,
+                                           [NotNullWhen(false)] out String?                   ErrorResponse,
+                                           DateTimeOffset?                                    MessageTimestamp                     = null,
+                                           EventTracking_Id?                                  EventTrackingId                      = null,
+                                           CustomCBORParserDelegate<MessageTransferMessage>?  CustomMessageTransferMessageParser   = null)
+        {
+
+            try
+            {
+
+                MessageTransferMessage = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a MessageTransfer message is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryText("vendorId",
+                                             "vendor identification",
+                                             out var VendorIdText,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!Vendor_Id.TryParse(VendorIdText, out var VendorId))
+                {
+                    ErrorResponse = $"Invalid vendor identification '{VendorIdText}'!";
+                    return false;
+                }
+
+                Message_Id? MessageId2 = null;
+
+                if (CBOR.ParseOptionalText("messageId",
+                                           "message identification",
+                                           out var MessageIdText,
+                                           out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
+                        return false;
+
+                    if (!Message_Id.TryParse(MessageIdText!, out var MessageIdValue))
+                    {
+                        ErrorResponse = $"Invalid message identification '{MessageIdText}'!";
+                        return false;
+                    }
+
+                    MessageId2 = MessageIdValue;
+
+                }
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                // Data of any shape: the CBOR value of the JSON value.
+                var Data = CBOR.TryGetValue(CBORValue.FromText("data"), out var dataCBOR)
+                               ? CBORJSON.ToJSON(dataCBOR)
+                               : null;
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                                  "cryptographic signatures",
+                                                  OCPPCBORExtensions.TryParseSignature,
+                                                  out var Signatures,
+                                                  out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                MessageTransferMessage = new MessageTransferMessage(
+                                             Destination,
+                                             VendorId,
+                                             MessageId2,
+                                             Data,
+                                             null,
+                                             null,
+                                             Signatures,
+                                             MessageId,
+                                             MessageTimestamp,
+                                             EventTrackingId,
+                                             NetworkPath
+                                         );
+
+                if (CustomMessageTransferMessageParser is not null)
+                    MessageTransferMessage = CustomMessageTransferMessageParser(CBOR,
+                                                                                MessageTransferMessage);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                MessageTransferMessage  = null;
+                ErrorResponse           = "The given CBOR representation of a MessageTransfer message is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomMessageTransferMessageSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this MessageTransfer message: the keys of
+        /// its JSON object, and its values as what they are. Its data is of any shape,
+        /// and is the CBOR value of its JSON value.
+        /// </summary>
+        /// <param name="CustomMessageTransferMessageSerializer">A delegate to serialize custom MessageTransfer messages.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<MessageTransferMessage>? CustomMessageTransferMessageSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("vendorId",                  CBORValue.FromText(VendorId.TextId)),
+                           ("messageId",                 OCPPCBORExtensions.Text(MessageId?.TextId)),
+                           ("data",                      Data is not null ? (CBORValue?) CBORJSON.ToCBOR(Data) : null),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures, signature => signature.ToCBOR()))
+                       );
+
+            return CustomMessageTransferMessageSerializer is not null
+                       ? CustomMessageTransferMessageSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (DatagramRequest1, DatagramRequest2)

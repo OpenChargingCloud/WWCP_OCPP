@@ -170,6 +170,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
+        #region AMessageWithoutAnAnswer_IsTranslatedThroughItsClass(Action, JSON)
+
+        /// <summary>
+        /// The messages without an answer have a CBOR form of their own, as the requests
+        /// have: a point in time is a point in time there, and comes back as it went.
+        /// </summary>
+        [TestCase("MessageTransfer",
+                  """{"vendorId":"GraphDefined","messageId":"hello","data":{"text":"world","number":23,"list":[1,"two",{"three":true}]}}""")]
+        [TestCase("MessageTransfer",
+                  """{"vendorId":"GraphDefined"}""")]
+        [TestCase("NotifyPeriodicEventStream",
+                  """{"id":1,"pending":2,"basetime":"2026-11-13T10:00:00.000Z","data":[{"t":1.5,"v":"230.1"},{"t":3,"v":"229.8"}]}""")]
+        [TestCase("NotifyNetworkTopology",
+                  """{"networkTopologyInformation":{"routingNode":"lc1","routes":[{"destinationId":"cs1","uplink":{"distance":1},"downlink":{"distance":2,"capacity":[1000000,5000,"bit/s"],"latency":[12.5,1.5,"ms"],"packetLoss":[0.5,0.25,"%"]},"priority":1,"weight":2,"timeout":30}],"notBefore":"2026-11-13T10:00:00.000Z","notAfter":"2026-11-14T10:00:00.000Z","priority":3}}""")]
+        public void AMessageWithoutAnAnswer_IsTranslatedThroughItsClass(String Action, String JSON)
+        {
+
+            var sample = JObject.Parse(JSON);
+
+            Assert.That(OCPPMessagesAsCBOR.Messages, Does.Contain(Action), $"'{Action}' is carried as what its JSON says, value by value.");
+
+            Assert.That(OCPPMessagesAsCBOR.TryMessageToCBOR(Action, sample, requestId, destination, NetworkPath.Empty, out var cbor, out var e1),
+                        Is.True, e1);
+
+            Assert.That(OCPPMessagesAsCBOR.TryMessageToJSON(Action, CBORValue.Parse(cbor.ToByteArray()), requestId, destination, NetworkPath.Empty, out var json, out var e2),
+                        Is.True, e2);
+
+            Assert.That(JToken.DeepEquals(Normalized(json!), Normalized(sample)), Is.True,
+                        $"Came back: {Normalized(json!).ToString(Newtonsoft.Json.Formatting.None)}{Environment.NewLine}" +
+                        $"Went:      {Normalized(sample).ToString(Newtonsoft.Json.Formatting.None)}");
+
+        }
+
+        /// <summary>
+        /// The base time of a periodic event stream is a point in time in its CBOR, not
+        /// a text: what a message of a class writes, and what one carried blind did not.
+        /// </summary>
+        [Test]
+        public void TheBaseTimeOfAPeriodicEventStream_IsAPointInTime()
+        {
+
+            var sample = JObject.Parse("""{"id":1,"pending":0,"basetime":"2026-11-13T10:00:00.000Z","data":[{"t":1,"v":"230"}]}""");
+
+            Assert.That(OCPPMessagesAsCBOR.TryMessageToCBOR("NotifyPeriodicEventStream", sample, requestId, destination, NetworkPath.Empty, out var cbor, out var e1),
+                        Is.True, e1);
+
+            Assert.That(cbor.TryGetValue(CBORValue.FromText("basetime"), out var baseTime),  Is.True);
+            Assert.That(baseTime.Kind,                                                       Is.EqualTo(CBORValueKind.Tagged));
+
+        }
+
+        #endregion
+
         #region AnActionNobodyKnows_IsCarriedBlind()
 
         /// <summary>

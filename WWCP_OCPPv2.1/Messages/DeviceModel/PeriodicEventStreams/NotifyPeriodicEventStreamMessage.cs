@@ -503,6 +503,168 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
+        #region (static) TryParseCBOR(CBOR, RequestId, Destination, NetworkPath, out NotifyPeriodicEventStreamMessage, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyPeriodicEventStream
+        /// message - the keys of its JSON object, and its values as what they are: its
+        /// base time is a point in time, the offsets of its data elements are durations.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The message identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyPeriodicEventStreamMessage">The NotifyPeriodicEventStream message.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomNotifyPeriodicEventStreamMessageParser">A delegate to read custom NotifyPeriodicEventStream messages.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                    CBOR,
+                                           Request_Id                                                   RequestId,
+                                           SourceRouting                                                Destination,
+                                           NetworkPath                                                  NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyPeriodicEventStreamMessage?   NotifyPeriodicEventStreamMessage,
+                                           [NotNullWhen(false)] out String?                             ErrorResponse,
+                                           CustomCBORParserDelegate<NotifyPeriodicEventStreamMessage>?  CustomNotifyPeriodicEventStreamMessageParser   = null)
+        {
+
+            try
+            {
+
+                NotifyPeriodicEventStreamMessage = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyPeriodicEventStream message is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("id",
+                                               "periodic event stream identification",
+                                               out var IdNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PeriodicEventStream_Id.TryParse(IdNumber) is not PeriodicEventStream_Id Id)
+                {
+                    ErrorResponse = $"Invalid periodic event stream identification '{IdNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryUInt64("pending",
+                                               "number of pending data elements",
+                                               out var PendingNumber,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (PendingNumber > UInt32.MaxValue)
+                {
+                    ErrorResponse = $"Invalid number of pending data elements '{PendingNumber}'!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryValue("basetime",
+                                              "base timestamp",
+                                              OCPPCBORExtensions.TryParseTimestamp,
+                                              out DateTimeOffset BaseTime,
+                                              out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryList<StreamDataElement>("data",
+                                                                "periodic event stream data elements",
+                                                                StreamDataElement.TryParseCBOR,
+                                                                out var StreamDataElements,
+                                                                out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                                  "cryptographic signatures",
+                                                  OCPPCBORExtensions.TryParseSignature,
+                                                  out var Signatures,
+                                                  out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyPeriodicEventStreamMessage = new NotifyPeriodicEventStreamMessage(
+                                                       Destination,
+                                                       Id,
+                                                       (UInt32) PendingNumber,
+                                                       BaseTime,
+                                                       StreamDataElements,
+                                                       null,
+                                                       null,
+                                                       Signatures,
+                                                       CustomData,
+                                                       RequestId,
+                                                       null,
+                                                       null,
+                                                       NetworkPath
+                                                   );
+
+                if (CustomNotifyPeriodicEventStreamMessageParser is not null)
+                    NotifyPeriodicEventStreamMessage = CustomNotifyPeriodicEventStreamMessageParser(CBOR,
+                                                                                                    NotifyPeriodicEventStreamMessage);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyPeriodicEventStreamMessage  = null;
+                ErrorResponse                     = "The given CBOR representation of a NotifyPeriodicEventStream message is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyPeriodicEventStreamMessageSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyPeriodicEventStream message: the
+        /// keys of its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyPeriodicEventStreamMessageSerializer">A delegate to serialize custom NotifyPeriodicEventStream messages.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyPeriodicEventStreamMessage>? CustomNotifyPeriodicEventStreamMessageSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                        CBORValue.FromUInt64(Id.Value)),
+                           ("pending",                   CBORValue.FromUInt64(Pending)),
+                           ("basetime",                  BaseTime.ToCBOR()),
+                           ("data",                      OCPPCBORExtensions.Array(StreamDataElements, streamDataElement => streamDataElement.ToCBOR())),
+                           ("signatures",                OCPPCBORExtensions.Array(Signatures,         signature         => signature.        ToCBOR())),
+                           ("customData",                CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyPeriodicEventStreamMessageSerializer is not null
+                       ? CustomNotifyPeriodicEventStreamMessageSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (NotifyPeriodicEventStreamMessage1, NotifyPeriodicEventStreamMessage2)

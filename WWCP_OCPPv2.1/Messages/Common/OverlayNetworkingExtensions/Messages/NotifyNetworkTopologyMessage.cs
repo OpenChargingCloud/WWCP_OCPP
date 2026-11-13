@@ -323,6 +323,136 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
+        #region (static) TryParseCBOR(CBOR, RequestId, Destination, NetworkPath, out NotifyNetworkTopologyMessage, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Try to read the given CBOR representation of a NotifyNetworkTopology message.
+        /// </summary>
+        /// <remarks>
+        /// The network topology information is a data structure of WWCP_Core; its CBOR
+        /// is that of NetworkTopologyCBORExtensions - a point in time is a point in
+        /// time, a timeout and a latency are durations.
+        /// </remarks>
+        /// <param name="CBOR">The CBOR to be read.</param>
+        /// <param name="RequestId">The message identification.</param>
+        /// <param name="Destination">The destination networking node identification or source routing path.</param>
+        /// <param name="NetworkPath">The network path of the message.</param>
+        /// <param name="NotifyNetworkTopologyMessage">The NotifyNetworkTopology message.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="RequestTimestamp">An optional message timestamp.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this message with other events.</param>
+        /// <param name="CustomNotifyNetworkTopologyMessageParser">A delegate to read custom NotifyNetworkTopology messages.</param>
+        public static Boolean TryParseCBOR(CBORValue                                                CBOR,
+                                           Request_Id                                               RequestId,
+                                           SourceRouting                                            Destination,
+                                           NetworkPath                                              NetworkPath,
+                                           [NotNullWhen(true)]  out NotifyNetworkTopologyMessage?   NotifyNetworkTopologyMessage,
+                                           [NotNullWhen(false)] out String?                         ErrorResponse,
+                                           DateTimeOffset?                                          RequestTimestamp                           = null,
+                                           EventTracking_Id?                                        EventTrackingId                            = null,
+                                           CustomCBORParserDelegate<NotifyNetworkTopologyMessage>?  CustomNotifyNetworkTopologyMessageParser   = null)
+        {
+
+            try
+            {
+
+                NotifyNetworkTopologyMessage = null;
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a NotifyNetworkTopology message is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.TryGetValue(CBORValue.FromText("networkTopologyInformation"), out var informationCBOR))
+                {
+                    ErrorResponse = "The network topology information of the given CBOR representation of a NotifyNetworkTopology message is missing!";
+                    return false;
+                }
+
+                if (!NetworkTopologyCBORExtensions.TryParseNetworkTopologyInformation(informationCBOR,
+                                                                                      out var NetworkTopologyInformation,
+                                                                                      out ErrorResponse))
+                {
+                    return false;
+                }
+
+                CBOR.ParseOptionalList<Signature>("signatures",
+                                                  "cryptographic signatures",
+                                                  OCPPCBORExtensions.TryParseSignature,
+                                                  out var Signatures,
+                                                  out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+
+                NotifyNetworkTopologyMessage = new NotifyNetworkTopologyMessage(
+                                                   Destination,
+                                                   NetworkTopologyInformation,
+                                                   null,
+                                                   null,
+                                                   Signatures,
+                                                   CustomData,
+                                                   RequestId,
+                                                   RequestTimestamp,
+                                                   EventTrackingId,
+                                                   NetworkPath
+                                               );
+
+                if (CustomNotifyNetworkTopologyMessageParser is not null)
+                    NotifyNetworkTopologyMessage = CustomNotifyNetworkTopologyMessageParser(CBOR,
+                                                                                            NotifyNetworkTopologyMessage);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                NotifyNetworkTopologyMessage  = null;
+                ErrorResponse                 = "The given CBOR representation of a NotifyNetworkTopology message is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR(CustomNotifyNetworkTopologyMessageSerializer = null)
+
+        /// <summary>
+        /// Return the CBOR representation of this NotifyNetworkTopology message: the keys
+        /// of its JSON object, and its values as what they are.
+        /// </summary>
+        /// <param name="CustomNotifyNetworkTopologyMessageSerializer">A delegate to serialize custom NotifyNetworkTopology messages.</param>
+        public CBORValue ToCBOR(CustomCBORSerializerDelegate<NotifyNetworkTopologyMessage>? CustomNotifyNetworkTopologyMessageSerializer = null)
+        {
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("networkTopologyInformation",  NetworkTopologyInformation.ToCBOR()),
+                           ("signatures",                  OCPPCBORExtensions.Array(Signatures, signature => signature.ToCBOR())),
+                           ("customData",                  CustomData?.ToCBOR())
+                       );
+
+            return CustomNotifyNetworkTopologyMessageSerializer is not null
+                       ? CustomNotifyNetworkTopologyMessageSerializer(this, cbor)
+                       : cbor;
+
+        }
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (NotifyNetworkTopologyMessage1, NotifyNetworkTopologyMessage2)
