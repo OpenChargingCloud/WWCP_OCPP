@@ -928,7 +928,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 default:
                     Kind   = AuthenticationKind.Basic;
-                    Error  = $"'{Text}' is not a kind of authentication this station knows.";
+                    Error  = $"'{Text}' is not a kind of authentication this {NodeWording.Noun} knows.";
                     return false;
 
             }
@@ -1539,7 +1539,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 if (KnownCertificateIds is not null && !KnownCertificateIds().Contains(CertificateId))
                 {
-                    Error = $"This station has no client key '{CertificateId}'.";
+                    Error = $"This {NodeWording.Noun} has no client key '{CertificateId}'.";
                     return false;
                 }
 
@@ -2662,7 +2662,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 {
                     successor.Role = PeerRole.Successor;
                     notes.Add($"Peer {successor.Id} '{successor.Description}' was in charge of the {ConnectionEntry.AsText(otherVersion)} node, " +
-                              $"as '{primary.Description}' was of the {ConnectionEntry.AsText(primary.OCPPVersion)} one. The station has one primary now, " +
+                              $"as '{primary.Description}' was of the {ConnectionEntry.AsText(primary.OCPPVersion)} one. The {NodeWording.Noun} has one primary now, " +
                               $"so it is a successor: dialled and registered with as before, and held to a successor's rights once they apply.");
                 }
 
@@ -2930,7 +2930,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 if (peer.Role == PeerRole.Primary && newRole != PeerRole.Primary)
                 {
-                    Error = $"'{peer.Description}' is the primary. To hand the station to another back end, make that one the primary.";
+                    Error = $"'{peer.Description}' is the primary. To hand the {NodeWording.Noun} to another back end, make that one the primary.";
                     return false;
                 }
 
@@ -3110,13 +3110,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (OverSSH && Certificate is not null)
             {
                 Error = "A client certificate is shown in a TLS handshake, and an ssh:// connection makes none: " +
-                        "it signs in with this station's SSH key.";
+                        $"it signs in with this {NodeWording.Noun}'s SSH key.";
                 return false;
             }
 
             if (OverSSH && Authentication is not null && authentications[Authentication].Kind == AuthenticationKind.TOTP)
             {
-                Error = "An ssh:// connection signs in with this station's SSH key, and a password on top where wanted. " +
+                Error = $"An ssh:// connection signs in with this {NodeWording.Noun}'s SSH key, and a password on top where wanted. " +
                         "A TOTP password is answered over HTTP, which it does not speak.";
                 return false;
             }
@@ -3125,7 +3125,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 KnownCertificateIds is not null &&
                 !KnownCertificateIds().Contains(Certificate))
             {
-                Error = "That client certificate is not on this station.";
+                Error = $"That client certificate is not on this {NodeWording.Noun}.";
                 return false;
             }
 
@@ -3184,7 +3184,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                     if (credentials.Kind == AuthenticationKind.TOTP && credentials.TLSChannelBinding && !Entry.IsSSH &&
                         !Entry.BindsItsPassword)
                         Entry.Warnings.Add($"'{credentials.Description}' binds its password to the TLS session, and one is bound only on a " +
-                                            "connection that names HTTP/3 and nothing else: over HTTP/1.1 and HTTP/2 this station's TLS exports " +
+                                            $"connection that names HTTP/3 and nothing else: over HTTP/1.1 and HTTP/2 this {NodeWording.Noun}'s TLS exports " +
                                             "no keying material to bind one with, so it is not dialled. Name HTTP/3 for it, or switch the " +
                                             "binding off to have the password sent unbound - and know that an unbound password can be replayed " +
                                             "within its validity.");
@@ -3197,7 +3197,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             {
 
                 if (KnownCertificateIds is not null && !KnownCertificateIds().Contains(Entry.CertificateId))
-                    Entry.Warnings.Add("The client certificate this connection names is not on this station any more.");
+                    Entry.Warnings.Add($"The client certificate this connection names is not on this {NodeWording.Noun} any more.");
 
                 if (!Entry.IsSecure)
                     Entry.Warnings.Add("A client certificate is shown during a TLS handshake, and this connection makes none.");

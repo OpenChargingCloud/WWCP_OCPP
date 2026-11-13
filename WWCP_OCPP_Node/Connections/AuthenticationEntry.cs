@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (login.Length == 0)
             {
-                Error = "A login is needed: it is the name the other end knows this station by.";
+                Error = $"A login is needed: it is the name the other end knows this {NodeWording.Noun} by.";
                 return false;
             }
 
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (kind is null)
             {
-                Error = $"'{kindText}' is not a kind of authentication this station knows.";
+                Error = $"'{kindText}' is not a kind of authentication this {NodeWording.Noun} knows.";
                 return false;
             }
 

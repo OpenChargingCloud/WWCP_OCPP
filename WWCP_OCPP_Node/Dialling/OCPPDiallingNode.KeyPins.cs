@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                        status == PinnedConnectionStatus.Trying ? ConnectionStatus.Trying : ConnectionStatus.Lost,
                                                                        what),
                     TimeProvider:   TimeProvider,
-                    NodeName:       "station");
+                    NodeName:       $"{NodeWording.Noun}");
 
         /// <summary>
         /// The connection the core speaks of: the store's own copies are
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             => Endpoint as ConnectionEntry
                    ?? Connections.CopyOf(Endpoint.Id)
-                   ?? throw new ArgumentException($"'{Endpoint.Id}' is no connection of this station.", nameof(Endpoint));
+                   ?? throw new ArgumentException($"'{Endpoint.Id}' is no connection of this {NodeWording.Noun}.", nameof(Endpoint));
 
         #endregion
 

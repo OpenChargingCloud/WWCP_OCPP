@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (algorithm is null)
             {
-                Error = $"'{Algorithm}' is not a key this charging station generates ({String.Join(", ", KeyAlgorithm.All.Select(one => one.Id))}).";
+                Error = $"'{Algorithm}' is not a key this {NodeWording.LongNoun} generates ({String.Join(", ", KeyAlgorithm.All.Select(one => one.Id))}).";
                 return false;
             }
 
@@ -319,8 +319,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (subject.Length == 0)
             {
-                Error = "A certificate has to say who this station is, or no back end will know whose it is. " +
-                        "Fill in a subject - the identity this station dials with is the usual answer.";
+                Error = $"A certificate has to say who this {NodeWording.Noun} is, or no back end will know whose it is. " +
+                        $"Fill in a subject - the identity this {NodeWording.Noun} dials with is the usual answer.";
                 return false;
             }
 
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (uploaded.Count == 0)
             {
                 Error = "There is no certificate in this file. What is expected is PEM - the '-----BEGIN CERTIFICATE-----' kind - " +
-                        "with the certificate of this station first and any intermediates after it.";
+                        $"with the certificate of this {NodeWording.Noun} first and any intermediates after it.";
                 return false;
             }
 
@@ -616,7 +616,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 if (leaf is null || leafId is null)
                 {
-                    Error = "None of the certificates in this file belongs to a key of this charging station. " +
+                    Error = $"None of the certificates in this file belongs to a key of this {NodeWording.LongNoun}. " +
                             "A certificate is only usable here if it answers a signing request made here.";
                     return false;
                 }
@@ -630,7 +630,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 if (new DateTimeOffset(leaf.NotAfter.ToUniversalTime()) <= now)
                 {
                     Error = $"This certificate expired on {leaf.NotAfter.ToUniversalTime():yyyy-MM-dd} and can never be used. " +
-                            $"By the clock of this charging station it is now {now:yyyy-MM-dd}.";
+                            $"By the clock of this {NodeWording.LongNoun} it is now {now:yyyy-MM-dd}.";
                     return false;
                 }
 
@@ -776,8 +776,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 if (Pick(TimeProvider.GetUtcNow())?.Id == Id)
                 {
-                    Error = "This is the certificate the station is holding up. Take another one into use first, " +
-                            "or this station will come back from its next restart unable to connect.";
+                    Error = $"This is the certificate the {NodeWording.Noun} is holding up. Take another one into use first, " +
+                            $"or this {NodeWording.Noun} will come back from its next restart unable to connect.";
                     return false;
                 }
 
@@ -890,8 +890,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 OnNotice?.Invoke(
                     LogLevel.Warning,
                     entries.Count == 0
-                        ? "This station has no certificate of its own. It can only dial a back end that does not ask for one."
-                        : "None of this station's certificates can be held up at the moment - every one of them has expired, is not valid yet, or cannot be loaded here."
+                        ? $"This {NodeWording.Noun} has no certificate of its own. It can only dial a back end that does not ask for one."
+                        : $"None of this {NodeWording.Noun}'s certificates can be held up at the moment - every one of them has expired, is not valid yet, or cannot be loaded here."
                 );
                 return;
             }
@@ -901,7 +901,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (WarnDaysBefore.Contains(daysLeft))
                 OnNotice?.Invoke(
                     daysLeft <= 3 ? LogLevel.Error : LogLevel.Warning,
-                    $"The certificate of this station runs out in {daysLeft} day(s), on {inUse.NotAfter:yyyy-MM-dd}. " +
+                    $"The certificate of this {NodeWording.Noun} runs out in {daysLeft} day(s), on {inUse.NotAfter:yyyy-MM-dd}. " +
                     "A new key and a new signing request take a minute; getting the answer back may take rather longer."
                 );
 
@@ -1030,7 +1030,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (!Entry.CanBeHeldUp)
                 Entry.Warnings.Add(
-                    $"This certificate cannot be held up by this station: {Entry.CannotBeHeldUp}. " +
+                    $"This certificate cannot be held up by this {NodeWording.Noun}: {Entry.CannotBeHeldUp}. " +
                     "The certificate itself may be perfectly good - a runtime that cannot take it today may take it after an update."
                 );
 
@@ -1063,9 +1063,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (!chain.Build(Entry.Certificate))
                 Entry.Warnings.Add(
-                    "The chain of this certificate does not verify on this station: " +
+                    $"The chain of this certificate does not verify on this {NodeWording.Noun}: " +
                     String.Join(", ", chain.ChainStatus.Select(status => status.StatusInformation.Trim())) +
-                    ". That may be quite correct - a private authority the back end knows is not one this station has to know."
+                    $". That may be quite correct - a private authority the back end knows is not one this {NodeWording.Noun} has to know."
                 );
 
             #endregion
@@ -1125,7 +1125,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (kind is null)
             {
-                Error = $"'{algorithm}' is not a key algorithm this charging station knows.";
+                Error = $"'{algorithm}' is not a key algorithm this {NodeWording.LongNoun} knows.";
                 return false;
             }
 

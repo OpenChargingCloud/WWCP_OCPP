@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (peers.Length == 0)
                 {
                     Log.Info(connections.Count == 0
-                                 ? "No connections are configured; this station connects nowhere."
+                                 ? $"No connections are configured; this {NodeWording.Noun} connects nowhere."
                                  : $"None of the {connections.Count} configured connection(s) is set to connect by itself.",
                              "ocpp", "connections");
                     return;

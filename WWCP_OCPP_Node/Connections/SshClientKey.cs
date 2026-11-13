@@ -354,9 +354,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 Volatile.Write(ref key, newKey);
 
                 OnNotice?.Invoke(LogLevel.Notice,
-                                 $"A key was made for this station to sign in with over SSH: {newKey.AlgorithmNames[0]} " +
+                                 $"A key was made for this {NodeWording.Noun} to sign in with over SSH: {newKey.AlgorithmNames[0]} " +
                                  $"{SshFingerprint.Sha256(newKey.PublicKeyBlob)}, kept in '{Path}'. " +
-                                 "Its public half goes into the authorized_keys of every back end this station dials over SSH.");
+                                 $"Its public half goes into the authorized_keys of every back end this {NodeWording.Noun} dials over SSH.");
 
                 return newKey;
 
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             catch (Exception problem)
             {
                 throw new InvalidOperationException(
-                          $"The key this station signs in with over SSH, in '{Path}', could not be read: {problem.Message} " +
+                          $"The key this {NodeWording.Noun} signs in with over SSH, in '{Path}', could not be read: {problem.Message} " +
                           "Repair it, or remove it for a new one - whose public half every back end then has to be given again.",
                           problem
                       );

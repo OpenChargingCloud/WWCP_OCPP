@@ -755,13 +755,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (!AllowedSchemes.Contains(url.Scheme))
             {
-                Error = $"'{url.Scheme}' is not something this station dials. OCPP goes over ws, wss or ssh.";
+                Error = $"'{url.Scheme}' is not something this {NodeWording.Noun} dials. OCPP goes over ws, wss or ssh.";
                 return false;
             }
 
             if (!TryParseType(TypeText, out var type))
             {
-                Error = $"'{TypeText}' is not a kind of connection this station knows.";
+                Error = $"'{TypeText}' is not a kind of connection this {NodeWording.Noun} knows.";
                 return false;
             }
 
@@ -770,7 +770,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             // older protocol.
             if (!String.IsNullOrWhiteSpace(VersionText) && !TryParseVersion(VersionText, out Version))
             {
-                Error = $"'{VersionText}' is not an OCPP version this station speaks. It speaks OCPP1.6 and OCPP2.1.";
+                Error = $"'{VersionText}' is not an OCPP version this {NodeWording.Noun} speaks. It speaks OCPP1.6 and OCPP2.1.";
                 return false;
             }
 
