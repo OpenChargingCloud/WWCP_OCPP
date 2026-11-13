@@ -521,6 +521,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Description:      I18NString.Create("The shared secret used to generate the the time-based one-time passwords.")
 
                 )
+                {
+                    // Read by the role "ReadSecrets" and by a "systemadmin", write-only for everybody else.
+                    IsSecret = true
+                }
             );
 
             #endregion

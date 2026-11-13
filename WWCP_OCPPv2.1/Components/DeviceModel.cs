@@ -54,9 +54,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <remarks>
     /// Component and variable names and instances are compared case insensitively.
     /// A write-only variable is never read out, neither by GetVariables nor in a report.
+    /// The one exception is a secret (<see cref="VariableConfig.IsSecret"/>): a GetVariables
+    /// request signed by somebody in the role "ReadSecrets", or by a "systemadmin", reads it.
     /// </remarks>
     public static class DeviceModel
     {
+
+        #region Data
+
+        /// <summary>
+        /// The role whose signature on a GetVariables request reads a secret:
+        /// a write-only variable that says so (<see cref="VariableConfig.IsSecret"/>).
+        /// </summary>
+        public const String ReadSecretsRole  = "ReadSecrets";
+
+        /// <summary>
+        /// The role of the administrators of every kind of node, which may do
+        /// everything there is, and so is in the role "ReadSecrets" too.
+        /// </summary>
+        public const String AdminRole        = "systemadmin";
+
+        #endregion
 
         #region GetVariables        (VariableData, ComponentConfigs)
 
@@ -79,6 +97,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// decided by itself: one the signers of the request may not read is
         /// "Rejected" with the reason code "NotAuthorized" (white paper "Signed
         /// OCPP Messages and Signer Roles", section 5.2).
+        /// A secret is read when one of the signers is in the role "ReadSecrets"
+        /// or a "systemadmin"; for everybody else it is write-only.
         /// </summary>
         /// <param name="Request">A GetVariables request whose signatures are verified.</param>
         /// <param name="ComponentConfigs">The lookup of the node's component configurations.</param>
@@ -86,8 +106,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static IReadOnlyList<GetVariableResult> GetVariables(GetVariablesRequest            Request,
                                                                     ComponentConfigLookupDelegate  ComponentConfigs,
                                                                     SignaturePolicy                SignaturePolicy)
+        {
 
-            => [.. Request.VariableData.Select(getVariableData =>
+            var mayReadSecrets = MayReadSecrets(Request, SignaturePolicy);
+
+            return [.. Request.VariableData.Select(getVariableData =>
                        SignaturePolicy.DecideVariable(
                            Request,
                            getVariableData.Component.Name,
@@ -97,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            "read",
                            out var reason
                        )
-                           ? GetVariable(getVariableData, ComponentConfigs)
+                           ? GetVariable(getVariableData, ComponentConfigs, mayReadSecrets)
                            : new GetVariableResult(
                                  AttributeStatus:       GetVariableStatus.Rejected,
                                  Component:             getVariableData.Component,
@@ -105,6 +128,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  AttributeType:         getVariableData.AttributeType,
                                  AttributeStatusInfo:   new StatusInfo("NotAuthorized", reason)
                              ))];
+
+        }
+
+        #endregion
+
+        #region MayReadSecrets      (Request, SignaturePolicy)
+
+        /// <summary>
+        /// Whether the given request reads the secrets of the device model: one
+        /// of its valid signatures is of somebody in the role "ReadSecrets" or of
+        /// a "systemadmin". While the policy of the node is "Off" nobody is asked
+        /// for a role, and so nobody holds one.
+        /// </summary>
+        /// <param name="Request">A request whose signatures are verified.</param>
+        /// <param name="SignaturePolicy">The node's signature policy.</param>
+        public static Boolean MayReadSecrets(IRequest         Request,
+                                             SignaturePolicy  SignaturePolicy)
+
+            => SignaturePolicy.Mode != MessagePolicyModes.Off &&
+               SignaturePolicy.SignerRolesOf is not null      &&
+               Request.Signatures.Any(signature => signature.Status == VerificationStatus.ValidSignature &&
+                                                   SignaturePolicy.SignerRolesOf(signature).Any(role => role == ReadSecretsRole ||
+                                                                                                        role == AdminRole));
 
         #endregion
 
@@ -563,10 +609,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (private static) GetVariable        (GetVariableData, ComponentConfigs)
+        #region (private static) GetVariable        (GetVariableData, ComponentConfigs, MayReadSecrets = false)
 
         private static GetVariableResult GetVariable(GetVariableData                GetVariableData,
-                                                     ComponentConfigLookupDelegate  ComponentConfigs)
+                                                     ComponentConfigLookupDelegate  ComponentConfigs,
+                                                     Boolean                        MayReadSecrets   = false)
         {
 
             var component = GetVariableData.Component;
@@ -596,8 +643,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                   )
                        );
 
-            // A write-only variable, like a password, is never read out.
-            if (variableConfig.Attributes?.Mutability == MutabilityTypes.WriteOnly)
+            // A write-only variable, like a password, is never read out,
+            // but a secret by whoever may read secrets.
+            if (variableConfig.Attributes?.Mutability == MutabilityTypes.WriteOnly &&
+                !(variableConfig.IsSecret && MayReadSecrets))
                 return new GetVariableResult(
                            AttributeStatus:       GetVariableStatus.Rejected,
                            Component:             component,
