@@ -78,13 +78,6 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             station    = Nodes.New(directory, configuration);
             model      = new SSHPeerDeviceModel(station.Node);
 
-            // Whoever writes the peers over OCPP has signed it: here, everybody has.
-            station.Bridge.SSHPeers.SignedBy = (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
-                signer  = "the test";
-                why     = null;
-                return true;
-            };
-
         }
 
         [TearDown]
@@ -367,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region File servers, and who may write the peers
+        #region File servers
 
         private static readonly OCPP21.SetVariableStatus Accepted = OCPP21.SetVariableStatus.Accepted;
         private static readonly OCPP21.SetVariableStatus Rejected = OCPP21.SetVariableStatus.Rejected;
@@ -496,77 +489,6 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             }
 
             Assert.That(FileTransfersOnDisk(), Is.Null);
-
-        }
-
-        /// <summary>
-        /// The peers say who a host is believed by and where the node's files
-        /// may go: over OCPP they are written by a request a signer of pin sets
-        /// signed, and by no other - neither a peer nor what it may be used for.
-        /// </summary>
-        [Test]
-        public async Task OnlyASignedRequestWritesThePeers()
-        {
-
-            var before = OnDisk().ToString();
-
-            (String? Peer, String Variable, String Value)[][] writes = [
-                [ ("lc", "HostKeyPins", PinB) ],
-                [ ("lc", "Address", "elsewhere.example") ],
-                [ ("lc", "FileTransfers", "Upload"), ("lc", "UploadPaths", "/upload/") ],
-                [ (null, "Peers", "") ],
-                [ (null, "Peers", "lc,time"), ("time", "Address", "time.example"), ("time", "HostKeyPins", PinB) ]
-            ];
-
-            // A node that knows no signer writes nothing over OCPP: it is not the way around one.
-            station!.Bridge.SSHPeers.SignedBy = null;
-
-            foreach (var write in writes)
-            {
-
-                var results = await Set(OCPP21.DataConsistencyModel.ACID, write);
-
-                Assert.That(StatusesOf(results),                                               Is.All.EqualTo(Rejected));
-                Assert.That(results.Select(result => result.AttributeStatusInfo?.ReasonCode),  Is.All.EqualTo("Unsigned"));
-
-            }
-
-            // A request no signer the node believes signed.
-            OCPP21.CSMS.SetVariablesRequest? asked = null;
-
-            station.Bridge.SSHPeers.SignedBy = (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
-                asked   = request;
-                signer  = null;
-                why     = "None of the request's signatures is a valid one of a signer this node believes.";
-                return false;
-            };
-
-            foreach (var write in writes)
-            {
-
-                var results = await Set(null, write);
-
-                Assert.That(StatusesOf(results),                                                   Is.All.EqualTo(Rejected));
-                Assert.That(results.Select(result => result.AttributeStatusInfo?.ReasonCode),      Is.All.EqualTo("Unsigned"));
-                Assert.That(results.Select(result => result.AttributeStatusInfo?.AdditionalInfo),  Is.All.Contains("None of the request's signatures"));
-
-            }
-
-            Assert.That(asked,                Is.Not.Null);
-            Assert.That(OnDisk().ToString(),  Is.EqualTo(before), "nothing was written");
-
-            // Reading is nobody's secret.
-            Assert.That(Shown("HostKeyPins"), Is.EqualTo(PinA));
-
-            // Signed, it is written.
-            station.Bridge.SSHPeers.SignedBy = (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
-                signer  = "the security officer";
-                why     = null;
-                return true;
-            };
-
-            Assert.That(StatusesOf(await Set(null, ("lc", "HostKeyPins", PinB))), Is.All.EqualTo(Accepted));
-            Assert.That(Shown("HostKeyPins"), Is.EqualTo(PinB));
 
         }
 

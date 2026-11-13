@@ -187,6 +187,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        // are "signatures" to the policy.
                        "signatures"  => "MessageSignatureController",
 
+                       // "sshPeers", "sshPeers.clientPublicKey" and "sshPeer.<name>.*":
+                       // who a host is believed by, and where the node's files may go.
+                       "sshpeers"  => "SSHPeerController",
+                       "sshpeer"   => "SSHPeerController",
+
                        _        => "ConfigurationKeys"
                    };
 

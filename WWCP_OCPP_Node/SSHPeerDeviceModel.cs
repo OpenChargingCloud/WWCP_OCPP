@@ -34,18 +34,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// Whether a signer of pin sets the node believes signed the given
-    /// SetVariables request, which writes the SSH peers of the node.
-    /// </summary>
-    /// <param name="Request">The request; null where it is not known.</param>
-    /// <param name="Signer">Who signed it.</param>
-    /// <param name="Why">Why it is not taken as signed.</param>
-    public delegate Boolean SSHPeerSignatureCheck(SetVariablesRequest?                                              Request,
-                                                  [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]  out String?  Signer,
-                                                  [System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out String?  Why);
-
-
-    /// <summary>
     /// The SSH peers of a node as the OCPP Device Model has them:
     /// SSHPeerController, read from the "ssh.peers" of the node's configuration
     /// at every read, and written there by a SetVariables request.
@@ -115,16 +103,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The component whose instances a SetVariables request may add.
         /// </summary>
         public IEnumerable<String>  NewInstanceComponents    => [ Component ];
-
-        /// <summary>
-        /// Who says whether a signer of pin sets the node believes signed a
-        /// request that writes the SSH peers. The peers say who a host is
-        /// believed by and where the node's files may go, so over OCPP they
-        /// are written by a signed request and by no other. Without anybody
-        /// to say so there is no signer, and nothing is written over OCPP at
-        /// all: a node that knows no signer is not the way around one.
-        /// </summary>
-        public SSHPeerSignatureCheck?  SignedBy              { get; set; }
 
         #endregion
 
@@ -256,6 +234,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// Set variables of the SSH peers: all of the given entries at once
         /// with ACID and BASE, each by itself otherwise.
         /// </summary>
+        /// <remarks>
+        /// Who may write them is not asked here. SSHPeerController is a
+        /// component like every other to the signature policy of the OCPP
+        /// node, which decides it before a request comes this far: nothing
+        /// while its mode is "Off", so that a CSMS that signs nothing sets
+        /// the peers as it sets everything else, and by the role of the
+        /// signer once it is enforced.
+        /// </remarks>
         public async Task<IReadOnlyList<SetVariableResult>> SetVariablesAsync(IReadOnlyList<SetVariableEntry>  Entries,
                                                                               DataConsistencyModel             DataConsistencyModel,
                                                                               CancellationToken                CancellationToken)
@@ -264,24 +250,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
             var results = new SetVariableResult?[Entries.Count];
             var atomic  = DataConsistencyModel == DataConsistencyModel.ACID ||
                           DataConsistencyModel == DataConsistencyModel.BASE;
-
-            // Signed by a signer of pin sets the node believes, or not written: checked
-            // before anything is changed, and not under the lock of the node.
-            String? unsigned = null;
-
-            if (SignedBy is not SSHPeerSignatureCheck signedBy)
-                unsigned = "This node believes no signer of pin sets, so its SSH peers are not written over OCPP: they are set on the node itself.";
-            else if (!signedBy(Entries.FirstOrDefault()?.Request, out var signer, out var why))
-                unsigned = why;
-            else
-                log?.Invoke($"A request that writes the SSH peers of this node was signed by {signer}.");
-
-            if (unsigned is not null)
-            {
-                for (var i = 0; i < Entries.Count; i++)
-                    results[i] = Result(Entries[i], SetVariableStatus.Rejected, "Unsigned", unsigned.Length > 1024 ? unsigned[..1024] : unsigned);
-                return results!;
-            }
 
             await oneRequestAtATime.WaitAsync(CancellationToken);
 

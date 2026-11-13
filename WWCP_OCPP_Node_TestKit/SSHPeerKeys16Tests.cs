@@ -64,13 +64,6 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
             station    = Nodes.New(directory, configuration);
 
-            // Whoever writes the peers over OCPP has signed it: here, everybody has.
-            station.Bridge.SSHPeers.SignedBy = (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
-                signer  = "the test";
-                why     = null;
-                return true;
-            };
-
         }
 
         [TearDown]
@@ -283,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region File servers, and who may write the peers
+        #region File servers
 
         /// <summary>
         /// What a peer may be used for as a file server has keys of its own,
@@ -322,41 +315,6 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             // Another key of the peer changed: what it may be used for is still there.
             Assert.That(await Change("sshPeer.lc.hostKeyPins", $"{PinA},{PinB}"), Is.EqualTo(OCPP16.ConfigurationStatus.Accepted));
             Assert.That(Value("sshPeer.lc.uploadPaths"),             Is.EqualTo("/upload/{id}/"));
-
-        }
-
-        /// <summary>
-        /// A ChangeConfiguration of OCPP 1.6 brings no signature here, so with a
-        /// signer that checks one, no key of the peers is written over OCPP 1.6.
-        /// </summary>
-        [Test]
-        public async Task WithoutASignatureNoKeyOfThePeersIsWritten()
-        {
-
-            var before = OnDisk().ToString();
-
-            foreach (var check in new SSHPeerSignatureCheck?[] {
-                         null,
-                         (OCPP21.CSMS.SetVariablesRequest? request, out String? signer, out String? why) => {
-                             signer  = null;
-                             why     = request?.Signatures.Any() == true ? "not believed" : "not signed";
-                             return false;
-                         }
-                     })
-            {
-
-                ((SSHPeerDeviceModel) Keys).SignedBy = check;
-
-                Assert.That(await Change("sshPeer.lc.hostKeyPins",    PinB),                                Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
-                Assert.That(await Change("sshPeer.lc.url",            "ssh://cs001@elsewhere.example"),     Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
-                Assert.That(await Change("sshPeer.lc.fileTransfers",  "Upload"),                            Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
-                Assert.That(await Change("sshPeer.new.url",           $"ssh://new.example#{PinB}"),         Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
-                Assert.That(await Change("sshPeers",                  ""),                                  Is.EqualTo(OCPP16.ConfigurationStatus.Rejected));
-
-            }
-
-            Assert.That(OnDisk().ToString(),            Is.EqualTo(before), "nothing was written");
-            Assert.That(Value("sshPeer.lc.hostKeyPins"), Is.EqualTo(PinA),  "and everything is still read");
 
         }
 
