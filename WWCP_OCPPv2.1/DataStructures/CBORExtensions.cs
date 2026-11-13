@@ -59,11 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                        OrderBy(rule => rule.Priority).
                                                                        ThenBy (rule => rule.Context.ToString(), StringComparer.Ordinal),
                                                                    rule => rule.ToCBOR())),
+                   ("defaultSigningAction",        SignaturePolicy.DefaultSigningAction != SigningRuleActions.ForwardUnsigned
+                                                       ? (CBORValue?) CBORValue.FromText(SignaturePolicy.DefaultSigningAction.AsText())
+                                                       : null),
+                   ("defaultSigningKeyPair",       SignaturePolicy.DefaultSigningKeyPair?.ToPublicCBOR()),
                    ("verificationRules",  OCPPCBORExtensions.Array(SignaturePolicy.VerificationPolicyEntries.
                                                                        ToArray().
                                                                        OrderBy(rule => rule.Priority).
                                                                        ThenBy (rule => rule.Context.ToString(), StringComparer.Ordinal),
                                                                    rule => rule.ToCBOR())),
+                   ("defaultVerificationAction",   SignaturePolicy.DefaultVerificationAction != VerificationRuleActions.AcceptUnverified
+                                                       ? (CBORValue?) CBORValue.FromText(SignaturePolicy.DefaultVerificationAction.AsText())
+                                                       : null),
+                   ("defaultVerificationKeyPair",  SignaturePolicy.DefaultVerificationKeyPair?.ToPublicCBOR()),
                    ("signatures",  OCPPCBORExtensions.Array(SignaturePolicy.Signatures, s => s.ToCBOR())),
                    ("customData",  SignaturePolicy.CustomData?.ToCBOR())
                );
@@ -155,6 +163,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (ErrorResponse is not null)
                     return false;
 
+                if (!TryOptional<SigningRuleActions>     (CBOR, "defaultSigningAction",      "default signing action",      SigningRuleActionsExtensions.     TryParse, out var DefaultSigningAction,      out ErrorResponse) ||
+                    !TryOptional<VerificationRuleActions>(CBOR, "defaultVerificationAction", "default verification action", VerificationRuleActionsExtensions.TryParse, out var DefaultVerificationAction, out ErrorResponse))
+                {
+                    ErrorResponse ??= "The default action of the signature policy is invalid!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("defaultSigningKeyPair",
+                                   "default signing key pair",
+                                   TryParseKeyPair,
+                                   out ECCKeyPair? DefaultSigningKeyPair,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptional("defaultVerificationKeyPair",
+                                   "default verification key pair",
+                                   TryParseKeyPair,
+                                   out ECCKeyPair? DefaultVerificationKeyPair,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
                 CBOR.ParseOptionalList<Signature>("signatures",
                                                "cryptographic signatures",
                                                OCPPCBORExtensions.TryParseSignature,
@@ -180,11 +213,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       NotBefore,
                                       NotAfter,
                                       SigningRules,
-                                      null,  // DefaultSigningAction
-                                      null,  // DefaultSigningKeyPair
+                                      DefaultSigningAction,
+                                      DefaultSigningKeyPair,
                                       VerificationRules,
-                                      null,  // DefaultVerificationAction
-                                      null,  // DefaultVerificationKeyPair
+                                      DefaultVerificationAction,
+                                      DefaultVerificationKeyPair,
                                       null,
                                       null,
                                       Signatures,

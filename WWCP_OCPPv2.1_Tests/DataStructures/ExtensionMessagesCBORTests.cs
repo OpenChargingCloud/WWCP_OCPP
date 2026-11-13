@@ -389,6 +389,102 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         }
 
         /// <summary>
+        /// What a policy does with a message no rule is for - its default actions
+        /// and their key pairs - is written and read, in JSON and in CBOR, with the
+        /// public keys alone.
+        /// </summary>
+        [Test]
+        public void SignaturePolicy_SaysItsDefaultActionsAndTheirPublicKeys_InJSONAndInCBOR()
+        {
+
+            var signingKeyPair       = ECCKeyPair.GenerateKeys()!;
+            var verificationKeyPair  = ECCKeyPair.GenerateKeys()!;
+
+            var policy  = new SignaturePolicy(
+                              SignaturePolicy_Id.Parse("policy3"),
+                              7,
+                              notBefore,
+                              notAfter,
+                              DefaultSigningAction:        SigningRuleActions.Sign,
+                              DefaultSigningKeyPair:       signingKeyPair,
+                              DefaultVerificationAction:   VerificationRuleActions.VerifyAll,
+                              DefaultVerificationKeyPair:  verificationKeyPair
+                          );
+
+            var json    = policy.ToJSON();
+            var bytes   = policy.ToCBOR().ToByteArray();
+            var cbor    = CBORValue.Parse(bytes);
+
+            Assert.That(json["defaultSigningAction"]?.     Value<String>(),  Is.EqualTo(SigningRuleActions.     Sign.     AsText()));
+            Assert.That(json["defaultVerificationAction"]?.Value<String>(),  Is.EqualTo(VerificationRuleActions.VerifyAll.AsText()));
+
+            Assert.That(json.ToString(),             Does.Not.Contain("private"));
+            Assert.That(json.ToString(),             Does.Not.Contain(Convert.ToBase64String(signingKeyPair.PrivateKeyBytes)));
+            Assert.That(Convert.ToHexString(bytes),  Does.Not.Contain(Convert.ToHexString(signingKeyPair.     PrivateKeyBytes)));
+            Assert.That(Convert.ToHexString(bytes),  Does.Not.Contain(Convert.ToHexString(verificationKeyPair.PrivateKeyBytes)));
+            Assert.That(KeysOf(cbor),                Is.EqualTo(KeysOf(json)));
+
+            Assert.That(SignaturePolicy.TryParse              (json, out var fromJSON, out var jsonErrorResponse),  Is.True, jsonErrorResponse);
+            Assert.That(CBORExtensions.TryParseSignaturePolicy(cbor, out var fromCBOR, out var cborErrorResponse),  Is.True, cborErrorResponse);
+
+            AreTheSame(fromJSON!.ToJSON(), json);
+            AreTheSame(fromCBOR!.ToJSON(), json);
+
+            foreach (var again in new[] { fromJSON, fromCBOR })
+            {
+                Assert.That(again.DefaultSigningAction,                         Is.EqualTo(SigningRuleActions.Sign));
+                Assert.That(again.DefaultSigningKeyPair!.     PublicKeyBytes,   Is.EqualTo(signingKeyPair.PublicKeyBytes));
+                Assert.That(again.DefaultSigningKeyPair.      PrivateKeyBytes,  Is.Empty);
+                Assert.That(again.DefaultVerificationAction,                    Is.EqualTo(VerificationRuleActions.VerifyAll));
+                Assert.That(again.DefaultVerificationKeyPair!.PublicKeyBytes,   Is.EqualTo(verificationKeyPair.PublicKeyBytes));
+                Assert.That(again.DefaultVerificationKeyPair. PrivateKeyBytes,  Is.Empty);
+            }
+
+        }
+
+        /// <summary>
+        /// A policy that does what a policy does anyway says nothing of it, and one
+        /// that is to verify by default without a key to verify with is refused.
+        /// </summary>
+        [Test]
+        public void SignaturePolicy_WithoutDefaults_SaysNone_AndADefaultWithoutItsKeyIsRefused()
+        {
+
+            var json = Policy().ToJSON();
+
+            Assert.That(KeysOf(json),  Does.Not.Contain("defaultSigningAction"));
+            Assert.That(KeysOf(json),  Does.Not.Contain("defaultSigningKeyPair"));
+            Assert.That(KeysOf(json),  Does.Not.Contain("defaultVerificationAction"));
+            Assert.That(KeysOf(json),  Does.Not.Contain("defaultVerificationKeyPair"));
+
+            json["defaultVerificationAction"] = VerificationRuleActions.VerifyAll.AsText();
+
+            Assert.That(SignaturePolicy.TryParse(json, out _, out var jsonErrorResponse),  Is.False);
+            Assert.That(jsonErrorResponse,                                                 Is.Not.Null);
+
+            var cbor = OCPPCBORExtensions.Map(
+                           ("id",                         CBORValue.FromText  ("policy1")),
+                           ("priority",                   CBORValue.FromUInt64(7)),
+                           ("notBefore",                  notBefore.ToCBOR()),
+                           ("defaultVerificationAction",  CBORValue.FromText  (VerificationRuleActions.VerifyAll.AsText()))
+                       );
+
+            Assert.That(CBORExtensions.TryParseSignaturePolicy(Read(cbor), out _, out var cborErrorResponse),  Is.False);
+            Assert.That(cborErrorResponse,                                                                     Is.Not.Null);
+
+            var unknown = OCPPCBORExtensions.Map(
+                              ("id",                    CBORValue.FromText  ("policy1")),
+                              ("priority",              CBORValue.FromUInt64(7)),
+                              ("notBefore",             notBefore.ToCBOR()),
+                              ("defaultSigningAction",  CBORValue.FromText  ("whatever"))
+                          );
+
+            Assert.That(CBORExtensions.TryParseSignaturePolicy(Read(unknown), out _, out var unknownErrorResponse),  Is.False);
+            Assert.That(unknownErrorResponse,                                                                        Is.Not.Null);
+
+        }
+
+        /// <summary>
         /// A key pair is read without a private key, and one that has both has
         /// them the right way round.
         /// </summary>
