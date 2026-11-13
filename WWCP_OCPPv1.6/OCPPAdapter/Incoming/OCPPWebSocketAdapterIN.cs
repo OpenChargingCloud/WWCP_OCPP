@@ -161,6 +161,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         public Func<IMessageConnection, cloud.charging.open.protocols.WWCP.ConnectionRights?>?  RightsOfConnection  { get; set; }
 
+        /// <summary>
+        /// Asked for every request and every send message that comes in, with
+        /// the connection it came over, the node that connection is known by,
+        /// the network path the message names and its action. A sentence, why
+        /// that connection may not send a message of that path, drops it:
+        /// unanswered, as an answer would go to the sender the path names.
+        /// Null lets it through.
+        /// </summary>
+        /// <remarks>
+        /// In the overlay network a frame names its network path itself, and
+        /// nothing else ties it to the connection: whoever may speak for whom
+        /// is the node's to say - a central system, say, lets a connection
+        /// speak for itself, and only a local controller's for the charge
+        /// points behind it. A gate that fails drops the message, rather than
+        /// let through what it was there to stop. As in OCPP 2.1.
+        /// </remarks>
+        public Func<IMessageConnection, NetworkingNode_Id?, NetworkPath, String, String?>?  SenderGate  { get; set; }
+
         #endregion
 
         #region Events
@@ -478,6 +496,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #endregion
 
+        #region (private) SenderRefused(Connection, Node, Path, Action)
+
+        /// <summary>
+        /// Whether the <see cref="SenderGate"/> drops a message - false where
+        /// there is no gate or it lets it through.
+        /// </summary>
+        private Boolean SenderRefused(IMessageConnection  Connection,
+                                      NetworkingNode_Id?  Node,
+                                      NetworkPath         Path,
+                                      String              Action)
+        {
+
+            if (SenderGate is not Func<IMessageConnection, NetworkingNode_Id?, NetworkPath, String, String?> gate)
+                return false;
+
+            try
+            {
+                return gate(Connection, Node, Path, Action) is not null;
+            }
+            catch (Exception exception)
+            {
+                DebugX.Log($"'{parentNetworkingNode.Id}': could not decide who may send '{Action}' over the connection of '{Node}', and dropped it: {exception.Message}");
+                return true;
+            }
+
+        }
+
+        #endregion
+
         #region (private) ConnectionRightsOf(Connection)
 
         /// <summary>
@@ -586,6 +633,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     #endregion
 
+                    #region Who sent it, and over which connection
+
+                    // The overlay network names the path in the frame itself: whether
+                    // this connection may send it in that name is the node's to say.
+                    if (SenderRefused(WebSocketConnection, sourceNodeId, jsonRequestMessage.NetworkPath, jsonRequestMessage.Action))
+                        return;
+
+                    #endregion
 
                     #region OnJSONMessageRequestReceived
 
@@ -928,6 +983,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     #endregion
 
+                    #region Who sent it, and over which connection
+
+                    // The overlay network names the path in the frame itself: whether
+                    // this connection may send it in that name is the node's to say.
+                    if (SenderRefused(WebSocketConnection, sourceNodeId, jsonSendMessage.NetworkPath, jsonSendMessage.Action))
+                        return;
+
+                    #endregion
 
                     #region OnJSONSendMessageReceived
 
@@ -1167,6 +1230,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     #endregion
 
+                    #region Who sent it, and over which connection
+
+                    // The overlay network names the path in the frame itself: whether
+                    // this connection may send it in that name is the node's to say.
+                    if (SenderRefused(WebSocketConnection, sourceNodeId, binaryRequestMessage.NetworkPath, binaryRequestMessage.Action))
+                        return;
+
+                    #endregion
 
                     #region OnBinaryRequestMessageReceived
 
@@ -1483,6 +1554,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                     #endregion
 
+                    #region Who sent it, and over which connection
+
+                    // The overlay network names the path in the frame itself: whether
+                    // this connection may send it in that name is the node's to say.
+                    if (SenderRefused(WebSocketConnection, sourceNodeId, binarySendMessage.NetworkPath, binarySendMessage.Action))
+                        return;
+
+                    #endregion
 
                     #region OnBinarySendMessageReceived
 
