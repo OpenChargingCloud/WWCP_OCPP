@@ -95,6 +95,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public Func<CSMS.ResetRequest, CancellationToken, Task<CS.ResetResponse?>>?  OnResetByOwner  { get; set; }
 
         /// <summary>
+        /// Answers an UnlockConnector - the owner of this node knows what is
+        /// plugged in where, and whether somebody is charging there - or null
+        /// to leave it to this node, which says "Unlocked" and does nothing.
+        /// </summary>
+        public Func<CSMS.UnlockConnectorRequest, CancellationToken, Task<CS.UnlockConnectorResponse?>>?  OnUnlockConnectorByOwner  { get; set; }
+
+        /// <summary>
+        /// Answers a TriggerMessage before this node does - the owner of this
+        /// node knows how its EVSEs stand, and whom it registered with - or
+        /// null to leave it to this node and to the owner's other answers.
+        /// </summary>
+        public Func<CSMS.TriggerMessageRequest, CancellationToken, Task<CS.TriggerMessageResponse?>>?  OnTriggerMessageByOwner  { get; set; }
+
+        /// <summary>
         /// Answers a TriggerMessage of SignChargingStationCertificate,
         /// SignV2GCertificate, SignV2G20Certificate or SignCombinedCertificate -
         /// the owner of this node makes the key and sends the SignCertificate -
@@ -1241,11 +1255,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region OnUnlockConnector
 
-            OCPP.IN.OnUnlockConnector +=  (timestamp,
-                                           sender,
-                                           connection,
-                                           request,
-                                           ct) => {
+            OCPP.IN.OnUnlockConnector += async (timestamp,
+                                                sender,
+                                                connection,
+                                                request,
+                                                ct) => {
+
+                // The owner's to answer, where it has an answer: this node
+                // has no lock to let go of.
+                if (OnUnlockConnectorByOwner is Func<CSMS.UnlockConnectorRequest, CancellationToken, Task<CS.UnlockConnectorResponse?>> owner &&
+                    await owner(request, ct) is CS.UnlockConnectorResponse answered)
+                    return answered;
 
                 UnlockConnectorResponse? response = null;
 
@@ -1278,7 +1298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    CustomData:   null
                                );
 
-                return Task.FromResult(response);
+                return response;
 
             };
 
@@ -2686,6 +2706,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                connection,
                                                request,
                                                ct) => {
+
+                // The owner's to answer first, where it has an answer: how
+                // the EVSEs stand, and whom this node registered with.
+                if (OnTriggerMessageByOwner is Func<CSMS.TriggerMessageRequest, CancellationToken, Task<CS.TriggerMessageResponse?>> owner &&
+                    await owner(request, ct) is CS.TriggerMessageResponse byOwner)
+                    return byOwner;
 
                 // A CustomTrigger is the owner's to answer: "SignSSHKey" of the
                 // white paper "OCPP over SSH", say. None, and it is rejected.
