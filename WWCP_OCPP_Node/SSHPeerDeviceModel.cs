@@ -45,9 +45,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// never stored, so there is no moment in between.
     /// </para>
     /// <para>
-    /// What is written is the whole list, as the node takes it. A change made
-    /// elsewhere between the read and the write of one request is not seen;
-    /// OldAttributeValue guards a single variable against it.
+    /// What is written is the whole list, as the node takes it - read, changed
+    /// and written while the node holds its configuration
+    /// (<see cref="WWCPNode.TryUpdateSSHPeers"/>), so that a change made
+    /// elsewhere in between, on the node's page or by another request, is
+    /// neither missed nor written over. OldAttributeValue is compared then
+    /// as well: with what the variable is when it is set.
     /// </para>
     /// </remarks>
     public sealed partial class SSHPeerDeviceModel : ISSHPeerControllerSource,
@@ -226,21 +229,32 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (atomic)
                 {
 
-                    var table = TableOf(node.ConfiguredSSHPeers);
+                    var refused = -1;
 
-                    for (var i = 0; i < Entries.Count; i++)
+                    var (saved, reason, why) = await Change(table => {
+
+                                                                for (var i = 0; i < Entries.Count; i++)
+                                                                {
+                                                                    if (!TryApply(table, Entries[i], Entries, out var code, out var info))
+                                                                    {
+                                                                        refused = i;
+                                                                        return (code, info);
+                                                                    }
+                                                                }
+
+                                                                return null;
+
+                                                            },
+                                                            SenderOf(Entries));
+
+                    if (refused >= 0)
                     {
-                        if (!TryApply(table, Entries[i], Entries, out var code, out var info))
-                        {
-                            for (var j = 0; j < Entries.Count; j++)
-                                results[j] = j == i
-                                                 ? Result(Entries[j], SetVariableStatus.Rejected,   code,          info)
-                                                 : Result(Entries[j], SetVariableStatus.Rolledback, "Unspecified", $"{Where(Entries[i])} was refused.");
-                            return results!;
-                        }
+                        for (var j = 0; j < Entries.Count; j++)
+                            results[j] = j == refused
+                                             ? Result(Entries[j], SetVariableStatus.Rejected,   reason,        why)
+                                             : Result(Entries[j], SetVariableStatus.Rolledback, "Unspecified", $"{Where(Entries[refused])} was refused.");
+                        return results!;
                     }
-
-                    var (saved, reason, why) = await Save(table, SenderOf(Entries));
 
                     for (var j = 0; j < Entries.Count; j++)
                         results[j] = saved
@@ -264,15 +278,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         continue;
                     }
 
-                    var table = TableOf(node.ConfiguredSSHPeers);
+                    var entry = Entries[i];
 
-                    if (!TryApply(table, Entries[i], [ Entries[i] ], out var code, out var info))
-                    {
-                        results[i] = Result(Entries[i], SetVariableStatus.Rejected, code, info);
-                        continue;
-                    }
-
-                    var (saved, reason, why) = await Save(table, SenderOf(Entries));
+                    var (saved, reason, why) = await Change(table => TryApply(table, entry, [ entry ], out var code, out var info)
+                                                                         ? null
+                                                                         : (code, info),
+                                                            SenderOf(Entries));
 
                     results[i] = saved
                                      ? Result(Entries[i], SetVariableStatus.Accepted)
@@ -476,19 +487,30 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) Save(Table, Sender)
+        #region (private) Change(Edit, Sender)
 
         /// <summary>
-        /// Have the node take the peers as the table has them: read as its
+        /// Have the node change its peers: the given edit is made in a table
+        /// of the peers as the node has them at that moment, while the node
+        /// holds its configuration, and what comes of it is read as its
         /// configuration file is read, saved there, and in effect at once.
         /// </summary>
-        private async Task<(Boolean Saved, String ReasonCode, String AdditionalInfo)> Save(List<Row>  Table,
-                                                                                         String     Sender)
+        /// <remarks>
+        /// Read, changed and written as one: a peer somebody else added or
+        /// changed in between - on the node's page, in its file - is in the
+        /// table the edit is made in, and is not written over. And what an
+        /// entry believes a variable to be (OldAttributeValue) is compared
+        /// with what it is when it is set, not with what it was a moment
+        /// before.
+        /// </remarks>
+        /// <param name="Edit">Changes the table, or says why not: the reason code and what to say.</param>
+        /// <param name="Sender">Who asked, for the log.</param>
+        private async Task<(Boolean Saved, String ReasonCode, String AdditionalInfo)> Change(Func<List<Row>, (String ReasonCode, String AdditionalInfo)?>  Edit,
+                                                                                           String                                                       Sender)
         {
 
-            // A name Peers took out and put in again would be the same peer:
-            // the order of the list is the order of the file.
-            var change = new JObject(new JProperty("peers", new JArray(Table.Select(row => row.ToJSON()))));
+            List<Row>                                    Table    = [];
+            (String ReasonCode, String AdditionalInfo)?  refused  = null;
 
             String InWords(String Error)
             {
@@ -500,10 +522,21 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             }
 
-            if (!SSHConfiguration.TryParse(change, out _, out var wrong))
-                return (false, "InvalidValue", InWords(wrong));
+            var changed = await node.TryUpdateSSHPeers(peers => {
 
-            var changed = await node.TryUpdateSSHConfiguration(change);
+                                    Table    = TableOf(peers);
+                                    refused  = Edit(Table);
+
+                                    // A name Peers took out and put in again would be the same peer:
+                                    // the order of the list is the order of the file.
+                                    return refused is null
+                                               ? new JArray(Table.Select(row => row.ToJSON()))
+                                               : null;
+
+                                });
+
+            if (refused is (String, String) why)
+                return (false, why.ReasonCode, why.AdditionalInfo);
 
             if (changed.Error is String error)
                 return (false, changed.NotSaved ? "InternalError" : "InvalidValue", InWords(error));

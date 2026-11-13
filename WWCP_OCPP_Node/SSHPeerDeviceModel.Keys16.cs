@@ -165,6 +165,35 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                    CancellationToken  CancellationToken = default)
         {
 
+            // A key that adds a peer or takes one out says the whole list of
+            // them, of the list as it was read here: where somebody else
+            // changed the list in between, the node refuses it instead of
+            // taking that change back, and it is said again of the list as
+            // it is now.
+            for (var attempt = 1; ; attempt++)
+            {
+
+                var were    = String.Join(",", PeerIds);
+                var status  = await ChangeOnce(Key, Value, Sender, ListOf(were), CancellationToken);
+
+                if (status != OCPP16.ConfigurationStatus.Rejected ||
+                    attempt == 3 ||
+                    String.Join(",", PeerIds) == were)
+                {
+                    return status;
+                }
+
+            }
+
+        }
+
+        private async Task<OCPP16.ConfigurationStatus?> ChangeOnce(String                 Key,
+                                                                   String                 Value,
+                                                                   String?                Sender,
+                                                                   IReadOnlyList<String>  Were,
+                                                                   CancellationToken      CancellationToken)
+        {
+
             var entries = new List<OCPP21.SetVariableData>();
 
             if (String.Equals(Key, ClientPublicKeyKey16, StringComparison.OrdinalIgnoreCase))
@@ -176,10 +205,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 var names = ListOf(Value);
 
                 // A name alone is no peer: one is added by its "url".
-                if (names.Any(name => !PeerIds.Contains(name, StringComparer.OrdinalIgnoreCase)))
+                if (names.Any(name => !Were.Contains(name, StringComparer.OrdinalIgnoreCase)))
                     return OCPP16.ConfigurationStatus.Rejected;
 
-                entries.Add(NodeEntry("Peers", String.Join(",", names)));
+                entries.Add(NodeEntry("Peers", String.Join(",", names), String.Join(",", Were)));
 
             }
 
@@ -189,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (!TryPeerKey(Key, out var peer, out _, out var variable, out var written))
                     return null;
 
-                var id = PeerIds.FirstOrDefault(known => String.Equals(known, peer, StringComparison.OrdinalIgnoreCase));
+                var id = Were.FirstOrDefault(known => String.Equals(known, peer, StringComparison.OrdinalIgnoreCase));
 
                 // The keys of a peer the node does not have are none of its
                 // keys - but its "url", which adds it.
@@ -216,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         if (pins is null || pins.Count == 0)
                             return OCPP16.ConfigurationStatus.Rejected;
 
-                        entries.Add(NodeEntry("Peers", String.Join(",", PeerIds.Append(peer))));
+                        entries.Add(NodeEntry("Peers", String.Join(",", Were.Append(peer)), String.Join(",", Were)));
 
                     }
 
@@ -364,12 +393,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #region (private static) NodeEntry(Variable, Value), PeerEntry(Peer, Variable, Value)
 
-        private static OCPP21.SetVariableData NodeEntry(String Variable, String Value)
+        private static OCPP21.SetVariableData NodeEntry(String Variable, String Value, String? Believed = null)
 
             => new (
-                   Component:       new OCPP21.Component(Name: Component),
-                   Variable:        new OCPP21.Variable (Name: Variable),
-                   AttributeValue:  Value
+                   Component:          new OCPP21.Component(Name: Component),
+                   Variable:           new OCPP21.Variable (Name: Variable),
+                   AttributeValue:     Value,
+                   OldAttributeValue:  Believed
                );
 
         private static OCPP21.SetVariableData PeerEntry(String Peer, String Variable, String Value)
