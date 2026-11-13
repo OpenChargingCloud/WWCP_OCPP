@@ -34,6 +34,7 @@ using cloud.charging.open.protocols.WWCP.Node.Configuration;
 using cloud.charging.open.protocols.WWCP.Node.TestKit;
 using cloud.charging.open.protocols.OCPP.Node.TestKit;
 
+using OCPPv1_6 = cloud.charging.open.protocols.OCPPv1_6;
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
 
 #endregion
@@ -80,6 +81,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
             logStatus.     Clear();
             firmwareStatus.Clear();
             waited.        Clear();
+            logStatus16.        Clear();
+            diagnosticsStatus16.Clear();
+            firmwareStatus16.   Clear();
         }
 
         [TearDown]
@@ -520,6 +524,235 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
             Assert.That(waited[0].TotalMinutes, Is.EqualTo(120).Within(1), "until it is due");
             Assert.That(waited[1],              Is.EqualTo(TimeSpan.FromSeconds(30)), "and the interval of the request before its second attempt");
             Assert.That(Directory.Exists(Transfers.StagingDirectory) ? Directory.GetFiles(Transfers.StagingDirectory) : [], Is.Empty);
+
+        }
+
+        #endregion
+
+
+        #region OCPP 1.6
+
+        private readonly List<OCPPv1_6.UploadLogStatus>     logStatus16          = [];
+        private readonly List<OCPPv1_6.DiagnosticsStatus>   diagnosticsStatus16  = [];
+        private readonly List<OCPPv1_6.FirmwareStatus>      firmwareStatus16     = [];
+
+        private static Func<TStatus, Task> Into<TStatus>(List<TStatus> Told)
+            => status => { lock (Told) Told.Add(status); return Task.CompletedTask; };
+
+        private static async Task Until(Func<Boolean> IsSo)
+        {
+            for (var i = 0; i < 100 && !IsSo(); i++)
+                await Task.Delay(50);
+        }
+
+        private Task<OCPPv1_6.CP.GetLogResponse> GetLog16(String Location)
+
+            => station!.Bridge.GetLog(
+                   new OCPPv1_6.CS.GetLogRequest(
+                       SourceRouting.To(((OCPPv1_6.CS.IChargePointNode) station.OCPPv1_6Node).Id),
+                       OCPPv1_6.LogTypes.SecurityLog,
+                       43,
+                       new OCPPv1_6.LogParameters(org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(Location))
+                   ),
+                   Into(logStatus16)
+               );
+
+        private Task<OCPPv1_6.CP.GetDiagnosticsResponse> GetDiagnostics16(String Location)
+
+            => station!.Bridge.GetDiagnostics(
+                   new OCPPv1_6.CS.GetDiagnosticsRequest(
+                       SourceRouting.To(((OCPPv1_6.CS.IChargePointNode) station.OCPPv1_6Node).Id),
+                       Location
+                   ),
+                   Into(diagnosticsStatus16)
+               );
+
+        private Task<OCPPv1_6.CP.UpdateFirmwareResponse> UpdateFirmware16(String Location, Byte? Retries = null, DateTimeOffset? RetrieveAt = null)
+
+            => station!.Bridge.UpdateFirmware(
+                   new OCPPv1_6.CS.UpdateFirmwareRequest(
+                       SourceRouting.To(((OCPPv1_6.CS.IChargePointNode) station.OCPPv1_6Node).Id),
+                       org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(Location),
+                       RetrieveAt ?? DateTimeOffset.UtcNow.AddMinutes(-1),
+                       Retries,
+                       TimeSpan.FromSeconds(30)
+                   ),
+                   Into(firmwareStatus16)
+               );
+
+        private Task<OCPPv1_6.CP.SignedUpdateFirmwareResponse> SignedUpdateFirmware16(String Location)
+
+            => station!.Bridge.SignedUpdateFirmware(
+                   new OCPPv1_6.CS.SignedUpdateFirmwareRequest(
+                       SourceRouting.To(((OCPPv1_6.CS.IChargePointNode) station.OCPPv1_6Node).Id),
+                       new OCPPv1_6.FirmwareImage(org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(Location),
+                                                  DateTime.UtcNow.AddMinutes(-1),
+                                                  "-----BEGIN CERTIFICATE-----",
+                                                  "c2lnbmF0dXJl"),
+                       9
+                   ),
+                   Into(firmwareStatus16)
+               );
+
+
+        [Test]
+        public async Task TheOCPP1_6NodeLeavesItsFilesToTheBridge()
+        {
+
+            await Enrolled();
+
+            Assert.That(station!.OCPPv1_6Node, Is.InstanceOf<OCPPv1_6.IFileTransferNode>());
+
+            var node16 = (OCPPv1_6.IFileTransferNode) station.OCPPv1_6Node;
+
+            Assert.That(node16.GetLogProcessor,                Is.Not.Null);
+            Assert.That(node16.GetDiagnosticsProcessor,        Is.Not.Null);
+            Assert.That(node16.UpdateFirmwareProcessor,        Is.Not.Null);
+            Assert.That(node16.SignedUpdateFirmwareProcessor,  Is.Not.Null);
+
+        }
+
+        [Test]
+        public async Task OCPP1_6_ALogAndTheDiagnosticsAreUploaded()
+        {
+
+            await Enrolled();
+
+            var asked = new List<FileRequest>();
+            var files = 0;
+
+            Transfers.FileProvider = (request, cancellationToken) => {
+                asked.Add(request);
+                return Task.FromResult<FileToUpload?>(new FileToUpload(new MemoryStream(RandomNumberGenerator.GetBytes(5000)), $"file{++files}.tar.gz"));
+            };
+
+            // GetLog of the security extension.
+            var log = await GetLog16(URL("/upload/"));
+
+            Assert.That(log.Status,    Is.EqualTo(OCPPv1_6.LogStatus.Accepted));
+            Assert.That(log.Filename,  Is.EqualTo("file1.tar.gz"));
+
+            await Transfers.Upload;
+
+            Assert.That(logStatus16,   Is.EqualTo(new[] { OCPPv1_6.UploadLogStatus.Uploading, OCPPv1_6.UploadLogStatus.Uploaded }));
+            Assert.That(asked[0].Kind, Is.EqualTo("SecurityLog"));
+
+            // GetDiagnostics, whose response is the file name alone.
+            var diagnostics = await GetDiagnostics16(URL("/upload/"));
+
+            Assert.That(diagnostics.FileName, Is.EqualTo("file2.tar.gz"));
+
+            await Transfers.Upload;
+
+            Assert.That(diagnosticsStatus16,  Is.EqualTo(new[] { OCPPv1_6.DiagnosticsStatus.Uploading, OCPPv1_6.DiagnosticsStatus.Uploaded }));
+            Assert.That(asked[1].Kind,        Is.EqualTo("Diagnostics"));
+            Assert.That(asked[1].RequestId,   Is.Null);
+
+            Assert.That(Directory.GetFiles(uploads).Select(Path.GetFileName).Order(), Is.EqualTo(new[] { "file1.tar.gz", "file2.tar.gz" }));
+
+        }
+
+        [Test]
+        public async Task OCPP1_6_ARefusalIsSaidInTheFewWordsThereAre()
+        {
+
+            await Enrolled();
+
+            var provided = 0;
+            Transfers.FileProvider = (request, cancellationToken) => {
+                provided++;
+                return Task.FromResult<FileToUpload?>(new FileToUpload(new MemoryStream([ 1, 2, 3 ]), "a.log"));
+            };
+
+            var elsewhere = URL("/upload/", Host: "127.0.0.2");
+
+            // GetLog has a status, and no status info.
+            var log = await GetLog16(elsewhere);
+
+            Assert.That(log.Status,    Is.EqualTo(OCPPv1_6.LogStatus.Rejected));
+            Assert.That(log.Filename,  Is.Null);
+            Assert.That(logStatus16,   Is.Empty);
+
+            // GetDiagnostics has neither: no file name, and the upload is told as failed.
+            var diagnostics = await GetDiagnostics16(elsewhere);
+
+            Assert.That(diagnostics.FileName, Is.Null.Or.Empty);
+            await Until(() => diagnosticsStatus16.Count > 0);
+            Assert.That(diagnosticsStatus16,  Is.EqualTo(new[] { OCPPv1_6.DiagnosticsStatus.UploadFailed }));
+
+            // UpdateFirmware answers with nothing: the download is told as failed.
+            await UpdateFirmware16(URL("/firmware/a.bin", Host: "127.0.0.2"));
+
+            await Until(() => firmwareStatus16.Count > 0);
+            Assert.That(firmwareStatus16,     Is.EqualTo(new[] { OCPPv1_6.FirmwareStatus.DownloadFailed }));
+
+            // SignedUpdateFirmware has a status again.
+            firmwareStatus16.Clear();
+
+            var signed = await SignedUpdateFirmware16(URL("/firmware/a.bin", Host: "127.0.0.2"));
+
+            Assert.That(signed.Status,        Is.EqualTo(OCPPv1_6.UpdateFirmwareStatus.Rejected));
+            await Task.Delay(500);
+            Assert.That(firmwareStatus16,     Is.Empty);
+
+            Assert.That(provided,                    Is.Zero);
+            Assert.That(Directory.GetFiles(uploads), Is.Empty);
+
+        }
+
+        [Test]
+        public async Task OCPP1_6_AFirmwareImageIsDownloadedSignedOrNot()
+        {
+
+            await Enrolled();
+
+            var image = RandomNumberGenerator.GetBytes(60_000);
+            File.WriteAllBytes(Path.Combine(firmware, "station-4.2.1.bin"), image);
+
+            var taken = new List<DownloadedFile>();
+            Transfers.FileConsumer = (file, cancellationToken) => { taken.Add(file); return Task.CompletedTask; };
+
+            // The plain one: no request id, no signature.
+            await UpdateFirmware16(URL("/firmware/station-4.2.1.bin"));
+            await Transfers.Download;
+
+            Assert.That(firmwareStatus16,   Is.EqualTo(new[] { OCPPv1_6.FirmwareStatus.Downloading, OCPPv1_6.FirmwareStatus.Downloaded }));
+            Assert.That(taken[0].RequestId, Is.Null);
+            Assert.That(taken[0].Request,   Is.InstanceOf<OCPPv1_6.CS.UpdateFirmwareRequest>());
+            Assert.That(File.ReadAllBytes(taken[0].Path), Is.EqualTo(image));
+
+            // The signed one: the request goes with the file, for whoever checks its signature.
+            firmwareStatus16.Clear();
+
+            var signed = await SignedUpdateFirmware16(URL("/firmware/station-4.2.1.bin"));
+            Assert.That(signed.Status,      Is.EqualTo(OCPPv1_6.UpdateFirmwareStatus.Accepted));
+
+            await Transfers.Download;
+
+            Assert.That(firmwareStatus16,   Is.EqualTo(new[] { OCPPv1_6.FirmwareStatus.Downloading, OCPPv1_6.FirmwareStatus.Downloaded }));
+            Assert.That(taken[1].RequestId, Is.EqualTo(9));
+            Assert.That(((OCPPv1_6.CS.SignedUpdateFirmwareRequest) taken[1].Request!).Firmware.Signature, Is.EqualTo("c2lnbmF0dXJl"));
+            Assert.That(File.ReadAllBytes(taken[1].Path), Is.EqualTo(image));
+
+        }
+
+        [Test]
+        public async Task OCPP1_6_APlainDownloadThatWaitsTellsNothingOfIt()
+        {
+
+            var closed = TestPorts.Free();
+            await Enrolled(Port: closed);
+
+            await UpdateFirmware16(URL("/firmware/station-4.2.1.bin", Port: closed), Retries: 1, RetrieveAt: DateTimeOffset.UtcNow.AddHours(1));
+            await Transfers.Download;
+
+            // A FirmwareStatusNotification has no word for scheduled and none for paused.
+            Assert.That(firmwareStatus16, Is.EqualTo(new[] {
+                                                         OCPPv1_6.FirmwareStatus.Downloading,
+                                                         OCPPv1_6.FirmwareStatus.Downloading,
+                                                         OCPPv1_6.FirmwareStatus.DownloadFailed
+                                                     }));
+            Assert.That(waited, Has.Count.EqualTo(2), "it waited until it was due, and for its second attempt, all the same");
 
         }
 

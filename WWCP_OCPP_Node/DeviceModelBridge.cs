@@ -233,9 +233,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 ChargePoint.CertificateSources.Add(NTSRootCertificates);
                 ChargePoint.AddConfigurationKeySource(NTS);
 
-                // The security events of the node's file transfers are told
-                // to a central system as well.
-                _ = FileTransfers;
+                // GetLog, GetDiagnostics, UpdateFirmware and SignedUpdateFirmware,
+                // answered with the node's file transfers - see
+                // DeviceModelBridge.FileTransfers16.cs.
+                ServeFileTransfers(ChargePoint);
 
                 // The SSH peers: "sshPeers" and the keys of each peer.
                 ChargePoint.AddConfigurationKeySource(SSHPeers);

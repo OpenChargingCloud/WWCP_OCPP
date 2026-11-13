@@ -47,7 +47,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// </summary>
     public partial class TestChargePointNode : AChargePointNode,
                                        IChargePointNode,
-                                       IQueryDNSNode
+                                       IQueryDNSNode,
+                                       IFileTransferNode
     {
 
         #region Events
@@ -612,6 +613,133 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// "Disabled", since nothing here resolves names that could be asked.
         /// </summary>
         public OnQueryDNSDelegate? QueryDNSProcessor { get; set; }
+
+        #region File transfers: the four requests are answered once somebody answers them
+
+        // A request has a handler only once it has a processor: without one,
+        // a charge point answers it as it always did - not at all.
+
+        private OnGetLogDelegate?                getLogProcessor;
+        private OnGetDiagnosticsDelegate?        getDiagnosticsProcessor;
+        private OnUpdateFirmwareDelegate?        updateFirmwareProcessor;
+        private OnSignedUpdateFirmwareDelegate?  signedUpdateFirmwareProcessor;
+
+        /// <summary>
+        /// What answers a GetLog request: whoever moves the files of the WWCP
+        /// node this charge point runs in.
+        /// </summary>
+        public OnGetLogDelegate? GetLogProcessor
+        {
+            get => getLogProcessor;
+            set
+            {
+
+                if (getLogProcessor is null && value is not null)
+                    OCPP.IN.OnGetLog += (timestamp, sender, connection, request, cancellationToken)
+                                            => getLogProcessor is OnGetLogDelegate processor
+                                                   ? processor(timestamp, sender, connection, request, cancellationToken)
+                                                   : Task.FromResult(new GetLogResponse(request, LogStatus.Rejected));
+
+                getLogProcessor = value;
+
+            }
+        }
+
+        /// <summary>
+        /// What answers a GetDiagnostics request.
+        /// </summary>
+        public OnGetDiagnosticsDelegate? GetDiagnosticsProcessor
+        {
+            get => getDiagnosticsProcessor;
+            set
+            {
+
+                if (getDiagnosticsProcessor is null && value is not null)
+                    OCPP.IN.OnGetDiagnostics += (timestamp, sender, connection, request, cancellationToken)
+                                                    => getDiagnosticsProcessor is OnGetDiagnosticsDelegate processor
+                                                           ? processor(timestamp, sender, connection, request, cancellationToken)
+                                                           : Task.FromResult(new GetDiagnosticsResponse(request));
+
+                getDiagnosticsProcessor = value;
+
+            }
+        }
+
+        /// <summary>
+        /// What answers an UpdateFirmware request.
+        /// </summary>
+        public OnUpdateFirmwareDelegate? UpdateFirmwareProcessor
+        {
+            get => updateFirmwareProcessor;
+            set
+            {
+
+                if (updateFirmwareProcessor is null && value is not null)
+                    OCPP.IN.OnUpdateFirmware += (timestamp, sender, connection, request, cancellationToken)
+                                                    => updateFirmwareProcessor is OnUpdateFirmwareDelegate processor
+                                                           ? processor(timestamp, sender, connection, request, cancellationToken)
+                                                           : Task.FromResult(new UpdateFirmwareResponse(request));
+
+                updateFirmwareProcessor = value;
+
+            }
+        }
+
+        /// <summary>
+        /// What answers a SignedUpdateFirmware request.
+        /// </summary>
+        public OnSignedUpdateFirmwareDelegate? SignedUpdateFirmwareProcessor
+        {
+            get => signedUpdateFirmwareProcessor;
+            set
+            {
+
+                if (signedUpdateFirmwareProcessor is null && value is not null)
+                    OCPP.IN.OnSignedUpdateFirmware += (timestamp, sender, connection, request, cancellationToken)
+                                                          => signedUpdateFirmwareProcessor is OnSignedUpdateFirmwareDelegate processor
+                                                                 ? processor(timestamp, sender, connection, request, cancellationToken)
+                                                                 : Task.FromResult(new SignedUpdateFirmwareResponse(request, UpdateFirmwareStatus.Rejected));
+
+                signedUpdateFirmwareProcessor = value;
+
+            }
+        }
+
+        /// <summary>
+        /// Tell the central system how the upload of a log goes.
+        /// </summary>
+        public Task SendLogStatus(UploadLogStatus    Status,
+                                  Int32?             LogRequestId,
+                                  CancellationToken  CancellationToken   = default)
+
+            => this.SendLogStatusNotification(Status, LogRequestId, CancellationToken: CancellationToken);
+
+        /// <summary>
+        /// Tell the central system how the upload of the diagnostics goes.
+        /// </summary>
+        public Task SendDiagnosticsStatus(DiagnosticsStatus  Status,
+                                          CancellationToken  CancellationToken   = default)
+
+            => this.SendDiagnosticsStatusNotification(Status, CancellationToken: CancellationToken);
+
+        /// <summary>
+        /// Tell the central system how the download of a firmware image goes.
+        /// </summary>
+        public Task SendFirmwareStatus(FirmwareStatus     Status,
+                                       CancellationToken  CancellationToken   = default)
+
+            => this.SendFirmwareStatusNotification(Status, CancellationToken: CancellationToken);
+
+        /// <summary>
+        /// Tell the central system how the download of a signed firmware image goes.
+        /// </summary>
+        public Task SendSignedFirmwareStatus(FirmwareStatus     Status,
+                                             Int32?             UpdateRequestId,
+                                             CancellationToken  CancellationToken   = default)
+
+            => this.SendSignedFirmwareStatusNotification(Status, UpdateRequestId: UpdateRequestId, CancellationToken: CancellationToken);
+
+        #endregion
 
         /// <summary>
         /// Answers a Reset - the owner of this node knows what a restart is, and
