@@ -74,6 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
                    "installer"    => ofInstaller,
                    "dns-admin"    => [ "dns:read", "dns:edit" ],
                    "monitoring"   => [ "monitoring:read", "monitoring:edit" ],
+                   "authorization" => [ "authorization:read", "authorization:edit" ],
                    _              => []
                };
 
@@ -554,6 +555,108 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
                 // A known signer without the right is no longer enough.
                 Assert.That(Accepts(station, AReport  (dnsAdmin),   request => request.ToJSON(true), out var e9),   Is.False,  "The DNS admin read the monitors!");
                 Assert.That(e9,                                                                                     Does.Contain("monitoring:read"));
+
+            });
+
+        }
+
+        #endregion
+
+        #region ReservationsTheLocalListTheCacheAndDataTransfersHaveTheirRights()
+
+        /// <summary>
+        /// Reservations need "session:run"; the version of the local list
+        /// "authorization:read"; sending the list and clearing the cache
+        /// "authorization:edit"; a DataTransfer "node:run" (Achim, 2026-11-13).
+        /// </summary>
+        [Test]
+        public void ReservationsTheLocalListTheCacheAndDataTransfersHaveTheirRights()
+        {
+
+            var cpo            = ECCKeyPair.GenerateKeys()!;
+            var support        = ECCKeyPair.GenerateKeys()!;
+            var authorization  = ECCKeyPair.GenerateKeys()!;
+            var station        = AStation(MessagePolicyModes.Enforce, [ (cpo, "cpo"), (support, "support"), (authorization, "authorization") ]);
+
+            (ReserveNowRequest, JObject) AReservation(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new ReserveNowRequest(toTheStation, Reservation_Id.NewRandom, Timestamp.Now + TimeSpan.FromMinutes(15), IdToken.NewRandomRFID7(), RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => ReserveNowRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (CancelReservationRequest, JObject) ACancellation(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new CancelReservationRequest(toTheStation, Reservation_Id.NewRandom, RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => CancelReservationRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (GetLocalListVersionRequest, JObject) AListVersion(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new GetLocalListVersionRequest(toTheStation, RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => GetLocalListVersionRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (SendLocalListRequest, JObject) AList(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new SendLocalListRequest(toTheStation, 1, UpdateTypes.Full, RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => SendLocalListRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (ClearCacheRequest, JObject) AClearedCache(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new ClearCacheRequest(toTheStation, RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => ClearCacheRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (DataTransferRequest, JObject) ADataTransfer(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new DataTransferRequest(toTheStation, Vendor_Id.Parse("ACME Inc."), RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => DataTransferRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            Assert.Multiple(() => {
+
+                // The operator holds and lets go outlets, reads everything and has messages sent.
+                Assert.That(Accepts(station, AReservation (cpo),           request => request.ToJSON(true), out var e1),    Is.True,   e1);
+                Assert.That(Accepts(station, ACancellation(cpo),           request => request.ToJSON(true), out var e2),    Is.True,   e2);
+                Assert.That(Accepts(station, AListVersion (cpo),           request => request.ToJSON(true), out var e3),    Is.True,   e3);
+                Assert.That(Accepts(station, ADataTransfer(cpo),           request => request.ToJSON(true), out var e4),    Is.True,   e4);
+                Assert.That(Accepts(station, AList        (cpo),           request => request.ToJSON(true), out var e5),    Is.False,  "Reading everything sent a local list!");
+                Assert.That(e5,                                                                    Does.Contain("authorization:edit"));
+                Assert.That(Accepts(station, AClearedCache(cpo),           request => request.ToJSON(true), out var e6),    Is.False,  "Reading everything cleared the cache!");
+                Assert.That(e6,                                                                    Does.Contain("authorization:edit"));
+
+                Assert.That(Accepts(station, AListVersion (authorization), request => request.ToJSON(true), out var e7),    Is.True,   e7);
+                Assert.That(Accepts(station, AList        (authorization), request => request.ToJSON(true), out var e8),    Is.True,   e8);
+                Assert.That(Accepts(station, AClearedCache(authorization), request => request.ToJSON(true), out var e9),    Is.True,   e9);
+
+                // A known signer without the right is no longer enough.
+                Assert.That(Accepts(station, AReservation (support),       request => request.ToJSON(true), out var e10),   Is.False,  "The support held an outlet!");
+                Assert.That(e10,                                                                   Does.Contain("session:run"));
+                Assert.That(Accepts(station, ACancellation(support),       request => request.ToJSON(true), out var e11),   Is.False,  "The support let go of a reservation!");
+                Assert.That(e11,                                                                   Does.Contain("session:run"));
+                Assert.That(Accepts(station, AListVersion (support),       request => request.ToJSON(true), out var e12),   Is.False,  "The support read the version of the local list!");
+                Assert.That(e12,                                                                   Does.Contain("authorization:read"));
+                Assert.That(Accepts(station, ADataTransfer(support),       request => request.ToJSON(true), out var e13),   Is.False,  "The support sent a DataTransfer!");
+                Assert.That(e13,                                                                   Does.Contain("node:run"));
 
             });
 

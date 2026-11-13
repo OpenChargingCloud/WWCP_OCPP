@@ -110,6 +110,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    ActionPermission.Needs  ("UnlockConnector",         "unlock:run"),
                    ActionPermission.Needs  ("ChangeAvailability",      "availability:edit"),
 
+                   // An outlet held for somebody, or let go again: what the sessions are about.
+                   ActionPermission.Needs  ("ReserveNow",              "session:run"),
+                   ActionPermission.Needs  ("CancelReservation",       "session:run"),
+
+                   // Who may charge without the CSMS being asked: the local authorization
+                   // list and the authorization cache.
+                   ActionPermission.Needs  ("GetLocalListVersion",     "authorization:read"),
+                   ActionPermission.Needs  ("SendLocalList",           "authorization:edit"),
+                   ActionPermission.Needs  ("ClearCache",              "authorization:edit"),
+
+                   // Whatever a vendor made of it: the policy table can ask for more, by
+                   // its "vendorId" and "messageId".
+                   ActionPermission.Needs  ("DataTransfer",            "node:run"),
+
                    // Charging profiles, by their purpose. One whose purpose is none of these
                    // needs both permissions.
                    ActionPermission.Needs  ("SetChargingProfile",      "session:run",          FieldCondition.In   (Purpose, ofASession)),

@@ -73,6 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.E2ESecurityExt
                    "support"      => ofSupport,
                    "cpo"          => ofTheCPO,
                    "installer"    => ofInstaller,
+                   "authorization" => [ "authorization:read", "authorization:edit" ],
                    _              => []
                };
 
@@ -334,6 +335,108 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.E2ESecurityExt
                 Assert.That(Accepts(chargePoint, AnUnlock(support),                                    out var unlock),    Is.True,  unlock);
                 Assert.That(Accepts(chargePoint, AFirmwareUpdate(support),                             out var firmware),  Is.False, "The support updated the firmware!");
                 Assert.That(firmware, Does.Contain("firmware:edit"));
+
+            });
+
+        }
+
+        #endregion
+
+        #region ReservationsTheLocalListTheCacheAndDataTransfersHaveTheirRights()
+
+        /// <summary>
+        /// Reservations need "session:run"; the version of the local list
+        /// "authorization:read"; sending the list and clearing the cache
+        /// "authorization:edit"; a DataTransfer "node:run" (Achim, 2026-11-13).
+        /// </summary>
+        [Test]
+        public void ReservationsTheLocalListTheCacheAndDataTransfersHaveTheirRights()
+        {
+
+            var cpo            = ECCKeyPair.GenerateKeys()!;
+            var support        = ECCKeyPair.GenerateKeys()!;
+            var authorization  = ECCKeyPair.GenerateKeys()!;
+            var chargePoint    = AChargePoint(MessagePolicyModes.Enforce, [ (cpo, "cpo"), (support, "support"), (authorization, "authorization") ]);
+
+            (ReserveNowRequest, JObject) AReservation(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new ReserveNowRequest(toTheChargePoint, Connector_Id.Parse(1), Reservation_Id.NewRandom, Timestamp.Now + TimeSpan.FromMinutes(15), IdToken.NewRandom(), RequestId: requestId),
+                            request => request.ToJSON(),
+                            json => ReserveNowRequest.Parse(json, requestId, toTheChargePoint, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (CancelReservationRequest, JObject) ACancellation(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new CancelReservationRequest(toTheChargePoint, Reservation_Id.NewRandom, RequestId: requestId),
+                            request => request.ToJSON(),
+                            json => CancelReservationRequest.Parse(json, requestId, toTheChargePoint, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (GetLocalListVersionRequest, JObject) AListVersion(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new GetLocalListVersionRequest(toTheChargePoint, RequestId: requestId),
+                            request => request.ToJSON(),
+                            json => GetLocalListVersionRequest.Parse(json, requestId, toTheChargePoint, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (SendLocalListRequest, JObject) AList(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new SendLocalListRequest(toTheChargePoint, 1, UpdateTypes.Full, RequestId: requestId),
+                            request => request.ToJSON(),
+                            json => SendLocalListRequest.Parse(json, requestId, toTheChargePoint, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (ClearCacheRequest, JObject) AClearedCache(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new ClearCacheRequest(toTheChargePoint, RequestId: requestId),
+                            request => request.ToJSON(),
+                            json => ClearCacheRequest.Parse(json, requestId, toTheChargePoint, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (DataTransferRequest, JObject) ADataTransfer(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new DataTransferRequest(toTheChargePoint, Vendor_Id.Parse("ACME Inc."), RequestId: requestId),
+                            request => request.ToJSON(),
+                            json => DataTransferRequest.Parse(json, requestId, toTheChargePoint, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            Assert.Multiple(() => {
+
+                // The operator holds and lets go outlets, reads everything and has messages sent.
+                Assert.That(Accepts(chargePoint, AReservation (cpo),           request => request.ToJSON(), out var e1),    Is.True,   e1);
+                Assert.That(Accepts(chargePoint, ACancellation(cpo),           request => request.ToJSON(), out var e2),    Is.True,   e2);
+                Assert.That(Accepts(chargePoint, AListVersion (cpo),           request => request.ToJSON(), out var e3),    Is.True,   e3);
+                Assert.That(Accepts(chargePoint, ADataTransfer(cpo),           request => request.ToJSON(), out var e4),    Is.True,   e4);
+                Assert.That(Accepts(chargePoint, AList        (cpo),           request => request.ToJSON(), out var e5),    Is.False,  "Reading everything sent a local list!");
+                Assert.That(e5,                                                                    Does.Contain("authorization:edit"));
+                Assert.That(Accepts(chargePoint, AClearedCache(cpo),           request => request.ToJSON(), out var e6),    Is.False,  "Reading everything cleared the cache!");
+                Assert.That(e6,                                                                    Does.Contain("authorization:edit"));
+
+                Assert.That(Accepts(chargePoint, AListVersion (authorization), request => request.ToJSON(), out var e7),    Is.True,   e7);
+                Assert.That(Accepts(chargePoint, AList        (authorization), request => request.ToJSON(), out var e8),    Is.True,   e8);
+                Assert.That(Accepts(chargePoint, AClearedCache(authorization), request => request.ToJSON(), out var e9),    Is.True,   e9);
+
+                // A known signer without the right is no longer enough.
+                Assert.That(Accepts(chargePoint, AReservation (support),       request => request.ToJSON(), out var e10),   Is.False,  "The support held an outlet!");
+                Assert.That(e10,                                                                   Does.Contain("session:run"));
+                Assert.That(Accepts(chargePoint, ACancellation(support),       request => request.ToJSON(), out var e11),   Is.False,  "The support let go of a reservation!");
+                Assert.That(e11,                                                                   Does.Contain("session:run"));
+                Assert.That(Accepts(chargePoint, AListVersion (support),       request => request.ToJSON(), out var e12),   Is.False,  "The support read the version of the local list!");
+                Assert.That(e12,                                                                   Does.Contain("authorization:read"));
+                Assert.That(Accepts(chargePoint, ADataTransfer(support),       request => request.ToJSON(), out var e13),   Is.False,  "The support sent a DataTransfer!");
+                Assert.That(e13,                                                                   Does.Contain("node:run"));
 
             });
 

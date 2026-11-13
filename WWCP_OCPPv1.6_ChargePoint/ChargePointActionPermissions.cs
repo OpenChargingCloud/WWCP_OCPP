@@ -102,6 +102,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    ActionPermission.Needs  ("UnlockConnector",         "unlock:run"),
                    ActionPermission.Needs  ("ChangeAvailability",      "availability:edit"),
 
+                   // An outlet held for somebody, or let go again: what the sessions are about.
+                   ActionPermission.Needs  ("ReserveNow",              "session:run"),
+                   ActionPermission.Needs  ("CancelReservation",       "session:run"),
+
+                   // Who may charge without the CSMS being asked: the local authorization
+                   // list and the authorization cache.
+                   ActionPermission.Needs  ("GetLocalListVersion",     "authorization:read"),
+                   ActionPermission.Needs  ("SendLocalList",           "authorization:edit"),
+                   ActionPermission.Needs  ("ClearCache",              "authorization:edit"),
+
+                   // Whatever a vendor made of it: the policy table can ask for more, by
+                   // its "vendorId" and "messageId".
+                   ActionPermission.Needs  ("DataTransfer",            "node:run"),
+
                    // Charging profiles, by their purpose. OCPP 1.6 has neither external
                    // constraints nor local generation.
                    ActionPermission.Needs  ("SetChargingProfile",      "session:run",          FieldCondition.In   (Purpose, ofASession)),
