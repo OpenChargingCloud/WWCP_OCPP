@@ -221,6 +221,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public ISetVariablesSource?      SetVariablesSource { get; init; }
 
+        /// <summary>
+        /// Whether this write-only variable is a secret somebody in the role
+        /// "ReadSecrets", or a "systemadmin", reads by a signed GetVariables
+        /// request (<see cref="DeviceModel.MayReadSecrets"/>). For everybody
+        /// else, and in every report, it stays write-only. Not part of the JSON.
+        /// </summary>
+        public Boolean                   IsSecret           { get; init; }
+
         #endregion
 
         #region Constructor(s)
