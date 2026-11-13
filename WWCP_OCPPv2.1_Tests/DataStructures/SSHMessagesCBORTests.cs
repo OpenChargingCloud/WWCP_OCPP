@@ -428,6 +428,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         #endregion
 
+        #region A key for a login at a file server
+
+        /// <summary>
+        /// With the purpose SFTP both messages say which file server and which
+        /// login a key is for, as JSON and as CBOR; without them they are as
+        /// they were.
+        /// </summary>
+        [Test]
+        public void SignSSHKeyAndSSHKeySigned_SayWhichFileServerAndLogin()
+        {
+
+            var sign = new OCPPv2_1.CS.SignSSHKeyRequest(destination, SSHKeyPurpose.SFTP, PublicKey, "files", " cs001 ", RequestId: requestId);
+
+            Assert.That(sign.Peer,                                Is.EqualTo("files"));
+            Assert.That(sign.Login,                               Is.EqualTo("cs001"), "trimmed");
+            Assert.That(sign.ToJSON()["peer"]?. Value<String>(),  Is.EqualTo("files"));
+            Assert.That(sign.ToJSON()["login"]?.Value<String>(),  Is.EqualTo("cs001"));
+
+            Assert.That(OCPPv2_1.CS.SignSSHKeyRequest.TryParse    (sign.ToJSON(),       requestId, destination, NetworkPath.Empty, out var signJSON, out var e1), Is.True, e1);
+            Assert.That(OCPPv2_1.CS.SignSSHKeyRequest.TryParseCBOR(Read(sign.ToCBOR()), requestId, destination, NetworkPath.Empty, out var signCBOR, out var e2), Is.True, e2);
+
+            Assert.That((signJSON!.Peer, signJSON.Login),         Is.EqualTo(("files", "cs001")));
+            Assert.That((signCBOR!.Peer, signCBOR.Login),         Is.EqualTo(("files", "cs001")));
+            AreTheSame(signJSON.ToJSON(), sign.ToJSON());
+            AreTheSame(signCBOR.ToJSON(), sign.ToJSON());
+
+            var signed = new OCPPv2_1.CSMS.SSHKeySignedRequest(destination, SSHKeyPurpose.SFTP, PublicKey, Peer: "files", Login: "cs001", RequestId: requestId);
+
+            Assert.That(OCPPv2_1.CSMS.SSHKeySignedRequest.TryParse    (signed.ToJSON(),       requestId, destination, NetworkPath.Empty, out var signedJSON, out var e3), Is.True, e3);
+            Assert.That(OCPPv2_1.CSMS.SSHKeySignedRequest.TryParseCBOR(Read(signed.ToCBOR()), requestId, destination, NetworkPath.Empty, out var signedCBOR, out var e4), Is.True, e4);
+
+            Assert.That((signedJSON!.Peer, signedJSON.Login),     Is.EqualTo(("files", "cs001")));
+            Assert.That((signedCBOR!.Peer, signedCBOR.Login),     Is.EqualTo(("files", "cs001")));
+            Assert.That(signedJSON.Certificate,                   Is.Null);
+
+            // Another login is another request.
+            Assert.That(new OCPPv2_1.CS.SignSSHKeyRequest(destination, SSHKeyPurpose.SFTP, PublicKey, "files", "cs001-fw", RequestId: requestId).GetHashCode(), Is.Not.EqualTo(sign.GetHashCode()));
+
+            // Without them, nothing of them is written.
+            var plain = SignSSHKeyRequest();
+
+            Assert.That(plain.Peer,                               Is.Null);
+            Assert.That(plain.ToJSON().ContainsKey("peer"),       Is.False);
+            Assert.That(plain.ToJSON().ContainsKey("login"),      Is.False);
+            Assert.That(OCPPv2_1.CS.SignSSHKeyRequest.TryParseCBOR(Read(plain.ToCBOR()), requestId, destination, NetworkPath.Empty, out var plainCBOR, out var e5), Is.True, e5);
+            Assert.That((plainCBOR!.Peer, plainCBOR.Login),       Is.EqualTo(((String?) null, (String?) null)));
+
+        }
+
+        /// <summary>
+        /// A peer or a login that is no text, or too long, is no message.
+        /// </summary>
+        [Test]
+        public void APeerOrALoginThatIsNoneIsRefused()
+        {
+
+            var json = new OCPPv2_1.CS.SignSSHKeyRequest(destination, SSHKeyPurpose.SFTP, PublicKey, RequestId: requestId).ToJSON();
+
+            foreach (var (name, value) in new (String, JToken)[] {
+                         ("peer",   42),
+                         ("login",  new JArray("cs001")),
+                         ("peer",   new String('p', 51)),
+                         ("login",  new String('l', 33))
+                     })
+            {
+
+                var wrong = (JObject) json.DeepClone();
+                wrong[name] = value;
+
+                Assert.That(OCPPv2_1.CS.SignSSHKeyRequest.    TryParse(wrong, requestId, destination, NetworkPath.Empty, out _, out var e1), Is.False, $"{name}: {value}");
+                Assert.That(OCPPv2_1.CSMS.SSHKeySignedRequest.TryParse(wrong, requestId, destination, NetworkPath.Empty, out _, out var e2), Is.False, $"{name}: {value}");
+                Assert.That(e1, Does.Contain("peer").Or.Contain("login"));
+                Assert.That(e2, Does.Contain("peer").Or.Contain("login"));
+
+            }
+
+            var cbor = OCPPCBORExtensions.Map(("purpose",    CBORValue.FromText("SFTP")),
+                                              ("publicKey",  CBORValue.FromText(PublicKey)),
+                                              ("peer",       CBORValue.FromText(new String('p', 51))));
+
+            Assert.That(OCPPv2_1.CS.SignSSHKeyRequest.    TryParseCBOR(Read(cbor), requestId, destination, NetworkPath.Empty, out _, out _), Is.False);
+            Assert.That(OCPPv2_1.CSMS.SSHKeySignedRequest.TryParseCBOR(Read(cbor), requestId, destination, NetworkPath.Empty, out _, out _), Is.False);
+
+        }
+
+        #endregion
+
     }
 
 }

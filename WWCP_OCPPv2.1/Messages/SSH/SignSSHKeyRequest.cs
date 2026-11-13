@@ -68,6 +68,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         [Mandatory]
         public String  PublicKey  { get; }
 
+        /// <summary>
+        /// With the purpose SFTP: the name of the file server the key is for,
+        /// as SSHPeerController.Peers has it.
+        /// </summary>
+        [Optional]
+        public String?  Peer  { get; }
+
+        /// <summary>
+        /// With the purpose SFTP: the login the key is for at that file server.
+        /// </summary>
+        [Optional]
+        public String?  Login  { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -81,6 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public SignSSHKeyRequest(SourceRouting                Destination,
                                SSHKeyPurpose                Purpose,
                                String                       PublicKey,
+                               String?                      Peer                  = null,
+                               String?                      Login                 = null,
 
                                IEnumerable<KeyPair>?        SignKeys              = null,
                                IEnumerable<SignInfo>?       SignInfos             = null,
@@ -117,13 +132,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             this.Purpose = Purpose;
             this.PublicKey = PublicKey;
+            this.Peer  = Peer?. Trim() is { Length: > 0 } peer  ? peer  : null;
+            this.Login = Login?.Trim() is { Length: > 0 } login ? login : null;
 
             unchecked
             {
 
                 hashCode = this.Purpose.GetHashCode() * 3 ^
                            this.PublicKey.GetHashCode() * 5 ^
-                           base.GetHashCode();
+                           (this.Peer?. GetHashCode() ?? 0) * 11 ^
+                           (this.Login?.GetHashCode() ?? 0) * 13 ^
+                                                      base.GetHashCode();
 
             }
 
@@ -215,6 +234,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Peer, Login          [optional]
+
+                if (JSON["peer"]  is JToken peerToken  && peerToken. Type is not (JTokenType.String or JTokenType.Null))
+                {
+                    ErrorResponse = "The given 'peer' must be a string!";
+                    return false;
+                }
+
+                if (JSON["login"] is JToken loginToken && loginToken.Type is not (JTokenType.String or JTokenType.Null))
+                {
+                    ErrorResponse = "The given 'login' must be a string!";
+                    return false;
+                }
+
+                var Peer   = JSON["peer"]?. Type == JTokenType.String ? JSON["peer"]!. Value<String>() : null;
+                var Login  = JSON["login"]?.Type == JTokenType.String ? JSON["login"]!.Value<String>() : null;
+
+                if (Peer?.Length > 50 || Login?.Length > 32)
+                {
+                    ErrorResponse = "The given 'peer' has at most 50 characters, and 'login' at most 32!";
+                    return false;
+                }
+
+                #endregion
+
                 #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -249,6 +293,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   Destination,
                                   Purpose,
                                   PublicKey!,
+                                  Peer,
+                                  Login,
 
                                   null,
                                   null,
@@ -307,6 +353,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("purpose",  Purpose.AsText()),
 
                                  new JProperty("publicKey",  PublicKey),
+
+                           Peer is not null
+                               ? new JProperty("peer",   Peer)
+                               : null,
+
+                           Login is not null
+                               ? new JProperty("login",  Login)
+                               : null,
 
                            Signatures.Any()
                                ? new JProperty("signatures",  new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -388,6 +442,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     return false;
                 }
 
+                CBOR.ParseOptionalText("peer",
+                                       "peer",
+                                       out var Peer,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalText("login",
+                                       "login",
+                                       out var Login,
+                                       out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (Peer?.Length > 50 || Login?.Length > 32)
+                {
+                    ErrorResponse = "The given 'peer' has at most 50 characters, and 'login' at most 32!";
+                    return false;
+                }
+
                 CBOR.ParseOptionalList<Signature>("signatures",
                                                "cryptographic signatures",
                                                OCPPCBORExtensions.TryParseSignature,
@@ -412,6 +488,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         Destination,
                                         Purpose,
                                         PublicKey.Trim(),
+                                        Peer,
+                                        Login,
 
                                         null,
                                         null,
@@ -459,7 +537,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             var cbor = OCPPCBORExtensions.Map(
                            ("purpose",                   CBORValue.FromText(Purpose.AsText())),
                            ("publicKey",                 CBORValue.FromText(PublicKey)),
-                           ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
+                           ("peer",                      OCPPCBORExtensions.Text(Peer)),
+                           ("login",                     OCPPCBORExtensions.Text(Login)),
+                                                      ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
                            ("customData",                CustomData?.ToCBOR())
                        );
 
@@ -513,7 +593,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                Purpose.Equals(SignSSHKeyRequest.Purpose) &&
                String.Equals(PublicKey, SignSSHKeyRequest.PublicKey, StringComparison.Ordinal) &&
 
-               base.GenericEquals(SignSSHKeyRequest);
+               String.Equals(Peer,  SignSSHKeyRequest.Peer,  StringComparison.Ordinal) &&
+               String.Equals(Login, SignSSHKeyRequest.Login, StringComparison.Ordinal) &&
+                              base.GenericEquals(SignSSHKeyRequest);
 
         #endregion
 
@@ -539,6 +621,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => String.Join(", ", new String?[] {
                    Purpose.ToString(),
                    PublicKey.ToString(),
+                   Peer,
+                   Login,
                }.Where(text => text is not null));
 
         #endregion
