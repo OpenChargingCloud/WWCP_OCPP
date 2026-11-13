@@ -728,7 +728,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     continue;
                 }
 
-                if (Dialling.LastJudgementOf(OCPPDiallingNode.OCPPCertificateUsage, url.Host.ToString()) is { } judgement)
+                if (Dialling.LastJudgementOf(Dialling.ConnectionsCertificateUsage, url.Host.ToString()) is { } judgement)
                     connection.Add(new JProperty("judgement", judgement.ToJSON()));
 
             }

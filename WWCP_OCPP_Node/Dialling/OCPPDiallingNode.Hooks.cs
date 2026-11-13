@@ -85,6 +85,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
+        #region ConnectionsCertificateUsage
+
+        /// <summary>
+        /// What the certificate of the server of a connection is judged
+        /// for, and remembered under: the use a root of this node's
+        /// certificate store is kept for where it vouches for one.
+        /// </summary>
+        public virtual String ConnectionsCertificateUsage
+
+            => OCPPCertificateUsage;
+
+        #endregion
+
         #region (protected virtual) ConnectionIsUp(Connection)
 
         /// <summary>

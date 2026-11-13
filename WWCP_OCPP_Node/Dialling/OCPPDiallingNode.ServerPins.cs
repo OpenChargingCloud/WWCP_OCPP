@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             ? now.Pins
                             : null;
 
-            return JudgeServer(OCPPCertificateUsage,
+            return JudgeServer(ConnectionsCertificateUsage,
                                DialledURL.Host.ToString(),
                                pins,
                                Certificate,
