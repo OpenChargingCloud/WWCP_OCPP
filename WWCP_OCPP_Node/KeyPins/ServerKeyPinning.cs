@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
         /// by its CA.
         /// </summary>
         /// <param name="Endpoint">The connection, as it is dialled.</param>
-        /// <param name="NotDialled">Why it is not dialled at all: it requires raw public keys, which .NET's TLS stack cannot offer yet.</param>
+        /// <param name="NotDialled">Why it is not dialled at all. Nothing any more: a connection that requires raw public keys (RFC 7250) is dialled, and offers them.</param>
         public ServerKeyPinTrust? TrustFor(IPinnedTLSEndpoint  Endpoint,
                                            out String?         NotDialled)
         {
@@ -176,16 +176,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
             if (!Endpoint.IsKeyPinned)
                 return null;
 
-            // .NET's SslStream offers no raw public key, and a certificate is
-            // what such a connection refuses: dialled, it would only be turned
-            // away, and report its server's certificate as invalid when it is
-            // this node that cannot do what was asked.
-            if (Endpoint.RawPublicKeys == RawPublicKeyMode.Require)
-            {
-                NotDialled = $"requires raw public keys, which this {nodeName}'s TLS stack cannot offer yet. Prefer or Off check the same " +
-                             "key pins in a certificate";
-                return null;
-            }
+            // A connection that prefers or requires raw public keys (RFC 7250)
+            // is dialled as every other: its WebSocket client offers them, as
+            // the validator of its trust says the key pins it checks. One that
+            // requires them is turned away by a server that shows a certificate
+            // alone, and says that this is why.
 
             var id     = Endpoint.Id;
             var trust  = new ServerKeyPinTrust(Endpoint, () => Endpoints.CopyOf(id));

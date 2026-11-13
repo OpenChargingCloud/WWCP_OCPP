@@ -3246,13 +3246,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                        $"{Entry.ServerKeyPinProbationTime.TotalMinutes:0.#} minute(s) until a signed pin set confirms its key. " +
                                         "Pin it now to decide yourself - the connection test shows its key pin.");
 
+                // Raw public keys (RFC 7250) are offered where a connection
+                // prefers or requires them. Preferred, there is nothing to warn
+                // of: a server that knows none shows its certificate, and its
+                // key is checked by the same pins.
                 if (Entry.RawPublicKeys == RawPublicKeyMode.Require)
-                    Entry.Warnings.Add("This connection requires raw public keys, and this station's TLS stack cannot offer them yet: it is not " +
-                                       "dialled until it can. Prefer or Off check the same key pins in a certificate.");
-
-                else if (Entry.RawPublicKeys == RawPublicKeyMode.Prefer)
-                    Entry.Warnings.Add("Raw public keys are preferred, and this station's TLS stack cannot offer them yet: the key of the server " +
-                                       "is checked in its certificate, by the same key pins.");
+                    Entry.Warnings.Add("This connection requires raw public keys: a server that shows a certificate is turned away, whatever " +
+                                       "key is in it. Prefer takes the same key in a certificate as well, by the same key pins.");
 
             }
 

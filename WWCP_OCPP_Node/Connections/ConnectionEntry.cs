@@ -388,10 +388,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// 7250). Off unless it says so.
         /// </summary>
         /// <remarks>
-        /// Kept as it is written, and not yet done: this station's TLS stack,
-        /// .NET's SslStream, cannot offer raw public keys. Prefer is therefore
-        /// what Off is, a key in a certificate checked by its pin; Require is
-        /// not dialled until the stack can, and says so.
+        /// Prefer offers them, and takes the key of a server that knows none
+        /// in its certificate, checked by the same pins. Require offers them
+        /// alone: a server that shows a certificate is turned away, whatever
+        /// key is in it. The key pin rules do not ask how the key came.
         /// </remarks>
         public RawPublicKeyMode       RawPublicKeys            { get; internal set; }
 

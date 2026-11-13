@@ -317,22 +317,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
                         continue;
                     }
 
-                    // .NET's SslStream offers no raw public key: a connection that
-                    // requires them is not dialled, and a CSMS that asked for it
-                    // from afar would have cut the node off from this server.
-                    var require = trustEntries.Where(one => one.Name == "RawPublicKeys" &&
-                                                            String.Equals(one.Value?.Trim(), nameof(RawPublicKeyMode.Require), StringComparison.OrdinalIgnoreCase)).
-                                               ToArray();
-
-                    foreach (var one in require)
-                        Result(one.Index, OCPPv2_1.SetVariableStatus.Rejected, "NotSupported",
-                               $"This {NodeName}'s TLS stack cannot offer raw public keys yet, and a connection that requires them would not be dialled: " +
-                                "Prefer checks the same key pins in a certificate.");
-
-                    var taken = trustEntries.Except(require).ToArray();
-
-                    if (taken.Length == 0)
-                        continue;
+                    // Raw public keys (RFC 7250) are offered where a connection
+                    // prefers or requires them, so "Require" is taken as "Prefer"
+                    // and "Off" are.
+                    var taken = trustEntries;
 
                     var settings = new ServerKeyPinSettings(taken.FirstOrDefault(one => one.Name == "RawPublicKeys").  Value,
                                                             taken.FirstOrDefault(one => one.Name == "TrustOnFirstUse").Value,

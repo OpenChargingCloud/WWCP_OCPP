@@ -205,8 +205,19 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
         /// <summary>
         /// The validator the WebSocket client asks at every TLS handshake.
         /// </summary>
+        /// <remarks>
+        /// It says which key pins stand behind it, so that a client that is
+        /// handed it, and nothing else, offers raw public keys (RFC 7250)
+        /// where the connection asks for them: a raw public key has no
+        /// certificate a validator could be shown, so the client checks it
+        /// against <see cref="Policy"/> itself and tells this trust what
+        /// came of it, as this validator does of a certificate. Always the
+        /// same delegate: it is by this one that the client knows.
+        /// </remarks>
         public RemoteTLSServerCertificateValidationHandler<IWebSocketClient>  Validator
-            => Validate;
+            => validator ??= KeyPinValidator.WithKeyPins<IWebSocketClient>(Validate, Policy, Told);
+
+        private RemoteTLSServerCertificateValidationHandler<IWebSocketClient>? validator;
 
         #endregion
 
