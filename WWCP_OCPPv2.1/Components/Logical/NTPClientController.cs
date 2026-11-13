@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("SSHUserName",                 DataTypes.String,      "The user name of the SSH user authentication in mode NTSv4SSH.",                                              MaxLimit: 32,                  Writable: true),
             new ("SSHHostKeyPins",              DataTypes.String,      "Comma separated SHA-256 fingerprints of the host keys the server may show, as SHA256:<base64> of ssh-keygen -l.",                         Writable: true, MaxItems: 16),
             new ("SSHHostCAs",                  DataTypes.String,      "Comma separated SHA-256 fingerprints of the SSH CA keys that may sign the host certificate of the server.",                                 Writable: true, MaxItems: 4),
-            new ("SSHUseOCPPConnection",        DataTypes.Boolean,     "Whether the subsystem is opened as a channel of the SSH connection of OCPP.",                                                               Writable: true),
+            new ("SSHConnection",               DataTypes.OptionList,  "Dedicated: an SSH connection of its own. Shared: one more channel of the SSH connection the station shares with the SSH peer the server's host is.", ValuesList: [ "Dedicated", "Shared" ], Writable: true),
             new ("SSHClientPublicKey",          DataTypes.String,      "The public key the charging station authenticates with, in the authorized_keys format of OpenSSH."),
             new ("SSHHostKeyFingerprint",       DataTypes.String,      "The SHA-256 fingerprint of the host key the server showed at its last NTS-KE handshake over SSH."),
 

@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// Establishment over SSH" - has keys of its own: "ntp.&lt;group&gt;.mode"
     /// is a list per server that takes NTSv4SSH as well, read as one value
     /// where every server has it; "ntske.&lt;group&gt;.sshPorts",
-    /// "sshUserNames" and "sshUseOCPPConnection" are lists per server,
+    /// "sshUserNames" and "sshConnection" are lists per server,
     /// "ntske.&lt;group&gt;.sshHostKeyPins.n" and "sshHostCAs.n" the n-th
     /// server's, and the common "ntske.sshClientPublicKey" is the key the node
     /// signs in with, made at the first read, and read-only.
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// A list is written for the servers it applies to in their mode, and an
     /// entry for any other is left alone, whatever it says: a port of NTS-KE
     /// over TLS for a server over SSH, an SSH port for one over TLS or on the
-    /// connection of OCPP. A list that applies to none of the group's servers
+    /// shared connection. A list that applies to none of the group's servers
     /// is rejected, so that a central system learns to switch the mode first,
     /// as 2.1 refuses those variables outside it. A server's own key of one
     /// that does not apply to it may be emptied, which changes nothing.
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("ntske.maxRefresh",         "MaxRefresh",       true,   "86400"),
             ("ntske.sshPorts",           "SSHPort",          true,   NTSServerSSH.DefaultPort.ToString(CultureInfo.InvariantCulture)),
             ("ntske.sshUserNames",       "SSHUserName",      true,   NTSServerSSH.DefaultUser),
-            ("ntske.sshUseOCPPConnection", "SSHUseOCPPConnection", true, "false")
+            ("ntske.sshConnection",      "SSHConnection",    true,   "Dedicated")
         ];
 
         /// <summary>
@@ -393,13 +393,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (!TryList(Value, clients.Length, DefaultOf(variable), out var values, EmptyIsUnset: variable is "AEADAlgorithm" or "NTSKEServerURL"))
                     return OCPP16.ConfigurationStatus.Rejected;
 
-                if (variable == "SSHUseOCPPConnection")
+                if (variable == "SSHConnection")
                 {
 
-                    if (values.Any(value => value.ToLowerInvariant() is not ("true" or "false")))
+                    if (values.Any(value => value.ToLowerInvariant() is not ("dedicated" or "shared")))
                         return OCPP16.ConfigurationStatus.Rejected;
 
-                    values = [.. values.Select(value => value.ToLowerInvariant())];
+                    // As the Device Model writes them, whatever case they came in.
+                    values = [.. values.Select(value => value.ToLowerInvariant() == "shared" ? "Shared" : "Dedicated")];
 
                 }
 
@@ -514,7 +515,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 {
 
                     // Its key exchange as the last one's goes: over SSH, on
-                    // the connection of OCPP or one of its own, with the CAs
+                    // the shared connection or one of its own, with the CAs
                     // whose host certificates for its own name it believes -
                     // but no host key the last one is pinned to.
                     if (ClientValue(Clients[^1], "Mode") == "NTSv4SSH")
@@ -522,8 +523,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                         Entries.Add(ClientEntry(id, "Mode", "NTSv4SSH"));
 
-                        if (ClientValue(Clients[^1], "SSHUseOCPPConnection") == "true")
-                            Entries.Add(ClientEntry(id, "SSHUseOCPPConnection", "true"));
+                        if (ClientValue(Clients[^1], "SSHConnection") == "Shared")
+                            Entries.Add(ClientEntry(id, "SSHConnection", "Shared"));
 
                     }
 
@@ -669,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// Whether a variable of a server applies to it in its mode: nothing of
-        /// TLS over SSH, nothing of SSH over TLS, and on the connection of OCPP
+        /// TLS over SSH, nothing of SSH over TLS, and on a shared connection
         /// none of a connection of its own - section 7 of the white paper "NTS
         /// Key Establishment over SSH".
         /// </summary>
@@ -679,12 +680,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var overSSH  = ClientValue(Client, "Mode")                 == "NTSv4SSH";
             var shared   = overSSH &&
-                           ClientValue(Client, "SSHUseOCPPConnection") == "true";
+                           ClientValue(Client, "SSHConnection")        == "Shared";
 
             return Variable switch {
                 "NTSKEServerPort" or "NTSKEServerURL" or "RootCAs" or
                 "CertificatePins" or "RootPins"       or "TrustOnFirstUse"  => !overSSH,
-                "SSHUseOCPPConnection"                                       =>  overSSH,
+                "SSHConnection"                                              =>  overSSH,
                 "SSHPort"         or "SSHUserName"    or
                 "SSHHostKeyPins"  or "SSHHostCAs"                            =>  overSSH && !shared,
                 "OnPinMismatch"                                              => !shared,

@@ -21,9 +21,13 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.SSH.Client;
+
 using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP.Node;
+using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 
 using cloud.charging.open.protocols.OCPP.Node;
 
@@ -466,24 +470,31 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region AServerIsSwitchedToTheConnectionOfOCPP()
+        #region AServerIsSwitchedToASharedConnection()
 
         /// <summary>
-        /// Mode NTSv4SSH with SSHUseOCPPConnection, in either order: the key
-        /// exchange is one more channel of the SSH connection of OCPP to the
+        /// Mode NTSv4SSH with SSHConnection, in either order: the key
+        /// exchange is one more channel of the SSH connection shared with the
         /// server's host (section 8.3 of the white paper "NTS Key Establishment
         /// over SSH") - no port, login or host key of its own, and the key read
-        /// as SSHClientPublicKey is the one OCPP signs in with. No key of the
+        /// as SSHClientPublicKey is the one of that SSH peer. No key of the
         /// node's own is made for it.
         /// </summary>
         [Test]
-        public async Task AServerIsSwitchedToTheConnectionOfOCPP()
+        public async Task AServerIsSwitchedToASharedConnection()
         {
 
-            station!.Node.OCPPOverSSH = new OCPPConnectionsOverSSH(host => null, () => "ssh-ed25519 AAAAOCPP ocpp@station");
+            // The host of ptb-a is an SSH peer of the node, which signs in there
+            // with the key below. Nothing dials it in this test.
+            var hostOfPtbA = ((JArray) OnDisk("legal")!["servers"]!).Single(server => server["id"]?.Value<String>() == "ptb-a")["hostname"]!.Value<String>()!;
+
+            station!.Node.AddSSHPeer(new SSHPeer(DomainName.Parse(hostOfPtbA),
+                                                 22,
+                                                 new SshSharedConnection(ct => ValueTask.FromException<SshClient>(new InvalidOperationException("Not dialled in this test."))),
+                                                 PublicKey: () => "ssh-ed25519 AAAAOCPP ocpp@station"));
 
             var results = await Set(OCPP21.DataConsistencyModel.ACID,
-                                    Client("ptb-a",  "SSHUseOCPPConnection",  "true"),
+                                    Client("ptb-a",  "SSHConnection",         "Shared"),
                                     Client("ptb-a",  "Mode",                  "NTSv4SSH"));
 
             var ptbA    = (JObject) ((JArray) OnDisk("legal")!["servers"]!).Single(server => server["id"]?.Value<String>() == "ptb-a");
@@ -494,12 +505,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                             String.Join(" | ", results.Select(result => result.AttributeStatusInfo?.AdditionalInfo)));
 
                 Assert.That(model.ClientValue("ptb-a",   "Mode"),                  Is.EqualTo("NTSv4SSH"));
-                Assert.That(model.ClientValue("ptb-a",   "SSHUseOCPPConnection"),  Is.EqualTo("true"));
+                Assert.That(model.ClientValue("ptb-a",   "SSHConnection"),         Is.EqualTo("Shared"));
                 Assert.That(model.ClientValue("ptb-a",   "SSHClientPublicKey"),    Is.EqualTo("ssh-ed25519 AAAAOCPP ocpp@station"));
                 Assert.That(model.ClientValue("ptb-a",   "SSHHostKeyPins"),        Is.EqualTo(""));
-                Assert.That(model.ClientValue("legal-2", "SSHUseOCPPConnection"),  Is.EqualTo("false"));
+                Assert.That(model.ClientValue("legal-2", "SSHConnection"),         Is.EqualTo("Dedicated"));
 
-                Assert.That(JToken.DeepEquals(ptbA["ssh"], JObject.Parse("""{ "useOCPPConnection": true }""")), Is.True, ptbA.ToString());
+                Assert.That(JToken.DeepEquals(ptbA["ssh"], JObject.Parse("""{ "connection": "shared" }""")), Is.True, ptbA.ToString());
                 Assert.That(File.Exists(station.Node.NTSKEClientKeyPath),         Is.False, "a key of the node's own was made");
 
             });
@@ -508,25 +519,25 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region WhatOnlyAConnectionOfItsOwnHasIsRefusedOnTheConnectionOfOCPP()
+        #region WhatOnlyAConnectionOfItsOwnHasIsRefusedOnASharedConnection()
 
         /// <summary>
-        /// Switched to the connection of OCPP, a server loses the host keys of a
+        /// Switched to the shared connection, a server loses the host keys of a
         /// connection of its own; an SSH port, a login, host keys or what a
         /// mismatch comes to are refused then, saying why, and an empty list is
-        /// not. SSHUseOCPPConnection outside NTSv4SSH is refused; false again, a
+        /// not. SSHConnection outside NTSv4SSH is refused; false again, a
         /// connection of its own is set up in the same request; Mode NTSv4
         /// leaves both behind.
         /// </summary>
         [Test]
-        public async Task WhatOnlyAConnectionOfItsOwnHasIsRefusedOnTheConnectionOfOCPP()
+        public async Task WhatOnlyAConnectionOfItsOwnHasIsRefusedOnASharedConnection()
         {
 
-            var outside  = await Set(null, Client("legal-2", "SSHUseOCPPConnection", "true"));
+            var outside  = await Set(null, Client("legal-2", "SSHConnection", "Shared"));
 
             await Set(OCPP21.DataConsistencyModel.ACID, Client("legal-2", "Mode", "NTSv4SSH"), Client("legal-2", "SSHHostKeyPins", APin), Client("legal-2", "SSHPort", "2222"));
 
-            var shared   = await Set(null, Client("legal-2", "SSHUseOCPPConnection", "true"));
+            var shared   = await Set(null, Client("legal-2", "SSHConnection", "Shared"));
             var pinsLeft = model.ClientValue("legal-2", "SSHHostKeyPins");
 
             var port     = await Set(null, Client("legal-2", "SSHPort",         "2223"));
@@ -538,11 +549,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
             var own      = await Set(OCPP21.DataConsistencyModel.ACID,
                                      Client("legal-2", "SSHPort",               "2224"),
                                      Client("legal-2", "SSHHostKeyPins",        APin),
-                                     Client("legal-2", "SSHUseOCPPConnection",  "false"));
+                                     Client("legal-2", "SSHConnection",         "Dedicated"));
 
             var ownSSH   = ((JArray) OnDisk("legal")!["servers"]!)[1]["ssh"]?.DeepClone();
 
-            await Set(OCPP21.DataConsistencyModel.ACID, Client("legal-2", "SSHUseOCPPConnection", "true"));
+            await Set(OCPP21.DataConsistencyModel.ACID, Client("legal-2", "SSHConnection", "Shared"));
 
             var back     = await Set(null, Client("legal-2", "Mode", "NTSv4"));
 
@@ -557,7 +568,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 foreach (var refused in new[] { port, user, pins, mismatch })
                 {
                     Assert.That(refused.Single().AttributeStatus,                  Is.EqualTo(OCPP21.SetVariableStatus.Rejected));
-                    Assert.That(refused.Single().AttributeStatusInfo?.AdditionalInfo, Does.Contain("does not apply with SSHUseOCPPConnection"));
+                    Assert.That(refused.Single().AttributeStatusInfo?.AdditionalInfo, Does.Contain("does not apply with SSHConnection Shared"));
                 }
 
                 Assert.That(noPins.  Single().AttributeStatus,                     Is.EqualTo(OCPP21.SetVariableStatus.Accepted), "an empty list of what does not apply");
@@ -568,7 +579,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
                 Assert.That(back.    Single().AttributeStatus,                     Is.EqualTo(OCPP21.SetVariableStatus.Accepted));
                 Assert.That(model.ClientValue("legal-2", "Mode"),                  Is.EqualTo("NTSv4"));
-                Assert.That(model.ClientValue("legal-2", "SSHUseOCPPConnection"),  Is.EqualTo("false"));
+                Assert.That(model.ClientValue("legal-2", "SSHConnection"),         Is.EqualTo("Dedicated"));
 
             });
 
@@ -595,7 +606,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(first,                                      Does.StartWith("ssh-ed25519 "));
                 Assert.That(second,                                     Is.EqualTo(first));
                 Assert.That(File.Exists(station!.Node.NTSKEClientKeyPath), Is.True);
-                Assert.That(model.ClientValue("ptb-a", "SSHUseOCPPConnection"), Is.EqualTo("false"));
+                Assert.That(model.ClientValue("ptb-a", "SSHConnection"), Is.EqualTo("Dedicated"));
             });
 
         }
@@ -1257,7 +1268,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "ServerURL"),        Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
                 Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "Mode"),             Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
                 Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "SSHHostKeyPins"),   Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
-                Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "SSHUseOCPPConnection"), Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
+                Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "SSHConnection"), Is.EqualTo(OCPP21.MutabilityTypes.ReadWrite));
                 Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "SSHClientPublicKey"), Is.EqualTo(OCPP21.MutabilityTypes.ReadOnly));
                 Assert.That(MutabilityOf(node, "NTPClientController",       "ptb-a",  "SSHHostKeyFingerprint"), Is.EqualTo(OCPP21.MutabilityTypes.ReadOnly));
                 Assert.That(MutabilityOf(node, "ClockCtrlr",                null,     "DateTime"),         Is.EqualTo(OCPP21.MutabilityTypes.ReadOnly));

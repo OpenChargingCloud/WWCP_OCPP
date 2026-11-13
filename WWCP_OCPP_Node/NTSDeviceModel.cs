@@ -22,6 +22,7 @@ using System.Globalization;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Norn.Monitoring;
 using org.GraphDefined.Vanaheimr.Norn.NTS;
 
@@ -117,9 +118,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("SSHUserName",             server       => TextOf     (Child(server["ssh"], "user")) is { Length: > 0 } sshUser ? sshUser : NTSServerSSH.DefaultUser),
             ("SSHHostKeyPins",          server       => PinsOf     (server["ssh"], "hostKeyPins")),
             ("SSHHostCAs",              server       => PinsOf     (server["ssh"], "hostCAs")),
-            // One more channel of the SSH connection of OCPP to its host.
-            ("SSHUseOCPPConnection",    server       => Child(server["ssh"], "useOCPPConnection")?.Type == JTokenType.Boolean &&
-                                                        Child(server["ssh"], "useOCPPConnection")!.Value<Boolean>() ? "true" : "false"),
+            // One more channel of the SSH connection the node shares with its host.
+            ("SSHConnection",           server       => IsShared(server["ssh"]) ? "Shared" : "Dedicated"),
             // The node's own key, whichever mode, or OCPP's on the connection
             // of OCPP: a CSMS reads it before it switches a server to NTSv4SSH
             // - see ClientValue.
@@ -311,12 +311,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             // The key this node signs in with at its time servers' SSH servers,
             // made at the first need: "" only where it can be had neither way,
-            // which the log says why. On the connection of OCPP, the key OCPP
-            // signs in with: no key of the node's own is made for it.
+            // which the log says why. On a shared connection, the key the
+            // node signs in with at that SSH peer: no key of the node's own is
+            // made for it.
             if (String.Equals(Variable, "SSHClientPublicKey", StringComparison.OrdinalIgnoreCase))
-                return Child(server["ssh"], "useOCPPConnection")?.Type == JTokenType.Boolean &&
-                       Child(server["ssh"], "useOCPPConnection")!.Value<Boolean>()
-                           ? node.OCPPOverSSH?.PublicKey() ?? ""
+                return IsShared(server["ssh"])
+                           ? DomainName.TryParse(server["hostname"]?.Value<String>() ?? "", out var peersHost, out _) && peersHost is not null
+                                 ? node.SSHPeerTo(peersHost)?.PublicKey?.Invoke() ?? ""
+                                 : ""
                            : node.NTSKEClientPublicKey ?? "";
 
             return value(server);
@@ -420,6 +422,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #endregion
 
         #region (private static) Child(Token, Key)
+
+        /// <summary>
+        /// Whether the "ssh" object of a server's entry says its key exchange
+        /// shares the node's SSH connection to its host: "connection":
+        /// "shared", or what a file written before calls it,
+        /// "useOCPPConnection": true.
+        /// </summary>
+        private static Boolean IsShared(JToken? SSH)
+
+            => String.Equals(Child(SSH, "connection")?.Value<String>(), "shared", StringComparison.OrdinalIgnoreCase) ||
+               (Child(SSH, "connection") is null &&
+                Child(SSH, "useOCPPConnection")?.Type == JTokenType.Boolean &&
+                Child(SSH, "useOCPPConnection")!.Value<Boolean>());
 
         /// <summary>
         /// What an object holds under a key, or null where there is no object:

@@ -598,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
         {
 
             var port    = await Change("ntske.legal.sshPorts",             "2222");
-            var shared  = await Change("ntske.legal.sshUseOCPPConnection", "true");
+            var shared  = await Change("ntske.legal.sshConnection", "Shared");
 
             Assert.Multiple(() => {
                 Assert.That((port, shared),  Is.EqualTo((OCPP16.ConfigurationStatus.Rejected, OCPP16.ConfigurationStatus.Rejected)));
@@ -609,24 +609,24 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
 
         #endregion
 
-        #region TheConnectionOfOCPPIsAListPerServer()
+        #region TheSharedConnectionIsAListPerServer()
 
         /// <summary>
-        /// "ntske.&lt;group&gt;.sshUseOCPPConnection" is a list per server of
-        /// true and false. A server on the connection of OCPP loses its pins
+        /// "ntske.&lt;group&gt;.sshConnection" is a list per server of
+        /// Dedicated and Shared. A server on a shared connection loses its pins
         /// and is left alone by the lists of a connection of its own - its port,
         /// its user, what a mismatch comes to.
         /// </summary>
         [Test]
-        public async Task TheConnectionOfOCPPIsAListPerServer()
+        public async Task TheSharedConnectionIsAListPerServer()
         {
 
             await Change("ntp.legal.mode",                "NTSv4SSH");
             await Change("ntske.legal.sshHostKeyPins.1",  AHostKey);
             await Change("ntske.legal.sshHostKeyPins.2",  AHostKey);
 
-            var shared   = await Change("ntske.legal.sshUseOCPPConnection", "TRUE,false");
-            var notBool  = await Change("ntske.legal.sshUseOCPPConnection", "yes");
+            var shared   = await Change("ntske.legal.sshConnection", "SHARED,dedicated");
+            var notBool  = await Change("ntske.legal.sshConnection", "yes");
             var ports    = await Change("ntske.legal.sshPorts",             "2200");
             var record   = await Change("ntske.legal.onPinMismatch",        "Record");
 
@@ -637,12 +637,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.TestKit
                 Assert.That((shared, notBool, ports, record),         Is.EqualTo((OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Rejected,
                                                                                   OCPP16.ConfigurationStatus.Accepted, OCPP16.ConfigurationStatus.Accepted)));
 
-                Assert.That(Value("ntske.legal.sshUseOCPPConnection"), Is.EqualTo("true,false,false,false"));
-                Assert.That(Value("ntske.legal.sshHostKeyPins.1"),     Is.EqualTo(""),  "a pin of its own, on the connection of OCPP");
+                Assert.That(Value("ntske.legal.sshConnection"), Is.EqualTo("Shared,Dedicated,Dedicated,Dedicated"));
+                Assert.That(Value("ntske.legal.sshHostKeyPins.1"),     Is.EqualTo(""),  "a pin of its own, on a shared connection");
                 Assert.That(Value("ntske.legal.sshPorts"),             Is.EqualTo("22,2200,2200,2200"));
                 Assert.That(Value("ntske.legal.onPinMismatch"),        Does.StartWith("Refuse,Record"));
 
-                Assert.That(servers[0]["ssh"]?.ToString(Newtonsoft.Json.Formatting.None), Is.EqualTo("""{"useOCPPConnection":true}"""));
+                Assert.That(servers[0]["ssh"]?.ToString(Newtonsoft.Json.Formatting.None), Is.EqualTo("""{"connection":"shared"}"""));
                 Assert.That(servers[1]["ssh"]?["port"]?.Value<Int32>(),        Is.EqualTo(2200));
 
             });

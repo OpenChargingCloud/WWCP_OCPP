@@ -448,6 +448,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// <param name="RemoteCertificateValidator">Whether to believe the server's TLS certificate (HTTP WebSocket).</param>
         /// <param name="TLSProtocols">The TLS versions allowed (HTTP WebSocket).</param>
         /// <param name="Ssh">The SSH login: user name, keys, how the host key is checked (SSH) - its user name must be the URL's, where the URL has one.</param>
+        /// <param name="SshConnection">The SSH connection OCPP goes over, where it is not OCPP's own: the connection to an SSH peer that others share. OCPP is one more channel of it, and closes that channel only (SSH).</param>
         /// <param name="DNSClient">The DNS client the URL's host name is resolved with - over either transport; the node's by default. Never the resolver of the operating system.</param>
         /// <param name="EventTrackingId">An optional event tracking identification.</param>
         /// <param name="CancellationToken">A cancellation token.</param>
@@ -470,6 +471,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                                      SslProtocols?                                                   TLSProtocols                 = null,
 
                                                                      SshClientOptions?                                               Ssh                          = null,
+                                                                     Func<CancellationToken, ValueTask<SshClient>>?                  SshConnection                = null,
 
                                                                      IDNSClient?                                                     DNSClient                    = null,
                                                                      EventTracking_Id?                                               EventTrackingId              = null,
@@ -483,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                     throw new ArgumentException($"'{RemoteURL}' is an ssh:// URL, and no SSH login was given.", nameof(Ssh));
 
                 var sshClient = NewOCPPSshClient(
-                                    WWCPSshClient.OptionsFrom(RemoteURL, Ssh, OCPPSshServer.OCPPSubsystem, Subprotocols, ReconnectPolicy, PingEvery, DNSClient ?? this.DNSClient),
+                                    WWCPSshClient.OptionsFrom(RemoteURL, Ssh, OCPPSshServer.OCPPSubsystem, Subprotocols, ReconnectPolicy, PingEvery, DNSClient ?? this.DNSClient, SshConnection),
                                     NetworkingMode,
                                     WWCPSshClient.ConnectAsFrom(RemoteURL),
                                     Description
