@@ -424,6 +424,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                 true);
 
         /// <summary>
+        /// The signer roles or the signature policy of the node were changed, over the network or at the node itself (Signed OCPP Messages and Signer Roles, section 5.4).
+        /// </summary>
+        public readonly static SecurityEventType RoleTableChanged                       = new ("RoleTableChanged",
+                                                                                               "The signer roles or the signature policy of the node were changed, over the network or at the node itself (Signed OCPP Messages and Signer Roles, section 5.4).",
+                                                                                                true);
+
+        /// <summary>
         /// The legal group of time servers reached MaxErrors: the station keeps no legal time until a round of it produces a time again (Secure Time Synchronization, section 3.2.6).
         /// </summary>
         public readonly static SecurityEventType LegalTimeLimited                       = new ("LegalTimeLimited",

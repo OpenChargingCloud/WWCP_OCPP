@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         #endregion
 
 
-        #region AddSignaturePolicy
+        #region SignaturePolicy, and its key pairs
 
         private static SignaturePolicy Policy()
             => new (
@@ -514,32 +514,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         /// The key pairs of a user role: their public keys, in JSON and in CBOR.
         /// </summary>
         [Test]
-        public void AddUserRoleRequest_WithKeyPairs_SaysTheirPublicKeysAlone()
+        public void AUserRole_WithKeyPairs_SaysTheirPublicKeysAlone()
         {
 
-            var keyPair  = ECCKeyPair.GenerateKeys()!;
+            var keyPair   = ECCKeyPair.GenerateKeys()!;
+            var userRole  = new UserRole(UserRole_Id.Support, I18NString.Create(Languages.en, "The support"), [ keyPair ]);
 
-            var request  = new OCPPv2_1.NetworkingNode.AddUserRoleRequest(
-                               destination,
-                               new UserRole(UserRole_Id.Support, I18NString.Create(Languages.en, "The support"), [ keyPair ]),
-                               RequestId: requestId
-                           );
-
-            var json     = request.ToJSON();
-            var bytes    = request.ToCBOR().ToByteArray();
-            var cbor     = CBORValue.Parse(bytes);
+            var json      = userRole.ToJSON();
+            var bytes     = userRole.ToCBOR().ToByteArray();
+            var cbor      = CBORValue.Parse(bytes);
 
             Assert.That(json.ToString(),             Does.Not.Contain("private"));
             Assert.That(Convert.ToHexString(bytes),  Does.Not.Contain(Convert.ToHexString(keyPair.PrivateKeyBytes)));
-            Assert.That(KeysOf(Of(cbor, "userRole")),  Is.EqualTo(KeysOf((JObject) json["userRole"]!)));
+            Assert.That(KeysOf(cbor),                Is.EqualTo(KeysOf(json)));
 
-            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParse    (json, requestId, destination, NetworkPath.Empty, out var fromJSON, out var jsonErrorResponse), Is.True, jsonErrorResponse);
-            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParseCBOR(cbor, requestId, destination, NetworkPath.Empty, out var fromCBOR, out var cborErrorResponse), Is.True, cborErrorResponse);
+            Assert.That(UserRole.TryParse              (json, out var fromJSON, out var jsonErrorResponse), Is.True, jsonErrorResponse);
+            Assert.That(CBORExtensions.TryParseUserRole(cbor, out var fromCBOR, out var cborErrorResponse), Is.True, cborErrorResponse);
 
-            Assert.That(fromJSON!.UserRole.KeyPairs.Single().PublicKeyBytes,   Is.EqualTo(keyPair.PublicKeyBytes));
-            Assert.That(fromJSON. UserRole.KeyPairs.Single().PrivateKeyBytes,  Is.Empty);
-            Assert.That(fromCBOR!.UserRole.KeyPairs.Single().PublicKeyBytes,   Is.EqualTo(keyPair.PublicKeyBytes));
-            Assert.That(fromCBOR. UserRole.KeyPairs.Single().PrivateKeyBytes,  Is.Empty);
+            Assert.That(fromJSON!.KeyPairs.Single().PublicKeyBytes,   Is.EqualTo(keyPair.PublicKeyBytes));
+            Assert.That(fromJSON. KeyPairs.Single().PrivateKeyBytes,  Is.Empty);
+            Assert.That(fromCBOR!.KeyPairs.Single().PublicKeyBytes,   Is.EqualTo(keyPair.PublicKeyBytes));
+            Assert.That(fromCBOR. KeyPairs.Single().PrivateKeyBytes,  Is.Empty);
 
             AreTheSame(fromJSON.ToJSON(), json);
             AreTheSame(fromCBOR.ToJSON(), json);
@@ -558,109 +553,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         }
 
-        [Test]
-        public void AddSignaturePolicyRequest_AsCBOR()
-        {
-
-            var request = new OCPPv2_1.NetworkingNode.AddSignaturePolicyRequest(destination, Policy(), Signatures: Signatures(), CustomData: Custom(), RequestId: requestId);
-
-            Assert.That(OCPPv2_1.NetworkingNode.AddSignaturePolicyRequest.TryParseCBOR(Read(request.ToCBOR()), requestId, destination, NetworkPath.Empty, out var again, out var errorResponse), Is.True, errorResponse);
-
-            AreTheSame(again!.ToJSON(), request.ToJSON());
-
-            Assert.That(KeysOf(request.ToCBOR()),         Is.EqualTo(KeysOf(request.ToJSON())));
-
-            Assert.That(again.SignaturePolicy.Id,         Is.EqualTo(SignaturePolicy_Id.Parse("policy1")));
-            Assert.That(again.SignaturePolicy.NotAfter,   Is.EqualTo(notAfter));
-            Assert.That(again.Signatures.Count,           Is.EqualTo(1));
-            Assert.That(again.CustomData,                 Is.Not.Null);
-
-        }
-
-        [Test]
-        public void AddSignaturePolicyRequest_WithoutItsSignaturePolicy_IsRefused()
-        {
-
-            var cbor = OCPPCBORExtensions.Map(("customData", Custom().ToCBOR()));
-
-            Assert.That(OCPPv2_1.NetworkingNode.AddSignaturePolicyRequest.TryParseCBOR(Read(cbor), requestId, destination, NetworkPath.Empty, out var request, out var errorResponse), Is.False);
-            Assert.That(request,       Is.Null);
-            Assert.That(errorResponse, Is.Not.Null);
-
-        }
-
         #endregion
 
-        #region DeleteSignaturePolicy
-
-        [Test]
-        public void DeleteSignaturePolicyRequest_AsCBOR()
-        {
-
-            var request = new OCPPv2_1.NetworkingNode.DeleteSignaturePolicyRequest(destination, SignaturePolicy_Id.Parse("policy1"), Signatures: Signatures(), CustomData: Custom(), RequestId: requestId);
-
-            Assert.That(OCPPv2_1.NetworkingNode.DeleteSignaturePolicyRequest.TryParseCBOR(Read(request.ToCBOR()), requestId, destination, NetworkPath.Empty, out var again, out var errorResponse), Is.True, errorResponse);
-
-            AreTheSame(again!.ToJSON(), request.ToJSON());
-
-            Assert.That(KeysOf(request.ToCBOR()),  Is.EqualTo(KeysOf(request.ToJSON())));
-
-            Assert.That(again.SignaturePolicyId,   Is.EqualTo(SignaturePolicy_Id.Parse("policy1")));
-            Assert.That(again.Signatures.Count,    Is.EqualTo(1));
-            Assert.That(again.CustomData,          Is.Not.Null);
-
-        }
-
-        [Test]
-        public void DeleteSignaturePolicyRequest_WithoutItsSignaturePolicyId_IsRefused()
-        {
-
-            var cbor = OCPPCBORExtensions.Map(("customData", Custom().ToCBOR()));
-
-            Assert.That(OCPPv2_1.NetworkingNode.DeleteSignaturePolicyRequest.TryParseCBOR(Read(cbor), requestId, destination, NetworkPath.Empty, out var request, out var errorResponse), Is.False);
-            Assert.That(request,       Is.Null);
-            Assert.That(errorResponse, Is.Not.Null);
-
-        }
-
-        #endregion
-
-        #region AddUserRole
-
-        private static OCPPv2_1.NetworkingNode.AddUserRoleRequest AddUserRoleRequest()
-            => new (
-                   destination,
-                   new UserRole(UserRole_Id.Support, I18NString.Create(Languages.en, "The support"), CustomData: Custom()),
-                   Signatures:  Signatures(),
-                   CustomData:  Custom(),
-                   RequestId:   requestId
-               );
+        #region UserRole
 
         /// <summary>
-        /// A user role says who it is - its identification and its description -
-        /// under the key "userRole": an AddUserRole request is read back from its
-        /// JSON, and from its CBOR, which has the same keys.
+        /// A user role says who it is - its identification and its description:
+        /// it is read back from its JSON, and from its CBOR, which has the same keys.
         /// </summary>
         [Test]
-        public void AddUserRoleRequest_AsCBOR_HasTheKeysOfItsJSON_AndIsReadBackFromBoth()
+        public void AUserRole_AsCBOR_HasTheKeysOfItsJSON_AndIsReadBackFromBoth()
         {
 
-            var request = AddUserRoleRequest();
-            var json    = request.ToJSON();
-            var cbor    = Read(request.ToCBOR());
+            var userRole  = new UserRole(UserRole_Id.Support, I18NString.Create(Languages.en, "The support"), CustomData: Custom());
+            var json      = userRole.ToJSON();
+            var cbor      = Read(userRole.ToCBOR());
 
-            Assert.That(KeysOf(cbor),                    Is.EqualTo(KeysOf(json)));
-            Assert.That(KeysOf(Of(cbor, "userRole")),    Is.EqualTo(KeysOf((JObject) json["userRole"]!)));
-            Assert.That(KeysOf(Of(cbor, "userRole")),    Does.Contain("id"));
-            Assert.That(KeysOf(Of(cbor, "userRole")),    Does.Contain("description"));
+            Assert.That(KeysOf(cbor),    Is.EqualTo(KeysOf(json)));
+            Assert.That(KeysOf(cbor),    Does.Contain("id"));
+            Assert.That(KeysOf(cbor),    Does.Contain("description"));
 
-            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParse    (json, requestId, destination, NetworkPath.Empty, out var fromJSON, out var jsonErrorResponse), Is.True, jsonErrorResponse);
-            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParseCBOR(cbor, requestId, destination, NetworkPath.Empty, out var fromCBOR, out var cborErrorResponse), Is.True, cborErrorResponse);
+            Assert.That(UserRole.TryParse              (json, out var fromJSON, out var jsonErrorResponse), Is.True, jsonErrorResponse);
+            Assert.That(CBORExtensions.TryParseUserRole(cbor, out var fromCBOR, out var cborErrorResponse), Is.True, cborErrorResponse);
 
-            Assert.That(fromJSON!.UserRole.Id,                         Is.EqualTo(UserRole_Id.Support));
-            Assert.That(fromJSON. UserRole.Description[Languages.en],  Is.EqualTo("The support"));
-            Assert.That(fromCBOR!.UserRole.Id,                         Is.EqualTo(UserRole_Id.Support));
-            Assert.That(fromCBOR. UserRole.Description[Languages.en],  Is.EqualTo("The support"));
+            Assert.That(fromJSON!.Id,                         Is.EqualTo(UserRole_Id.Support));
+            Assert.That(fromJSON. Description[Languages.en],  Is.EqualTo("The support"));
+            Assert.That(fromCBOR!.Id,                         Is.EqualTo(UserRole_Id.Support));
+            Assert.That(fromCBOR. Description[Languages.en],  Is.EqualTo("The support"));
+            Assert.That(fromCBOR. CustomData,                 Is.Not.Null);
 
             AreTheSame(fromJSON.ToJSON(), json);
             AreTheSame(fromCBOR.ToJSON(), json);
@@ -668,37 +588,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         }
 
         [Test]
-        public void AddUserRoleRequest_WithTheIdentificationOfItsUserRole_IsRead()
+        public void AUserRole_WithoutItsIdentification_IsRefused()
         {
 
-            var cbor = OCPPCBORExtensions.Map(
-                           ("userRole",         OCPPCBORExtensions.Map(
-                                                    ("id",           CBORValue.FromText("support")),
-                                                    ("description",  I18NString.Create(Languages.en, "The support").ToCBOR()),
-                                                    ("customData",   Custom().ToCBOR())
-                                                )),
-                           ("signatures",       OCPPCBORExtensions.Array(Signatures(), signature => signature.ToCBOR())),
-                           ("customData",       Custom().ToCBOR())
-                       );
+            var cbor = OCPPCBORExtensions.Map(("description", I18NString.Create(Languages.en, "The support").ToCBOR()));
 
-            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParseCBOR(Read(cbor), requestId, destination, NetworkPath.Empty, out var request, out var errorResponse), Is.True, errorResponse);
-
-            Assert.That(request!.UserRole.Id,                         Is.EqualTo(UserRole_Id.Support));
-            Assert.That(request. UserRole.Description[Languages.en],  Is.EqualTo("The support"));
-            Assert.That(request. UserRole.CustomData,                 Is.Not.Null);
-            Assert.That(request. Signatures.Count,                    Is.EqualTo(1));
-            Assert.That(request. CustomData,                          Is.Not.Null);
-
-        }
-
-        [Test]
-        public void AddUserRoleRequest_WithoutItsUserRole_IsRefused()
-        {
-
-            var cbor = OCPPCBORExtensions.Map(("customData", Custom().ToCBOR()));
-
-            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParseCBOR(Read(cbor), requestId, destination, NetworkPath.Empty, out var request, out var errorResponse), Is.False);
-            Assert.That(request,       Is.Null);
+            Assert.That(CBORExtensions.TryParseUserRole(Read(cbor), out var userRole, out var errorResponse), Is.False);
+            Assert.That(userRole,      Is.Null);
             Assert.That(errorResponse, Is.Not.Null);
 
         }

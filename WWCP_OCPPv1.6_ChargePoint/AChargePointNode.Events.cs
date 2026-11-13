@@ -206,6 +206,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
+        #region (private) TellOfRoleTableChange(Change)
+
+        /// <summary>
+        /// Tell the central system that the signer roles or the signature
+        /// policy of this charge point were changed, over the network or at
+        /// the charge point itself: the security event "RoleTableChanged",
+        /// whose techInfo says what was changed, of which role, and to which
+        /// version (white paper "Signed OCPP Messages and Signer Roles",
+        /// section 5.4).
+        /// </summary>
+        private void TellOfRoleTableChange(SignerRoleTableChange Change)
+        {
+
+            var techInfo = Change.Change switch {
+                               SignerRoleTableChanges.RoleAdded            => $"The role '{Change.Role}' got its keys, version {Change.Version}",
+                               SignerRoleTableChanges.RoleUpdated          => $"The role '{Change.Role}' got other keys, version {Change.Version}",
+                               SignerRoleTableChanges.RoleDeleted          => $"The role '{Change.Role}' lost its keys, version {Change.Version}",
+                               SignerRoleTableChanges.FirstOwnerInstalled  => $"The first owner: the role '{Change.Role}' got its keys, version {Change.Version}",
+                               SignerRoleTableChanges.TableReset           => "The keys of every role and the signature policy were forgotten",
+                               SignerRoleTableChanges.PolicySet            => $"The signature policy was set, version {Change.Version}",
+                               _                                           => Change.Change.ToString()
+                           } + (Change.Locally ? ", at the charge point itself" : "");
+
+            try
+            {
+
+                _ = QueueSecurityEventAsync(
+                        SecurityEvent.RoleTableChanged,
+                        techInfo
+                    ).ContinueWith(
+                        task => DebugX.LogException(task.Exception!, $"Charge point '{Id}': telling of a '{SecurityEvent.RoleTableChanged}'"),
+                        TaskContinuationOptions.OnlyOnFaulted
+                    );
+
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, $"Charge point '{Id}': telling of a '{SecurityEvent.RoleTableChanged}'");
+            }
+
+        }
+
+        #endregion
+
         #region QueueSecurityEventAsync(Type, TechInfo = null, Timestamp = null, Destination = null)
 
         /// <summary>

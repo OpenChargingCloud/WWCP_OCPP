@@ -383,8 +383,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                     ? [ "*:read", "*:edit", "*:run" ]
                                                                     : [];
 
+            // What a role may do is what its role assignment says of it, where it says
+            // less than the node does (section 6.2). A role nobody may do anything as is
+            // none of this node's.
+            var permissionsOfTheNode                  = OCPP.SignaturePolicy.PermissionsOfRole;
+
+            SignerRoles.OwnerRole                     = ChargingStationSettings.UserRoles.Admin.ToString();
+            SignerRoles.PermissionsOfRole             = role => permissionsOfTheNode(role).ToArray() is { Length: > 0 } permissions
+                                                                    ? permissions
+                                                                    : null;
+
+            OCPP.SignaturePolicy.PermissionsOfRole    = role => SignerRoles.PermissionsOf(role);
+
             if (!OCPP.SignaturePolicy.ActionPermissions.Any())
-                OCPP.SignaturePolicy.AddActionPermissions(ChargingStationActionPermissions.Default());
+                OCPP.SignaturePolicy.AddActionPermissions(ChargingStationActionPermissions.Default(
+                                                              TakesItsFirstOwner: () => SignerRoles.AllowFirstOwnerByNetwork && !SignerRoles.HasOwner
+                                                          ));
 
             foreach (var action in ChargingStationActionPermissions.ActionsDecidedPerEntry)
                 OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add(action);
@@ -1558,26 +1572,116 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region E2E Security Extensions
 
-            #region SignaturePolicy
+            #region Signer roles and the signature policy (white paper "Signed OCPP Messages and Signer Roles", section 6.4)
 
-            #region OnAddSignaturePolicy
+            // What the signer role table refuses is answered with its reason: the reason
+            // code of the status info is one of the SignerRoleReasons.
+            static StatusInfo? Why(Boolean Accepted, SignerRoleReasons Reason, String? ErrorResponse)
+                => Accepted
+                       ? null
+                       : new StatusInfo(Reason.ToString(), ErrorResponse);
 
-            OCPP.IN.OnAddSignaturePolicy += (timestamp,
+            #region OnAddSignerRole
+
+            OCPP.IN.OnAddSignerRole += (timestamp,
+                                        sender,
+                                        connection,
+                                        request,
+                                        ct) => {
+
+                var accepted = SignerRoles.TryAdd(request.SignerRole, out var reason, out var errorResponse);
+
+                return Task.FromResult(
+                           new AddSignerRoleResponse(
+                               Request:      request,
+                               Status:       accepted ? GenericStatus.Accepted : GenericStatus.Rejected,
+                               StatusInfo:   Why(accepted, reason, errorResponse)
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnUpdateSignerRole
+
+            OCPP.IN.OnUpdateSignerRole += (timestamp,
+                                           sender,
+                                           connection,
+                                           request,
+                                           ct) => {
+
+                var accepted = SignerRoles.TryUpdate(request.SignerRole, out var reason, out var errorResponse);
+
+                return Task.FromResult(
+                           new UpdateSignerRoleResponse(
+                               Request:      request,
+                               Status:       accepted ? GenericStatus.Accepted : GenericStatus.Rejected,
+                               StatusInfo:   Why(accepted, reason, errorResponse)
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnDeleteSignerRole
+
+            OCPP.IN.OnDeleteSignerRole += (timestamp,
+                                           sender,
+                                           connection,
+                                           request,
+                                           ct) => {
+
+                var accepted = SignerRoles.TryDelete(request.Role, request.Version, out var reason, out var errorResponse);
+
+                return Task.FromResult(
+                           new DeleteSignerRoleResponse(
+                               Request:      request,
+                               Status:       accepted ? GenericStatus.Accepted : GenericStatus.Rejected,
+                               StatusInfo:   Why(accepted, reason, errorResponse)
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetSignerRoles
+
+            OCPP.IN.OnGetSignerRoles += (timestamp,
+                                         sender,
+                                         connection,
+                                         request,
+                                         ct) =>
+
+                Task.FromResult(
+                    new GetSignerRolesResponse(
+                        Request:       request,
+                        Status:        GenericStatus.Accepted,
+                        SignerRoles:   SignerRoles.Assignments.
+                                           Where (assignment => !request.Roles.Any() || request.Roles.Contains(assignment.Role)).
+                                           Select(assignment => assignment.JSON)
+                    )
+                );
+
+            #endregion
+
+            #region OnSetSignaturePolicy
+
+            OCPP.IN.OnSetSignaturePolicy += (timestamp,
                                              sender,
                                              connection,
                                              request,
                                              ct) => {
 
-                DebugX.Log($"Charging station '{Id}': Incoming AddSignaturePolicy!");
-
-                // Message
+                var accepted = SignerRoles.TrySetPolicy(request.Policy, OCPP.SignaturePolicy, out var reason, out var errorResponse);
 
                 return Task.FromResult(
-                           new AddSignaturePolicyResponse(
+                           new SetSignaturePolicyResponse(
                                Request:      request,
-                               Status:       GenericStatus.Accepted,
-                               StatusInfo:   null,
-                               CustomData:   null
+                               Status:       accepted ? GenericStatus.Accepted : GenericStatus.Rejected,
+                               StatusInfo:   Why(accepted, reason, errorResponse)
                            )
                        );
 
@@ -1585,133 +1689,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            #region OnUpdateSignaturePolicy
+            #region OnGetSignaturePolicy
 
-            OCPP.IN.OnUpdateSignaturePolicy += (timestamp,
-                                                sender,
-                                                connection,
-                                                request,
-                                                ct) => {
+            OCPP.IN.OnGetSignaturePolicy += (timestamp,
+                                             sender,
+                                             connection,
+                                             request,
+                                             ct) =>
 
-                DebugX.Log($"Charging station '{Id}': Incoming UpdateSignaturePolicy!");
-
-                // Message
-
-                return Task.FromResult(
-                           new UpdateSignaturePolicyResponse(
-                               Request:      request,
-                               Status:       GenericStatus.Accepted,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnDeleteSignaturePolicy
-
-            OCPP.IN.OnDeleteSignaturePolicy += (timestamp,
-                                                sender,
-                                                connection,
-                                                request,
-                                                ct) => {
-
-                DebugX.Log($"Charging station '{Id}': Incoming DeleteSignaturePolicy!");
-
-                // Message
-
-                return Task.FromResult(
-                           new DeleteSignaturePolicyResponse(
-                               Request:      request,
-                               Status:       GenericStatus.Accepted,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #endregion
-
-            #region UserRoles
-
-            #region OnAddUserRole
-
-            OCPP.IN.OnAddUserRole += (timestamp,
-                                      sender,
-                                      connection,
-                                      request,
-                                      ct) => {
-
-                DebugX.Log($"Charging station '{Id}': Incoming AddUserRole!");
-
-                // Message
-
-                return Task.FromResult(
-                           new AddUserRoleResponse(
-                               Request:      request,
-                               Status:       GenericStatus.Accepted,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnUpdateUserRole
-
-            OCPP.IN.OnUpdateUserRole += (timestamp,
-                                         sender,
-                                         connection,
-                                         request,
-                                         ct) => {
-
-                DebugX.Log($"Charging station '{Id}': Incoming UpdateUserRole!");
-
-                // Message
-
-                return Task.FromResult(
-                           new UpdateUserRoleResponse(
-                               Request:      request,
-                               Status:       GenericStatus.Accepted,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
-                       );
-
-            };
-
-            #endregion
-
-            #region OnDeleteUserRole
-
-            OCPP.IN.OnDeleteUserRole += (timestamp,
-                                         sender,
-                                         connection,
-                                         request,
-                                         ct) => {
-
-                DebugX.Log($"Charging station '{Id}': Incoming DeleteUserRole!");
-
-                // Message
-
-                return Task.FromResult(
-                           new DeleteUserRoleResponse(
-                               Request:      request,
-                               Status:       GenericStatus.Accepted,
-                               StatusInfo:   null,
-                               CustomData:   null
-                           )
-                       );
-
-
-            };
+                Task.FromResult(
+                    new GetSignaturePolicyResponse(
+                        Request:   request,
+                        Status:    GenericStatus.Accepted,
+                        Policy:    SignerRoles.Policy
+                    )
+                );
 
             #endregion
 

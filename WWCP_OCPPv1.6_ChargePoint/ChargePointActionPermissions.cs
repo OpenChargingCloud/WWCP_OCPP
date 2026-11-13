@@ -66,7 +66,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// The table.
         /// </summary>
         /// <param name="IsMetrologicallyRelevant">Whether the charge point holds a calibration certificate or signs sessions over a meter it reads. The charge point says so itself: a firmware update then needs "calibration:edit" too.</param>
-        public static IEnumerable<ActionPermission> Default(Func<Boolean>? IsMetrologicallyRelevant = null)
+        /// <param name="TakesItsFirstOwner">Whether the charge point has no owner yet and takes its first one over the network (section 6.1, option 3). The charge point says so itself: an AddSignerRole then needs nobody's permission as a request, since there is nobody yet who could hold one, and is held to its role assignment alone.</param>
+        public static IEnumerable<ActionPermission> Default(Func<Boolean>? IsMetrologicallyRelevant   = null,
+                                                            Func<Boolean>? TakesItsFirstOwner         = null)
         {
 
             IEnumerable<String> ofAMetrologicallyRelevantOne()
@@ -129,7 +131,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    new ActionPermission    ("ClearChargingProfile",    [ "session:run", "power:edit" ]),
 
                    new ActionPermission    ("UpdateFirmware",          [ "firmware:edit" ],    AdditionalPermissions: ofAMetrologicallyRelevantOne),
-                   new ActionPermission    ("SignedUpdateFirmware",    [ "firmware:edit" ],    AdditionalPermissions: ofAMetrologicallyRelevantOne)
+                   new ActionPermission    ("SignedUpdateFirmware",    [ "firmware:edit" ],    AdditionalPermissions: ofAMetrologicallyRelevantOne),
+
+                   // The signer roles and the signature policy (section 6.4). What writes
+                   // them needs the permission to, whatever a policy entry says.
+                   new ActionPermission    ("AddSignerRole",
+                                            [],
+                                            AdditionalPermissions: () => TakesItsFirstOwner?.Invoke() == true
+                                                                             ? []
+                                                                             : [ "signatures:edit" ]),
+                   ActionPermission.Needs  ("UpdateSignerRole",        "signatures:edit"),
+                   ActionPermission.Needs  ("DeleteSignerRole",        "signatures:edit"),
+                   ActionPermission.Needs  ("GetSignerRoles",          "signatures:read"),
+                   ActionPermission.Needs  ("SetSignaturePolicy",      "signatures:edit"),
+                   ActionPermission.Needs  ("GetSignaturePolicy",      "signatures:read")
 
                ];
 
@@ -166,6 +181,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        "ntp"    => "NTPClientController",
                        "nts"    => "NTSClientController",
                        "ntske"  => "NTSClientController",
+
+                       // "signatures.roles.support.version" is a variable of the role's
+                       // component, the other keys are the signature controller's: both
+                       // are "signatures" to the policy.
+                       "signatures"  => "MessageSignatureController",
+
                        _        => "ConfigurationKeys"
                    };
 

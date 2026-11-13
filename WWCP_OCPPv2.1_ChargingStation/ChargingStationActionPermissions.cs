@@ -72,7 +72,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The table.
         /// </summary>
         /// <param name="IsMetrologicallyRelevant">Whether the station holds a calibration certificate or signs sessions over a meter it reads. The station says so itself: a firmware update then needs "calibration:edit" too.</param>
-        public static IEnumerable<ActionPermission> Default(Func<Boolean>? IsMetrologicallyRelevant = null)
+        /// <param name="TakesItsFirstOwner">Whether the station has no owner yet and takes its first one over the network (section 6.1, option 3). The station says so itself: an AddSignerRole then needs nobody's permission as a request, since there is nobody yet who could hold one, and is held to its role assignment alone.</param>
+        public static IEnumerable<ActionPermission> Default(Func<Boolean>? IsMetrologicallyRelevant   = null,
+                                                            Func<Boolean>? TakesItsFirstOwner         = null)
 
             => [
 
@@ -149,13 +151,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    ActionPermission.Needs  ("SetNetworkProfile",       "connections:edit"),
 
-                   // The roles and the signature policy: phase 4 renames these messages.
-                   ActionPermission.Needs  ("AddUserRole",             "signatures:edit"),
-                   ActionPermission.Needs  ("UpdateUserRole",          "signatures:edit"),
-                   ActionPermission.Needs  ("DeleteUserRole",          "signatures:edit"),
-                   ActionPermission.Needs  ("AddSignaturePolicy",      "signatures:edit"),
-                   ActionPermission.Needs  ("UpdateSignaturePolicy",   "signatures:edit"),
-                   ActionPermission.Needs  ("DeleteSignaturePolicy",   "signatures:edit")
+                   // The signer roles and the signature policy (section 6.4). What writes
+                   // them needs the permission to, whatever a policy entry says.
+                   new ActionPermission    ("AddSignerRole",
+                                            [],
+                                            AdditionalPermissions: () => TakesItsFirstOwner?.Invoke() == true
+                                                                             ? []
+                                                                             : [ "signatures:edit" ]),
+                   ActionPermission.Needs  ("UpdateSignerRole",        "signatures:edit"),
+                   ActionPermission.Needs  ("DeleteSignerRole",        "signatures:edit"),
+                   ActionPermission.Needs  ("GetSignerRoles",          "signatures:read"),
+                   ActionPermission.Needs  ("SetSignaturePolicy",      "signatures:edit"),
+                   ActionPermission.Needs  ("GetSignaturePolicy",      "signatures:read")
 
                ];
 

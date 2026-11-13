@@ -27,35 +27,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public interface E2ESecurityExtensions_IncomingMessages
     {
 
-        /// <summary>
-        /// An event sent whenever an AddSignaturePolicy request was received.
-        /// </summary>
-        event OnAddSignaturePolicyDelegate       OnAddSignaturePolicy;
 
         /// <summary>
-        /// An event sent whenever an UpdateSignaturePolicy request was received.
+        /// An event sent whenever an AddSignerRole request was received.
         /// </summary>
-        event OnUpdateSignaturePolicyDelegate    OnUpdateSignaturePolicy;
+        event OnAddSignerRoleDelegate    OnAddSignerRole;
 
         /// <summary>
-        /// An event sent whenever a DeleteSignaturePolicy request was received.
+        /// An event sent whenever an UpdateSignerRole request was received.
         /// </summary>
-        event OnDeleteSignaturePolicyDelegate    OnDeleteSignaturePolicy;
+        event OnUpdateSignerRoleDelegate    OnUpdateSignerRole;
 
         /// <summary>
-        /// An event sent whenever an AddUserRole request was received.
+        /// An event sent whenever a DeleteSignerRole request was received.
         /// </summary>
-        event OnAddUserRoleDelegate              OnAddUserRole;
+        event OnDeleteSignerRoleDelegate    OnDeleteSignerRole;
 
         /// <summary>
-        /// An event sent whenever an UpdateUserRole request was received.
+        /// An event sent whenever a GetSignerRoles request was received.
         /// </summary>
-        event OnUpdateUserRoleDelegate           OnUpdateUserRole;
+        event OnGetSignerRolesDelegate    OnGetSignerRoles;
 
         /// <summary>
-        /// An event sent whenever a DeleteUserRole request was received.
+        /// An event sent whenever a SetSignaturePolicy request was received.
         /// </summary>
-        event OnDeleteUserRoleDelegate           OnDeleteUserRole;
+        event OnSetSignaturePolicyDelegate    OnSetSignaturePolicy;
+
+        /// <summary>
+        /// An event sent whenever a GetSignaturePolicy request was received.
+        /// </summary>
+        event OnGetSignaturePolicyDelegate    OnGetSignaturePolicy;
 
 
         /// <summary>

@@ -27,63 +27,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface E2ESecurityExtensions_OutgoingMessages
     {
 
-        #region AddSignaturePolicy          (Request)
+        #region AddSignerRole (Request)
 
         /// <summary>
-        /// Add a signature policy.
+        /// Give keys to a signer role that has none yet.
         /// </summary>
-        /// <param name="Request">An AddSignaturePolicy request.</param>
-        Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request);
+        /// <param name="Request">An AddSignerRole request.</param>
+        Task<AddSignerRoleResponse> AddSignerRole(AddSignerRoleRequest Request);
 
         #endregion
 
-        #region UpdateSignaturePolicy       (Request)
+        #region UpdateSignerRole (Request)
 
         /// <summary>
-        /// Update a signature policy.
+        /// Replace the keys of a signer role.
         /// </summary>
-        /// <param name="Request">An UpdateSignaturePolicy request.</param>
-        Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request);
+        /// <param name="Request">An UpdateSignerRole request.</param>
+        Task<UpdateSignerRoleResponse> UpdateSignerRole(UpdateSignerRoleRequest Request);
 
         #endregion
 
-        #region DeleteSignaturePolicy       (Request)
+        #region DeleteSignerRole (Request)
 
         /// <summary>
-        /// Delete a signature policy.
+        /// Take the keys of a signer role away.
         /// </summary>
-        /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request);
+        /// <param name="Request">A DeleteSignerRole request.</param>
+        Task<DeleteSignerRoleResponse> DeleteSignerRole(DeleteSignerRoleRequest Request);
 
         #endregion
 
-        #region AddUserRole                 (Request)
+        #region GetSignerRoles (Request)
 
         /// <summary>
-        /// Add a user role.
+        /// Ask for the role assignments a node has stored.
         /// </summary>
-        /// <param name="Request">An AddUserRole request.</param>
-        Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request);
+        /// <param name="Request">A GetSignerRoles request.</param>
+        Task<GetSignerRolesResponse> GetSignerRoles(GetSignerRolesRequest Request);
 
         #endregion
 
-        #region UpdateUserRole              (Request)
+        #region SetSignaturePolicy (Request)
 
         /// <summary>
-        /// Update a user role.
+        /// Set the policy table of a node.
         /// </summary>
-        /// <param name="Request">An UpdateUserRole request.</param>
-        Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request);
+        /// <param name="Request">A SetSignaturePolicy request.</param>
+        Task<SetSignaturePolicyResponse> SetSignaturePolicy(SetSignaturePolicyRequest Request);
 
         #endregion
 
-        #region DeleteUserRole              (Request)
+        #region GetSignaturePolicy (Request)
 
         /// <summary>
-        /// Delete a user role.
+        /// Ask for the policy table a node has stored.
         /// </summary>
-        /// <param name="Request">An DeleteUserRole request.</param>
-        Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request);
+        /// <param name="Request">A GetSignaturePolicy request.</param>
+        Task<GetSignaturePolicyResponse> GetSignaturePolicy(GetSignaturePolicyRequest Request);
 
         #endregion
 

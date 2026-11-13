@@ -230,9 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             // Who a key belongs to: the roles of this node. The policy table asks for them
             // (white paper "Signed OCPP Messages and Signer Roles", section 5.1).
+            // They are the roles its signer role table has given the key (chapter 6), and
+            // the user roles a program has written down for it.
             this.OCPP.SignaturePolicy.SignerRolesOf ??= signature => [.. UserRoles.
                                                                              Where (userRole => userRole.KeyPairs.Any(keyPair => signature.KeyId.SequenceEqual(keyPair.PublicKeyBytes))).
-                                                                             Select(userRole => userRole.Id.ToString())];
+                                                                             Select(userRole => userRole.Id.ToString()).
+                                                                             Union (SignerRoles.RolesOf(signature.KeyId, Used: true))];
 
         }
 

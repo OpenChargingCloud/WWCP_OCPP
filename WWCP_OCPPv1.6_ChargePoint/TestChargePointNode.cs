@@ -881,8 +881,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                     ? [ "*:read", "*:edit", "*:run" ]
                                                                     : [];
 
+            // What a role may do is what its role assignment says of it, where it says
+            // less than the node does (section 6.2). A role nobody may do anything as is
+            // none of this node's.
+            var permissionsOfTheNode                  = OCPP.SignaturePolicy.PermissionsOfRole;
+
+            SignerRoles.OwnerRole                     = "admin";
+            SignerRoles.PermissionsOfRole             = role => permissionsOfTheNode(role).ToArray() is { Length: > 0 } permissions
+                                                                    ? permissions
+                                                                    : null;
+
+            OCPP.SignaturePolicy.PermissionsOfRole    = role => SignerRoles.PermissionsOf(role);
+
             if (!OCPP.SignaturePolicy.ActionPermissions.Any())
-                OCPP.SignaturePolicy.AddActionPermissions(ChargePointActionPermissions.Default());
+                OCPP.SignaturePolicy.AddActionPermissions(ChargePointActionPermissions.Default(
+                                                              TakesItsFirstOwner: () => SignerRoles.AllowFirstOwnerByNetwork && !SignerRoles.HasOwner
+                                                          ));
 
             foreach (var action in ChargePointActionPermissions.ActionsDecidedPerKey)
                 OCPP.SignaturePolicy.ActionsDecidedPerEntry.Add(action);
@@ -1705,6 +1719,144 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                        );
 
             };
+
+            #endregion
+
+            #region Signer roles and the signature policy (white paper "Signed OCPP Messages and Signer Roles", section 6.4)
+
+            #region OnAddSignerRole
+
+            OCPP.IN.OnAddSignerRole += (timestamp,
+                                  sender,
+                                  connection,
+                                  request,
+                                  cancellationToken) => {
+
+                var accepted = SignerRoles.TryAdd   (request.SignerRole, out var reason, out var errorResponse);
+
+                return Task.FromResult(
+                           new AddSignerRoleResponse(
+                               request,
+                               accepted ? GenericStatus.Accepted : GenericStatus.Rejected,
+                               ReasonCode:      accepted ? null : reason.ToString(),
+                               AdditionalInfo:  accepted ? null : errorResponse
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnUpdateSignerRole
+
+            OCPP.IN.OnUpdateSignerRole += (timestamp,
+                                  sender,
+                                  connection,
+                                  request,
+                                  cancellationToken) => {
+
+                var accepted = SignerRoles.TryUpdate(request.SignerRole, out var reason, out var errorResponse);
+
+                return Task.FromResult(
+                           new UpdateSignerRoleResponse(
+                               request,
+                               accepted ? GenericStatus.Accepted : GenericStatus.Rejected,
+                               ReasonCode:      accepted ? null : reason.ToString(),
+                               AdditionalInfo:  accepted ? null : errorResponse
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnDeleteSignerRole
+
+            OCPP.IN.OnDeleteSignerRole += (timestamp,
+                                  sender,
+                                  connection,
+                                  request,
+                                  cancellationToken) => {
+
+                var accepted = SignerRoles.TryDelete(request.Role, request.Version, out var reason, out var errorResponse);
+
+                return Task.FromResult(
+                           new DeleteSignerRoleResponse(
+                               request,
+                               accepted ? GenericStatus.Accepted : GenericStatus.Rejected,
+                               ReasonCode:      accepted ? null : reason.ToString(),
+                               AdditionalInfo:  accepted ? null : errorResponse
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetSignerRoles
+
+            OCPP.IN.OnGetSignerRoles += (timestamp,
+                                  sender,
+                                  connection,
+                                  request,
+                                  cancellationToken) => {
+
+                return Task.FromResult(
+                           new GetSignerRolesResponse(
+                               request,
+                               GenericStatus.Accepted,
+                               SignerRoles:  SignerRoles.Assignments.
+                                                 Where (assignment => !request.Roles.Any() || request.Roles.Contains(assignment.Role)).
+                                                 Select(assignment => assignment.JSON)
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnSetSignaturePolicy
+
+            OCPP.IN.OnSetSignaturePolicy += (timestamp,
+                                  sender,
+                                  connection,
+                                  request,
+                                  cancellationToken) => {
+
+                var accepted = SignerRoles.TrySetPolicy(request.Policy, OCPP.SignaturePolicy, out var reason, out var errorResponse);
+
+                return Task.FromResult(
+                           new SetSignaturePolicyResponse(
+                               request,
+                               accepted ? GenericStatus.Accepted : GenericStatus.Rejected,
+                               ReasonCode:      accepted ? null : reason.ToString(),
+                               AdditionalInfo:  accepted ? null : errorResponse
+                           )
+                       );
+
+            };
+
+            #endregion
+
+            #region OnGetSignaturePolicy
+
+            OCPP.IN.OnGetSignaturePolicy += (timestamp,
+                                  sender,
+                                  connection,
+                                  request,
+                                  cancellationToken) => {
+
+                return Task.FromResult(
+                           new GetSignaturePolicyResponse(
+                               request,
+                               GenericStatus.Accepted,
+                               Policy:  SignerRoles.Policy
+                           )
+                       );
+
+            };
+
+            #endregion
 
             #endregion
 

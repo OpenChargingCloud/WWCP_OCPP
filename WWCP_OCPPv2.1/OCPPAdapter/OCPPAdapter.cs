@@ -397,20 +397,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
         // E2E Security Extensions
-        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                             CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<AddSignaturePolicyResponse>?                            CustomAddSignaturePolicyResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                    CustomAddUserRoleRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<AddUserRoleResponse>?                                   CustomAddUserRoleResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyResponse>?                         CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                                 CustomDeleteUserRoleRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?                                CustomDeleteUserRoleResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?                          CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<AddSignerRoleRequest>?                                  CustomAddSignerRoleRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<AddSignerRoleResponse>?                                 CustomAddSignerRoleResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignerRoleRequest>?                               CustomUpdateSignerRoleRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignerRoleResponse>?                              CustomUpdateSignerRoleResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignerRoleRequest>?                               CustomDeleteSignerRoleRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignerRoleResponse>?                              CustomDeleteSignerRoleResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<GetSignerRolesRequest>?                                 CustomGetSignerRolesRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<GetSignerRolesResponse>?                                CustomGetSignerRolesResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<SetSignaturePolicyRequest>?                             CustomSetSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<SetSignaturePolicyResponse>?                            CustomSetSignaturePolicyResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<GetSignaturePolicyRequest>?                             CustomGetSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetSignaturePolicyResponse>?                            CustomGetSignaturePolicyResponseSerializer                   { get; set; }
         public CustomBinarySerializerDelegate <SecureDataTransferRequest>?                             CustomSecureDataTransferRequestSerializer                    { get; set; }
         public CustomBinarySerializerDelegate <SecureDataTransferResponse>?                            CustomSecureDataTransferResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?                          CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyResponse>?                         CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                                 CustomUpdateUserRoleRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateUserRoleResponse>?                                CustomUpdateUserRoleResponseSerializer                       { get; set; }
 
 
         // Overlay Network Extensions
@@ -860,18 +860,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         // E2ESecurityExtensions
         public CustomBinaryParserDelegate<SecureDataTransferRequest>?                                  CustomSecureDataTransferRequestParser                    { get; set; }
         public CustomBinaryParserDelegate<SecureDataTransferResponse>?                                 CustomSecureDataTransferResponseParser                   { get; set; }
-        public CustomJObjectParserDelegate<AddSignaturePolicyRequest>?                                 CustomAddSignaturePolicyRequestParser                    { get; set; }
-        public CustomJObjectParserDelegate<AddSignaturePolicyResponse>?                                CustomAddSignaturePolicyResponseParser                   { get; set; }
-        public CustomJObjectParserDelegate<AddUserRoleRequest>?                                        CustomAddUserRoleRequestParser                           { get; set; }
-        public CustomJObjectParserDelegate<AddUserRoleResponse>?                                       CustomAddUserRoleResponseParser                          { get; set; }
-        public CustomJObjectParserDelegate<DeleteSignaturePolicyRequest>?                              CustomDeleteSignaturePolicyRequestParser                 { get; set; }
-        public CustomJObjectParserDelegate<DeleteSignaturePolicyResponse>?                             CustomDeleteSignaturePolicyResponseParser                { get; set; }
-        public CustomJObjectParserDelegate<DeleteUserRoleRequest>?                                     CustomDeleteUserRoleRequestParser                        { get; set; }
-        public CustomJObjectParserDelegate<DeleteUserRoleResponse>?                                    CustomDeleteUserRoleResponseParser                       { get; set; }
-        public CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?                              CustomUpdateSignaturePolicyRequestParser                 { get; set; }
-        public CustomJObjectParserDelegate<UpdateSignaturePolicyResponse>?                             CustomUpdateSignaturePolicyResponseParser                { get; set; }
-        public CustomJObjectParserDelegate<UpdateUserRoleRequest>?                                     CustomUpdateUserRoleRequestParser                        { get; set; }
-        public CustomJObjectParserDelegate<UpdateUserRoleResponse>?                                    CustomUpdateUserRoleResponseParser                       { get; set; }
+        public CustomJObjectParserDelegate<AddSignerRoleRequest>?                                      CustomAddSignerRoleRequestParser                             { get; set; }
+        public CustomJObjectParserDelegate<AddSignerRoleResponse>?                                     CustomAddSignerRoleResponseParser                            { get; set; }
+        public CustomJObjectParserDelegate<UpdateSignerRoleRequest>?                                   CustomUpdateSignerRoleRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<UpdateSignerRoleResponse>?                                  CustomUpdateSignerRoleResponseParser                         { get; set; }
+        public CustomJObjectParserDelegate<DeleteSignerRoleRequest>?                                   CustomDeleteSignerRoleRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<DeleteSignerRoleResponse>?                                  CustomDeleteSignerRoleResponseParser                         { get; set; }
+        public CustomJObjectParserDelegate<GetSignerRolesRequest>?                                     CustomGetSignerRolesRequestParser                            { get; set; }
+        public CustomJObjectParserDelegate<GetSignerRolesResponse>?                                    CustomGetSignerRolesResponseParser                           { get; set; }
+        public CustomJObjectParserDelegate<SetSignaturePolicyRequest>?                                 CustomSetSignaturePolicyRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<SetSignaturePolicyResponse>?                                CustomSetSignaturePolicyResponseParser                       { get; set; }
+        public CustomJObjectParserDelegate<GetSignaturePolicyRequest>?                                 CustomGetSignaturePolicyRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<GetSignaturePolicyResponse>?                                CustomGetSignaturePolicyResponseParser                       { get; set; }
 
 
         public CustomJObjectParserDelegate<ChargingStation>?                                           CustomChargingStationParser                              { get; set; }

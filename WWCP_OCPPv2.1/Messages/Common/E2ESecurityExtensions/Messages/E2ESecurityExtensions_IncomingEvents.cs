@@ -27,87 +27,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public interface E2ESecurityExtensions_IncomingEvents
     {
 
-        #region OnAddSignaturePolicy    (RequestReceived/-ResponseSent)
+        #region OnAddSignerRole (RequestReceived/-ResponseSent)
 
         /// <summary>
-        /// An event sent whenever an AddSignaturePolicy request was received.
+        /// An event sent whenever an AddSignerRole request was received.
         /// </summary>
-        event OnAddSignaturePolicyRequestReceivedDelegate       OnAddSignaturePolicyRequestReceived;
+        event OnAddSignerRoleRequestReceivedDelegate       OnAddSignerRoleRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to an AddSignaturePolicy request was sent.
+        /// An event sent whenever a response to an AddSignerRole request was sent.
         /// </summary>
-        event OnAddSignaturePolicyResponseReceivedDelegate      OnAddSignaturePolicyResponseReceived;
+        event OnAddSignerRoleResponseReceivedDelegate      OnAddSignerRoleResponseReceived;
 
         #endregion
 
-        #region OnUpdateSignaturePolicy (RequestReceived/-ResponseSent)
+        #region OnUpdateSignerRole (RequestReceived/-ResponseSent)
 
         /// <summary>
-        /// An event sent whenever an UpdateSignaturePolicy request was received.
+        /// An event sent whenever an UpdateSignerRole request was received.
         /// </summary>
-        event OnUpdateSignaturePolicyRequestReceivedDelegate    OnUpdateSignaturePolicyRequestReceived;
+        event OnUpdateSignerRoleRequestReceivedDelegate       OnUpdateSignerRoleRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to an UpdateSignaturePolicy request was sent.
+        /// An event sent whenever a response to an UpdateSignerRole request was sent.
         /// </summary>
-        event OnUpdateSignaturePolicyResponseReceivedDelegate   OnUpdateSignaturePolicyResponseReceived;
+        event OnUpdateSignerRoleResponseReceivedDelegate      OnUpdateSignerRoleResponseReceived;
 
         #endregion
 
-        #region OnDeleteSignaturePolicy (RequestReceived/-ResponseSent)
+        #region OnDeleteSignerRole (RequestReceived/-ResponseSent)
 
         /// <summary>
-        /// An event sent whenever a DeleteSignaturePolicy request was received.
+        /// An event sent whenever a DeleteSignerRole request was received.
         /// </summary>
-        event OnDeleteSignaturePolicyRequestReceivedDelegate    OnDeleteSignaturePolicyRequestReceived;
+        event OnDeleteSignerRoleRequestReceivedDelegate       OnDeleteSignerRoleRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
+        /// An event sent whenever a response to a DeleteSignerRole request was sent.
         /// </summary>
-        event OnDeleteSignaturePolicyResponseReceivedDelegate   OnDeleteSignaturePolicyResponseReceived;
+        event OnDeleteSignerRoleResponseReceivedDelegate      OnDeleteSignerRoleResponseReceived;
 
         #endregion
 
-        #region OnAddUserRole           (RequestReceived/-ResponseSent)
+        #region OnGetSignerRoles (RequestReceived/-ResponseSent)
 
         /// <summary>
-        /// An event sent whenever an AddUserRole request was received.
+        /// An event sent whenever a GetSignerRoles request was received.
         /// </summary>
-        event OnAddUserRoleRequestReceivedDelegate              OnAddUserRoleRequestReceived;
+        event OnGetSignerRolesRequestReceivedDelegate       OnGetSignerRolesRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to an AddUserRole request was sent.
+        /// An event sent whenever a response to a GetSignerRoles request was sent.
         /// </summary>
-        event OnAddUserRoleResponseReceivedDelegate             OnAddUserRoleResponseReceived;
+        event OnGetSignerRolesResponseReceivedDelegate      OnGetSignerRolesResponseReceived;
 
         #endregion
 
-        #region OnUpdateUserRole        (RequestReceived/-ResponseSent)
+        #region OnSetSignaturePolicy (RequestReceived/-ResponseSent)
 
         /// <summary>
-        /// An event sent whenever an UpdateUserRole request was received.
+        /// An event sent whenever a SetSignaturePolicy request was received.
         /// </summary>
-        event OnUpdateUserRoleRequestReceivedDelegate           OnUpdateUserRoleRequestReceived;
+        event OnSetSignaturePolicyRequestReceivedDelegate       OnSetSignaturePolicyRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to an UpdateUserRole request was sent.
+        /// An event sent whenever a response to a SetSignaturePolicy request was sent.
         /// </summary>
-        event OnUpdateUserRoleResponseReceivedDelegate          OnUpdateUserRoleResponseReceived;
+        event OnSetSignaturePolicyResponseReceivedDelegate      OnSetSignaturePolicyResponseReceived;
 
         #endregion
 
-        #region OnDeleteUserRole        (RequestReceived/-ResponseSent)
+        #region OnGetSignaturePolicy (RequestReceived/-ResponseSent)
 
         /// <summary>
-        /// An event sent whenever a DeleteUserRole request was received.
+        /// An event sent whenever a GetSignaturePolicy request was received.
         /// </summary>
-        event OnDeleteUserRoleRequestReceivedDelegate           OnDeleteUserRoleRequestReceived;
+        event OnGetSignaturePolicyRequestReceivedDelegate       OnGetSignaturePolicyRequestReceived;
 
         /// <summary>
-        /// An event sent whenever a response to a DeleteUserRole request was sent.
+        /// An event sent whenever a response to a GetSignaturePolicy request was sent.
         /// </summary>
-        event OnDeleteUserRoleResponseReceivedDelegate          OnDeleteUserRoleResponseReceived;
+        event OnGetSignaturePolicyResponseReceivedDelegate      OnGetSignaturePolicyResponseReceived;
 
         #endregion
 

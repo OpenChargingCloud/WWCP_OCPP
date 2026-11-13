@@ -530,6 +530,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         // Advanced Diagnostics Extensions
         public CustomJObjectSerializerDelegate<AdjustTimeScaleRequest>?                              CustomAdjustTimeScaleRequestSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<AdjustTimeScaleResponse>?                             CustomAdjustTimeScaleResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<AddSignerRoleRequest>?                                  CustomAddSignerRoleRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<AddSignerRoleResponse>?                                 CustomAddSignerRoleResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignerRoleRequest>?                               CustomUpdateSignerRoleRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignerRoleResponse>?                              CustomUpdateSignerRoleResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignerRoleRequest>?                               CustomDeleteSignerRoleRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignerRoleResponse>?                              CustomDeleteSignerRoleResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<GetSignerRolesRequest>?                                 CustomGetSignerRolesRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<GetSignerRolesResponse>?                                CustomGetSignerRolesResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<SetSignaturePolicyRequest>?                             CustomSetSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<SetSignaturePolicyResponse>?                            CustomSetSignaturePolicyResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<GetSignaturePolicyRequest>?                             CustomGetSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetSignaturePolicyResponse>?                            CustomGetSignaturePolicyResponseSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<GetExecutingEnvironmentRequest>?                      CustomGetExecutingEnvironmentRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<GetExecutingEnvironmentResponse>?                     CustomGetExecutingEnvironmentResponseSerializer              { get; set; }
         public CustomJObjectSerializerDelegate<QueryDNSRequest>?                                     CustomQueryDNSRequestSerializer                              { get; set; }
@@ -959,6 +971,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         // Advanced Diagnostics Extensions
         public CustomJObjectParserDelegate<AdjustTimeScaleRequest>?                                    CustomAdjustTimeScaleRequestParser                       { get; set; }
         public CustomJObjectParserDelegate<AdjustTimeScaleResponse>?                                   CustomAdjustTimeScaleResponseParser                      { get; set; }
+        public CustomJObjectParserDelegate<AddSignerRoleRequest>?                                      CustomAddSignerRoleRequestParser                             { get; set; }
+        public CustomJObjectParserDelegate<AddSignerRoleResponse>?                                     CustomAddSignerRoleResponseParser                            { get; set; }
+        public CustomJObjectParserDelegate<UpdateSignerRoleRequest>?                                   CustomUpdateSignerRoleRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<UpdateSignerRoleResponse>?                                  CustomUpdateSignerRoleResponseParser                         { get; set; }
+        public CustomJObjectParserDelegate<DeleteSignerRoleRequest>?                                   CustomDeleteSignerRoleRequestParser                          { get; set; }
+        public CustomJObjectParserDelegate<DeleteSignerRoleResponse>?                                  CustomDeleteSignerRoleResponseParser                         { get; set; }
+        public CustomJObjectParserDelegate<GetSignerRolesRequest>?                                     CustomGetSignerRolesRequestParser                            { get; set; }
+        public CustomJObjectParserDelegate<GetSignerRolesResponse>?                                    CustomGetSignerRolesResponseParser                           { get; set; }
+        public CustomJObjectParserDelegate<SetSignaturePolicyRequest>?                                 CustomSetSignaturePolicyRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<SetSignaturePolicyResponse>?                                CustomSetSignaturePolicyResponseParser                       { get; set; }
+        public CustomJObjectParserDelegate<GetSignaturePolicyRequest>?                                 CustomGetSignaturePolicyRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<GetSignaturePolicyResponse>?                                CustomGetSignaturePolicyResponseParser                       { get; set; }
         public CustomJObjectParserDelegate<GetExecutingEnvironmentRequest>?                            CustomGetExecutingEnvironmentRequestParser               { get; set; }
         public CustomJObjectParserDelegate<GetExecutingEnvironmentResponse>?                           CustomGetExecutingEnvironmentResponseParser              { get; set; }
         public CustomJObjectParserDelegate<QueryDNSRequest>?                                           CustomQueryDNSRequestParser                              { get; set; }

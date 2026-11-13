@@ -607,6 +607,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             // Whatever the signature policy finds wrong with a request, the central system is told.
             OCPP.SignaturePolicy.OnPolicyViolation += TellOfPolicyViolation;
 
+            // And of every change of who may sign as what, also of one made at the charge point.
+            OnSignerRolesChanged                   += TellOfRoleTableChange;
+
             if (ChargeBoxId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ChargeBoxId),        "The given charge box identification must not be null or empty!");
 

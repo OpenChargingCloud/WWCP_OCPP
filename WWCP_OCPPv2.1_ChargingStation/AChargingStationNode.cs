@@ -707,6 +707,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             // Whatever the signature policy finds wrong with a request, the CSMS is told.
             OCPP.SignaturePolicy.OnPolicyViolation += TellOfPolicyViolation;
 
+            // And of every change of who may sign as what, also of one made at the station.
+            OnSignerRolesChanged                   += TellOfRoleTableChange;
+
             if (VendorName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(VendorName),  "The given vendor name must not be null or empty!");
 

@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var setSignaturePolicyRequests = new ConcurrentList<AddSignaturePolicyRequest>();
+                var setSignaturePolicyRequests = new ConcurrentList<SetSignaturePolicyRequest>();
 
                 ////testCSMS01.OnAddSignaturePolicyRequest += (timestamp, sender, connection, setSignaturePolicyRequest) => {
                 ////    setSignaturePolicyRequests.TryAdd(setSignaturePolicyRequest);
