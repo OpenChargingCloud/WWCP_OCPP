@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #region UserRole      [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("signaturePolicy",
+                if (!JSON.ParseMandatoryJSON("userRole",
                                              "user role",
                                              WWCP.UserRole.TryParse,
                                              out UserRole? UserRole,
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             var json = JSONObject.Create(
 
-                                 new JProperty("signaturePolicy",   UserRole.ToJSON()),
+                                 new JProperty("userRole",   UserRole.ToJSON()),
 
                            Signatures.Any()
                                ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -370,8 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     return false;
                 }
 
-                // The key of the user role is "signaturePolicy", as within the JSON object.
-                if (!CBOR.ParseMandatory("signaturePolicy",
+                if (!CBOR.ParseMandatory("userRole",
                                          "user role",
                                          CBORExtensions.TryParseUserRole,
                                          out UserRole? UserRole,
@@ -448,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         {
 
             var cbor = OCPPCBORExtensions.Map(
-                           ("signaturePolicy",           UserRole.ToCBOR()),
+                           ("userRole",           UserRole.ToCBOR()),
                            ("signatures",                OCPPCBORExtensions.Array(Signatures, s => s.ToCBOR())),
                            ("customData",                CustomData?.ToCBOR())
                        );

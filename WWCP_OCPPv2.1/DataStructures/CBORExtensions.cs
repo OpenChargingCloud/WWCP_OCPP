@@ -43,8 +43,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// its values as what they are.
         /// </summary>
         /// <remarks>
-        /// Its signing and verification rules are not written, as its JSON object
-        /// does not have them either.
+        /// Its signing and verification rules say the public keys of their key
+        /// pairs alone, as its JSON object does.
         /// </remarks>
         /// <param name="SignaturePolicy">A signature policy.</param>
         public static CBORValue ToCBOR(this SignaturePolicy SignaturePolicy)
@@ -54,6 +54,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    ("priority",    CBORValue.FromUInt64(SignaturePolicy.Priority)),
                    ("notBefore",   SignaturePolicy.NotBefore.ToCBOR()),
                    ("notAfter",    SignaturePolicy.NotAfter?.ToCBOR()),
+                   ("signingRules",       OCPPCBORExtensions.Array(SignaturePolicy.SignaturePolicyEntries.
+                                                                       ToArray().
+                                                                       OrderBy(rule => rule.Priority).
+                                                                       ThenBy (rule => rule.Context.ToString(), StringComparer.Ordinal),
+                                                                   rule => rule.ToCBOR())),
+                   ("verificationRules",  OCPPCBORExtensions.Array(SignaturePolicy.VerificationPolicyEntries.
+                                                                       ToArray().
+                                                                       OrderBy(rule => rule.Priority).
+                                                                       ThenBy (rule => rule.Context.ToString(), StringComparer.Ordinal),
+                                                                   rule => rule.ToCBOR())),
                    ("signatures",  OCPPCBORExtensions.Array(SignaturePolicy.Signatures, s => s.ToCBOR())),
                    ("customData",  SignaturePolicy.CustomData?.ToCBOR())
                );
@@ -127,6 +137,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (ErrorResponse is not null)
                     return false;
 
+                CBOR.ParseOptionalList<SigningRule>("signingRules",
+                                                    "signing rules",
+                                                    TryParseSigningRule,
+                                                    out var SigningRules,
+                                                    out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                CBOR.ParseOptionalList<VerificationRule>("verificationRules",
+                                                         "verification rules",
+                                                         TryParseVerificationRule,
+                                                         out var VerificationRules,
+                                                         out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
                 CBOR.ParseOptionalList<Signature>("signatures",
                                                "cryptographic signatures",
                                                OCPPCBORExtensions.TryParseSignature,
@@ -151,10 +179,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       (Byte) PriorityNumber,
                                       NotBefore,
                                       NotAfter,
-                                      null,
+                                      SigningRules,
                                       null,  // DefaultSigningAction
                                       null,  // DefaultSigningKeyPair
-                                      null,
+                                      VerificationRules,
                                       null,  // DefaultVerificationAction
                                       null,  // DefaultVerificationKeyPair
                                       null,
@@ -178,6 +206,352 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Key pairs: ToPublicCBOR(KeyPair), TryParseKeyPair(CBOR, out KeyPair, out ErrorResponse)
+
+        private delegate Boolean TryParseText<T>(String Text, out T Value);
+
+        /// <summary>
+        /// An optional text of a map, read as what it names.
+        /// </summary>
+        private static Boolean TryOptional<T>(CBORValue                         CBOR,
+                                              String                            Key,
+                                              String                            Description,
+                                              TryParseText<T>                   Parser,
+                                              out T?                            Value,
+                                              out String?                       ErrorResponse)
+
+            where T : struct
+
+        {
+
+            Value = null;
+
+            if (CBOR.ParseOptionalText(Key, Description, out var text, out ErrorResponse))
+            {
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!Parser(text!, out var parsed))
+                {
+                    ErrorResponse = $"Invalid {Description} '{text}'!";
+                    return false;
+                }
+
+                Value = parsed;
+
+            }
+
+            return ErrorResponse is null;
+
+        }
+
+
+        /// <summary>
+        /// The given key pair as CBOR without its private key - what a key pair
+        /// says of itself to anybody else: the keys of its public JSON object,
+        /// and its public key as the bytes it is.
+        /// </summary>
+        /// <param name="KeyPair">A key pair.</param>
+        public static CBORValue ToPublicCBOR(this KeyPair KeyPair)
+
+            => OCPPCBORExtensions.Map(
+                   ("public",         CBORValue.FromBytes(KeyPair.PublicKeyBytes)),
+                   ("algorithm",      KeyPair.Algorithm     != CryptoAlgorithm.    Secp256r1 ? (CBORValue?) CBORValue.FromText(KeyPair.Algorithm.    ToString()) : null),
+                   ("serialization",  KeyPair.Serialization != CryptoSerialization.RAW       ? (CBORValue?) CBORValue.FromText(KeyPair.Serialization.ToString()) : null),
+                   ("encoding",       KeyPair.Encoding      != CryptoEncoding.     BASE64    ? (CBORValue?) CBORValue.FromText(KeyPair.Encoding.     ToString()) : null),
+                   ("customData",     KeyPair.CustomData?.ToCBOR())
+               );
+
+
+        /// <summary>
+        /// Try to read the given CBOR value as a key pair: its public key, and
+        /// its private key should somebody have sent it.
+        /// </summary>
+        /// <param name="CBOR">A CBOR value.</param>
+        /// <param name="KeyPair">The key pair.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseKeyPair(CBORValue                             CBOR,
+                                              [NotNullWhen(true)]  out ECCKeyPair?  KeyPair,
+                                              [NotNullWhen(false)] out String?      ErrorResponse)
+        {
+
+            KeyPair = null;
+
+            try
+            {
+
+                if (CBOR.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = "The given CBOR representation of a key pair is not a map!";
+                    return false;
+                }
+
+                if (!CBOR.ParseMandatoryBytes("public", "public key", out var Public, out ErrorResponse))
+                    return false;
+
+                CBOR.ParseOptionalBytes("private", "private key", out var Private, out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                if (!TryOptional<CryptoAlgorithm>    (CBOR, "algorithm",     "crypto algorithm",     CryptoAlgorithm.    TryParse, out var Algorithm,     out ErrorResponse) ||
+                    !TryOptional<CryptoSerialization>(CBOR, "serialization", "crypto serialization", CryptoSerialization.TryParse, out var Serialization, out ErrorResponse) ||
+                    !TryOptional<CryptoEncoding>     (CBOR, "encoding",      "crypto encoding",      CryptoEncoding.     TryParse, out var Encoding,      out ErrorResponse))
+                {
+                    ErrorResponse ??= "The given CBOR representation of a key pair is invalid!";
+                    return false;
+                }
+
+                CBOR.ParseOptional("customData",
+                                   "custom data",
+                                   OCPPCBORExtensions.TryParseCustomData,
+                                   out CustomData? CustomData,
+                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                KeyPair = new ECCKeyPair(
+                              Public,
+                              Private is { Length: > 0 } ? Private : null,
+                              Algorithm,
+                              Serialization,
+                              Encoding,
+                              CustomData
+                          );
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                KeyPair        = null;
+                ErrorResponse  = "The given CBOR representation of a key pair is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region Rules: ToCBOR(SigningRule), TryParseSigningRule(...), ToCBOR(VerificationRule), TryParseVerificationRule(...)
+
+        /// <summary>
+        /// The given signing rule as CBOR: the keys of its JSON object - the
+        /// message it is for, and the public key of its key pair.
+        /// </summary>
+        /// <param name="SigningRule">A signing rule.</param>
+        public static CBORValue ToCBOR(this SigningRule SigningRule)
+
+            => OCPPCBORExtensions.Map(
+                   ("context",     CBORValue.FromText  (SigningRule.Context.ToString())),
+                   ("priority",    CBORValue.FromUInt64(SigningRule.Priority)),
+                   ("action",      CBORValue.FromText  (SigningRule.Action.AsText())),
+                   ("keyPair",     SigningRule.KeyPair?.   ToPublicCBOR()),
+                   ("customData",  SigningRule.CustomData?.ToCBOR())
+               );
+
+
+        /// <summary>
+        /// The given verification rule as CBOR: the keys of its JSON object - the
+        /// message it is for, and the public key of its key pair.
+        /// </summary>
+        /// <param name="VerificationRule">A verification rule.</param>
+        public static CBORValue ToCBOR(this VerificationRule VerificationRule)
+
+            => OCPPCBORExtensions.Map(
+                   ("context",            CBORValue.FromText  (VerificationRule.Context.ToString())),
+                   ("priority",           CBORValue.FromUInt64(VerificationRule.Priority)),
+                   ("action",             CBORValue.FromText  (VerificationRule.Action.AsText())),
+                   ("keyPair",            VerificationRule.KeyPair?.ToPublicCBOR()),
+                   ("withoutTimeWindow",  VerificationRule.WithoutTimeWindow ? (CBORValue?) CBORValue.True : null),
+                   ("customData",         VerificationRule.CustomData?.ToCBOR())
+               );
+
+
+        /// <summary>
+        /// What both kinds of rules have: the message they are for, their
+        /// priority, the text of their action, their key pair and custom data.
+        /// </summary>
+        private static Boolean TryParseRule(CBORValue        CBOR,
+                                            String           Kind,
+                                            JSONLDContext    DefaultContext,
+                                            out JSONLDContext  Context,
+                                            out UInt32       Priority,
+                                            out String       ActionText,
+                                            out ECCKeyPair?  KeyPair,
+                                            out CustomData?  CustomData,
+                                            out String?      ErrorResponse)
+        {
+
+            Context     = DefaultContext;
+            Priority    = 0;
+            ActionText  = "";
+            KeyPair     = null;
+            CustomData  = null;
+
+            if (CBOR.Kind != CBORValueKind.Map)
+            {
+                ErrorResponse = $"The given CBOR representation of a {Kind} rule is not a map!";
+                return false;
+            }
+
+            if (!TryOptional<JSONLDContext>(CBOR, "context", $"context of the {Kind} rule", JSONLDContext.TryParse, out var context, out ErrorResponse))
+            {
+                ErrorResponse ??= $"The context of the {Kind} rule is invalid!";
+                return false;
+            }
+
+            if (context.HasValue)
+                Context = context.Value;
+
+            if (!CBOR.ParseMandatoryUInt64("priority", $"{Kind} rule priority", out var priority, out ErrorResponse))
+                return false;
+
+            if (priority > UInt32.MaxValue)
+            {
+                ErrorResponse = $"Invalid {Kind} rule priority '{priority}'!";
+                return false;
+            }
+
+            Priority = (UInt32) priority;
+
+            if (!CBOR.ParseMandatoryText("action", $"{Kind} rule action", out var actionText, out ErrorResponse))
+                return false;
+
+            ActionText = actionText ?? "";
+
+            CBOR.ParseOptional("keyPair",
+                               "cryptographic key pair",
+                               TryParseKeyPair,
+                               out KeyPair,
+                               out ErrorResponse);
+
+            if (ErrorResponse is not null)
+                return false;
+
+            CBOR.ParseOptional("customData",
+                               "custom data",
+                               OCPPCBORExtensions.TryParseCustomData,
+                               out CustomData,
+                               out ErrorResponse);
+
+            return ErrorResponse is null;
+
+        }
+
+
+        /// <summary>
+        /// Try to read the given CBOR value as a signing rule.
+        /// </summary>
+        /// <param name="CBOR">A CBOR value.</param>
+        /// <param name="SigningRule">The signing rule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseSigningRule(CBORValue                              CBOR,
+                                                  [NotNullWhen(true)]  out SigningRule?  SigningRule,
+                                                  [NotNullWhen(false)] out String?       ErrorResponse)
+        {
+
+            SigningRule = null;
+
+            try
+            {
+
+                if (!TryParseRule(CBOR, "signing", WWCP.SigningRule.DefaultJSONLDContext,
+                                  out var context, out var priority, out var actionText, out var keyPair, out var customData, out ErrorResponse))
+                {
+                    ErrorResponse ??= "The given CBOR representation of a signing rule is invalid!";
+                    return false;
+                }
+
+                if (!SigningRuleActionsExtensions.TryParse(actionText, out var action))
+                {
+                    ErrorResponse = $"Invalid signing rule action '{actionText}'!";
+                    return false;
+                }
+
+                SigningRule = new SigningRule(
+                                  context,
+                                  priority,
+                                  action,
+                                  keyPair,
+                                  CustomData: customData
+                              );
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SigningRule    = null;
+                ErrorResponse  = "The given CBOR representation of a signing rule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Try to read the given CBOR value as a verification rule.
+        /// </summary>
+        /// <param name="CBOR">A CBOR value.</param>
+        /// <param name="VerificationRule">The verification rule.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseVerificationRule(CBORValue                                   CBOR,
+                                                       [NotNullWhen(true)]  out VerificationRule?  VerificationRule,
+                                                       [NotNullWhen(false)] out String?            ErrorResponse)
+        {
+
+            VerificationRule = null;
+
+            try
+            {
+
+                if (!TryParseRule(CBOR, "verification", WWCP.VerificationRule.DefaultJSONLDContext,
+                                  out var context, out var priority, out var actionText, out var keyPair, out var customData, out ErrorResponse))
+                {
+                    ErrorResponse ??= "The given CBOR representation of a verification rule is invalid!";
+                    return false;
+                }
+
+                if (!VerificationRuleActionsExtensions.TryParse(actionText, out var action))
+                {
+                    ErrorResponse = $"Invalid verification rule action '{actionText}'!";
+                    return false;
+                }
+
+                CBOR.ParseOptionalBoolean("withoutTimeWindow", "without time window", out var withoutTimeWindow, out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
+                VerificationRule = new VerificationRule(
+                                       context,
+                                       priority,
+                                       action,
+                                       keyPair,
+                                       withoutTimeWindow ?? false,
+                                       customData
+                                   );
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                VerificationRule  = null;
+                ErrorResponse     = "The given CBOR representation of a verification rule is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
         #region User roles: ToCBOR(UserRole), TryParseUserRole(CBOR, out UserRole, out ErrorResponse)
 
         /// <summary>
@@ -185,25 +559,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// values as what they are.
         /// </summary>
         /// <remarks>
-        /// The JSON object of a user role has its custom data only - neither
-        /// its identification, nor its description or key pairs - and so has
-        /// its CBOR map: what is written is not read back, as with JSON.
+        /// Its key pairs say their public keys alone, as its JSON object does.
         /// </remarks>
         /// <param name="UserRole">A user role.</param>
         public static CBORValue ToCBOR(this UserRole UserRole)
 
             => OCPPCBORExtensions.Map(
-                   ("customData",  UserRole.CustomData?.ToCBOR())
+                   ("id",           CBORValue.FromText(UserRole.Id.ToString())),
+                   ("description",  UserRole.Description.IsNotNullOrEmpty()
+                                        ? (CBORValue?) UserRole.Description.ToCBOR()
+                                        : null),
+                   ("keyPairs",     OCPPCBORExtensions.Array(UserRole.KeyPairs, keyPair => keyPair.ToPublicCBOR())),
+                   ("customData",   UserRole.CustomData?.ToCBOR())
                );
 
 
         /// <summary>
         /// Try to read the given CBOR value as a user role.
         /// </summary>
-        /// <remarks>
-        /// Its key pairs are not read: they have no CBOR representation, and
-        /// the JSON object of a user role never has them.
-        /// </remarks>
         /// <param name="CBOR">A CBOR value.</param>
         /// <param name="UserRole">The user role.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -246,6 +619,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (ErrorResponse is not null)
                     return false;
 
+                CBOR.ParseOptionalList<ECCKeyPair>("keyPairs",
+                                                   "cryptographic key pairs",
+                                                   TryParseKeyPair,
+                                                   out var KeyPairs,
+                                                   out ErrorResponse);
+
+                if (ErrorResponse is not null)
+                    return false;
+
                 CBOR.ParseOptional("customData",
                                    "custom data",
                                    OCPPCBORExtensions.TryParseCustomData,
@@ -259,7 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 UserRole = new UserRole(
                                Id,
                                Description,
-                               null,
+                               KeyPairs,
                                CustomData
                            );
 

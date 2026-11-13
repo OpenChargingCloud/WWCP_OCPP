@@ -134,9 +134,15 @@ namespace cloud.charging.open.protocols.OCPP
         #region Timestamps: ToCBOR(Timestamp), TryParseTimestamp(CBOR, out Timestamp, out ErrorResponse)
 
         /// <summary>
-        /// The given timestamp as tag 1: epoch seconds, as an integer for a whole
-        /// second and as a float otherwise.
+        /// The given timestamp as tag 1, epoch seconds, and never as a float: an
+        /// integer for a whole second, and a decimal fraction (tag 4) otherwise,
+        /// which says every digit of it.
         /// </summary>
+        /// <remarks>
+        /// RFC 8949 has an integer or a float under tag 1. A float is no exact
+        /// number, and no writer here writes one; the decimal fraction is what
+        /// Styx reads under tag 1 when it turns CBOR into JSON.
+        /// </remarks>
         /// <param name="Timestamp">A timestamp.</param>
         public static CBORValue ToCBOR(this DateTimeOffset Timestamp)
         {
@@ -146,16 +152,18 @@ namespace cloud.charging.open.protocols.OCPP
             return CBORValue.Tagged(
                        CBORTag.EpochDateTime,
                        ticks % TimeSpan.TicksPerSecond == 0
-                           ? CBORValue.FromInt64 (ticks / TimeSpan.TicksPerSecond)
-                           : CBORValue.FromDouble(ticks / (Double) TimeSpan.TicksPerSecond)
+                           ? CBORValue.FromInt64  (ticks / TimeSpan.TicksPerSecond)
+                           : CBORValue.FromDecimal(ticks / (Decimal) TimeSpan.TicksPerSecond)
                    );
 
         }
 
 
         /// <summary>
-        /// Try to read the given CBOR value as a timestamp: tag 1 (or 0), to the
-        /// microsecond - which is what a float of epoch seconds holds exactly.
+        /// Try to read the given CBOR value as a timestamp: tag 1 over an integer
+        /// or a decimal fraction, as written here, or what else Styx reads as a
+        /// point in time - tag 0, and the float of epoch seconds another sender
+        /// may write, which is read to the microsecond: what it holds exactly.
         /// </summary>
         /// <param name="CBOR">A CBOR value.</param>
         /// <param name="Timestamp">The timestamp.</param>
@@ -165,13 +173,52 @@ namespace cloud.charging.open.protocols.OCPP
                                                 [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
+            var content = CBOR.Kind == CBORValueKind.Tagged
+                              ? CBOR.UntaggedValue
+                              : CBOR;
+
+            #region Epoch seconds as a decimal fraction
+
+            if (CBOR.   Kind == CBORValueKind.Tagged   &&
+                CBOR.   HasTag(CBORTag.EpochDateTime)  &&
+                content.Kind == CBORValueKind.Tagged   &&
+                content.HasTag(CBORTag.DecimalFraction))
+            {
+
+                Timestamp = default;
+
+                if (!content.TryGetDecimal(out var seconds))
+                {
+                    ErrorResponse = "The epoch seconds of the timestamp are not a decimal fraction!";
+                    return false;
+                }
+
+                try
+                {
+                    Timestamp      = DateTimeOffset.UnixEpoch.AddTicks((Int64) Math.Round(seconds * TimeSpan.TicksPerSecond, MidpointRounding.AwayFromZero));
+                    ErrorResponse  = null;
+                    return true;
+                }
+                catch (Exception e) when (e is OverflowException || e is ArgumentOutOfRangeException)
+                {
+                    ErrorResponse = "The epoch-based timestamp is out of range!";
+                    return false;
+                }
+
+            }
+
+            #endregion
+
             var map = new CBORMap { { CBORValue.FromText("t"), CBOR } };
 
             if (!((CBORValue) map).ParseMandatoryTimestamp("t", "timestamp", out Timestamp, out ErrorResponse))
                 return false;
 
-            var microseconds = (Timestamp - DateTimeOffset.UnixEpoch).Ticks / 10.0;
-            Timestamp        = DateTimeOffset.UnixEpoch.AddTicks((Int64) Math.Round(microseconds, MidpointRounding.AwayFromZero) * 10);
+            if (content.Kind is CBORValueKind.HalfFloat or CBORValueKind.SingleFloat or CBORValueKind.DoubleFloat)
+            {
+                var microseconds = (Timestamp - DateTimeOffset.UnixEpoch).Ticks / 10.0;
+                Timestamp        = DateTimeOffset.UnixEpoch.AddTicks((Int64) Math.Round(microseconds, MidpointRounding.AwayFromZero) * 10);
+            }
 
             return true;
 

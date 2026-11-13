@@ -311,6 +311,145 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         }
 
+        private static readonly JSONLDContext bootNotification  = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/bootNotificationRequest");
+        private static readonly JSONLDContext heartbeat         = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v2.1/cs/heartbeatRequest");
+
+        private static SignaturePolicy PolicyWithRules(ECCKeyPair KeyPair)
+            => new (
+                   SignaturePolicy_Id.Parse("policy2"),
+                   7,
+                   notBefore,
+                   notAfter,
+                   SigningRules:       [ new SigningRule     (bootNotification, 1, SigningRuleActions.Sign, KeyPair, CustomData: Custom()) ],
+                   VerificationRules:  [ new VerificationRule(bootNotification, 2, VerificationRuleActions.VerifyAll, KeyPair, WithoutTimeWindow: true),
+                                         new VerificationRule(heartbeat,        1, VerificationRuleActions.AcceptUnverified) ],
+                   Signatures:         Signatures(),
+                   CustomData:         Custom()
+               );
+
+        /// <summary>
+        /// A signature policy writes its rules - the message each is for, and the
+        /// public key of its key pair, never the private one - in JSON and in CBOR,
+        /// and both are read back.
+        /// </summary>
+        [Test]
+        public void SignaturePolicy_WithRules_SaysTheirPublicKeysAlone_InJSONAndInCBOR()
+        {
+
+            var keyPair  = ECCKeyPair.GenerateKeys()!;
+            var policy   = PolicyWithRules(keyPair);
+            var json     = policy.ToJSON();
+            var bytes    = policy.ToCBOR().ToByteArray();
+            var cbor     = CBORValue.Parse(bytes);
+
+            Assert.That(keyPair.PrivateKeyBytes.Length,  Is.GreaterThan(0));
+
+            Assert.That(json.ToString(),                 Does.Not.Contain("private"));
+            Assert.That(json.ToString(),                 Does.Not.Contain(Convert.ToBase64String(keyPair.PrivateKeyBytes)));
+            Assert.That(json.ToString(),                 Does.Contain    (Convert.ToBase64String(keyPair.PublicKeyBytes)));
+            Assert.That(Convert.ToHexString(bytes),      Does.Not.Contain(Convert.ToHexString(keyPair.PrivateKeyBytes)));
+            Assert.That(Convert.ToHexString(bytes),      Does.Contain    (Convert.ToHexString(keyPair.PublicKeyBytes)));
+
+            Assert.That(KeysOf(cbor),                                                      Is.EqualTo(KeysOf(json)));
+            Assert.That(KeysOf(Of(cbor, "signingRules").AsArray()[0]),                     Is.EqualTo(KeysOf((JObject) json["signingRules"]![0]!)));
+            Assert.That(KeysOf(Of(Of(cbor, "signingRules").AsArray()[0], "keyPair")),      Is.EqualTo(KeysOf((JObject) json["signingRules"]![0]!["keyPair"]!)));
+            Assert.That(KeysOf(Of(cbor, "verificationRules").AsArray()[1]),                Is.EqualTo(KeysOf((JObject) json["verificationRules"]![1]!)));
+
+            Assert.That(SignaturePolicy.TryParse              (json, out var fromJSON, out var jsonErrorResponse),  Is.True, jsonErrorResponse);
+            Assert.That(CBORExtensions.TryParseSignaturePolicy(cbor, out var fromCBOR, out var cborErrorResponse),  Is.True, cborErrorResponse);
+
+            AreTheSame(fromJSON!.ToJSON(), json);
+            AreTheSame(fromCBOR!.ToJSON(), json);
+
+            foreach (var again in new[] { fromJSON, fromCBOR })
+            {
+
+                var signingRule = again.SignaturePolicyEntries.Single();
+
+                Assert.That(signingRule.Context,                    Is.EqualTo(bootNotification));
+                Assert.That(signingRule.Priority,                   Is.EqualTo(1));
+                Assert.That(signingRule.Action,                     Is.EqualTo(SigningRuleActions.Sign));
+                Assert.That(signingRule.KeyPair!.PublicKeyBytes,    Is.EqualTo(keyPair.PublicKeyBytes));
+                Assert.That(signingRule.KeyPair. PrivateKeyBytes,   Is.Empty);
+                Assert.That(signingRule.CustomData,                 Is.Not.Null);
+
+                Assert.That(again.VerificationPolicyEntries.Count(),  Is.EqualTo(2));
+
+                var verificationRule = again.VerificationPolicyEntries.Single(rule => rule.Context.Equals(bootNotification));
+
+                Assert.That(verificationRule.Action,                    Is.EqualTo(VerificationRuleActions.VerifyAll));
+                Assert.That(verificationRule.WithoutTimeWindow,         Is.True);
+                Assert.That(verificationRule.KeyPair!.PublicKeyBytes,   Is.EqualTo(keyPair.PublicKeyBytes));
+                Assert.That(verificationRule.KeyPair. PrivateKeyBytes,  Is.Empty);
+
+                Assert.That(again.VerificationPolicyEntries.Single(rule => rule.Context.Equals(heartbeat)).KeyPair,  Is.Null);
+
+            }
+
+        }
+
+        /// <summary>
+        /// A key pair is read without a private key, and one that has both has
+        /// them the right way round.
+        /// </summary>
+        [Test]
+        public void AKeyPair_IsReadWithoutItsPrivateKey_AndWithItsKeysTheRightWayRound()
+        {
+
+            var keyPair = ECCKeyPair.GenerateKeys()!;
+
+            Assert.That(keyPair.ToPublicJSON().ToString(),  Does.Not.Contain("private"));
+
+            Assert.That(ECCKeyPair.TryParse(keyPair.ToPublicJSON(), out var publicOnly, out var errorResponse1),  Is.True, errorResponse1);
+            Assert.That(publicOnly!.PublicKeyBytes,   Is.EqualTo(keyPair.PublicKeyBytes));
+            Assert.That(publicOnly. PrivateKeyBytes,  Is.Empty);
+
+            Assert.That(ECCKeyPair.TryParse(keyPair.ToJSON(), out var whole, out var errorResponse2),  Is.True, errorResponse2);
+            Assert.That(whole!.PublicKeyBytes,        Is.EqualTo(keyPair.PublicKeyBytes));
+            Assert.That(whole. PrivateKeyBytes,       Is.EqualTo(keyPair.PrivateKeyBytes));
+
+            Assert.That(CBORExtensions.TryParseKeyPair(Read(keyPair.ToPublicCBOR()), out var fromCBOR, out var errorResponse3),  Is.True, errorResponse3);
+            Assert.That(fromCBOR!.PublicKeyBytes,     Is.EqualTo(keyPair.PublicKeyBytes));
+            Assert.That(fromCBOR. PrivateKeyBytes,    Is.Empty);
+
+        }
+
+        /// <summary>
+        /// The key pairs of a user role: their public keys, in JSON and in CBOR.
+        /// </summary>
+        [Test]
+        public void AddUserRoleRequest_WithKeyPairs_SaysTheirPublicKeysAlone()
+        {
+
+            var keyPair  = ECCKeyPair.GenerateKeys()!;
+
+            var request  = new OCPPv2_1.NetworkingNode.AddUserRoleRequest(
+                               destination,
+                               new UserRole(UserRole_Id.Support, I18NString.Create(Languages.en, "The support"), [ keyPair ]),
+                               RequestId: requestId
+                           );
+
+            var json     = request.ToJSON();
+            var bytes    = request.ToCBOR().ToByteArray();
+            var cbor     = CBORValue.Parse(bytes);
+
+            Assert.That(json.ToString(),             Does.Not.Contain("private"));
+            Assert.That(Convert.ToHexString(bytes),  Does.Not.Contain(Convert.ToHexString(keyPair.PrivateKeyBytes)));
+            Assert.That(KeysOf(Of(cbor, "userRole")),  Is.EqualTo(KeysOf((JObject) json["userRole"]!)));
+
+            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParse    (json, requestId, destination, NetworkPath.Empty, out var fromJSON, out var jsonErrorResponse), Is.True, jsonErrorResponse);
+            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParseCBOR(cbor, requestId, destination, NetworkPath.Empty, out var fromCBOR, out var cborErrorResponse), Is.True, cborErrorResponse);
+
+            Assert.That(fromJSON!.UserRole.KeyPairs.Single().PublicKeyBytes,   Is.EqualTo(keyPair.PublicKeyBytes));
+            Assert.That(fromJSON. UserRole.KeyPairs.Single().PrivateKeyBytes,  Is.Empty);
+            Assert.That(fromCBOR!.UserRole.KeyPairs.Single().PublicKeyBytes,   Is.EqualTo(keyPair.PublicKeyBytes));
+            Assert.That(fromCBOR. UserRole.KeyPairs.Single().PrivateKeyBytes,  Is.Empty);
+
+            AreTheSame(fromJSON.ToJSON(), json);
+            AreTheSame(fromCBOR.ToJSON(), json);
+
+        }
+
         [Test]
         public void SignaturePolicy_WithoutItsPriority_IsRefused()
         {
@@ -402,26 +541,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                );
 
         /// <summary>
-        /// The JSON object of a user role has its custom data only, not the
-        /// identification its parser asks for: an AddUserRole request is not read
-        /// back from its JSON - and neither from its CBOR, which has the same keys.
+        /// A user role says who it is - its identification and its description -
+        /// under the key "userRole": an AddUserRole request is read back from its
+        /// JSON, and from its CBOR, which has the same keys.
         /// </summary>
         [Test]
-        public void AddUserRoleRequest_AsCBOR_HasTheKeysOfItsJSON_AndIsNotReadBackEither()
+        public void AddUserRoleRequest_AsCBOR_HasTheKeysOfItsJSON_AndIsReadBackFromBoth()
         {
 
             var request = AddUserRoleRequest();
             var json    = request.ToJSON();
             var cbor    = Read(request.ToCBOR());
 
-            Assert.That(KeysOf(cbor),                                             Is.EqualTo(KeysOf(json)));
-            Assert.That(KeysOf(Of(cbor, "signaturePolicy")),                       Is.EqualTo(KeysOf((JObject) json["signaturePolicy"]!)));
+            Assert.That(KeysOf(cbor),                    Is.EqualTo(KeysOf(json)));
+            Assert.That(KeysOf(Of(cbor, "userRole")),    Is.EqualTo(KeysOf((JObject) json["userRole"]!)));
+            Assert.That(KeysOf(Of(cbor, "userRole")),    Does.Contain("id"));
+            Assert.That(KeysOf(Of(cbor, "userRole")),    Does.Contain("description"));
 
-            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParse    (json, requestId, destination, NetworkPath.Empty, out _, out var jsonErrorResponse), Is.False);
-            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParseCBOR(cbor, requestId, destination, NetworkPath.Empty, out _, out var cborErrorResponse), Is.False);
+            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParse    (json, requestId, destination, NetworkPath.Empty, out var fromJSON, out var jsonErrorResponse), Is.True, jsonErrorResponse);
+            Assert.That(OCPPv2_1.NetworkingNode.AddUserRoleRequest.TryParseCBOR(cbor, requestId, destination, NetworkPath.Empty, out var fromCBOR, out var cborErrorResponse), Is.True, cborErrorResponse);
 
-            Assert.That(jsonErrorResponse, Is.Not.Null);
-            Assert.That(cborErrorResponse, Is.Not.Null);
+            Assert.That(fromJSON!.UserRole.Id,                         Is.EqualTo(UserRole_Id.Support));
+            Assert.That(fromJSON. UserRole.Description[Languages.en],  Is.EqualTo("The support"));
+            Assert.That(fromCBOR!.UserRole.Id,                         Is.EqualTo(UserRole_Id.Support));
+            Assert.That(fromCBOR. UserRole.Description[Languages.en],  Is.EqualTo("The support"));
+
+            AreTheSame(fromJSON.ToJSON(), json);
+            AreTheSame(fromCBOR.ToJSON(), json);
 
         }
 
@@ -430,7 +576,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         {
 
             var cbor = OCPPCBORExtensions.Map(
-                           ("signaturePolicy",  OCPPCBORExtensions.Map(
+                           ("userRole",         OCPPCBORExtensions.Map(
                                                     ("id",           CBORValue.FromText("support")),
                                                     ("description",  I18NString.Create(Languages.en, "The support").ToCBOR()),
                                                     ("customData",   Custom().ToCBOR())
@@ -521,6 +667,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
             Assert.That(again.StatusInfo?.ReasonCode, Is.EqualTo("NoError"));
             Assert.That(again.Signatures.Count,       Is.EqualTo(1));
             Assert.That(again.CustomData,             Is.Not.Null);
+
+        }
+
+        /// <summary>
+        /// The status info of the response is in its JSON, as it is in its CBOR,
+        /// and is read back from it.
+        /// </summary>
+        [Test]
+        public void NotifyWebPaymentStartedResponse_AsJSON_HasItsStatusInfo()
+        {
+
+            var response = new OCPPv2_0_1.CS.NotifyWebPaymentStartedResponse(NotifyWebPaymentStartedRequest(), DataTransferStatus.Rejected, Info(), Signatures: Signatures(), CustomData: Custom());
+            var json     = response.ToJSON();
+
+            Assert.That(json["statusInfo"]?["reasonCode"]?.Value<String>(),   Is.EqualTo("NoError"));
+            Assert.That(KeysOf(Read(response.ToCBOR())),                      Is.EqualTo(KeysOf(json)));
+
+            Assert.That(OCPPv2_0_1.CS.NotifyWebPaymentStartedResponse.TryParse(NotifyWebPaymentStartedRequest(), json, destination, NetworkPath.Empty, out var again, out var errorResponse), Is.True, errorResponse);
+            Assert.That(again!.StatusInfo?.ReasonCode,                        Is.EqualTo("NoError"));
 
         }
 

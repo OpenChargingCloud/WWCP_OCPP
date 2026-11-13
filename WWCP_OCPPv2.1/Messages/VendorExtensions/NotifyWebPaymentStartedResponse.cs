@@ -330,6 +330,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
                                  new JProperty("status",       Status.    AsText()),
 
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomCustomDataSerializer: CustomCustomDataSerializer))
+                               : null,
+
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                           CustomCustomDataSerializer))))

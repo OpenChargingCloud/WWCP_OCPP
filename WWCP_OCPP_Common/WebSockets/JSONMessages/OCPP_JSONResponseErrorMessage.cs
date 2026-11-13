@@ -498,6 +498,79 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
             try
             {
 
+                #region OCPP Overlay Network mode
+
+                // [
+                //     5,                         // MessageType: CALLRESULTERROR
+                //    DestinationId,
+                //    [ NetworkPath ],
+                //    "19223201",                 // RequestId from request
+                //    "<errorCode>",
+                //    "<errorDescription>",
+                //    {
+                //        <errorDetails>
+                //    }
+                // ]
+
+                if (JSONArray.Count            == 7                   &&
+                    JSONArray[0].Type          == JTokenType.Integer  &&
+                    JSONArray[0].Value<Byte>() == 5                   &&
+                    JSONArray[1].Type          == JTokenType.String   &&
+                    JSONArray[2].Type          == JTokenType.Array    &&
+                    JSONArray[3].Type          == JTokenType.String   &&
+                    JSONArray[4].Type          == JTokenType.String   &&
+                    JSONArray[5].Type          == JTokenType.String   &&
+                    JSONArray[6].Type          == JTokenType.Object)
+                {
+
+                    if (!NetworkingNode_Id.TryParse(JSONArray[1].Value<String>() ?? "", out var overlayDestinationId))
+                        return false;
+
+                    if (JSONArray[2] is not JArray networkPathJSONArray ||
+                        !NetworkPath.TryParse(networkPathJSONArray, out var overlayNetworkPath, out _) || overlayNetworkPath is null)
+                    {
+                        return false;
+                    }
+
+                    // As with a request error: whoever sent it is on its path.
+                    if (ImplicitSourceNodeId.HasValue                           &&
+                        ImplicitSourceNodeId.Value != NetworkingNode_Id.Zero    &&
+                        overlayNetworkPath.Length  == 0)
+                    {
+                        overlayNetworkPath = overlayNetworkPath.Append(ImplicitSourceNodeId.Value);
+                    }
+
+                    if (!Request_Id.TryParse(JSONArray[3].Value<String>() ?? "", out var overlayRequestId))
+                        return false;
+
+                    if (!ResultCode.TryParse(JSONArray[4].Value<String>() ?? "", out var overlayErrorCode))
+                        return false;
+
+                    var overlayDescription = JSONArray[5].Value<String>();
+                    if (overlayDescription is null)
+                        return false;
+
+                    if (JSONArray[6] is not JObject overlayDetails)
+                        return false;
+
+                    ErrorMessage = new OCPP_JSONResponseErrorMessage(
+                                       Timestamp.Now,
+                                       EventTracking_Id.New,
+                                       NetworkingMode.OverlayNetwork,
+                                       SourceRouting.To(overlayDestinationId),
+                                       overlayNetworkPath,
+                                       overlayRequestId,
+                                       overlayErrorCode,
+                                       overlayDescription,
+                                       overlayDetails
+                                   );
+
+                    return true;
+
+                }
+
+                #endregion
+
                 if (JSONArray.Count            != 5                   ||
                     JSONArray[0].Type          != JTokenType.Integer  ||
                     JSONArray[0].Value<Byte>() != 5                   ||

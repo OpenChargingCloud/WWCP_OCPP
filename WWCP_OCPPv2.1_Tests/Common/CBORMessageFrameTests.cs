@@ -261,14 +261,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.Common
         #region AResponseError_IsReadBackAsItWasWritten()
 
         /// <summary>
-        /// In standard mode only: the JSON response error message, whose frame this is,
-        /// writes the overlay form and reads the standard form alone.
+        /// In both modes, as every other message: the JSON response error message,
+        /// whose frame this is, reads the overlay form it writes.
         /// </summary>
-        [Test]
-        public void AResponseError_IsReadBackAsItWasWritten()
+        [TestCaseSource(nameof(Modes))]
+        public void AResponseError_IsReadBackAsItWasWritten(NetworkingMode Mode)
         {
-
-            var Mode = NetworkingMode.Standard;
 
             var written = new OCPP_CBORResponseErrorMessage(
                               Timestamp.Now,
@@ -295,6 +293,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.Common
                 Assert.That(read.ErrorDescription,        Is.EqualTo("The response could not be read!"));
                 Assert.That(JToken.DeepEquals(read.ErrorDetails, details), Is.True, read.ErrorDetails.ToString());
 
+                if (Mode == NetworkingMode.OverlayNetwork)
+                {
+                    Assert.That(cborArray.AsArray().Count,    Is.EqualTo(7));
+                    Assert.That(read.Destination.Next,        Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(read.NetworkPath.ToString(),  Is.EqualTo(NetworkPath.From(station).ToString()));
+                }
+
+            });
+
+        }
+
+        /// <summary>
+        /// The same in JSON, where it was lost: a response error in overlay mode has
+        /// seven items, and says whom it is for and which way it came.
+        /// </summary>
+        [TestCaseSource(nameof(Modes))]
+        public void AJSONResponseError_IsReadBackAsItWasWritten(NetworkingMode Mode)
+        {
+
+            var written = new OCPP_JSONResponseErrorMessage(
+                              Timestamp.Now,
+                              EventTracking_Id.New,
+                              Mode,
+                              SourceRouting.To(NetworkingNode_Id.CSMS),
+                              NetworkPath.From(station),
+                              requestId,
+                              ResultCode.ProtocolError,
+                              "The response could not be read!",
+                              details
+                          );
+
+            var jsonArray = JArray.Parse(written.ToJSON().ToString(Newtonsoft.Json.Formatting.None));
+
+            Assert.That(OCPP_JSONResponseErrorMessage.TryParse(jsonArray, out var read), Is.True, jsonArray.ToString(Newtonsoft.Json.Formatting.None));
+
+            Assert.Multiple(() => {
+
+                Assert.That(jsonArray.Count,              Is.EqualTo(Mode == NetworkingMode.OverlayNetwork ? 7 : 5));
+
+                Assert.That(read!.NetworkingMode,         Is.EqualTo(Mode));
+                Assert.That(read.RequestId,               Is.EqualTo(requestId));
+                Assert.That(read.ErrorCode,               Is.EqualTo(ResultCode.ProtocolError));
+                Assert.That(read.ErrorDescription,        Is.EqualTo("The response could not be read!"));
+                Assert.That(JToken.DeepEquals(read.ErrorDetails, details), Is.True, read.ErrorDetails.ToString());
+
+                if (Mode == NetworkingMode.OverlayNetwork)
+                {
+                    Assert.That(read.Destination.Next,        Is.EqualTo(NetworkingNode_Id.CSMS));
+                    Assert.That(read.NetworkPath.ToString(),  Is.EqualTo(NetworkPath.From(station).ToString()));
+                }
+
+            });
+
+        }
+
+        /// <summary>
+        /// A response error is no request error and no response, whatever its mode:
+        /// the parsers tell the kinds apart by their first item.
+        /// </summary>
+        [Test]
+        public void AJSONResponseErrorInOverlayMode_IsNoMessageOfAnotherKind()
+        {
+
+            var jsonArray = new OCPP_JSONResponseErrorMessage(
+                                Timestamp.Now,
+                                EventTracking_Id.New,
+                                NetworkingMode.OverlayNetwork,
+                                SourceRouting.To(NetworkingNode_Id.CSMS),
+                                NetworkPath.From(station),
+                                requestId,
+                                ResultCode.ProtocolError,
+                                "The response could not be read!",
+                                details
+                            ).ToJSON();
+
+            var requestError = new JArray(jsonArray) { [0] = 4 };
+
+            Assert.Multiple(() => {
+                Assert.That(OCPP_JSONRequestErrorMessage. TryParse(jsonArray,    out _, out _),  Is.False);
+                Assert.That(OCPP_JSONResponseErrorMessage.TryParse(requestError, out _),         Is.False);
+                Assert.That(OCPP_JSONRequestErrorMessage. TryParse(requestError, out _, out _),  Is.True);
             });
 
         }

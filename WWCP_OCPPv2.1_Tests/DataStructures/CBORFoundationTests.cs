@@ -83,6 +83,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
         }
 
+        /// <summary>
+        /// No writer here writes a float: a point in time with a fraction of a
+        /// second is tag 1 over a decimal fraction, which says every digit of it.
+        /// </summary>
+        [TestCase(      1)]   // 100 ns, the smallest step there is
+        [TestCase(   5000)]   // half a millisecond
+        [TestCase(3140000)]   // 314 ms, what a JSON timestamp has
+        [TestCase(9999999)]
+        public void Timestamp_WithAFraction_IsTag1WithADecimalFraction_AndNeverAFloat(Int32 Ticks)
+        {
+
+            var timestamp = new DateTimeOffset(2026, 11, 13, 4, 11, 59, TimeSpan.Zero).AddTicks(Ticks);
+            var cbor      = Read(timestamp.ToCBOR());
+
+            Assert.That(cbor.HasTag(CBORTag.EpochDateTime),                  Is.True);
+            Assert.That(cbor.UntaggedValue.Kind,                             Is.EqualTo(CBORValueKind.Tagged));
+            Assert.That(cbor.UntaggedValue.HasTag(CBORTag.DecimalFraction),  Is.True);
+
+            Assert.That(OCPPCBORExtensions.TryParseTimestamp(cbor, out var again, out var errorResponse), Is.True, errorResponse);
+            Assert.That(again, Is.EqualTo(timestamp), "To the tick.");
+
+            // And Styx makes the timestamp of JSON of it.
+            Assert.That(CBORJSON.ToJSON(cbor).Value<String>(), Is.EqualTo(new DateTimeOffset(timestamp.Ticks - timestamp.Ticks % TimeSpan.TicksPerMillisecond, TimeSpan.Zero).ToISO8601()));
+
+        }
+
+        /// <summary>
+        /// The float of epoch seconds RFC 8949 allows is still read, should another
+        /// sender write it: to the microsecond, which is what it holds exactly.
+        /// </summary>
+        [Test]
+        public void Timestamp_AsTheFloatOfAnotherSender_IsStillRead()
+        {
+
+            var timestamp = new DateTimeOffset(2026, 11, 13, 4, 11, 59, TimeSpan.Zero).AddTicks(1234560);
+            var cbor      = Read(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromDouble(timestamp.ToUnixTimeSeconds() + 0.123456)));
+
+            Assert.That(OCPPCBORExtensions.TryParseTimestamp(cbor, out var again, out var errorResponse), Is.True, errorResponse);
+            Assert.That(again, Is.EqualTo(timestamp));
+
+        }
+
         #endregion
 
         #region Durations
