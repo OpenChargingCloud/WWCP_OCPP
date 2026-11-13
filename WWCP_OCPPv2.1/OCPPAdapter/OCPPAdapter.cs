@@ -1008,6 +1008,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             foreach (var signaturePolicy in signaturePolicies)
                 signaturePolicy.CBORPayloadOf ??= OCPPMessagesAsCBOR.SignedPayloadOf;
 
+            // Which signatures a message gets may be a matter of the connection it leaves over.
+            foreach (var signaturePolicy in signaturePolicies)
+                signaturePolicy.FormatsOf     ??= SignatureFormatsOf;
+
         }
 
         #endregion
@@ -1168,6 +1172,115 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             return null;
 
         }
+
+        #endregion
+
+        #region Signature formats per connection
+
+        // What a connection says of the signatures of the messages that leave over it:
+        // by the node at its far end, and by the transport that reaches it - a client,
+        // which is one connection, whatever names its far end is reached under.
+        private readonly ConcurrentDictionary<NetworkingNode_Id, SignatureFormats>  signatureFormatsTo    = [];
+        private readonly System.Runtime.CompilerServices.ConditionalWeakTable<Object, Object>  signatureFormatsOver  = [];
+
+        #region SetSignatureFormats(Destination, Formats)
+
+        /// <summary>
+        /// Say which signatures the messages for the given networking node get - the JWS
+        /// over their JSON, the COSE_Sign1 over their CBOR, or both - or, with null, that
+        /// they get what the signature policy of this node says.
+        ///
+        /// It is said of the next node on the way: a message for a node behind it is
+        /// signed the way the connection it leaves over says.
+        /// </summary>
+        /// <param name="Destination">The node at the far end of a connection.</param>
+        /// <param name="Formats">Which signatures are written; null for what the policy says.</param>
+        public void SetSignatureFormats(NetworkingNode_Id  Destination,
+                                        SignatureFormats?  Formats)
+        {
+
+            if (Formats.HasValue)
+                signatureFormatsTo[Destination] = Formats.Value;
+
+            else
+                signatureFormatsTo.TryRemove(Destination, out _);
+
+        }
+
+        #endregion
+
+        #region SetSignatureFormats(Client, Formats)
+
+        /// <summary>
+        /// Say which signatures the messages that leave over the given client get, under
+        /// whatever names its far end is reached - or, with null, that they get what the
+        /// signature policy of this node says.
+        /// </summary>
+        /// <param name="Client">A client of this node: the connection to one far end.</param>
+        /// <param name="Formats">Which signatures are written; null for what the policy says.</param>
+        public void SetSignatureFormats(IWWCPClient        Client,
+                                        SignatureFormats?  Formats)
+        {
+
+            // Kept for as long as the client is: one that was let go of takes it along.
+            if (Formats.HasValue)
+                signatureFormatsOver.AddOrUpdate(Client, Formats.Value);
+
+            else
+                signatureFormatsOver.Remove(Client);
+
+        }
+
+        #endregion
+
+        #region SignatureFormatsFor(Destination)
+
+        /// <summary>
+        /// Which signatures the messages for the given networking node get, where its
+        /// connection says so - or null, where the signature policy of this node decides.
+        /// </summary>
+        /// <param name="Destination">The next node on the way of a message.</param>
+        public SignatureFormats? SignatureFormatsFor(NetworkingNode_Id Destination)
+        {
+
+            if (signatureFormatsTo.TryGetValue(Destination, out var said))
+                return said;
+
+            if (NetworkingNode.Routing.LookupNetworkingNode(Destination, out var reachability) &&
+                reachability.Transport is Object transport                                     &&
+                signatureFormatsOver.TryGetValue(transport, out var over))
+            {
+                return (SignatureFormats) over;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (private) SignatureFormatsOf(Message)
+
+        /// <summary>
+        /// What the signature policy asks for a message it is about to sign: a request
+        /// and a message without an answer leave for the next node of their destination,
+        /// a response for the node its request came from.
+        /// </summary>
+        private SignatureFormats? SignatureFormatsOf(ISignableMessage Message)
+        {
+
+            return Message switch {
+                       IRequest  request   => SignatureFormatsFor(request.Destination.Next),
+                       IResponse response  => response.RequestMessage is IRequest asked
+                                                  ? SignatureFormatsFor(asked.NetworkPath.Source)
+                                                  : null,
+                       IMessage  message   => SignatureFormatsFor(message.Destination.Next),
+                       _                   => null
+                   };
+
+        }
+
+        #endregion
 
         #endregion
 
