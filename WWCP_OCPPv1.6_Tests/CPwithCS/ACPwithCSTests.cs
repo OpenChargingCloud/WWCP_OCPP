@@ -41,6 +41,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
     public abstract class ACPwithCSTests
     {
 
+        #region Encoding
+
+        /// <summary>
+        /// How the charge points of this fixture ask to be spoken to: JSON, unless a
+        /// fixture runs its tests over CBOR.
+        /// </summary>
+        protected virtual MessageEncodings Encoding
+            => MessageEncodings.JSON;
+
+        /// <summary>
+        /// What a charge point of this fixture offers, and so what its connection agrees on.
+        /// </summary>
+        protected IEnumerable<String> Offered
+            => OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Encoding);
+
+        /// <summary>
+        /// What a connection of this fixture agrees on.
+        /// </summary>
+        protected String AgreedOn
+            => Encoding == MessageEncodings.JSON
+                   ? Version.WebSocketSubProtocolId
+                   : Version.WebSocketSubProtocolIdCBOR;
+
+        #endregion
+
         #region Data
 
         protected TestCentralSystemNode?  centralSystem;
@@ -168,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
 
 
 
-            var response1 = await chargePoint.ConnectOCPPWebSocketClient(URL.Parse($"http://127.0.0.1:{centralSystemWSS.IPPort}/{chargePoint.Id}"));
+            var response1 = await chargePoint.ConnectOCPPWebSocketClient(URL.Parse($"http://127.0.0.1:{centralSystemWSS.IPPort}/{chargePoint.Id}"), SecWebSocketProtocols: Offered);
 
             Assert.That(response1, Is.Not.Null);
 
@@ -187,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CPwithCS
                 Assert.That(response1.HTTPStatusCode,                 Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
                 Assert.That(response1.Connection,                     Is.EqualTo(ConnectionType.Upgrade));
                 Assert.That(response1.Upgrade,                        Is.EqualTo("websocket"));
-                Assert.That(response1.SecWebSocketProtocol,           Is.EqualTo("ocpp1.6"));
+                Assert.That(response1.SecWebSocketProtocol,           Is.EqualTo(AgreedOn));
 
             }
 

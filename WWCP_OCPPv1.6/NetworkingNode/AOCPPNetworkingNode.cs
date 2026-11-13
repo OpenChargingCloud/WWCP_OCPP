@@ -431,7 +431,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                                           RequireAuthentication,
                                           SecWebSocketProtocols ?? [
-                                                                       Version.WebSocketSubProtocolId
+                                                                       Version.WebSocketSubProtocolId,
+                                                                       Version.WebSocketSubProtocolIdCBOR
                                                                    ],
                                           SubprotocolSelector,
                                           DisableWebSocketPings,
@@ -518,6 +519,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
         /// </summary>
         protected override IEnumerable<String> DefaultOCPPSubprotocols
             => [ Version.WebSocketSubProtocolId ];
+
+        /// <summary>
+        /// A server takes OCPP 1.6 as CBOR as well: whoever calls chooses between the two.
+        /// </summary>
+        protected override IEnumerable<String> DefaultOCPPServerSubprotocols
+            => [ Version.WebSocketSubProtocolId, Version.WebSocketSubProtocolIdCBOR ];
 
         /// <summary>
         /// An OCPP 1.6 node sends to its central system as "CentralSystem" - as over HTTP WebSockets.

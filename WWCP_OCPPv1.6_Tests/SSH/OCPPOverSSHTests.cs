@@ -120,6 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.SSH
 
             var result = await chargePoint.ConnectOCPPClient(
                                    URL.Parse($"ssh://{Id}@127.0.0.1:{listener!.LocalEndPoint.Port}"),
+                                   Subprotocols: Offered,
                                    Ssh: new SshClientOptions {
                                             Username       = Id,
                                             VerifyHostKey  = blob => blob.AsSpan().SequenceEqual(hostKey.PublicKeyBlob),
@@ -162,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.SSH
             Assert.That(boot.Status,                                   Is.EqualTo(RegistrationStatus.Accepted));
             Assert.That(heartbeat.Result.ResultCode,                   Is.EqualTo(ResultCode.OK), heartbeat.Result.ToString());
 
-            Assert.That(sshServer!.GetConnectionsFor(chargePoint.Id).Single().Subprotocol, Is.EqualTo(Version.WebSocketSubProtocolId));
+            Assert.That(sshServer!.GetConnectionsFor(chargePoint.Id).Single().Subprotocol, Is.EqualTo(AgreedOn));
 
             Assert.That(chargePoint.Routing.LookupNetworkingNode(NetworkingNode_Id.CentralSystem, out var toCentralSystem), Is.True);
             Assert.That(toCentralSystem!.Client,                       Is.InstanceOf<OCPPSshClient>());

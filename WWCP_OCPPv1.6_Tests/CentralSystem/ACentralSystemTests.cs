@@ -39,6 +39,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
     public abstract class ACentralSystemTests
     {
 
+        #region Encoding
+
+        /// <summary>
+        /// How the charge points of this fixture ask to be spoken to: JSON, unless a
+        /// fixture runs its tests over CBOR.
+        /// </summary>
+        protected virtual MessageEncodings Encoding
+            => MessageEncodings.JSON;
+
+        /// <summary>
+        /// What a charge point of this fixture offers, and so what its connection agrees on.
+        /// </summary>
+        protected IEnumerable<String> Offered
+            => OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Encoding);
+
+        /// <summary>
+        /// What a connection of this fixture agrees on.
+        /// </summary>
+        protected String AgreedOn
+            => Encoding == MessageEncodings.JSON
+                   ? Version.WebSocketSubProtocolId
+                   : Version.WebSocketSubProtocolIdCBOR;
+
+        #endregion
+
         #region Data
 
         protected TestCentralSystemNode?  testCentralSystem01;

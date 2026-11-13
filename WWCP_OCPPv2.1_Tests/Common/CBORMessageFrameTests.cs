@@ -453,7 +453,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.Common
                 Assert.That(OCPPSubprotocols.CBOROf("ocpp2.1"),       Is.EqualTo(Version.WebSocketSubProtocolIdCBOR));
                 Assert.That(OCPPSubprotocols.CBOROf("ocpp2.1cbor"),   Is.EqualTo("ocpp2.1cbor"));
                 Assert.That(OCPPSubprotocols.CBOROf("ocpp2.0.1"),     Is.Null);
-                Assert.That(OCPPSubprotocols.CBOROf("ocpp1.6"),       Is.Null);
+                Assert.That(OCPPSubprotocols.CBOROf("ocpp1.6"),       Is.EqualTo("ocpp1.6cbor"));
+                Assert.That(OCPPSubprotocols.CBOROf("ocpp2.0.1"),     Is.Null);
 
                 Assert.That(OCPPSubprotocols.JSONOf("ocpp2.1cbor"),   Is.EqualTo(Version.WebSocketSubProtocolId));
                 Assert.That(OCPPSubprotocols.JSONOf("ocpp2.1"),       Is.EqualTo("ocpp2.1"));
@@ -478,9 +479,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.Common
                 Assert.That(OCPPSubprotocols.Offer(versions,        MessageEncodings.CBOR),  Is.EqualTo(new[] { "ocpp2.1cbor" }));
                 Assert.That(OCPPSubprotocols.Offer(versions,        MessageEncodings.Auto),  Is.EqualTo(new[] { "ocpp2.1cbor", "ocpp2.1", "ocpp2.0.1" }));
 
-                // OCPP 1.6 has no CBOR form: CBOR alone offers nothing, and nothing is connected.
-                Assert.That(OCPPSubprotocols.Offer([ "ocpp1.6" ],   MessageEncodings.CBOR),  Is.Empty);
-                Assert.That(OCPPSubprotocols.Offer([ "ocpp1.6" ],   MessageEncodings.Auto),  Is.EqualTo(new[] { "ocpp1.6" }));
+                // OCPP 1.6 has its CBOR form as OCPP 2.1 has.
+                Assert.That(OCPPSubprotocols.Offer([ "ocpp1.6" ],   MessageEncodings.CBOR),  Is.EqualTo(new[] { "ocpp1.6cbor" }));
+                Assert.That(OCPPSubprotocols.Offer([ "ocpp1.6" ],   MessageEncodings.Auto),  Is.EqualTo(new[] { "ocpp1.6cbor", "ocpp1.6" }));
+
+                // OCPP 2.0.1 has no CBOR form: CBOR alone offers nothing, and nothing is connected.
+                Assert.That(OCPPSubprotocols.Offer([ "ocpp2.0.1" ], MessageEncodings.CBOR),  Is.Empty);
+                Assert.That(OCPPSubprotocols.Offer([ "ocpp2.0.1" ], MessageEncodings.Auto),  Is.EqualTo(new[] { "ocpp2.0.1" }));
 
                 // Whoever hands in a CBOR form gets what its encoding says, not what it handed in.
                 Assert.That(OCPPSubprotocols.Offer([ "ocpp2.1cbor", "ocpp2.1" ], MessageEncodings.JSON),  Is.EqualTo(new[] { "ocpp2.1" }));

@@ -239,7 +239,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 var response1 = chargePoint1.ConnectOCPPWebSocketClient(
                                     URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargePoint1.Id),
-                                    HTTPAuthentication:  HTTPBasicAuthentication.Create(chargePoint1.Id.ToString(), "1234abcd")
+                                    HTTPAuthentication:  HTTPBasicAuthentication.Create(chargePoint1.Id.ToString(), "1234abcd"),
+                                    SecWebSocketProtocols:  Offered
                                 ).Result;
 
                 Assert.That(response1, Is.Not.Null);
@@ -259,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(response1.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
                     Assert.That(response1.Connection?.ToString().ToLower(), Is.EqualTo("upgrade"));
                     Assert.That(response1.Upgrade, Is.EqualTo("websocket"));
-                    Assert.That(response1.SecWebSocketProtocol, Is.EqualTo("ocpp1.6"));
+                    Assert.That(response1.SecWebSocketProtocol, Is.EqualTo(AgreedOn));
 
                 }
 

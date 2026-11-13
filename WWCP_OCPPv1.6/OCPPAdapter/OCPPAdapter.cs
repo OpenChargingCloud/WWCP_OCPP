@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -44,10 +45,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
     /// <summary>
     /// The OCPP Adapter.
     /// </summary>
-    public class OCPPAdapter
+    public class OCPPAdapter : IOCPPCBOREdgeHost
     {
 
         #region Data
+
+        /// <summary>
+        /// The CBOR edge of this adapter.
+        /// </summary>
+        internal                OCPPCBOREdge                                         CBOR                            { get; }
 
         //private readonly        ConcurrentDictionary<String, List<ComponentConfig>>  componentConfigs                = [];
         private readonly        ConcurrentDictionary<Request_Id, SendRequestState>   requests                        = [];
@@ -1057,6 +1063,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
             this.DefaultRequestTimeout  = DefaultRequestTimeout ?? DefaultRequestTimeoutDefault;
 
+            this.CBOR                   = new OCPPCBOREdge(
+                                              OCPPMessagesAsCBOR.Of,
+                                              this
+                                          );
+
             this.IN                     = new OCPPWebSocketAdapterIN(
                                               NetworkingNode
                                           );
@@ -1072,6 +1083,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                                           );
 
             this.signaturePolicies.Add((SignaturePolicy ?? new SignaturePolicy()).BindTo(NetworkingNode.Id, cloud.charging.open.protocols.OCPPv1_6.Version.WebSocketSubProtocolId));
+
+            // A COSE signature signs the CBOR of a message, which its class writes.
+            foreach (var signaturePolicy in signaturePolicies)
+                signaturePolicy.CBORPayloadOf ??= OCPPMessagesAsCBOR.SignedPayloadOf;
+
+            // Which signatures a message gets may be a matter of the connection it leaves over.
+            foreach (var signaturePolicy in signaturePolicies)
+                signaturePolicy.FormatsOf     ??= message => SignatureFormatsOfConnections.Of(message);
 
         }
 
@@ -1136,6 +1155,155 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #endregion
 
+        #region Signature formats per connection
+
+        private SignatureFormatsPerConnection? signatureFormats;
+
+        /// <summary>
+        /// Which signatures the messages of this node get, by the connection they leave over.
+        /// </summary>
+        private SignatureFormatsPerConnection SignatureFormatsOfConnections
+            => signatureFormats ??= new SignatureFormatsPerConnection(NetworkingNode.Routing);
+
+        /// <summary>
+        /// Say which signatures the messages for the given networking node get - the JWS
+        /// over their JSON, the COSE_Sign1 over their CBOR, or both - or, with null, that
+        /// they get what the signature policy of this node says. It is said of the next
+        /// node on the way of a message.
+        /// </summary>
+        /// <param name="Destination">The node at the far end of a connection.</param>
+        /// <param name="Formats">Which signatures are written; null for what the policy says.</param>
+        public void SetSignatureFormats(NetworkingNode_Id  Destination,
+                                        SignatureFormats?  Formats)
+
+            => SignatureFormatsOfConnections.Set(Destination, Formats);
+
+        /// <summary>
+        /// Say which signatures the messages that leave over the given client get, under
+        /// whatever names its far end is reached - or, with null, that they get what the
+        /// signature policy of this node says.
+        /// </summary>
+        /// <param name="Client">A client of this node: the connection to one far end.</param>
+        /// <param name="Formats">Which signatures are written; null for what the policy says.</param>
+        public void SetSignatureFormats(IWWCPClient        Client,
+                                        SignatureFormats?  Formats)
+
+            => SignatureFormatsOfConnections.Set(Client, Formats);
+
+        /// <summary>
+        /// Which signatures the messages for the given networking node get, where its
+        /// connection says so - or null, where the signature policy of this node decides.
+        /// </summary>
+        /// <param name="Destination">The next node on the way of a message.</param>
+        public SignatureFormats? SignatureFormatsFor(NetworkingNode_Id Destination)
+
+            => SignatureFormatsOfConnections.For(Destination);
+
+        #endregion
+
+        #region CBOR at the edge
+
+        // What a connection that agreed on a CBOR subprotocol sends and receives is
+        // translated by the CBOR edge of this adapter, which is the same for every
+        // version of OCPP (OCPPCBOREdge). These are its methods under the names this
+        // adapter always had for them.
+
+        internal void RememberCBORRequestReceived(IMessageConnection  Connection,
+                                                  Request_Id          RequestId,
+                                                  String              Action,
+                                                  Object?             Request,
+                                                  DateTimeOffset      Until,
+                                                  NetworkingNode_Id?  From   = null)
+
+            => CBOR.RememberCBORRequestReceived(Connection, RequestId, Action, Request, Until, From);
+
+        internal Boolean TryTakeCBORRequestSent(Request_Id                                          RequestId,
+                                                [NotNullWhen(true)] out OCPPCBOREdge.CBORExchange?  Exchange)
+
+            => CBOR.TryTakeCBORRequestSent(RequestId, out Exchange);
+
+        private Task<SentMessageResult> SendRequest      (IOCPPMessageTransport Transport, OCPP_JSONRequestMessage         JSONRequestMessage)
+            => CBOR.SendRequest      (Transport, JSONRequestMessage);
+
+        private Task<SentMessageResult> SendResponse     (IOCPPMessageTransport Transport, OCPP_JSONResponseMessage        JSONResponseMessage,       IMessageConnection? Over)
+            => CBOR.SendResponse     (Transport, JSONResponseMessage, Over);
+
+        private Task<SentMessageResult> SendRequestError (IOCPPMessageTransport Transport, OCPP_JSONRequestErrorMessage    JSONRequestErrorMessage,   IMessageConnection? Over)
+            => CBOR.SendRequestError (Transport, JSONRequestErrorMessage, Over);
+
+        private static Task<SentMessageResult> SendResponseError(IOCPPMessageTransport Transport, OCPP_JSONResponseErrorMessage   JSONResponseErrorMessage)
+            => OCPPCBOREdge.SendResponseError(Transport, JSONResponseErrorMessage);
+
+        private Task<SentMessageResult> SendSendMessage  (IOCPPMessageTransport Transport, OCPP_JSONSendMessage            JSONSendMessage)
+            => CBOR.SendSendMessage  (Transport, JSONSendMessage);
+
+        private Task<SentMessageResult> SendRequest      (IOCPPMessageTransport Transport, OCPP_BinaryRequestMessage       BinaryRequestMessage)
+            => CBOR.SendRequest      (Transport, BinaryRequestMessage);
+
+        private Task<SentMessageResult> SendResponse     (IOCPPMessageTransport Transport, OCPP_BinaryResponseMessage      BinaryResponseMessage,     IMessageConnection? Over)
+            => CBOR.SendResponse     (Transport, BinaryResponseMessage, Over);
+
+        private Task<SentMessageResult> SendRequestError (IOCPPMessageTransport Transport, OCPP_BinaryRequestErrorMessage  BinaryRequestErrorMessage, IMessageConnection? Over)
+            => CBOR.SendRequestError (Transport, BinaryRequestErrorMessage, Over);
+
+        private static Task<SentMessageResult> SendResponseError(IOCPPMessageTransport Transport, OCPP_BinaryResponseErrorMessage BinaryResponseErrorMessage)
+            => OCPPCBOREdge.SendResponseError(Transport, BinaryResponseErrorMessage);
+
+        private static Task<SentMessageResult> SendSendMessage  (IOCPPMessageTransport Transport, OCPP_BinarySendMessage          BinarySendMessage)
+            => OCPPCBOREdge.SendSendMessage  (Transport, BinarySendMessage);
+
+        #region What the CBOR edge needs of this adapter (IOCPPCBOREdgeHost)
+
+        NetworkingNode_Id IOCPPCBOREdgeHost.Id
+            => NetworkingNode.Id;
+
+        Task IOCPPCBOREdgeHost.ProcessJSONMessage(DateTimeOffset      MessageTimestamp,
+                                                  IMessageConnection  Connection,
+                                                  NetworkingNode_Id?  SourceNodeId,
+                                                  JArray              JSONMessage,
+                                                  EventTracking_Id    EventTrackingId,
+                                                  CancellationToken   CancellationToken)
+
+            => IN.ProcessJSONMessage(MessageTimestamp, Connection, SourceNodeId, JSONMessage, EventTrackingId, CancellationToken);
+
+        Task IOCPPCBOREdgeHost.ProcessBinaryFormatMessage(DateTimeOffset      MessageTimestamp,
+                                                          IMessageConnection  Connection,
+                                                          NetworkingNode_Id?  SourceNodeId,
+                                                          Byte[]              BinaryMessage,
+                                                          EventTracking_Id    EventTrackingId,
+                                                          CancellationToken   CancellationToken)
+
+            => IN.ProcessBinaryFormatMessage(MessageTimestamp, Connection, SourceNodeId, BinaryMessage, EventTrackingId, CancellationToken);
+
+        Task<SentMessageResult> IOCPPCBOREdgeHost.SendCBORRequestError(OCPP_CBORRequestErrorMessage  CBORRequestErrorMessage,
+                                                                      IMessageConnection?           Over)
+
+            => SendCBORRequestError(CBORRequestErrorMessage, Over);
+
+        Boolean IOCPPCBOREdgeHost.ReceiveJSONRequestError(OCPP_JSONRequestErrorMessage  JSONRequestErrorMessage,
+                                                          IMessageConnection            Connection)
+
+            => ReceiveJSONRequestError(JSONRequestErrorMessage, Connection);
+
+        Task IOCPPCBOREdgeHost.TellTheAnswererItCannotBeRead(IMessageConnection?  Connection,
+                                                             NetworkPath          ResponseNetworkPath,
+                                                             Request_Id           RequestId,
+                                                             EventTracking_Id     EventTrackingId,
+                                                             Boolean              Binary,
+                                                             String?              Why,
+                                                             CancellationToken    CancellationToken)
+
+            => IN.TellTheAnswererItCannotBeRead(Connection, ResponseNetworkPath, RequestId, EventTrackingId, Binary, Why, CancellationToken);
+
+        Task IOCPPCBOREdgeHost.HandleErrors(String     Caller,
+                                            Exception  ExceptionOccurred)
+
+            => IN.HandleErrors(Caller, ExceptionOccurred);
+
+        #endregion
+
+        #endregion
+
         #region (internal) SendJSONRequest          (JSONRequestMessage, SentMessageResultDelegate = null)
 
         internal async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage     JSONRequestMessage,
@@ -1148,7 +1316,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendJSONRequest(JSONRequestMessage);
+                    sentMessageResult = await SendRequest(ocppTransport, JSONRequestMessage);
 
             }
 
@@ -1328,7 +1496,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (TransportFor(JSONResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
-                sentMessageResult = await ocppTransport.SendJSONResponse(JSONResponseMessage);
+                sentMessageResult = await SendResponse(ocppTransport, JSONResponseMessage, Over);
 
             return sentMessageResult;
 
@@ -1345,7 +1513,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (TransportFor(JSONRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
-                sentMessageResult = await ocppTransport.SendJSONRequestError(JSONRequestErrorMessage);
+                sentMessageResult = await SendRequestError(ocppTransport, JSONRequestErrorMessage, Over);
 
             return sentMessageResult;
 
@@ -1364,7 +1532,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendJSONResponseError(JSONResponseErrorMessage);
+                    sentMessageResult = await SendResponseError(ocppTransport, JSONResponseErrorMessage);
 
             }
 
@@ -1389,11 +1557,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
                 foreach (var webSocketClient in NetworkingNode.Routing.AllWebSocketClients)
                     if (webSocketClient is OCPPWebSocketClient ocppWebSocketClient)
-                        sentMessageResult = await ocppWebSocketClient.SendJSONSendMessage(JSONSendMessage);
+                        sentMessageResult = await SendSendMessage(ocppWebSocketClient, JSONSendMessage);
 
                 foreach (var webSocketServer in NetworkingNode.Routing.AllWebSocketServers)
                     if (webSocketServer is OCPPWebSocketServer ocppWebSocketServer)
-                        sentMessageResult = await ocppWebSocketServer.SendJSONSendMessage(JSONSendMessage);
+                        sentMessageResult = await SendSendMessage(ocppWebSocketServer, JSONSendMessage);
 
                 sentMessageResult = SentMessageResult.Broadcast();
 
@@ -1405,7 +1573,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendJSONSendMessage(JSONSendMessage);
+                    sentMessageResult = await SendSendMessage(ocppTransport, JSONSendMessage);
 
             }
 
@@ -1422,6 +1590,113 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region Send    binary messages
 
+        #region (internal) SendCBORRequest          (CBORRequestMessage)
+
+        /// <summary>
+        /// Send (and forget) the given CBOR request message along the route to its destination.
+        /// </summary>
+        /// <param name="CBORRequestMessage">A CBOR request message.</param>
+        internal async Task<SentMessageResult> SendCBORRequest(OCPP_CBORRequestMessage CBORRequestMessage)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORRequestMessage.Destination.Next, null) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORRequest(CBORRequestMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (internal) SendCBORResponse         (CBORResponseMessage,     Over = null)
+
+        /// <summary>
+        /// Send the given CBOR response message: over the client connection its request
+        /// came over, or else along the route to its destination.
+        /// </summary>
+        /// <param name="CBORResponseMessage">A CBOR response message.</param>
+        /// <param name="Over">The connection the request came over, where known.</param>
+        internal async Task<SentMessageResult> SendCBORResponse(OCPP_CBORResponseMessage  CBORResponseMessage,
+                                                                IMessageConnection?       Over   = null)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORResponse(CBORResponseMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (internal) SendCBORRequestError     (CBORRequestErrorMessage, Over = null)
+
+        /// <summary>
+        /// Send the given CBOR request error message: over the client connection its request
+        /// came over, or else along the route to its destination.
+        /// </summary>
+        /// <param name="CBORRequestErrorMessage">A CBOR request error message.</param>
+        /// <param name="Over">The connection the request came over, where known.</param>
+        internal async Task<SentMessageResult> SendCBORRequestError(OCPP_CBORRequestErrorMessage  CBORRequestErrorMessage,
+                                                                    IMessageConnection?           Over   = null)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORRequestError(CBORRequestErrorMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (internal) SendCBORResponseError    (CBORResponseErrorMessage)
+
+        /// <summary>
+        /// Send the given CBOR response error message along the route to its destination.
+        /// </summary>
+        /// <param name="CBORResponseErrorMessage">A CBOR response error message.</param>
+        internal async Task<SentMessageResult> SendCBORResponseError(OCPP_CBORResponseErrorMessage CBORResponseErrorMessage)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORResponseErrorMessage.Destination.Next, null) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORResponseError(CBORResponseErrorMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+        #region (internal) SendCBORSendMessage      (CBORSendMessage)
+
+        /// <summary>
+        /// Send (and forget) the given CBOR send message along the route to its destination.
+        /// </summary>
+        /// <param name="CBORSendMessage">A CBOR send message.</param>
+        internal async Task<SentMessageResult> SendCBORSendMessage(OCPP_CBORSendMessage CBORSendMessage)
+        {
+
+            var sentMessageResult = SentMessageResult.UnknownClient();
+
+            if (TransportFor(CBORSendMessage.Destination.Next, null) is IOCPPMessageTransport ocppTransport)
+                sentMessageResult = await ocppTransport.SendCBORSendMessage(CBORSendMessage);
+
+            return sentMessageResult;
+
+        }
+
+        #endregion
+
+
         #region (internal) SendBinaryRequest        (BinaryRequestMessage, SentMessageResultDelegate = null)
 
         internal async Task<SentMessageResult> SendBinaryRequest(OCPP_BinaryRequestMessage   BinaryRequestMessage,
@@ -1434,7 +1709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendBinaryRequest(BinaryRequestMessage);
+                    sentMessageResult = await SendRequest(ocppTransport, BinaryRequestMessage);
 
             }
 
@@ -1580,7 +1855,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (TransportFor(BinaryResponseMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
-                sentMessageResult = await ocppTransport.SendBinaryResponse(BinaryResponseMessage);
+                sentMessageResult = await SendResponse(ocppTransport, BinaryResponseMessage, Over);
 
             return sentMessageResult;
 
@@ -1597,7 +1872,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             var sentMessageResult = SentMessageResult.UnknownClient();
 
             if (TransportFor(BinaryRequestErrorMessage.Destination.Next, Over) is IOCPPMessageTransport ocppTransport)
-                sentMessageResult = await ocppTransport.SendBinaryRequestError(BinaryRequestErrorMessage);
+                sentMessageResult = await SendRequestError(ocppTransport, BinaryRequestErrorMessage, Over);
 
             return sentMessageResult;
 
@@ -1616,7 +1891,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendBinaryResponseError(BinaryResponseErrorMessage);
+                    sentMessageResult = await SendResponseError(ocppTransport, BinaryResponseErrorMessage);
 
             }
 
@@ -1638,7 +1913,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
             {
 
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await ocppTransport.SendBinarySendMessage(BinarySendMessage);
+                    sentMessageResult = await SendSendMessage(ocppTransport, BinarySendMessage);
 
             }
 

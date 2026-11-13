@@ -45,6 +45,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public const            String      WebSocketSubProtocolId   = "ocpp1.6";
 
+        /// <summary>
+        /// The HTTP WebSocket subprotocol of this OCPP version with every message as CBOR in a binary frame.
+        /// </summary>
+        public const            String      WebSocketSubProtocolIdCBOR   = "ocpp1.6cbor";
+
     }
 
 }

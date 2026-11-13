@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.OCPPv1_6.NetworkingNode;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
+using cloud.charging.open.protocols.WWCP;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -342,6 +343,97 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                        SourceRouting.To(RequestNetworkPath.Source),
                        NetworkPath.From(parentNetworkingNode.Id)
                    );
+
+        }
+
+        #endregion
+
+        #region (private) TellTheAnswererItCannotBeRead(Connection, NetworkPath, RequestId, EventTrackingId, Binary, Why, ...)
+
+        /// <summary>
+        /// Tell whoever answered a request of this node that its answer cannot be read:
+        /// a response error with FormationViolation, under the request id of the answer,
+        /// in the format the answer came in.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// "A CALLRESULTERROR is sent back on receipt of a CALLRESULT that contains errors to
+        /// notify the sender that the response could not be processed", under the id of that
+        /// CALLRESULT (OCPP 2.1 Edition 2, Part 4, 4.2.3 and 4.1.4). This node never sent one,
+        /// and whoever answered never heard that its answer was of no use.
+        /// </para>
+        /// <para>
+        /// Only over a connection that speaks OCPP 2.1. OCPP 2.0.1, which this node speaks as
+        /// well, has no CALLRESULTERROR: a system that gets a message type it does not know
+        /// ignores it at best.
+        /// </para>
+        /// </remarks>
+        /// <param name="Connection">The connection the answer came over.</param>
+        /// <param name="ResponseNetworkPath">The network path of the answer.</param>
+        /// <param name="RequestId">The request id of the answer.</param>
+        /// <param name="EventTrackingId">The event tracking identification of the request.</param>
+        /// <param name="Binary">Whether the answer was a binary one.</param>
+        /// <param name="Why">Why the answer cannot be read.</param>
+        /// <param name="CancellationToken">An optional cancellation token.</param>
+        internal async Task TellTheAnswererItCannotBeRead(IMessageConnection?  Connection,
+                                                         NetworkPath          ResponseNetworkPath,
+                                                         Request_Id           RequestId,
+                                                         EventTracking_Id     EventTrackingId,
+                                                         Boolean              Binary,
+                                                         String?              Why,
+                                                         CancellationToken    CancellationToken)
+        {
+
+            if (Connection?.Subprotocol != Version.WebSocketSubProtocolId &&
+                Connection?.Subprotocol != Version.WebSocketSubProtocolIdCBOR)
+            {
+                return;
+            }
+
+            // An empty network path leaves no idea where to.
+            if (ResponseNetworkPath.Source == NetworkingNode_Id.Zero)
+                return;
+
+            var description = $"The answer cannot be read: {(Why.IsNotNullOrEmpty() ? Why : "-")}";
+
+            try
+            {
+
+                if (Binary)
+                    await parentNetworkingNode.OCPP.SendBinaryResponseError(
+                              new OCPP_BinaryResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTrackingId,
+                                  NetworkingMode.Unknown,
+                                  SourceRouting.To(ResponseNetworkPath.Source),
+                                  NetworkPath.From(parentNetworkingNode.Id),
+                                  RequestId,
+                                  ResultCode.FormationViolation,
+                                  description,
+                                  CancellationToken: CancellationToken
+                              )
+                          );
+
+                else
+                    await parentNetworkingNode.OCPP.SendJSONResponseError(
+                              new OCPP_JSONResponseErrorMessage(
+                                  Timestamp.Now,
+                                  EventTrackingId,
+                                  NetworkingMode.Unknown,
+                                  SourceRouting.To(ResponseNetworkPath.Source),
+                                  NetworkPath.From(parentNetworkingNode.Id),
+                                  RequestId,
+                                  ResultCode.FormationViolation,
+                                  description,
+                                  CancellationToken: CancellationToken
+                              )
+                          );
+
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, nameof(OCPPWebSocketAdapterIN) + "." + nameof(TellTheAnswererItCannotBeRead));
+            }
 
         }
 
@@ -960,9 +1052,76 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #endregion
 
+        #region ProcessCBORMessage   (MessageTimestamp, WebSocketConnection, CBORMessage,   EventTrackingId, CancellationToken)
+
+        /// <summary>
+        /// Process a message that was received as CBOR: it is translated at the CBOR
+        /// edge of the adapter (OCPPCBOREdge), which hands this adapter the JSON array
+        /// the CBOR stands for - or the message of the binary format its byte string is.
+        /// </summary>
+        public Task ProcessCBORMessage(DateTimeOffset        MessageTimestamp,
+                                       IMessageConnection    WebSocketConnection,
+                                       NetworkingNode_Id?    sourceNodeId,
+                                       Byte[]                CBORMessage,
+                                       EventTracking_Id      EventTrackingId,
+                                       CancellationToken     CancellationToken)
+
+            => parentNetworkingNode.OCPP.CBOR.ProcessCBORMessage(
+                   MessageTimestamp,
+                   WebSocketConnection,
+                   sourceNodeId,
+                   CBORMessage,
+                   EventTrackingId,
+                   CancellationToken
+               );
+
+        #endregion
+
         #region ProcessBinaryMessage (MessageTimestamp, WebSocketConnection, BinaryMessage, EventTrackingId, CancellationToken)
 
-        public async Task ProcessBinaryMessage(DateTimeOffset        MessageTimestamp,
+        /// <summary>
+        /// Process a binary frame.
+        ///
+        /// A connection that agreed on a CBOR subprotocol has CBOR in its binary frames,
+        /// and nothing else: the binary format of the BinaryDataStreams extension is not
+        /// guessed at there. Its messages arrive as CBOR messages whose payload is a byte
+        /// string, and are handed on from there.
+        /// </summary>
+        public Task ProcessBinaryMessage(DateTimeOffset        MessageTimestamp,
+                                         IMessageConnection    WebSocketConnection,
+                                         NetworkingNode_Id?    sourceNodeId,
+                                         Byte[]                BinaryMessage,
+                                         EventTracking_Id      EventTrackingId,
+                                         CancellationToken     CancellationToken)
+
+            => WebSocketConnection.SpeaksCBOR()
+
+                   ? ProcessCBORMessage(
+                         MessageTimestamp,
+                         WebSocketConnection,
+                         sourceNodeId,
+                         BinaryMessage,
+                         EventTrackingId,
+                         CancellationToken
+                     )
+
+                   : ProcessBinaryFormatMessage(
+                         MessageTimestamp,
+                         WebSocketConnection,
+                         sourceNodeId,
+                         BinaryMessage,
+                         EventTrackingId,
+                         CancellationToken
+                     );
+
+        #endregion
+
+        #region (internal) ProcessBinaryFormatMessage(MessageTimestamp, WebSocketConnection, BinaryMessage, EventTrackingId, CancellationToken)
+
+        /// <summary>
+        /// Process a message of the binary format.
+        /// </summary>
+        internal async Task ProcessBinaryFormatMessage(DateTimeOffset        MessageTimestamp,
                                                IMessageConnection    WebSocketConnection,
                                                NetworkingNode_Id?    sourceNodeId,
                                                Byte[]                BinaryMessage,
@@ -1525,8 +1684,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
 
         #region (private) HandleErrors  (Caller, ExceptionOccurred)
 
-        private Task HandleErrors(String     Caller,
-                                  Exception  ExceptionOccurred)
+        internal Task HandleErrors(String     Caller,
+                                   Exception  ExceptionOccurred)
 
             => parentNetworkingNode.HandleErrors(
                    nameof(OCPPWebSocketAdapterIN),

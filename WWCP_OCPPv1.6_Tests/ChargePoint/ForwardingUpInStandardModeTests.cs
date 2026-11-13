@@ -61,6 +61,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
     public class ForwardingUpInStandardModeTests : ACentralSystemTests
     {
 
+        #region Encodings
+
+        /// <summary>
+        /// How the charge point speaks to the node that forwards.
+        /// </summary>
+        protected virtual MessageEncodings Downlink
+            => MessageEncodings.JSON;
+
+        /// <summary>
+        /// How the node that forwards speaks to the central system.
+        /// </summary>
+        protected virtual MessageEncodings Uplink
+            => MessageEncodings.JSON;
+
+        #endregion
+
         #region Data
 
         private const String            Password = "1234abcd";
@@ -97,6 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                NextHopNetworkingNodeId:  NetworkingNode_Id.CentralSystem,
                                RemoteURL:                URL.Parse($"http://127.0.0.1:{testBackendWebSockets01!.IPPort}/{forwarder.Id}"),
                                HTTPAuthentication:       HTTPBasicAuthentication.Create(forwarder.Id.ToString(), Password),
+                               SecWebSocketProtocols:    OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Uplink),
                                DisableWebSocketPings:    true,
                                NetworkingMode:           NetworkingMode.Standard
                            ).GetAwaiter().GetResult();
@@ -164,6 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                      NextHopNetworkingNodeId:  NetworkingNode_Id.CentralSystem,
                                      RemoteURL:                URL.Parse($"http://127.0.0.1:{forwarderServer.IPPort}/{chargePoint.Id}"),
                                      HTTPAuthentication:       HTTPBasicAuthentication.Create(chargePoint.Id.ToString(), Password),
+                                     SecWebSocketProtocols:    OCPPSubprotocols.Offer([ Version.WebSocketSubProtocolId ], Downlink),
                                      DisableWebSocketPings:    true
                                  );
 

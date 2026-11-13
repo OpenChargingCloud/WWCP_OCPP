@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Binary">Whether the answer was a binary one.</param>
         /// <param name="Why">Why the answer cannot be read.</param>
         /// <param name="CancellationToken">An optional cancellation token.</param>
-        private async Task TellTheAnswererItCannotBeRead(IMessageConnection?  Connection,
+        internal async Task TellTheAnswererItCannotBeRead(IMessageConnection?  Connection,
                                                          NetworkPath          ResponseNetworkPath,
                                                          Request_Id           RequestId,
                                                          EventTracking_Id     EventTrackingId,
@@ -1243,322 +1243,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #region ProcessCBORMessage   (MessageTimestamp, WebSocketConnection, CBORMessage,   EventTrackingId, CancellationToken)
 
         /// <summary>
-        /// Process a binary frame of a connection that agreed on a CBOR subprotocol.
-        ///
-        /// The frame is the CBOR array of an OCPP message. Its payload is read by the class
-        /// of the message and written as the JSON of that class, and what comes of it is
-        /// processed as if it had arrived as JSON: by the same processors, with the same
-        /// events, forwarded the same way. What is answered leaves as CBOR again, since the
-        /// connection it leaves over speaks nothing else.
+        /// Process a message that was received as CBOR: it is translated at the CBOR
+        /// edge of the adapter (OCPPCBOREdge), which hands this adapter the JSON array
+        /// the CBOR stands for - or the message of the binary format its byte string is.
         /// </summary>
-        /// <param name="MessageTimestamp">When the frame arrived.</param>
-        /// <param name="WebSocketConnection">The connection it arrived over.</param>
-        /// <param name="sourceNodeId">The networking node at the far end of that connection.</param>
-        /// <param name="CBORMessage">The bytes of the frame.</param>
-        /// <param name="EventTrackingId">An event tracking identification.</param>
-        /// <param name="CancellationToken">A cancellation token.</param>
-        public async Task ProcessCBORMessage(DateTimeOffset        MessageTimestamp,
-                                             IMessageConnection    WebSocketConnection,
-                                             NetworkingNode_Id?    sourceNodeId,
-                                             Byte[]                CBORMessage,
-                                             EventTracking_Id      EventTrackingId,
-                                             CancellationToken     CancellationToken)
-        {
+        public Task ProcessCBORMessage(DateTimeOffset        MessageTimestamp,
+                                       IMessageConnection    WebSocketConnection,
+                                       NetworkingNode_Id?    sourceNodeId,
+                                       Byte[]                CBORMessage,
+                                       EventTracking_Id      EventTrackingId,
+                                       CancellationToken     CancellationToken)
 
-            try
-            {
-
-                // Without a request identification there is nobody to tell.
-                if (!OCPP_CBORFrame.TryParse(CBORMessage, out var cborArray, out var frameError))
-                {
-                    DebugX.Log($"{nameof(OCPPWebSocketAdapterIN)}: A binary frame of a CBOR connection could not be read: {frameError}");
-                    return;
-                }
-
-                if (!OCPP_CBORFrame.TrySplit(cborArray, out var jsonMessage, out var last, out var splitError))
-                {
-                    DebugX.Log($"{nameof(OCPPWebSocketAdapterIN)}: A CBOR array that is no OCPP message was received: {splitError}");
-                    return;
-                }
-
-                JObject? payload;
-
-                #region A request
-
-                if      (OCPP_CBORRequestMessage.      TryParse(cborArray, out var cborRequestMessage,       out var requestParsingError,  MessageTimestamp, null, EventTrackingId, sourceNodeId, CancellationToken))
-                {
-
-                    // A byte string is a message of the binary format: the bytes its
-                    // class wrote, and reads again.
-                    if (cborRequestMessage.Payload.TryGetBytes(out var binaryRequest))
-                    {
-
-                        // An answer in JSON to it is carried as what that JSON says.
-                        parentNetworkingNode.OCPP.RememberCBORRequestReceived(
-                            WebSocketConnection,
-                            cborRequestMessage.RequestId,
-                            cborRequestMessage.Action,
-                            null,
-                            cborRequestMessage.RequestTimeout,
-                            sourceNodeId
-                        );
-
-                        await ProcessBinaryFormatMessage(
-                                  MessageTimestamp,
-                                  WebSocketConnection,
-                                  sourceNodeId,
-                                  new OCPP_BinaryRequestMessage(
-                                      MessageTimestamp,
-                                      EventTrackingId,
-                                      cborRequestMessage.NetworkingMode,
-                                      cborRequestMessage.Destination,
-                                      cborRequestMessage.NetworkPath,
-                                      cborRequestMessage.RequestId,
-                                      cborRequestMessage.Action,
-                                      binaryRequest,
-                                      cborRequestMessage.RequestTimeout
-                                  ).ToByteArray(),
-                                  EventTrackingId,
-                                  CancellationToken
-                              );
-
-                        return;
-
-                    }
-
-                    if (!OCPPMessagesAsCBOR.TryRequestToJSON(
-                             cborRequestMessage.Action,
-                             cborRequestMessage.Payload,
-                             cborRequestMessage.RequestId,
-                             cborRequestMessage.Destination,
-                             cborRequestMessage.NetworkPath,
-                             out payload,
-                             out var request,
-                             out var requestError
-                         ))
-                    {
-
-                        // Back to whoever asked, so that it does not wait out its timeout.
-                        await parentNetworkingNode.OCPP.SendCBORRequestError(
-                                  new OCPP_CBORRequestErrorMessage(
-                                      Timestamp.Now,
-                                      EventTracking_Id.New,
-                                      NetworkingMode.Unknown,
-                                      SourceRouting.To(cborRequestMessage.NetworkPath.Source),
-                                      NetworkPath.From(parentNetworkingNode.Id),
-                                      cborRequestMessage.RequestId,
-                                      OCPPMessagesAsCBOR.KnowsRequest(cborRequestMessage.Action)
-                                          ? ResultCode.FormationViolation
-                                          : ResultCode.NotImplemented,
-                                      requestError
-                                  ),
-                                  WebSocketConnection
-                              );
-
-                        return;
-
-                    }
-
-                    // Its response is written together with it.
-                    parentNetworkingNode.OCPP.RememberCBORRequestReceived(
-                        WebSocketConnection,
-                        cborRequestMessage.RequestId,
-                        cborRequestMessage.Action,
-                        request,
-                        cborRequestMessage.RequestTimeout,
-                        sourceNodeId
-                    );
-
-                }
-
-                #endregion
-
-                #region A response
-
-                else if (OCPP_CBORResponseMessage.     TryParse(cborArray, out var cborResponseMessage,      out var responseParsingError, sourceNodeId))
-                {
-
-                    // A byte string is a response of the binary format.
-                    if (cborResponseMessage.Payload.TryGetBytes(out var binaryResponse))
-                    {
-
-                        // The request is answered with this.
-                        parentNetworkingNode.OCPP.TryTakeCBORRequestSent(cborResponseMessage.RequestId, out _);
-
-                        await ProcessBinaryFormatMessage(
-                                  MessageTimestamp,
-                                  WebSocketConnection,
-                                  sourceNodeId,
-                                  new OCPP_BinaryResponseMessage(
-                                      MessageTimestamp,
-                                      EventTrackingId,
-                                      cborResponseMessage.NetworkingMode,
-                                      cborResponseMessage.Destination,
-                                      cborResponseMessage.NetworkPath,
-                                      cborResponseMessage.RequestId,
-                                      binaryResponse
-                                  ).ToByteArray(),
-                                  EventTrackingId,
-                                  CancellationToken
-                              );
-
-                        return;
-
-                    }
-
-                    // A response is read together with its request, and nobody but the
-                    // node that sent that request as CBOR knows which one it was.
-                    if (!parentNetworkingNode.OCPP.TryTakeCBORRequestSent(cborResponseMessage.RequestId, out var asked))
-                    {
-                        DebugX.Log($"{nameof(OCPPWebSocketAdapterIN)}: A CBOR response to the request '{cborResponseMessage.RequestId}' was received, which {parentNetworkingNode.Id} never sent as CBOR.");
-                        return;
-                    }
-
-                    if (!OCPPMessagesAsCBOR.TryResponseToJSON(
-                             asked.Action,
-                             asked.Request,
-                             cborResponseMessage.Payload,
-                             cborResponseMessage.RequestId,
-                             cborResponseMessage.Destination,
-                             cborResponseMessage.NetworkPath,
-                             out payload,
-                             out var responseError
-                         ))
-                    {
-
-                        // Whoever waits for it here learns it at once...
-                        parentNetworkingNode.OCPP.ReceiveJSONRequestError(
-                            new OCPP_JSONRequestErrorMessage(
-                                Timestamp.Now,
-                                EventTrackingId,
-                                NetworkingMode.Unknown,
-                                SourceRouting.To(parentNetworkingNode.Id),
-                                cborResponseMessage.NetworkPath,
-                                cborResponseMessage.RequestId,
-                                ResultCode.FormationViolation,
-                                $"The answer cannot be read: {responseError}"
-                            ),
-                            WebSocketConnection
-                        );
-
-                        // ...and so does whoever answered.
-                        await TellTheAnswererItCannotBeRead(
-                                  WebSocketConnection,
-                                  cborResponseMessage.NetworkPath,
-                                  cborResponseMessage.RequestId,
-                                  EventTrackingId,
-                                  Binary: false,
-                                  responseError,
-                                  CancellationToken
-                              );
-
-                        return;
-
-                    }
-
-                }
-
-                #endregion
-
-                #region A request error
-
-                else if (OCPP_CBORRequestErrorMessage. TryParse(cborArray, out var cborRequestErrorMessage,  out var requestErrorError,    sourceNodeId))
-                {
-
-                    // The request is answered with this.
-                    parentNetworkingNode.OCPP.TryTakeCBORRequestSent(cborRequestErrorMessage.RequestId, out _);
-
-                    payload = CBORJSON.ToJSON(last) as JObject ?? [];
-
-                }
-
-                #endregion
-
-                #region A response error
-
-                else if (OCPP_CBORResponseErrorMessage.TryParse(cborArray, out var cborResponseErrorMessage, out var responseErrorError,   sourceNodeId))
-                    payload = CBORJSON.ToJSON(last) as JObject ?? [];
-
-                #endregion
-
-                #region A message without an answer
-
-                else if (OCPP_CBORSendMessage.         TryParse(cborArray, out var cborSendMessage,          out var sendParsingError,     MessageTimestamp, EventTrackingId, sourceNodeId, CancellationToken))
-                {
-
-                    // A byte string is a message of the binary format.
-                    if (cborSendMessage.Payload.TryGetBytes(out var binaryMessage))
-                    {
-
-                        await ProcessBinaryFormatMessage(
-                                  MessageTimestamp,
-                                  WebSocketConnection,
-                                  sourceNodeId,
-                                  new OCPP_BinarySendMessage(
-                                      MessageTimestamp,
-                                      EventTrackingId,
-                                      cborSendMessage.NetworkingMode,
-                                      cborSendMessage.Destination,
-                                      cborSendMessage.NetworkPath,
-                                      cborSendMessage.MessageId,
-                                      cborSendMessage.Action,
-                                      binaryMessage
-                                  ).ToByteArray(),
-                                  EventTrackingId,
-                                  CancellationToken
-                              );
-
-                        return;
-
-                    }
-
-                    if (!OCPPMessagesAsCBOR.TryMessageToJSON(
-                             cborSendMessage.Action,
-                             cborSendMessage.Payload,
-                             cborSendMessage.MessageId,
-                             cborSendMessage.Destination,
-                             cborSendMessage.NetworkPath,
-                             out payload,
-                             out var messageError
-                         ))
-                    {
-                        DebugX.Log($"{nameof(OCPPWebSocketAdapterIN)}: The CBOR message '{cborSendMessage.Action}' could not be read: {messageError}");
-                        return;
-                    }
-
-                }
-
-                #endregion
-
-                else
-                {
-                    DebugX.Log($"{nameof(OCPPWebSocketAdapterIN)}: A CBOR array that is no OCPP message was received: {requestParsingError ?? responseParsingError ?? requestErrorError ?? responseErrorError ?? sendParsingError ?? cborArray.ToDiagnosticString()}");
-                    return;
-                }
-
-                // What stood in front of the payload is the JSON array already, with an empty
-                // object where the payload belongs.
-                jsonMessage[jsonMessage.Count - 1] = payload;
-
-                await ProcessJSONMessage(
-                          MessageTimestamp,
-                          WebSocketConnection,
-                          sourceNodeId,
-                          jsonMessage,
-                          EventTrackingId,
-                          CancellationToken
-                      );
-
-            }
-            catch (Exception e)
-            {
-                await HandleErrors(
-                          nameof(ProcessCBORMessage),
-                          e
-                      );
-            }
-
-        }
+            => parentNetworkingNode.OCPP.CBOR.ProcessCBORMessage(
+                   MessageTimestamp,
+                   WebSocketConnection,
+                   sourceNodeId,
+                   CBORMessage,
+                   EventTrackingId,
+                   CancellationToken
+               );
 
         #endregion
 
@@ -1608,7 +1311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// the frame of a connection that speaks that format, or the same bytes, put
         /// together from a CBOR message whose payload was a byte string.
         /// </summary>
-        private async Task ProcessBinaryFormatMessage(DateTimeOffset        MessageTimestamp,
+        internal async Task ProcessBinaryFormatMessage(DateTimeOffset        MessageTimestamp,
                                                       IMessageConnection    WebSocketConnection,
                                                       NetworkingNode_Id?    sourceNodeId,
                                                       Byte[]                BinaryMessage,
@@ -2224,8 +1927,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region (private) HandleErrors  (Caller, ExceptionOccurred)
 
-        private Task HandleErrors(String     Caller,
-                                  Exception  ExceptionOccurred)
+        internal Task HandleErrors(String     Caller,
+                                   Exception  ExceptionOccurred)
 
             => parentNetworkingNode.HandleErrors(
                    nameof(OCPPWebSocketAdapterIN),

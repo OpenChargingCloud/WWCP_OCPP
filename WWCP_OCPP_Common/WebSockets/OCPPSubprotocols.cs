@@ -67,10 +67,11 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
         public const String CBORSuffix = "cbor";
 
         /// <summary>
-        /// The subprotocols that have a CBOR form: OCPP 2.1, for now.
+        /// The subprotocols that have a CBOR form: OCPP 2.1 and OCPP 1.6.
         /// </summary>
         public static readonly IReadOnlySet<String> HaveACBORForm = new HashSet<String>(StringComparer.Ordinal) {
-                                                                        "ocpp2.1"
+                                                                        "ocpp2.1",
+                                                                        "ocpp1.6"
                                                                     };
 
         #endregion
