@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
-                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(timeReference.ToISO8601()));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(timeReference.ToUnixTimeSeconds()).ToISO8601()));
 
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.Count(), Is.EqualTo(1));
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
@@ -574,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
-                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(timeReference.ToISO8601()));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(timeReference.ToUnixTimeSeconds()).ToISO8601()));
 
                 // Verify the signature of the request
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.Count(), Is.EqualTo(1));
@@ -911,7 +911,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
-                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(timeReference.ToISO8601()));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(timeReference.ToUnixTimeSeconds()).ToISO8601()));
 
                 // Verify the signature of the request
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.Count(), Is.EqualTo(1));
@@ -1251,7 +1251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
-                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(timeReference.ToISO8601()));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(timeReference.ToUnixTimeSeconds()).ToISO8601()));
 
                 // Verify the signature of the request
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.Count(), Is.EqualTo(1));
@@ -1671,7 +1671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
-                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(timeReference.ToISO8601()));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(timeReference.ToUnixTimeSeconds()).ToISO8601()));
 
                 // Verify the signature of the request
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.Count(), Is.EqualTo(1));
@@ -1714,7 +1714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
-                Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(timeReference.ToISO8601()));
+                Assert.That(setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(timeReference.ToUnixTimeSeconds()).ToISO8601()));
 
                 // Verify the signature of the request
                 Assert.That(setDefaultChargingTariffRequests.ElementAt(1).Signatures.Count(), Is.EqualTo(1));

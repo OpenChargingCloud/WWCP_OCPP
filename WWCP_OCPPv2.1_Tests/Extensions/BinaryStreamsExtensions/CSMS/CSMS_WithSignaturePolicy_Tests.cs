@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Name, Is.EqualTo("emp1"));
                 Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Description?.FirstText(), Is.EqualTo("Just a signed charging tariff!"));
-                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(timeReference.ToISO8601()));
+                Assert.That(setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.First().Timestamp?.ToISO8601(), Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(timeReference.ToUnixTimeSeconds()).ToISO8601()));
 
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.Count(), Is.EqualTo(1));
                 Assert.That(setDefaultChargingTariffRequests.First().Signatures.First().Status, Is.EqualTo(VerificationStatus.ValidSignature));
