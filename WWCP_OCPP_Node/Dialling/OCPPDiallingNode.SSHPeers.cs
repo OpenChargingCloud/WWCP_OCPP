@@ -127,8 +127,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         protected override IEnumerable<String> SSHPeerHostsToBe
 
-            => [.. Connections.Connections.Where (entry => entry.IsSSH).
-                                           Select(entry => entry.URL.Host.ToString())];
+            // Asked while the node is still being made, by what configures
+            // its name servers: a node that has no connections yet has none
+            // over SSH.
+            => Connections is null
+                   ? []
+                   : [.. Connections.Connections.Where (entry => entry.IsSSH).
+                                                 Select(entry => entry.URL.Host.ToString())];
 
         #endregion
 
