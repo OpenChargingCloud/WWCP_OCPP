@@ -469,14 +469,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
 
             // Held on probation while the store writes the pins: the write ends
             // what the trust says it learned, before it is known whether the
-            // server is believed afterwards.
-            var onIt = Probations.Hold(Probations.OfEndpoint(EndpointId));
+            // server is believed afterwards. The connections are taken after
+            // the write, so that one made meanwhile is among them.
+            Probations.Hold(EndpointId);
 
             try
             {
 
                 if (!Endpoints.TryTakeSignedServerKeyPins(EndpointId, Pins, Version, out var learned, out var confirmed, out Error))
                     return false;
+
+                var onIt = Probations.OfEndpoint(EndpointId);
 
                 if (learned is null && held is not null)
                 {
@@ -491,7 +494,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
             }
             finally
             {
-                Probations.Release(onIt);
+                Probations.Release(EndpointId);
             }
 
         }
@@ -599,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
                                             [NotNullWhen(false)] out String?  Error)
         {
 
-            var onIt = Probations.Hold(Probations.OfEndpoint(EndpointId));
+            Probations.Hold(EndpointId);
 
             try
             {
@@ -614,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
             }
             finally
             {
-                Probations.Release(onIt);
+                Probations.Release(EndpointId);
             }
 
         }

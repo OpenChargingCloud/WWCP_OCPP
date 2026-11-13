@@ -75,10 +75,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
 
         private readonly ConcurrentDictionary<String, CancellationTokenSource>  clocks     = new ();
 
-        // Connections held on probation while what ends it is written down: the
-        // store's write ends what their trust says it learned, before anybody
-        // could say whether they are believed afterwards.
-        private readonly ConcurrentDictionary<IMessageConnection, Int32>      held       = new ();
+        // Endpoints whose connections are held on probation while what ends it is
+        // written down: the store's write ends what their trust says it learned,
+        // before anybody could say whether they are believed afterwards. Held by
+        // the endpoint, so that a connection made meanwhile is held as well.
+        private readonly Dictionary<String, Int32>                            held       = new ();
 
         #endregion
 
@@ -146,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
                                          [NotNullWhen(true)] out Probation?  Probation)
         {
 
-            if (onProbation.TryGetValue(Connection, out Probation) && (held.ContainsKey(Connection) || Probation.OnIt()))
+            if (onProbation.TryGetValue(Connection, out Probation) && (IsHeld(Probation.EndpointId) || Probation.OnIt()))
                 return true;
 
             Probation = null;
@@ -156,36 +157,38 @@ namespace cloud.charging.open.protocols.OCPP.Node.KeyPins
 
         #endregion
 
-        #region Hold(Connections) / Release(Connections)
+        #region Hold(EndpointId) / Release(EndpointId)
 
         /// <summary>
-        /// Hold the given connections on probation, whatever their trust says, until they are released,
-        /// taken off probation, or written down as not believed: around a write that ends a probation
-        /// before it is known how.
+        /// Hold every connection of the given endpoint on probation, whatever its trust says - one made
+        /// meanwhile as well - until it is released, or the connection is taken off probation or written
+        /// down as not believed: around a write that ends a probation before it is known how.
         /// </summary>
-        /// <returns>The connections held, to be released.</returns>
-        public IReadOnlyList<IMessageConnection> Hold(IReadOnlyList<IMessageConnection> Connections)
+        public void Hold(String EndpointId)
         {
             lock (held)
-                foreach (var connection in Connections)
-                    held[connection] = held.TryGetValue(connection, out var count) ? count + 1 : 1;
-            return Connections;
+                held[EndpointId] = held.TryGetValue(EndpointId, out var count) ? count + 1 : 1;
         }
 
         /// <summary>
-        /// Release the given connections held on probation.
+        /// Release the connections of the given endpoint held on probation.
         /// </summary>
-        public void Release(IEnumerable<IMessageConnection> Connections)
+        public void Release(String EndpointId)
         {
             lock (held)
-                foreach (var connection in Connections)
-                    if (held.TryGetValue(connection, out var count))
-                    {
-                        if (count <= 1)
-                            held.TryRemove(connection, out _);
-                        else
-                            held[connection] = count - 1;
-                    }
+                if (held.TryGetValue(EndpointId, out var count))
+                {
+                    if (count <= 1)
+                        held.Remove(EndpointId);
+                    else
+                        held[EndpointId] = count - 1;
+                }
+        }
+
+        private Boolean IsHeld(String EndpointId)
+        {
+            lock (held)
+                return held.ContainsKey(EndpointId);
         }
 
         #endregion

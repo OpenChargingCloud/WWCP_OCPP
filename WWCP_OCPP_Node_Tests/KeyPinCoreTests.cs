@@ -354,6 +354,40 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
 
         #endregion
 
+        #region AConnectionMadeWhileTheStoreWrites_IsHeldAsWell()
+
+        /// <summary>
+        /// A connection of the same server that goes on probation while the store writes a pin set without
+        /// the key pin learned - one made again just then - is held at the gate as well, and is not
+        /// believed afterwards.
+        /// </summary>
+        [Test]
+        public void AConnectionMadeWhileTheStoreWrites_IsHeldAsWell()
+        {
+
+            var (trust, _)  = FirstHandshake();
+            var again       = NewConnection();
+            String? gate    = "not asked";
+
+            endpoints!.AfterWrite = () => {
+                pinning!.Probations.Enter(again, new Probation("csms", new Object(), trust, () => trust.OnProbation));
+                gate = pinning.Probations.Gate(again, "Reset", null, (probation, action, payload) => KeyPinGate.Rules(probation, action, payload, "station"));
+            };
+
+            using var other  = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+            var taken        = pinning!.TryTakeSignedServerKeyPins("csms", KeyPin.FromKey(other).ToHex(), 1, "the CSMS", out var error, new TaskCompletionSource().Task);
+
+            Assert.Multiple(() => {
+                Assert.That(taken,  Is.True, error);
+                Assert.That(gate,   Is.Not.Null, "A connection made while the store wrote the pin set got through.");
+                Assert.That(pinning.Probations.Gate(again, "Reset", null, (probation, action, payload) => KeyPinGate.Rules(probation, action, payload, "station")),
+                            Does.Contain("no longer believes"), "A connection made while the store wrote the pin set is believed afterwards.");
+            });
+
+        }
+
+        #endregion
+
         #region WhileTheStoreSwitchesTrustOnFirstUseOff_TheServerMeetsTheGate()
 
         /// <summary>
