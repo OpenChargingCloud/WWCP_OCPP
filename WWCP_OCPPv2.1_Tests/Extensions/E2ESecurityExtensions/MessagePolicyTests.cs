@@ -73,6 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
                    "cpo"          => ofTheCPO,
                    "installer"    => ofInstaller,
                    "dns-admin"    => [ "dns:read", "dns:edit" ],
+                   "monitoring"   => [ "monitoring:read", "monitoring:edit" ],
                    _              => []
                };
 
@@ -476,6 +477,84 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
                 Assert.That(Accepts(station, AnUnlock(support),  out var errorResponse), Is.True, errorResponse);
                 Assert.That(Accepts(station, AnUnlock(stranger), out var byAStranger),   Is.False, "A key that holds no role released a connector!");
                 Assert.That(byAStranger, Does.Contain("unlock:run"));
+            });
+
+        }
+
+        #endregion
+
+        #region TheMonitoringOfTheStationIsARightOfItsOwn()
+
+        /// <summary>
+        /// Which monitors there are needs "monitoring:read"; taking monitors
+        /// away, the monitoring base and the monitoring level need
+        /// "monitoring:edit" (Achim, 2026-11-13).
+        /// </summary>
+        [Test]
+        public void TheMonitoringOfTheStationIsARightOfItsOwn()
+        {
+
+            var monitoring  = ECCKeyPair.GenerateKeys()!;
+            var cpo         = ECCKeyPair.GenerateKeys()!;
+            var dnsAdmin    = ECCKeyPair.GenerateKeys()!;
+            var station     = AStation(MessagePolicyModes.Enforce, [ (monitoring, "monitoring"), (cpo, "cpo"), (dnsAdmin, "dns-admin") ]);
+
+            (GetMonitoringReportRequest, JObject) AReport(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new GetMonitoringReportRequest(toTheStation, 1, [], [], RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => GetMonitoringReportRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (ClearVariableMonitoringRequest, JObject) AClearing(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new ClearVariableMonitoringRequest(toTheStation, [ VariableMonitoring_Id.Parse(1) ], RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => ClearVariableMonitoringRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (SetMonitoringBaseRequest, JObject) ABase(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new SetMonitoringBaseRequest(toTheStation, MonitoringBase.All, RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => SetMonitoringBaseRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            (SetMonitoringLevelRequest, JObject) ALevel(KeyPair SignedBy)
+            {
+                var requestId = NextRequestId;
+                return Sent(new SetMonitoringLevelRequest(toTheStation, Severities.Warning, RequestId: requestId),
+                            (request, withContext) => request.ToJSON(withContext),
+                            json => SetMonitoringLevelRequest.Parse(json, requestId, toTheStation, NetworkPath.Empty),
+                            SignedBy);
+            }
+
+            Assert.Multiple(() => {
+
+                Assert.That(Accepts(station, AReport  (monitoring), request => request.ToJSON(true), out var e1),   Is.True,   e1);
+                Assert.That(Accepts(station, AClearing(monitoring), request => request.ToJSON(true), out var e2),   Is.True,   e2);
+                Assert.That(Accepts(station, ABase    (monitoring), request => request.ToJSON(true), out var e3),   Is.True,   e3);
+                Assert.That(Accepts(station, ALevel   (monitoring), request => request.ToJSON(true), out var e4),   Is.True,   e4);
+
+                // Who may read everything may read which monitors there are, and change none of it.
+                Assert.That(Accepts(station, AReport  (cpo),        request => request.ToJSON(true), out var e5),   Is.True,   e5);
+                Assert.That(Accepts(station, AClearing(cpo),        request => request.ToJSON(true), out var e6),   Is.False,  "Reading everything cleared a monitor!");
+                Assert.That(e6,                                                                                     Does.Contain("monitoring:edit"));
+                Assert.That(Accepts(station, ABase    (cpo),        request => request.ToJSON(true), out var e7),   Is.False,  "Reading everything set the monitoring base!");
+                Assert.That(e7,                                                                                     Does.Contain("monitoring:edit"));
+                Assert.That(Accepts(station, ALevel   (cpo),        request => request.ToJSON(true), out var e8),   Is.False,  "Reading everything set the monitoring level!");
+                Assert.That(e8,                                                                                     Does.Contain("monitoring:edit"));
+
+                // A known signer without the right is no longer enough.
+                Assert.That(Accepts(station, AReport  (dnsAdmin),   request => request.ToJSON(true), out var e9),   Is.False,  "The DNS admin read the monitors!");
+                Assert.That(e9,                                                                                     Does.Contain("monitoring:read"));
+
             });
 
         }
