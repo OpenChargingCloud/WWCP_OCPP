@@ -1,0 +1,8 @@
+{
+  "name": "wwcp-ocpp-node-frontend",
+  "version": "0.1.0",
+  "description": "What the web interfaces of the nodes that dial a CSMS share - the pages of their connections, credentials and client keys: TypeScript and SCSS that a charging station and a local controller bundle into their own, imported as @ocpp/... through a webpack alias. Nothing is installed here: the files are checked, tested and built by the kinds of node that use them, with their packages.",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-or-later"
+}
