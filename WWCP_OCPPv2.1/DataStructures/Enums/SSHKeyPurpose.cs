@@ -25,14 +25,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
-        /// Parse the given text as the purpose of an SSH key: "Station", "NTS" or "SFTP", as written -
-        /// and "OCPP", which "Station" was called before.
+        /// Parse the given text as the purpose of an SSH key: "Station", "NTS", "SFTP" or "DNS", as
+        /// written - and "OCPP", which "Station" was called before.
         /// </summary>
         public static SSHKeyPurpose Parse(String Text)
 
             => TryParse(Text, out var purpose)
                    ? purpose
-                   : throw new ArgumentException($"'{Text}' is no purpose of an SSH key: it is Station, NTS or SFTP.", nameof(Text));
+                   : throw new ArgumentException($"'{Text}' is no purpose of an SSH key: it is Station, NTS, SFTP or DNS.", nameof(Text));
 
         /// <summary>
         /// Try to parse the given text as the purpose of an SSH key.
@@ -44,9 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    : null;
 
         /// <summary>
-        /// Try to parse the given text as the purpose of an SSH key: "Station", "NTS" or "SFTP", as
-        /// written. "OCPP" is read as "Station": the key was called after its first user before, when
-        /// the connection it signs in on was taken for OCPP's.
+        /// Try to parse the given text as the purpose of an SSH key: "Station", "NTS", "SFTP" or "DNS",
+        /// as written. "OCPP" is read as "Station": the key was called after its first user before,
+        /// when the connection it signs in on was taken for OCPP's.
         /// </summary>
         public static Boolean TryParse(String Text, out SSHKeyPurpose Purpose)
         {
@@ -66,6 +66,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Purpose = SSHKeyPurpose.SFTP;
                     return true;
 
+                case "DNS":
+                    Purpose = SSHKeyPurpose.DNS;
+                    return true;
+
                 default:
                     Purpose = SSHKeyPurpose.Station;
                     return false;
@@ -74,13 +78,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         /// <summary>
-        /// The purpose as it is written: "Station", "NTS" or "SFTP".
+        /// The purpose as it is written: "Station", "NTS", "SFTP" or "DNS".
         /// </summary>
         public static String AsText(this SSHKeyPurpose Purpose)
 
             => Purpose switch {
                    SSHKeyPurpose.NTS   => "NTS",
                    SSHKeyPurpose.SFTP  => "SFTP",
+                   SSHKeyPurpose.DNS   => "DNS",
                    _                   => "Station"
                };
 
@@ -110,7 +115,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The SFTP locations of GetLog and UpdateFirmware.
         /// </summary>
-        SFTP
+        SFTP,
+
+        /// <summary>
+        /// The subsystem dns@open.charging.cloud of the white paper "DNS over SSH" (section 7.3), where
+        /// a name server has an SSH connection of its own. A key of its own, as time has one: it is
+        /// withdrawn at a name server without the station's own key being touched, and a name server
+        /// that is neither the station's CSMS nor its Local Controller never holds the key that opens
+        /// OCPP. Last, so that the purposes before it keep their numbers.
+        /// </summary>
+        DNS
 
     }
 

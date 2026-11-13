@@ -19,6 +19,8 @@
 
 using System.Globalization;
 
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
+
 using cloud.charging.open.protocols.WWCP.Node;
 using cloud.charging.open.protocols.WWCP.Node.Certificates;
 
@@ -33,9 +35,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// <summary>
     /// What the CSMS is told of the time servers and the name servers without
     /// asking: the security events of the Secure Time Synchronization white
-    /// paper (section 3.2.6) and of the Secure DNS white paper (section 3.1.4),
-    /// and the events of the monitors it set (NTS concept B.12, SecureDNS
-    /// concept B.11).
+    /// paper (section 3.2.6), of the Secure DNS white paper (section 3.1.4)
+    /// and, for name servers over SSH, of the white paper "DNS over SSH"
+    /// (section 7.4), and the events of the monitors it set (NTS concept B.12,
+    /// SecureDNS concept B.11).
     /// </summary>
     /// <remarks>
     /// <para>
@@ -178,10 +181,76 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             };
 
+            node.OnNameServerSSHNews += WhenNameServerSSHNews;
+
         }
 
         #endregion
 
+
+        #region (internal) WhenNameServerSSHNews(Server, State, News)
+
+        /// <summary>
+        /// An attempt to ask a name server over SSH came to another verdict
+        /// than the one before: the security events of the white paper "DNS
+        /// over SSH" (section 7.4), each with the server and the host key it
+        /// showed.
+        /// </summary>
+        /// <remarks>
+        /// The node says it once per change of the verdict, so this does not
+        /// count. A host key nothing vouches for is InvalidNameServerHostKey
+        /// whether it was refused or - by OnPinMismatch Record or Accept - used
+        /// all the same: used, it is the one thing that says the name server is
+        /// whoever answers at that address. Of its own, so that a test can say
+        /// it without an SSH server.
+        /// </remarks>
+        internal void WhenNameServerSSHNews(DNSServerConfig     Server,
+                                            NameServerSSHState  State,
+                                            NameServerSSHNews   News)
+        {
+
+            var server = WWCPNode.NameOf(Server);
+
+            switch (News)
+            {
+
+                case NameServerSSHNews.HostKeyRefused:
+                    TellCSMS("InvalidNameServerHostKey",
+                             $"{server}: {State.Status}, host key {State.HostKey ?? "none"}, refused: {State.Why}",
+                             CertificateUsages.DNS);
+                    break;
+
+                case NameServerSSHNews.HostKeyTolerated:
+                    TellCSMS("InvalidNameServerHostKey",
+                             $"{server}: host key {State.HostKey ?? "none"}, used although nothing vouches for it: {State.Why}",
+                             CertificateUsages.DNS);
+                    break;
+
+                case NameServerSSHNews.HostKeyChanged:
+                    TellCSMS("NameServerHostKeyChanged",
+                             $"{server}: host key {State.Previously ?? "unknown"} -> {State.HostKey ?? "unknown"}",
+                             CertificateUsages.DNS);
+                    break;
+
+                case NameServerSSHNews.AuthenticationFailed:
+                    TellCSMS("NameServerAuthenticationFailed",
+                             $"{server}: {State.Why}",
+                             CertificateUsages.DNS);
+                    break;
+
+                case NameServerSSHNews.WeakAlgorithms:
+                    TellCSMS("InvalidSSHAlgorithms",
+                             $"{server}: {State.Why}",
+                             CertificateUsages.DNS);
+                    break;
+
+            }
+
+            CheckMonitors();
+
+        }
+
+        #endregion
 
         #region (internal) WhenNTSGroupLimited(Group, Limited)
 

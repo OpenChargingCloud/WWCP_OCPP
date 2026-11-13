@@ -67,6 +67,23 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// say, but none of its pins, and takes away the ones beyond its end - all
     /// through DNSClientController.Servers as OCPP 2.1 would.
     /// </para>
+    /// <para>
+    /// The keys of a name server over SSH are those of the white paper "DNS
+    /// over SSH" (section 7.5). A key is one change, and the rules for such a
+    /// server (its section 7.2) are about several variables at once - one
+    /// over SSH must be believable, and nothing of SSH may be set on one that
+    /// is not - so a key that could never be set by itself says what goes
+    /// with it. A host key or a CA pinned by "dns.sshHostKeyPins.n" or
+    /// "dns.sshHostCAs.n", or "Shared" in "dns.sshConnection", makes that
+    /// server one asked over SSH, on the connection the key is about; and
+    /// "dns.transports" taking a server away from SSH takes what it had there
+    /// with it. "dns.transports" alone cannot make a server one over SSH: it
+    /// would be one nothing authenticates. In "dns.sshUserNames" and
+    /// "dns.sshConnection" an empty or missing entry is that server's own
+    /// default - the station's identity, and Dedicated - and not the entry
+    /// before it: a login or a shared connection repeated onto the next
+    /// server would sign in, or look for an SSH peer, where nobody meant to.
+    /// </para>
     /// </remarks>
     public sealed partial class DNSDeviceModel : OCPP16.CP.IConfigurationKeySource
     {
@@ -93,22 +110,32 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("dns.encryptedOnly",     "EncryptedOnly",     false,  ""),
             ("dns.onPinMismatch",     "OnPinMismatch",     true,   "Refuse"),
             ("dns.trustOnFirstUse",   "TrustOnFirstUse",   true,   "None"),
-            ("dns.rootCAs",           "RootCAs",           true,   "")
+            ("dns.rootCAs",           "RootCAs",           true,   ""),
+            ("dns.sshUserNames",      "SSHUserName",       true,   ""),
+            ("dns.sshConnection",     "SSHConnection",     true,   "Dedicated"),
+            ("dns.sshHostKeyFingerprints", "SSHHostKeyFingerprint", true, "")
         ];
+
+        /// <summary>
+        /// The keys that are read, and not written.
+        /// </summary>
+        private static readonly String[] readOnly16 = [ "dns.sshHostKeyFingerprints" ];
 
         /// <summary>
         /// The pins of the n-th server, numbered from 1.
         /// </summary>
         private static readonly (String Key, String Variable)[] pinKeys16 = [
             ("dns.certificatePins",   "CertificatePins"),
-            ("dns.rootPins",          "RootPins")
+            ("dns.rootPins",          "RootPins"),
+            ("dns.sshHostKeyPins",    "SSHHostKeyPins"),
+            ("dns.sshHostCAs",        "SSHHostCAs")
         ];
 
         /// <summary>
         /// The lists whose empty or missing entry is the server's own default
         /// rather than the entry before it.
         /// </summary>
-        private static readonly String[] ownDefaults16 = [ "dns.ports", "dns.queryTimeouts" ];
+        private static readonly String[] ownDefaults16 = [ "dns.ports", "dns.queryTimeouts", "dns.sshUserNames", "dns.sshConnection" ];
 
         /// <summary>
         /// What a server added by "dns.servers" takes from the last one: the
@@ -174,7 +201,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             return value is null
                        ? null
-                       : new OCPP16.ConfigurationKey(name, OCPP16.AccessRights.ReadWrite, value);
+                       : new OCPP16.ConfigurationKey(name,
+                                                     readOnly16.Contains(name, StringComparer.OrdinalIgnoreCase)
+                                                         ? OCPP16.AccessRights.ReadOnly
+                                                         : OCPP16.AccessRights.ReadWrite,
+                                                     value);
 
         }
 
@@ -199,6 +230,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return null;
             }
 
+            // What the node says, and nobody sets.
+            if (readOnly16.Contains(name, StringComparer.OrdinalIgnoreCase))
+                return OCPP16.ConfigurationStatus.Rejected;
+
             var now      = section();
             var ids      = IdsIn(now);
             var entries  = new List<OCPP21.SetVariableData>();
@@ -220,13 +255,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (!TryList(Value, ids.Count, ownDefault ? null : DefaultOf(name), out var values))
                     return OCPP16.ConfigurationStatus.Rejected;
 
+                // Each server's own default, where its entry is empty or missing.
                 for (var at = 0; at < ids.Count; at++)
-                    entries.Add(ServerEntry(ids[at], variable, values[at]));
+                    entries.Add(ServerEntry(ids[at], variable, values[at].Length == 0 && ownDefault ? DefaultOf(name) : values[at]));
 
             }
 
             else
                 entries.Add(ClientEntry(variable, Value.Trim()));
+
+            WhatGoesWithSSH(now, entries);
 
             if (entries.Count == 0)
                 return OCPP16.ConfigurationStatus.Accepted;
@@ -255,6 +293,82 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
+
+        #region (private static) WhatGoesWithSSH(Section, Entries)
+
+        /// <summary>
+        /// What a key of a name server over SSH says beside the variable it
+        /// stands for, so that it can be set at all: a key is one change, and a
+        /// server over SSH is made, and unmade, by several variables at once
+        /// (white paper "DNS over SSH", section 7.2).
+        /// </summary>
+        /// <remarks>
+        /// A host key or a CA pinned on a server that is not asked over SSH
+        /// makes it one that is, on a connection of its own - also where it
+        /// shared one; Shared on such a server makes it one over SSH as well;
+        /// and a Transport that takes a server away from SSH clears what it
+        /// had there. Nothing is added that the key's own entries say
+        /// already.
+        /// </remarks>
+        /// <param name="Section">How the node resolves names now.</param>
+        /// <param name="Entries">The entries the key stands for, which are added to.</param>
+        private static void WhatGoesWithSSH(JObject                       Section,
+                                            List<OCPP21.SetVariableData>  Entries)
+        {
+
+            Boolean Says(String Server, String Variable)
+
+                => Entries.Any(entry => String.Equals(entry.Component.Instance, Server,   StringComparison.OrdinalIgnoreCase) &&
+                                        String.Equals(entry.Variable.Name,      Variable, StringComparison.OrdinalIgnoreCase));
+
+            foreach (var entry in Entries.ToArray())
+            {
+
+                if (entry.Component.Instance is not String server ||
+                    !String.Equals(entry.Component.Name, ServerComponent, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var value      = entry.AttributeValue ?? "";
+                var overSSH    = String.Equals(ServerValueIn(Section, server, "Transport"),     "SSH",    StringComparison.OrdinalIgnoreCase);
+                var shared     = String.Equals(ServerValueIn(Section, server, "SSHConnection"), "Shared", StringComparison.OrdinalIgnoreCase);
+
+                switch (entry.Variable.Name.ToLowerInvariant())
+                {
+
+                    case "sshhostkeypins" or "sshhostcas" when value.Length > 0:
+
+                        if (!overSSH && !Says(server, "Transport"))
+                            Entries.Add(ServerEntry(server, "Transport",     "SSH"));
+
+                        if (shared   && !Says(server, "SSHConnection"))
+                            Entries.Add(ServerEntry(server, "SSHConnection", "Dedicated"));
+
+                        break;
+
+                    case "sshconnection" when String.Equals(value, "Shared", StringComparison.OrdinalIgnoreCase):
+
+                        if (!overSSH && !Says(server, "Transport"))
+                            Entries.Add(ServerEntry(server, "Transport",     "SSH"));
+
+                        break;
+
+                    case "transport" when overSSH && !String.Equals(value, "SSH", StringComparison.OrdinalIgnoreCase):
+
+                        foreach (var (variable, cleared) in new[] { ("SSHConnection", "Dedicated"), ("SSHUserName", ""), ("SSHHostKeyPins", ""), ("SSHHostCAs", "") })
+                            if (!Says(server, variable) && ServerValueIn(Section, server, variable) is String had && had != cleared)
+                                Entries.Add(ServerEntry(server, variable, cleared));
+
+                        break;
+
+                }
+
+            }
+
+        }
+
+        #endregion
 
         #region (private) TryServers(Section, Ids, Value, Entries)
 
@@ -300,9 +414,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     // server after its end - but no pins, whose keys are the
                     // server's own, and no port or timeout, whose missing
                     // entry is the server's default.
+                    // Nor that it is asked over SSH: a new server has no host
+                    // key to be believed by yet, and is asked as a new one is
+                    // until its own keys say otherwise.
                     if (Ids.Count > 0)
                         foreach (var variable in repeatedForNewServers16)
-                            if (ServerValueIn(Section, Ids[^1], variable) is String last && last.Length > 0)
+                            if (ServerValueIn(Section, Ids[^1], variable) is String last && last.Length > 0 &&
+                                !(variable == "Transport" && String.Equals(last, "SSH", StringComparison.OrdinalIgnoreCase)))
                                 Entries.Add(ServerEntry(ids[at], variable, last));
 
                 }

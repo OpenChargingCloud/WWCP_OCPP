@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (!SSHKeyPurposeExtensions.TryParse(JSON["purpose"]?.Value<String>() ?? "", out var purpose))
             {
-                ErrorResponse = "An installed SSH key needs a 'purpose': OCPP, NTS or SFTP!";
+                ErrorResponse = "An installed SSH key needs a 'purpose': Station, NTS, SFTP or DNS!";
                 return false;
             }
 
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (!CBOR.ParseMandatoryText("purpose", "SSH key purpose", out var purposeText, out ErrorResponse) ||
                 !SSHKeyPurposeExtensions.TryParse(purposeText, out var purpose))
             {
-                ErrorResponse = "An installed SSH key needs a 'purpose': OCPP, NTS or SFTP!";
+                ErrorResponse = "An installed SSH key needs a 'purpose': Station, NTS, SFTP or DNS!";
                 return false;
             }
 

@@ -38,6 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// Servers come and go through DNSClientController.Servers, as time servers
     /// do through the Clients of their group. Its variables are those of the
     /// paper that the given source can answer, read from it at every read.
+    /// <para>
+    /// The transport SSH and the variables beginning with "SSH" are those of
+    /// the white paper "DNS over SSH" (section 7.1): a name server asked over
+    /// the subsystem "dns@open.charging.cloud", held to its host key instead
+    /// of a certificate - or, with SSHConnection Shared, asked on the SSH
+    /// connection the station keeps to the SSH peer its Address names.
+    /// </para>
     /// </remarks>
     public class DNSServerController : ALogicalComponentConfig
     {
@@ -51,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             new ("Address",                 DataTypes.String,      "The IP address or the domain name of the name server.",                                           MaxLimit: 253,                                      Writable: true),
             new ("Port",                    DataTypes.Integer,     "The port of the name server; by default the one of its transport.",                               MinLimit: 1, MaxLimit: 65535,                       Writable: true, MayBeEmpty: true),
-            new ("Transport",               DataTypes.OptionList,  "How the name server is asked.",                                                                    ValuesList: [ "UDP", "TCP", "TLS", "HTTPS", "HTTPS_GET" ], Writable: true),
+            new ("Transport",               DataTypes.OptionList,  "How the name server is asked.",                                                                    ValuesList: [ "UDP", "TCP", "TLS", "HTTPS", "HTTPS_GET", "SSH" ], Writable: true),
             new ("QueryTimeout",            DataTypes.Decimal,     "How long one query to this server may take; empty for the one of DNSClientController.",           MinLimit: 0.1m, MaxLimit: 120, InSeconds: true,     Writable: true, MayBeEmpty: true),
             new ("CertificatePins",         DataTypes.String,      "Comma separated SHA-256 fingerprints of the certificates this server may show.",                  MaxItems: 16,                                       Writable: true),
             new ("RootPins",                DataTypes.String,      "Comma separated SHA-256 fingerprints of the root CA certificates this server's chain may end at.", MaxItems: 16,                                      Writable: true),
@@ -65,7 +72,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("CertificateStatus",       DataTypes.OptionList,  "The verdict of the last TLS handshake; empty before the first one and for unencrypted transports.", ValuesList: [ "Accepted", "Recorded", "Tolerated", "PinMismatch", "Untrusted", "WrongName", "NoCertificate" ]),
             new ("CertificateFingerprint",  DataTypes.String,      "The SHA-256 fingerprint of the certificate the server showed at its last handshake."),
             new ("RootFingerprint",         DataTypes.String,      "The SHA-256 fingerprint of the root CA its chain ended at."),
-            new ("KnownSince",              DataTypes.DateTime,    "Since when the server is believed with its current certificate.")
+            new ("KnownSince",              DataTypes.DateTime,    "Since when the server is believed with its current certificate - over SSH, with its current host key."),
+
+            // Transport SSH, section 7.1 of the white paper "DNS over SSH".
+            new ("SSHUserName",             DataTypes.String,      "The login of the SSH user authentication; empty for the station's own identity.",                 MaxLimit: 32,                                       Writable: true),
+            new ("SSHHostKeyPins",          DataTypes.String,      "Comma separated SHA-256 fingerprints of the host keys the server may show, as SHA256:<base64> of ssh-keygen -l.", MaxItems: 16,                        Writable: true),
+            new ("SSHHostCAs",              DataTypes.String,      "Comma separated SHA-256 fingerprints of the SSH CA keys that may sign the host certificate of the server, for its Address as a principal.", MaxItems: 4, Writable: true),
+            new ("SSHConnection",           DataTypes.OptionList,  "Dedicated: an SSH connection of the name server's own. Shared: one more channel of the SSH connection the station keeps to the SSH peer its Address names.", ValuesList: [ "Dedicated", "Shared" ], Writable: true),
+            new ("SSHClientPublicKey",      DataTypes.String,      "The public key the charging station authenticates with, in the authorized_keys format of OpenSSH."),
+            new ("SSHHostKeyFingerprint",   DataTypes.String,      "The SHA-256 fingerprint of the host key the server showed at its last handshake."),
+            new ("SSHStatus",               DataTypes.OptionList,  "The outcome of the last attempt to ask the server over SSH; empty before the first one.",         ValuesList: [ "Accepted", "PinMismatch", "Untrusted", "WeakAlgorithms", "AuthenticationFailed", "SubsystemRefused", "NoSSHPeer" ])
 
         ];
 

@@ -446,6 +446,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                            "A name server was believed with another certificate or root CA than before (Secure Name Resolution, section 3.1.4).",
                                                                                             true);
 
+        /// <summary>
+        /// A name server over SSH showed a host key that neither a pin nor a CA vouches for, or an invalid host certificate (DNS over SSH, section 7.4).
+        /// </summary>
+        public readonly static SecurityEvent InvalidNameServerHostKey               = new ("InvalidNameServerHostKey",
+                                                                                           "A name server over SSH showed a host key that neither a pin nor a CA vouches for, or an invalid host certificate (DNS over SSH, section 7.4).",
+                                                                                            true);
+
+        /// <summary>
+        /// A name server over SSH was believed with another host key than before (DNS over SSH, section 7.4).
+        /// </summary>
+        public readonly static SecurityEvent NameServerHostKeyChanged               = new ("NameServerHostKeyChanged",
+                                                                                           "A name server over SSH was believed with another host key than before (DNS over SSH, section 7.4).",
+                                                                                            false);
+
+        /// <summary>
+        /// A name server over SSH did not take the station's key (DNS over SSH, section 7.4).
+        /// </summary>
+        public readonly static SecurityEvent NameServerAuthenticationFailed         = new ("NameServerAuthenticationFailed",
+                                                                                           "A name server over SSH did not take the station's key (DNS over SSH, section 7.4).",
+                                                                                            false);
+
         #endregion
 
 

@@ -130,6 +130,31 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// change names the CSMS that made it, as the node writes it down: "ocpp:"
     /// and the start of the request's network path.
     /// </para>
+    /// <para>
+    /// For a name server asked over SSH the rules of the white paper "DNS over
+    /// SSH" (section 7.2) join these. A server must be believable: over SSH
+    /// with neither SSHHostKeyPins, nor SSHHostCAs, nor SSHConnection Shared
+    /// it is InvalidSSHHostKeyConfig, and never stored. The SSH variables
+    /// belong to SSH servers, and Transport does not change away from SSH
+    /// while one of them is set; nothing of a certificate applies to an SSH
+    /// server, and TrustOnFirstUse stays None. On a shared connection Port,
+    /// SSHUserName, SSHHostKeyPins, SSHHostCAs and OnPinMismatch do not apply,
+    /// and Address must be an SSH peer of the station. Within a change,
+    /// SSHConnection is applied after Transport and before everything else,
+    /// whatever its place in the request. And a server on a shared connection
+    /// does not count for resolving the name that connection is dialled by:
+    /// the node's pre-flight leaves it out for that name, so a change after
+    /// which the CSMS would resolve through its own connection alone is
+    /// CSMSUnreachable although the name resolves now.
+    /// </para>
+    /// <para>
+    /// "Do not apply" is about a value: the empty one, Dedicated and Refuse
+    /// say nothing a server does not say already, and are taken, so that a
+    /// change that takes a server away from SSH can clear what it had there in
+    /// the same request - which is the only way to do it, since without its
+    /// pins it would not be believable, and with them its Transport does not
+    /// change.
+    /// </para>
     /// </remarks>
     public sealed partial class DNSDeviceModel : ISetVariablesSource,
                                                  INewInstancesSource
@@ -152,6 +177,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
         public const String NTSKEUnreachable = "NTSKEUnreachable";
 
         /// <summary>
+        /// The reason code of a name server over SSH that nothing would
+        /// authenticate: neither a pinned host key, nor an SSH CA, nor the SSH
+        /// peer whose connection it shares - the reason code of the white paper
+        /// "OCPP over SSH", section 9.2.
+        /// </summary>
+        public const String InvalidSSHHostKeyConfig = "InvalidSSHHostKeyConfig";
+
+        /// <summary>
         /// The most characters of the additionalInfo of a result (OCPP 2.1).
         /// </summary>
         private const Int32 MaxAdditionalInfo = 1024;
@@ -167,7 +200,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
         ];
 
         private static readonly String[] writableServerVariables = [
-            "Address", "Port", "Transport", "QueryTimeout", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse", "RootCAs"
+            "Address", "Port", "Transport", "QueryTimeout", "CertificatePins", "RootPins", "OnPinMismatch", "TrustOnFirstUse", "RootCAs",
+            "SSHUserName", "SSHHostKeyPins", "SSHHostCAs", "SSHConnection"
         ];
 
         /// <summary>
@@ -531,8 +565,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
 
             // Addresses first, so that a server is where it is meant to be
-            // before anything is said about how it is asked.
-            foreach (var item in Change.OrderBy(item => item.IsAddress ? 0 : 1))
+            // before anything is said about how it is asked. Then its
+            // transport, and whether it shares an SSH connection, whatever
+            // their places in the request: what a request sets beside them is
+            // set for the transport it switches to, and on the connection it
+            // switches to (white paper "DNS over SSH", section 7.2).
+            foreach (var item in Change.OrderBy(item => item.IsAddress                                 ? 0
+                                                      : item.Server is not null && item.Is("Transport")     ? 1
+                                                      : item.Server is not null && item.Is("SSHConnection") ? 2
+                                                      : 3))
             {
 
                 if (item.Server is not String id)
@@ -553,11 +594,77 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     return;
                 }
 
+                // What does not apply to a server as it is asked by now: an SSH
+                // variable to one that is not asked over SSH, anything of a
+                // certificate to one that is, and anything of its own to one
+                // on a shared connection.
+                if (server.WhyNot(item.Name, item.Value, Where(item.Entry)) is String whyNot)
+                {
+                    Refuse(Change, [ item ], Results, Atomic, "InvalidValue", whyNot);
+                    return;
+                }
+
                 switch (item.Name.ToLowerInvariant())
                 {
 
                     case "address":
                         server.Address         = item.Value.Trim();
+                        break;
+
+                    // One more channel of the SSH connection the station keeps
+                    // to the SSH peer the Address names, or a connection of its
+                    // own again. Switched to it, what only a connection of its
+                    // own has goes: its port, its login, its host keys and CAs,
+                    // and what a mismatch of them comes to.
+                    case "sshconnection":
+
+                        var shared = String.Equals(item.Value, "Shared", StringComparison.OrdinalIgnoreCase);
+
+                        if (shared && !server.SSHShared)
+                        {
+                            server.Port            = null;
+                            server.SSHUser         = null;
+                            server.SSHHostKeyPins  = [];
+                            server.SSHHostCAs      = [];
+                            server.OnMismatch      = "refuse";
+                        }
+
+                        server.SSHShared       = shared;
+                        break;
+
+                    // The empty one is the station's own identity.
+                    case "sshusername":
+                        server.SSHUser         = item.Value.Trim().Length > 0 ? item.Value.Trim() : null;
+                        break;
+
+                    // SHA-256 fingerprints of keys, as ssh-keygen -l writes them:
+                    // "SHA256:" and 43 characters of base64. An MD5 fingerprint
+                    // is none.
+                    case "sshhostkeypins":
+                    case "sshhostcas":
+
+                        var fingerprints = new List<String>();
+
+                        foreach (var text in ListOf(item.Value))
+                        {
+
+                            if (!NTSServerSSH.TryParseFingerprint(text, out var fingerprint))
+                            {
+                                Refuse(Change, [ item ], Results, Atomic, "InvalidValue",
+                                       $"'{Where(item.Entry)}': '{text}' is no SHA-256 fingerprint of an SSH key, which ssh-keygen -l writes as \"SHA256:\" and 43 characters of base64.");
+                                return;
+                            }
+
+                            if (!fingerprints.Contains(fingerprint))
+                                fingerprints.Add(fingerprint);
+
+                        }
+
+                        if (item.Is("SSHHostKeyPins"))
+                            server.SSHHostKeyPins  = fingerprints;
+                        else
+                            server.SSHHostCAs      = fingerprints;
+
                         break;
 
                     case "port":
@@ -620,6 +727,52 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 {
                     server.Port = null;
                 }
+
+            // Transport does not change away from SSH while an SSH variable is
+            // set: what the server had over SSH is cleared in the same change,
+            // where it is to go.
+            foreach (var (id, before) in transported)
+                if (candidate.FirstOrDefault(server => Is(server.Id, id)) is TableServer server &&
+                    String.Equals(before, "SSH", StringComparison.OrdinalIgnoreCase) &&
+                    !server.IsOverSSH &&
+                    server.HasSSHSettings)
+                {
+                    Refuse(Change, [ .. Change.Where(item => Is(item.Server, id) && item.Is("Transport")) ], Results, Atomic, "InvalidValue",
+                           $"'{ServerComponent}[{id}].Transport' cannot change away from SSH while SSHUserName, SSHHostKeyPins, SSHHostCAs or SSHConnection Shared is set: clear them in the same request!");
+                    return;
+                }
+
+            // Every name server over SSH this change says anything about must be
+            // believable, and one on a shared connection must name an SSH peer.
+            // A server the change does not touch is left as it is: an SSH peer
+            // that went since is why it is not asked, and no reason to refuse
+            // a change of something else (decision 7 of the paper).
+            var peers = (this.section()["sshPeers"] as JArray ?? []).Values<String>().
+                                                                      OfType<String>().
+                                                                      Select(peer => peer.Trim().TrimEnd('.')).
+                                                                      ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var server in candidate.Where(server => server.IsOverSSH && Change.Any(item => Is(item.Server, server.Id))))
+            {
+
+                var its = Change.Where(item => Is(item.Server, server.Id)).ToArray();
+
+                if (!server.SSHShared && server.SSHHostKeyPins.Count == 0 && server.SSHHostCAs.Count == 0)
+                {
+                    Refuse(Change, its, Results, Atomic, InvalidSSHHostKeyConfig,
+                           $"'{ServerComponent}[{server.Id}]' would be asked over SSH with neither SSHHostKeyPins, nor SSHHostCAs, nor SSHConnection Shared: a name server without a way to authenticate it is never stored!");
+                    return;
+                }
+
+                if (server.SSHShared && !peers.Contains(server.Address.Trim().TrimEnd('.')))
+                {
+                    Refuse(Change, its, Results, Atomic, "InvalidValue",
+                           $"'{ServerComponent}[{server.Id}].Address': '{server.Address}' is no SSH peer of this charging station, so there is no connection for SSHConnection Shared to share: " +
+                           "it must be the host of a network connection profile with an ssh:// URL, or the Address of an SSHPeerController!");
+                    return;
+                }
+
+            }
 
             // Where the servers are from: System gives them back to the ones
             // the node was started with - the operating system's - which the
@@ -1007,6 +1160,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             => Transport.ToUpperInvariant() switch {
                    "TLS"                             => 853,
+                   "SSH"                             => 22,
                    var http when http.StartsWith("HTTPS", StringComparison.Ordinal) => 443,
                    var http when http.StartsWith("HTTP",  StringComparison.Ordinal) => 80,
                    _                                 => 53
@@ -1084,6 +1238,30 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public String        TrustOnFirstUse  { get; set; } = "none";
 
             /// <summary>
+            /// How it is asked over SSH: the login, or null for the station's
+            /// own identity; the host keys and CAs it is held to; and whether
+            /// it shares the connection to the SSH peer its address is. What a
+            /// mismatch comes to is <see cref="OnMismatch"/>, over SSH as over
+            /// TLS.
+            /// </summary>
+            public String?       SSHUser          { get; set; }
+            public List<String>  SSHHostKeyPins   { get; set; } = [];
+            public List<String>  SSHHostCAs       { get; set; } = [];
+            public Boolean       SSHShared        { get; set; }
+
+            /// <summary>
+            /// Whether it is asked over SSH.
+            /// </summary>
+            public Boolean       IsOverSSH
+                => String.Equals(Transport, "SSH", StringComparison.OrdinalIgnoreCase);
+
+            /// <summary>
+            /// Whether anything is said of how it is asked over SSH.
+            /// </summary>
+            public Boolean       HasSSHSettings
+                => SSHUser is not null || SSHHostKeyPins.Count > 0 || SSHHostCAs.Count > 0 || SSHShared;
+
+            /// <summary>
             /// The group of roots the server is held to, which no variable
             /// says: it stays with the server, as the fingerprints do, also where
             /// the request gives it another address.
@@ -1109,15 +1287,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 foreach (var json in (Section["servers"] as JArray ?? []).OfType<JObject>())
                 {
 
+                    // Over SSH, how it is asked is in "ssh", and so is what a
+                    // host key that is none it is held to comes to: left out,
+                    // the next change of anything would make it a server that
+                    // nothing authenticates.
+                    var ssh    = json["ssh"] as JObject;
+
                     var server = new TableServer(json.Value<String>("id") ?? "", json.Value<String>("address") ?? "") {
                                      Port             = json["port"]?.Type == JTokenType.Integer ? json.Value<UInt16>("port") : null,
                                      Transport        = json.Value<String>("transport") ?? "UDP",
                                      QueryTimeout     = json["queryTimeoutSeconds"]?.Type is JTokenType.Integer or JTokenType.Float ? json["queryTimeoutSeconds"]!.AsDecimal() : null,
                                      CertificatePins  = ListOf(PinsOf(json, "certificateFingerprint")),
                                      RootPins         = ListOf(PinsOf(json, "rootFingerprint")),
-                                     OnMismatch       = json.Value<String>("onMismatch")      ?? "refuse",
+                                     OnMismatch       = (ssh ?? json).Value<String>("onMismatch") ?? "refuse",
                                      TrustOnFirstUse  = json.Value<String>("trustOnFirstUse") ?? "none",
-                                     RootGroup        = json.Value<String>("rootGroup")
+                                     RootGroup        = json.Value<String>("rootGroup"),
+                                     SSHUser          = ssh?.Value<String>("user") is { Length: > 0 } user ? user : null,
+                                     SSHHostKeyPins   = ssh?["hostKeyPins"] is JArray hostKeyPins ? [.. hostKeyPins.Values<String>().OfType<String>()] : [],
+                                     SSHHostCAs       = ssh?["hostCAs"]     is JArray hostCAs     ? [.. hostCAs.    Values<String>().OfType<String>()] : [],
+                                     SSHShared        = String.Equals(ssh?.Value<String>("connection"), "shared", StringComparison.OrdinalIgnoreCase)
                                  };
 
                     server.ShownAsSent();
@@ -1141,8 +1329,67 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        OnMismatch       = OnMismatch,
                        TrustOnFirstUse  = TrustOnFirstUse,
                        RootGroup        = RootGroup,
+                       SSHUser          = SSHUser,
+                       SSHHostKeyPins   = [.. SSHHostKeyPins],
+                       SSHHostCAs       = [.. SSHHostCAs],
+                       SSHShared        = SSHShared,
                        AsShown          = AsShown
                    };
+
+            /// <summary>
+            /// Why the given variable cannot be set to the given value on this
+            /// server as it is asked by now, or null where it can: the rules of
+            /// section 7.2 of the white paper "DNS over SSH" that are about one
+            /// variable alone.
+            /// </summary>
+            /// <remarks>
+            /// Asked with the transport and the connection of the change in
+            /// place already. The empty value, Dedicated, Refuse and None say
+            /// what a server without the variable says, and are never refused:
+            /// they are how a change clears what the server had before.
+            /// </remarks>
+            /// <param name="Variable">The name of the variable, in any case.</param>
+            /// <param name="Value">The value as it was sent.</param>
+            /// <param name="Where">The variable, as a refusal names it.</param>
+            public String? WhyNot(String  Variable,
+                                  String  Value,
+                                  String  Where)
+            {
+
+                var variable  = Variable.ToLowerInvariant();
+                var value     = Value.Trim();
+
+                // SSH variables belong to SSH servers.
+                if (!IsOverSSH &&
+                    ((variable is "sshusername" or "sshhostkeypins" or "sshhostcas" && value.Length > 0) ||
+                     (variable is "sshconnection" && String.Equals(value, "Shared", StringComparison.OrdinalIgnoreCase))))
+                {
+                    return $"'{Where}' applies to a name server whose Transport is SSH only, and this one is asked over {Transport}: set its Transport to SSH in the same request!";
+                }
+
+                if (!IsOverSSH)
+                    return null;
+
+                // Over SSH there is no certificate to be held to, and nothing
+                // is learned on first use.
+                if (variable is "certificatepins" or "rootpins" or "rootcas" && value.Length > 0)
+                    return $"'{Where}' does not apply to a name server asked over SSH, which shows no certificate: it is held to its host key, in SSHHostKeyPins or SSHHostCAs!";
+
+                if (variable is "trustonfirstuse" && !String.Equals(value, "None", StringComparison.OrdinalIgnoreCase))
+                    return $"'{Where}': an SSH host key is not learned on first use: pin it in SSHHostKeyPins, or name its CA in SSHHostCAs!";
+
+                // On a shared connection, its port, its login and the host key
+                // it is held to are the SSH peer's.
+                if (SSHShared &&
+                    ((variable is "port" or "sshusername" or "sshhostkeypins" or "sshhostcas" && value.Length > 0) ||
+                     (variable is "onpinmismatch" && !String.Equals(value, "Refuse", StringComparison.OrdinalIgnoreCase))))
+                {
+                    return $"'{Where}' does not apply with SSHConnection Shared: name resolution goes over the SSH connection the station keeps to that SSH peer, with its port, its login and the host key it is held to!";
+                }
+
+                return null;
+
+            }
 
             /// <summary>
             /// From now on, what the server is held to is what it was shown with.
@@ -1200,6 +1447,29 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 if (QueryTimeout.HasValue)
                     json["queryTimeoutSeconds"]  = QueryTimeout.Value;
+
+                // Over SSH, how: on the connection of an SSH peer, with nothing
+                // of its own - not even a port - or on one of its own.
+                if (IsOverSSH && SSHShared)
+                {
+                    json.Remove("port");
+                    json["ssh"]                  = new JObject(new JProperty("connection", "shared"));
+                }
+
+                else if (IsOverSSH)
+                {
+
+                    var ssh = new JObject();
+
+                    if (SSHUser is not null)                                   ssh["user"]         = SSHUser;
+                    if (SSHHostKeyPins.Count > 0)                              ssh["hostKeyPins"]  = new JArray(SSHHostKeyPins);
+                    if (SSHHostCAs.    Count > 0)                              ssh["hostCAs"]      = new JArray(SSHHostCAs);
+                    if (OnMismatch != "refuse" &&
+                        SSHHostKeyPins.Count + SSHHostCAs.Count > 0)           ssh["onMismatch"]   = OnMismatch;
+
+                    json["ssh"]                  = ssh;
+
+                }
 
                 json.Merge(PinsJSON());
 

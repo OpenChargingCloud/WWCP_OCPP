@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         IEnumerable<String>  WritableConnectionVariables   { get; }
 
         /// <summary>
-        /// The purposes the station has an SSH key for: "Station", "NTS", "SFTP".
+        /// The purposes the station has an SSH key for: "Station", "NTS", "SFTP", "DNS".
         /// </summary>
         IEnumerable<String>  Purposes                      { get; }
 

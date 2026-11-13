@@ -54,6 +54,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// Made with a way to change the node, it takes the writes of a
     /// SetVariables request as well - see DNSDeviceModel.Writing.cs.
     /// </para>
+    /// <para>
+    /// A name server asked over SSH (white paper "DNS over SSH", chapter 7)
+    /// is read the same way: the node says in "ssh" how it is asked, and
+    /// beside it what the last attempt came to, the host key it showed and
+    /// the key the node signs in with there.
+    /// </para>
     /// </remarks>
     public sealed partial class DNSDeviceModel : protocols.OCPPv2_1.IDNSControllerSource
     {
@@ -100,14 +106,28 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ("QueryTimeout",            server => SecondsOf  (server["queryTimeoutSeconds"])),
             ("CertificatePins",         server => PinsOf     (server, "certificateFingerprint")),
             ("RootPins",                server => PinsOf     (server, "rootFingerprint")),
-            ("OnPinMismatch",           server => OptionOf   (server["onMismatch"],      "Refuse")),
+            // Over SSH, what a host key that is none it is held to comes to.
+            ("OnPinMismatch",           server => OptionOf   (IsOverSSH(server) ? Child(server["ssh"], "onMismatch") : server["onMismatch"], "Refuse")),
             ("TrustOnFirstUse",         server => OptionOf   (server["trustOnFirstUse"], "None")),
             ("RootCAs",                 server => TextOf     (server["rootGroup"])),
-            ("Problem",                 server => ProblemOf  (server["judgement"])),
+            // Over SSH, while the last attempt came to anything but Accepted.
+            ("Problem",                 server => IsOverSSH(server) ? SSHProblemOf(server["sshStatus"]) : ProblemOf(server["judgement"])),
             ("CertificateStatus",       server => OptionOf   (Child(server["judgement"], "outcome"), "")),
             ("CertificateFingerprint",  server => TextOf     (Child(server["judgement"], "certificate"))),
             ("RootFingerprint",         server => TextOf     (Child(server["judgement"], "root"))),
-            ("KnownSince",              server => DateTimeOf (Child(server["known"],     "since")))
+            ("KnownSince",              server => DateTimeOf (Child(server["known"],     "since"))),
+            // The transport SSH (white paper "DNS over SSH", section 7.1): how
+            // the server is signed in at and what its host key is held to,
+            // empty for every other transport - and what the last attempt came
+            // to, which takes the place of CertificateStatus and its
+            // fingerprints, which stay empty over SSH.
+            ("SSHUserName",             server => TextOf     (Child(server["ssh"], "user"))),
+            ("SSHHostKeyPins",          server => TextsOf    (Child(server["ssh"], "hostKeyPins"))),
+            ("SSHHostCAs",              server => TextsOf    (Child(server["ssh"], "hostCAs"))),
+            ("SSHConnection",           server => IsShared(server) ? "Shared" : "Dedicated"),
+            ("SSHClientPublicKey",      server => TextOf     (server["sshClientPublicKey"])),
+            ("SSHHostKeyFingerprint",   server => TextOf     (server["sshHostKey"])),
+            ("SSHStatus",               server => TextOf     (server["sshStatus"]))
         ];
 
         private static readonly Dictionary<String, Func<JObject, String>> clientVariableNamed
@@ -419,6 +439,47 @@ namespace cloud.charging.open.protocols.OCPP.Node
             => Judgement is JObject judgement && judgement["accepted"]?.Type == JTokenType.Boolean && !judgement.Value<Boolean>("accepted")
                    ? "true"
                    : "false";
+
+        #endregion
+
+        #region (private static) IsOverSSH(Server), IsShared(Server), SSHProblemOf(Status), TextsOf(Token)
+
+        /// <summary>
+        /// Whether the server's entry has it asked over SSH.
+        /// </summary>
+        private static Boolean IsOverSSH(JObject Server)
+
+            => String.Equals(TextOf(Server["transport"]), "SSH", StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Whether the server's entry has it asked on the SSH connection the
+        /// node shares with the SSH peer its address is: "connection":
+        /// "shared".
+        /// </summary>
+        private static Boolean IsShared(JObject Server)
+
+            => IsOverSSH(Server) &&
+               String.Equals(TextOf(Child(Server["ssh"], "connection")), "shared", StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// "true" while the last attempt to ask the server over SSH came to
+        /// anything but Accepted, and "false" otherwise - before the first one
+        /// as well.
+        /// </summary>
+        private static String SSHProblemOf(JToken? Status)
+
+            => TextOf(Status) is { Length: > 0 } status && !String.Equals(status, "Accepted", StringComparison.OrdinalIgnoreCase)
+                   ? "true"
+                   : "false";
+
+        /// <summary>
+        /// The texts of a list, comma separated, or "" for none.
+        /// </summary>
+        private static String TextsOf(JToken? Token)
+
+            => Token is JArray several
+                   ? String.Join(",", several.Values<String>().OfType<String>())
+                   : "";
 
         #endregion
 

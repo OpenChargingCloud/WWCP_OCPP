@@ -264,7 +264,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(queryTimeout.VariableCharacteristics?.MaxLimit,                                Is.EqualTo(120m));
 
                 Assert.That(transport.VariableCharacteristics?.DataType,                                   Is.EqualTo(DataTypes.OptionList));
-                Assert.That(transport.VariableCharacteristics?.ValuesList,                                 Is.EqualTo(new[] { "UDP", "TCP", "TLS", "HTTPS", "HTTPS_GET" }));
+                // With SSH, the transport of the white paper "DNS over SSH" (section 7.1).
+                Assert.That(transport.VariableCharacteristics?.ValuesList,                                 Is.EqualTo(new[] { "UDP", "TCP", "TLS", "HTTPS", "HTTPS_GET", "SSH" }));
 
                 Assert.That(configReport.Any(reportData => reportData.Component.Name.StartsWith("DNS")),   Is.False);
 

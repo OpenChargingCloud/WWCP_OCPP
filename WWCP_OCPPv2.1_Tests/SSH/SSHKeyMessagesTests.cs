@@ -531,7 +531,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.SSH
                 Assert.That(SSHKeyPurposeExtensions.TryParse("ocpp"),     Is.Null);
                 Assert.That(SSHKeyPurposeExtensions.TryParse("NTS"),      Is.EqualTo(SSHKeyPurpose.NTS));
                 Assert.That(SSHKeyPurposeExtensions.TryParse("SFTP"),     Is.EqualTo(SSHKeyPurpose.SFTP));
-                Assert.That(() => SSHKeyPurposeExtensions.Parse("Shell"), Throws.ArgumentException.With.Message.Contain("Station, NTS or SFTP"));
+                // The key for name servers over SSH (white paper "DNS over SSH", section 7.3).
+                Assert.That(SSHKeyPurposeExtensions.TryParse("DNS"),      Is.EqualTo(SSHKeyPurpose.DNS));
+                Assert.That(SSHKeyPurposeExtensions.TryParse("dns"),      Is.Null);
+                Assert.That(SSHKeyPurpose.DNS.AsText(),                   Is.EqualTo("DNS"));
+                Assert.That(SSHKeyPurposeExtensions.Parse("DNS"),         Is.EqualTo(SSHKeyPurpose.DNS));
+                Assert.That(() => SSHKeyPurposeExtensions.Parse("Shell"), Throws.ArgumentException.With.Message.Contain("Station, NTS, SFTP or DNS"));
             });
 
         }

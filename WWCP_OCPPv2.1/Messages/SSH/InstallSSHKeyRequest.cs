@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public NetworkingNode_Id  NetworkingNodeId  { get; }
 
         /// <summary>
-        /// What the key admits: the subsystem of OCPP, of NTS-KE, or SFTP.
+        /// What the key admits: the subsystem of OCPP, of NTS-KE or of DNS, or SFTP.
         /// </summary>
         [Mandatory]
         public SSHKeyPurpose  Purpose  { get; }
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Destination">The destination networking node identification or source routing path.</param>
         /// <param name="NetworkingNodeId">The station's login.</param>
-        /// <param name="Purpose">What the key admits: the subsystem of OCPP, of NTS-KE, or SFTP.</param>
+        /// <param name="Purpose">What the key admits: the subsystem of OCPP, of NTS-KE or of DNS, or SFTP.</param>
         /// <param name="PublicKey">The key, as a line of authorized_keys, with OpenSSH options such as from=\"...\" and expiry-time=\"...\".</param>
         public InstallSSHKeyRequest(SourceRouting                Destination,
                                NetworkingNode_Id            NetworkingNodeId,
