@@ -479,37 +479,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 // Under a name of its own, and the primary under the name of the
                 // CSMS as well - see NextHopOf and CSMSNamesOf.
-                var response = Connection.OCPPVersion == OCPPVersion.OCPP1_6
-
-                                   ? await Node16.ConnectOCPPWebSocketClient(
-                                             RemoteURL:                   Connection.URL,
-                                             NextHopNetworkingNodeId:     NextHopOf(Connection),
-                                             RoutingNetworkingNodeIds:    CSMSNamesOf(Connection),
-                                             SecWebSocketProtocols:       SubProtocolsOf(Connection),
-                                             HTTPAuthentication:          basic,
-                                             RemoteCertificateValidator:  validator,
-                                             ClientCertificates:          certificates,
-                                             TOTPConfig:                  totp,
-                                             TOTPLogin:                   totpLogin,
-                                             WebSocketOver:               Connection.HTTPVersion,
-                                             DNSClient:                   DNSClient,
-                                             CancellationToken:           CancellationToken
-                                         )
-
-                                   : await Node21.ConnectOCPPWebSocketClient(
-                                             RemoteURL:                   Connection.URL,
-                                             NextHopNetworkingNodeId:     NextHopOf(Connection),
-                                             RoutingNetworkingNodeIds:    CSMSNamesOf(Connection),
-                                             SecWebSocketProtocols:       SubProtocolsOf(Connection),
-                                             HTTPAuthentication:          basic,
-                                             RemoteCertificateValidator:  validator,
-                                             ClientCertificates:          certificates,
-                                             TOTPConfig:                  totp,
-                                             TOTPLogin:                   totpLogin,
-                                             WebSocketOver:               Connection.HTTPVersion,
-                                             DNSClient:                   DNSClient,
-                                             CancellationToken:           CancellationToken
-                                         );
+                var response = await ConnectOverWebSocket(Connection, basic, validator, certificates, totp, totpLogin, CancellationToken);
 
                 // 101 and nothing else: an HTTP answer that is not an upgrade
                 // is a web server being polite, not a back end.

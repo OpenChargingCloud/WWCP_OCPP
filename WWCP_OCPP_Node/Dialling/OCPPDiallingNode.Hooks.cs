@@ -17,6 +17,12 @@
 
 #region Usings
 
+using System.Security.Cryptography.X509Certificates;
+
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP.Node.Connections;
@@ -34,6 +40,50 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// </summary>
     public abstract partial class OCPPDiallingNode
     {
+
+        #region (protected virtual) ConnectOverWebSocket(Connection, Basic, Validator, Certificates, TOTP, TOTPLogin, CancellationToken)
+
+        /// <summary>
+        /// Open the WebSocket of the given connection, by the OCPP node of
+        /// its version: under a name of its own, and the primary under the
+        /// name of the CSMS as well - see NextHopOf and CSMSNamesOf.
+        /// </summary>
+        /// <remarks>
+        /// What every node that dials says is said here. A node that has more
+        /// to say of its lines - the networking mode, how often it pings, how
+        /// long it waits, which versions of TLS it speaks - opens it itself.
+        /// </remarks>
+        /// <param name="Connection">The connection.</param>
+        /// <param name="Basic">The password it signs in with, where it has one.</param>
+        /// <param name="Validator">How the server is believed: by its key pins, by its CA, or not asked where there is no TLS.</param>
+        /// <param name="Certificates">The client certificate it holds up, with its chain, where it has one.</param>
+        /// <param name="TOTP">The one-time password it signs in with, where it has one.</param>
+        /// <param name="TOTPLogin">The login the one-time password is sent under.</param>
+        /// <param name="CancellationToken">Ends the attempt.</param>
+        protected virtual Task<HTTPResponse> ConnectOverWebSocket(ConnectionEntry                                                 Connection,
+                                                                  IHTTPAuthentication?                                            Basic,
+                                                                  RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  Validator,
+                                                                  X509Certificate2[]?                                             Certificates,
+                                                                  TOTPConfig?                                                     TOTP,
+                                                                  String?                                                         TOTPLogin,
+                                                                  CancellationToken                                               CancellationToken)
+
+            => NodeOf(Connection.OCPPVersion).ConnectOCPPWebSocketClient(
+                   RemoteURL:                   Connection.URL,
+                   NextHopNetworkingNodeId:     NextHopOf(Connection),
+                   RoutingNetworkingNodeIds:    CSMSNamesOf(Connection),
+                   SecWebSocketProtocols:       SubProtocolsOf(Connection),
+                   HTTPAuthentication:          Basic,
+                   RemoteCertificateValidator:  Validator,
+                   ClientCertificates:          Certificates,
+                   TOTPConfig:                  TOTP,
+                   TOTPLogin:                   TOTPLogin,
+                   WebSocketOver:               Connection.HTTPVersion,
+                   DNSClient:                   DNSClient,
+                   CancellationToken:           CancellationToken
+               );
+
+        #endregion
 
         #region (protected virtual) ConnectionIsUp(Connection)
 
