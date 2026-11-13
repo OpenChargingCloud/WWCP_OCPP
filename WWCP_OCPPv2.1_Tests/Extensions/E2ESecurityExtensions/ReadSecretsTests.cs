@@ -32,9 +32,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
 
     /// <summary>
     /// The secrets of the device model: the shared secret the TOTPs of the web
-    /// payments controller are made with is read by a GetVariables request
-    /// signed by somebody in the role "ReadSecrets" or by a "systemadmin", and
-    /// is write-only for everybody else.
+    /// payments controller are made with, and the password of HTTP Basic
+    /// Authentication of the security controller, are read by a GetVariables
+    /// request signed by somebody in the role "ReadSecrets" or by a
+    /// "systemadmin", and are write-only for everybody else.
     /// </summary>
     /// <remarks>
     /// Each test signs a request as a CSMS's adapter does, parses it as the
@@ -95,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
         }
 
         /// <summary>
-        /// Sign a GetVariables request for the given variable of the web payments
+        /// Sign a GetVariables request for the given variable of the given
         /// controller as a CSMS does, and answer it as the station does.
         /// </summary>
         private static GetVariableResult Read(SignaturePolicy   Station,
@@ -110,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
                                  toTheStation,
                                  [
                                      new GetVariableData(
-                                         new Component(Name: nameof(WebPaymentsCtrlr)),
+                                         new Component(Name: Controller.Name),
                                          new Variable (Name: Variable)
                                      )
                                  ],
@@ -133,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
 
             return DeviceModel.GetVariables(
                        received,
-                       (name, evse) => name.Equals(nameof(WebPaymentsCtrlr), StringComparison.OrdinalIgnoreCase) ? [ Controller ] : [],
+                       (name, evse) => name.Equals(Controller.Name, StringComparison.OrdinalIgnoreCase) ? [ Controller ] : [],
                        Station
                    ).Single();
 
@@ -269,12 +270,77 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
 
         #endregion
 
+        #region TheBasicAuthPassword_IsReadAsTheSharedSecretIs()
+
+        /// <summary>
+        /// The password of HTTP Basic Authentication of the security controller
+        /// is such a secret too: read by a "systemadmin" and by whoever may read
+        /// the controller and is in the role "ReadSecrets", at a charging station
+        /// and at a battery swap station, and write-only for everybody else and
+        /// for everybody while the policy of the station is "Off".
+        /// </summary>
+        [Test]
+        public void TheBasicAuthPassword_IsReadAsTheSharedSecretIs()
+        {
+
+            var station       = AStation(MessagePolicyModes.Enforce);
+            var observing     = AStation(MessagePolicyModes.Observe);
+            var off           = AStation(MessagePolicyModes.Off);
+
+            var atCS          = new SecurityCtrlr    ("GraphDefined", 16, SecurityProfiles.SecurityProfile1, BasicAuthPassword: secret);
+            var atBSS         = new BSS.SecurityCtrlr("GraphDefined", 16, SecurityProfiles.SecurityProfile1, BasicAuthPassword: secret);
+
+            var byAdmin       = Read(station,   atCS,  "BasicAuthPassword", admin);
+            var byOne         = Read(station,   atCS,  "BasicAuthPassword", cpoAndReader);
+            var byTwo         = Read(station,   atCS,  "BasicAuthPassword", cpo, reader);
+            var byAdminBSS    = Read(station,   atBSS, "BasicAuthPassword", admin);
+
+            var byTheCPO      = Read(station,   atCS,  "BasicAuthPassword", cpo);
+            var byTheCPOBSS   = Read(station,   atBSS, "BasicAuthPassword", cpo);
+            var byReader      = Read(station,   atCS,  "BasicAuthPassword", reader);
+            var byAStranger   = Read(observing, atCS,  "BasicAuthPassword", stranger);
+            var byNobody      = Read(observing, atCS,  "BasicAuthPassword");
+            var whileOff      = Read(off,       atCS,  "BasicAuthPassword", admin);
+
+            // What the operator may read of the same controller.
+            var organization  = Read(station,   atCS,  "OrganizationName",  cpo);
+
+            using (Assert.EnterMultipleScope())
+            {
+
+                foreach (var result in new[] { byAdmin, byOne, byTwo, byAdminBSS })
+                {
+                    Assert.That(result.AttributeStatus,                  Is.EqualTo(GetVariableStatus.Accepted));
+                    Assert.That(result.AttributeValue,                   Is.EqualTo(secret));
+                }
+
+                foreach (var result in new[] { byTheCPO, byTheCPOBSS, byAStranger, byNobody, whileOff })
+                {
+                    Assert.That(result.AttributeStatus,                  Is.EqualTo(GetVariableStatus.Rejected));
+                    Assert.That(result.AttributeStatusInfo?.ReasonCode,  Is.EqualTo("WriteOnly"));
+                    Assert.That(result.AttributeValue,                   Is.Null);
+                }
+
+                Assert.That(byReader.AttributeStatus,                    Is.EqualTo(GetVariableStatus.Rejected));
+                Assert.That(byReader.AttributeStatusInfo?.ReasonCode,    Is.EqualTo("NotAuthorized"));
+                Assert.That(byReader.AttributeValue,                     Is.Null);
+
+                Assert.That(organization.AttributeStatus,                Is.EqualTo(GetVariableStatus.Accepted));
+                Assert.That(organization.AttributeValue,                 Is.EqualTo("GraphDefined"));
+
+            }
+
+        }
+
+        #endregion
+
         #region OnlyASecret_IsReadByReadSecrets()
 
         /// <summary>
         /// Only a write-only variable that says it is a secret is read this way:
-        /// the shared secret is one, at a charging station and at a battery swap
-        /// station, and nothing else of the controller is.
+        /// the shared secret of the web payments controller and the password of
+        /// HTTP Basic Authentication of the security controller are, at a charging
+        /// station and at a battery swap station, and nothing else of them is.
         /// </summary>
         [Test]
         public void OnlyASecret_IsReadByReadSecrets()
@@ -283,14 +349,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2ESecurityExt
             using (Assert.EnterMultipleScope())
             {
 
-                foreach (var controller in new ComponentConfig[] { new WebPaymentsCtrlr(), new BSS.WebPaymentsCtrlr() })
+                foreach (var (controller, itsSecret) in new (ComponentConfig, String)[] {
+                                                            (new WebPaymentsCtrlr(),                                                        "SharedSecret"),
+                                                            (new BSS.WebPaymentsCtrlr(),                                                    "SharedSecret"),
+                                                            (new SecurityCtrlr    ("GraphDefined", 16, SecurityProfiles.SecurityProfile1),  "BasicAuthPassword"),
+                                                            (new BSS.SecurityCtrlr("GraphDefined", 16, SecurityProfiles.SecurityProfile1),  "BasicAuthPassword")
+                                                        })
                 {
 
                     Assert.That(controller.VariableConfigs.Where (variable => variable.IsSecret).
                                                            Select(variable => variable.Name),
-                                Is.EqualTo(new[] { "SharedSecret" }));
+                                Is.EqualTo(new[] { itsSecret }));
 
-                    Assert.That(controller.VariableConfigs.First(variable => variable.Name == "SharedSecret").Attributes?.Mutability,
+                    Assert.That(controller.VariableConfigs.First(variable => variable.Name == itsSecret).Attributes?.Mutability,
                                 Is.EqualTo(MutabilityTypes.WriteOnly));
 
                 }

@@ -177,6 +177,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       )
 
                 )
+                {
+                    // Read by the role "ReadSecrets" and by a "systemadmin", write-only for everybody else.
+                    IsSecret = true
+                }
             );
 
             #endregion
