@@ -24,6 +24,7 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
@@ -255,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
         #endregion
 
-        #region TryCreateKey  (Subject, Algorithm, out Id, out CSR, out Error [, out NotSaved])
+        #region TryCreateKey  (Subject, Algorithm, [Asks,] out Id, out CSR, out Error [, out NotSaved])
 
         /// <summary>
         /// A new key, and the signing request to be handed to whoever issues
@@ -294,6 +295,35 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// <param name="NotSaved">True where its files could not be written: nothing about the request was wrong, and nothing of the key is kept.</param>
         public Boolean TryCreateKey(String                            Subject,
                                     String?                           Algorithm,
+                                    [NotNullWhen(true)]  out String?  Id,
+                                    [NotNullWhen(true)]  out String?  CSR,
+                                    [NotNullWhen(false)] out String?  Error,
+                                    out Boolean                       NotSaved)
+
+            => TryCreateKey(Subject, Algorithm, null, out Id, out CSR, out Error, out NotSaved);
+
+        /// <summary>
+        /// A new key and its signing request, made to a profile and asking for
+        /// more than a client certificate where somebody said so.
+        /// </summary>
+        /// <remarks>
+        /// Signing in as a client is asked for whatever else is: that is what
+        /// a key here is for, and not a choice. A signature is asked of the
+        /// key for the same reason, and enciphering a key where its kind can.
+        /// Everything in <paramref name="Asks"/> is added to that, and what a
+        /// kind of key cannot do is refused here, with the reason, rather than
+        /// by a certificate authority without one.
+        /// </remarks>
+        /// <param name="Subject">Who this station says it is - plain text is read as a common name, a full distinguished name is taken as written.</param>
+        /// <param name="Algorithm">Which kind of key, or null for the usual one.</param>
+        /// <param name="Asks">The template, its role, and the usages asked for beside the usual ones; null for a client certificate and nothing else.</param>
+        /// <param name="Id">What the new key is called here.</param>
+        /// <param name="CSR">Its signing request, as PEM.</param>
+        /// <param name="Error">Why there is none.</param>
+        /// <param name="NotSaved">True where its files could not be written: nothing about the request was wrong, and nothing of the key is kept.</param>
+        public Boolean TryCreateKey(String                            Subject,
+                                    String?                           Algorithm,
+                                    ClientKeyAsks?                    Asks,
                                     [NotNullWhen(true)]  out String?  Id,
                                     [NotNullWhen(true)]  out String?  CSR,
                                     [NotNullWhen(false)] out String?  Error,
@@ -358,6 +388,112 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             #endregion
 
+            #region What it is asked for
+
+            var template = CSRTemplate.Find(Asks?.Template is { Length: > 0 } named ? named : CSRTemplate.DefaultId);
+
+            if (template is null)
+            {
+                Error = $"'{Asks?.Template}' is not a template this {NodeWording.LongNoun} makes a signing request to ({String.Join(", ", CSRTemplate.All.Select(one => one.Id))}).";
+                return false;
+            }
+
+            var role = Asks?.Role?.Trim() is { Length: > 0 } said ? said : null;
+
+            if (template.AsksForARole)
+            {
+
+                if (role is null)
+                {
+                    Error = $"A certificate for {template.Name} has to say which role its holder may play ({String.Join(", ", template.Roles)}, or the one its server knows).";
+                    return false;
+                }
+
+                if (role.Length > CSRTemplate.MaxRoleLength || role.Any(Char.IsControl))
+                {
+                    Error = $"A role may be at most {CSRTemplate.MaxRoleLength} characters long, and all of them printable.";
+                    return false;
+                }
+
+            }
+
+            else if (role is not null)
+            {
+                Error = $"A certificate for {template.Name} has no role to ask for. Leave it out, or pick the template that has one.";
+                return false;
+            }
+
+            // What the kind of key brings by itself, then what the template
+            // and somebody ticking boxes add - each once, in that order.
+            var keyUsageBits   = algorithm.CanEncipher
+                                     ? KeyUsage.DigitalSignature | KeyUsage.KeyEncipherment
+                                     : KeyUsage.DigitalSignature;
+
+            var keyUsageNames  = new List<String> { "digitalSignature" };
+
+            if (algorithm.CanEncipher)
+                keyUsageNames.Add("keyEncipherment");
+
+            foreach (var (name, fromTemplate) in template.KeyUsages.Select(name => (name, true)).
+                                                 Concat((Asks?.KeyUsages ?? []).Select(name => (name, false))))
+            {
+
+                // Named again, as the page of an older version would: asked
+                // for anyway.
+                if (keyUsageNames.Contains(name.Trim(), StringComparer.OrdinalIgnoreCase))
+                    continue;
+
+                var usage = CSRKeyUsage.Find(name);
+
+                if (usage is null)
+                {
+                    Error = $"'{name}' is not a key usage this {NodeWording.LongNoun} asks for ({String.Join(", ", CSRKeyUsage.All.Select(one => one.Id))}).";
+                    return false;
+                }
+
+                if (!usage.Fits(algorithm))
+                {
+
+                    // What a template would like and the kind of key cannot
+                    // do is left out; what somebody ticked is theirs to hear.
+                    if (fromTemplate)
+                        continue;
+
+                    Error = $"A key of the kind {algorithm.Name} cannot be used for {usage.Id}: {usage.Remark}";
+                    return false;
+
+                }
+
+                keyUsageBits |= usage.Bit;
+                keyUsageNames.Add(usage.Id);
+
+            }
+
+            var purposes      = new List<DerObjectIdentifier>();
+            var purposeNames  = new List<String> { CSRPurpose.ClientAuth };
+
+            foreach (var name in template.ExtendedKeyUsages.Concat(Asks?.ExtendedKeyUsages ?? []))
+            {
+
+                if (name.Trim().Length == 0)
+                    continue;
+
+                if (!CSRPurpose.TryParse(name, out var purpose, out var written))
+                {
+                    Error = $"'{name}' is neither an extended key usage this {NodeWording.LongNoun} knows ({String.Join(", ", CSRPurpose.All.Select(one => one.Id))}) nor an object identifier such as 1.3.6.1.5.5.7.3.9.";
+                    return false;
+                }
+
+                if (purposeNames.Contains(written))
+                    continue;
+
+                purposes.    Add(purpose);
+                purposeNames.Add(written);
+
+            }
+
+            #endregion
+
             AsymmetricCipherKeyPair pair;
 
             try
@@ -393,7 +529,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                               subjectName,
                               algorithm,
                               null,
-                              KeyPurposeID.id_kp_clientAuth
+                              KeyPurposeID.id_kp_clientAuth,
+                              keyUsageBits,
+                              purposes,
+                              template.ExtensionsFor(role)
                           ).ToPEM();
                 }
                 catch (Exception e)
@@ -427,7 +566,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                             new JProperty("id",         id),
                             new JProperty("algorithm",  algorithm.Id),
                             new JProperty("createdAt",  createdAt.ToString("o")),
-                            new JProperty("subject",    subjectText)
+                            new JProperty("subject",    subjectText),
+                            new JProperty("template",   template.Id),
+                            new JProperty("role",       role),
+                            new JProperty("keyUsages",          new JArray(keyUsageNames)),
+                            new JProperty("extendedKeyUsages",  new JArray(purposeNames))
                         ).ToString(Formatting.Indented) + Environment.NewLine
                     );
 
@@ -456,7 +599,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 #endregion
 
-                var entry = new ClientCertificateEntry(id, algorithm.Name, createdAt, subjectText);
+                var entry = new ClientCertificateEntry(id, algorithm.Name, createdAt, subjectText) {
+                                Template           = template.Id,
+                                Role               = role,
+                                KeyUsages          = keyUsageNames,
+                                ExtendedKeyUsages  = purposeNames
+                            };
 
                 entries   [id] = entry;
                 publicKeys[id] = publicKey;
@@ -466,7 +614,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             }
 
-            OnNotice?.Invoke(LogLevel.Notice, $"A new {algorithm.Name} key '{id}' was generated and a signing request for {subjectText} is waiting to be collected.");
+            OnNotice?.Invoke(LogLevel.Notice, $"A new {algorithm.Name} key '{id}' was generated and a signing request for {subjectText}" +
+                                              (template.Id != CSRTemplate.DefaultId ? $", made to the template {template.Name}{(role is not null ? $" with the role {role}" : "")}," : "") +
+                                              " is waiting to be collected.");
 
             return true;
 
@@ -959,6 +1109,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                            new JProperty("defaultAlgorithm",  DefaultAlgorithm),
                            new JProperty("maxSubjectLength",  MaxSubjectLength),
 
+                           // What a request may be made to and may ask for
+                           // beside signing in as a client, which is not a
+                           // choice and therefore not in the list.
+                           new JProperty("templates",          new JArray(CSRTemplate.All.Select(template => template.ToJSON()))),
+                           new JProperty("defaultTemplate",    CSRTemplate.DefaultId),
+                           new JProperty("keyUsages",          new JArray(CSRKeyUsage.All.Select(usage   => usage.  ToJSON()))),
+                           new JProperty("extendedKeyUsages",  new JArray(CSRPurpose. All.Select(purpose => purpose.ToJSON()))),
+
                            // No import, and the page should say so rather than
                            // leave somebody looking for the button: a key that
                            // arrived from somewhere else is a key somebody else
@@ -1095,6 +1253,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             var createdAt  = TimeProvider.GetUtcNow();
             var subject    = "";
 
+            // What its request asked for: a key made before that was written
+            // down asked for a client certificate, and for nothing else.
+            var template           = CSRTemplate.DefaultId;
+            String?  role          = null;
+            String[] keyUsages     = [];
+            String[] purposeNames  = [ CSRPurpose.ClientAuth ];
+
             var metaPath   = FilePath(Id, "json");
 
             if (File.Exists(metaPath))
@@ -1106,6 +1271,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                     algorithm  = meta.Value<String>("algorithm") ?? DefaultAlgorithm;
                     subject    = meta.Value<String>("subject")   ?? "";
+                    template   = meta.Value<String>("template")  ?? CSRTemplate.DefaultId;
+                    role       = meta.Value<String>("role");
+
+                    if (meta["keyUsages"] is JArray usages)
+                        keyUsages = [.. usages.Values<String>().OfType<String>()];
+
+                    if (meta["extendedKeyUsages"] is JArray extended)
+                        purposeNames = [.. extended.Values<String>().OfType<String>()];
 
                     if (DateTimeOffset.TryParse(meta.Value<String>("createdAt"),
                                                 System.Globalization.CultureInfo.InvariantCulture,
@@ -1170,7 +1343,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             PublicKey = publicKey;
 
-            var entry = new ClientCertificateEntry(Id, kind.Name, createdAt, subject);
+            var entry = new ClientCertificateEntry(Id, kind.Name, createdAt, subject) {
+                            Template           = template,
+                            Role               = role,
+                            KeyUsages          = keyUsages,
+                            ExtendedKeyUsages  = purposeNames
+                        };
 
             #endregion
 

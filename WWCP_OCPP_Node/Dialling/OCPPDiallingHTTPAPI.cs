@@ -499,6 +499,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
+        /// The keys and certificates as the pages read them: what the store
+        /// says - and whatever a kind of node says beside it, a charging
+        /// station that it can send a signing request to its CSMS, say.
+        /// </summary>
+        protected virtual JObject ClientCertificatesJSON()
+            => Dialling.ClientCertificates.ToJSON();
+
+        /// <summary>
         /// GET /api/v1/configuration/certificates: the keys and certificates
         /// this station holds up when it dials a back end.
         /// </summary>
@@ -515,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(refused);
 
             return Task.FromResult(
-                       JSONResponse(Request, HTTPStatusCode.OK, Dialling.ClientCertificates.ToJSON())
+                       JSONResponse(Request, HTTPStatusCode.OK, ClientCertificatesJSON())
                    );
 
         }
@@ -523,7 +531,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// POST /api/v1/configuration/certificates with {"subject", "algorithm"}:
         /// a new key, and the signing request to be handed to a certificate
-        /// authority.
+        /// authority - made to a "template", with its "role", and asking for
+        /// the "keyUsages" and "extendedKeyUsages" named beside the usual
+        /// ones, where the request says so.
         /// </summary>
         /// <remarks>
         /// At the same permission as the name servers and the time server, and
@@ -542,8 +552,23 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
+            // A name where a list is wanted is a request somebody wrote by
+            // hand: refused, rather than read as nothing asked for.
+            foreach (var list in new[] { "keyUsages", "extendedKeyUsages" })
+                if (json[list] is JToken given && given.Type != JTokenType.Null &&
+                    !(given is JArray names && names.All(name => name.Type == JTokenType.String)))
+                {
+                    return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, $"\"{list}\" is a list of names.", false));
+                }
+
             if (!Dialling.ClientCertificates.TryCreateKey(json.Value<String>("subject")   ?? "",
                                                          json.Value<String>("algorithm"),
+                                                         new ClientKeyAsks(
+                                                             json.Value<String>("template"),
+                                                             json.Value<String>("role"),
+                                                             (json["keyUsages"]         as JArray)?.Values<String>().OfType<String>(),
+                                                             (json["extendedKeyUsages"] as JArray)?.Values<String>().OfType<String>()
+                                                         ),
                                                          out var id,
                                                          out var csr,
                                                          out var error,
@@ -557,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                     new JObject(
                                         new JProperty("id",           id),
                                         new JProperty("csr",          csr),
-                                        new JProperty("certificates", Dialling.ClientCertificates.ToJSON())
+                                        new JProperty("certificates", ClientCertificatesJSON())
                                     ))
                    );
 
@@ -597,7 +622,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                     new JObject(
                                         new JProperty("id",           id),
                                         new JProperty("warnings",     new JArray(warnings)),
-                                        new JProperty("certificates", Dialling.ClientCertificates.ToJSON())
+                                        new JProperty("certificates", ClientCertificatesJSON())
                                     ))
                    );
 
@@ -625,7 +650,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
 
             return Task.FromResult(
-                       JSONResponse(Request, HTTPStatusCode.OK, Dialling.ClientCertificates.ToJSON())
+                       JSONResponse(Request, HTTPStatusCode.OK, ClientCertificatesJSON())
                    );
 
         }

@@ -93,3 +93,29 @@
     font-size:  0.85rem;
     padding:    0.3rem 0.5rem;
 }
+
+// What a signing request asks for beside the usual, folded away: most
+// requests ask for a client certificate and for nothing else.
+details#asks-for {
+
+    summary {
+        cursor:     pointer;
+        font-size:  0.9rem;
+        color:      $color-muted;
+    }
+
+    &[open] summary {
+        margin-bottom: 0.7rem;
+    }
+
+    fieldset {
+        margin-bottom: 0.7rem;
+    }
+
+}
+
+// The keys that wait for their certificate, among the identities: what there
+// is to do with one stands in a row under it, with what came of it.
+.key-actions {
+    flex-wrap: wrap;
+}

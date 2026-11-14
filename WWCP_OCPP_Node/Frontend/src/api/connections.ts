@@ -323,6 +323,51 @@ export interface KeyAlgorithm {
     remark:   string;
 }
 
+/** One key usage a signing request may ask for beside the ones the kind of key brings by itself. */
+export interface KeyUsage {
+    /** How it is written in the API and in X.509, e.g. "keyAgreement". */
+    id:          string;
+    name:        string;
+    remark:      string;
+    /** The kinds of key that can be used that way, by their id. */
+    algorithms:  string[];
+}
+
+/** One extended key usage a signing request may ask for beside clientAuth. */
+export interface ExtendedKeyUsage {
+    /** How it is written in the API and in X.509, e.g. "serverAuth". */
+    id:      string;
+    name:    string;
+    remark:  string;
+    oid:     string;
+}
+
+/** A profile a signing request is made to: "ocpp", "modbus-tls". */
+export interface KeyTemplate {
+    id:                 string;
+    name:               string;
+    remark:             string;
+    /** What it asks for by itself, beside what every request asks for. */
+    keyUsages:          string[];
+    extendedKeyUsages:  string[];
+    /** The role it asks for, where it asks for one: what the profile names, though any may be typed. */
+    role?: {
+        label:      string;
+        roles:      string[];
+        maxLength:  number;
+    };
+}
+
+/** What a signing request asks for beyond a subject and a kind of key; everything may be left out. */
+export interface KeyAsks {
+    template?:           string;
+    role?:               string;
+    /** Beside a signature, and enciphering a key where the key can. */
+    keyUsages?:          string[];
+    /** Beside clientAuth; a name, or an object identifier in dots. */
+    extendedKeyUsages?:  string[];
+}
+
 /** One key of this station, its signing request, and its certificate if it has one. */
 export interface StationKey {
     id:            string;
@@ -340,6 +385,16 @@ export interface StationKey {
     cannotBeHeldUp?: string;
     /** The request waiting to be collected, while there is no certificate yet. */
     csr?:          string;
+    /** What its request asked for; all of its key usages, where they were written down. */
+    asksFor?: {
+        template:           string;
+        templateName:       string;
+        role:               string | null;
+        keyUsages:          string[];
+        extendedKeyUsages:  string[];
+    };
+    /** When its request was sent to the CSMS, while its certificate has not come. */
+    sentToCSMSAt?: string;
     certificate?: {
         subject:           string;
         issuer:            string;
@@ -369,6 +424,13 @@ export interface StationCertificates {
     maxSubjectLength:      number;
     /** Always false, and said out loud: a key that arrived from elsewhere is one somebody else has a copy of. */
     canImportPrivateKeys:  boolean;
+    /** What a request may be made to, and may ask for beside the usual; left out by a node that asks for a client certificate and nothing else. */
+    templates?:            KeyTemplate[];
+    defaultTemplate?:      string;
+    keyUsages?:            KeyUsage[];
+    extendedKeyUsages?:    ExtendedKeyUsage[];
+    /** Whether a request can be sent to the CSMS from here, in SignCertificate: a charging station's. */
+    canBeSentToCSMS?:      boolean;
 }
 
 
@@ -458,9 +520,19 @@ export const connectionsAPI = {
          * SLH-DSA key takes seconds to generate, and the deadline for a write
          * covers it.
          */
-        create:  (subject: string, algorithm: string) =>
+        create:  (subject: string, algorithm: string, asks: KeyAsks = {}) =>
                      request<{ id: string; csr: string; certificates: StationCertificates }>(
-                         'POST', '/configuration/certificates', { subject, algorithm }),
+                         'POST', '/configuration/certificates', { subject, algorithm, ...asks }),
+
+        /**
+         * Send the request of a key that waits for its certificate to the
+         * CSMS, in SignCertificate - where the node says it can, see
+         * canBeSentToCSMS. Answered once the CSMS has, which is why the
+         * deadline covers the time a node waits for an answer over OCPP.
+         */
+        sendToCSMS:  (id: string) =>
+                         request<{ said: string; certificates: StationCertificates }>(
+                             'POST', '/configuration/certificates/sign', { id }, afterAsking([ 30 ])),
 
         /** The certificate that came back, and whatever intermediates came with it. */
         add:     (pem: string) =>

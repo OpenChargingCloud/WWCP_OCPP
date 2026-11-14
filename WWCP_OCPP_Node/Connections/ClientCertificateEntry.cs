@@ -124,6 +124,32 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         public List<String>                 Warnings          { get; } = [];
 
         /// <summary>
+        /// The profile its signing request was made to, see
+        /// <see cref="CSRTemplate"/>: the usual one for a key that was never
+        /// told another.
+        /// </summary>
+        public String                       Template          { get; init; } = CSRTemplate.DefaultId;
+
+        /// <summary>
+        /// The role its signing request asked for, where its template asks
+        /// for one.
+        /// </summary>
+        public String?                      Role              { get; init; }
+
+        /// <summary>
+        /// The key usages its signing request asked for - all of them, what
+        /// its kind of key brings by itself included. Empty for a key made
+        /// before that was written down.
+        /// </summary>
+        public IReadOnlyList<String>        KeyUsages         { get; init; } = [];
+
+        /// <summary>
+        /// The extended key usages its signing request asked for: signing in
+        /// as a client, and whatever else.
+        /// </summary>
+        public IReadOnlyList<String>        ExtendedKeyUsages { get; init; } = [ CSRPurpose.ClientAuth ];
+
+        /// <summary>
         /// The first moment this certificate may be used, or null without one.
         /// </summary>
         public DateTimeOffset?              NotBefore
@@ -179,7 +205,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                            new JProperty("createdAt",  CreatedAt.ToString("o")),
                            new JProperty("subject",    Subject),
                            new JProperty("inUse",      InUse),
-                           new JProperty("canBeHeldUp", CanBeHeldUp)
+                           new JProperty("canBeHeldUp", CanBeHeldUp),
+
+                           // What its signing request asked for, which is what
+                           // somebody comparing it with the certificate that
+                           // came back wants beside it.
+                           new JProperty("asksFor",    new JObject(
+                               new JProperty("template",           Template),
+                               new JProperty("templateName",       CSRTemplate.Find(Template)?.Name ?? Template),
+                               new JProperty("role",               Role),
+                               new JProperty("keyUsages",          new JArray(KeyUsages)),
+                               new JProperty("extendedKeyUsages",  new JArray(ExtendedKeyUsages))
+                           ))
                        );
 
             if (CannotBeHeldUp is not null)

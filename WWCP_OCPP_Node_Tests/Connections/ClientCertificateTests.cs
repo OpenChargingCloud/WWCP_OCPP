@@ -21,6 +21,9 @@ using System.Security.Cryptography;
 
 using NUnit.Framework;
 
+using Newtonsoft.Json.Linq;
+
+using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.OpenSsl;
@@ -537,6 +540,186 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(notPEM, Is.Not.Null);
 
             });
+
+        }
+
+        #endregion
+
+        #region (private static) ExtensionsOf(CSR)
+
+        /// <summary>
+        /// The extensions a signing request asks for.
+        /// </summary>
+        private static X509Extensions ExtensionsOf(String CSR)
+        {
+
+            var request = (new PemReader(new StringReader(CSR)).ReadObject() as Pkcs10CertificationRequest)!;
+
+            Assert.That(request.Verify(), Is.True, "The signing request is not signed by the key it names.");
+
+            return X509Extensions.GetInstance(
+                       AttributePkcs.GetInstance(
+                           request.GetCertificationRequestInfo().Attributes!.ToArray().
+                               First(entry => AttributePkcs.GetInstance(entry).AttrType.
+                                                  Equals(PkcsObjectIdentifiers.Pkcs9AtExtensionRequest))
+                       ).AttrValues[0]
+                   );
+
+        }
+
+        #endregion
+
+        #region ARequestAsksForWhatWasTickedBesideTheUsual()
+
+        /// <summary>
+        /// Key usages and extended key usages beside the ones every request
+        /// has - by name, and by object identifier for the ones no list has.
+        /// </summary>
+        /// <remarks>
+        /// Signing in as a client and a signature stay whatever is ticked:
+        /// they are what a key here is for, and what was asked for is written
+        /// down beside the key, so that it can be compared with what came
+        /// back.
+        /// </remarks>
+        [Test]
+        public void ARequestAsksForWhatWasTickedBesideTheUsual()
+        {
+
+            Assert.That(store.TryCreateKey("cs001.example.org",
+                                           "ecdsa-p256",
+                                           new ClientKeyAsks(
+                                               KeyUsages:          [ "keyAgreement", "nonRepudiation" ],
+                                               ExtendedKeyUsages:  [ "serverAuth", "1.3.6.1.4.1.311.20.2.2", "clientAuth", "1.3.6.1.5.5.7.3.1" ]
+                                           ),
+                                           out var id, out var csr, out var error, out _),
+                        Is.True, error);
+
+            var extensions  = ExtensionsOf(csr!);
+            var keyUsage    = KeyUsage.GetInstance(extensions.GetExtensionParsedValue(X509Extensions.KeyUsage));
+            var purposes    = ExtendedKeyUsage.GetInstance(extensions.GetExtensionParsedValue(X509Extensions.ExtendedKeyUsage));
+            var entry       = store.Entries.Single(entry => entry.Id == id);
+
+            Assert.Multiple(() => {
+
+                Assert.That(keyUsage.IntValue & 0xFFFF,
+                            Is.EqualTo(KeyUsage.DigitalSignature | KeyUsage.KeyAgreement | KeyUsage.NonRepudiation));
+
+                Assert.That(purposes.GetAllUsages().Select(purpose => purpose.Id),
+                            Is.EqualTo(new[] { KeyPurposeID.id_kp_clientAuth.Id, KeyPurposeID.id_kp_serverAuth.Id, "1.3.6.1.4.1.311.20.2.2" }),
+                            "clientAuth first, each purpose once - named or by its number");
+
+                Assert.That(entry.KeyUsages,          Is.EqualTo(new[] { "digitalSignature", "keyAgreement", "nonRepudiation" }));
+                Assert.That(entry.ExtendedKeyUsages,  Is.EqualTo(new[] { "clientAuth", "serverAuth", "1.3.6.1.4.1.311.20.2.2" }));
+                Assert.That(entry.Template,           Is.EqualTo(CSRTemplate.DefaultId));
+
+            });
+
+            // And it is still there after a restart.
+            var again = new ClientCertificateStore(store.Path).Entries.Single(entry => entry.Id == id);
+
+            Assert.Multiple(() => {
+                Assert.That(again.KeyUsages,          Is.EqualTo(entry.KeyUsages));
+                Assert.That(again.ExtendedKeyUsages,  Is.EqualTo(entry.ExtendedKeyUsages));
+            });
+
+        }
+
+        #endregion
+
+        #region AModbusTLSRequestCarriesItsRole()
+
+        /// <summary>
+        /// The template for Modbus/TLS asks for a client certificate with the
+        /// role its holder may play, in the extension a Modbus/TLS server
+        /// reads - and for nothing without one.
+        /// </summary>
+        [Test]
+        public void AModbusTLSRequestCarriesItsRole()
+        {
+
+            Assert.That(store.TryCreateKey("cs001.example.org",
+                                           "ecdsa-p256",
+                                           new ClientKeyAsks(Template: CSRTemplate.ModbusTLSId, Role: " GridServiceSunSpec "),
+                                           out var id, out var csr, out var error, out _),
+                        Is.True, error);
+
+            var extensions  = ExtensionsOf(csr!);
+            var role        = extensions.GetExtension(new DerObjectIdentifier("1.3.6.1.4.1.50316.802.1"));
+            var purposes    = ExtendedKeyUsage.GetInstance(extensions.GetExtensionParsedValue(X509Extensions.ExtendedKeyUsage));
+            var entry       = store.Entries.Single(entry => entry.Id == id);
+            var json        = store.ToJSON();
+
+            Assert.Multiple(() => {
+
+                Assert.That(role,                                                           Is.Not.Null, "The request carries no role extension.");
+                Assert.That(role?.IsCritical,                                               Is.False);
+                Assert.That(DerUtf8String.GetInstance(role?.GetParsedValue()).GetString(),  Is.EqualTo("GridServiceSunSpec"));
+                Assert.That(purposes.HasKeyPurposeId(KeyPurposeID.id_kp_clientAuth),        Is.True);
+
+                Assert.That(entry.Template,  Is.EqualTo("modbus-tls"));
+                Assert.That(entry.Role,      Is.EqualTo("GridServiceSunSpec"));
+
+                Assert.That(json["entries"]?[0]?["asksFor"]?["templateName"]?.Value<String>(),  Does.Contain("Modbus/TLS"));
+                Assert.That(json["entries"]?[0]?["asksFor"]?["role"]?.Value<String>(),          Is.EqualTo("GridServiceSunSpec"));
+                Assert.That(json["templates"]?.Select(template => template["id"]?.Value<String>()),
+                            Is.EqualTo(new[] { "ocpp", "modbus-tls" }));
+                Assert.That(json["templates"]?[1]?["role"]?["roles"]?.Values<String>(),         Does.Contain("ReadOnlySunSpec"));
+
+            });
+
+            // A request made to no template carries none.
+            Assert.That(store.TryCreateKey("cs002.example.org", "ecdsa-p256", out _, out var plain, out error), Is.True, error);
+            Assert.That(ExtensionsOf(plain!).GetExtension(new DerObjectIdentifier("1.3.6.1.4.1.50316.802.1")), Is.Null);
+
+        }
+
+        #endregion
+
+        #region WhatARequestMayNotAskFor()
+
+        /// <summary>
+        /// What a kind of key cannot do, a template nobody has heard of and a
+        /// role in the wrong place are refused, with what may be asked for
+        /// instead - and nothing of a key is kept.
+        /// </summary>
+        [Test]
+        public void WhatARequestMayNotAskFor()
+        {
+
+            Boolean Made(String Algorithm, ClientKeyAsks Asks, out String? Why)
+                => store.TryCreateKey("cs001.example.org", Algorithm, Asks, out _, out _, out Why, out _);
+
+            Assert.Multiple(() => {
+
+                Assert.That(Made("ed25519",    new ClientKeyAsks(KeyUsages: [ "keyAgreement" ]),               out var cannotAgree),    Is.False);
+                Assert.That(cannotAgree,       Does.Contain("keyAgreement"));
+
+                Assert.That(Made("ecdsa-p256", new ClientKeyAsks(KeyUsages: [ "dataEncipherment" ]),           out var cannotEncipher), Is.False);
+                Assert.That(cannotEncipher,    Does.Contain("RSA"));
+
+                Assert.That(Made("ecdsa-p256", new ClientKeyAsks(KeyUsages: [ "keyCertSign" ]),                out var noAuthority),    Is.False);
+                Assert.That(noAuthority,       Does.Contain("nonRepudiation"), "The refusal does not say what may be asked for instead.");
+
+                Assert.That(Made("ecdsa-p256", new ClientKeyAsks(ExtendedKeyUsages: [ "serverAuthentication" ]), out var noPurpose),    Is.False);
+                Assert.That(noPurpose,         Does.Contain("serverAuth"));
+
+                Assert.That(Made("ecdsa-p256", new ClientKeyAsks(Template: "quantum-banana"),                  out var noTemplate),     Is.False);
+                Assert.That(noTemplate,        Does.Contain("modbus-tls"));
+
+                Assert.That(Made("ecdsa-p256", new ClientKeyAsks(Template: "modbus-tls"),                      out var noRole),         Is.False);
+                Assert.That(noRole,            Does.Contain("ReadOnlySunSpec"));
+
+                Assert.That(Made("ecdsa-p256", new ClientKeyAsks(Role: "ReadOnlySunSpec"),                     out var roleOfNothing),  Is.False);
+                Assert.That(roleOfNothing,     Does.Contain("no role"));
+
+                Assert.That(store.Entries,     Is.Empty, "A key was kept for a request that was refused.");
+
+            });
+
+            // What the kind of key brings by itself may be named, as a page
+            // that shows every usage would.
+            Assert.That(Made("rsa-2048", new ClientKeyAsks(KeyUsages: [ "digitalSignature", "keyEncipherment", "dataEncipherment" ]), out var error),
+                        Is.True, error);
 
         }
 
