@@ -25,6 +25,8 @@ using cloud.charging.open.protocols.OCPP.Node.Connections;
 
 using cloud.charging.open.protocols.OCPP.Node.KeyPins;
 
+using cloud.charging.open.protocols.WWCP.Node.Certificates;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.Node
@@ -111,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (private) ClientKeyPins()
 
         /// <summary>
-        /// The key pins of the TLS client keys this station presents: those of the client certificates its
+        /// The key pins of the TLS client keys this station presents: those of the identities its
         /// wss:// connections name, the oldest connection's first, each once.
         /// </summary>
         /// <remarks>
@@ -126,20 +128,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected virtual IEnumerable<KeyPin> ClientKeyPins()
         {
 
-            var certificates = ClientCertificates.Entries.ToDictionary(entry => entry.Id);
-            var pins         = new List<KeyPin>();
+            var pins = new List<KeyPin>();
 
             foreach (var connection in Connections.Connections.Where(entry => entry.IsSecure && entry.CertificateId is not null).OrderBy(entry => entry.CreatedAt))
             {
 
-                if (!certificates.TryGetValue(connection.CertificateId!, out var certificate) || certificate.Certificate is null)
+                if (Certificates.Get(connection.CertificateId, CertificateKind.TLSIdentity) is not CertificateEntry identity ||
+                    !Certificates.TryLoad(identity, out var certificate, out _))
+                {
                     continue;
+                }
 
                 try
                 {
-                    var pin = KeyPin.FromCertificate(certificate.Certificate);
-                    if (!pins.Contains(pin))
-                        pins.Add(pin);
+                    using (certificate)
+                    {
+                        var pin = KeyPin.FromCertificate(certificate);
+                        if (!pins.Contains(pin))
+                            pins.Add(pin);
+                    }
                 }
                 catch
                 {

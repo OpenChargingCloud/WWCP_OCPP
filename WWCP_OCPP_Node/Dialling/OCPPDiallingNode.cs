@@ -58,12 +58,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region Properties
 
         /// <summary>
-        /// The keys and certificates this node holds up to a back end that
-        /// asks for one.
-        /// </summary>
-        public ClientCertificateStore  ClientCertificates    { get; protected set; } = default!;
-
-        /// <summary>
         /// The places this node dials, and the credentials it proves itself
         /// with when it gets there.
         /// </summary>
@@ -134,7 +128,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                    TimeProvider?                              TimeProvider                    = null,
                                    SSHSettings?                               SSH                             = null,
                                    SecurityHeaderOptions?                     FrontendSecurityHeaders         = null,
-                                   WebConfiguration?                          Web                             = null)
+                                   WebConfiguration?                          Web                             = null,
+                                   IEnumerable<CertificateKind>?              CertificateRequestKinds         = null)
 
             : base(Kind,
                    Version,
@@ -168,7 +163,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    TimeProvider,
                    SSH,
                    FrontendSecurityHeaders,
-                   Web)
+                   Web,
+                   CertificateRequestKinds)
 
         { }
 

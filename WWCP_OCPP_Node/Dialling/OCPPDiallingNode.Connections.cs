@@ -47,6 +47,8 @@ using cloud.charging.open.protocols.OCPP.Node.Connections;
 
 using cloud.charging.open.protocols.OCPP.Node.KeyPins;
 
+using cloud.charging.open.protocols.WWCP.Node.Certificates;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.Node
@@ -345,27 +347,40 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (Connection.CertificateId is not null)
             {
 
-                var key = ClientCertificates.Entries.
-                              FirstOrDefault(entry => entry.Id == Connection.CertificateId);
+                // Who this node is as a client, from its certificate store:
+                // asked whenever it dials, so that an identity switched off
+                // or taken out on the page next door is not shown again.
+                var identity = this.Certificates.Get(Connection.CertificateId, CertificateKind.TLSIdentity);
 
-                if (key?.Certificate is null)
+                if (identity is null)
                 {
-                    Error = $"it names a client certificate this {NodeWording.Noun} does not have";
+                    Error = $"it names an identity this {NodeWording.Noun} does not have";
                     return false;
                 }
 
-                // A certificate whose private key this runtime could not
-                // attach cannot be shown in a handshake. Said here rather than
-                // left to a TLS error that names neither the certificate nor
-                // the reason.
-                if (!key.CanBeHeldUp)
+                if (!identity.IsActive)
                 {
-                    Error = $"it would show a certificate this runtime cannot present ({key.CannotBeHeldUp})";
+                    Error = $"it would show the identity '{identity.Label}', which is switched off";
                     return false;
                 }
 
-                Certificates  = [ key.Certificate ];
-                Says          = $"a TLS client certificate, '{key.Subject}' ({key.Algorithm})";
+                // Said here rather than left to a TLS error that names
+                // neither the certificate nor the reason.
+                // As a handshake wants it, which on Windows is not as the
+                // store reads it - see CertificateStore.TryLoadForHandshake.
+                // What travels with it is not shown, as it never was: a
+                // back end is told the intermediates of its stations' CA.
+                if (!this.Certificates.TryLoadForHandshake(identity, out var shown, out var above, out var unreadable))
+                {
+                    Error = $"it would show the identity '{identity.Label}', which this runtime cannot present ({unreadable})";
+                    return false;
+                }
+
+                foreach (var certificate in above)
+                    certificate.Dispose();
+
+                Certificates  = [ shown ];
+                Says          = $"a TLS client certificate, '{identity.Subject}' ({identity.KeyAlgorithm})";
 
             }
 

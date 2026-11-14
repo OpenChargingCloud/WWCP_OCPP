@@ -1539,7 +1539,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 if (KnownCertificateIds is not null && !KnownCertificateIds().Contains(CertificateId))
                 {
-                    Error = $"This {NodeWording.Noun} has no client key '{CertificateId}'.";
+                    Error = $"This {NodeWording.Noun} has no identity '{CertificateId}'.";
                     return false;
                 }
 

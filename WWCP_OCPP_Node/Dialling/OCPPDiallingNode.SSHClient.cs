@@ -35,6 +35,8 @@ using cloud.charging.open.protocols.OCPP.Node.Connections;
 
 using cloud.charging.open.protocols.OCPP.Node.KeyPins;
 
+using cloud.charging.open.protocols.WWCP.Node.Certificates;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.Node
@@ -249,10 +251,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (NetworkingNode_Id.TryParse(path[(path.LastIndexOf('/') + 1)..]) is NetworkingNode_Id fromPath)
                 return fromPath;
 
+            // Who its identity says it is: the common name of the
+            // certificate, which is what the store calls it by.
             if (Connection.CertificateId is String certificateId &&
-                ClientCertificates.Entries.FirstOrDefault(entry => entry.Id == certificateId)?.Certificate is System.Security.Cryptography.X509Certificates.X509Certificate2 certificate &&
-                NetworkingNode_Id.TryParse(certificate.GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType.SimpleName, forIssuer: false)) is NetworkingNode_Id fromCertificate)
-                return fromCertificate;
+                Certificates.Get(certificateId, CertificateKind.TLSIdentity) is CertificateEntry identity &&
+                Certificates.TryLoad(identity, out var certificate, out _))
+            {
+                using (certificate)
+                {
+                    if (NetworkingNode_Id.TryParse(certificate.GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType.SimpleName, forIssuer: false)) is NetworkingNode_Id fromCertificate)
+                        return fromCertificate;
+                }
+            }
 
             return login is not null
                        ? NetworkingNode_Id.TryParse(login)

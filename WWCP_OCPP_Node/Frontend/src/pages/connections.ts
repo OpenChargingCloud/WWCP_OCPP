@@ -453,10 +453,10 @@ export const connectionsPage: Page = {
                         `}
 
                         ${state.certificates.length === 0 ? nothing : html`
-                            <optgroup label="TLS client certificates">
+                            <optgroup label="TLS identities">
                                 ${state.certificates.map(one => html`
                                     <option value="cert:${one.id}" ?selected=${chosen === `cert:${one.id}`}>
-                                        ${one.subject || one.id} (${one.algorithm})${one.hasCertificate ? '' : ' - request still out'}
+                                        ${one.label || one.subject || one.id} (${one.algorithm})${one.canBeHeldUp ? '' : ' - cannot be shown right now'}
                                     </option>
                                 `)}
                             </optgroup>
@@ -464,8 +464,9 @@ export const connectionsPage: Page = {
 
                     </select>
                     <span class="hint">
-                        One of them. Credentials come from the Authentication page and certificates from the
-                        Certificates page; anything missing here is missing there. Over <code>ssh://</code> this
+                        One of them. Credentials come from the Authentication page and identities from the
+                        Identities page, where a key is made and its certificate brought; anything missing here
+                        is missing there. Over <code>ssh://</code> this
                         ${nodeNoun()} always signs in with its own SSH key, and HTTP Basic credentials add their
                         login and password.
                     </span>
@@ -520,7 +521,7 @@ export const connectionsPage: Page = {
                             ${credentials !== undefined
                                   ? html`${credentials.description} (${credentials.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})`
                                   : certificate !== undefined
-                                        ? html`Client certificate ${certificate.subject || certificate.id}`
+                                        ? html`TLS identity ${certificate.label || certificate.subject || certificate.id}`
                                         : entry.authenticationId !== undefined || entry.certificateId !== undefined
                                               ? html`<span class="hint">something that is no longer here</span>`
                                               : entry.transport === 'ssh'

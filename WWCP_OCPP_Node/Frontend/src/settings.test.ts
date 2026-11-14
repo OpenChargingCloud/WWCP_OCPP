@@ -12,13 +12,12 @@ import { leave, open, type Asked } from '@node/../test/node.ts';
 import { strict as assert }     from 'node:assert';
 import { after, describe, it }  from 'node:test';
 
-import type { StationCertificates, StationConnections } from './api/connections.ts';
+import type { StationConnections } from './api/connections.ts';
 import { connectionsResource, nodeNoun, nodeNounInFull, nodeTraits,
          setConnectionsResource, setNodeNoun, setNodeTraits } from './settings.ts';
 
 const { connectionsPage }     = await import('./pages/connections.ts');
 const { authenticationPage }  = await import('./pages/authentication.ts');
-const { clientKeysPage }      = await import('./pages/clientKeys.ts');
 
 
 /** A node that dials nowhere yet, and has nothing to prove itself with. */
@@ -39,27 +38,10 @@ function nothingYet(): StationConnections {
     };
 }
 
-/** And no key to dial with. */
-function noKeys(): StationCertificates {
-    return {
-        directory:             'certificates',
-        now:                   '2026-10-04T12:00:00Z',
-        inUseId:               null,
-        entries:               [],
-        algorithms:            [ { id: 'ecdsa-p256', name: 'ECDSA P-256', remark: 'What every back end takes.' } ],
-        defaultAlgorithm:      'ecdsa-p256',
-        maxSubjectLength:      200,
-        canImportPrivateKeys:  false
-    };
-}
-
 function node({ path }: Asked): unknown {
 
     if (path === '/configuration/connections' || path === '/configuration/authentications')
         return nothingYet();
-
-    if (path === '/configuration/certificates')
-        return noKeys();
 
     if (path === '/status/connections')
         return { timestamp: '2026-10-04T12:00:05Z', states: {} };
@@ -142,22 +124,6 @@ describe('the pages of the connections, told they are a local controller\'s', ()
         assert.match(text, /How this local controller proves who it is when it dials a back end\./);
         assert.match(text, /it is what the other end calls this local controller\./);
         assert.doesNotMatch(text, /[Tt]his (charging )?station/);
-
-    });
-
-    it('speak of a local controller on the Client keys page, which is dialled itself', async () => {
-
-        told();
-
-        const root = await open(clientKeysPage, '/configuration/client-keys', [ 'csms:read', 'csms:edit' ],
-                                node, root => root.querySelector('#create-form') !== null);
-        const text = written(root);
-
-        assert.match(text, /What this local controller says it is when it dials a back end\./);
-        assert.match(text, /What a back end recognises this local controller by\./);
-        assert.match(text, /It dials with this key and is not dialled by it, so nothing else is asked for\./);
-        assert.doesNotMatch(text, /[Tt]his (charging )?station/);
-        assert.doesNotMatch(text, /is not something anybody dials/);
 
     });
 

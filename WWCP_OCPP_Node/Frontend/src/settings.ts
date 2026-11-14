@@ -1,7 +1,7 @@
 /*
  * What the pages of the connections are told by the kind of node they are
  * drawn for: a charging station and a local controller keep the same
- * connections, credentials and client keys, and serve them by the same
+ * connections and credentials, and serve them by the same
  * routes, but each under a resource of its own, and each is something else.
  *
  * Said once, in a kind's main.ts, before the web interface starts - the pages

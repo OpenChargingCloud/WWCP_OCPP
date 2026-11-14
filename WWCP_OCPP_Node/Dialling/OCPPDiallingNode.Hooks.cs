@@ -29,6 +29,8 @@ using cloud.charging.open.protocols.OCPP.Node.Connections;
 
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
 
+using cloud.charging.open.protocols.WWCP.Node.Certificates;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.Node
@@ -169,6 +171,44 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                    String                                       Name,
                                                    String?                                      Instance)
         { }
+
+        #endregion
+
+        #region (override) WhatUses(Handle, Kind)
+
+        /// <summary>
+        /// What of this node uses an identity of its certificate store: the
+        /// connections that show it when they are dialled.
+        /// </summary>
+        /// <remarks>
+        /// Deleted from under them, they would be dialled with an identity
+        /// that is not there, and refused at the next handshake rather than
+        /// here. Switching it off is what takes an identity out of service;
+        /// choosing another one for its connections is what lets it go.
+        /// </remarks>
+        public override String? WhatUses(String            Handle,
+                                         CertificateKind?  Kind)
+        {
+
+            if (Kind is null || Kind == CertificateKind.TLSIdentity)
+            {
+
+                var showing = Connections.Connections.
+                                  Where (connection => connection.CertificateId == Handle).
+                                  Select(connection => connection.Description).
+                                  ToArray();
+
+                if (showing.Length > 0)
+                    return (showing.Length == 1
+                                ? $"The connection '{showing[0]}' shows it"
+                                : $"{showing.Length} connections show it ({String.Join(", ", showing.Select(name => $"'{name}'"))})") +
+                           $" when this {NodeWording.Noun} dials. Choose another identity on the Connections page first - or switch this one off, which keeps it.";
+
+            }
+
+            return base.WhatUses(Handle, Kind);
+
+        }
 
         #endregion
 

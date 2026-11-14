@@ -5,8 +5,8 @@ import { afterAsking,
 
 
 // What a node that dials its back ends keeps for it, and how it is asked: the
-// credentials it proves itself with, the connections it dials and where each
-// of them stands, and the client keys it holds up. A charging station and a
+// credentials it proves itself with, and the connections it dials and where
+// each of them stands. A charging station and a
 // local controller keep them alike, and serve them by the same routes -
 // OCPPDiallingHTTPAPI's - so the types and the calls are here, for the pages
 // of both. A kind of node names them in its own api/client.ts as well, and
@@ -274,12 +274,19 @@ export interface ConnectionStates {
     states:     Record<string, ConnectionState>;
 }
 
-/** A client certificate, as far as a connection is concerned. */
+/** An identity of the node's certificate store, as far as a connection is concerned: what it may show when it is dialled. */
 export interface ConnectionCertificate {
+    /** The handle of the identity in the certificate store. */
     id:                  string;
+    /** What it is called there. */
+    label?:              string;
     subject:             string;
     algorithm:           string;
+    notAfter?:           string;
+    /** Whether it is switched on. */
+    active?:             boolean;
     hasCertificate:      boolean;
+    /** Whether it can be shown right now: switched on, in its window, and with its key. */
     canBeHeldUp:         boolean;
 }
 
@@ -313,131 +320,11 @@ export interface StationConnections extends ConnectionStates {
     };
 }
 
-/** One kind of key this station will make for itself. */
-export interface KeyAlgorithm {
-    /** How it is written in the API, e.g. "ed448". */
-    id:       string;
-    /** How it is written on a page, e.g. "Ed448". */
-    name:     string;
-    /** What somebody choosing it should know. */
-    remark:   string;
-}
-
-/** One key usage a signing request may ask for beside the ones the kind of key brings by itself. */
-export interface KeyUsage {
-    /** How it is written in the API and in X.509, e.g. "keyAgreement". */
-    id:          string;
-    name:        string;
-    remark:      string;
-    /** The kinds of key that can be used that way, by their id. */
-    algorithms:  string[];
-}
-
-/** One extended key usage a signing request may ask for beside clientAuth. */
-export interface ExtendedKeyUsage {
-    /** How it is written in the API and in X.509, e.g. "serverAuth". */
-    id:      string;
-    name:    string;
-    remark:  string;
-    oid:     string;
-}
-
-/** A profile a signing request is made to: "ocpp", "modbus-tls". */
-export interface KeyTemplate {
-    id:                 string;
-    name:               string;
-    remark:             string;
-    /** What it asks for by itself, beside what every request asks for. */
-    keyUsages:          string[];
-    extendedKeyUsages:  string[];
-    /** The role it asks for, where it asks for one: what the profile names, though any may be typed. */
-    role?: {
-        label:      string;
-        roles:      string[];
-        maxLength:  number;
-    };
-}
-
-/** What a signing request asks for beyond a subject and a kind of key; everything may be left out. */
-export interface KeyAsks {
-    template?:           string;
-    role?:               string;
-    /** Beside a signature, and enciphering a key where the key can. */
-    keyUsages?:          string[];
-    /** Beside clientAuth; a name, or an object identifier in dots. */
-    extendedKeyUsages?:  string[];
-}
-
-/** One key of this station, its signing request, and its certificate if it has one. */
-export interface StationKey {
-    id:            string;
-    algorithm:     string;
-    createdAt:     string;
-    subject:       string;
-    /** Whether this is the one the station would hold up when it dials. */
-    inUse:         boolean;
-    /**
-     * Whether this station can load the certificate together with its key at
-     * all. False is about the platform and not about the certificate: .NET has
-     * no key object for an Ed448 or an ML-DSA key today.
-     */
-    canBeHeldUp:   boolean;
-    cannotBeHeldUp?: string;
-    /** The request waiting to be collected, while there is no certificate yet. */
-    csr?:          string;
-    /** What its request asked for; all of its key usages, where they were written down. */
-    asksFor?: {
-        template:           string;
-        templateName:       string;
-        role:               string | null;
-        keyUsages:          string[];
-        extendedKeyUsages:  string[];
-    };
-    /** When its request was sent to the CSMS, while its certificate has not come. */
-    sentToCSMSAt?: string;
-    certificate?: {
-        subject:           string;
-        issuer:            string;
-        serialNumber:      string;
-        notBefore:         string;
-        notAfter:          string;
-        thumbprintSHA256:  string;
-        /** How many were sent along between it and a root. */
-        intermediates:     number;
-        /** Negative once it has run out. */
-        daysLeft:          number;
-        expired:           boolean;
-        notYetValid:       boolean;
-    };
-    warnings?:     string[];
-}
-
-/** The keys and certificates this station dials a back end with. */
-export interface StationCertificates {
-    directory:             string;
-    /** What the station thinks the time is, so a page does not guess which clock the days are counted by. */
-    now:                   string;
-    inUseId:               string | null;
-    entries:               StationKey[];
-    algorithms:            KeyAlgorithm[];
-    defaultAlgorithm:      string;
-    maxSubjectLength:      number;
-    /** Always false, and said out loud: a key that arrived from elsewhere is one somebody else has a copy of. */
-    canImportPrivateKeys:  boolean;
-    /** What a request may be made to, and may ask for beside the usual; left out by a node that asks for a client certificate and nothing else. */
-    templates?:            KeyTemplate[];
-    defaultTemplate?:      string;
-    keyUsages?:            KeyUsage[];
-    extendedKeyUsages?:    ExtendedKeyUsage[];
-    /** Whether a request can be sent to the CSMS from here, in SignCertificate: a charging station's. */
-    canBeSentToCSMS?:      boolean;
-}
-
-
 /**
- * The routes of the credentials, the connections and the client keys, as a
- * kind of node has them in its own api: api.authentications, api.connections
- * and api.clientKeys.
+ * The routes of the credentials and the connections, as a kind of node has
+ * them in its own api: api.authentications and api.connections. Who the node
+ * is when it dials - the identity a connection shows - is its certificate
+ * store's, and every node's: see "@node/api/client".
  */
 export const connectionsAPI = {
 
@@ -504,44 +391,6 @@ export const connectionsAPI = {
         test:    (entry: ConnectionToSave, asks: ConnectionTestAsks = 'heartbeat') =>
                      request<ConnectionTest>('POST', '/configuration/connections/test', { ...entry, ocppRequest: asks },
                                              afterAsking(asks === 'none' ? [ 2 ] : [ connectionTestAnswerWithin, 2 ]))
-
-    },
-
-    /** The keys this station dials its back ends with, made here and never imported. */
-    clientKeys: {
-
-        get:     ()  => request<StationCertificates>('GET', '/configuration/certificates'),
-
-        /**
-         * A new key and the signing request to be handed to whoever issues
-         * certificates for this station.
-         *
-         * Slower than the other writes by a wide margin - an RSA 4096 or an
-         * SLH-DSA key takes seconds to generate, and the deadline for a write
-         * covers it.
-         */
-        create:  (subject: string, algorithm: string, asks: KeyAsks = {}) =>
-                     request<{ id: string; csr: string; certificates: StationCertificates }>(
-                         'POST', '/configuration/certificates', { subject, algorithm, ...asks }),
-
-        /**
-         * Send the request of a key that waits for its certificate to the
-         * CSMS, in SignCertificate - where the node says it can, see
-         * canBeSentToCSMS. Answered once the CSMS has, which is why the
-         * deadline covers the time a node waits for an answer over OCPP.
-         */
-        sendToCSMS:  (id: string) =>
-                         request<{ said: string; certificates: StationCertificates }>(
-                             'POST', '/configuration/certificates/sign', { id }, afterAsking([ 30 ])),
-
-        /** The certificate that came back, and whatever intermediates came with it. */
-        add:     (pem: string) =>
-                     request<{ id: string; warnings: string[]; certificates: StationCertificates }>(
-                         'POST', '/configuration/certificates/import', { pem }),
-
-        /** The identification travels in the body, as it does everywhere else in this API. */
-        remove:  (id: string) =>
-                     request<StationCertificates>('POST', '/configuration/certificates/remove', { id })
 
     }
 

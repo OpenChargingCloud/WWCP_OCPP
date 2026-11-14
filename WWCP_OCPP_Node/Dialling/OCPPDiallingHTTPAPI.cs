@@ -33,6 +33,8 @@ using cloud.charging.open.protocols.WWCP.Node.Configuration;
 using cloud.charging.open.protocols.OCPP.Node.Connections;
 using cloud.charging.open.protocols.OCPP.Node.KeyPins;
 
+using cloud.charging.open.protocols.WWCP.Node.Certificates;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.Node
@@ -112,10 +114,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
             AddHandler(HTTPPath.Root + "v1/configuration/connections/test",       PostTestConnection,        HTTPMethod.POST);
             AddHandler(HTTPPath.Root + "v1/configuration/connections/pinSetSigners",         PostPinSetSigner,        HTTPMethod.POST);
             AddHandler(HTTPPath.Root + "v1/configuration/connections/pinSetSigners/remove",  PostRemovePinSetSigner,  HTTPMethod.POST);
-            AddHandler(HTTPPath.Root + "v1/configuration/certificates",        GetClientCertificates,   HTTPMethod.GET);
-            AddHandler(HTTPPath.Root + "v1/configuration/certificates",        PostClientKey,           HTTPMethod.POST);
-            AddHandler(HTTPPath.Root + "v1/configuration/certificates/import", PostClientCertificate,   HTTPMethod.POST);
-            AddHandler(HTTPPath.Root + "v1/configuration/certificates/remove", PostRemoveClientKey,     HTTPMethod.POST);
 
         }
 
@@ -499,163 +497,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// The keys and certificates as the pages read them: what the store
-        /// says - and whatever a kind of node says beside it, a charging
-        /// station that it can send a signing request to its CSMS, say.
-        /// </summary>
-        protected virtual JObject ClientCertificatesJSON()
-            => Dialling.ClientCertificates.ToJSON();
-
-        /// <summary>
-        /// GET /api/v1/configuration/certificates: the keys and certificates
-        /// this station holds up when it dials a back end.
-        /// </summary>
-        /// <remarks>
-        /// Reading them needs no more than reading anything else here: a
-        /// certificate is a signature over a public key, a signing request is
-        /// meant to be handed to somebody, and the private keys are the one
-        /// thing that never appears in this answer at all.
-        /// </remarks>
-        protected Task<HTTPResponse> GetClientCertificates(HTTPRequest Request)
-        {
-
-            if (!TryAuthorize(Request, Permission.Read(ConnectionsResource), false, out _, out var refused))
-                return Task.FromResult(refused);
-
-            return Task.FromResult(
-                       JSONResponse(Request, HTTPStatusCode.OK, ClientCertificatesJSON())
-                   );
-
-        }
-
-        /// <summary>
-        /// POST /api/v1/configuration/certificates with {"subject", "algorithm"}:
-        /// a new key, and the signing request to be handed to a certificate
-        /// authority - made to a "template", with its "role", and asking for
-        /// the "keyUsages" and "extendedKeyUsages" named beside the usual
-        /// ones, where the request says so.
-        /// </summary>
-        /// <remarks>
-        /// At the same permission as the name servers and the time server, and
-        /// for the same reason: this is a statement about how the station
-        /// reaches the outside world. It is not about what the equipment is or
-        /// may deliver, and it is not about calibration - a certificate here
-        /// says who this station is to a back end, and nothing about what it
-        /// measures.
-        /// </remarks>
-        protected Task<HTTPResponse> PostClientKey(HTTPRequest Request)
-        {
-
-            if (!TryAuthorize(Request, Permission.Edit(ConnectionsResource), true, out _, out var refused))
-                return Task.FromResult(refused);
-
-            if (!TryParseJSONObject(Request, out var json, out var errorResponse))
-                return Task.FromResult(errorResponse);
-
-            // A name where a list is wanted is a request somebody wrote by
-            // hand: refused, rather than read as nothing asked for.
-            foreach (var list in new[] { "keyUsages", "extendedKeyUsages" })
-                if (json[list] is JToken given && given.Type != JTokenType.Null &&
-                    !(given is JArray names && names.All(name => name.Type == JTokenType.String)))
-                {
-                    return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, $"\"{list}\" is a list of names.", false));
-                }
-
-            if (!Dialling.ClientCertificates.TryCreateKey(json.Value<String>("subject")   ?? "",
-                                                         json.Value<String>("algorithm"),
-                                                         new ClientKeyAsks(
-                                                             json.Value<String>("template"),
-                                                             json.Value<String>("role"),
-                                                             (json["keyUsages"]         as JArray)?.Values<String>().OfType<String>(),
-                                                             (json["extendedKeyUsages"] as JArray)?.Values<String>().OfType<String>()
-                                                         ),
-                                                         out var id,
-                                                         out var csr,
-                                                         out var error,
-                                                         out var notSaved))
-            {
-                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
-            }
-
-            return Task.FromResult(
-                       JSONResponse(Request, HTTPStatusCode.Created,
-                                    new JObject(
-                                        new JProperty("id",           id),
-                                        new JProperty("csr",          csr),
-                                        new JProperty("certificates", ClientCertificatesJSON())
-                                    ))
-                   );
-
-        }
-
-        /// <summary>
-        /// POST /api/v1/configuration/certificates/import with {"pem"}: the
-        /// certificate a certificate authority sent back, and whatever
-        /// intermediates came with it.
-        /// </summary>
-        /// <remarks>
-        /// What could not be used is refused here, while somebody is looking at
-        /// the screen, rather than at the next handshake. What may legitimately
-        /// look wrong from inside a station - a chain it cannot verify - comes
-        /// back as a warning beside a certificate that was taken in.
-        /// </remarks>
-        protected Task<HTTPResponse> PostClientCertificate(HTTPRequest Request)
-        {
-
-            if (!TryAuthorize(Request, Permission.Edit(ConnectionsResource), true, out _, out var refused))
-                return Task.FromResult(refused);
-
-            if (!TryParseJSONObject(Request, out var json, out var errorResponse))
-                return Task.FromResult(errorResponse);
-
-            if (!Dialling.ClientCertificates.TryAddCertificate(json.Value<String>("pem") ?? "",
-                                                              out var id,
-                                                              out var warnings,
-                                                              out var error,
-                                                              out var notSaved))
-            {
-                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
-            }
-
-            return Task.FromResult(
-                       JSONResponse(Request, HTTPStatusCode.OK,
-                                    new JObject(
-                                        new JProperty("id",           id),
-                                        new JProperty("warnings",     new JArray(warnings)),
-                                        new JProperty("certificates", ClientCertificatesJSON())
-                                    ))
-                   );
-
-        }
-
-        /// <summary>
-        /// POST /api/v1/configuration/certificates/remove with {"id"}: take a
-        /// key and everything belonging to it away, for good.
-        /// </summary>
-        /// <remarks>
-        /// A POST rather than a DELETE because every other identification in
-        /// this API travels in the body rather than in the path, and one route
-        /// shaped differently from the rest is a route somebody gets wrong.
-        /// </remarks>
-        protected Task<HTTPResponse> PostRemoveClientKey(HTTPRequest Request)
-        {
-
-            if (!TryAuthorize(Request, Permission.Edit(ConnectionsResource), true, out _, out var refused))
-                return Task.FromResult(refused);
-
-            if (!TryParseJSONObject(Request, out var json, out var errorResponse))
-                return Task.FromResult(errorResponse);
-
-            if (!Dialling.ClientCertificates.TryRemove(json.Value<String>("id") ?? "", out var error, out var notSaved))
-                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
-
-            return Task.FromResult(
-                       JSONResponse(Request, HTTPStatusCode.OK, ClientCertificatesJSON())
-                   );
-
-        }
-
-        /// <summary>
         /// What the server of a wss:// connection checked by its CA is held to,
         /// as it was sent under "pins" - with what the page showed it held to,
         /// under "pinsAsShown", where it says so - or null, where neither was
@@ -766,16 +607,23 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // ssh:// connection made it.
             json.Add(new JProperty("sshClientKey", Dialling.SshKey.ToJSON()));
 
+            // Who this node is as a client: the identities of its
+            // certificate store, which is where they are looked after - one
+            // that is switched off or has run out is still named, with why
+            // it cannot be shown.
             json.Add(
                 new JProperty("certificates",
                     new JArray(
-                        Dialling.ClientCertificates.Entries.Select(entry =>
+                        Dialling.Certificates.ByKind(CertificateKind.TLSIdentity).Select(entry =>
                             new JObject(
                                 new JProperty("id",              entry.Id),
+                                new JProperty("label",           entry.Label),
                                 new JProperty("subject",         entry.Subject),
-                                new JProperty("algorithm",       entry.Algorithm),
-                                new JProperty("hasCertificate",  entry.Certificate is not null),
-                                new JProperty("canBeHeldUp",     entry.CanBeHeldUp)
+                                new JProperty("algorithm",       entry.KeyAlgorithm),
+                                new JProperty("notAfter",        entry.NotAfter.UtcDateTime),
+                                new JProperty("active",          entry.IsActive),
+                                new JProperty("hasCertificate",  true),
+                                new JProperty("canBeHeldUp",     entry.HasPrivateKey && entry.IsUsable)
                             )))));
 
             // Where each connection stands, so that the page does not first
