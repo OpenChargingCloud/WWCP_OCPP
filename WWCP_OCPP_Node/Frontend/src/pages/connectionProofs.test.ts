@@ -107,10 +107,10 @@ async function opened(path = '/configuration/connections', make: () => StationCo
     logins               = [];
     refuseTheConnection  = false;
     return open(connectionsPage, path, [ 'connections:read', 'connections:edit', 'connections:run' ],
-                station, root => root.querySelector('#panel-connections #add-form') !== null);
+                station, root => root.querySelector('#panel-new #add-form') !== null);
 }
 
-const add     = (root: HTMLElement) => root.querySelector<HTMLFormElement>('#panel-connections #add-form')!;
+const add     = (root: HTMLElement) => root.querySelector<HTMLFormElement>('#panel-new #add-form')!;
 const editOf  = (root: HTMLElement, id: string) => root.querySelector<HTMLFormElement>(`form[data-edit="${id}"]`)!;
 const ways    = (form: HTMLFormElement) => [ ...form.querySelectorAll<HTMLOptionElement>('select[name="proves"] option') ].map(option => option.value);
 const ticked  = (form: HTMLFormElement) => [ ...form.querySelectorAll<HTMLInputElement>('input[name="identity"]') ].filter(box => box.checked).map(box => box.value);
@@ -140,7 +140,7 @@ describe('what a connection proves itself with', () => {
         typeURL(form, 'ssh://cs001@csms.example.org:2222');
         await until(() => form.querySelector('[data-identities="ssh"]') !== null, 'an ssh:// connection is not shown the keys it signs in with');
 
-        assert.equal(form.querySelector('select[name="proves"]'), null, 'an ssh:// connection is offered something beside its keys');
+        assert.deepEqual(ways(form), [ '', 'auth:l1', 'new:basic' ], 'an ssh:// connection is offered something beside its keys and a password');
         assert.deepEqual([ ...form.querySelectorAll<HTMLInputElement>('input[name="identity"]') ].map(box => box.value), [ 'own', 'k1' ]);
         assert.deepEqual(ticked(form), []);
         assert.ok(add(root) === form, 'the form was made anew, and what was typed into it with it');
@@ -162,7 +162,7 @@ describe('what a connection proves itself with', () => {
         const root = await opened();
         const form = add(root);
 
-        type(field(root, '#panel-connections #add-form', 'description'), 'CSMS, main');
+        type(field(root, '#panel-new #add-form', 'description'), 'CSMS, main');
         typeURL(form, 'wss://csms.example.org/cs001');
         await until(() => ways(form).includes('tls'), 'the certificates are not offered');
 
@@ -173,7 +173,7 @@ describe('what a connection proves itself with', () => {
         change(boxOf(form, 'bbbb'), true);
         type(fromOf(form, 'bbbb'), '2027-01-31T00:00');
 
-        submit(root, '#panel-connections #add-form');
+        submit(root, '#panel-new #add-form');
         await until(() => lastAdded !== null, 'the connection was not written down');
 
         assert.deepEqual(lastAdded!.identities, [ { id: 'aaaa' }, { id: 'bbbb', from: new Date('2027-01-31T00:00').toISOString() } ]);
@@ -218,12 +218,67 @@ describe('what a connection proves itself with', () => {
 
     });
 
+    it('writes down the password an ssh:// connection signs in with, one that is there or one typed with it, and takes it away again', async () => {
+
+        const root = await opened(undefined, () => aStation({
+                                      authentications: [ { id: 'l1', description: 'CSMS login', kind: 'basic', login: 'cs001', createdAt: '2026-10-01T10:00:00Z', hasSecret: true },
+                                                         { id: 't1', description: 'One-time',   kind: 'totp',  login: 'cs001', createdAt: '2026-10-01T10:00:00Z', hasSecret: true } ]
+                                  }));
+        const ssh  = editOf(root, 'c2');
+
+        assert.deepEqual(ways(ssh), [ '', 'auth:l1', 'new:basic' ], 'a TOTP is offered where nothing answers one');
+        assert.equal(ssh.querySelector<HTMLSelectElement>('select[name="proves"]')!.value, '');
+
+        change(ssh.querySelector<HTMLSelectElement>('select[name="proves"]')!, 'auth:l1');
+        submit(root, 'form[data-edit="c2"]');
+        await until(() => lastSaved !== null, 'the connection was not saved');
+
+        assert.equal(lastSaved!.authenticationId, 'l1');
+        assert.deepEqual(lastSaved!.identities, [ { id: 'k1' } ], 'the keys went with the password');
+
+        // One with a password says so, and has it chosen; "None" takes it away.
+        const withOne = await opened(undefined, () => aStation({
+                                         connections: [ aConnection('c2', { url: 'ssh://cs001@csms.example.org:2222', secure: false, transport: 'ssh', authenticationId: 'l1' }) ]
+                                     }));
+        const form    = editOf(withOne, 'c2');
+
+        assert.match(withOne.querySelector('[data-proves="c2"]')!.textContent!.replace(/\s+/g, ' '), /SSH key, and the password of CSMS login/);
+        assert.equal(form.querySelector<HTMLSelectElement>('select[name="proves"]')!.value, 'auth:l1');
+
+        change(form.querySelector<HTMLSelectElement>('select[name="proves"]')!, '');
+        submit(withOne, 'form[data-edit="c2"]');
+        await until(() => lastSaved !== null, 'the connection was not saved');
+
+        assert.equal(lastSaved!.authenticationId, null);
+
+        // And a new one, typed with a new connection.
+        const fresh = add(withOne);
+
+        type(field(withOne, '#panel-new #add-form', 'description'), 'CSMS over SSH');
+        typeURL(fresh, 'ssh://cs002@csms.example.org:2222');
+        await until(() => fresh.querySelector('[data-identities="ssh"]') !== null, 'the keys are not shown');
+
+        change(fresh.querySelector<HTMLSelectElement>('select[name="proves"]')!, 'new:basic');
+        await until(() => fresh.querySelector('[data-new-login]') !== null, 'the fields of a new login are not shown');
+
+        type(fresh.querySelector<HTMLInputElement>('[name="newLogin"]')!,  'cs002');
+        type(fresh.querySelector<HTMLInputElement>('[name="newSecret"]')!, 'a password');
+
+        submit(withOne, '#panel-new #add-form');
+        await until(() => lastAdded !== null, 'the connection was not written down');
+
+        assert.deepEqual(logins, [ { description: 'CSMS over SSH', kind: 'basic', login: 'cs002', secret: 'a password' } ]);
+        assert.equal(lastAdded!.authenticationId, 'l2');
+        assert.deepEqual(lastAdded!.identities, []);
+
+    });
+
     it('writes a login typed into the form of a connection down before the connection, and once', async () => {
 
         const root = await opened();
         const form = add(root);
 
-        type(field(root, '#panel-connections #add-form', 'description'), 'The spare');
+        type(field(root, '#panel-new #add-form', 'description'), 'The spare');
         typeURL(form, 'wss://spare.example.org/cs001');
 
         change(form.querySelector<HTMLSelectElement>('select[name="proves"]')!, 'new:basic');
@@ -233,8 +288,8 @@ describe('what a connection proves itself with', () => {
         type(form.querySelector<HTMLInputElement>('[name="newSecret"]')!, 'a password');
 
         refuseTheConnection = true;
-        submit(root, '#panel-connections #add-form');
-        await until(() => root.querySelector('#panel-connections #add-error')?.textContent !== '', 'why the connection was refused is not said');
+        submit(root, '#panel-new #add-form');
+        await until(() => root.querySelector('#panel-new #add-error')?.textContent !== '', 'why the connection was refused is not said');
 
         assert.deepEqual(logins, [ { description: 'The spare', kind: 'basic', login: 'cs001', secret: 'a password' } ],
                          'the login was not written down as it was typed, called what the connection is');
@@ -246,8 +301,8 @@ describe('what a connection proves itself with', () => {
         // Again, with what the station refused put right: the login that is there, and no second one.
         refuseTheConnection = false;
         lastAdded = null;
-        submit(root, '#panel-connections #add-form');
-        await until(() => root.querySelector('#panel-connections #add-note')?.textContent === 'Written down.', 'the connection was not written down');
+        submit(root, '#panel-new #add-form');
+        await until(() => root.querySelector('#panel-new #add-note')?.textContent === 'Written down.', 'the connection was not written down');
 
         assert.equal(logins.length, 1, 'a second login was written down');
         assert.equal(lastAdded!.authenticationId, 'l2');
@@ -261,9 +316,12 @@ describe('what a connection proves itself with', () => {
 
         const root = await opened();
 
-        assert.deepEqual([ ...root.querySelectorAll('[role="tab"]') ].map(tab => tab.id), [ 'tab-connections', 'tab-credentials' ]);
-        assert.equal(root.querySelector<HTMLElement>('#panel-connections')!.hidden, false);
+        assert.deepEqual([ ...root.querySelectorAll('[role="tab"]') ].map(tab => tab.id), [ 'tab-connections', 'tab-new', 'tab-credentials' ]);
+        assert.equal(root.querySelector<HTMLElement>('#panel-connections')!.hidden, false, 'the page does not open on the connections there are');
+        assert.equal(root.querySelector<HTMLElement>('#panel-new')!.hidden,         true);
         assert.equal(root.querySelector<HTMLElement>('#panel-credentials')!.hidden, true);
+        assert.equal(root.querySelector('#panel-connections #add-form'), null, 'a new connection is written down among the ones there are');
+        assert.ok(root.querySelector('#panel-connections [data-proves="c1"]') !== null);
         assert.match(root.querySelector('#panel-credentials')!.textContent!, /CSMS login/, 'the credentials are not drawn while their tab is not shown');
         assert.equal(asked.some(one => one.path === '/configuration/authentications'), false, 'the credentials were asked for a second time');
 
@@ -271,6 +329,17 @@ describe('what a connection proves itself with', () => {
         await until(() => !root.querySelector<HTMLElement>('#panel-credentials')!.hidden, 'the tab of the credentials is not shown');
 
         assert.ok(add(root) !== null, 'the form of the connections went with the look at the other tab');
+
+        // A connection written down is shown where it stands: among the others.
+        root.querySelector<HTMLButtonElement>('#tab-new')!.click();
+        await until(() => !root.querySelector<HTMLElement>('#panel-new')!.hidden, 'the tab of a new connection is not shown');
+
+        type(field(root, '#panel-new #add-form', 'description'), 'The spare');
+        typeURL(add(root), 'wss://spare.example.org/cs001');
+        submit(root, '#panel-new #add-form');
+        await until(() => !root.querySelector<HTMLElement>('#panel-connections')!.hidden, 'the page did not turn to the connection written down');
+
+        assert.match(root.querySelector('#panel-connections')!.textContent!, /The spare/);
 
         const there = await opened('/configuration/connections?tab=credentials');
 

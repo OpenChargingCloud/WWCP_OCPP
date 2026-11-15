@@ -89,11 +89,12 @@ describe('the pages of the connections, told they are a local controller\'s', ()
         assert.equal(may.querySelector<HTMLButtonElement>('#add-form button[type="submit"]')!.disabled, false);
         assert.equal(may.querySelector<HTMLButtonElement>('#add-form [data-test="add"]')!.disabled,    false);
 
+        // Somebody who may neither write a connection down nor test one is not shown where one is written down.
         const mayNot = await open(connectionsPage, '/configuration/connections', [ 'connections:read', 'connections:edit', 'connections:run' ],
-                                  node, root => root.querySelector('#add-form') !== null);
+                                  node, root => root.querySelector('#panel-credentials #add-form') !== null);
 
-        assert.equal(mayNot.querySelector<HTMLButtonElement>('#add-form button[type="submit"]')!.disabled, true);
-        assert.equal(mayNot.querySelector<HTMLButtonElement>('#add-form [data-test="add"]')!.disabled,    true);
+        assert.equal(mayNot.querySelector('#tab-new'),   null);
+        assert.equal(mayNot.querySelector('#panel-new'), null);
 
     });
 

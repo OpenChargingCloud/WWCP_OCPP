@@ -49,13 +49,16 @@ const signatureFormats: ReadonlyArray<readonly [SignatureFormatsOfAConnection, s
  * where it goes: over ws:// and wss:// nothing, a set of credentials - one
  * written down already, or written down here with the connection - or, where
  * there is a TLS handshake, the client certificates it shows; over ssh:// the
- * SSH keys it signs in with, and nothing else. Certificates and keys are
- * ticked, several where one follows another: each from a time on, so that a
- * key is changed at the moment its server was told and not when somebody
- * happens to stand beside the station.
+ * SSH keys it signs in with, and a password where its server asks for one -
+ * the weaker of the two, and what some servers take all the same.
+ * Certificates and keys are ticked, several where one follows another: each
+ * from a time on, so that a key is changed at the moment its server was told
+ * and not when somebody happens to stand beside the station.
  *
- * The credentials are a tab of this page, because this is where they are
- * used: a login is written down for a connection, and looked up from one.
+ * What the page opens on is what there is: the connections, and where each
+ * stands. A new one is written down on a tab of its own, and the credentials
+ * are a tab of this page as well, because this is where they are used: a
+ * login is written down for a connection, and looked up from one.
  *
  * What is configured but cannot work is said here rather than discovered at the
  * next connection - a password going out over a connection without TLS, a
@@ -83,7 +86,7 @@ export const connectionsPage: Page = {
 
     title: 'Connections',
 
-    render({ root }) {
+    render({ root, url }) {
 
         const page = shell(root, {
             active:    '/configuration/connections',
@@ -92,13 +95,26 @@ export const connectionsPage: Page = {
             actions:   reloadButton(() => reload())
         });
 
-        /** The connections, and the credentials they prove themselves with - which are used here, and so are kept here. */
+        const mayManage = auth.can(connectionsResource(), 'edit');
+
+        // Its own permission: a test makes this station open a connection to a
+        // host and show it a credential, which is more than reading a page and
+        // less than changing what the station does.
+        const mayTest   = auth.can(connectionsResource(), 'run');
+
+        /**
+         * The connections there are, first: what somebody comes to look at.
+         * Then a new one - for whoever may write one down, or may at least
+         * test what they type - and the credentials they prove themselves
+         * with, which are used here, and so are kept here.
+         */
         const tabs: readonly Tab[] = [
             { id: 'connections', label: 'Connections', icon: 'fa-plug' },
+            ...(mayManage || mayTest ? [ { id: 'new', label: 'New connection', icon: 'fa-plus' } ] : []),
             { id: 'credentials', label: 'Credentials', icon: 'fa-user-lock' }
         ];
 
-        let shown = tabFromURL(tabs);
+        let shown = tabFromURL(tabs, url);
 
         function show(id: string): void {
             shown = id;
@@ -106,11 +122,14 @@ export const connectionsPage: Page = {
             frame();
         }
 
-        /** The row of tabs and their two panels: each panel drawn by its own, so that what is typed into one outlives a look at the other. */
+        /** The row of tabs and their panels: each panel drawn by its own, so that what is typed into one outlives a look at the other. */
         function frame(): void {
             render(page, html`
                 ${tabsView(tabs, shown, show, 'Connections')}
                 <section class="tab-panel" role="tabpanel" id="panel-connections" aria-labelledby="tab-connections" ?hidden=${shown !== 'connections'}></section>
+                ${tabs.some(tab => tab.id === 'new') ? html`
+                    <section class="tab-panel" role="tabpanel" id="panel-new" aria-labelledby="tab-new" ?hidden=${shown !== 'new'}></section>
+                ` : nothing}
                 <section class="tab-panel" role="tabpanel" id="panel-credentials" aria-labelledby="tab-credentials" ?hidden=${shown !== 'credentials'}></section>
             `);
         }
@@ -118,6 +137,9 @@ export const connectionsPage: Page = {
         frame();
 
         const content = must<HTMLElement>(page, '#panel-connections');
+
+        /** Where a new connection is written down - or null, for somebody who may neither write one down nor test one. */
+        const adding  = page.querySelector<HTMLElement>('#panel-new');
 
         render(content, html`<div class="loading">Loading ...</div>`);
 
@@ -128,13 +150,6 @@ export const connectionsPage: Page = {
             handed:   true,
             changed:  state => { took(state, false); draw(); }
         });
-
-        const mayManage = auth.can(connectionsResource(), 'edit');
-
-        // Its own permission: a test makes this station open a connection to a
-        // host and show it a credential, which is more than reading a page and
-        // less than changing what the station does.
-        const mayTest   = auth.can(connectionsResource(), 'run');
 
         let cancelled = false;
         let store: StationConnections | null = null;
@@ -228,38 +243,6 @@ export const connectionsPage: Page = {
 
                 <section class="card">
 
-                    <h2><i class="fa-solid fa-plus"></i> Write down a connection</h2>
-
-                    <form id="add-form" class="form-stack" @submit=${add}>
-                        ${theFields('add', null, state)}
-                        <div class="form-actions">
-                            <button type="submit" class="btn primary" ?disabled=${!mayManage}>
-                                Write it down
-                            </button>
-                            <button type="button" class="btn small" data-test="add"
-                                    ?disabled=${!mayTest} @click=${testThisForm}>
-                                <i class="fa-solid fa-plug-circle-check"></i> Test it
-                            </button>
-                            ${whatATestAsks(mayTest)}
-                            <span id="add-note"  class="form-notice" role="status"></span>
-                            <span id="add-error" class="form-error"  role="alert"></span>
-                        </div>
-                        <span class="hint">
-                            Testing does not write anything down: it makes the connection once, asks its back
-                            end for a Heartbeat, says what happened and when, and lets go. Worth doing before
-                            saving rather than after. A back end that is not to be asked anything - one that
-                            takes a Heartbeat for a station having come - is tested by asking nothing: then the
-                            test ends with the handshake.
-                        </span>
-                    </form>
-
-                </section>
-
-                ${sshKeyView(state)}
-                ${signersView(state)}
-
-                <section class="card">
-
                     <h2><i class="fa-solid fa-list"></i> What is configured</h2>
 
                     <p class="hint">Newest first. Written to ${state.directory}.</p>
@@ -274,6 +257,10 @@ export const connectionsPage: Page = {
                                 ? html`
                                       <p class="hint">
                                           Nothing yet. This ${nodeNoun()} dials nowhere and waits to be dialled.
+                                          ${mayManage ? html`
+                                              Where it is to dial is written down on the tab
+                                              <a href="#" @click=${(event: Event) => { event.preventDefault(); show('new'); }}>New connection</a>.
+                                          ` : nothing}
                                       </p>
                                   `
                                 : html`<p class="hint">Nothing written down any more.</p>`
@@ -283,7 +270,44 @@ export const connectionsPage: Page = {
 
                 </section>
 
+                ${sshKeyView(state)}
+                ${signersView(state)}
+
             `);
+
+            if (adding !== null)
+                render(adding, html`
+
+                    <section class="card">
+
+                        <h2><i class="fa-solid fa-plus"></i> Write down a connection</h2>
+
+                        <form id="add-form" class="form-stack" @submit=${add}>
+                            ${theFields('add', null, state)}
+                            <div class="form-actions">
+                                <button type="submit" class="btn primary" ?disabled=${!mayManage}>
+                                    Write it down
+                                </button>
+                                <button type="button" class="btn small" data-test="add"
+                                        ?disabled=${!mayTest} @click=${testThisForm}>
+                                    <i class="fa-solid fa-plug-circle-check"></i> Test it
+                                </button>
+                                ${whatATestAsks(mayTest)}
+                                <span id="add-note"  class="form-notice" role="status"></span>
+                                <span id="add-error" class="form-error"  role="alert"></span>
+                            </div>
+                            <span class="hint">
+                                Testing does not write anything down: it makes the connection once, asks its back
+                                end for a Heartbeat, says what happened and when, and lets go. Worth doing before
+                                saving rather than after. A back end that is not to be asked anything - one that
+                                takes a Heartbeat for a station having come - is tested by asking nothing: then the
+                                test ends with the handshake.
+                            </span>
+                        </form>
+
+                    </section>
+
+                `);
 
         }
 
@@ -595,33 +619,12 @@ export const connectionsPage: Page = {
                                     : nothing}
                         ${nothingToChoose ? html`
                             Nothing is written down yet that it could prove itself with: choose a new login here, or make a
-                            key on the <a href="${toURL('/configuration/identities')}?tab=request">Client identities</a> page.
+                            key on the <a href="${toURL('/configuration/client-identities')}?tab=request">Client identities</a> page.
                         ` : nothing}
                     </span>
                 </label>
 
-                ${way === 'new:basic' || way === 'new:totp' ? html`
-                    <fieldset class="proves-with" data-new-login>
-                        <legend>${way === 'new:basic' ? 'A new login and password' : 'A new TOTP secret'}</legend>
-                        <label>What they are for
-                            <input type="text" name="newDescription" maxlength="${state.maxDescriptionLength}"
-                                   placeholder="CSMS login" ?disabled=${!mayManage} />
-                            <span class="hint">Left empty, they are called what the connection is.</span>
-                        </label>
-                        <label>Login
-                            <input type="text" name="newLogin" placeholder="cs001" ?disabled=${!mayManage} />
-                        </label>
-                        <label>${way === 'new:basic' ? 'Password' : 'Shared secret'}
-                            <input type="password" name="newSecret" autocomplete="new-password" ?disabled=${!mayManage} />
-                            <span class="hint">
-                                ${way === 'new:totp' ? `At least ${state.minSharedSecretLength} characters. ` : ''}Written
-                                down with the connection, on the Credentials tab, where another connection may use them as
-                                well and where a TOTP's validity and length are set. Never shown again. A test before that
-                                goes without them.
-                            </span>
-                        </label>
-                    </fieldset>
-                ` : nothing}
+                ${newLoginView(way, state, false)}
 
                 ${way === 'tls' ? html`
                     <fieldset class="proves-with" data-identities="tls">
@@ -638,7 +641,7 @@ export const connectionsPage: Page = {
                             last - and the one before it while that one cannot be shown. Tick the certificate that follows
                             beside the one in use, with the time its server takes it from, in this browser's time. A key is
                             made, and its certificate brought, on the
-                            <a href="${toURL('/configuration/identities')}?tab=request">Client identities</a> page.
+                            <a href="${toURL('/configuration/client-identities')}?tab=request">Client identities</a> page.
                         </span>
                     </fieldset>
                 ` : nothing}
@@ -647,10 +650,49 @@ export const connectionsPage: Page = {
 
         }
 
-        /** Over SSH: the keys it signs in with, and nothing else to choose. */
-        function sshProvesView(_id: string, entry: StationConnection | null, state: StationConnections): TemplateResult {
+        /** The fields of a login written down with its connection - or nothing, where it names one that is there, or none. */
+        function newLoginView(way: string, state: StationConnections, overSSH: boolean): TemplateResult | typeof nothing {
 
-            const password = state.authentications.find(one => one.id === entry?.authenticationId);
+            if (way !== 'new:basic' && way !== 'new:totp')
+                return nothing;
+
+            return html`
+                <fieldset class="proves-with" data-new-login>
+                    <legend>${way === 'new:basic' ? 'A new login and password' : 'A new TOTP secret'}</legend>
+                    <label>What they are for
+                        <input type="text" name="newDescription" maxlength="${state.maxDescriptionLength}"
+                               placeholder="CSMS login" ?disabled=${!mayManage} />
+                        <span class="hint">Left empty, they are called what the connection is.</span>
+                    </label>
+                    <label>Login
+                        <input type="text" name="newLogin" placeholder="cs001" ?disabled=${!mayManage} />
+                        ${overSSH ? html`<span class="hint">The one the URL names, where it names one: it is one login.</span>` : nothing}
+                    </label>
+                    <label>${way === 'new:basic' ? 'Password' : 'Shared secret'}
+                        <input type="password" name="newSecret" autocomplete="new-password" ?disabled=${!mayManage} />
+                        <span class="hint">
+                            ${way === 'new:totp' ? `At least ${state.minSharedSecretLength} characters. ` : ''}Written
+                            down with the connection, on the Credentials tab, where another connection may use them as
+                            well${overSSH ? '' : ` and where a TOTP's validity and length are set`}. Never shown again. A test
+                            before that goes without them.
+                        </span>
+                    </label>
+                </fieldset>
+            `;
+
+        }
+
+        /**
+         * Over SSH: the keys it signs in with, and a password where its
+         * server asks for one - a login and password written down already,
+         * or written down here with the connection. No TOTP: that is
+         * answered over HTTP, which an ssh:// connection does not speak.
+         */
+        function sshProvesView(id: string, entry: StationConnection | null, state: StationConnections): TemplateResult {
+
+            const logins = state.authentications.filter(one => one.kind === 'basic');
+            const picked = ways.get(id) ?? chosenOf(entry);
+            const way    = picked === 'new:basic' || logins.some(one => picked === `auth:${one.id}`) ? picked : '';
 
             return html`
                 <fieldset class="proves-with" data-identities="ssh">
@@ -662,20 +704,40 @@ export const connectionsPage: Page = {
                                        detail:  one.made ? (one.fingerprint ?? '') : 'made when it is first needed'
                                    })))}
                     <span class="hint">
-                        None ticked, it signs in with this ${nodeNoun()}'s own key. Several are offered to the server one
+                        None ticked, it offers this ${nodeNoun()}'s own key. Several are offered to the server one
                         after another, the one whose time came last first: tick the key that follows beside the one in
                         use, with the time its server takes it from, in this browser's time. Keys are made on the
-                        <a href="${toURL('/configuration/identities')}">Client identities</a> page, where the line for the
+                        <a href="${toURL('/configuration/client-identities')}">Client identities</a> page, where the line for the
                         server's <code>authorized_keys</code> is.
                     </span>
                 </fieldset>
-                ${password !== undefined ? html`
-                    <label class="checkbox">
-                        <input type="checkbox" name="keepPassword" checked ?disabled=${!mayManage} />
-                        And the password of ${password.description}, where the server asks for one
-                        <span class="hint">Written down before a connection over SSH signed in with keys alone. Unticked, it is not sent any more.</span>
-                    </label>
-                ` : nothing}
+                <label>And a password
+                    <select name="proves" ?disabled=${!mayManage}
+                            @change=${(event: Event) => pickWay(id, (event.target as HTMLSelectElement).value)}>
+
+                        <option value="" ?selected=${way === ''}>
+                            None - it signs in with its keys alone
+                        </option>
+
+                        <optgroup label="A login">
+                            ${logins.map(one => html`
+                                <option value="auth:${one.id}" ?selected=${way === `auth:${one.id}`}>
+                                    ${one.description} (${one.login})${one.hasSecret ? '' : ' - no secret set'}
+                                </option>
+                            `)}
+                            <option value="new:basic" ?selected=${way === 'new:basic'}>New login and password ...</option>
+                        </optgroup>
+
+                    </select>
+                    <span class="hint" data-proves-hint>
+                        Sent where the server asks for one, after the keys were offered - and only to a server that
+                        proved itself with a host key believed here. The weaker of the two: whoever reads a password
+                        signs in as this ${nodeNoun()}, where a key never leaves it. A server that takes passwords
+                        alone turns the keys away and is given the password. A TOTP is not answered over SSH.
+                    </span>
+                </label>
+
+                ${newLoginView(way, state, true)}
             `;
 
         }
@@ -1185,7 +1247,7 @@ export const connectionsPage: Page = {
 
             const entry    = id !== undefined ? store?.connections.find(one => one.id === id) ?? null : null;
             const overSSH  = schemeIn(id ?? 'add', entry) === 'ssh';
-            const proves   = overSSH ? '' : field(form, 'proves');
+            const proves   = field(form, 'proves');
 
             // The certificates or the keys ticked, each from the time beside
             // it: read where the form shows them, and nowhere else.
@@ -1198,12 +1260,6 @@ export const connectionsPage: Page = {
                                  : { id: box.value };
                   })
                 : [];
-
-            // A password over SSH is one that was there before: kept while
-            // its box stays ticked, and never added here.
-            const password = overSSH && (form.querySelector<HTMLInputElement>('[name="keepPassword"]')?.checked ?? false)
-                                 ? entry?.authenticationId ?? null
-                                 : null;
 
             // As drawn, beside as typed: left as it was, the station keeps the
             // one it has, which the first connection may have written down
@@ -1255,7 +1311,7 @@ export const connectionsPage: Page = {
                 encoding:            (form.querySelector<HTMLSelectElement>('[name="encoding"]')?.value ?? 'json') as EncodingOfAConnection,
                 signatureFormats:    (form.querySelector<HTMLSelectElement>('[name="signatureFormats"]')?.value ?? 'policy') as SignatureFormatsOfAConnection,
                 autoConnect:  form.querySelector<HTMLInputElement>('[name="autoConnect"]')?.checked ?? false,
-                authenticationId:    overSSH ? password : proves.startsWith('auth:') ? proves.slice(5) : null,
+                authenticationId:    proves.startsWith('auth:') ? proves.slice(5) : null,
                 certificateId:       null,
                 identities
             };
@@ -1323,17 +1379,18 @@ export const connectionsPage: Page = {
             event.preventDefault();
 
             const form = event.currentTarget as HTMLFormElement;
-            const note = must<HTMLElement>(content, '#add-note');
+            const here = adding ?? content;
+            const note = must<HTMLElement>(here, '#add-note');
 
             note.textContent = '';
-            must<HTMLElement>(content, '#add-error').textContent = '';
+            must<HTMLElement>(here, '#add-error').textContent = '';
 
             const written = readFrom(form);
             const login   = newLoginIn(form, written);
 
             try
             {
-                const made = await whileSaving(content, note, async () => api.connections.add(await withItsNewLogin('add', login, written)));
+                const made = await whileSaving(here, note, async () => api.connections.add(await withItsNewLogin('add', login, written)));
 
                 if (cancelled)
                     return;
@@ -1347,6 +1404,11 @@ export const connectionsPage: Page = {
                 form.reset();
 
                 note.textContent = 'Written down.';
+
+                // And to where it stands now, among the others: whether it
+                // came through is what is wanted next.
+                show('connections');
+                page.querySelector<HTMLElement>('#tab-connections')?.scrollIntoView?.({ block: 'center' });
             }
             catch (problem)
             {
@@ -1354,7 +1416,7 @@ export const connectionsPage: Page = {
                     // A login written down before its connection was refused
                     // is the one chosen now.
                     draw();
-                    must<HTMLElement>(content, '#add-error').textContent = errorMessage(problem);
+                    must<HTMLElement>(here, '#add-error').textContent = errorMessage(problem);
                 }
             }
 
@@ -1588,11 +1650,12 @@ export const connectionsPage: Page = {
             await load();
             if (!cancelled) {
                 content.querySelectorAll('form').forEach(form => form.reset());
+                adding?.querySelectorAll('form').forEach(form => form.reset());
                 await credentials.reload();
             }
         }
 
-        const release = unsaved.heldBy(() => anyFormTypedSinceDrawn(content));
+        const release = unsaved.heldBy(() => anyFormTypedSinceDrawn(content) || (adding !== null && anyFormTypedSinceDrawn(adding)));
 
         void load();
 

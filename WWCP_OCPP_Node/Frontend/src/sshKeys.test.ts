@@ -100,7 +100,7 @@ function node({ method, path, body }: Asked): unknown {
 async function opened(permissions = [ 'certificates:read', 'certificates:run', 'connections:read' ]): Promise<HTMLElement> {
     held       = aStation();
     confirmed  = true;
-    return open(identitiesPage({ sections: context => [ sshKeysSection(context) ] }), '/configuration/identities', permissions, node,
+    return open(identitiesPage({ sections: context => [ sshKeysSection(context) ] }), '/configuration/client-identities', permissions, node,
                 root => root.querySelector('#panel-usage') !== null);
 }
 
