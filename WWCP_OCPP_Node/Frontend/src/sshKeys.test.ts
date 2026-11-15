@@ -134,6 +134,10 @@ describe('the SSH keys of a node that dials, among its client identities', () =>
 
         const root   = await opened();
         const label  = () => root.querySelector<HTMLInputElement>('#ssh-key-label')!;
+
+        assert.ok(root.querySelector('#tab-request') !== null, 'a page whose store makes no keys has no tab to make an SSH key on');
+        assert.ok(root.querySelector('#panel-request #make-an-ssh-key') !== null, 'an SSH key is not made where every key of the page is');
+        assert.equal(root.querySelector('#panel-usage #make-an-ssh-key'), null, 'an SSH key is made among the ones there are');
         const make   = () => root.querySelector<HTMLButtonElement>('#make-an-ssh-key')!.click();
 
         make();
@@ -146,6 +150,8 @@ describe('the SSH keys of a node that dials, among its client identities', () =>
         assert.deepEqual(asked.filter(one => one.path === '/configuration/sshKeys').at(-1)!.body, { label: 'CSMS over SSH, from January' });
         assert.equal(label().value, '', 'what the key was called is still typed');
         assert.match(cardOf(root, 'k3').textContent!, /CSMS over SSH, from January/);
+        assert.equal(root.querySelector<HTMLElement>('#panel-usage')!.hidden, false, 'the page did not turn to the key that was made');
+        assert.match(cardOf(root, 'k3').querySelector('[data-ssh-key-note="k3"]')!.textContent!, /authorized_keys/);
 
         confirmed = false;
         cardOf(root, 'k2').querySelector<HTMLButtonElement>('[data-remove-ssh-key="k2"]')!.click();
@@ -166,6 +172,7 @@ describe('the SSH keys of a node that dials, among its client identities', () =>
 
         assert.deepEqual(keys(reader), [ 'own', 'k1', 'k2' ]);
         assert.equal(reader.querySelector('#make-an-ssh-key'), null, 'somebody who may not make keys is offered to');
+        assert.equal(reader.querySelector('#tab-request'), null, 'a tab to make keys on is shown to somebody who may make none');
         assert.equal(cardOf(reader, 'k2').querySelector<HTMLButtonElement>('[data-remove-ssh-key="k2"]')!.disabled, true);
 
         mayNotSeeThem = true;

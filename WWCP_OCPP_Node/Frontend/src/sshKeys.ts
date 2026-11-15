@@ -2,6 +2,7 @@ import { connectionsAPI as api, type SshKey, type StationConnections } from './a
 import { auth } from './auth';
 import { nodeNoun } from './settings';
 import { toURL } from '@node/basePath';
+import { requestTabId } from '@node/certificateRequests';
 import type { CertificatesSection, SectionContext } from '@node/pages/certificates';
 import { errorMessage, formatTimestamp, whileSaving } from '@node/ui';
 import { html, nothing, repeat, type TemplateResult } from '@node/view';
@@ -23,6 +24,10 @@ import { html, nothing, repeat, type TemplateResult } from '@node/view';
  *
  * What is shown is the public half, the line for a server's authorized_keys.
  * The private half never leaves its file.
+ *
+ * The keys stand with what the node presents; one is made where every key of
+ * the page is, on its "New key" tab - and the page turns to the key once it
+ * is made, for its line is what is wanted next.
  *
  * Outside pages/, where every file is a page and is held to what a page is:
  * this is a part of one, drawn where the page has room for it. And it has no
@@ -82,9 +87,12 @@ export function sshKeysSection(context: SectionContext): CertificatesSection {
             if (label !== null)
                 label.value = '';
 
+            // To the key, among the others: its line is what is wanted next.
+            context.show('usage');
             context.draw();
 
-            say('#ssh-key-note', 'Made. Its line goes into the authorized_keys of the server it is to sign in at.');
+            say(`[data-ssh-key-note="${made.id}"]`, 'Made. Its line goes into the authorized_keys of the server it is to sign in at.');
+            place(`[data-ssh-key="${made.id}"]`)?.scrollIntoView?.({ block: 'nearest' });
         }
         catch (problem)
         {
@@ -194,32 +202,48 @@ export function sshKeysSection(context: SectionContext): CertificatesSection {
                                 key goes into the <code>authorized_keys</code> of the server; it is no secret, and the
                                 private half never leaves this ${nodeNoun()}. Which connection signs in with which, and
                                 from when, is ticked on the <a href="${toURL('/configuration/connections')}">Connections</a>
-                                page.
+                                page${mayMake ? html`, and a key is made on the tab
+                                <a href="#" @click=${(event: Event) => { event.preventDefault(); context.show(requestTabId); }}>New key</a>` : nothing}.
                             </p>
 
                             <div class="cards">${repeat(keys, key => key.id, key => card(key))}</div>
 
-                            ${mayMake ? html`
-                                <div class="form-stack" id="make-ssh-key">
-                                    <label>A new key, for
-                                        <input type="text" id="ssh-key-label" maxlength="${state.maxDescriptionLength}"
-                                               placeholder="CSMS over SSH, from January"
-                                               @keydown=${(event: KeyboardEvent) => { if (event.key === 'Enter') { event.preventDefault(); void make(); } }} />
-                                    </label>
-                                </div>
-                                <div class="form-actions">
-                                    <button type="button" class="btn primary" id="make-an-ssh-key" @click=${() => void make()}>
-                                        <i class="fa-solid fa-key"></i> Make an SSH key
-                                    </button>
-                                    <span class="form-notice" role="status" id="ssh-key-note"></span>
-                                    <span class="form-error"  role="alert"  id="ssh-key-error"></span>
-                                </div>
-                            ` : nothing}
-
                         </section>
                     `;
 
-                }
+                },
+
+        makesKeys:  () => mayMake && state !== null,
+
+        newKey: () => html`
+                    <section class="card" id="make-ssh-key">
+
+                        <h3><i class="fa-solid fa-terminal"></i> A new SSH key</h3>
+
+                        <p class="hint">
+                            A key this ${nodeNoun()} signs in with where it dials over <code>ssh://</code>, beside its own:
+                            made here, and its private half never leaves. No certificate comes back for it - its line
+                            goes into the <code>authorized_keys</code> of the server, and a connection is told to sign
+                            in with it on the <a href="${toURL('/configuration/connections')}">Connections</a> page.
+                        </p>
+
+                        <div class="form-stack">
+                            <label>What it is for
+                                <input type="text" id="ssh-key-label" maxlength="${state?.maxDescriptionLength ?? 120}"
+                                       placeholder="CSMS over SSH, from January"
+                                       @keydown=${(event: KeyboardEvent) => { if (event.key === 'Enter') { event.preventDefault(); void make(); } }} />
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn primary" id="make-an-ssh-key" @click=${() => void make()}>
+                                <i class="fa-solid fa-key"></i> Make an SSH key
+                            </button>
+                            <span class="form-notice" role="status" id="ssh-key-note"></span>
+                            <span class="form-error"  role="alert"  id="ssh-key-error"></span>
+                        </div>
+
+                    </section>
+                `
 
     };
 
