@@ -217,12 +217,15 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
                         <input type="checkbox" name="tlsChannelBinding"
                                ?checked=${entry?.tlsChannelBinding ?? false}
                                ?disabled=${!mayManage} />
-                        Bind the password to the TLS session
+                        Bind the password to its session
                     </label>
 
                     <span class="hint">
                         A bound password is no use to anybody who copies it off one connection and tries it on
-                        another. It is bound on a connection that names HTTP/3 and nothing else: over HTTP/1.1
+                        another. Over <code>ssh://</code> it is bound to the SSH session and sent as
+                        <code>totp@open.charging.cloud</code>, to a server that takes that and to no other; unbound,
+                        it is the answer to the server's prompt, or a password. Over <code>wss://</code> it is bound
+                        to the TLS session, on a connection that names HTTP/3 and nothing else: over HTTP/1.1
                         and HTTP/2 this ${nodeNoun()}'s TLS exports no keying material to bind one with, so any other
                         connection whose credentials ask for it is not dialled at all, rather than sent less
                         than it was told. The Connections page says so where it applies. The back end has to

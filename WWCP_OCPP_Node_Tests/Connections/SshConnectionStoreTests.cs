@@ -162,15 +162,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #endregion
 
-        #region ACertificateOrATOTPPasswordIsRefusedOverSSH()
+        #region ACertificateIsRefusedOverSSH_AndAPasswordOrAOneTimePasswordIsTaken()
 
         /// <summary>
-        /// Over SSH there is no TLS handshake to show a certificate in, and no
-        /// HTTP to answer a TOTP password in. A Basic login is taken: its
-        /// password is what an SSH server asks for.
+        /// Over SSH there is no TLS handshake to show a certificate in. A
+        /// login is taken: its password is what an SSH server asks for, and
+        /// a one-time password is sent as one - which is said, where it is
+        /// not bound to its session.
         /// </summary>
         [Test]
-        public void ACertificateOrATOTPPasswordIsRefusedOverSSH()
+        public void ACertificateIsRefusedOverSSH_AndAPasswordOrAOneTimePasswordIsTaken()
         {
 
             Assert.That(store.TryAddAuthentication("A TOTP login", "totp", "cs001", "shared-secret-not-the-real-one", out var totp, out var error),
@@ -181,9 +182,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, totp, null, out _, out var refusedTOTP),
-                            Is.False);
-                Assert.That(refusedTOTP, Does.Contain("TOTP"));
+                Assert.That(store.TryAddConnection("Over SSH, with a one-time password", AnSshURL, "CSMS", true, totp, null, out var withTOTP, out error),
+                            Is.True, error);
+
+                Assert.That(store.Connections.Single(entry => entry.Id == withTOTP).Warnings,
+                            Has.Some.Contains("totp@open.charging.cloud").And.Contains("not bound"),
+                            "That an unbound one-time password can be read and used is not said.");
 
                 Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, null, "some-certificate", out _, out var refusedCertificate),
                             Is.False);
@@ -195,6 +199,54 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(store.Connections.Single(entry => entry.Id == withPassword).Warnings,
                             Has.None.Contains("in the clear"),
                             "A password over SSH is not sent in the clear.");
+
+            });
+
+        }
+
+        #endregion
+
+        #region AConnectionThatOffersNoKey_NamesNothingBesideThat_AndHasAPassword()
+
+        /// <summary>
+        /// A connection may say that it offers its server no key: named
+        /// alone, without a time, and only with a password to sign in with.
+        /// </summary>
+        [Test]
+        public void AConnectionThatOffersNoKey_NamesNothingBesideThat_AndHasAPassword()
+        {
+
+            Assert.That(store.TryAddAuthentication("A Basic login", "basic", "cs001", "not-the-real-one", out var basic, out var error),
+                        Is.True, error);
+
+            store.KnownSshKeyIds = () => [ SshClientKeys.OwnId ];
+
+            Assert.Multiple(() => {
+
+                Assert.That(store.TryAddConnection("No key, no password", AnSshURL, "CSMS", true, null, null, out _, out var nothingAtAll,
+                                                   Identities: [ new ConnectionIdentity(SshClientKeys.NoneId) ]),
+                            Is.False);
+                Assert.That(nothingAtAll, Does.Contain("needs a password"));
+
+                Assert.That(store.TryAddConnection("No key and a key", AnSshURL, "CSMS", true, basic, null, out _, out var both,
+                                                   Identities: [ new ConnectionIdentity(SshClientKeys.NoneId), new ConnectionIdentity(SshClientKeys.OwnId) ]),
+                            Is.False);
+                Assert.That(both, Does.Contain("nothing beside that"));
+
+                Assert.That(store.TryAddConnection("No key from a time on", AnSshURL, "CSMS", true, basic, null, out _, out var fromATime,
+                                                   Identities: [ new ConnectionIdentity(SshClientKeys.NoneId, DateTimeOffset.UtcNow.AddDays(1)) ]),
+                            Is.False);
+                Assert.That(fromATime, Does.Contain("no time"));
+
+                Assert.That(store.TryAddConnection("The password alone", AnSshURL, "CSMS", true, basic, null, out var id, out error,
+                                                   Identities: [ new ConnectionIdentity(SshClientKeys.NoneId) ]),
+                            Is.True, error);
+
+                var entry = store.Connections.Single(connection => connection.Id == id);
+
+                Assert.That(entry.Identities.Select(identity => identity.Id), Is.EqualTo(new[] { SshClientKeys.NoneId }));
+                Assert.That(entry.Warnings,                                   Has.None.Contains("SSH key"));
+                Assert.That(entry.ToJSON()["identities"]?.ToString(Newtonsoft.Json.Formatting.None), Is.EqualTo("[{\"id\":\"none\"}]"));
 
             });
 

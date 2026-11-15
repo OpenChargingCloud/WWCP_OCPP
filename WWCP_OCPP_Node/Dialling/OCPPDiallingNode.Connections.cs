@@ -862,12 +862,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// One place, for the same reason as WhatItProvesItselfWith: dialling
         /// and testing a connection have to agree about what it shows.
         ///
-        /// Always this station's own key. A password on top where the
-        /// connection names credentials - HTTP Basic ones, whose login and
-        /// password are what an SSH server asks for - and only sent where the
-        /// server asks for one, after it proved itself with its host key. Who
-        /// signs in is the URL's login, or the credentials', or else the name
-        /// of the OCPP node that dials.
+        /// The keys it names, or this station's own - or none, where it says
+        /// so. A password on top where the connection names credentials, and
+        /// only sent where the server asks for one, after it proved itself
+        /// with its host key: the password of a login, or the one-time
+        /// password of a TOTP secret. That one is sent in one of two ways,
+        /// and the credentials say which: bound to the session, as the method
+        /// "totp@open.charging.cloud", to a server that takes that and to no
+        /// other - or unbound, as the answer to a keyboard-interactive prompt
+        /// or as a password, which every SSH server can be made to check and
+        /// whoever the session ends at can read. Who signs in is the URL's
+        /// login, or the credentials', or else the name of the OCPP node that
+        /// dials.
         /// </remarks>
         /// <param name="ForTest">Whether it is for a connection test: one that pins nothing believes the first host key shown, and writes nothing down.</param>
         protected Boolean SshLoginOf(ConnectionEntry                            Connection,
@@ -906,9 +912,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return false;
             }
 
-            String? password       = null;
-            String? passwordLogin  = null;
-            String? passwordOf     = null;
+            String?     password       = null;
+            String?     passwordLogin  = null;
+            String?     passwordOf     = null;
+            TOTPConfig? totp           = null;
+            var         totpIsBound    = false;
 
             if (Connection.AuthenticationId is not null)
             {
@@ -924,17 +932,27 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 if (credentials.Kind == AuthenticationKind.TOTP)
                 {
-                    Error = $"it uses '{credentials.Description}', a TOTP password, which is answered over HTTP and not over SSH";
-                    return false;
+
+                    totp         = credentials.ToTOTPConfig();
+                    totpIsBound  = credentials.TLSChannelBinding;
+
+                    if (totp is null)
+                    {
+                        Error = $"it uses '{credentials.Description}', which has no secret set";
+                        return false;
+                    }
+
                 }
 
-                if (String.IsNullOrEmpty(credentials.Password))
+                else if (String.IsNullOrEmpty(credentials.Password))
                 {
                     Error = $"it uses '{credentials.Description}', which has no secret set";
                     return false;
                 }
 
-                password       = credentials.Password;
+                else
+                    password   = credentials.Password;
+
                 passwordLogin  = credentials.Login;
                 passwordOf     = credentials.Description;
 
@@ -955,7 +973,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
                          Connection.SshLearnedHostKey,
                          ForTest ? SshTrustOnFirstUse.HostKey : Connection.SshTrustOnFirstUse,
                          Connection.SshOnPinMismatch,
-                         PasswordMayBeSent: password is not null,
+                         // A one-time password bound to its session is of no use to
+                         // a server that is not the one meant; an unbound one is a
+                         // password for as long as it is valid.
+                         PasswordMayBeSent: password is not null || (totp is not null && !totpIsBound),
                          Connection.URL.Host.ToString(),
                          Connection.URL.Port ?? IPPort.Parse(22)
                      );
@@ -970,12 +991,38 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return false;
             }
 
+            // A one-time password is worked out when it is asked for, and not
+            // when the connection is dialled: a server slow to answer is not
+            // shown one that ran out on the way.
+            String oneTimePassword()
+                => TOTPGenerator.GenerateTOTP(
+                       TimeProvider.GetUtcNow(),
+                       totp!.SharedSecret,
+                       totp. ValidityTime,
+                       totp. Length ?? 12,
+                       totp. Alphabet,
+                       null,
+                       totp. HashAlgorithm
+                   ).Current;
+
             Login  = new SshClientOptions {
                          Username           = username,
                          DNSClient          = DNSClient,
                          VerifyHostKey      = Trust.Verify,
                          Credentials        = [ .. keys ],
-                         Password           = password,
+                         Password           = totp is null
+                                                  ? password
+                                                  : totpIsBound ? null : oneTimePassword(),
+                         // Every prompt is answered with it: a server that asks
+                         // for a one-time password asks for nothing else.
+                         KeyboardInteractive  = totp is not null && !totpIsBound
+                                                    ? (challenge, cancellationToken) => ValueTask.FromResult(
+                                                          challenge.Prompts.Select(prompt => oneTimePassword()).ToArray()
+                                                      )
+                                                    : null,
+                         SessionBoundTotp   = totp is not null
+                                                  ? sessionId => SshSessionBoundTotp.Generate(totp, sessionId, TimeProvider.GetUtcNow())
+                                                  : null,
                          ConnectTimeout     = SshConnectTimeout,
                          KeepAliveInterval  = SshKeepAliveEvery,
                          // Terrapin (CVE-2023-48795): a server without strict KEX
@@ -984,9 +1031,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
                      };
 
             Says   = $"{keysSay} as '{username}'" +
-                     (passwordOf is not null
-                          ? $", and the password of '{passwordOf}' where the server asks for one"
-                          : "");
+                     (passwordOf is null
+                          ? ""
+                          : totp is null
+                                ? $", and the password of '{passwordOf}' where the server asks for one"
+                                : totpIsBound
+                                      ? $", and the one-time password of '{passwordOf}', bound to the session, where the server takes '{SshSessionBoundTotp.MethodName}'"
+                                      : $", and the one-time password of '{passwordOf}' where the server asks for one - bound to the session where it takes " +
+                                        $"'{SshSessionBoundTotp.MethodName}', and unbound as the answer to a prompt or as a password otherwise");
 
             return true;
 
@@ -1017,6 +1069,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
             {
                 Keys = [ Own ];
                 Says = $"this {NodeWording.Noun}'s SSH key ({SshFingerprint.Sha256(Own.PublicKeyBlob)})";
+                return true;
+            }
+
+            // It says it offers none: its password is all it signs in with.
+            if (Connection.Identities.Any(identity => identity.Id == SshClientKeys.NoneId))
+            {
+                Keys = [];
+                Says = "no SSH key";
                 return true;
             }
 
@@ -1072,6 +1132,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             if (Connection.Identities.Count == 0)
                 return SshKey.PublicKeyLine is String own ? [ own ] : [];
+
+            if (Connection.Identities.Any(identity => identity.Id == SshClientKeys.NoneId))
+                return [];
 
             return [ .. Connection.IdentitiesAt(TimeProvider.GetUtcNow()).
                                    Select(named => SshKeys.Get(named.Id)?.Key.PublicKeyLine).

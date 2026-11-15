@@ -37,6 +37,9 @@ const signatureFormats: ReadonlyArray<readonly [SignatureFormatsOfAConnection, s
     [ 'both',   'Both, next to each other' ]
 ];
 
+/** What an ssh:// connection names instead of a key, to offer its server none: SshClientKeys.NoneId. */
+const noSshKey = 'none';
+
 /**
  * The places this charging station dials.
  *
@@ -50,7 +53,9 @@ const signatureFormats: ReadonlyArray<readonly [SignatureFormatsOfAConnection, s
  * written down already, or written down here with the connection - or, where
  * there is a TLS handshake, the client certificates it shows; over ssh:// the
  * SSH keys it signs in with, and a password where its server asks for one -
- * the weaker of the two, and what some servers take all the same.
+ * the weaker of the two, and what some servers take all the same: the
+ * password of a login, or the one-time password of a TOTP secret, and no key
+ * at all where it says so.
  * Certificates and keys are ticked, several where one follows another: each
  * from a time on, so that a key is changed at the moment its server was told
  * and not when somebody happens to stand beside the station.
@@ -683,16 +688,17 @@ export const connectionsPage: Page = {
         }
 
         /**
-         * Over SSH: the keys it signs in with, and a password where its
-         * server asks for one - a login and password written down already,
-         * or written down here with the connection. No TOTP: that is
-         * answered over HTTP, which an ssh:// connection does not speak.
+         * Over SSH: the keys it signs in with - or none, where it says so -
+         * and a password where its server asks for one: the password of a
+         * login, or the one-time password of a TOTP secret, written down
+         * already or written down here with the connection.
          */
         function sshProvesView(id: string, entry: StationConnection | null, state: StationConnections): TemplateResult {
 
-            const logins = state.authentications.filter(one => one.kind === 'basic');
+            const logins = state.authentications;
             const picked = ways.get(id) ?? chosenOf(entry);
-            const way    = picked === 'new:basic' || logins.some(one => picked === `auth:${one.id}`) ? picked : '';
+            const way    = picked.startsWith('new:') || logins.some(one => picked === `auth:${one.id}`) ? picked : '';
+            const noKey  = entry?.transport === 'ssh' && identitiesOf(entry).some(one => one.id === noSshKey);
 
             return html`
                 <fieldset class="proves-with" data-identities="ssh">
@@ -703,6 +709,11 @@ export const connectionsPage: Page = {
                                        name:    one.label,
                                        detail:  one.made ? (one.fingerprint ?? '') : 'made when it is first needed'
                                    })))}
+                    <label class="checkbox" data-no-key>
+                        <input type="checkbox" name="noKey" ?checked=${noKey} ?disabled=${!mayManage} />
+                        No key - it signs in with its password alone
+                        <span class="hint">whatever is ticked above; it needs a password below</span>
+                    </label>
                     <span class="hint">
                         None ticked, it offers this ${nodeNoun()}'s own key. Several are offered to the server one
                         after another, the one whose time came last first: tick the key that follows beside the one in
@@ -722,10 +733,13 @@ export const connectionsPage: Page = {
                         <optgroup label="A login">
                             ${logins.map(one => html`
                                 <option value="auth:${one.id}" ?selected=${way === `auth:${one.id}`}>
-                                    ${one.description} (${one.login})${one.hasSecret ? '' : ' - no secret set'}
+                                    ${one.description} (${one.login}${one.kind === 'totp'
+                                        ? `, one-time password${one.tlsChannelBinding === true ? ', bound to the session' : ''}`
+                                        : ''})${one.hasSecret ? '' : ' - no secret set'}
                                 </option>
                             `)}
                             <option value="new:basic" ?selected=${way === 'new:basic'}>New login and password ...</option>
+                            <option value="new:totp"  ?selected=${way === 'new:totp'}>New TOTP secret ...</option>
                         </optgroup>
 
                     </select>
@@ -733,7 +747,10 @@ export const connectionsPage: Page = {
                         Sent where the server asks for one, after the keys were offered - and only to a server that
                         proved itself with a host key believed here. The weaker of the two: whoever reads a password
                         signs in as this ${nodeNoun()}, where a key never leaves it. A server that takes passwords
-                        alone turns the keys away and is given the password. A TOTP is not answered over SSH.
+                        alone turns the keys away and is given the password. A one-time password is worked out from
+                        its secret as it is asked for: the answer to the server's prompt (keyboard-interactive), or a
+                        password - or, where its credentials bind it and the server takes
+                        <code>totp@open.charging.cloud</code>, bound to the session, and then good in no other.
                     </span>
                 </label>
 
@@ -747,7 +764,7 @@ export const connectionsPage: Page = {
                               offered:  { id: string; name: string; detail: string }[]): TemplateResult {
 
             const named = new Map(identitiesOf(entry).map(one => [ one.id, one ]));
-            const gone  = [ ...named.keys() ].filter(id => !offered.some(one => one.id === id)).
+            const gone  = [ ...named.keys() ].filter(id => id !== noSshKey && !offered.some(one => one.id === id)).
                                               map(id => ({ id, name: id, detail: 'no longer here' }));
 
             return html`
@@ -785,10 +802,12 @@ export const connectionsPage: Page = {
                 const keys = state.sshKeys ?? [];
 
                 return html`
-                    ${identities.length === 0
-                          ? html`This ${nodeNoun()}'s SSH key`
-                          : html`${identities.length === 1 ? 'The SSH key ' : 'The SSH keys '}${list(one => keys.find(key => key.id === one.id)?.label ?? `${one.id} (no longer here)`)}`}${credentials !== undefined
-                          ? html`, and the password of ${credentials.description}`
+                    ${identities.some(one => one.id === noSshKey)
+                          ? html`No SSH key`
+                          : identities.length === 0
+                                ? html`This ${nodeNoun()}'s SSH key`
+                                : html`${identities.length === 1 ? 'The SSH key ' : 'The SSH keys '}${list(one => keys.find(key => key.id === one.id)?.label ?? `${one.id} (no longer here)`)}`}${credentials !== undefined
+                          ? html`, and the ${credentials.kind === 'totp' ? 'one-time password' : 'password'} of ${credentials.description}`
                           : entry.authenticationId !== undefined ? html`, and a password that is no longer here` : nothing}
                 `;
 
@@ -1251,7 +1270,9 @@ export const connectionsPage: Page = {
 
             // The certificates or the keys ticked, each from the time beside
             // it: read where the form shows them, and nowhere else.
-            const identities: ConnectionIdentity[] = overSSH || proves === 'tls'
+            const identities: ConnectionIdentity[] = overSSH && (form.querySelector<HTMLInputElement>('[name="noKey"]')?.checked ?? false)
+                ? [ { id: noSshKey } ]
+                : overSSH || proves === 'tls'
                 ? [ ...form.querySelectorAll<HTMLInputElement>('input[name="identity"]:checked') ].map(box => {
                       const typed = form.querySelector<HTMLInputElement>(`input[name="from:${box.value}"]`)?.value ?? '';
                       const from  = typed === '' ? null : new Date(typed);

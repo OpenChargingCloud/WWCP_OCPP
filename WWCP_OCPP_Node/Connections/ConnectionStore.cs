@@ -3128,21 +3128,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 return false;
             }
 
-            // Over SSH this station signs in with its own key, and a password
-            // on top where the server asks for one. A TLS client certificate
-            // has no handshake to be shown in, and a TOTP password is answered
-            // in an HTTP header there is none of.
+            // Over SSH this station signs in with its keys, and a password on
+            // top where the server asks for one - one written down, or a
+            // one-time password worked out as it is asked for. A TLS client
+            // certificate has no handshake to be shown in.
             if (OverSSH && Identities is null && certificate is not null)
             {
                 Error = "A client certificate is shown in a TLS handshake, and an ssh:// connection makes none: " +
                         $"it signs in with this {NodeWording.Noun}'s SSH key.";
-                return false;
-            }
-
-            if (OverSSH && Authentication is not null && authentications[Authentication].Kind == AuthenticationKind.TOTP)
-            {
-                Error = $"An ssh:// connection signs in with this {NodeWording.Noun}'s SSH key, and a password on top where wanted. " +
-                        "A TOTP password is answered over HTTP, which it does not speak.";
                 return false;
             }
 
@@ -3155,7 +3148,27 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (OverSSH)
             {
 
-                if (KnownSshKeyIds is not null &&
+                // No key at all is named alone, and by a connection that has
+                // something else to sign in with.
+                if (identities.Any(identity => identity.Id == SshClientKeys.NoneId))
+                {
+
+                    if (identities.Length > 1 || identities[0].From is not null)
+                    {
+                        Error = "A connection that offers its server no key names nothing beside that, and no time: " +
+                                "it offers none, or it offers keys.";
+                        return false;
+                    }
+
+                    if (Authentication is null)
+                    {
+                        Error = "A connection that offers its server no key needs a password to sign in with.";
+                        return false;
+                    }
+
+                }
+
+                else if (KnownSshKeyIds is not null &&
                     identities.FirstOrDefault(identity => !KnownSshKeyIds().Contains(identity.Id)) is ConnectionIdentity noKey)
                 {
                     Error = $"There is no SSH key '{noKey.Id}' on this {NodeWording.Noun}.";
@@ -3215,11 +3228,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                     if (credentials.Kind == AuthenticationKind.Basic && !Entry.IsSecure && !Entry.IsSSH)
                         Entry.Warnings.Add("HTTP Basic over a connection without TLS sends the password in the clear to anybody on the way.");
 
-                    if (credentials.Kind == AuthenticationKind.TOTP && Entry.IsSSH)
-                        Entry.Warnings.Add($"'{credentials.Description}' is a TOTP password, which is answered over HTTP. " +
-                                            "An ssh:// connection does not speak it, so it is not dialled.");
+                    if (credentials.Kind == AuthenticationKind.TOTP && Entry.IsSSH && !credentials.TLSChannelBinding)
+                        Entry.Warnings.Add($"'{credentials.Description}' is not bound to its session, so over SSH its one-time password is " +
+                                            "sent as a password, or as the answer to a prompt, where the server asks for one: whoever the " +
+                                            "session ends at reads it, and can use it within its validity. Bound, it is sent to a server " +
+                                            "that takes 'totp@open.charging.cloud' and to no other.");
 
-                    if (credentials.Kind == AuthenticationKind.Basic && Entry.IsSSH &&
+                    if (Entry.IsSSH &&
                         Entry.URL.Login is String login && login != credentials.Login)
                         Entry.Warnings.Add($"The URL signs in as '{login}' and '{credentials.Description}' as '{credentials.Login}'. " +
                                             "It is one login, so it is not dialled until the two agree.");
@@ -3252,7 +3267,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (Entry.IsSSH && Entry.Identities.Count > 0)
             {
 
-                if (KnownSshKeyIds is not null && Entry.Identities.Any(identity => !KnownSshKeyIds().Contains(identity.Id)))
+                if (KnownSshKeyIds is not null && Entry.Identities.Any(identity => identity.Id != SshClientKeys.NoneId && !KnownSshKeyIds().Contains(identity.Id)))
                     Entry.Warnings.Add($"An SSH key this connection names is not on this {NodeWording.Noun} any more.");
 
             }

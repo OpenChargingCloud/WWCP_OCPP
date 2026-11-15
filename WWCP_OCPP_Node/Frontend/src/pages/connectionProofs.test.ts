@@ -140,7 +140,7 @@ describe('what a connection proves itself with', () => {
         typeURL(form, 'ssh://cs001@csms.example.org:2222');
         await until(() => form.querySelector('[data-identities="ssh"]') !== null, 'an ssh:// connection is not shown the keys it signs in with');
 
-        assert.deepEqual(ways(form), [ '', 'auth:l1', 'new:basic' ], 'an ssh:// connection is offered something beside its keys and a password');
+        assert.deepEqual(ways(form), [ '', 'auth:l1', 'new:basic', 'new:totp' ], 'an ssh:// connection is offered something beside its keys and a password');
         assert.deepEqual([ ...form.querySelectorAll<HTMLInputElement>('input[name="identity"]') ].map(box => box.value), [ 'own', 'k1' ]);
         assert.deepEqual(ticked(form), []);
         assert.ok(add(root) === form, 'the form was made anew, and what was typed into it with it');
@@ -226,7 +226,8 @@ describe('what a connection proves itself with', () => {
                                   }));
         const ssh  = editOf(root, 'c2');
 
-        assert.deepEqual(ways(ssh), [ '', 'auth:l1', 'new:basic' ], 'a TOTP is offered where nothing answers one');
+        assert.deepEqual(ways(ssh), [ '', 'auth:l1', 'auth:t1', 'new:basic', 'new:totp' ], 'a one-time password is not offered over SSH');
+        assert.match(ssh.querySelector('option[value="auth:t1"]')!.textContent!, /one-time password/);
         assert.equal(ssh.querySelector<HTMLSelectElement>('select[name="proves"]')!.value, '');
 
         change(ssh.querySelector<HTMLSelectElement>('select[name="proves"]')!, 'auth:l1');
@@ -270,6 +271,40 @@ describe('what a connection proves itself with', () => {
         assert.deepEqual(logins, [ { description: 'CSMS over SSH', kind: 'basic', login: 'cs002', secret: 'a password' } ]);
         assert.equal(lastAdded!.authenticationId, 'l2');
         assert.deepEqual(lastAdded!.identities, []);
+
+    });
+
+    it('writes down that an ssh:// connection offers no key, and a one-time password as what it signs in with', async () => {
+
+        const root = await opened(undefined, () => aStation({
+                                      authentications: [ { id: 't1', description: 'One-time', kind: 'totp', login: 'cs001', createdAt: '2026-10-01T10:00:00Z',
+                                                           hasSecret: true, tlsChannelBinding: true } ],
+                                      connections:     [ aConnection('c2', { url: 'ssh://cs001@csms.example.org:2222', secure: false, transport: 'ssh',
+                                                                             identities: [ { id: 'k1' } ] }),
+                                                         aConnection('c3', { url: 'ssh://cs001@csms.example.org:2222', secure: false, transport: 'ssh',
+                                                                             identities: [ { id: 'none' } ], authenticationId: 't1' }) ]
+                                  }));
+
+        // One that offers none says so, has it ticked, and shows no key as gone.
+        const none = editOf(root, 'c3');
+
+        assert.match(root.querySelector('[data-proves="c3"]')!.textContent!.replace(/\s+/g, ' '), /No SSH key, and the one-time password of One-time/);
+        assert.equal(none.querySelector<HTMLInputElement>('[name="noKey"]')!.checked, true);
+        assert.deepEqual([ ...none.querySelectorAll<HTMLInputElement>('input[name="identity"]') ].map(box => box.value), [ 'own', 'k1' ]);
+        assert.match(none.querySelector('option[value="auth:t1"]')!.textContent!, /bound to the session/);
+
+        // And one that offers a key is told to offer none: whatever is ticked.
+        const ssh = editOf(root, 'c2');
+
+        assert.equal(ssh.querySelector<HTMLInputElement>('[name="noKey"]')!.checked, false);
+
+        change(ssh.querySelector<HTMLInputElement>('[name="noKey"]')!, true);
+        change(ssh.querySelector<HTMLSelectElement>('select[name="proves"]')!, 'auth:t1');
+        submit(root, 'form[data-edit="c2"]');
+        await until(() => lastSaved !== null, 'the connection was not saved');
+
+        assert.deepEqual(lastSaved!.identities, [ { id: 'none' } ]);
+        assert.equal(lastSaved!.authenticationId, 't1');
 
     });
 

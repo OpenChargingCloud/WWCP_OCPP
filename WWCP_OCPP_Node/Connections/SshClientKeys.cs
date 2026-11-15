@@ -94,6 +94,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         public const String  OwnId              = "own";
 
         /// <summary>
+        /// What a connection names instead of a key to offer its server
+        /// none: it signs in with its password alone. No key of the store
+        /// - nothing is kept under it - and named alone, by a connection
+        /// that has a password.
+        /// </summary>
+        public const String  NoneId             = "none";
+
+        /// <summary>
         /// The directory the keys somebody made are kept in, below the one of
         /// the node's own.
         /// </summary>
