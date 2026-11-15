@@ -2089,7 +2089,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         {
 
             var clock  = Stopwatch.StartNew();
-            var steps  = new JArray();
+
+            // What was done, in the order it was said. Said from this method and from what the
+            // connection calls back on other threads - a message received, the other end closing -
+            // and so under a lock; and what is said after the answer was made is not in it.
+            var steps  = new List<JObject>();
+            var done   = false;
 
             // What is asked in OCPP once it is connected, and what came of it.
             TestRequest? asked = null;
@@ -2100,23 +2105,37 @@ namespace cloud.charging.open.protocols.OCPP.Node
             KeyPin? shownKeyPin = null;
 
             void Step(String Level, String Text)
-                => steps.Add(new JObject(
-                       new JProperty("at_ms",  clock.ElapsedMilliseconds),
-                       new JProperty("level",  Level),
-                       new JProperty("text",   Text)
-                   ));
+            {
+                lock (steps)
+                {
+                    if (!done)
+                        steps.Add(new JObject(
+                            new JProperty("at_ms",  clock.ElapsedMilliseconds),
+                            new JProperty("level",  Level),
+                            new JProperty("text",   Text)
+                        ));
+                }
+            }
 
             JObject Done(ConnectionEntry? Connection, Boolean OK)
             {
 
                 clock.Stop();
 
+                JArray said;
+
+                lock (steps)
+                {
+                    done = true;
+                    said = new JArray(steps);
+                }
+
                 var result = new JObject(
                                  new JProperty("description",  Connection?.Description ?? (Description ?? "").Trim()),
                                  new JProperty("url",          Connection?.URL.ToString() ?? (URL ?? "").Trim()),
                                  new JProperty("ok",           OK),
                                  new JProperty("runtime_ms",   clock.ElapsedMilliseconds),
-                                 new JProperty("steps",        steps)
+                                 new JProperty("steps",        said)
                              );
 
                 if (shownKeyPin is not null)

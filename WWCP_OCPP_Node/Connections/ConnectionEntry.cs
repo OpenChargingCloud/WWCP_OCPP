@@ -585,7 +585,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// something other than this record - whether the credentials it
         /// names still exist, and whether the URL it was given can carry them.
         /// </remarks>
-        public List<String>    Warnings             { get; } = [];
+        public IReadOnlyList<String>  Warnings      { get; internal set; } = [];
 
         #endregion
 

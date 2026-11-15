@@ -3211,41 +3211,43 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         private void CheckEntry(ConnectionEntry Entry)
         {
 
-            Entry.Warnings.Clear();
+            // Worked out aside and put in its place at once: the page, a test and the dialler read
+            // the warnings while another thread works them out again.
+            var warnings = new List<String>();
 
             if (Entry.AuthenticationId is not null)
             {
 
                 if (!authentications.TryGetValue(Entry.AuthenticationId, out var credentials))
-                    Entry.Warnings.Add("The credentials this connection names are not configured here any more.");
+                    warnings.Add("The credentials this connection names are not configured here any more.");
 
                 else
                 {
 
                     if (!credentials.HasSecret)
-                        Entry.Warnings.Add($"'{credentials.Description}' has no secret set, so this connection cannot prove itself.");
+                        warnings.Add($"'{credentials.Description}' has no secret set, so this connection cannot prove itself.");
 
                     if (credentials.Kind == AuthenticationKind.Basic && !Entry.IsSecure && !Entry.IsSSH)
-                        Entry.Warnings.Add("HTTP Basic over a connection without TLS sends the password in the clear to anybody on the way.");
+                        warnings.Add("HTTP Basic over a connection without TLS sends the password in the clear to anybody on the way.");
 
                     if (credentials.Kind == AuthenticationKind.TOTP && Entry.IsSSH && !credentials.TLSChannelBinding)
-                        Entry.Warnings.Add($"'{credentials.Description}' is not bound to its session, so over SSH its one-time password is " +
-                                            "sent as a password, or as the answer to a prompt, where the server asks for one: whoever the " +
-                                            "session ends at reads it, and can use it within its validity. Bound, it is sent to a server " +
-                                            "that takes 'totp@open.charging.cloud' and to no other.");
+                        warnings.Add($"'{credentials.Description}' is not bound to its session, so over SSH its one-time password is " +
+                                      "sent as a password, or as the answer to a prompt, where the server asks for one: whoever the " +
+                                      "session ends at reads it, and can use it within its validity. Bound, it is sent to a server " +
+                                      "that takes 'totp@open.charging.cloud' and to no other.");
 
                     if (Entry.IsSSH &&
                         Entry.URL.Login is String login && login != credentials.Login)
-                        Entry.Warnings.Add($"The URL signs in as '{login}' and '{credentials.Description}' as '{credentials.Login}'. " +
-                                            "It is one login, so it is not dialled until the two agree.");
+                        warnings.Add($"The URL signs in as '{login}' and '{credentials.Description}' as '{credentials.Login}'. " +
+                                      "It is one login, so it is not dialled until the two agree.");
 
                     if (credentials.Kind == AuthenticationKind.TOTP && credentials.TLSChannelBinding && !Entry.IsSSH &&
                         !Entry.BindsItsPassword)
-                        Entry.Warnings.Add($"'{credentials.Description}' binds its password to the TLS session, and one is bound only on a " +
-                                            $"connection that names HTTP/3 and nothing else: over HTTP/1.1 and HTTP/2 this {NodeWording.Noun}'s TLS exports " +
-                                            "no keying material to bind one with, so it is not dialled. Name HTTP/3 for it, or switch the " +
-                                            "binding off to have the password sent unbound - and know that an unbound password can be replayed " +
-                                            "within its validity.");
+                        warnings.Add($"'{credentials.Description}' binds its password to the TLS session, and one is bound only on a " +
+                                      $"connection that names HTTP/3 and nothing else: over HTTP/1.1 and HTTP/2 this {NodeWording.Noun}'s TLS exports " +
+                                      "no keying material to bind one with, so it is not dialled. Name HTTP/3 for it, or switch the " +
+                                      "binding off to have the password sent unbound - and know that an unbound password can be replayed " +
+                                      "within its validity.");
 
                 }
 
@@ -3255,12 +3257,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             {
 
                 if (KnownCertificateIds is not null && Entry.Identities.Any(identity => !KnownCertificateIds().Contains(identity.Id)))
-                    Entry.Warnings.Add(Entry.Identities.Count == 1
-                                           ? $"The client certificate this connection names is not on this {NodeWording.Noun} any more."
-                                           : $"One of the client certificates this connection names is not on this {NodeWording.Noun} any more.");
+                    warnings.Add(Entry.Identities.Count == 1
+                                     ? $"The client certificate this connection names is not on this {NodeWording.Noun} any more."
+                                     : $"One of the client certificates this connection names is not on this {NodeWording.Noun} any more.");
 
                 if (!Entry.IsSecure)
-                    Entry.Warnings.Add("A client certificate is shown during a TLS handshake, and this connection makes none.");
+                    warnings.Add("A client certificate is shown during a TLS handshake, and this connection makes none.");
 
             }
 
@@ -3268,43 +3270,43 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             {
 
                 if (KnownSshKeyIds is not null && Entry.Identities.Any(identity => identity.Id != SshClientKeys.NoneId && !KnownSshKeyIds().Contains(identity.Id)))
-                    Entry.Warnings.Add($"An SSH key this connection names is not on this {NodeWording.Noun} any more.");
+                    warnings.Add($"An SSH key this connection names is not on this {NodeWording.Noun} any more.");
 
             }
 
             // Written down to follow, and nothing before it: until its time
             // comes this connection has nothing to show.
             if (Entry.Identities.Count > 0 && !Entry.IdentitiesAt(TimeProvider.GetUtcNow()).Any())
-                Entry.Warnings.Add($"None of the identities this connection names is shown yet: the first from " +
-                                   $"{Entry.Identities.Min(identity => identity.From)!.Value.UtcDateTime:yyyy-MM-dd HH:mm} UTC. Until then it is not dialled.");
+                warnings.Add($"None of the identities this connection names is shown yet: the first from " +
+                             $"{Entry.Identities.Min(identity => identity.From)!.Value.UtcDateTime:yyyy-MM-dd HH:mm} UTC. Until then it is not dialled.");
 
             // Over SSH this station always shows its own key.
             if (Entry.AuthenticationId is null && Entry.CertificateId is null && !Entry.IsSSH)
-                Entry.Warnings.Add("This connection proves nothing about who is dialling. A back end that asks will refuse it.");
+                warnings.Add("This connection proves nothing about who is dialling. A back end that asks will refuse it.");
 
             if (Entry.IsSSH)
             {
 
                 if (Entry.PinsMD5)
-                    Entry.Warnings.Add("An MD5 fingerprint is pinned, and MD5 fingerprints are no longer taken: this connection is not dialled " +
-                                       "until it is replaced by the SHA-256 one - the connection test shows it.");
+                    warnings.Add("An MD5 fingerprint is pinned, and MD5 fingerprints are no longer taken: this connection is not dialled " +
+                                 "until it is replaced by the SHA-256 one - the connection test shows it.");
 
                 if (Entry.SshHostKey is null && Entry.SshLearnedHostKey is not null)
-                    Entry.Warnings.Add($"The host key {Entry.SshLearnedHostKey} was learned on the first connection and is on probation: " +
-                                        "until a signed pin set confirms it, nothing but such a pin set is executed.");
+                    warnings.Add($"The host key {Entry.SshLearnedHostKey} was learned on the first connection and is on probation: " +
+                                  "until a signed pin set confirms it, nothing but such a pin set is executed.");
 
                 else if (Entry.SshHostKey is null && Entry.SshTrustOnFirstUse == SshTrustOnFirstUse.HostKey)
-                    Entry.Warnings.Add("No host key is pinned, so the first server that answers is believed, on probation for " +
-                                       $"{Entry.SshProbationTime.TotalMinutes:0.#} minute(s) until a signed pin set confirms its key. " +
-                                        "Pin it now to decide yourself - the connection test shows the key.");
+                    warnings.Add("No host key is pinned, so the first server that answers is believed, on probation for " +
+                                 $"{Entry.SshProbationTime.TotalMinutes:0.#} minute(s) until a signed pin set confirms its key. " +
+                                  "Pin it now to decide yourself - the connection test shows the key.");
 
                 else if (Entry.SshHostKey is null)
-                    Entry.Warnings.Add("No host key is pinned and trust on first use is off, so this connection is not dialled: " +
-                                       "pin its server's host key - the connection test shows it - or let it learn the first one, on probation.");
+                    warnings.Add("No host key is pinned and trust on first use is off, so this connection is not dialled: " +
+                                 "pin its server's host key - the connection test shows it - or let it learn the first one, on probation.");
 
                 if (Entry.SshOnPinMismatch != SshOnPinMismatch.Refuse)
-                    Entry.Warnings.Add($"A host key that matches no pin is believed all the same ({Entry.SshOnPinMismatch}): whoever answers on the way " +
-                                        "is taken for the server. That is for test benches, and for the move to a server whose key is not pinned yet.");
+                    warnings.Add($"A host key that matches no pin is believed all the same ({Entry.SshOnPinMismatch}): whoever answers on the way " +
+                                  "is taken for the server. That is for test benches, and for the move to a server whose key is not pinned yet.");
 
             }
 
@@ -3312,23 +3314,25 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             {
 
                 if (Entry.ServerKeyPinLearned is not null)
-                    Entry.Warnings.Add($"The key pin {Entry.ServerKeyPinLearned} was learned on the first connection and is on probation: " +
-                                        "until a signed pin set confirms it, nothing but such a pin set is executed.");
+                    warnings.Add($"The key pin {Entry.ServerKeyPinLearned} was learned on the first connection and is on probation: " +
+                                  "until a signed pin set confirms it, nothing but such a pin set is executed.");
 
                 else if (Entry.ServerKeyPins.Count == 0)
-                    Entry.Warnings.Add("No key is pinned, so the first server that answers is believed, on probation for " +
-                                       $"{Entry.ServerKeyPinProbationTime.TotalMinutes:0.#} minute(s) until a signed pin set confirms its key. " +
-                                        "Pin it now to decide yourself - the connection test shows its key pin.");
+                    warnings.Add("No key is pinned, so the first server that answers is believed, on probation for " +
+                                 $"{Entry.ServerKeyPinProbationTime.TotalMinutes:0.#} minute(s) until a signed pin set confirms its key. " +
+                                  "Pin it now to decide yourself - the connection test shows its key pin.");
 
                 // Raw public keys (RFC 7250) are offered where a connection
                 // prefers or requires them. Preferred, there is nothing to warn
                 // of: a server that knows none shows its certificate, and its
                 // key is checked by the same pins.
                 if (Entry.RawPublicKeys == RawPublicKeyMode.Require)
-                    Entry.Warnings.Add("This connection requires raw public keys: a server that shows a certificate is turned away, whatever " +
-                                       "key is in it. Prefer takes the same key in a certificate as well, by the same key pins.");
+                    warnings.Add("This connection requires raw public keys: a server that shows a certificate is turned away, whatever " +
+                                 "key is in it. Prefer takes the same key in a certificate as well, by the same key pins.");
 
             }
+
+            Entry.Warnings = warnings;
 
         }
 
