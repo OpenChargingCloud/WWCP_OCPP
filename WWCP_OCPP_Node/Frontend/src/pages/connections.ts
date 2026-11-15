@@ -342,6 +342,22 @@ export const connectionsPage: Page = {
                     </span>
                 </label>
 
+                <label class="checkbox" data-inbound>
+                    <input type="checkbox" name="inbound"
+                           ?checked=${entry?.inbound ?? false}
+                           ?disabled=${!mayManage} />
+                    The other end dials - it comes to this ${nodeNoun()}'s OCPP server
+                    <span class="hint">
+                        For a CSMS or a local controller this ${nodeNoun()} cannot reach, and that can reach it.
+                        The URL above is then the one the other end dials -
+                        <code>wss://this-${nodeNoun().replace(/\s+/g, '-')}.example.org:9443/csms-01</code> - and its last part the
+                        name it comes under. What it proves itself with, below, is what the other end signs in
+                        with: a login of that name, with a password or a TOTP secret. Host keys, key pins, client
+                        certificates and the version of HTTP are the dialler's to say: leave them as they are.
+                        OCPP itself stays as it is - this ${nodeNoun()} says that it started, and is asked.
+                    </span>
+                </label>
+
                 <label>Host keys of its server
                     <input type="text" name="sshHostKey" class="mono"
                            placeholder="SHA256:... or ssh-ed25519 AAAA..." value="${entry?.sshHostKey ?? ''}"
@@ -545,7 +561,8 @@ export const connectionsPage: Page = {
                     <span class="hint">
                         This is what decides whether the connection is used at all. Off, it stays written
                         down and nothing happens - an address kept ready for the day somebody needs it,
-                        which can still be tried by hand with the button below.
+                        which can still be tried by hand with the button below. Where the other end dials,
+                        it is what lets it in: off, nothing comes in under its name.
                     </span>
                 </label>
 
@@ -855,16 +872,20 @@ export const connectionsPage: Page = {
                                     ? html`<span class="chip on">TLS</span>`
                                     : html`<span class="chip warn">no TLS</span>`}
                         ${entry.keyPinned === true ? html`<span class="chip on">key pin</span>` : nothing}
-                        ${entry.autoConnect
-                              ? html`<span class="chip on">connects by itself</span>`
-                              : html`<span class="chip">configured only</span>`}
+                        ${entry.inbound === true
+                              ? html`<span class="chip on" data-inbound="${entry.id}">dials in</span>${entry.autoConnect
+                                    ? html`<span class="chip on">let in</span>`
+                                    : html`<span class="chip">not let in</span>`}`
+                              : entry.autoConnect
+                                    ? html`<span class="chip on">connects by itself</span>`
+                                    : html`<span class="chip">configured only</span>`}
                     </div>
 
                     <div class="connection-state" data-state="${entry.id}">${stateView(entry)}</div>
 
                     <dl class="kv">
-                        <dt>Where</dt>   <dd><code>${entry.url}</code></dd>
-                        <dt>Proves itself</dt>
+                        <dt>${entry.inbound === true ? 'It dials' : 'Where'}</dt>   <dd><code>${entry.url}</code></dd>
+                        <dt>${entry.inbound === true ? 'Signs in with' : 'Proves itself'}</dt>
                         <dd data-proves="${entry.id}">${provesSaid(entry, state)}</dd>
                         ${entry.transport === 'ssh' ? html`
                             <dt>Host keys</dt>
@@ -1332,6 +1353,7 @@ export const connectionsPage: Page = {
                 encoding:            (form.querySelector<HTMLSelectElement>('[name="encoding"]')?.value ?? 'json') as EncodingOfAConnection,
                 signatureFormats:    (form.querySelector<HTMLSelectElement>('[name="signatureFormats"]')?.value ?? 'policy') as SignatureFormatsOfAConnection,
                 autoConnect:  form.querySelector<HTMLInputElement>('[name="autoConnect"]')?.checked ?? false,
+                inbound:      form.querySelector<HTMLInputElement>('[name="inbound"]')?.checked ?? false,
                 authenticationId:    proves.startsWith('auth:') ? proves.slice(5) : null,
                 certificateId:       null,
                 identities

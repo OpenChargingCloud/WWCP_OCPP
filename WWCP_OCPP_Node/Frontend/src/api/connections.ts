@@ -61,6 +61,10 @@ export interface StationConnection {
     /** Which OCPP is spoken here, and so which of this station's two nodes dials. */
     ocppVersion:         string;
     autoConnect:  boolean;
+    /** Whether the other end dials: it comes to this node's OCPP server, under the name its URL ends with. */
+    inbound?:     boolean;
+    /** The name the other end of an inbound connection comes under. */
+    inboundName?: string;
     /** Whether the URL makes a TLS connection, which decides what the rest can mean. */
     secure:              boolean;
     /** Over an HTTP WebSocket, or over the SSH subsystem ocpp@open.charging.cloud. */
@@ -178,6 +182,8 @@ export interface ConnectionToSave {
     connectionType:      string;
     ocppVersion:         string;
     autoConnect:  boolean;
+    /** Whether the other end dials; left out, it stays as it is. */
+    inbound?:     boolean;
     authenticationId:    string | null;
     certificateId:       string | null;
     /** The identities it names; where they are sent, they go before "certificateId". */
@@ -286,7 +292,7 @@ export interface ConnectionTest {
  * a back end that has more than one, dialled when the one dialled now cannot be
  * reached.
  */
-export type ConnectionStatus = 'connected' | 'lost' | 'trying' | 'refused' | 'notDialled' | 'failed' | 'standby';
+export type ConnectionStatus = 'connected' | 'lost' | 'trying' | 'refused' | 'notDialled' | 'failed' | 'standby' | 'waiting';
 
 /** What became of one connection this station dialled, and since when. */
 export interface ConnectionState {

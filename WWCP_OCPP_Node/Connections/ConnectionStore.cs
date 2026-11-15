@@ -1033,10 +1033,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                         String?                          HTTPVersion     = null,
                                         String?                          Encoding        = null,
                                         String?                          SignatureFormats = null,
-                                        IEnumerable<ConnectionIdentity>? Identities      = null)
+                                        IEnumerable<ConnectionIdentity>? Identities      = null,
+                                        Boolean?                         Inbound         = null)
 
             => TryAddConnection(Description, URL, ConnectionType, AutoConnect, AuthenticationId, CertificateId,
-                                out Id, out Error, out _, OCPPVersion, SshHostKey, SshTrust, ServerKeyPins, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats, Identities);
+                                out Id, out Error, out _, OCPPVersion, SshHostKey, SshTrust, ServerKeyPins, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats, Identities, Inbound);
 
         /// <summary>
         /// Write down one connection - and say whether a refusal was the
@@ -1051,6 +1052,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// <param name="HTTPVersion">The version of HTTP the WebSocket is opened over - "auto", "1.1" or "2"; none for "auto".</param>
         /// <param name="Encoding">How its messages are written - "json", "cbor" or "auto"; none for "json".</param>
         /// <param name="SignatureFormats">Which signatures it writes - "jws", "cose" or "both"; none, or "policy", for what the signature policy says.</param>
+        /// <param name="Inbound">Whether the other end dials, see <see cref="ConnectionEntry.Inbound"/>; none for a connection this node dials.</param>
         public Boolean TryAddConnection(String?                          Description,
                                         String?                          URL,
                                         String?                          ConnectionType,
@@ -1069,7 +1071,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                         String?                          HTTPVersion     = null,
                                         String?                          Encoding        = null,
                                         String?                          SignatureFormats = null,
-                                        IEnumerable<ConnectionIdentity>? Identities      = null)
+                                        IEnumerable<ConnectionIdentity>? Identities      = null,
+                                        Boolean?                         Inbound         = null)
         {
 
             Id        = null;
@@ -1116,11 +1119,19 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (!ConnectionEntry.CheckOneWay(serverKeyPins, keyTrustOnFirstUse, pins, out Error))
                 return false;
 
+            var inbound = Inbound ?? false;
+
+            if (inbound && !CheckInbound(url, hostKey, serverKeyPins, rawPublicKeys, keyTrustOnFirstUse, pins, httpVersion, out Error))
+                return false;
+
             lock (updateLock)
             {
 
                 if (!CheckReferences(AuthenticationId, CertificateId, Identities, url.Scheme == URIScheme.ssh,
                                      out var authenticationId, out var identities, out Error))
+                    return false;
+
+                if (inbound && !CheckInboundReferences(null, url, version, authenticationId, identities, out Error))
                     return false;
 
                 var entry = new ConnectionEntry(
@@ -1132,6 +1143,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                             ) {
                                 OCPPVersion         = version,
                                 AutoConnect  = AutoConnect ?? false,
+                                Inbound             = inbound,
                                 AuthenticationId    = authenticationId,
                                 Identities          = identities,
                                 SshHostKey          = hostKey,
@@ -1230,6 +1242,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// <param name="HTTPVersion">The version of HTTP the WebSocket is opened over - "auto", "1.1" or "2"; nothing to keep the one it has.</param>
         /// <param name="Encoding">How its messages are written - "json", "cbor" or "auto"; nothing to keep what it says.</param>
         /// <param name="SignatureFormats">Which signatures it writes - "jws", "cose", "both", or "policy" for what the signature policy says; nothing to keep what it says.</param>
+        /// <param name="Inbound">Whether the other end dials, see <see cref="ConnectionEntry.Inbound"/>; nothing to keep what it says.</param>
         public Boolean TryUpdateConnection(String?                          Id,
                                            String?                          Description,
                                            String?                          URL,
@@ -1250,7 +1263,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                            String?                          HTTPVersion            = null,
                                            String?                          Encoding               = null,
                                            String?                          SignatureFormats       = null,
-                                           IEnumerable<ConnectionIdentity>? Identities             = null)
+                                           IEnumerable<ConnectionIdentity>? Identities             = null,
+                                           Boolean?                         Inbound                = null)
         {
 
             NotSaved = false;
@@ -1376,6 +1390,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 if (!ConnectionEntry.CheckOneWay(keyPins, keyTrustOnFirstUse, pins, out Error))
                     return false;
 
+                var inbound = Inbound ?? entry.Inbound;
+
+                if (inbound &&
+                    (!CheckInbound(url, hostKey, keyPins, rawPublicKeys, keyTrustOnFirstUse, pins, httpVersion ?? entry.HTTPVersion, out Error) ||
+                     !CheckInboundReferences(entry.Id, url, version, authenticationId, identities, out Error)))
+                    return false;
+
                 var peer = PeerOfUnlocked(entry.Id);
 
                 if (peer is not null && peer.EndpointIds.Count > 1 && version != peer.OCPPVersion)
@@ -1393,6 +1414,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 entry.ConnectionType      = type;
                 entry.OCPPVersion         = version;
                 entry.AutoConnect  = AutoConnect ?? false;
+                entry.Inbound             = inbound;
                 entry.AuthenticationId    = authenticationId;
                 entry.Identities          = identities;
 
@@ -3198,6 +3220,102 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 CheckEntry(entry);
         }
 
+        #region (private) CheckInbound(...) / CheckInboundReferences(...)
+
+        /// <summary>
+        /// What a connection the other end dials can not say: everything this
+        /// node holds a server to that it dials itself.
+        /// </summary>
+        private static Boolean CheckInbound(URL                               URL,
+                                            String?                           HostKey,
+                                            IReadOnlyList<KeyPin>             ServerKeyPins,
+                                            RawPublicKeyMode                  RawPublicKeys,
+                                            KeyTrustOnFirstUse                TrustOnFirstUse,
+                                            ServerPins?                       Pins,
+                                            WebSocketHTTPVersion?             HTTPVersion,
+                                            [NotNullWhen(false)] out String?  Error)
+        {
+
+            if (!ConnectionEntry.ValidateInbound(URL, out _, out Error))
+                return false;
+
+            if (HostKey is not null || ServerKeyPins.Count > 0 || Pins is not null ||
+                RawPublicKeys != RawPublicKeyMode.Off || TrustOnFirstUse != KeyTrustOnFirstUse.None)
+            {
+                Error = $"Host keys, key pins and what a server is held to are for a server this {NodeWording.Noun} dials. " +
+                        $"Here the other end dials, and this {NodeWording.Noun} is the server: leave them out.";
+                return false;
+            }
+
+            if (HTTPVersion is not null && HTTPVersion != WebSocketHTTPVersion.Auto)
+            {
+                Error = "Which version of HTTP the WebSocket is opened over is chosen by whoever dials - and here that is the other end.";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        /// <summary>
+        /// What a connection the other end dials needs of the rest of the
+        /// store: credentials the other end signs in with, under the name it
+        /// comes under - and that name to itself, among the connections of its
+        /// OCPP version. Called under the lock.
+        /// </summary>
+        private Boolean CheckInboundReferences(String?                               Id,
+                                               URL                                   URL,
+                                               OCPPVersion                           Version,
+                                               String?                               AuthenticationId,
+                                               IReadOnlyList<ConnectionIdentity>     Identities,
+                                               [NotNullWhen(false)] out String?      Error)
+        {
+
+            var name = ConnectionEntry.InboundNameOf(URL)!;
+
+            if (Identities.Count > 0)
+            {
+                Error = $"A client certificate is what this {NodeWording.Noun} shows where it dials. Here the other end dials: leave it out.";
+                return false;
+            }
+
+            if (AuthenticationId is null || !authentications.TryGetValue(AuthenticationId, out var credentials))
+            {
+                Error = $"A connection the other end makes needs credentials: what '{name}' signs in with. Nothing gets in without.";
+                return false;
+            }
+
+            if (credentials.Login != name)
+            {
+                Error = $"'{credentials.Description}' signs in as '{credentials.Login}', and the URL ends with '{name}'. " +
+                        "It is one name - the one the other end comes under - so the two have to agree.";
+                return false;
+            }
+
+            if (credentials.Kind == AuthenticationKind.TOTP && credentials.TLSChannelBinding)
+            {
+                Error = $"'{credentials.Description}' binds its password to the TLS session, which this {NodeWording.Noun}'s OCPP server does not check yet. " +
+                        "Name credentials without the binding.";
+                return false;
+            }
+
+            if (connections.Values.FirstOrDefault(other => other.Inbound &&
+                                                           other.Id          != Id &&
+                                                           other.OCPPVersion == Version &&
+                                                           other.InboundName == name) is ConnectionEntry taken)
+            {
+                Error = $"'{name}' is the name '{taken.Description}' comes under already, in {ConnectionEntry.AsText(Version)}. " +
+                        "Two connections under one name could not be told apart at the door.";
+                return false;
+            }
+
+            Error = null;
+            return true;
+
+        }
+
+        #endregion
+
         /// <summary>
         /// What is worth saying about one connection, worked out again.
         /// </summary>
@@ -3224,11 +3342,24 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 else
                 {
 
-                    if (!credentials.HasSecret)
+                    if (!credentials.HasSecret && !Entry.Inbound)
                         warnings.Add($"'{credentials.Description}' has no secret set, so this connection cannot prove itself.");
 
                     if (credentials.Kind == AuthenticationKind.Basic && !Entry.IsSecure && !Entry.IsSSH)
-                        warnings.Add("HTTP Basic over a connection without TLS sends the password in the clear to anybody on the way.");
+                        warnings.Add(Entry.Inbound
+                                         ? "Without TLS the other end sends its password in the clear to anybody on the way."
+                                         : "HTTP Basic over a connection without TLS sends the password in the clear to anybody on the way.");
+
+                    if (Entry.Inbound && !credentials.HasSecret)
+                        warnings.Add($"'{credentials.Description}' has no secret set, so nothing is let in as '{Entry.InboundName}'.");
+
+                    if (Entry.Inbound && credentials.Login != Entry.InboundName)
+                        warnings.Add($"'{credentials.Description}' signs in as '{credentials.Login}', and this connection comes under the name " +
+                                     $"'{Entry.InboundName}': nothing is let in until the two agree.");
+
+                    if (Entry.Inbound && credentials.Kind == AuthenticationKind.TOTP && credentials.TLSChannelBinding)
+                        warnings.Add($"'{credentials.Description}' binds its password to the TLS session, which this {NodeWording.Noun}'s OCPP server " +
+                                      "does not check yet: nothing is let in with it.");
 
                     if (credentials.Kind == AuthenticationKind.TOTP && Entry.IsSSH && !credentials.TLSChannelBinding)
                         warnings.Add($"'{credentials.Description}' is not bound to its session, so over SSH its one-time password is " +
@@ -3241,7 +3372,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                         warnings.Add($"The URL signs in as '{login}' and '{credentials.Description}' as '{credentials.Login}'. " +
                                       "It is one login, so it is not dialled until the two agree.");
 
-                    if (credentials.Kind == AuthenticationKind.TOTP && credentials.TLSChannelBinding && !Entry.IsSSH &&
+                    if (credentials.Kind == AuthenticationKind.TOTP && credentials.TLSChannelBinding && !Entry.IsSSH && !Entry.Inbound &&
                         !Entry.BindsItsPassword)
                         warnings.Add($"'{credentials.Description}' binds its password to the TLS session, and one is bound only on a " +
                                       $"connection that names HTTP/3 and nothing else: over HTTP/1.1 and HTTP/2 this {NodeWording.Noun}'s TLS exports " +
@@ -3282,7 +3413,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             // Over SSH this station always shows its own key.
             if (Entry.AuthenticationId is null && Entry.CertificateId is null && !Entry.IsSSH)
-                warnings.Add("This connection proves nothing about who is dialling. A back end that asks will refuse it.");
+                warnings.Add(Entry.Inbound
+                                 ? "This connection names no credentials, so nothing is let in under its name."
+                                 : "This connection proves nothing about who is dialling. A back end that asks will refuse it.");
 
             if (Entry.IsSSH)
             {

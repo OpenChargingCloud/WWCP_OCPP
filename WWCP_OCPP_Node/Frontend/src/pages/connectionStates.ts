@@ -62,12 +62,14 @@ export function between(from: string, to: string): string {
  * @param state  what the station says became of it, if it dialled it.
  * @param now    the station's clock when it said so.
  */
-export function stateLine(entry:  Pick<StationConnection, 'url' | 'ocppVersion' | 'autoConnect'>,
+export function stateLine(entry:  Pick<StationConnection, 'url' | 'ocppVersion' | 'autoConnect'> & Pick<Partial<StationConnection>, 'inbound'>,
                           state:  ConnectionState | undefined,
                           now:    string): StateLine | null {
 
     if (state === undefined)
-        return entry.autoConnect
+        return entry.inbound === true
+                   ? null
+             : entry.autoConnect
                    ? {
                          chip:   'not dialled',
                          tone:   '',
@@ -94,17 +96,22 @@ export function stateLine(entry:  Pick<StationConnection, 'url' | 'ocppVersion' 
             case 'refused':     return [ 'refused',      'bad',  `${since}, and not tried again` ];
             case 'notDialled':  return [ 'not dialled',  'bad',  since ];
             case 'standby':     return [ 'in reserve',   '',     since ];
+            case 'waiting':     return [ 'waiting',      '',     since ];
             default:            return [ 'failed',       'bad',  `${since}, and not tried again` ];
         }
     })();
 
     const notes: string[] = [];
 
-    if (state.url !== entry.url || state.ocppVersion !== entry.ocppVersion)
+    if (entry.inbound === true) {
+        // Nothing of it is dialled here: what is said of it is all there is to say.
+    }
+
+    else if (state.url !== entry.url || state.ocppVersion !== entry.ocppVersion)
         notes.push(`Dialled as ${state.url} (${state.ocppVersion}). ` +
                    `It is hung up and dialled as written here now, as soon as this ${nodeNoun()} has taken the change.`);
 
-    if (!entry.autoConnect && (state.status === 'connected' || state.status === 'lost' || state.status === 'trying'))
+    if (entry.inbound !== true && !entry.autoConnect && (state.status === 'connected' || state.status === 'lost' || state.status === 'trying'))
         notes.push(`No longer set to connect by itself. It is hung up as soon as this ${nodeNoun()} has taken the change.`);
 
     return { chip, tone, when, said: state.said, notes };

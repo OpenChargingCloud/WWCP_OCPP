@@ -122,17 +122,42 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// migration - registers with that one too, and is answered by it. Such an
         /// answer is about that connection: the heartbeat interval it gives, or its
         /// refusal, set on the node, changed the heartbeat to the node's CSMS. Where
-        /// nothing tells the connections apart - a connection this node accepted, one
-        /// without a client, no route by that name - it is taken to come from the
-        /// CSMS, as everything did before.
+        /// nothing tells the connections apart - no route by that name, a connection
+        /// this node accepted on a server that reaches nothing under that name - it
+        /// is taken to come from the CSMS, as everything did before.
+        ///
+        /// A connection this node accepted is told apart where it can be: it is not
+        /// the CSMS while the CSMS is one this node dialled, and where the CSMS
+        /// dialled in itself - the server reaches it under that name as well, see
+        /// WWCPWebSocketServer.ReachAs - it is the CSMS where it came under the
+        /// name the CSMS came under.
         /// </remarks>
         /// <param name="Connection">The connection something came over.</param>
         protected Boolean ComesFromItsCSMS(IMessageConnection? Connection)
+        {
 
-            => Connection?.WWCPClientOf() is not IWWCPClient client                      ||
-               !Routing.LookupNetworkingNode(DefaultNextHopNetworkingNodeId, out var csms) ||
-               csms.Client is null                                                        ||
-               ReferenceEquals(csms.Client, client);
+            if (!Routing.LookupNetworkingNode(DefaultNextHopNetworkingNodeId, out var csms))
+                return true;
+
+            // A connection this node dialled.
+            if (Connection?.WWCPClientOf() is IWWCPClient client)
+                return csms.Client is null ||
+                       ReferenceEquals(csms.Client, client);
+
+            // One it accepted, or one nothing is known of.
+            if (csms.Client is not null)
+                return Connection is null;
+
+            if (Connection is not null &&
+                csms.Server is WWCP.WebSockets.WWCPWebSocketServer server &&
+                server.ReachedAs(DefaultNextHopNetworkingNodeId) is NetworkingNode_Id itsCSMS)
+            {
+                return Connection.TryGetCustomDataAs<NetworkingNode_Id>(WWCP.WebSockets.WebSocketKeys.NetworkingNodeId) == itsCSMS;
+            }
+
+            return true;
+
+        }
 
         #endregion
 

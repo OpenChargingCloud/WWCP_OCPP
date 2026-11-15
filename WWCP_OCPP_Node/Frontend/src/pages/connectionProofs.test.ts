@@ -383,4 +383,54 @@ describe('what a connection proves itself with', () => {
 
     });
 
+    it('writes down a connection the other end makes, and says of one that it dials in', async () => {
+
+        const root = await opened(undefined, () => aStation({
+                                      authentications: [ { id: 'l1', description: 'What the CSMS signs in with', kind: 'basic', login: 'csms-01',
+                                                           createdAt: '2026-10-01T10:00:00Z', hasSecret: true } ],
+                                      connections:     [ aConnection('c1', { url: 'wss://station.example.org:9443/csms-01', authenticationId: 'l1',
+                                                                             inbound: true, inboundName: 'csms-01' }),
+                                                         aConnection('c2') ]
+                                  }));
+
+        // The one that dials in says so, and what it signs in with; the other one does not.
+        const card = root.querySelector('[data-inbound="c1"]')!.closest('.card, article, section, li, div.connection') ?? root;
+
+        assert.equal(root.querySelector('[data-inbound="c1"]')!.textContent!.trim(), 'dials in');
+        assert.equal(root.querySelector('[data-inbound="c2"]'), null);
+        assert.match(card.textContent!.replace(/\s+/g, ' '), /let in/);
+        assert.match(root.querySelector('[data-proves="c1"]')!.previousElementSibling!.textContent!, /Signs in with/);
+        assert.match(root.querySelector('[data-proves="c2"]')!.previousElementSibling!.textContent!, /Proves itself/);
+
+        assert.equal(editOf(root, 'c1').querySelector<HTMLInputElement>('[name="inbound"]')!.checked, true);
+        assert.equal(editOf(root, 'c2').querySelector<HTMLInputElement>('[name="inbound"]')!.checked, false);
+
+        // A new one, with the box ticked - and one without it.
+        const fresh = add(root);
+
+        type(field(root, '#panel-new #add-form', 'description'), 'Another CSMS, dialling in');
+        typeURL(fresh, 'wss://station.example.org:9443/csms-01');
+        change(fresh.querySelector<HTMLInputElement>('[name="inbound"]')!, true);
+        change(fresh.querySelector<HTMLSelectElement>('select[name="proves"]')!, 'auth:l1');
+
+        submit(root, '#panel-new #add-form');
+        await until(() => lastAdded !== null, 'the connection was not written down');
+
+        assert.equal(lastAdded!.inbound, true);
+        assert.equal(lastAdded!.authenticationId, 'l1');
+        assert.equal(lastAdded!.url, 'wss://station.example.org:9443/csms-01');
+
+        const again = await opened();
+        const plain = add(again);
+
+        type(field(again, '#panel-new #add-form', 'description'), 'A CSMS this station dials');
+        typeURL(plain, 'wss://csms.example.org/cs001');
+
+        submit(again, '#panel-new #add-form');
+        await until(() => lastAdded !== null, 'the connection was not written down');
+
+        assert.equal(lastAdded!.inbound, false);
+
+    });
+
 });

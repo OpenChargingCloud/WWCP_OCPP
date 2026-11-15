@@ -237,6 +237,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// </summary>
         public const String PinsAsShownKey       = ServerPins.AsShownKey;
 
+        /// <summary>
+        /// The key that says the other end dials: true for a connection this
+        /// node waits for, on its own OCPP server.
+        /// </summary>
+        public const String InboundKey           = "inbound";
+
         #endregion
 
         #region Properties
@@ -284,6 +290,32 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// is noticed by whatever is at the other end, later.
         /// </remarks>
         public Boolean         AutoConnect          { get; internal set; }
+
+        /// <summary>
+        /// Whether the other end dials: a connection this node waits for on
+        /// its own OCPP server, rather than one it makes.
+        /// </summary>
+        /// <remarks>
+        /// The roles of OCPP stay as they are - what dials in is a CSMS or a
+        /// local controller, and this node tells it that it started, as it
+        /// tells one it dialled; only who opens the WebSocket is the other
+        /// way round. Its URL is the one the other end dials, and the last
+        /// segment of its path the name it comes under
+        /// (<see cref="InboundName"/>). The credentials it names are what the
+        /// other end signs in with, and not what this node proves itself
+        /// with. <see cref="AutoConnect"/> says whether it is let in at all.
+        /// </remarks>
+        public Boolean         Inbound              { get; internal set; }
+
+        /// <summary>
+        /// The name the other end of an inbound connection comes under: the
+        /// last segment of the path of its URL. Null for a connection this
+        /// node dials.
+        /// </summary>
+        public String?         InboundName
+            => Inbound
+                   ? InboundNameOf(URL)
+                   : null;
 
         /// <summary>
         /// The credentials this connection proves itself with, by their
@@ -810,6 +842,89 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             URL   = url;
             Type  = type;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region (static) InboundNameOf(URL) / ValidateInbound(URL, out Name, out Error)
+
+        /// <summary>
+        /// The last segment of the path of the given URL: the name the other
+        /// end of an inbound connection comes under. Null where there is none.
+        /// </summary>
+        public static String? InboundNameOf(URL URL)
+        {
+
+            var path = URL.Path.ToString();
+            var cut  = path.IndexOfAny([ '?', '#' ]);
+
+            if (cut >= 0)
+                path = path[..cut];
+
+            var name = path.TrimEnd('/');
+            var last = name.LastIndexOf('/');
+
+            name = Uri.UnescapeDataString(last >= 0 ? name[(last + 1)..] : name).Trim();
+
+            return name.Length > 0
+                       ? name
+                       : null;
+
+        }
+
+        /// <summary>
+        /// What can be said to be wrong with the URL of a connection the other
+        /// end dials: it is a WebSocket one, and the last segment of its path
+        /// names the other end.
+        /// </summary>
+        public static Boolean ValidateInbound(URL                               URL,
+                                              [NotNullWhen(true)]  out String?  Name,
+                                              [NotNullWhen(false)] out String?  Error)
+        {
+
+            Name   = null;
+            Error  = null;
+
+            if (URL.Scheme == URIScheme.ssh)
+            {
+                Error = $"Over SSH nothing dials this {NodeWording.Noun}'s OCPP server: a connection the other end makes is a ws:// or a wss:// one.";
+                return false;
+            }
+
+            Name = InboundNameOf(URL);
+
+            if (Name is null)
+            {
+                Error = "The URL of a connection the other end makes ends with the name the other end comes under - " +
+                        "wss://this-station.example.org:9443/csms-01. It says none.";
+                return false;
+            }
+
+            if (!cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.TryParse(Name, out var node))
+            {
+                Error = $"'{Name}' can not name a networking node, and so nothing can come under it.";
+                Name  = null;
+                return false;
+            }
+
+            // The names a node says what it has to say by. What comes in under
+            // one of them would be told all of it, whichever connection is in
+            // charge: the one in charge is reached under them, and by nothing
+            // it says of itself.
+            if (node == cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.CSMS          ||
+                node == cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.CentralSystem ||
+                node == cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.Broadcast     ||
+                node == cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.Zero          ||
+                Name.StartsWith("connection-", StringComparison.Ordinal))
+            {
+                Error = $"'{Name}' is a name this {NodeWording.Noun} keeps for itself. Whatever dials in comes under a name of its own - csms-01, say; " +
+                        "the one in charge is spoken to as the CSMS all the same.";
+                Name  = null;
+                return false;
+            }
 
             return true;
 
@@ -1401,6 +1516,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 return false;
             }
 
+            var inbound = JSON.Value<Boolean?>(InboundKey) ?? false;
+
+            if (inbound && !ValidateInbound(url, out _, out var wrongInbound))
+            {
+                Error = $"connection '{id}': {wrongInbound}";
+                return false;
+            }
+
             Entry = new ConnectionEntry(
                         id,
                         (JSON.Value<String>("description") ?? "").Trim(),
@@ -1410,6 +1533,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                     ) {
                         OCPPVersion         = version,
                         AutoConnect  = JSON.Value<Boolean?>("autoConnect") ?? false,
+                        Inbound             = inbound,
                         AuthenticationId    = Named(JSON.Value<String>("authenticationId")),
                         CertificateId       = Named(JSON.Value<String>("certificateId")),
                         SshHostKey          = hostKey,
@@ -1470,6 +1594,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                            new JProperty("transport",           IsSSH ? "ssh" : "websocket"),
                            new JProperty("createdAt",           CreatedAt.UtcDateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"))
                        );
+
+            // Said only where it is so: a file of before says nothing of it.
+            if (Inbound)
+            {
+                json.Add(new JProperty(InboundKey,    true));
+                json.Add(new JProperty("inboundName", InboundName));
+            }
 
             if (AuthenticationId is not null)  json.Add(new JProperty("authenticationId",  AuthenticationId));
             if (CertificateId    is not null)  json.Add(new JProperty("certificateId",     CertificateId));
@@ -1642,6 +1773,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             => new (Id, Description, URL, ConnectionType, CreatedAt) {
                    OCPPVersion       = OCPPVersion,
                    AutoConnect       = AutoConnect,
+                   Inbound           = Inbound,
                    AuthenticationId  = AuthenticationId,
                    Identities          = Identities,
                    SshHostKey          = SshHostKey,

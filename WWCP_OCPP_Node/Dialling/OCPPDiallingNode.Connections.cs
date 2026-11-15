@@ -488,6 +488,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
             try
             {
 
+                // The other end dials: there is nothing to dial, and it is
+                // waited for.
+                if (Connection.Inbound)
+                {
+                    WaitFor(Connection);
+                    return;
+                }
+
                 if (Connection.IsSSH)
                 {
                     await DialOverSSH(Connection, where, CancellationToken);
@@ -1957,6 +1965,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected void Note(ConnectionEntry Connection, String What)
         {
 
+            // Said of a connection the other end made that is gone by now - an
+            // answer to a BootNotification that came in as it went: it is not
+            // connected, and what is said of it stays that it is waited for.
+            if (Connection.Inbound && !IsUp(Connection))
+            {
+                Log.Debug($"'{Connection.Description}': {What} - said after it went, and so not of how it stands.", "ocpp", "connections", "inbound");
+                return;
+            }
+
             Record(Connection, ConnectionStatus.Connected, What);
 
             Log.Info($"'{Connection.Description}': {What}", "ocpp", "connections");
@@ -2232,6 +2249,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
             protocols.WWCP.Node.ServerJudgement? judged = null;
 
             #endregion
+
+            // There is nothing of it this node could try: the other end dials.
+            if (connection.Inbound)
+            {
+
+                Step("error", $"'{connection.Description}' is a connection the other end makes: '{connection.InboundName}' dials {connection.URL}. " +
+                              $"There is nothing this {NodeWording.Noun} could dial to test it - what is said of it on the page is how it stands.");
+
+                return Done(connection, false);
+
+            }
 
             Log.Info($"Testing the connection to '{connection.Description}' ({connection.URL}) ...", "ocpp", "connections", "test");
 

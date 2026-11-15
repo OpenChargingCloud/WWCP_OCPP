@@ -76,7 +76,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// dialled while another endpoint of it is, and dialled when that one
         /// cannot be reached.
         /// </summary>
-        Standby
+        Standby,
+
+        /// <summary>
+        /// A connection the other end makes, and nothing is in over it: it is
+        /// waited for, or nothing can come - switched off, or no server of
+        /// this node for it to dial.
+        /// </summary>
+        Waiting
 
     }
 
@@ -123,6 +130,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                    ConnectionStatus.Refused     => "refused",
                    ConnectionStatus.NotDialled  => "notDialled",
                    ConnectionStatus.Standby     => "standby",
+                   ConnectionStatus.Waiting     => "waiting",
                    _                            => "failed"
                };
 

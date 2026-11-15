@@ -178,4 +178,20 @@ describe('a connection removed since the start', () => {
 
     });
 
+    it('a connection the other end makes is waited for, and nothing of it is said to be dialled', () => {
+
+        const inbound = { ...dialled, inbound: true };
+
+        assert.equal(stateLine(inbound, undefined, '2020-01-01T00:00:00.000Z'), null, 'not dialled yet, of something nobody dials');
+
+        const line = stateLine({ ...inbound, url: 'wss://elsewhere.example.org/csms-01', autoConnect: false },
+                               state('waiting'), '2020-01-01T00:01:00.000Z');
+
+        assert.equal(line?.chip, 'waiting');
+        assert.equal(line?.tone, '');
+        assert.equal(line?.when, 'for 1 min');
+        assert.deepEqual(line?.notes, [], 'it is said to be hung up and dialled again');
+
+    });
+
 });
