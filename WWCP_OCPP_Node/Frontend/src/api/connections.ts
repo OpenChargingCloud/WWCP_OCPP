@@ -67,7 +67,14 @@ export interface StationConnection {
     transport?:          'websocket' | 'ssh';
     createdAt:           string;
     authenticationId?:   string;
+    /** The first identity it names, where it is a wss:// connection: what it was before it could name several. */
     certificateId?:      string;
+    /**
+     * The identities it proves itself with, in the order written: TLS
+     * identities on a wss:// connection, SSH keys on an ssh:// one - none
+     * there for the node's own key. Each from when on, where it says.
+     */
+    identities?:         ConnectionIdentity[];
     /** The host keys the server of an ssh:// connection may show, separated by commas; none where nothing is pinned. */
     sshHostKey?:         string;
     /** Whether an ssh:// connection that pins nothing learns the first host key shown, on probation. */
@@ -137,6 +144,17 @@ export interface StationConnection {
     warnings?:           string[];
 }
 
+/**
+ * One of the identities a connection proves itself with, and from when on.
+ * Of those whose time has come the one that came last goes first: over TLS
+ * the first that can be shown is, over SSH all are offered in that order.
+ */
+export interface ConnectionIdentity {
+    id:     string;
+    /** From when on it is shown, as ISO 8601; left out for from the start. */
+    from?:  string;
+}
+
 /** The version of HTTP a ws:// or wss:// connection opens its WebSocket over. */
 export type HTTPVersionOfAConnection = 'auto' | '1.1' | '2' | '3';
 
@@ -162,6 +180,8 @@ export interface ConnectionToSave {
     autoConnect:  boolean;
     authenticationId:    string | null;
     certificateId:       string | null;
+    /** The identities it names; where they are sent, they go before "certificateId". */
+    identities?:         ConnectionIdentity[];
     /** The host keys typed, separated by commas: "" for none. */
     sshHostKey?:         string;
     sshTrustOnFirstUse?: 'None' | 'HostKey';
@@ -191,6 +211,22 @@ export interface PinSetSigner {
     publicKey:    string;
     description:  string;
     createdAt:    string;
+}
+
+/** One of the keys a node signs in with over SSH: its own, or one somebody made beside it. */
+export interface SshKey {
+    /** What a connection names it by; "own" for the node's own. */
+    id:           string;
+    label:        string;
+    /** Whether it is the node's own: what a connection that names none signs in with. */
+    own:          boolean;
+    /** Whether there is a key yet: the node's own is made when it is first needed. */
+    made:         boolean;
+    /** Its public half, as a line of authorized_keys; null where it is not made yet. */
+    publicKey:    string | null;
+    fingerprint:  string | null;
+    path:         string;
+    createdAt:    string | null;
 }
 
 /** The key this station signs in with over SSH. */
@@ -304,6 +340,8 @@ export interface StationConnections extends ConnectionStates {
     certificates:          ConnectionCertificate[];
     /** Null until the first ssh:// connection made it. */
     sshClientKey?:         StationSshKey | null;
+    /** Every key it signs in with over SSH: its own first, then the ones somebody made. */
+    sshKeys?:              SshKey[];
     /** The keys a pin set for a connection over SSH is believed of. */
     pinSetSigners?:        PinSetSigner[];
     connectionTypes:       string[];
@@ -343,6 +381,18 @@ export const connectionsAPI = {
         /** Refused while a connection is using it, and the refusal names it. */
         remove:  (id: string) =>
                      request<StationConnections>('POST', '/configuration/authentications/remove', { id })
+
+    },
+
+    /** The keys the node signs in with over SSH, beside its own: made and removed at what making a key of the certificate store asks. */
+    sshKeys: {
+
+        make:    (label: string) =>
+                     request<{ id: string; connections: StationConnections }>('POST', '/configuration/sshKeys', { label }),
+
+        /** Refused while a connection signs in with it, and for the node's own. */
+        remove:  (id: string) =>
+                     request<StationConnections>('POST', '/configuration/sshKeys/remove', { id })
 
     },
 

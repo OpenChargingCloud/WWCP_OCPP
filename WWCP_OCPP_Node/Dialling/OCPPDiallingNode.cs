@@ -69,6 +69,40 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         public SshClientKey            SshKey                { get; protected set; } = default!;
 
+        private SshClientKeys? sshKeys;
+
+        /// <summary>
+        /// Every key this node signs in with over SSH: its own, and the ones
+        /// somebody made beside it - for one server and not the next, or to
+        /// follow another at a time its server was told.
+        /// </summary>
+        public SshClientKeys           SshKeys
+        {
+            get
+            {
+
+                if (sshKeys is SshClientKeys kept)
+                    return kept;
+
+                var keys = new SshClientKeys(SshKey,
+                                             $"This {NodeWording.Noun}'s own key",
+                                             SshKey.Comment,
+                                             TimeProvider);
+
+                keys.OnNotice += (level, message) => Log.Log(level, message, "ocpp", "connections", "ssh", "security");
+
+                if (Interlocked.CompareExchange(ref sshKeys, keys, null) is SshClientKeys before)
+                    return before;
+
+                // What an ssh:// connection may name, asked whenever one is
+                // written down: a key removed next door is gone from it too.
+                Connections.KnownSshKeyIds ??= () => keys.Ids;
+
+                return keys;
+
+            }
+        }
+
         /// <summary>
         /// The node that speaks OCPP 1.6 for this one, where it has one.
         /// </summary>

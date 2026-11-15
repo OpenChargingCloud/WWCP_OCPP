@@ -93,3 +93,68 @@
     font-size:  0.85rem;
     padding:    0.3rem 0.5rem;
 }
+
+// What a connection proves itself with, below the choice: the fields of a
+// login written down with it, or the certificates or keys it names - each to
+// tick, and each from a time on.
+fieldset.proves-with {
+
+    display:         flex;
+    flex-direction:  column;
+    gap:             0.7rem;
+    margin:          0;
+    padding:         0.75rem 0.9rem 0.9rem;
+    border:          1px solid $color-border;
+    border-radius:   $radius;
+    min-width:       0;
+
+    legend {
+        padding:    0 0.35rem;
+        font-size:  0.85rem;
+        color:      $color-muted;
+    }
+
+}
+
+.identity-rows {
+
+    display:         flex;
+    flex-direction:  column;
+    gap:             0.35rem;
+
+    .identity-row {
+
+        display:      flex;
+        align-items:  center;
+        flex-wrap:    wrap;
+        gap:          0.4rem 1rem;
+
+        label.checkbox {
+            flex:    1 1 16rem;
+            margin:  0;
+        }
+
+        // A row of its own kind in a form whose labels stand over their
+        // fields: the word and the time side by side.
+        label.identity-from,
+        .form-stack & label.identity-from {
+
+            display:         flex;
+            flex-direction:  row;
+            align-items:     center;
+            gap:          0.4rem;
+            margin:       0;
+            font-size:    0.85rem;
+            color:        $color-muted;
+
+            input {
+                width:      auto;
+                font-size:  0.85rem;
+                padding:    0.2rem 0.4rem;
+            }
+
+        }
+
+    }
+
+}

@@ -115,6 +115,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
             AddHandler(HTTPPath.Root + "v1/configuration/connections/pinSetSigners",         PostPinSetSigner,        HTTPMethod.POST);
             AddHandler(HTTPPath.Root + "v1/configuration/connections/pinSetSigners/remove",  PostRemovePinSetSigner,  HTTPMethod.POST);
 
+            // The keys the node signs in with over SSH, beside its own:
+            // made and removed at what making a key in the certificate
+            // store asks, because that is what they are - who the node is.
+            AddHandler(HTTPPath.Root + "v1/configuration/sshKeys",                PostSshKey,                HTTPMethod.POST);
+            AddHandler(HTTPPath.Root + "v1/configuration/sshKeys/remove",         PostRemoveSshKey,          HTTPMethod.POST);
+
         }
 
         #endregion
@@ -302,6 +308,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryPinsOf(json, out var pins, out var wrongPins))
                 return NotChanged(Request, HTTPStatusCode.BadRequest, wrongPins, false);
 
+            if (!ConnectionIdentity.TryParse(json["identities"], out var identities, out var wrongIdentities))
+                return NotChanged(Request, HTTPStatusCode.BadRequest, wrongIdentities, false);
+
             if (!Dialling.Connections.TryAddConnection(json.Value<String>("description"),
                                                        json.Value<String>("url"),
                                                        json.Value<String>("connectionType"),
@@ -319,7 +328,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                        pins,
                                                        json.Value<String>(ConnectionEntry.HTTPVersionKey),
                                                        json.Value<String>(ConnectionEntry.EncodingKey),
-                                                       json.Value<String>(ConnectionEntry.SignatureFormatsKey)))
+                                                       json.Value<String>(ConnectionEntry.SignatureFormatsKey),
+                                                       json["identities"] is null ? null : identities))
             {
                 return NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved);
             }
@@ -356,6 +366,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryPinsOf(json, out var pins, out var wrongPins))
                 return NotChanged(Request, HTTPStatusCode.BadRequest, wrongPins, false);
 
+            if (!ConnectionIdentity.TryParse(json["identities"], out var identities, out var wrongIdentities))
+                return NotChanged(Request, HTTPStatusCode.BadRequest, wrongIdentities, false);
+
             if (!Dialling.Connections.TryUpdateConnection(json.Value<String>("id"),
                                                           json.Value<String>("description"),
                                                           json.Value<String>("url"),
@@ -375,7 +388,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                           pins,
                                                           json.Value<String>(ConnectionEntry.HTTPVersionKey),
                                                           json.Value<String>(ConnectionEntry.EncodingKey),
-                                                          json.Value<String>(ConnectionEntry.SignatureFormatsKey)))
+                                                          json.Value<String>(ConnectionEntry.SignatureFormatsKey),
+                                                          json["identities"] is null ? null : identities))
             {
                 return NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved);
             }
@@ -607,6 +621,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // ssh:// connection made it.
             json.Add(new JProperty("sshClientKey", Dialling.SshKey.ToJSON()));
 
+            // Every key it signs in with over SSH: its own first - named
+            // whether it was made yet or not, since a connection that names
+            // none signs in with it - and the ones somebody made.
+            json.Add(new JProperty("sshKeys", Dialling.SshKeys.ToJSON()));
+
             // Who this node is as a client: the identities of its
             // certificate store, which is where they are looked after - one
             // that is switched off or has run out is still named, with why
@@ -651,6 +670,82 @@ namespace cloud.charging.open.protocols.OCPP.Node
                        Dialling.ConnectionStates.Select(entry => new JProperty(entry.Key, entry.Value.ToJSON()))
                    ))
                );
+
+        /// <summary>
+        /// POST /api/v1/configuration/sshKeys with {"label"}: make a key this
+        /// node signs in with over SSH, beside its own.
+        /// </summary>
+        /// <remarks>
+        /// At what making a key in the certificate store asks, and not at the
+        /// permission to change the connections: a key is who the node is,
+        /// and which connection shows it is another matter. What comes back
+        /// is its public half - the private one never leaves its file.
+        /// </remarks>
+        protected async Task<HTTPResponse> PostSshKey(HTTPRequest Request)
+        {
+
+            if (!TryAuthorizeKeys(Request, out var user, out var refused))
+                return refused;
+
+            if (!TryParseJSONObject(Request, out var json, out var errorResponse))
+                return errorResponse;
+
+            var (entry, error) = await Dialling.SshKeys.MakeAsync(json.Value<String>("label"), Request.CancellationToken);
+
+            if (entry is null)
+                return ErrorJSON(Request, HTTPStatusCode.BadRequest, error ?? "The key could not be made.");
+
+            Log.Info($"'{user.Id}' made the SSH key '{entry.Label}' ({entry.Key.Fingerprint}).", "ocpp", "connections", "ssh", "web");
+
+            return JSONResponse(Request, HTTPStatusCode.Created,
+                                new JObject(
+                                    new JProperty("id",          entry.Id),
+                                    new JProperty("connections", ConnectionsJSON())
+                                ));
+
+        }
+
+        /// <summary>
+        /// POST /api/v1/configuration/sshKeys/remove with {"id"}: take a key
+        /// somebody made away, for good.
+        /// </summary>
+        /// <remarks>
+        /// Not from under a connection that signs in with it, and never the
+        /// node's own.
+        /// </remarks>
+        protected Task<HTTPResponse> PostRemoveSshKey(HTTPRequest Request)
+        {
+
+            if (!TryAuthorizeKeys(Request, out var user, out var refused))
+                return Task.FromResult(refused);
+
+            if (!TryParseJSONObject(Request, out var json, out var errorResponse))
+                return Task.FromResult(errorResponse);
+
+            var id      = ConnectionEntry.Named(json.Value<String>("id")) ?? "";
+
+            var naming  = Dialling.Connections.Connections.
+                              Where (connection => connection.IsSSH && connection.Identities.Any(identity => identity.Id == id)).
+                              Select(connection => $"'{connection.Description}'").
+                              ToArray();
+
+            if (naming.Length > 0)
+                return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest,
+                                                 (naming.Length == 1
+                                                      ? $"The connection {naming[0]} signs in with it"
+                                                      : $"{naming.Length} connections sign in with it ({String.Join(", ", naming)})") +
+                                                 ". Choose another key for it on the Connections page first."));
+
+            if (!Dialling.SshKeys.TryRemove(id, out var error))
+                return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, error));
+
+            Log.Info($"'{user.Id}' removed the SSH key '{id}'.", "ocpp", "connections", "ssh", "web");
+
+            return Task.FromResult(
+                       JSONResponse(Request, HTTPStatusCode.OK, ConnectionsJSON())
+                   );
+
+        }
 
         /// <summary>
         /// The key this station signs in with over SSH, made where the

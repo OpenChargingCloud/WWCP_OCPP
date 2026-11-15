@@ -158,6 +158,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         public Func<IEnumerable<String>>? KnownCertificateIds { get; set; }
 
         /// <summary>
+        /// The same for the SSH keys an ssh:// connection may name.
+        /// </summary>
+        public Func<IEnumerable<String>>? KnownSshKeyIds      { get; set; }
+
+        /// <summary>
         /// Every set of credentials, newest first.
         /// </summary>
         public IReadOnlyList<AuthenticationEntry> Authentications
@@ -1027,10 +1032,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                         ServerPinsChange?                Pins            = null,
                                         String?                          HTTPVersion     = null,
                                         String?                          Encoding        = null,
-                                        String?                          SignatureFormats = null)
+                                        String?                          SignatureFormats = null,
+                                        IEnumerable<ConnectionIdentity>? Identities      = null)
 
             => TryAddConnection(Description, URL, ConnectionType, AutoConnect, AuthenticationId, CertificateId,
-                                out Id, out Error, out _, OCPPVersion, SshHostKey, SshTrust, ServerKeyPins, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats);
+                                out Id, out Error, out _, OCPPVersion, SshHostKey, SshTrust, ServerKeyPins, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats, Identities);
 
         /// <summary>
         /// Write down one connection - and say whether a refusal was the
@@ -1062,7 +1068,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                         ServerPinsChange?                Pins            = null,
                                         String?                          HTTPVersion     = null,
                                         String?                          Encoding        = null,
-                                        String?                          SignatureFormats = null)
+                                        String?                          SignatureFormats = null,
+                                        IEnumerable<ConnectionIdentity>? Identities      = null)
         {
 
             Id        = null;
@@ -1112,8 +1119,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             lock (updateLock)
             {
 
-                if (!CheckReferences(AuthenticationId, CertificateId, url.Scheme == URIScheme.ssh,
-                                     out var authenticationId, out var certificateId, out Error))
+                if (!CheckReferences(AuthenticationId, CertificateId, Identities, url.Scheme == URIScheme.ssh,
+                                     out var authenticationId, out var identities, out Error))
                     return false;
 
                 var entry = new ConnectionEntry(
@@ -1126,7 +1133,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                 OCPPVersion         = version,
                                 AutoConnect  = AutoConnect ?? false,
                                 AuthenticationId    = authenticationId,
-                                CertificateId       = certificateId,
+                                Identities          = identities,
                                 SshHostKey          = hostKey,
                                 SshTrustOnFirstUse  = url.Scheme == URIScheme.ssh ? trustOnFirstUse : SshTrustOnFirstUse.None,
                                 SshOnPinMismatch    = url.Scheme == URIScheme.ssh ? onPinMismatch   : SshOnPinMismatch.Refuse,
@@ -1201,11 +1208,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                            ServerPinsChange?                Pins                   = null,
                                            String?                          HTTPVersion            = null,
                                            String?                          Encoding               = null,
-                                           String?                          SignatureFormats       = null)
+                                           String?                          SignatureFormats       = null,
+                                           IEnumerable<ConnectionIdentity>? Identities             = null)
 
             => TryUpdateConnection(Id, Description, URL, ConnectionType, AutoConnect, AuthenticationId, CertificateId,
                                    out Error, out _, OCPPVersion, SshHostKey, SshHostKeyAsShown, SshTrust,
-                                   ServerKeyPins, ServerKeyPinsAsShown, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats);
+                                   ServerKeyPins, ServerKeyPinsAsShown, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats, Identities);
 
         /// <summary>
         /// Change one connection - and say whether a refusal was the file's
@@ -1241,7 +1249,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                            ServerPinsChange?                Pins                   = null,
                                            String?                          HTTPVersion            = null,
                                            String?                          Encoding               = null,
-                                           String?                          SignatureFormats       = null)
+                                           String?                          SignatureFormats       = null,
+                                           IEnumerable<ConnectionIdentity>? Identities             = null)
         {
 
             NotSaved = false;
@@ -1309,8 +1318,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                     return false;
                 }
 
-                if (!CheckReferences(AuthenticationId, CertificateId, url.Scheme == URIScheme.ssh,
-                                     out var authenticationId, out var certificateId, out Error))
+                if (!CheckReferences(AuthenticationId, CertificateId, Identities, url.Scheme == URIScheme.ssh,
+                                     out var authenticationId, out var identities, out Error))
                     return false;
 
                 // A host key kept goes with a connection that is no longer
@@ -1385,7 +1394,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 entry.OCPPVersion         = version;
                 entry.AutoConnect  = AutoConnect ?? false;
                 entry.AuthenticationId    = authenticationId;
-                entry.CertificateId       = certificateId;
+                entry.Identities          = identities;
 
                 // Kept where the change does not say, and nothing of an
                 // ssh:// connection, which a ws:// one may have become.
@@ -1543,7 +1552,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                     return false;
                 }
 
-                if (entry.CertificateId == CertificateId)
+                // Shown from now on, before whatever was written down to
+                // follow at a time that has not come: that still follows.
+                var now        = TimeProvider.GetUtcNow();
+
+                IReadOnlyList<ConnectionIdentity> shownNow = [ new ConnectionIdentity(CertificateId),
+                                                               .. entry.Identities.Where(identity => identity.Id != CertificateId &&
+                                                                                                     identity.From is DateTimeOffset from &&
+                                                                                                     from > now) ];
+
+                if (entry.Identities.SequenceEqual(shownNow))
                 {
                     Error = null;
                     return true;
@@ -1552,7 +1570,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 var was          = entry.Copy();
                 var revisionWas  = BumpDialRevision(Id);
 
-                entry.CertificateId = CertificateId;
+                entry.Identities = shownNow;
 
                 if (!TrySaveConnections(out Error))
                 {
@@ -2484,7 +2502,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                Was.OCPPVersion         != Now.OCPPVersion         ||
                Was.AutoConnect         != Now.AutoConnect         ||
                Was.AuthenticationId    != Now.AuthenticationId    ||
-               Was.CertificateId       != Now.CertificateId       ||
+               !Was.Identities.SequenceEqual(Now.Identities)      ||
                Was.HTTPVersion         != Now.HTTPVersion         ||
                Was.Encoding            != Now.Encoding            ||
                Was.SignatureFormats    != Now.SignatureFormats    ||
@@ -3079,19 +3097,26 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// What a connection says it proves itself with, checked against what
         /// is actually here. Called under the lock.
         /// </summary>
-        private Boolean CheckReferences(String?                          AuthenticationId,
-                                        String?                          CertificateId,
-                                        Boolean                          OverSSH,
-                                        out String?                      Authentication,
-                                        out String?                      Certificate,
-                                        [NotNullWhen(false)] out String? Error)
+        private Boolean CheckReferences(String?                                AuthenticationId,
+                                        String?                                CertificateId,
+                                        IEnumerable<ConnectionIdentity>?       Identities,
+                                        Boolean                                OverSSH,
+                                        out String?                            Authentication,
+                                        out IReadOnlyList<ConnectionIdentity>  Named,
+                                        [NotNullWhen(false)] out String?       Error)
         {
 
-            Authentication  = ConnectionEntry.Named(AuthenticationId);
-            Certificate     = ConnectionEntry.Named(CertificateId);
-            Error           = null;
+            Authentication   = ConnectionEntry.Named(AuthenticationId);
+            Named            = [];
+            Error            = null;
 
-            if (Authentication is not null && Certificate is not null)
+            var certificate  = ConnectionEntry.Named(CertificateId);
+
+            // A list goes before the one certificate a form of before names.
+            var identities   = Identities?.ToArray()
+                                   ?? (certificate is not null ? [ new ConnectionIdentity(certificate) ] : []);
+
+            if (Authentication is not null && (Identities is null ? certificate is not null : !OverSSH && identities.Length > 0))
             {
                 Error = "A connection proves itself one way, not two. Choose credentials or a client certificate.";
                 return false;
@@ -3107,7 +3132,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             // on top where the server asks for one. A TLS client certificate
             // has no handshake to be shown in, and a TOTP password is answered
             // in an HTTP header there is none of.
-            if (OverSSH && Certificate is not null)
+            if (OverSSH && Identities is null && certificate is not null)
             {
                 Error = "A client certificate is shown in a TLS handshake, and an ssh:// connection makes none: " +
                         $"it signs in with this {NodeWording.Noun}'s SSH key.";
@@ -3121,14 +3146,32 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 return false;
             }
 
-            if (Certificate is not null &&
-                KnownCertificateIds is not null &&
-                !KnownCertificateIds().Contains(Certificate))
+            if (identities.Select(identity => identity.Id).Distinct(StringComparer.Ordinal).Count() != identities.Length)
+            {
+                Error = "An identity is named twice. Each is shown from one time on.";
+                return false;
+            }
+
+            if (OverSSH)
+            {
+
+                if (KnownSshKeyIds is not null &&
+                    identities.FirstOrDefault(identity => !KnownSshKeyIds().Contains(identity.Id)) is ConnectionIdentity noKey)
+                {
+                    Error = $"There is no SSH key '{noKey.Id}' on this {NodeWording.Noun}.";
+                    return false;
+                }
+
+            }
+
+            else if (KnownCertificateIds is not null &&
+                     identities.Any(identity => !KnownCertificateIds().Contains(identity.Id)))
             {
                 Error = $"That client certificate is not on this {NodeWording.Noun}.";
                 return false;
             }
 
+            Named = identities;
             return true;
 
         }
@@ -3196,13 +3239,29 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (Entry.CertificateId is not null)
             {
 
-                if (KnownCertificateIds is not null && !KnownCertificateIds().Contains(Entry.CertificateId))
-                    Entry.Warnings.Add($"The client certificate this connection names is not on this {NodeWording.Noun} any more.");
+                if (KnownCertificateIds is not null && Entry.Identities.Any(identity => !KnownCertificateIds().Contains(identity.Id)))
+                    Entry.Warnings.Add(Entry.Identities.Count == 1
+                                           ? $"The client certificate this connection names is not on this {NodeWording.Noun} any more."
+                                           : $"One of the client certificates this connection names is not on this {NodeWording.Noun} any more.");
 
                 if (!Entry.IsSecure)
                     Entry.Warnings.Add("A client certificate is shown during a TLS handshake, and this connection makes none.");
 
             }
+
+            if (Entry.IsSSH && Entry.Identities.Count > 0)
+            {
+
+                if (KnownSshKeyIds is not null && Entry.Identities.Any(identity => !KnownSshKeyIds().Contains(identity.Id)))
+                    Entry.Warnings.Add($"An SSH key this connection names is not on this {NodeWording.Noun} any more.");
+
+            }
+
+            // Written down to follow, and nothing before it: until its time
+            // comes this connection has nothing to show.
+            if (Entry.Identities.Count > 0 && !Entry.IdentitiesAt(TimeProvider.GetUtcNow()).Any())
+                Entry.Warnings.Add($"None of the identities this connection names is shown yet: the first from " +
+                                   $"{Entry.Identities.Min(identity => identity.From)!.Value.UtcDateTime:yyyy-MM-dd HH:mm} UTC. Until then it is not dialled.");
 
             // Over SSH this station always shows its own key.
             if (Entry.AuthenticationId is null && Entry.CertificateId is null && !Entry.IsSSH)

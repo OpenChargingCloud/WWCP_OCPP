@@ -350,37 +350,76 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 // Who this node is as a client, from its certificate store:
                 // asked whenever it dials, so that an identity switched off
                 // or taken out on the page next door is not shown again.
-                var identity = this.Certificates.Get(Connection.CertificateId, CertificateKind.TLSIdentity);
+                //
+                // One certificate is shown in a handshake: of the identities
+                // whose time has come the first that can be, the one that
+                // came last before the ones before it - see ConnectionIdentity.
+                var inOrder = Connection.IdentitiesAt(TimeProvider.GetUtcNow()).ToArray();
 
-                if (identity is null)
+                if (inOrder.Length == 0)
                 {
-                    Error = $"it names an identity this {NodeWording.Noun} does not have";
+                    Error = "none of the identities it names is shown yet: the first from " +
+                            $"{Connection.Identities.Min(identity => identity.From)!.Value.UtcDateTime:yyyy-MM-dd HH:mm} UTC";
                     return false;
                 }
 
-                if (!identity.IsActive)
+                String? firstWrong  = null;
+                var     passedOver  = 0;
+
+                foreach (var named in inOrder)
                 {
-                    Error = $"it would show the identity '{identity.Label}', which is switched off";
-                    return false;
+
+                    var identity = this.Certificates.Get(named.Id, CertificateKind.TLSIdentity);
+
+                    String? wrong;
+
+                    if (identity is null)
+                        wrong = $"it names an identity this {NodeWording.Noun} does not have";
+
+                    else if (!identity.IsActive)
+                        wrong = $"it would show the identity '{identity.Label}', which is switched off";
+
+                    // Passed over for the next only where there is a next:
+                    // a connection that names one identity shows it, and is
+                    // told by its server what is wrong with it.
+                    else if (inOrder.Length > 1 && !identity.IsUsable)
+                        wrong = $"it would show the identity '{identity.Label}', which is not valid now";
+
+                    // Said here rather than left to a TLS error that names
+                    // neither the certificate nor the reason.
+                    // As a handshake wants it, which on Windows is not as the
+                    // store reads it - see CertificateStore.TryLoadForHandshake.
+                    // What travels with it is not shown, as it never was: a
+                    // back end is told the intermediates of its stations' CA.
+                    else if (!this.Certificates.TryLoadForHandshake(identity, out var shown, out var above, out var unreadable))
+                        wrong = $"it would show the identity '{identity.Label}', which this runtime cannot present ({unreadable})";
+
+                    else
+                    {
+
+                        foreach (var certificate in above)
+                            certificate.Dispose();
+
+                        Certificates  = [ shown ];
+                        Says          = $"a TLS client certificate, '{identity.Subject}' ({identity.KeyAlgorithm})" +
+                                        (passedOver > 0
+                                             ? $" - {(passedOver == 1 ? "the one before it" : $"{passedOver} before it")} cannot be shown now"
+                                             : "");
+
+                        break;
+
+                    }
+
+                    firstWrong ??= wrong;
+                    passedOver++;
+
                 }
 
-                // Said here rather than left to a TLS error that names
-                // neither the certificate nor the reason.
-                // As a handshake wants it, which on Windows is not as the
-                // store reads it - see CertificateStore.TryLoadForHandshake.
-                // What travels with it is not shown, as it never was: a
-                // back end is told the intermediates of its stations' CA.
-                if (!this.Certificates.TryLoadForHandshake(identity, out var shown, out var above, out var unreadable))
+                if (Certificates is null)
                 {
-                    Error = $"it would show the identity '{identity.Label}', which this runtime cannot present ({unreadable})";
+                    Error = firstWrong;
                     return false;
                 }
-
-                foreach (var certificate in above)
-                    certificate.Dispose();
-
-                Certificates  = [ shown ];
-                Says          = $"a TLS client certificate, '{identity.Subject}' ({identity.KeyAlgorithm})";
 
             }
 
@@ -923,11 +962,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             // The station's DNS client resolves the server's name, as it
             // resolves a WebSocket's: never the operating system's resolver.
+            // The keys it names, in the order a server is offered them - or
+            // this node's own, where it names none.
+            if (!SshKeysOf(Connection, Key, out var keys, out var keysSay, out Error))
+            {
+                Trust = null;
+                return false;
+            }
+
             Login  = new SshClientOptions {
                          Username           = username,
                          DNSClient          = DNSClient,
                          VerifyHostKey      = Trust.Verify,
-                         Credentials        = [ Key ],
+                         Credentials        = [ .. keys ],
                          Password           = password,
                          ConnectTimeout     = SshConnectTimeout,
                          KeepAliveInterval  = SshKeepAliveEvery,
@@ -936,12 +983,99 @@ namespace cloud.charging.open.protocols.OCPP.Node
                          RequireStrictKex   = true
                      };
 
-            Says   = $"this {NodeWording.Noun}'s SSH key ({SshFingerprint.Sha256(Key.PublicKeyBlob)}) as '{username}'" +
+            Says   = $"{keysSay} as '{username}'" +
                      (passwordOf is not null
                           ? $", and the password of '{passwordOf}' where the server asks for one"
                           : "");
 
             return true;
+
+        }
+
+        #endregion
+
+        #region (protected) SshKeysOf(Connection, Own, out Keys, out Says, out Error) / SshPublicKeyLinesOf(Connection)
+
+        /// <summary>
+        /// The keys an ssh:// connection signs in with, in the order its
+        /// server is offered them: the ones it names whose time has come, the
+        /// one that came last first - or this node's own, where it names none.
+        /// </summary>
+        /// <param name="Own">This node's own key, made already.</param>
+        protected Boolean SshKeysOf(ConnectionEntry                               Connection,
+                                    ISshHostKey                                   Own,
+                                    [NotNullWhen(true)]  out ISshHostKey[]?       Keys,
+                                    out String                                    Says,
+                                    [NotNullWhen(false)] out String?              Error)
+        {
+
+            Keys   = null;
+            Says   = "";
+            Error  = null;
+
+            if (Connection.Identities.Count == 0)
+            {
+                Keys = [ Own ];
+                Says = $"this {NodeWording.Noun}'s SSH key ({SshFingerprint.Sha256(Own.PublicKeyBlob)})";
+                return true;
+            }
+
+            var inOrder = Connection.IdentitiesAt(TimeProvider.GetUtcNow()).ToArray();
+
+            if (inOrder.Length == 0)
+            {
+                Error = "none of the SSH keys it names is used yet: the first from " +
+                        $"{Connection.Identities.Min(identity => identity.From)!.Value.UtcDateTime:yyyy-MM-dd HH:mm} UTC";
+                return false;
+            }
+
+            var keys  = new List<ISshHostKey>();
+            var said  = new List<String>();
+
+            foreach (var named in inOrder)
+            {
+
+                if (SshKeys.Get(named.Id) is not SshClientKeyEntry entry)
+                {
+                    Error = $"it names the SSH key '{named.Id}', which this {NodeWording.Noun} does not have";
+                    return false;
+                }
+
+                var key = entry.IsTheNodes ? Own : entry.Key.Key;
+
+                if (key is null)
+                {
+                    Error = $"it names the SSH key '{entry.Label}', which is not there any more";
+                    return false;
+                }
+
+                keys.Add(key);
+                said.Add($"'{entry.Label}' ({SshFingerprint.Sha256(key.PublicKeyBlob)})");
+
+            }
+
+            Keys = [ .. keys ];
+            Says = keys.Count == 1
+                       ? $"the SSH key {said[0]}"
+                       : $"{keys.Count} SSH keys, offered in this order: {String.Join(", ", said)}";
+
+            return true;
+
+        }
+
+        /// <summary>
+        /// The public halves of the keys an ssh:// connection signs in with
+        /// now, as lines of an authorized_keys file.
+        /// </summary>
+        protected IReadOnlyList<String> SshPublicKeyLinesOf(ConnectionEntry Connection)
+        {
+
+            if (Connection.Identities.Count == 0)
+                return SshKey.PublicKeyLine is String own ? [ own ] : [];
+
+            return [ .. Connection.IdentitiesAt(TimeProvider.GetUtcNow()).
+                                   Select(named => SshKeys.Get(named.Id)?.Key.PublicKeyLine).
+                                   OfType<String>() ];
 
         }
 
@@ -1887,7 +2021,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                   JToken?                Pins                  = null,
                                                   String?                HTTPVersion           = null,
                                                   String?                OCPPRequest           = null,
-                                                  String?                Encoding              = null)
+                                                  String?                Encoding              = null,
+                                                  JToken?                Identities            = null)
         {
 
             var clock  = Stopwatch.StartNew();
@@ -1996,6 +2131,20 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                  Encoding:                   encoding    ?? OCPPCommon.WebSockets.MessageEncodings.JSON
                              );
 
+            // What it names as a list goes before the one certificate.
+            if (Identities is not null)
+            {
+
+                if (!ConnectionIdentity.TryParse(Identities, out var named, out var wrongIdentities))
+                {
+                    Step("error", wrongIdentities);
+                    return Done(null, false);
+                }
+
+                connection.Identities = named;
+
+            }
+
             // What this station made of the certificate of a server checked by
             // its CA: its name, its chain, and what the form holds it to.
             protocols.WWCP.Node.ServerJudgement? judged = null;
@@ -2035,8 +2184,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     return Done(connection, false);
                 }
 
-                Step("info", $"It will sign in with {signsIn}. The server lets it in where its authorized_keys has this line: " +
-                             $"{SshKey.PublicKeyLine}");
+                var itsLines = SshPublicKeyLinesOf(connection);
+
+                Step("info", $"It will sign in with {signsIn}. The server lets it in where its authorized_keys has " +
+                             (itsLines.Count == 1 ? "this line: " : "one of these lines: ") +
+                             String.Join(" | ", itsLines));
 
                 Step(sshTrust.Pinned is not null ? "info" : "warning",
                      sshTrust.Pinned is not null
@@ -2703,7 +2855,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                               Fields[ConnectionEntry.PinsKey],
                               Fields.Value<String>(ConnectionEntry.HTTPVersionKey),
                               Fields.Value<String>(TestRequestKey),
-                              Fields.Value<String>(ConnectionEntry.EncodingKey));
+                              Fields.Value<String>(ConnectionEntry.EncodingKey),
+                              Fields["identities"]);
 
         /// <summary>
         /// Under which name a test is told what to ask in OCPP: "ocppRequest".

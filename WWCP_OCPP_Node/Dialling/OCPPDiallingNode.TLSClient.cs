@@ -130,10 +130,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var pins = new List<KeyPin>();
 
-            foreach (var connection in Connections.Connections.Where(entry => entry.IsSecure && entry.CertificateId is not null).OrderBy(entry => entry.CreatedAt))
+            // Every identity a connection names, the one that follows at a
+            // time to come as well: a server that pins the key of its client
+            // is told the next one before it is shown.
+            foreach (var named in Connections.Connections.Where     (entry => entry.IsSecure && entry.CertificateId is not null).
+                                                          OrderBy   (entry => entry.CreatedAt).
+                                                          SelectMany(entry => entry.Identities))
             {
 
-                if (Certificates.Get(connection.CertificateId, CertificateKind.TLSIdentity) is not CertificateEntry identity ||
+                if (Certificates.Get(named.Id, CertificateKind.TLSIdentity) is not CertificateEntry identity ||
                     !Certificates.TryLoad(identity, out var certificate, out _))
                 {
                     continue;

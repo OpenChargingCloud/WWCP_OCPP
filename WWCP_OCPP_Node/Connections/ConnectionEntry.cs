@@ -292,10 +292,44 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         public String?         AuthenticationId     { get; internal set; }
 
         /// <summary>
-        /// The client certificate this connection proves itself with, by its
-        /// identification - or null.
+        /// The identities this connection proves itself with, in the order
+        /// they were written: TLS identities of the certificate store on a
+        /// wss:// connection, SSH keys on an ssh:// one - each from when on.
+        /// None, on an ssh:// connection, is the node's own SSH key.
         /// </summary>
-        public String?         CertificateId        { get; internal set; }
+        /// <remarks>
+        /// Several, so that a key is changed at a time its server was told,
+        /// and so that the one before is fallen back on while the one after
+        /// cannot be shown - see <see cref="ConnectionIdentity"/>.
+        /// </remarks>
+        public IReadOnlyList<ConnectionIdentity>  Identities  { get; internal set; } = [];
+
+        /// <summary>
+        /// The client certificate this connection proves itself with, by its
+        /// identification - the first it names, where it names several - or
+        /// null. Always null on an ssh:// connection, which shows none.
+        /// </summary>
+        public String?         CertificateId
+        {
+
+            get => IsSSH
+                       ? null
+                       : Identities.Count > 0 ? Identities[0].Id : null;
+
+            internal set
+            {
+                if (!IsSSH)
+                    Identities = value is null ? [] : [ new ConnectionIdentity(value) ];
+            }
+
+        }
+
+        /// <summary>
+        /// The identities whose time has come, the one to try first first.
+        /// </summary>
+        public IEnumerable<ConnectionIdentity> IdentitiesAt(DateTimeOffset Now)
+
+            => ConnectionIdentity.InOrder(Identities, Now);
 
         /// <summary>
         /// The host keys the server of an ssh:// connection may show, separated
@@ -1361,6 +1395,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                          ? WrittenAt(JSON["serverKeyPinLearnedAt"])
                                          : null;
 
+            if (!ConnectionIdentity.TryParse(JSON["identities"], out var identities, out var wrongIdentities))
+            {
+                Error = $"connection '{id}': {wrongIdentities}";
+                return false;
+            }
+
             Entry = new ConnectionEntry(
                         id,
                         (JSON.Value<String>("description") ?? "").Trim(),
@@ -1393,6 +1433,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                         Encoding                   = encoding    ?? MessageEncodings.JSON,
                         SignatureFormats           = signatureFormats
                     };
+
+            // What it names as a list goes before the one certificate a file
+            // of before named.
+            if (JSON["identities"] is not null)
+                Entry.Identities = identities;
 
             Error = null;
             return true;
@@ -1428,6 +1473,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (AuthenticationId is not null)  json.Add(new JProperty("authenticationId",  AuthenticationId));
             if (CertificateId    is not null)  json.Add(new JProperty("certificateId",     CertificateId));
+            if (Identities.Count > 0)          json.Add(new JProperty("identities",        ConnectionIdentity.ToJSON(Identities)));
             if (SshHostKey       is not null)  json.Add(new JProperty("sshHostKey",        SshHostKey));
 
             if (IsSSH)
@@ -1597,7 +1643,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                    OCPPVersion       = OCPPVersion,
                    AutoConnect       = AutoConnect,
                    AuthenticationId  = AuthenticationId,
-                   CertificateId       = CertificateId,
+                   Identities          = Identities,
                    SshHostKey          = SshHostKey,
                    SshTrustOnFirstUse  = SshTrustOnFirstUse,
                    SshOnPinMismatch    = SshOnPinMismatch,

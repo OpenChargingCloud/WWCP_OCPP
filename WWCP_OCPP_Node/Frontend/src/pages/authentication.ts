@@ -23,18 +23,36 @@ import { html, nothing, render, repeat, type TemplateResult } from '@node/view';
  * is empty and means "leave it alone" - which is what makes it possible to
  * correct a description without having to find the password again.
  */
-export const authenticationPage: Page = {
+export interface CredentialsPanel {
+    /** Let go of the page: nothing is said to it afterwards. */
+    release():  void;
+    /** What the node has now, the forms too. */
+    reload():   Promise<void>;
+    /** The credentials as somebody else was just told them: drawn over what is here, what is typed kept. */
+    took(store: StationConnections):  void;
+}
 
-    title: 'Authentication',
+/** What a page tells the panel it draws the credentials into. */
+export interface CredentialsHost {
+    /** The credentials changed here: for a page that offers them somewhere else as well. */
+    changed?(store: StationConnections):  void;
+    /**
+     * Whether the page hands the panel what it shows (took) rather than
+     * the panel asking for it: where it is a tab of the connections, which
+     * are loaded with it.
+     */
+    handed?:   boolean;
+}
 
-    render({ root }) {
+/**
+ * The credentials, drawn into a part of a page: a page of their own
+ * (authenticationPage), or a tab of the connections, where they are used.
+ */
+export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {}): CredentialsPanel {
 
-        const content = shell(root, {
-            active:    '/configuration/authentication',
-            title:     'Authentication',
-            subtitle:  `How this ${nodeNounInFull()} proves who it is when it dials a back end.`,
-            actions:   reloadButton(() => reload())
-        });
+    return mount();
+
+    function mount(): CredentialsPanel {
 
         render(content, html`<div class="loading">Loading ...</div>`);
 
@@ -407,6 +425,7 @@ export const authenticationPage: Page = {
                 picked.delete('add');
 
                 draw();
+                host.changed?.(store);
 
                 // Written down, so no longer typed: the form is empty again.
                 form.reset();
@@ -444,6 +463,7 @@ export const authenticationPage: Page = {
                 picked.delete(id);
 
                 draw();
+                host.changed?.(store);
 
                 // A draw leaves a form as it is typed into; the one saved goes
                 // back to what it says now - the station's answer, and no
@@ -478,6 +498,7 @@ export const authenticationPage: Page = {
                 picked.delete(id);
 
                 draw();
+                host.changed?.(store);
             }
             catch (problem)
             {
@@ -521,18 +542,54 @@ export const authenticationPage: Page = {
          */
         async function reload(): Promise<void> {
             picked.clear();
-            await load();
+            if (host.handed !== true)
+                await load();
             if (!cancelled)
                 content.querySelectorAll('form').forEach(form => form.reset());
+        }
+
+        function took(State: StationConnections): void {
+            store = State;
+            draw();
         }
 
         // A half-typed password is work like any other, and losing one is worse
         // than losing most: it cannot be read back off the page to try again.
         const release = unsaved.heldBy(() => anyFormTypedSinceDrawn(content));
 
-        void load();
+        if (host.handed !== true)
+            void load();
 
-        return () => { cancelled = true; release(); };
+        return { release: () => { cancelled = true; release(); }, reload, took };
+
+    }
+
+}
+
+
+/**
+ * The credentials on a page of their own: what they were before they became
+ * a tab of the connections, and what a kind of node that has not followed
+ * still routes to.
+ */
+export const authenticationPage: Page = {
+
+    title: 'Authentication',
+
+    render({ root }) {
+
+        let panel: CredentialsPanel | null = null;
+
+        const content = shell(root, {
+            active:    '/configuration/authentication',
+            title:     'Authentication',
+            subtitle:  `How this ${nodeNounInFull()} proves who it is when it dials a back end.`,
+            actions:   reloadButton(() => panel?.reload() ?? Promise.resolve())
+        });
+
+        panel = credentialsPanel(content);
+
+        return panel.release;
 
     }
 

@@ -1,9 +1,12 @@
-import { connectionsAPI as api, type ConnectionState, type ConnectionTest, type ConnectionTestAsks, type ConnectionToSave, type EncodingOfAConnection, type HTTPVersionOfAConnection, type SignatureFormatsOfAConnection, type StationConnection, type StationConnections } from '../api/connections';
+import { connectionsAPI as api, type ConnectionIdentity, type ConnectionState, type ConnectionTest, type ConnectionTestAsks, type ConnectionToSave, type LoginToSave, type EncodingOfAConnection, type HTTPVersionOfAConnection, type SignatureFormatsOfAConnection, type StationConnection, type StationConnections } from '../api/connections';
 import { auth } from '../auth';
+import { credentialsPanel } from './authentication';
 import { connectionsResource, nodeNoun, nodeNounInFull, nodeTraits } from '../settings';
+import { toURL } from '@node/basePath';
 import { must } from '@node/html';
 import type { Page } from '@node/router';
 import { mayButNot, reloadButton, shell } from '@node/shell';
+import { rememberTab, tabFromURL, tabsView, type Tab } from '@node/tabs';
 import { errorMessage, field, formatTime, formatTimestamp, whileSaving } from '@node/ui';
 import { anyFormTypedSinceDrawn, unsaved } from '@node/unsaved';
 import { html, nothing, render, repeat, type TemplateResult } from '@node/view';
@@ -42,9 +45,17 @@ const signatureFormats: ReadonlyArray<readonly [SignatureFormatsOfAConnection, s
  * spare address - proves itself the same way both times, and a password written
  * down twice is a password that only gets changed once.
  *
- * How it proves itself is one decision, so it is one control: nothing, a set of
- * credentials from the Authentication page, or one of this station's client
- * certificates. Two at once would leave somebody guessing which was used.
+ * How it proves itself is one decision, and what there is to decide follows
+ * where it goes: over ws:// and wss:// nothing, a set of credentials - one
+ * written down already, or written down here with the connection - or, where
+ * there is a TLS handshake, the client certificates it shows; over ssh:// the
+ * SSH keys it signs in with, and nothing else. Certificates and keys are
+ * ticked, several where one follows another: each from a time on, so that a
+ * key is changed at the moment its server was told and not when somebody
+ * happens to stand beside the station.
+ *
+ * The credentials are a tab of this page, because this is where they are
+ * used: a login is written down for a connection, and looked up from one.
  *
  * What is configured but cannot work is said here rather than discovered at the
  * next connection - a password going out over a connection without TLS, a
@@ -74,14 +85,49 @@ export const connectionsPage: Page = {
 
     render({ root }) {
 
-        const content = shell(root, {
+        const page = shell(root, {
             active:    '/configuration/connections',
             title:     'Connections',
             subtitle:  `Where this ${nodeNounInFull()} dials, and what it proves itself with.`,
             actions:   reloadButton(() => reload())
         });
 
+        /** The connections, and the credentials they prove themselves with - which are used here, and so are kept here. */
+        const tabs: readonly Tab[] = [
+            { id: 'connections', label: 'Connections', icon: 'fa-plug' },
+            { id: 'credentials', label: 'Credentials', icon: 'fa-user-lock' }
+        ];
+
+        let shown = tabFromURL(tabs);
+
+        function show(id: string): void {
+            shown = id;
+            rememberTab(tabs, id);
+            frame();
+        }
+
+        /** The row of tabs and their two panels: each panel drawn by its own, so that what is typed into one outlives a look at the other. */
+        function frame(): void {
+            render(page, html`
+                ${tabsView(tabs, shown, show, 'Connections')}
+                <section class="tab-panel" role="tabpanel" id="panel-connections" aria-labelledby="tab-connections" ?hidden=${shown !== 'connections'}></section>
+                <section class="tab-panel" role="tabpanel" id="panel-credentials" aria-labelledby="tab-credentials" ?hidden=${shown !== 'credentials'}></section>
+            `);
+        }
+
+        frame();
+
+        const content = must<HTMLElement>(page, '#panel-connections');
+
         render(content, html`<div class="loading">Loading ...</div>`);
+
+        // Handed what the connections were loaded with, and telling them of
+        // every change: a login written down on its tab is on offer in the
+        // forms of the connections at once.
+        const credentials = credentialsPanel(must<HTMLElement>(page, '#panel-credentials'), {
+            handed:   true,
+            changed:  state => { took(state, false); draw(); }
+        });
 
         const mayManage = auth.can(connectionsResource(), 'edit');
 
@@ -103,6 +149,16 @@ export const connectionsPage: Page = {
 
         const opened = new Set<string>();
 
+        /**
+         * What is typed into the URL of a form and not saved yet, by the form
+         * - "add", or the id of the connection. What a connection can prove
+         * itself with follows its scheme, and follows it as it is typed.
+         */
+        const typedURLs = new Map<string, string>();
+
+        /** The way picked in a form and not saved yet, by the form: what is shown below the choice follows it at once. */
+        const ways      = new Map<string, string>();
+
         // What the certificate store keeps for the servers of the OCPP
         // connections: the roots and certificates a pin can be picked from.
         let offers: StoreOffers | null = null;
@@ -112,20 +168,48 @@ export const connectionsPage: Page = {
          * came with is the newest there is of where they stand: it was
          * loaded, or written, a moment ago.
          */
-        function took(State: StationConnections): void {
+        function took(State: StationConnections, tellTheCredentials = true): void {
             store        = State;
             states       = State.states ?? {};
             timestamp    = State.timestamp ?? timestamp;
             notAnswered  = null;
+            if (tellTheCredentials)
+                credentials.took(State);
         }
 
-        /** What the one authentication control calls each choice. */
+        /** The identities a connection names: as a list, or the one certificate it named before it could name several. */
+        function identitiesOf(entry: StationConnection | null): ConnectionIdentity[] {
+            return entry?.identities
+                ?? (entry?.certificateId !== undefined && entry.certificateId !== null ? [ { id: entry.certificateId } ] : []);
+        }
+
+        /** What the choice of a ws:// or wss:// connection calls what it has: nothing, credentials, or client certificates. */
         function chosenOf(entry: StationConnection | null): string {
             if (entry?.authenticationId !== undefined && entry.authenticationId !== null)
                 return `auth:${entry.authenticationId}`;
-            if (entry?.certificateId !== undefined && entry.certificateId !== null)
-                return `cert:${entry.certificateId}`;
+            if (entry?.transport !== 'ssh' && identitiesOf(entry).length > 0)
+                return 'tls';
             return '';
+        }
+
+        /** How the URL of a form goes, as it is typed: over SSH, with TLS, without - or not said yet. */
+        function schemeIn(id: string, entry: StationConnection | null): 'ssh' | 'wss' | 'ws' | '' {
+            const url = (typedURLs.get(id) ?? entry?.url ?? '').trim().toLowerCase();
+            return url.startsWith('ssh://')                                 ? 'ssh'
+                 : url.startsWith('wss://') || url.startsWith('https://')   ? 'wss'
+                 : url.startsWith('ws://')  || url.startsWith('http://')    ? 'ws'
+                 :                                                            '';
+        }
+
+        /** A time as an input of the browser shows it: its own time, to the minute. */
+        function localOf(iso: string | undefined): string {
+            if (iso === undefined)
+                return '';
+            const at = new Date(iso);
+            if (Number.isNaN(at.getTime()))
+                return '';
+            const two = (n: number) => String(n).padStart(2, '0');
+            return `${at.getFullYear()}-${two(at.getMonth() + 1)}-${two(at.getDate())}T${two(at.getHours())}:${two(at.getMinutes())}`;
         }
 
 
@@ -219,7 +303,8 @@ export const connectionsPage: Page = {
                 <label>Where it goes
                     <input type="text" name="url" class="mono"
                            placeholder="wss://csms.example.org/cs001" value="${entry?.url ?? ''}"
-                           ?disabled=${!mayManage} />
+                           ?disabled=${!mayManage}
+                           @input=${(event: Event) => typedURL(id, entry, (event.target as HTMLInputElement).value)} />
                     <span class="hint">
                         Write the scheme. <code>wss://</code> is encrypted and <code>ws://</code> is not, and
                         this ${nodeNoun()} will not decide that for you - everything below depends on which it is.
@@ -435,51 +520,234 @@ export const connectionsPage: Page = {
                     </span>
                 </label>
 
-                <label>How it proves itself
-                    <select name="proves" ?disabled=${!mayManage}>
-
-                        <option value="" ?selected=${chosen === ''}>
-                            Nothing - the back end must not ask
-                        </option>
-
-                        ${state.authentications.length === 0 ? nothing : html`
-                            <optgroup label="Credentials">
-                                ${state.authentications.map(one => html`
-                                    <option value="auth:${one.id}" ?selected=${chosen === `auth:${one.id}`}>
-                                        ${one.description} (${one.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})${one.hasSecret ? '' : ' - no secret set'}
-                                    </option>
-                                `)}
-                            </optgroup>
-                        `}
-
-                        ${state.certificates.length === 0 ? nothing : html`
-                            <optgroup label="TLS identities">
-                                ${state.certificates.map(one => html`
-                                    <option value="cert:${one.id}" ?selected=${chosen === `cert:${one.id}`}>
-                                        ${one.label || one.subject || one.id} (${one.algorithm})${one.canBeHeldUp ? '' : ' - cannot be shown right now'}
-                                    </option>
-                                `)}
-                            </optgroup>
-                        `}
-
-                    </select>
-                    <span class="hint">
-                        One of them. Credentials come from the Authentication page and identities from the
-                        Identities page, where a key is made and its certificate brought; anything missing here
-                        is missing there. Over <code>ssh://</code> this
-                        ${nodeNoun()} always signs in with its own SSH key, and HTTP Basic credentials add their
-                        login and password.
-                    </span>
-                </label>
+                ${provesView(id, entry, state)}
 
             `;
 
         }
 
-        function entryCard(entry: StationConnection, state: StationConnections): TemplateResult {
+        /** The URL of a form was typed into: where what it can prove itself with changes, the form is drawn again. */
+        function typedURL(id: string, entry: StationConnection | null, url: string): void {
+
+            const before = schemeIn(id, entry);
+
+            typedURLs.set(id, url);
+
+            if (schemeIn(id, entry) !== before)
+                draw();
+
+        }
+
+        /** A way was picked: what is asked below it follows. */
+        function pickWay(id: string, way: string): void {
+            ways.set(id, way);
+            draw();
+        }
+
+        /**
+         * What a connection proves itself with, as its URL allows: over SSH
+         * the keys it signs in with, and otherwise one choice - nothing,
+         * credentials, or the client certificates it shows.
+         */
+        function provesView(id: string, entry: StationConnection | null, state: StationConnections): TemplateResult {
+
+            const scheme = schemeIn(id, entry);
+
+            if (scheme === 'ssh')
+                return sshProvesView(id, entry, state);
+
+            const had     = chosenOf(entry);
+            const way     = ways.get(id) ?? had;
+            const nothingToChoose = state.authentications.length === 0 && state.certificates.length === 0;
+
+            return html`
+
+                <label>How it proves itself
+                    <select name="proves" ?disabled=${!mayManage}
+                            @change=${(event: Event) => pickWay(id, (event.target as HTMLSelectElement).value)}>
+
+                        <option value="" ?selected=${way === ''}>
+                            Nothing - the back end must not ask
+                        </option>
+
+                        <optgroup label="A login">
+                            ${state.authentications.map(one => html`
+                                <option value="auth:${one.id}" ?selected=${way === `auth:${one.id}`}>
+                                    ${one.description} (${one.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})${one.hasSecret ? '' : ' - no secret set'}
+                                </option>
+                            `)}
+                            <option value="new:basic" ?selected=${way === 'new:basic'}>New login and password ...</option>
+                            <option value="new:totp"  ?selected=${way === 'new:totp'}>New TOTP secret ...</option>
+                        </optgroup>
+
+                        ${scheme === 'wss' || way === 'tls' ? html`
+                            <option value="tls" ?selected=${way === 'tls'}>TLS client certificates</option>
+                        ` : nothing}
+
+                    </select>
+                    <span class="hint" data-proves-hint>
+                        One of them.
+                        ${scheme === 'ws'
+                              ? html`A <code>ws://</code> connection makes no TLS handshake, so it shows no client certificate
+                                     - and a password goes over it for everybody on the way to read.`
+                              : scheme === ''
+                                    ? html`Over <code>wss://</code> a client certificate as well; over <code>ssh://</code> the SSH keys it signs in with instead.`
+                                    : nothing}
+                        ${nothingToChoose ? html`
+                            Nothing is written down yet that it could prove itself with: choose a new login here, or make a
+                            key on the <a href="${toURL('/configuration/identities')}?tab=request">Client identities</a> page.
+                        ` : nothing}
+                    </span>
+                </label>
+
+                ${way === 'new:basic' || way === 'new:totp' ? html`
+                    <fieldset class="proves-with" data-new-login>
+                        <legend>${way === 'new:basic' ? 'A new login and password' : 'A new TOTP secret'}</legend>
+                        <label>What they are for
+                            <input type="text" name="newDescription" maxlength="${state.maxDescriptionLength}"
+                                   placeholder="CSMS login" ?disabled=${!mayManage} />
+                            <span class="hint">Left empty, they are called what the connection is.</span>
+                        </label>
+                        <label>Login
+                            <input type="text" name="newLogin" placeholder="cs001" ?disabled=${!mayManage} />
+                        </label>
+                        <label>${way === 'new:basic' ? 'Password' : 'Shared secret'}
+                            <input type="password" name="newSecret" autocomplete="new-password" ?disabled=${!mayManage} />
+                            <span class="hint">
+                                ${way === 'new:totp' ? `At least ${state.minSharedSecretLength} characters. ` : ''}Written
+                                down with the connection, on the Credentials tab, where another connection may use them as
+                                well and where a TOTP's validity and length are set. Never shown again. A test before that
+                                goes without them.
+                            </span>
+                        </label>
+                    </fieldset>
+                ` : nothing}
+
+                ${way === 'tls' ? html`
+                    <fieldset class="proves-with" data-identities="tls">
+                        <legend>The client certificates it shows</legend>
+                        ${identityRows(entry,
+                                       state.certificates.map(one => ({
+                                           id:      one.id,
+                                           name:    one.label || one.subject || one.id,
+                                           detail:  `${one.algorithm}${one.notAfter !== undefined ? `, until ${formatTimestamp(one.notAfter)}` : ''}${one.canBeHeldUp ? '' : ' - cannot be shown right now'}`
+                                       })))}
+                        <span class="hint">
+                            ${state.certificates.length === 0 ? html`This ${nodeNoun()} has no TLS identity yet. ` : nothing}
+                            One certificate is shown in a handshake: of those ticked whose time has come, the one that came
+                            last - and the one before it while that one cannot be shown. Tick the certificate that follows
+                            beside the one in use, with the time its server takes it from, in this browser's time. A key is
+                            made, and its certificate brought, on the
+                            <a href="${toURL('/configuration/identities')}?tab=request">Client identities</a> page.
+                        </span>
+                    </fieldset>
+                ` : nothing}
+
+            `;
+
+        }
+
+        /** Over SSH: the keys it signs in with, and nothing else to choose. */
+        function sshProvesView(_id: string, entry: StationConnection | null, state: StationConnections): TemplateResult {
+
+            const password = state.authentications.find(one => one.id === entry?.authenticationId);
+
+            return html`
+                <fieldset class="proves-with" data-identities="ssh">
+                    <legend>The SSH keys it signs in with</legend>
+                    ${identityRows(entry?.transport === 'ssh' ? entry : null,
+                                   (state.sshKeys ?? []).map(one => ({
+                                       id:      one.id,
+                                       name:    one.label,
+                                       detail:  one.made ? (one.fingerprint ?? '') : 'made when it is first needed'
+                                   })))}
+                    <span class="hint">
+                        None ticked, it signs in with this ${nodeNoun()}'s own key. Several are offered to the server one
+                        after another, the one whose time came last first: tick the key that follows beside the one in
+                        use, with the time its server takes it from, in this browser's time. Keys are made on the
+                        <a href="${toURL('/configuration/identities')}">Client identities</a> page, where the line for the
+                        server's <code>authorized_keys</code> is.
+                    </span>
+                </fieldset>
+                ${password !== undefined ? html`
+                    <label class="checkbox">
+                        <input type="checkbox" name="keepPassword" checked ?disabled=${!mayManage} />
+                        And the password of ${password.description}, where the server asks for one
+                        <span class="hint">Written down before a connection over SSH signed in with keys alone. Unticked, it is not sent any more.</span>
+                    </label>
+                ` : nothing}
+            `;
+
+        }
+
+        /** What a connection may name, each to tick and each from a time on - and what it names that is no longer here. */
+        function identityRows(entry:    StationConnection | null,
+                              offered:  { id: string; name: string; detail: string }[]): TemplateResult {
+
+            const named = new Map(identitiesOf(entry).map(one => [ one.id, one ]));
+            const gone  = [ ...named.keys() ].filter(id => !offered.some(one => one.id === id)).
+                                              map(id => ({ id, name: id, detail: 'no longer here' }));
+
+            return html`
+                <div class="identity-rows">
+                    ${[ ...offered, ...gone ].map(one => html`
+                        <div class="identity-row" data-identity="${one.id}">
+                            <label class="checkbox">
+                                <input type="checkbox" name="identity" value="${one.id}"
+                                       ?checked=${named.has(one.id)} ?disabled=${!mayManage} />
+                                ${one.name} <span class="hint">${one.detail}</span>
+                            </label>
+                            <label class="identity-from">from
+                                <input type="datetime-local" name="from:${one.id}"
+                                       value="${localOf(named.get(one.id)?.from)}" ?disabled=${!mayManage} />
+                            </label>
+                        </div>
+                    `)}
+                </div>
+            `;
+
+        }
+
+        /** What a card says a connection proves itself with. */
+        function provesSaid(entry: StationConnection, state: StationConnections): TemplateResult {
 
             const credentials = state.authentications.find(one => one.id === entry.authenticationId);
-            const certificate = state.certificates.   find(one => one.id === entry.certificateId);
+            const identities  = identitiesOf(entry);
+
+            const from = (one: ConnectionIdentity) => one.from !== undefined ? html` <span class="hint">from ${formatTimestamp(one.from)}</span>` : nothing;
+            const list = (names: (one: ConnectionIdentity) => string) =>
+                             identities.map((one, at) => html`${at > 0 ? ', ' : ''}${names(one)}${from(one)}`);
+
+            if (entry.transport === 'ssh') {
+
+                const keys = state.sshKeys ?? [];
+
+                return html`
+                    ${identities.length === 0
+                          ? html`This ${nodeNoun()}'s SSH key`
+                          : html`${identities.length === 1 ? 'The SSH key ' : 'The SSH keys '}${list(one => keys.find(key => key.id === one.id)?.label ?? `${one.id} (no longer here)`)}`}${credentials !== undefined
+                          ? html`, and the password of ${credentials.description}`
+                          : entry.authenticationId !== undefined ? html`, and a password that is no longer here` : nothing}
+                `;
+
+            }
+
+            if (credentials !== undefined)
+                return html`${credentials.description} (${credentials.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})`;
+
+            if (identities.length > 0)
+                return html`${identities.length === 1 ? 'TLS identity ' : 'TLS identities '}${list(one => {
+                    const certificate = state.certificates.find(known => known.id === one.id);
+                    return certificate !== undefined ? (certificate.label || certificate.subject || certificate.id) : `${one.id} (no longer here)`;
+                })}`;
+
+            return entry.authenticationId !== undefined
+                       ? html`<span class="hint">something that is no longer here</span>`
+                       : html`<span class="hint">nothing</span>`;
+
+        }
+
+        function entryCard(entry: StationConnection, state: StationConnections): TemplateResult {
 
             return html`
                 <div class="card">
@@ -516,18 +784,7 @@ export const connectionsPage: Page = {
                     <dl class="kv">
                         <dt>Where</dt>   <dd><code>${entry.url}</code></dd>
                         <dt>Proves itself</dt>
-                        <dd>
-                            ${entry.transport === 'ssh' ? html`This ${nodeNoun()}'s SSH key${credentials !== undefined ? ', and the password of ' : ''}` : nothing}
-                            ${credentials !== undefined
-                                  ? html`${credentials.description} (${credentials.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})`
-                                  : certificate !== undefined
-                                        ? html`TLS identity ${certificate.label || certificate.subject || certificate.id}`
-                                        : entry.authenticationId !== undefined || entry.certificateId !== undefined
-                                              ? html`<span class="hint">something that is no longer here</span>`
-                                              : entry.transport === 'ssh'
-                                                    ? nothing
-                                                    : html`<span class="hint">nothing</span>`}
-                        </dd>
+                        <dd data-proves="${entry.id}">${provesSaid(entry, state)}</dd>
                         ${entry.transport === 'ssh' ? html`
                             <dt>Host keys</dt>
                             <dd>${entry.sshHostKey !== undefined
@@ -926,7 +1183,27 @@ export const connectionsPage: Page = {
          */
         function readFrom(form: HTMLFormElement, id?: string): ConnectionToSave {
 
-            const proves   = field(form, 'proves');
+            const entry    = id !== undefined ? store?.connections.find(one => one.id === id) ?? null : null;
+            const overSSH  = schemeIn(id ?? 'add', entry) === 'ssh';
+            const proves   = overSSH ? '' : field(form, 'proves');
+
+            // The certificates or the keys ticked, each from the time beside
+            // it: read where the form shows them, and nowhere else.
+            const identities: ConnectionIdentity[] = overSSH || proves === 'tls'
+                ? [ ...form.querySelectorAll<HTMLInputElement>('input[name="identity"]:checked') ].map(box => {
+                      const typed = form.querySelector<HTMLInputElement>(`input[name="from:${box.value}"]`)?.value ?? '';
+                      const from  = typed === '' ? null : new Date(typed);
+                      return from !== null && !Number.isNaN(from.getTime())
+                                 ? { id: box.value, from: from.toISOString() }
+                                 : { id: box.value };
+                  })
+                : [];
+
+            // A password over SSH is one that was there before: kept while
+            // its box stays ticked, and never added here.
+            const password = overSSH && (form.querySelector<HTMLInputElement>('[name="keepPassword"]')?.checked ?? false)
+                                 ? entry?.authenticationId ?? null
+                                 : null;
 
             // As drawn, beside as typed: left as it was, the station keeps the
             // one it has, which the first connection may have written down
@@ -978,8 +1255,9 @@ export const connectionsPage: Page = {
                 encoding:            (form.querySelector<HTMLSelectElement>('[name="encoding"]')?.value ?? 'json') as EncodingOfAConnection,
                 signatureFormats:    (form.querySelector<HTMLSelectElement>('[name="signatureFormats"]')?.value ?? 'policy') as SignatureFormatsOfAConnection,
                 autoConnect:  form.querySelector<HTMLInputElement>('[name="autoConnect"]')?.checked ?? false,
-                authenticationId:    proves.startsWith('auth:') ? proves.slice(5) : null,
-                certificateId:       proves.startsWith('cert:') ? proves.slice(5) : null
+                authenticationId:    overSSH ? password : proves.startsWith('auth:') ? proves.slice(5) : null,
+                certificateId:       null,
+                identities
             };
 
         }
@@ -996,6 +1274,50 @@ export const connectionsPage: Page = {
             return text.split(/[\s,;]+/).filter(pin => pin !== '');
         }
 
+        /**
+         * The login typed into a form of a connection, written down before
+         * the connection is: what it names is there then. Written down once -
+         * a connection its node then refuses is saved again with the login
+         * that is there by now, and not with a second one.
+         */
+        async function withItsNewLogin(id: string, login: LoginToSave | null, written: ConnectionToSave): Promise<ConnectionToSave> {
+
+            if (login === null)
+                return written;
+
+            const made = await api.authentications.add(login);
+
+            took(made.connections);
+            ways.set(id, `auth:${made.id}`);
+
+            return { ...written, authenticationId: made.id };
+
+        }
+
+        /**
+         * The login typed into a form of a connection, or null where it
+         * names one that is there, or none. Read before anything is sent:
+         * a form is held still while it is, and says nothing then.
+         */
+        function newLoginIn(form: HTMLFormElement, written: ConnectionToSave): LoginToSave | null {
+
+            const way = form.querySelector<HTMLSelectElement>('[name="proves"]')?.value ?? '';
+
+            return way.startsWith('new:')
+                       ? { description:  field(form, 'newDescription') || written.description,
+                           kind:         way === 'new:totp' ? 'totp' : 'basic',
+                           login:        field(form, 'newLogin'),
+                           secret:       field(form, 'newSecret', false) }
+                       : null;
+
+        }
+
+        /** A form was saved, or emptied: nothing of it is typed any more. */
+        function settled(id: string): void {
+            typedURLs.delete(id);
+            ways.     delete(id);
+        }
+
         async function add(event: SubmitEvent): Promise<void> {
 
             event.preventDefault();
@@ -1007,15 +1329,17 @@ export const connectionsPage: Page = {
             must<HTMLElement>(content, '#add-error').textContent = '';
 
             const written = readFrom(form);
+            const login   = newLoginIn(form, written);
 
             try
             {
-                const made = await whileSaving(content, note, () => api.connections.add(written));
+                const made = await whileSaving(content, note, async () => api.connections.add(await withItsNewLogin('add', login, written)));
 
                 if (cancelled)
                     return;
 
                 took(made.connections);
+                settled('add');
 
                 draw();
 
@@ -1026,8 +1350,12 @@ export const connectionsPage: Page = {
             }
             catch (problem)
             {
-                if (!cancelled)
+                if (!cancelled) {
+                    // A login written down before its connection was refused
+                    // is the one chosen now.
+                    draw();
                     must<HTMLElement>(content, '#add-error').textContent = errorMessage(problem);
+                }
             }
 
         }
@@ -1041,15 +1369,17 @@ export const connectionsPage: Page = {
             error.textContent = '';
 
             const written = readFrom(form, id);
+            const login   = newLoginIn(form, written);
 
             try
             {
-                took(await whileSaving(content, note, () => api.connections.update(written)));
+                took(await whileSaving(content, note, async () => api.connections.update(await withItsNewLogin(id, login, written))));
 
                 if (cancelled)
                     return;
 
                 opened.add(id);
+                settled(id);
 
                 draw();
 
@@ -1061,8 +1391,10 @@ export const connectionsPage: Page = {
             }
             catch (problem)
             {
-                if (!cancelled)
+                if (!cancelled) {
+                    draw();
                     error.textContent = errorMessage(problem);
+                }
             }
 
         }
@@ -1251,9 +1583,13 @@ export const connectionsPage: Page = {
          * a draw on its own would leave as typed.
          */
         async function reload(): Promise<void> {
+            typedURLs.clear();
+            ways.     clear();
             await load();
-            if (!cancelled)
+            if (!cancelled) {
                 content.querySelectorAll('form').forEach(form => form.reset());
+                await credentials.reload();
+            }
         }
 
         const release = unsaved.heldBy(() => anyFormTypedSinceDrawn(content));
@@ -1265,7 +1601,7 @@ export const connectionsPage: Page = {
         // without asking more often than a person could read.
         const askingAgain = setInterval(() => void askAgain(), 5_000);
 
-        return () => { cancelled = true; clearInterval(askingAgain); release(); };
+        return () => { cancelled = true; clearInterval(askingAgain); release(); credentials.release(); };
 
     }
 

@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             {
 
                 var showing = Connections.Connections.
-                                  Where (connection => connection.CertificateId == Handle).
+                                  Where (connection => !connection.IsSSH && connection.Identities.Any(identity => identity.Id == Handle)).
                                   Select(connection => connection.Description).
                                   ToArray();
 
