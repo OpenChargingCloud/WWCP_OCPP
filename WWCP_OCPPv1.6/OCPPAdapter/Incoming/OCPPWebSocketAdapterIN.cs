@@ -611,7 +611,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         jsonRequestMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection.Role)
+                        // A line up this node accepted - its CSMS dialled it - is read
+                        // as one it dialled: what comes over it is for this node.
+                        switch (WebSocketConnection.IsALineUp() ? ConnectionRole.Client : WebSocketConnection.Role)
                         {
 
                             case ConnectionRole.Client:
@@ -961,7 +963,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         jsonSendMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection.Role)
+                        // A line up this node accepted - its CSMS dialled it - is read
+                        // as one it dialled: what comes over it is for this node.
+                        switch (WebSocketConnection.IsALineUp() ? ConnectionRole.Client : WebSocketConnection.Role)
                         {
 
                             case ConnectionRole.Client:
@@ -1208,7 +1212,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         binaryRequestMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection.Role)
+                        // A line up this node accepted - its CSMS dialled it - is read
+                        // as one it dialled: what comes over it is for this node.
+                        switch (WebSocketConnection.IsALineUp() ? ConnectionRole.Client : WebSocketConnection.Role)
                         {
 
                             case ConnectionRole.Client:
@@ -1532,7 +1538,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                         binarySendMessage.Destination.Next == NetworkingNode_Id.Zero  &&
                         sourceNodeId.HasValue)
                     {
-                        switch (WebSocketConnection.Role)
+                        // A line up this node accepted - its CSMS dialled it - is read
+                        // as one it dialled: what comes over it is for this node.
+                        switch (WebSocketConnection.IsALineUp() ? ConnectionRole.Client : WebSocketConnection.Role)
                         {
 
                             case ConnectionRole.Client:

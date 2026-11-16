@@ -163,6 +163,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         public Func<IEnumerable<String>>? KnownSshKeyIds      { get; set; }
 
         /// <summary>
+        /// Why a connection the other end makes can not come under the given
+        /// name, or null where it can: asked of a node whose server lets
+        /// others in as well - a local controller, whose charging stations
+        /// come under names of their own.
+        /// </summary>
+        public Func<String, String?>?     WhyInboundNameIsTaken { get; set; }
+
+        /// <summary>
         /// Every set of credentials, newest first.
         /// </summary>
         public IReadOnlyList<AuthenticationEntry> Authentications
@@ -3306,6 +3314,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             {
                 Error = $"'{name}' is the name '{taken.Description}' comes under already, in {ConnectionEntry.AsText(Version)}. " +
                         "Two connections under one name could not be told apart at the door.";
+                return false;
+            }
+
+            if (WhyInboundNameIsTaken?.Invoke(name) is String whyTaken)
+            {
+                Error = whyTaken;
                 return false;
             }
 

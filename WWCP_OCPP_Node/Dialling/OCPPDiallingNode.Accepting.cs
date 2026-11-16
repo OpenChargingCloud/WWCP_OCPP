@@ -17,10 +17,14 @@
 
 #region Usings
 
+using System.Text;
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
@@ -57,6 +61,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// speaks, on a port of its own - and hands them over with <see
     /// cref="ServeInbound"/>.
     /// </para>
+    /// <para>
+    /// A kind that has a server already, for others - a local controller, for
+    /// its charging stations - hands over that one, as shared: who signs in
+    /// there is the kind's to decide, and it asks at its own door whether
+    /// somebody is a connection written down here (<see
+    /// cref="SignInInbound"/>). What is let in that way is the line up of the
+    /// kind, not one of the others: <see cref="IsInbound"/>.
+    /// </para>
     /// </remarks>
     public abstract partial class OCPPDiallingNode
     {
@@ -81,7 +93,27 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         private readonly ConcurrentDictionary<String, NetworkingNode_Id[]>            inboundCSMSNames    = new ();
 
+        /// <summary>
+        /// The versions of OCPP whose server is not this node's alone: one the
+        /// kind lets others in over as well, and whose sign-ins it decides
+        /// itself.
+        /// </summary>
+        private readonly ConcurrentDictionary<OCPPVersion, Boolean>                   inboundServersShared  = new ();
+
+        /// <summary>
+        /// The servers whose events are followed already, by the version they
+        /// are followed for: a server served again - stopped and started, as a
+        /// kind does that keeps one server - is not followed twice.
+        /// </summary>
+        private readonly List<(OCPPVersion Version, OCPPWebSocketServer Server)>      inboundServersWired   = [];
+
         private          Int32                                                        followsInboundChanges;
+
+        /// <summary>
+        /// What a connection on a shared server carries that was let in as an
+        /// inbound connection: the id of its entry.
+        /// </summary>
+        public const     String                                                       InboundConnectionKey  = "inboundConnection";
 
         #endregion
 
@@ -106,11 +138,32 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         /// <param name="Version">The version of OCPP the server speaks.</param>
         /// <param name="Server">The server, attached to the node of that version.</param>
+        /// <param name="SharedWithOthers">
+        /// Whether the server lets others in as well, and the kind decides who
+        /// signs in: then the server is told no credentials, the kind asks
+        /// <see cref="SignInInbound"/> at its own door, and only what that let
+        /// in is a connection of this node.
+        /// </param>
         protected void ServeInbound(OCPPVersion          Version,
-                                    OCPPWebSocketServer  Server)
+                                    OCPPWebSocketServer  Server,
+                                    Boolean              SharedWithOthers = false)
         {
 
-            inboundServers[Version] = Server;
+            inboundServersShared[Version]  = SharedWithOthers;
+            inboundServers      [Version]  = Server;
+
+            lock (inboundServersWired)
+            {
+
+                if (inboundServersWired.Any(wired => wired.Version == Version && ReferenceEquals(wired.Server, Server)))
+                {
+                    FollowInboundConnections();
+                    return;
+                }
+
+                inboundServersWired.Add((Version, Server));
+
+            }
 
             // Routed under its own names before the 101 goes out, as the node
             // routes the name it came under: what is said to it right after it
@@ -118,6 +171,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Server.OnNetworkingNodeWebSocketConnectionAccepted += (timestamp, server, connection, networkingNodeId, networkingMode, sharedSubprotocols, eventTrackingId, cancellationToken) => {
 
                 if (ReferenceEquals(inboundServers.GetValueOrDefault(Version), Server) &&
+                    WasLetInAsInbound(Version, connection) &&
                     InboundOf(Version, networkingNodeId.ToString()) is ConnectionEntry entry)
                 {
                     RouteInbound(entry, networkingNodeId, connection);
@@ -131,6 +185,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Server.OnNetworkingNodeNewWebSocketConnection += (timestamp, server, connection, networkingNodeId, networkingMode, sharedSubprotocols, eventTrackingId, cancellationToken) => {
 
                 if (!ReferenceEquals(inboundServers.GetValueOrDefault(Version), Server))
+                    return Task.CompletedTask;
+
+                // One of the others of a shared server: the kind's, not this node's.
+                if (!WasLetInAsInbound(Version, connection))
                     return Task.CompletedTask;
 
                 if (InboundOf(Version, networkingNodeId.ToString()) is not ConnectionEntry entry)
@@ -208,12 +266,177 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             }
 
+            // The logins of a shared server are the kind's, and none of them
+            // was put there from here.
+            if (inboundServersShared.TryRemove(Version, out var shared) && shared)
+                return;
+
             foreach (var login in server.ClientLogins.Keys.ToArray())
                 server.RemoveHTTPBasicAuth(login);
 
             server.ClientTOTPConfig.Clear();
 
         }
+
+        #endregion
+
+        #region (protected) SignInInbound(Version, Connection) / IsInbound(Connection)
+
+        /// <summary>
+        /// What became of somebody who asked to be let in as an inbound
+        /// connection.
+        /// </summary>
+        /// <param name="LetIn">Whether it is let in.</param>
+        /// <param name="Name">The name it came under.</param>
+        /// <param name="Why">How it signed in, or why it is turned away: for the log, not for the other end.</param>
+        public sealed record InboundSignIn(Boolean  LetIn,
+                                           String   Name,
+                                           String   Why);
+
+        /// <summary>
+        /// At the door of a server shared with others: whether what asks to be
+        /// let in comes under the name of an inbound connection of the given
+        /// version of OCPP, and then whether it is let in - by the password or
+        /// the one-time password its connection names. Null where it comes
+        /// under no such name, or nothing is served: then it is one of the
+        /// others, and the kind's to decide.
+        /// </summary>
+        /// <remarks>
+        /// The name decides whose it is, before any credentials are looked at:
+        /// what comes under the name of a connection written down here is let
+        /// in as that or not at all, whatever else the kind would have taken
+        /// it for.
+        /// </remarks>
+        /// <param name="Version">The version of OCPP the server speaks.</param>
+        /// <param name="Connection">The connection, with the request that asks for the WebSocket.</param>
+        protected InboundSignIn? SignInInbound(OCPPVersion                Version,
+                                               WebSocketServerConnection  Connection)
+        {
+
+            if (!inboundServers.ContainsKey(Version) ||
+                Connection.HTTPRequest is not HTTPRequest request)
+            {
+                return null;
+            }
+
+            // Percent-decoded, segment by segment, by the time it is here.
+            var path  = request.Path.ToString();
+            var name  = path[(path.LastIndexOf('/') + 1)..];
+
+            var entry = Connections.Connections.FirstOrDefault(entry => entry.Inbound &&
+                                                                        entry.OCPPVersion == Version &&
+                                                                        entry.InboundName == name);
+
+            if (entry is null)
+                return null;
+
+            var credentials  = entry.AuthenticationId is String authenticationId
+                                   ? Connections.Authentications.FirstOrDefault(one => one.Id == authenticationId)
+                                   : null;
+
+            var password     = credentials is { Kind: AuthenticationKind.Basic, Password.Length: > 0 }
+                                   ? credentials.Password
+                                   : null;
+
+            var totp         = credentials is { Kind: AuthenticationKind.TOTP, TLSChannelBinding: false }
+                                   ? credentials.ToTOTPConfig()
+                                   : null;
+
+            // Looked at whether or not it may come in at all, so that a name
+            // that is switched off does not answer faster than one that is on.
+            var right        = request.Authorization switch {
+
+                                   HTTPBasicAuthentication basic
+                                       => basic.Username == name &&
+                                          (password is not null
+                                               ? CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(basic.Password),
+                                                                                         Encoding.UTF8.GetBytes(password))
+                                               // What a client that knows nothing but Basic has of a
+                                               // TOTP secret: the one-time password, as its password.
+                                               : totp is not null &&
+                                                 AWebSocketEndpoint.TOTPIsTheOneOf(totp, basic.Password, TOTPHTTPHeaderType.RAW, null)),
+
+                                   HTTPTOTPAuthentication oneTime
+                                       => oneTime.Login == name &&
+                                          totp is not null &&
+                                          AWebSocketEndpoint.TOTPIsTheOneOf(totp, oneTime.TOTP, oneTime.Type, Connection.TOTPTLSExporterMaterial),
+
+                                   null
+                                       => request.TOTP is TOTPHTTPHeader header &&
+                                          totp is not null &&
+                                          AWebSocketEndpoint.TOTPIsTheOneOf(totp, header.Value, header.Type, Connection.TOTPTLSExporterMaterial),
+
+                                   _   => false
+
+                               };
+
+            if (!entry.AutoConnect)
+                return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, a connection that is switched off");
+
+            if (credentials is null || credentials.Login != name || (password is null && totp is null))
+                return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, a connection without credentials it could sign in with");
+
+            if (!right)
+                return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, and what it signed in with is not what that connection names");
+
+            Connection.TryAddCustomData(InboundConnectionKey, entry.Id);
+
+            return new InboundSignIn(true, name, password is not null && request.Authorization is HTTPBasicAuthentication
+                                                     ? "a password"
+                                                     : "a one-time password");
+
+        }
+
+        /// <summary>
+        /// Whether the given connection is one somebody dialled who is written
+        /// down as a connection of this node - its CSMS, the controller above
+        /// it - and so a line up of this node, although this node accepted it.
+        /// </summary>
+        /// <param name="Connection">A connection something came over.</param>
+        protected Boolean IsInbound(IMessageConnection? Connection)
+
+            => Connection is WebSocketServerConnection webSocketConnection &&
+               inboundConnections.Values.Any(itsConnection => ReferenceEquals(itsConnection, webSocketConnection));
+
+        /// <summary>
+        /// Whether what is sent to the given name goes over a connection
+        /// somebody dialled who is written down as a connection of this node:
+        /// the name it came under, the one of its own every connection has,
+        /// or the CSMS's where it is the primary.
+        /// </summary>
+        /// <param name="Name">A name something is sent to.</param>
+        protected Boolean LeadsToInbound(NetworkingNode_Id Name)
+        {
+
+            foreach (var id in inboundConnections.Keys)
+            {
+
+                if (inboundCSMSNames.TryGetValue(id, out var csmsNames) && csmsNames.Contains(Name))
+                    return true;
+
+                if (Connections.Connections.FirstOrDefault(one => one.Id == id) is ConnectionEntry entry &&
+                    (NextHopOf(entry) == Name || entry.InboundName == Name.ToString()))
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
+
+        }
+
+        /// <summary>
+        /// Whether a connection of a server served for the given version was
+        /// let in as an inbound connection: every one of a server of this
+        /// node's own, and of a shared one those <see cref="SignInInbound"/>
+        /// let in.
+        /// </summary>
+        private Boolean WasLetInAsInbound(OCPPVersion                Version,
+                                          WebSocketServerConnection  Connection)
+
+            => !inboundServersShared.GetValueOrDefault(Version) ||
+               Connection.TryGetCustomData(InboundConnectionKey) is String;
 
         #endregion
 
@@ -308,6 +531,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             WaitFor(entry);
 
                     }
+
+                    // What a shared server knows of who may come in is the
+                    // kind's: it asks at its own door, see SignInInbound.
+                    if (inboundServersShared.GetValueOrDefault(version))
+                        continue;
 
                     foreach (var login in server.ClientLogins.Keys.Where(login => !passwords.ContainsKey(login)).ToArray())
                         server.RemoveHTTPBasicAuth(login);
@@ -428,6 +656,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return;
 
             inboundConnections[Connection.Id] = WebSocketConnection;
+
+            // Accepted, and the line up of this node all the same: what comes
+            // over it in the plain frame of OCPP is for this node, as over a
+            // connection it dialled, see LineUpExtensions.
+            WebSocketConnection.IsTheLineUp();
 
             server.ReachAs(NextHopOf(Connection), Name);
 
