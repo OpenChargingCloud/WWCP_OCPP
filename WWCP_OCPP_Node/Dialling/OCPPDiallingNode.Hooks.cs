@@ -78,13 +78,46 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    SecWebSocketProtocols:       SubProtocolsOf(Connection),
                    HTTPAuthentication:          Basic,
                    RemoteCertificateValidator:  Validator,
-                   ClientCertificates:          Certificates,
+                   ClientCertificates:          CertificateShownAlone(Certificates),
+                   ClientCertificateChain:      CertificateWithItsChain(Certificates),
                    TOTPConfig:                  TOTP,
                    TOTPLogin:                   TOTPLogin,
                    WebSocketOver:               Connection.HTTPVersion,
                    DNSClient:                   DNSClient,
                    CancellationToken:           CancellationToken
                );
+
+        #endregion
+
+        #region (protected static) CertificateShownAlone(Certificates) / CertificateWithItsChain(Certificates)
+
+        /// <summary>
+        /// What a connection proves itself with, as a client that shows one
+        /// certificate takes it: the certificate, where nothing travels with
+        /// it - and null where something does, see
+        /// <see cref="CertificateWithItsChain"/>.
+        /// </summary>
+        /// <remarks>
+        /// One or the other, never both: a client given its certificates and
+        /// a chain as well shows the certificates and sends no chain.
+        /// </remarks>
+        /// <param name="Certificates">The certificate with the key first, then what travels with it - as WhatItProvesItselfWith gives it.</param>
+        protected static X509Certificate2[]? CertificateShownAlone(X509Certificate2[]? Certificates)
+            => Certificates is { Length: > 1 }
+                   ? null
+                   : Certificates;
+
+        /// <summary>
+        /// What a connection proves itself with, as a client that sends a
+        /// chain takes it: the certificate with the key first and the
+        /// certificates of the CAs above it after it - or null, where nothing
+        /// travels with the certificate.
+        /// </summary>
+        /// <param name="Certificates">The certificate with the key first, then what travels with it - as WhatItProvesItselfWith gives it.</param>
+        protected static X509Certificate2[]? CertificateWithItsChain(X509Certificate2[]? Certificates)
+            => Certificates is { Length: > 1 }
+                   ? Certificates
+                   : null;
 
         #endregion
 

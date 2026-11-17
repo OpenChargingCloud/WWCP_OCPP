@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.Node.Certificates;
 using cloud.charging.open.protocols.WWCP.Node.Configuration;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -805,10 +806,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (ByItsName && CommonNameOf(Certificate) != Name)
                 return new ClientJudgement(false, $"it is issued to '{CommonNameOf(Certificate) ?? Certificate.Subject}', and '{Entry.Description}' comes under '{Name}'.", null);
 
+            // The CAs between a root and the certificate that this node knows
+            // already, for an other end that shows its certificate alone: they
+            // help to build the chain, beside what was sent along, and are
+            // believed nothing - the chain still has to end where the
+            // connection says.
+            var known         = KnownIssuingCAs();
+
             // What .NET judges a client certificate by - a chain to a root this
             // machine trusts - and nothing about a name: the name was asked above.
             var built         = Chain;
-            var ownChain      = Chain is null || PolicyErrors is null;
+            var ownChain      = Chain is null || PolicyErrors is null || known.Count > 0;
             var policyErrors  = PolicyErrors ?? SslPolicyErrors.None;
 
             try
@@ -822,6 +830,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     if (Chain is not null)
                         built.ChainPolicy.ExtraStore.AddRange(Chain.ChainPolicy.ExtraStore);
+
+                    foreach (var issuingCA in known)
+                        built.ChainPolicy.ExtraStore.Add(issuingCA);
 
                     policyErrors = built.Build(Certificate)
                                        ? SslPolicyErrors.None
@@ -846,9 +857,39 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
             finally
             {
+
                 if (ownChain && !ReferenceEquals(built, Chain))
                     built?.Dispose();
+
+                foreach (var issuingCA in known)
+                    issuingCA.Dispose();
+
             }
+
+        }
+
+        /// <summary>
+        /// The issuing CAs the certificate store of this node keeps to build
+        /// chains with (<see cref="CertificateKind.TLSIntermediate"/>), as far
+        /// as they can be used now. Whoever asks disposes of them.
+        /// </summary>
+        private List<X509Certificate2> KnownIssuingCAs()
+        {
+
+            var known = new List<X509Certificate2>();
+
+            try
+            {
+                foreach (var entry in Certificates.UsableByKind(CertificateKind.TLSIntermediate))
+                    if (Certificates.TryLoad(entry, out var issuingCA, out _))
+                        known.Add(issuingCA);
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"The issuing CAs of the certificate store could not be read: {e.Message}", "ocpp", "connections", "inbound", "tls");
+            }
+
+            return known;
 
         }
 

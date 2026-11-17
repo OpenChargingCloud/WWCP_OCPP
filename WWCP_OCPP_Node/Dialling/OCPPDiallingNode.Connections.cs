@@ -389,19 +389,24 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     // neither the certificate nor the reason.
                     // As a handshake wants it, which on Windows is not as the
                     // store reads it - see CertificateStore.TryLoadForHandshake.
-                    // What travels with it is not shown, as it never was: a
-                    // back end is told the intermediates of its stations' CA.
+                    // What travels with it - the CAs between it and its root,
+                    // as its file has them - is sent along, so that the other
+                    // end can build its chain without having been told them;
+                    // an identity kept without them shows itself alone, to an
+                    // other end that knows them.
                     else if (!this.Certificates.TryLoadForHandshake(identity, out var shown, out var above, out var unreadable))
                         wrong = $"it would show the identity '{identity.Label}', which this runtime cannot present ({unreadable})";
 
                     else
                     {
 
-                        foreach (var certificate in above)
-                            certificate.Dispose();
-
-                        Certificates  = [ shown ];
+                        // Its own first, which is the one with the key.
+                        Certificates  = [ shown, .. above ];
                         Says          = $"a TLS client certificate, '{identity.Subject}' ({identity.KeyAlgorithm})" +
+                                        (above.Count > 0
+                                             ? $", with {(above.Count == 1 ? "the certificate" : $"the {above.Count} certificates")} that " +
+                                               $"{(above.Count == 1 ? "travels" : "travel")} with it sent along"
+                                             : "") +
                                         (passedOver > 0
                                              ? $" - {(passedOver == 1 ? "the one before it" : $"{passedOver} before it")} cannot be shown now"
                                              : "");
@@ -2514,7 +2519,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                                                                       }
                                                                     : null,
-                             ClientCertificates:          certificates,
+                             // Its certificate alone, or with what travels with it:
+                             // see CertificateShownAlone.
+                             ClientCertificates:          CertificateShownAlone(certificates),
+                             ClientCertificateChain:      CertificateWithItsChain(certificates),
                              TOTPConfig:                  totp,
                              TOTPLogin:                   totpLogin,
                              DisableWebSocketPings:       true,
