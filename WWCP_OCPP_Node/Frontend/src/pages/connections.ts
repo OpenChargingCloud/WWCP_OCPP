@@ -35,7 +35,8 @@ const connectionTypeNames: Readonly<Record<string, string>> = {
     CSMS:             'Charging station management system',
     CSMSBackup:       'Management system, spare',
     LocalController:  'Local controller',
-    ChargingStation:  'Charging station'
+    ChargingStation:  'Charging station',
+    Gateway:          'Gateway'
 };
 
 /** Which signatures a connection may write, as the station names them. */

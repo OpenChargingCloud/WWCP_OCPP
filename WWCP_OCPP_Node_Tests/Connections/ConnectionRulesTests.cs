@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
                 Assert.That(json["connectionTypes"]!.Select(type => type.Value<String>()),
-                            Is.EqualTo(new[] { "CSMS", "CSMSBackup", "LocalController" }));
+                            Is.EqualTo(new[] { "CSMS", "CSMSBackup", "LocalController", "Gateway" }));
                 Assert.That(json["ocppVersions"]!.Select(version => version.Value<String>()),
                             Is.EqualTo(new[] { "OCPP2.1", "OCPP1.6" }));
                 Assert.That(json["rules"]!.Value<Boolean>("inbound"),                Is.True);
@@ -300,6 +300,42 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                         Is.False);
 
             Assert.That(store.Connections.Single().RemoteNodeId, Is.EqualTo("cs008"));
+
+        }
+
+        #endregion
+
+        #region AGatewayIsABackEnd_NotYetANodeBelow()
+
+        /// <summary>
+        /// A gateway is what a charging station, a local controller or another
+        /// gateway dials as its back end: "Gateway" is written down by a node
+        /// that dials its back end, and read back as itself. Not yet by a node
+        /// that dials downwards: what a gateway below a CSMS is spoken to as is
+        /// not decided, and a type a CSMS would speak to as a charging station
+        /// is refused rather than mishandled.
+        /// </summary>
+        [Test]
+        public void AGatewayIsABackEnd_NotYetANodeBelow()
+        {
+
+            Assert.That(ConnectionEntry.TryParseType("Gateway", out var type), Is.True);
+            Assert.That(type,                                                  Is.EqualTo(ConnectionType.Gateway));
+
+            Assert.That(store.TryAddConnection("The gateway above", "wss://gateway.example.org:2354/cs001", "Gateway", true, null, null,
+                                               out var up, out var error),
+                        Is.True, error);
+
+            Assert.That(store.Connections.Single(connection => connection.Id == up).ConnectionType, Is.EqualTo(ConnectionType.Gateway));
+
+            store.Rules = DiallingDownwards;
+
+            Assert.That(store.TryAddConnection("A gateway below", "wss://gateway7.example.org:9443/csms-01", "Gateway", true, null, null,
+                                               out _, out error,
+                                               RemoteNodeId: "gw007"),
+                        Is.False);
+
+            Assert.That(error, Does.Contain("is not what a connection of this"));
 
         }
 

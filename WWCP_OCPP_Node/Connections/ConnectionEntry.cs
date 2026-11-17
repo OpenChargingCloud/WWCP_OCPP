@@ -72,7 +72,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// A charging station: what a node above the stations dials, a CSMS
         /// that reaches one that cannot dial it.
         /// </summary>
-        ChargingStation
+        ChargingStation,
+
+        /// <summary>
+        /// A gateway: between charging stations and local controllers below
+        /// it and the CSMS above - what a station, a local controller or
+        /// another gateway dials as its back end. Not yet what a CSMS dials as
+        /// a node below it: what a gateway is to a CSMS that dials downwards
+        /// is not decided.
+        /// </summary>
+        Gateway
 
     }
 
@@ -835,6 +844,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 case "chargingstation":
                     Type = ConnectionType.ChargingStation;
+                    return true;
+
+                case "gateway":
+                    Type = ConnectionType.Gateway;
                     return true;
 
                 default:

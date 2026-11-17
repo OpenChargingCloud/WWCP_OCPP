@@ -61,7 +61,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         public static readonly IReadOnlyList<ConnectionType> BackEnds = [
             ConnectionType.CSMS,
             ConnectionType.CSMSBackup,
-            ConnectionType.LocalController
+            ConnectionType.LocalController,
+            ConnectionType.Gateway
         ];
 
         /// <summary>
