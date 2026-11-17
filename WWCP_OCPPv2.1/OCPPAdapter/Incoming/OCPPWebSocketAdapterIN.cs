@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         #endregion
 
 
-        #region (private) LearnRouteBack (SenderId, WebSocketConnection)
+        #region (private) LearnRouteBack (SenderId, WebSocketConnection, ConnectedAs)
 
         /// <summary>
         /// Remember that the given node can be reached over the connection one of its
@@ -314,8 +314,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// </summary>
         /// <param name="SenderId">The node that sent us a request.</param>
         /// <param name="WebSocketConnection">The connection it arrived on.</param>
+        /// <param name="ConnectedAs">The identification the far end of that connection connected under, where it is one of a server.</param>
         private void LearnRouteBack(NetworkingNode_Id     SenderId,
-                                    IMessageConnection    WebSocketConnection)
+                                    IMessageConnection    WebSocketConnection,
+                                    NetworkingNode_Id?    ConnectedAs)
         {
 
             if (SenderId == NetworkingNode_Id.Zero ||
@@ -333,6 +335,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (WebSocketConnection.WWCPClientOf() is IWWCPClient wwcpClient)
             {
                 parentNetworkingNode.Routing.AddOrUpdateStaticRouting(SenderId, wwcpClient);
+            }
+
+            // Or for the line up of this node that it accepted: the CSMS - or
+            // the controller above it - dialled it, under the name its URL ends
+            // with, and writes its own identification into what it asks. Like a
+            // client it has one far end, and the server is told that the name
+            // is that connection's as well, so the route to the server leads
+            // to it. The node takes the name away with the line up.
+            else if (WebSocketConnection.IsALineUp()                                                   &&
+                     ConnectedAs is NetworkingNode_Id connectedAs                                     &&
+                     connectedAs != SenderId                                                           &&
+                     WebSocketConnection is WebSocketServerConnection { WebSocketServer: WWCPWebSocketServer server })
+            {
+                server.ReachAs(SenderId, connectedAs);
+                WebSocketConnection.IsReachedAsWell(SenderId);
+                parentNetworkingNode.Routing.AddOrUpdateStaticRouting(SenderId, server);
             }
 
         }
@@ -695,7 +713,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //
                     // An incoming request is proof that its sender is reachable this way, so
                     // remember it. Existing routes win: this only fills in what we do not know.
-                    LearnRouteBack(jsonRequestMessage.NetworkPath.Source, WebSocketConnection);
+                    LearnRouteBack(jsonRequestMessage.NetworkPath.Source, WebSocketConnection, sourceNodeId);
 
                     #endregion
 
@@ -1385,7 +1403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //
                     // An incoming request is proof that its sender is reachable this way, so
                     // remember it. Existing routes win: this only fills in what we do not know.
-                    LearnRouteBack(binaryRequestMessage.NetworkPath.Source, WebSocketConnection);
+                    LearnRouteBack(binaryRequestMessage.NetworkPath.Source, WebSocketConnection, sourceNodeId);
 
                     #endregion
 

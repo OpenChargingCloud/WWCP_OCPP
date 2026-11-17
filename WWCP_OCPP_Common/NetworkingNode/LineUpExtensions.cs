@@ -17,7 +17,11 @@
 
 #region Usings
 
+using System.Collections.Concurrent;
+
 using org.GraphDefined.Vanaheimr.Hermod.Messaging;
+
+using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 #endregion
 
@@ -61,6 +65,42 @@ namespace cloud.charging.open.protocols.OCPP
         public static Boolean IsALineUp(this IMessageConnection Connection)
 
             => Connection.TryGetCustomData(LineUpKey) is true;
+
+
+        /// <summary>
+        /// What a line up a node accepted carries of the names it was learned
+        /// to be reached by as well.
+        /// </summary>
+        public const String NamesLearnedKey = "ocpp.lineUp.namesLearned";
+
+        /// <summary>
+        /// Remember that the given line up, which this node accepted, is
+        /// reached under the given name as well: the source its far end wrote
+        /// into a request - the identification of a CSMS that came under
+        /// another name. Its node takes the name away with the line up.
+        /// </summary>
+        /// <param name="Connection">A line up this node accepted.</param>
+        /// <param name="Name">The name it is reached by as well.</param>
+        public static void IsReachedAsWell(this IMessageConnection  Connection,
+                                           NetworkingNode_Id        Name)
+        {
+
+            Connection.TryAddCustomData(NamesLearnedKey, new ConcurrentDictionary<NetworkingNode_Id, Byte>());
+
+            if (Connection.TryGetCustomData(NamesLearnedKey) is ConcurrentDictionary<NetworkingNode_Id, Byte> names)
+                names[Name] = 0;
+
+        }
+
+        /// <summary>
+        /// The names the given line up was learned to be reached by as well.
+        /// </summary>
+        /// <param name="Connection">A line up this node accepted.</param>
+        public static NetworkingNode_Id[] NamesLearned(this IMessageConnection Connection)
+
+            => Connection.TryGetCustomData(NamesLearnedKey) is ConcurrentDictionary<NetworkingNode_Id, Byte> names
+                   ? [.. names.Keys]
+                   : [];
 
     }
 

@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 if (inboundConnections.TryRemove(entry.Id, out var connection))
                 {
-                    UnrouteInbound(entry, server);
+                    UnrouteInbound(entry, server, connection);
                     _ = connection.Close(WebSocketFrame.ClosingStatusCode.GoingAway, Why);
                 }
 
@@ -1026,7 +1026,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             if (inboundConnections.TryRemove(entry.Id, out var connection))
                             {
 
-                                UnrouteInbound(entry, server);
+                                UnrouteInbound(entry, server, connection);
 
                                 _ = connection.Close(WebSocketFrame.ClosingStatusCode.PolicyViolation, "No longer a connection of this node");
 
@@ -1082,7 +1082,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             if (NodeOrNoneOf(version) is not { } node)
                                 continue;
 
-                            foreach (var name in (names ?? []).Append(itsOwnName))
+                            foreach (var name in (names ?? []).Append(itsOwnName).Concat(connection?.NamesLearned() ?? []))
                             {
                                 if (server.NoLongerReachAs(name) &&
                                     node.Routing.LookupNetworkingNode(name, out var reachability) &&
@@ -1186,7 +1186,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) RouteInbound(Connection, Name, WebSocketConnection) / UnrouteInbound(Connection, Server)
+        #region (private) RouteInbound(Connection, Name, WebSocketConnection) / UnrouteInbound(Connection, Server, WebSocketConnection)
 
         /// <summary>
         /// Reach an inbound connection under the name every connection has in
@@ -1236,11 +1236,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// Take away the names an inbound connection was reached under: its
-        /// own, the CSMS's where it had it, and the one it came under - where
-        /// that still leads to the given server.
+        /// own, the CSMS's where it had it, those learned from what its far end
+        /// asked (see LineUpExtensions.IsReachedAsWell), and the one it came
+        /// under - where that still leads to the given server.
         /// </summary>
-        private void UnrouteInbound(ConnectionEntry      Connection,
-                                    OCPPWebSocketServer  Server)
+        private void UnrouteInbound(ConnectionEntry            Connection,
+                                    OCPPWebSocketServer        Server,
+                                    WebSocketServerConnection  WebSocketConnection)
         {
 
             var node = NodeOrNoneOf(Connection.OCPPVersion);
@@ -1251,6 +1253,27 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Server.NoLongerReachAs(NextHopOf(Connection));
 
             node.Routing.RemoveStaticRouting(NextHopOf(Connection));
+
+            // Learned from the identification its far end wrote into what it
+            // asked: where it is still this connection's, and its route still
+            // leads here.
+            if (Connection.InboundName is String cameUnder &&
+                NetworkingNode_Id.TryParse(cameUnder, out var cameAs))
+            {
+                foreach (var learned in WebSocketConnection.NamesLearned())
+                {
+
+                    if (Server.ReachedAs(learned) == cameAs)
+                        Server.NoLongerReachAs(learned);
+
+                    if (node.Routing.LookupNetworkingNode(learned, out var toIt) &&
+                        ReferenceEquals(toIt.Server, Server))
+                    {
+                        node.Routing.RemoveStaticRouting(learned);
+                    }
+
+                }
+            }
 
             if (inboundCSMSNames.TryRemove(Connection.Id, out var csmsNames))
             {
@@ -1307,7 +1330,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return;
 
             if (inboundServers.TryGetValue(Version, out var server))
-                UnrouteInbound(entry, server);
+                UnrouteInbound(entry, server, WebSocketConnection);
 
             var what = $"'{Name}' went away ({Why}); it is let in again when it dials.";
 
