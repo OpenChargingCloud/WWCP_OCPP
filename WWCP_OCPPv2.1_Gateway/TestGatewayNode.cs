@@ -709,6 +709,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
 
             #region DeviceModel
 
+            // Two paths that never meet. OCPP.IN sees only the requests addressed to this
+            // gateway itself, and ADeviceModelNode answers them from this node's own Device
+            // Model. OCPP.FORWARD sees only the requests for others, and hands them on
+            // unchanged to the station they name, which answers them from its own Device Model
+            // under its own rules.
+            AnswerFromOwnDeviceModel();
+
             #region Variables
 
             #region OnGetBaseReport

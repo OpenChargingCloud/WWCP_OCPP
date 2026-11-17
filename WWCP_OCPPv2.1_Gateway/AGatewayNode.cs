@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.Gateway
     /// <summary>
     /// An abstract gateway node.
     /// </summary>
-    public abstract class AGatewayNode : AOCPPNetworkingNode,
+    public abstract class AGatewayNode : ADeviceModelNode,
                                          GW.IGatewayNode
     {
 

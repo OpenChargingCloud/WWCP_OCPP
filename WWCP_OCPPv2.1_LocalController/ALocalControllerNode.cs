@@ -179,14 +179,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.LocalController
     /// </summary>
     /// <remarks>
     /// A local controller is a node of its own with a Device Model of its own - see
-    /// ALocalControllerNode.DeviceModel.cs - and a relay for the stations behind it.
+    /// ADeviceModelNode - and a relay for the stations behind it.
     /// Which of the two a request meets is decided by its destination alone, before any
     /// handler: a request addressed to this node, or to an anycast id it accepts, is
     /// answered here; any other is handed to FORWARD for the station it names.
     /// </remarks>
-    public abstract partial class ALocalControllerNode : AOCPPNetworkingNode,
-                                                         LC.ILocalControllerNode,
-                                                         IDeviceModelNode
+    public abstract partial class ALocalControllerNode : ADeviceModelNode,
+                                                         LC.ILocalControllerNode
     {
 
         #region Properties
