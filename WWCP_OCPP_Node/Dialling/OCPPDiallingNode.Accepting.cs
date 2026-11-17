@@ -488,26 +488,42 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return false;
             }
 
-            using var kept = ChainKeptFor(Certificate);
+            var kept = ChainKeptFor(Certificate);
 
-            var judgement = JudgeClient(Entry, Name, pins, Certificate, kept, null);
+            try
+            {
 
-            How = judgement.Accepted
-                      ? $"a client certificate{(judgement.AnchoredBy is String label ? $" of '{label}'" : "")}, issued to '{Name}'"
-                      : $"its client certificate was refused: {judgement.Why}";
+                var judgement = JudgeClient(Entry, Name, pins, Certificate, kept, null);
 
-            return judgement.Accepted;
+                How = judgement.Accepted
+                          ? $"a client certificate{(judgement.AnchoredBy is String label ? $" of '{label}'" : "")}, issued to '{Name}'"
+                          : $"its client certificate was refused: {judgement.Why}";
+
+                return judgement.Accepted;
+
+            }
+            finally
+            {
+                // The chain does not dispose what was loaded into it.
+                if (kept is not null)
+                {
+                    foreach (var one in kept.ChainPolicy.ExtraStore)
+                        one.Dispose();
+                    kept.Dispose();
+                }
+            }
 
         }
 
         #endregion
 
-        #region (protected) InboundCertificateCheck(Certificate, Chain, PolicyErrors)
+        #region (protected) InboundCertificateCheck(Version, Certificate, Chain, PolicyErrors)
 
         /// <summary>
         /// For the TLS validator of an OCPP server this node lets in over:
         /// whether a client certificate shown at the handshake is one an
-        /// inbound connection signs in with, and then whether it passes.
+        /// inbound connection of the version that server speaks signs in with,
+        /// and then whether it passes.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -526,11 +542,21 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// yet. The certificates the other end sent beside its own are kept
         /// for that, for a little while.
         /// </para>
+        /// <para>
+        /// Only the connections of the given version claim it: the name of an
+        /// inbound connection is its own within its version alone, and a
+        /// server that takes the common name of a certificate the handshake
+        /// accepted for who it is - one not shared with others - asks nothing
+        /// after this. The certificate of a connection of OCPP 1.6 lets nobody
+        /// in over OCPP 2.1 under the same name.
+        /// </para>
         /// </remarks>
+        /// <param name="Version">The version of OCPP the server of the handshake speaks.</param>
         /// <param name="Certificate">The client certificate of the handshake, or null.</param>
         /// <param name="Chain">The chain the machine built for it, with the certificates the other end sent beside it.</param>
         /// <param name="PolicyErrors">What building that chain found.</param>
-        protected TLSValidationResult? InboundCertificateCheck(X509Certificate2?  Certificate,
+        protected TLSValidationResult? InboundCertificateCheck(OCPPVersion        Version,
+                                                               X509Certificate2?  Certificate,
                                                                X509Chain?         Chain,
                                                                SslPolicyErrors    PolicyErrors)
         {
@@ -538,12 +564,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (Certificate is null)
                 return null;
 
-            var claimants = Connections.Connections.Where(entry => entry.Inbound &&
-                                                                   entry.AutoConnect &&
-                                                                   entry.IsSecure &&
-                                                                   entry.SignsInWithACertificate &&
-                                                                   inboundServers.ContainsKey(entry.OCPPVersion)).
-                                                    ToArray();
+            var claimants = CertificateClaimantsOf(Version);
 
             if (claimants.Length == 0)
                 return null;
@@ -624,35 +645,37 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected) IsInboundKeyPinned(Certificate)
+        #region (protected) IsInboundKeyPinned(Version, Certificate)
 
         /// <summary>
         /// Whether the given client certificate holds a key an inbound
-        /// connection that is switched on pins: then its key is all that was
-        /// checked, and what is written around it - its common name - names
-        /// nobody. For the AcceptedByKeyPin of the OCPP server it comes in over.
+        /// connection of the given version that is switched on pins: then its
+        /// key is all that was checked, and what is written around it - its
+        /// common name - names nobody. For the AcceptedByKeyPin of the OCPP
+        /// server of that version it comes in over.
         /// </summary>
+        /// <param name="Version">The version of OCPP the server speaks.</param>
         /// <param name="Certificate">A client certificate.</param>
-        protected Boolean IsInboundKeyPinned(X509Certificate2 Certificate)
+        protected Boolean IsInboundKeyPinned(OCPPVersion       Version,
+                                             X509Certificate2  Certificate)
         {
 
             var keyPin = KeyPin.FromCertificate(Certificate);
 
-            return Connections.Connections.Any(entry => entry.Inbound &&
-                                                        entry.AutoConnect &&
-                                                        entry.ClientKeyPins.Contains(keyPin));
+            return CertificateClaimantsOf(Version).Any(entry => entry.ClientKeyPins.Contains(keyPin));
 
         }
 
         #endregion
 
-        #region (protected) IsAnInboundCertificate(Certificate)
+        #region (protected) IsAnInboundCertificate(Version, Certificate)
 
         /// <summary>
         /// Whether the given client certificate is one an inbound connection
-        /// that is switched on claims: its key is one it pins, or it is issued
-        /// to the name of one checked by the CA of its other end. Whether it
-        /// passes is not asked here - see <see cref="InboundCertificateCheck"/>.
+        /// of the given version that is switched on claims: its key is one it
+        /// pins, or it is issued to the name of one checked by the CA of its
+        /// other end. Whether it passes is not asked here - see
+        /// <see cref="InboundCertificateCheck"/>.
         /// </summary>
         /// <remarks>
         /// For the door of a server shared with others: a certificate that got
@@ -660,19 +683,40 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// been held to anything the others are held to, and is to be judged
         /// as theirs before it lets anybody in as one of them.
         /// </remarks>
+        /// <param name="Version">The version of OCPP the server speaks.</param>
         /// <param name="Certificate">A client certificate.</param>
-        protected Boolean IsAnInboundCertificate(X509Certificate2 Certificate)
+        protected Boolean IsAnInboundCertificate(OCPPVersion       Version,
+                                                 X509Certificate2  Certificate)
         {
 
             var keyPin      = KeyPin.FromCertificate(Certificate);
             var commonName  = CommonNameOf(Certificate);
 
-            return Connections.Connections.Any(entry => entry.Inbound &&
-                                                        entry.AutoConnect &&
-                                                        (entry.ClientKeyPins.Contains(keyPin) ||
-                                                         (entry.ClientPins is not null && commonName is not null && entry.InboundName == commonName)));
+            return CertificateClaimantsOf(Version).Any(entry => entry.ClientKeyPins.Contains(keyPin) ||
+                                                                (entry.ClientPins is not null && commonName is not null && entry.InboundName == commonName));
 
         }
+
+        #endregion
+
+        #region (private) CertificateClaimantsOf(Version)
+
+        /// <summary>
+        /// The inbound connections of the given version that are switched on
+        /// and sign in with a client certificate over TLS - none where that
+        /// version is not served.
+        /// </summary>
+        /// <param name="Version">The version of OCPP of a server.</param>
+        private ConnectionEntry[] CertificateClaimantsOf(OCPPVersion Version)
+
+            => inboundServers.ContainsKey(Version)
+                   ? Connections.Connections.Where(entry => entry.Inbound &&
+                                                            entry.OCPPVersion == Version &&
+                                                            entry.AutoConnect &&
+                                                            entry.IsSecure &&
+                                                            entry.SignsInWithACertificate).
+                                             ToArray()
+                   : [];
 
         #endregion
 
@@ -784,9 +828,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var now = TimeProvider.GetUtcNow();
 
-            foreach (var (thumbprint, kept) in inboundChains.ToArray())
-                if (now - kept.Kept > InboundChainsKeptFor || inboundChains.Count > MaxInboundChainsKept)
-                    inboundChains.TryRemove(thumbprint, out _);
+            // Those kept too long, and then the oldest while there are too many:
+            // not whichever comes first, which may be one just kept for a
+            // connection that has yet to sign in.
+            foreach (var (thumbprint, kept) in inboundChains.ToArray().
+                                                             Where  (one => now - one.Value.Kept > InboundChainsKeptFor))
+                inboundChains.TryRemove(thumbprint, out _);
+
+            foreach (var (thumbprint, _) in inboundChains.ToArray().
+                                                       OrderBy(one => one.Value.Kept).
+                                                       Take   (Math.Max(0, inboundChains.Count - MaxInboundChainsKept + 1)))
+                inboundChains.TryRemove(thumbprint, out _);
 
             var certificates = new List<Byte[]>();
 
@@ -1070,11 +1122,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (IsUp(Connection))
                 return;
 
+            var server = inboundServers.GetValueOrDefault(Connection.OCPPVersion);
+
             var what = !Connection.AutoConnect
                            ? $"'{Connection.InboundName}' is not let in: this connection is switched off."
-                           : !InboundServed(Connection.OCPPVersion)
+                           : server is null
                                  ? $"'{Connection.InboundName}' can not dial in: this {NodeWording.Noun} serves no {ConnectionEntry.AsText(Connection.OCPPVersion)} to whoever dials it."
-                                 : $"Waiting for '{Connection.InboundName}' to dial in.";
+                                 : WhyItCanNotSignIn(Connection, server) is String why
+                                       ? $"'{Connection.InboundName}' can not sign in: {why}"
+                                       : $"Waiting for '{Connection.InboundName}' to dial in.";
 
             lock (dialled)
             {
@@ -1092,6 +1148,39 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Record(Connection, ConnectionStatus.Waiting, what);
 
             Log.Info($"'{Connection.Description}': {what}", "ocpp", "connections", "inbound");
+
+        }
+
+        /// <summary>
+        /// Why what an inbound connection signs in with can not come over the
+        /// server it dials, as that server is now - or null.
+        /// </summary>
+        /// <param name="Connection">An inbound connection that is switched on.</param>
+        /// <param name="Server">The server of its version of OCPP.</param>
+        private String? WhyItCanNotSignIn(ConnectionEntry      Connection,
+                                          OCPPWebSocketServer  Server)
+        {
+
+            // A server asks for a client certificate where it requires one or
+            // has a validator to judge it; without either, the handshake asks
+            // for none, and none is ever shown.
+            if (Connection.SignsInWithACertificate &&
+                !Server.ClientCertificateRequired &&
+                Server.ClientCertificateValidator is null)
+            {
+                return $"the server it dials asks for no client certificate, which is what this connection signs in with.";
+            }
+
+            // Bound to the TLS session: checked with keying material only the
+            // TLS of HTTP/3 exports.
+            if (!Server.AcceptHTTP3 &&
+                Connection.AuthenticationId is String id &&
+                Connections.Authentications.FirstOrDefault(credentials => credentials.Id == id) is { Kind: AuthenticationKind.TOTP, TLSChannelBinding: true })
+            {
+                return $"its one-time password is bound to its TLS session, which is checked over HTTP/3 only, and the server it dials takes no WebSockets over HTTP/3.";
+            }
+
+            return null;
 
         }
 
