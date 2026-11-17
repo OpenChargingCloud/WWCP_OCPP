@@ -608,6 +608,110 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                                 new JProperty("enabled", true))))),
                             Is.Empty);
 
+                // HTTP/3 opens and closes its UDP port while the server runs.
+                Assert.That(running.NeedsARestartFor(running.Merge(Parse(new JObject(
+                                new JProperty("http3", true))))),
+                            Is.Empty);
+
+            });
+
+        }
+
+        #endregion
+
+
+        #region HTTP3IsOffUnlessSaid_AndWrittenWhereItWasSaid()
+
+        /// <summary>
+        /// HTTP/3 opens a UDP port beside the TCP one, which nobody is given
+        /// who did not ask: off where the file says nothing, and "false" is
+        /// written as it was said.
+        /// </summary>
+        [Test]
+        public void HTTP3IsOffUnlessSaid_AndWrittenWhereItWasSaid()
+        {
+
+            var silent = Parse(new JObject(new JProperty("port", 9443)));
+            var on     = Parse(new JObject(new JProperty("port", 9443), new JProperty("http3", true)));
+            var off    = Parse(new JObject(new JProperty("port", 9443), new JProperty("http3", false)));
+
+            Assert.Multiple(() => {
+
+                Assert.That(silent.TakesHTTP3,                          Is.False, "HTTP/3 is on although the file says nothing of it");
+                Assert.That(silent.ToJSON().ContainsKey("http3"),       Is.False);
+                Assert.That(silent.Effective().TakesHTTP3,              Is.False);
+
+                Assert.That(on.TakesHTTP3,                              Is.True);
+                Assert.That(on.ToJSON().Value<Boolean>("http3"),        Is.True);
+                Assert.That(on.IsEmpty,                                 Is.False);
+
+                Assert.That(off.TakesHTTP3,                             Is.False);
+                Assert.That(off.ToJSON().Value<Boolean?>("http3"),      Is.False);
+
+                Assert.That(on.Merge(Parse([])).TakesHTTP3,             Is.True,  "a merge that says nothing of HTTP/3 took it away");
+                Assert.That(on.Merge(off).TakesHTTP3,                   Is.False);
+
+                Assert.That(Refuse(new JObject(new JProperty("http3", "yes"))), Does.Contain("http3"));
+
+            });
+
+        }
+
+        #endregion
+
+        #region APortOfItsOwnForOCPP16_IsAChargingStations()
+
+        /// <summary>
+        /// A charging station is two nodes, one per version of OCPP, with a
+        /// port each; a node with one server for every version offers OCPP 1.6
+        /// on its one port, and refuses a second.
+        /// </summary>
+        [Test]
+        public void APortOfItsOwnForOCPP16_IsAChargingStations()
+        {
+
+            var json      = new JObject(new JProperty("enabled", true), new JProperty("port", 9443), new JProperty("port16", 9444), new JProperty("http3", true));
+            var station   = Parse(json);
+
+            Assert.Multiple(() => {
+
+                Assert.That(station.Port16?.ToUInt16(),                       Is.EqualTo(9444));
+                Assert.That(station.ToJSON().ToString(Newtonsoft.Json.Formatting.None),
+                            Is.EqualTo(json.ToString(Newtonsoft.Json.Formatting.None)),
+                            "the four fields of a charging station did not come back as they were written");
+                Assert.That(station.ToString(),                                Does.Contain("OCPP 1.6 on port 9444").And.Contain("HTTP/3"));
+                Assert.That(Parse(new JObject(new JProperty("port16", 9444))).IsEmpty, Is.False);
+
+                Assert.That(Refuse(new JObject(new JProperty("port", 9443), new JProperty("port16", 9443))), Does.Contain("the same port"));
+
+                Assert.That(OCPPServerConfiguration.TryParseForOneServer(json, out var one, out var error), Is.False);
+                Assert.That(one,                                                Is.Null);
+                Assert.That(error,                                              Does.Contain("'ocppServer.port16' is a charging station's").And.Contain("subprotocols"));
+
+                Assert.That(OCPPServerConfiguration.TryParseForOneServer(new JObject(new JProperty("port", 9443), new JProperty("http3", true)), out one, out error),
+                            Is.True, error);
+                Assert.That(one!.WhatOneServerCannotServe(),                    Is.Null);
+
+            });
+
+        }
+
+        #endregion
+
+        #region WhatIsNotSwitchedOnSaysSo()
+
+        /// <summary>
+        /// A section that says nothing of "enabled" is a server that is off,
+        /// and is not said to be on.
+        /// </summary>
+        [Test]
+        public void WhatIsNotSwitchedOnSaysSo()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(Parse(new JObject(new JProperty("port", 9443))).ToString(),                                   Is.EqualTo("OCPP server off"));
+                Assert.That(Parse(new JObject(new JProperty("enabled", true), new JProperty("port16", 9444))).ToString(), Is.EqualTo("OCPP server on every interface, OCPP 1.6 on port 9444"));
+                Assert.That(new OCPPServerConfiguration().Effective().ToString(),                                        Is.EqualTo("OCPP server off"));
             });
 
         }

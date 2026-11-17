@@ -92,6 +92,25 @@ export const ocppServerPage: Page = {
                             starts switched off and stays that way until somebody says otherwise.
                         </p>
 
+                        <label class="switch">
+                            <input type="checkbox" id="http3"
+                                   .checked=${live(configuration.http3)}
+                                   ?disabled=${!mayChange}
+                                   @change=${(event: Event) => void save({ http3: (event.target as HTMLInputElement).checked }, 'http3', null)} />
+                            <span>Take WebSockets over HTTP/3 as well</span>
+                        </label>
+
+                        <p class="hint">
+                            HTTP/3 opens a UDP port of the same number beside the TCP port, and needs TLS. It is what
+                            a one-time password bound to its TLS session is checked over; without it, such a connection
+                            is not let in. Taken or not from the moment it is saved, without a restart.
+                        </p>
+
+                        <div class="form-actions">
+                            <span id="http3-note"  class="form-notice" role="status"></span>
+                            <span id="http3-error" class="form-error"  role="alert"></span>
+                        </div>
+
                     </section>
 
                     ${sshCard(configuration)}
@@ -465,6 +484,12 @@ export const ocppServerPage: Page = {
 
                     <h2><i class="fa-solid fa-circle-info"></i> Right now</h2>
 
+                    ${configuration.state.http3Problem ? html`
+                        <div class="notice warn" id="http3-problem">
+                            No WebSockets over HTTP/3: ${configuration.state.http3Problem}
+                        </div>
+                    ` : nothing}
+
                     <dl class="kv">
                         <dt>Listening</dt>
                         <dd class="${configuration.state.running ? 'ok' : 'muted'}">
@@ -478,6 +503,13 @@ export const ocppServerPage: Page = {
 
                         <dt>Stations connect to</dt>
                         <dd><code>${configuration.state.url}</code></dd>
+
+                        <dt>HTTP/3</dt>
+                        <dd id="state-http3">${!configuration.http3
+                                ? 'not taken'
+                                : typeof configuration.state.http3Port === 'number'
+                                      ? `on UDP port ${configuration.state.http3Port}`
+                                      : 'asked for, and not taken now'}</dd>
 
                         ${configuration.state.keyPin ? html`
                             <dt>Key pin</dt>

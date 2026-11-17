@@ -44,6 +44,8 @@ export interface OCPPServerConfiguration {
     checkCertificateRevocation:  boolean;
     maxConnections:              number;
     pingEverySeconds:            number;
+    /** Whether WebSockets are taken over HTTP/3 as well, on the UDP port of the same number. */
+    http3:                       boolean;
     logging:                     OCPPServerLogging;
     /** OCPP over SSH, on this controller's SSH server, beside the WebSocket port. */
     ssh:                         OCPPServerSSH;
@@ -51,6 +53,10 @@ export interface OCPPServerConfiguration {
         running:            boolean;
         tls:                boolean;
         url:                string;
+        /** The UDP port WebSockets are taken over HTTP/3 on, or null while none are. */
+        http3Port?:         number | null;
+        /** Why none are, although they were asked for. */
+        http3Problem?:      string | null;
         connections:        number;
         stationLogins:      number;
         trustedChains:      number;
@@ -112,6 +118,7 @@ export interface OCPPServerUpdate {
     checkCertificateRevocation?:  boolean;
     maxConnections?:              number;
     pingEverySeconds?:            number;
+    http3?:                       boolean;
     ssh?: {
         enabled?:  boolean;
     };

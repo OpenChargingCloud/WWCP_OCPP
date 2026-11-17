@@ -219,6 +219,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
             => ocppServerSettings.Enabled == true;
 
         /// <summary>
+        /// Why the station port takes no WebSockets over HTTP/3 although the
+        /// file says it shall, where that is known before it is tried.
+        /// </summary>
+        public const String NoHTTP3WithoutTLS = "HTTP/3 is QUIC, which is TLS always, and the charging station port is unencrypted: " +
+                                                "it needs a server certificate and security profile 2 or 3.";
+
+        /// <summary>
         /// Whether it is listening right now.
         /// </summary>
         public Boolean OCPPServerRunning
@@ -311,6 +318,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         {
 
             var directory = Path.GetDirectoryName(ConfigFile.Path) ?? ".";
+
+            if (Configuration?.WhatOneServerCannotServe() is String cannotServe)
+                throw new InvalidOperationException(cannotServe);
 
             ocppServerSettings  = (Configuration ?? new OCPPServerConfiguration()).Effective();
             ocppServerAsBuilt   = ocppServerSettings;
@@ -424,6 +434,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                   IsInboundKeyPinned(OCPPVersion.OCPP2_1, certificate);
 
             ocppWebSocketServer.OnValidateWebSocketConnection += ValidateStation;
+
+            // A WebSocket server of WWCP takes HTTP/3 unless told otherwise:
+            // here what the file says from the start, and whether the port is
+            // encrypted, which HTTP/3 needs, once it starts.
+            ocppWebSocketServer.AcceptHTTP3 = settings.TakesHTTP3;
 
             ApplyStationLogins(ocppWebSocketServer);
             WireOCPPServerLogging(ocppWebSocketServer);
@@ -570,6 +585,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             #endregion
 
+            // A TCP port and nothing else, unless the file asks for HTTP/3:
+            // it opens a UDP port of the same number, which nobody is given
+            // who did not ask. And never without TLS.
+            TakeHTTP3OrNot(settings);
+
             // The socket layer's own words for a port somebody else has name
             // neither the port nor what it was for, and both are known here.
             try
@@ -593,6 +613,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 $"{StationLogins.EnabledCount} station login(s), {ClientTrust.EnabledCount} accepted chain(s))" +
                 (OCPPServerKeyPin     is KeyPin keyPin  ? $", key pin {keyPin}"           : "") +
                 (OCPPServerNextKeyPin is KeyPin nextPin ? $", next key pin {nextPin}"     : "") +
+                (ocppWebSocketServer.AcceptHTTP3        ? $" - over HTTP/3 as well, on UDP port {settings.TCPPort ?? OCPPServerConfiguration.DefaultTCPPort}" : "") +
                 ".",
                 "ocpp", "station"
             );
@@ -637,6 +658,27 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 );
 
             #endregion
+
+        }
+
+        /// <summary>
+        /// Take WebSockets over HTTP/3 as well where the settings ask for it
+        /// and the port is encrypted, and none otherwise; said where it was
+        /// asked for and cannot be.
+        /// </summary>
+        private void TakeHTTP3OrNot(OCPPServerConfiguration Settings)
+        {
+
+            if (ocppWebSocketServer is null)
+                return;
+
+            ocppWebSocketServer.AcceptHTTP3 = Settings.TakesHTTP3 && ocppServerTLS;
+
+            if (Settings.TakesHTTP3 && !ocppServerTLS)
+                Log.Warning(
+                    $"The charging station port takes no WebSockets over HTTP/3, although the configuration says it shall: {NoHTTP3WithoutTLS}",
+                    "ocpp", "station", "tls"
+                );
 
         }
 
@@ -1678,6 +1720,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 new JProperty("checkCertificateRevocation",  settings.CheckCertificateRevocation == true),
                 new JProperty("maxConnections",              settings.MaxConnections ?? OCPPServerConfiguration.DefaultMaxConnections),
                 new JProperty("pingEverySeconds",            (settings.PingEvery ?? OCPPServerConfiguration.DefaultPingEvery).TotalSeconds),
+                new JProperty("http3",                       settings.TakesHTTP3),
 
                 new JProperty("ssh",                         new JObject(
                     new JProperty("enabled",                 settings.SSH?.Enabled == true),
@@ -1711,6 +1754,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     new JProperty("running",                 ocppServerStarted),
                     new JProperty("tls",                     ocppServerTLS),
                     new JProperty("url",                     OCPPServerURL),
+                    new JProperty("http3Port",               ocppWebSocketServer?.HTTP3Port?.ToUInt16()),
+                    new JProperty("http3Problem",            WhyNoHTTP3(settings)),
                     new JProperty("connections",             ocppWebSocketServer?.WebSocketConnections.Count() ?? 0),
                     new JProperty("stationLogins",           StationLogins.EnabledCount),
                     new JProperty("trustedChains",           ClientTrust.EnabledCount),
@@ -1745,6 +1790,26 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
+        #region (private) WhyNoHTTP3(Settings)
+
+        /// <summary>
+        /// Why the station port takes no WebSockets over HTTP/3 although the
+        /// settings ask for it, or null: while it takes them, while it was not
+        /// asked to, and while it does not run.
+        /// </summary>
+        private String? WhyNoHTTP3(OCPPServerConfiguration Settings)
+
+            => ocppServerStarted                       &&
+               Settings.TakesHTTP3                     &&
+               ocppWebSocketServer is not null         &&
+               ocppWebSocketServer.HTTP3Port is null
+                   ? ocppServerTLS
+                         ? ocppWebSocketServer.WhyNoHTTP3
+                         : NoHTTP3WithoutTLS
+                   : null;
+
+        #endregion
+
         #region TryUpdateOCPPServerConfiguration(JSON, out Error)
 
         /// <summary>
@@ -1775,7 +1840,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             NotSaved = false;
 
-            if (!OCPPServerConfiguration.TryParse(JSON, out var update, out Error))
+            if (!OCPPServerConfiguration.TryParseForOneServer(JSON, out var update, out Error))
                 return false;
 
             #region What cannot be saved because it would be a port nobody can use
@@ -1842,6 +1907,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     else
                         StopServingOCPPOverSSH("it was switched off");
 
+                }
+
+                // HTTP/3 on and off while the station server runs: the UDP
+                // port opens and closes, and what is on it goes with it.
+                if (ocppServerStarted &&
+                    before.Enabled    == ocppServerSettings.Enabled &&
+                    before.TakesHTTP3 != ocppServerSettings.TakesHTTP3)
+                {
+                    TakeHTTP3OrNot(ocppServerSettings);
                 }
 
                 #endregion

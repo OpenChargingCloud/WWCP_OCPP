@@ -121,6 +121,31 @@ describe('the charging station server\'s page', () => {
 
     });
 
+    it('takes HTTP/3 when it is switched on, at once, and says where - and why not, where not', async () => {
+
+        const root = await opened();
+
+        assert.equal(root.querySelector('#state-http3')!.textContent, 'not taken');
+
+        change(root.querySelector<HTMLInputElement>('#http3')!, true);
+        await until(() => saved(root, 'http3') && held.http3, 'the switch was not saved');
+
+        assert.deepEqual(asked.filter(one => one.method === 'PUT').map(one => one.body), [ { http3: true } ],
+                         'more than the switch was sent');
+        await until(() => root.querySelector('#state-http3')!.textContent === 'asked for, and not taken now', 'it was not said that none are taken');
+
+        held = { ...held, state: { ...held.state, http3Port: 8443 } };
+        change(root.querySelector<HTMLInputElement>('#http3')!, true);
+        await until(() => root.querySelector('#state-http3')!.textContent === 'on UDP port 8443', 'the UDP port was not said');
+        assert.equal(root.querySelector('#http3-problem'), null);
+
+        held = { ...held, state: { ...held.state, http3Port: null, http3Problem: 'the UDP port 8443 cannot be listened on' } };
+        change(root.querySelector<HTMLInputElement>('#http3')!, true);
+        await until(() => root.querySelector('#http3-problem') !== null, 'why none are taken was not said');
+        assert.match(root.querySelector('#http3-problem')!.textContent!, /the UDP port 8443 cannot be listened on/);
+
+    });
+
     it('shows the names as the controller took them once they are saved, with nothing left to save', async () => {
 
         const root = await opened();

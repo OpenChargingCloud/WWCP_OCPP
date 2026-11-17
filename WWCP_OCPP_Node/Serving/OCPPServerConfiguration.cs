@@ -36,9 +36,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
     /// <summary>
     /// The "ocppServer" section of the configuration file: the HTTP WebSocket
-    /// server the charging stations below this local controller connect to.
+    /// server the charging stations below a node connect to, and the back ends
+    /// above it that dial it.
     /// </summary>
     /// <remarks>
+    /// One section for every node that serves OCPP - a local controller, a
+    /// gateway, a charging station - and each reads what it has: a charging
+    /// station is two nodes, one per version of OCPP, with a port each, and
+    /// reads 'enabled', 'port', 'port16' and 'http3'; a node with one server
+    /// for every version refuses 'port16' and offers OCPP 1.6 by
+    /// 'subprotocols' on its one port.
+    ///
     /// As in the DNS and NTS sections, null means "the file does not say": what
     /// is missing keeps whatever the local controller was given at
     /// construction, and what it was given falls back to the defaults here.
@@ -69,6 +77,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
     /// <param name="PingEvery">How often a silent connection is pinged, which is how a station that went away is noticed.</param>
     /// <param name="Logging">What of this server ends up in the event log.</param>
     /// <param name="SSH">Whether, and how, the charging stations may connect over SSH as well.</param>
+    /// <param name="Port16">The TCP port OCPP 1.6 is served on, where a node serves it on a port of its own - a charging station; not served there where not said.</param>
+    /// <param name="HTTP3">Whether WebSockets are taken over HTTP/3 as well, on the UDP port of the same number; not where not said.</param>
     public sealed record OCPPServerConfiguration(Boolean?                 Enabled                      = null,
                                                  IIPAddress?              Address                      = null,
                                                  IPPort?                  TCPPort                      = null,
@@ -80,7 +90,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                                                  UInt32?                  MaxConnections               = null,
                                                  TimeSpan?                PingEvery                    = null,
                                                  OCPPServerLogging?       Logging                      = null,
-                                                 OCPPServerSSH?           SSH                          = null)
+                                                 OCPPServerSSH?           SSH                          = null,
+                                                 IPPort?                  Port16                       = null,
+                                                 Boolean?                 HTTP3                        = null)
     {
 
         #region Data
@@ -188,6 +200,20 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         #region Properties
 
         /// <summary>
+        /// Whether the server is on: off where not said.
+        /// </summary>
+        public Boolean IsEnabled
+            => Enabled == true;
+
+        /// <summary>
+        /// Whether WebSockets are taken over HTTP/3 as well: not where not
+        /// said. HTTP/3 is QUIC, and opens a UDP port of the same number beside
+        /// the TCP port, which nobody is given who did not ask.
+        /// </summary>
+        public Boolean TakesHTTP3
+            => HTTP3 == true;
+
+        /// <summary>
         /// Whether this section says anything at all.
         /// </summary>
         public Boolean IsEmpty
@@ -202,6 +228,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                !CheckCertificateRevocation.HasValue  &&
                !MaxConnections.HasValue              &&
                !PingEvery.HasValue                   &&
+               !Port16.HasValue                      &&
+               !HTTP3.HasValue                       &&
                (Logging is null || Logging.IsEmpty)  &&
                (SSH     is null || SSH.    IsEmpty);
 
@@ -224,6 +252,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
             if (!ConfigurationReader.TryReadBoolean(JSON, "enabled",                     SectionName, out var enabled,     out Error) ||
                 !ConfigurationReader.TryReadPort   (JSON, "port",                        SectionName, out var port,        out Error) ||
+                !ConfigurationReader.TryReadPort   (JSON, "port16",                      SectionName, out var port16,      out Error) ||
+                !ConfigurationReader.TryReadBoolean(JSON, "http3",                       SectionName, out var http3,       out Error) ||
                 !ConfigurationReader.TryReadBoolean(JSON, "checkCertificateRevocation",  SectionName, out var checkCRL,    out Error) ||
                 !ConfigurationReader.TryReadUInt32 (JSON, "maxConnections",              SectionName, 1, MaxMaxConnections, out var maxConnections, out Error) ||
                 !ConfigurationReader.TryReadSeconds(JSON, "pingEverySeconds",            SectionName, MinPingEverySeconds, MaxPingEverySeconds, out var pingEvery, out Error) ||
@@ -234,6 +264,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
             {
                 return false;
             }
+
+            #region One port for one server
+
+            if (port.HasValue && port16.HasValue && port.Value == port16.Value)
+            {
+                Error = $"'{SectionName}.port' and '{SectionName}.port16' are the same port, and a port is one server's: " +
+                        $"OCPP 2.1 and OCPP 1.6 are two nodes of this {NodeWording.Noun}, each with a server of its own.";
+                return false;
+            }
+
+            #endregion
 
             #region The interface to listen on
 
@@ -415,12 +456,58 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                                 maxConnections,
                                 pingEvery,
                                 logging,
-                                ssh
+                                ssh,
+                                port16,
+                                http3
                             );
 
             return true;
 
         }
+
+        #endregion
+
+        #region (static) TryParseForOneServer(JSON, out Configuration, out Error)
+
+        /// <summary>
+        /// The "ocppServer" section as a node reads it that has one server for
+        /// every version of OCPP - a local controller, a gateway: what
+        /// <see cref="TryParse"/> reads, and nothing it cannot serve.
+        /// </summary>
+        public static Boolean TryParseForOneServer(JObject                                          JSON,
+                                                   [NotNullWhen(true)]  out OCPPServerConfiguration? Configuration,
+                                                   [NotNullWhen(false)] out String?                  Error)
+        {
+
+            if (!TryParse(JSON, out Configuration, out Error))
+                return false;
+
+            if (Configuration.WhatOneServerCannotServe() is String why)
+            {
+                Configuration = null;
+                Error         = why;
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region WhatOneServerCannotServe()
+
+        /// <summary>
+        /// What of this section a node with one server for every version of
+        /// OCPP cannot serve, or null: a port of its own for OCPP 1.6 is a
+        /// charging station's, which is a node per version.
+        /// </summary>
+        public String? WhatOneServerCannotServe()
+
+            => Port16.HasValue
+                   ? $"'{SectionName}.port16' is a charging station's, whose OCPP 1.6 is a node of its own on a port of its own: " +
+                     $"this {NodeWording.Noun} serves every version of OCPP on its one port, OCPP 1.6 where '{SectionName}.subprotocols' names \"ocpp1.6\"."
+                   : null;
 
         #endregion
 
@@ -451,7 +538,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                          Update.MaxConnections             ?? MaxConnections,
                          Update.PingEvery                  ?? PingEvery,
                          (Logging ?? new OCPPServerLogging()).Merge(Update.Logging),
-                         (SSH     ?? new OCPPServerSSH())    .Merge(Update.SSH)
+                         (SSH     ?? new OCPPServerSSH())    .Merge(Update.SSH),
+                         Update.Port16                     ?? Port16,
+                         Update.HTTP3                      ?? HTTP3
                      );
 
         /// <summary>
@@ -475,7 +564,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                    MaxConnections             ?? DefaultMaxConnections,
                    PingEvery                  ?? DefaultPingEvery,
                    (Logging ?? new OCPPServerLogging()).Effective(),
-                   (SSH     ?? new OCPPServerSSH())    .Effective()
+                   (SSH     ?? new OCPPServerSSH())    .Effective(),
+                   Port16,
+                   HTTP3                      ?? false
                );
 
         #endregion
@@ -555,6 +646,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
             if (Enabled.HasValue)                     json.Add("enabled",                     Enabled.Value);
             if (Address is not null)                  json.Add("address",                     Address.ToString());
             if (TCPPort.HasValue)                     json.Add("port",                        TCPPort.Value.ToUInt16());
+            if (Port16.HasValue)                      json.Add("port16",                      Port16.Value.ToUInt16());
+            if (HTTP3.HasValue)                       json.Add("http3",                       HTTP3.Value);
             if (SecurityProfiles is not null)         json.Add("securityProfiles",            new JArray(SecurityProfiles.Select(profile => (Int32) profile)));
             if (Subprotocols is not null)             json.Add("subprotocols",                new JArray(Subprotocols));
             if (ReachableAs is not null)              json.Add("reachableAs",                 new JArray(ReachableAs));
@@ -592,9 +685,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
         public override String ToString()
 
-            => Enabled == false
+            => !IsEnabled
                    ? "OCPP server off"
-                   : $"OCPP server on {Address?.ToString() ?? "every interface"}:{TCPPort?.ToString() ?? DefaultTCPPort.ToString()}";
+                   : $"OCPP server on {Address?.ToString() ?? "every interface"}" +
+                     (TCPPort.HasValue ? $":{TCPPort}"                    : "") +
+                     (Port16.HasValue  ? $", OCPP 1.6 on port {Port16}"  : "") +
+                     (TakesHTTP3       ? ", over HTTP/3 as well"          : "");
 
         #endregion
 
