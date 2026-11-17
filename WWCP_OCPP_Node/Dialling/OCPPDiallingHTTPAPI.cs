@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                        json.Value<String>("ocppVersion"),
                                                        json.Value<String>("sshHostKey"),
                                                        ConnectionFields.SshTrustOf(json),
-                                                       ConnectionFields.KeyPinsOf(json, "serverKeyPins"),
+                                                       ConnectionFields.KeyPinsOf(json, ConnectionEntry.ClientKeyPinsKey) ?? ConnectionFields.KeyPinsOf(json, "serverKeyPins"),
                                                        ConnectionFields.KeyPinTrustOf(json),
                                                        pins,
                                                        json.Value<String>(ConnectionEntry.HTTPVersionKey),
@@ -383,8 +383,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                           json.Value<String>("sshHostKey"),
                                                           json.Value<String>("sshHostKeyAsShown"),
                                                           ConnectionFields.SshTrustOf(json),
-                                                          ConnectionFields.KeyPinsOf(json, "serverKeyPins"),
-                                                          ConnectionFields.KeyPinsOf(json, "serverKeyPinsAsShown"),
+                                                          ConnectionFields.KeyPinsOf(json, ConnectionEntry.ClientKeyPinsKey)            ?? ConnectionFields.KeyPinsOf(json, "serverKeyPins"),
+                                                          ConnectionFields.KeyPinsOf(json, ConnectionEntry.ClientKeyPinsAsShownKey)     ?? ConnectionFields.KeyPinsOf(json, "serverKeyPinsAsShown"),
                                                           ConnectionFields.KeyPinTrustOf(json),
                                                           pins,
                                                           json.Value<String>(ConnectionEntry.HTTPVersionKey),
@@ -532,14 +532,21 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Pins   = null;
             Error  = null;
 
-            var sent   = JSON[ConnectionEntry.PinsKey];
-            var shown  = JSON[ConnectionEntry.PinsAsShownKey];
+            // What the client certificate of the other end of a connection it
+            // is dialled by is held to comes under names of its own, and is
+            // read the same way.
+            var client     = JSON[ConnectionEntry.ClientPinsKey] is not null || JSON[ConnectionEntry.ClientPinsAsShownKey] is not null;
+            var sentKey    = client ? ConnectionEntry.ClientPinsKey        : ConnectionEntry.PinsKey;
+            var shownKey   = client ? ConnectionEntry.ClientPinsAsShownKey : ConnectionEntry.PinsAsShownKey;
+
+            var sent   = JSON[sentKey];
+            var shown  = JSON[shownKey];
 
             if (sent is null && shown is null)
                 return true;
 
-            if (!TryServerPins(sent,  ConnectionEntry.PinsKey,        out var sentPins,  out Error) ||
-                !TryServerPins(shown, ConnectionEntry.PinsAsShownKey, out var shownPins, out Error))
+            if (!TryServerPins(sent,  sentKey,  out var sentPins,  out Error) ||
+                !TryServerPins(shown, shownKey, out var shownPins, out Error))
             {
                 return false;
             }

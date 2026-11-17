@@ -171,6 +171,18 @@ function aKeyPinnedStation(): StationConnections {
                               serverKeyPinProbationTime: 600, serverKeyPinLearned: learnedKey, serverKeyPinLearnedAt: '2026-11-11T10:00:00.000Z' } ] };
 }
 
+/**
+ * A station whose CSMS dials it and signs in with a client certificate known
+ * by its key: no credentials, and the key pins are those of the certificate.
+ */
+function aStationDialledByItsCSMS(): StationConnections {
+    const station = aStation();
+    return { ...station,
+             connections: [ { ...station.connections[0]!, url: 'wss://this-station.example.org:9443/csms-01', inbound: true, inboundName: 'csms-01',
+                              authenticationId: undefined, clientKeyPins: [ pinnedKey ] },
+                            station.connections[1]! ] };
+}
+
 /** The pin of the key of a root, as the station keeps it. */
 const rootKey = 'spki:' + '5e'.repeat(32);
 
@@ -454,6 +466,27 @@ describe('the Connections page', () => {
         assert.equal    (lastSaved!.trustOnFirstUse,            'Key');
         assert.equal    (lastSaved!.rawPublicKeys,              'Prefer');
         assert.equal    (lastSaved!.serverKeyPinProbationTime,  120);
+
+    });
+
+    it('shows the key pins of the client certificate a CSMS that dials signs in with, and sends them under names of their own', async () => {
+
+        const root = await opened(aStationDialledByItsCSMS);
+
+        assert.match(root.querySelector('[data-client-certificate="c1"]')?.textContent ?? '', new RegExp(pinnedKey));
+        assert.match(root.querySelector('[data-client-certificate="c1"]')?.textContent ?? '', /whole check/);
+        assert.equal(root.querySelector('[data-key-pins="c1"]'), null, 'the key of its client certificate is shown as the key of a server');
+        assert.equal(field(root, 'form[data-edit="c1"]', 'serverKeyPins').value, pinnedKey, 'the key pins are not in the form');
+
+        submit(root, 'form[data-edit="c1"]');
+        await until(() => lastSaved !== null, 'the connection was not saved');
+
+        assert.equal    (lastSaved!.inbound,               true);
+        assert.deepEqual(lastSaved!.clientKeyPins,         [ pinnedKey ], 'the key pins shown were not sent as those of the client certificate');
+        assert.deepEqual(lastSaved!.clientKeyPinsAsShown,  [ pinnedKey ], 'what the page showed was not sent beside them');
+        assert.equal    (lastSaved!.serverKeyPins,         undefined,     'sent as the key pins of a server');
+        assert.equal    (lastSaved!.pins,                  undefined,     'sent as what a server is held to');
+        assert.notEqual (lastSaved!.clientPins,            undefined,     'what its certificate is held to was not sent');
 
     });
 

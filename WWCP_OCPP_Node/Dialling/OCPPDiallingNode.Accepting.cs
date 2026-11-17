@@ -19,7 +19,9 @@
 
 using System.Text;
 using System.Collections.Concurrent;
+using System.Net.Security;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -28,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.Node.Configuration;
 
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPP.Node.Connections;
@@ -289,9 +292,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="LetIn">Whether it is let in.</param>
         /// <param name="Name">The name it came under.</param>
         /// <param name="Why">How it signed in, or why it is turned away: for the log, not for the other end.</param>
+        /// <param name="ByCertificate">Whether the connection it came under signs in with a client certificate rather than with credentials.</param>
         public sealed record InboundSignIn(Boolean  LetIn,
                                            String   Name,
-                                           String   Why);
+                                           String   Why,
+                                           Boolean  ByCertificate = false);
 
         /// <summary>
         /// At the door of a server shared with others: whether what asks to be
@@ -330,6 +335,34 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (entry is null)
                 return null;
 
+            #region By a client certificate
+
+            // The certificate of the TLS handshake, and nothing else: a
+            // password or a one-time password it sends besides opens nothing
+            // under this name, and the connection names none.
+            if (entry.SignsInWithACertificate)
+            {
+
+                var byCertificate = CertificateSignsIn(entry, name, Connection.ClientCertificate, out var how);
+
+                if (!entry.AutoConnect)
+                    return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, a connection that is switched off", ByCertificate: true);
+
+                if (entry.AuthenticationId is not null)
+                    return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, which names a client certificate and credentials " +
+                                                          "as well - one or the other", ByCertificate: true);
+
+                if (!byCertificate)
+                    return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, and {how}", ByCertificate: true);
+
+                Connection.TryAddCustomData(InboundConnectionKey, entry.Id);
+
+                return new InboundSignIn(true, name, how, ByCertificate: true);
+
+            }
+
+            #endregion
+
             var credentials  = entry.AuthenticationId is String authenticationId
                                    ? Connections.Authentications.FirstOrDefault(one => one.Id == authenticationId)
                                    : null;
@@ -338,9 +371,20 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                    ? credentials.Password
                                    : null;
 
-            var totp         = credentials is { Kind: AuthenticationKind.TOTP, TLSChannelBinding: false }
+            // Bound to the TLS session or not, as the credentials say: a bound
+            // one is checked with keying material of the session it came over,
+            // which only HTTP/3 exports, and a raw one is not taken instead.
+            var totp         = credentials is { Kind: AuthenticationKind.TOTP }
                                    ? credentials.ToTOTPConfig()
                                    : null;
+
+            var bound        = totp is not null && credentials!.TLSChannelBinding;
+
+            var sentType     = request.Authorization switch {
+                                   HTTPTOTPAuthentication oneTime  => oneTime.Type,
+                                   null                            => request.TOTP?.Type,
+                                   _                               => null
+                               };
 
             // Looked at whether or not it may come in at all, so that a name
             // that is switched off does not answer faster than one that is on.
@@ -376,6 +420,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (credentials is null || credentials.Login != name || (password is null && totp is null))
                 return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, a connection without credentials it could sign in with");
 
+            // Said out loud, as the charging stations of a local controller are
+            // told: the alternative is a back end whose password is computed
+            // right and refused all the same, with nothing in the log to say why.
+            if (!right && bound && sentType == TOTPHTTPHeaderType.TLSChannelBinding && Connection.TOTPTLSExporterMaterial is not { Length: > 0 })
+                return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, and it sent a one-time password bound to the TLS session " +
+                                                      "over a connection whose TLS exports nothing to check it with: that is checked over HTTP/3 only");
+
+            if (!right && bound && sentType != TOTPHTTPHeaderType.TLSChannelBinding)
+                return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, whose one-time password is bound to the TLS session, " +
+                                                      "and it sent one that is not: it has to open its WebSocket over HTTP/3 and bind its one-time password");
+
             if (!right)
                 return new InboundSignIn(false, name, $"'{name}' is the name '{entry.Description}' comes under, and what it signed in with is not what that connection names");
 
@@ -383,9 +438,396 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             return new InboundSignIn(true, name, password is not null && request.Authorization is HTTPBasicAuthentication
                                                      ? "a password"
-                                                     : "a one-time password");
+                                                     : bound
+                                                           ? "a one-time password bound to its TLS session"
+                                                           : "a one-time password");
 
         }
+
+        #region (private) CertificateSignsIn(Entry, Name, Certificate, out How)
+
+        /// <summary>
+        /// Whether the client certificate of a connection signs it in as the
+        /// given inbound connection: by the key pin of its key, where that is
+        /// what the connection names, or by its CA - its chain judged as this
+        /// node judges the certificate of a server, held to what the
+        /// connection names, and its common name the name it came under.
+        /// </summary>
+        /// <param name="Entry">The inbound connection, which signs in with a certificate.</param>
+        /// <param name="Name">The name it came under.</param>
+        /// <param name="Certificate">The client certificate of its TLS handshake, or null.</param>
+        /// <param name="How">How it signed in, or why not: for the log.</param>
+        private Boolean CertificateSignsIn(ConnectionEntry    Entry,
+                                           String             Name,
+                                           X509Certificate2?  Certificate,
+                                           out String         How)
+        {
+
+            if (Certificate is null)
+            {
+                How = "it showed no client certificate, which is what that connection signs in with";
+                return false;
+            }
+
+            if (Entry.ClientKeyPins.Count > 0)
+            {
+
+                var validation = KeyPinValidator.Validate(new KeyPinPolicy(Entry.ClientKeyPins), Certificate);
+
+                How = validation.IsAccepted
+                          ? $"a client certificate, by its key pin {validation.Pin}"
+                          : $"its client certificate was refused: {validation.Reason ?? "its key is none of the pinned ones"}";
+
+                return validation.IsAccepted;
+
+            }
+
+            if (Entry.ClientPins is not ServerPins pins)
+            {
+                How = "that connection names nothing its client certificate is held to";
+                return false;
+            }
+
+            using var kept = ChainKeptFor(Certificate);
+
+            var judgement = JudgeClient(Entry, Name, pins, Certificate, kept, null);
+
+            How = judgement.Accepted
+                      ? $"a client certificate{(judgement.AnchoredBy is String label ? $" of '{label}'" : "")}, issued to '{Name}'"
+                      : $"its client certificate was refused: {judgement.Why}";
+
+            return judgement.Accepted;
+
+        }
+
+        #endregion
+
+        #region (protected) InboundCertificateCheck(Certificate, Chain, PolicyErrors)
+
+        /// <summary>
+        /// For the TLS validator of an OCPP server this node lets in over:
+        /// whether a client certificate shown at the handshake is one an
+        /// inbound connection signs in with, and then whether it passes.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Null where no inbound connection claims it: a key pin of none, and
+        /// a common name no connection checked by the CA of its other end
+        /// comes under. Then it is one of the others of the server - a
+        /// charging station of a local controller -, and the validator's to
+        /// decide as before. Success where it passes for one of them, and the
+        /// refusal, with what was wrong, where it claims to be one and does
+        /// not pass: a certificate that names a connection is let in as that
+        /// or not at all.
+        /// </para>
+        /// <para>
+        /// Asked again when the connection signs in, by the name it then comes
+        /// under (<see cref="SignInInbound"/>): the handshake knows no name
+        /// yet. The certificates the other end sent beside its own are kept
+        /// for that, for a little while.
+        /// </para>
+        /// </remarks>
+        /// <param name="Certificate">The client certificate of the handshake, or null.</param>
+        /// <param name="Chain">The chain the machine built for it, with the certificates the other end sent beside it.</param>
+        /// <param name="PolicyErrors">What building that chain found.</param>
+        protected TLSValidationResult? InboundCertificateCheck(X509Certificate2?  Certificate,
+                                                               X509Chain?         Chain,
+                                                               SslPolicyErrors    PolicyErrors)
+        {
+
+            if (Certificate is null)
+                return null;
+
+            var claimants = Connections.Connections.Where(entry => entry.Inbound &&
+                                                                   entry.AutoConnect &&
+                                                                   entry.IsSecure &&
+                                                                   entry.SignsInWithACertificate &&
+                                                                   inboundServers.ContainsKey(entry.OCPPVersion)).
+                                                    ToArray();
+
+            if (claimants.Length == 0)
+                return null;
+
+            #region By its key pin
+
+            var keyPin = KeyPin.FromCertificate(Certificate);
+
+            foreach (var entry in claimants.Where(entry => entry.ClientKeyPins.Contains(keyPin)))
+            {
+
+                // Hermod's validator rather than the comparison above: it also
+                // refuses a key that cannot be one - a malformed key, an unknown
+                // algorithm, a point that is not on its curve.
+                var validation = KeyPinValidator.Validate(new KeyPinPolicy(entry.ClientKeyPins), Certificate);
+
+                if (validation.IsAccepted)
+                    Log.Debug  ($"The client certificate of '{Certificate.Subject}' was accepted by its key pin {keyPin}, which '{entry.Description}' signs in with.",
+                                "ocpp", "connections", "inbound", "tls");
+                else
+                    Log.Warning($"The client certificate of '{Certificate.Subject}' was refused: {validation.Reason}",
+                                "ocpp", "connections", "inbound", "tls");
+
+                return validation.IsAccepted
+                           ? TLSValidationResult.Success()
+                           : TLSValidationResult.Failed(validation.Reason ?? "The key was refused.");
+
+            }
+
+            #endregion
+
+            #region By its CA, under the name it is issued to
+
+            var commonName = CommonNameOf(Certificate);
+
+            var byCA       = claimants.Where(entry => entry.ClientPins is not null &&
+                                                      commonName is not null &&
+                                                      entry.InboundName == commonName).
+                                       ToArray();
+
+            if (byCA.Length == 0)
+                return null;
+
+            var whyNot = new List<String>();
+
+            foreach (var entry in byCA)
+            {
+
+                var judgement = JudgeClient(entry, commonName!, entry.ClientPins!, Certificate, Chain, PolicyErrors);
+
+                if (judgement.Accepted)
+                {
+
+                    KeepChain(Certificate, Chain);
+
+                    Log.Debug($"The client certificate of '{Certificate.Subject}' was accepted: '{entry.Description}' signs in with a certificate issued to " +
+                              $"'{commonName}'{(judgement.AnchoredBy is String label ? $", of '{label}'" : "")}.",
+                              "ocpp", "connections", "inbound", "tls");
+
+                    return TLSValidationResult.Success();
+
+                }
+
+                whyNot.Add(judgement.Why);
+
+            }
+
+            var refused = String.Join(" ", whyNot.Distinct());
+
+            Log.Warning($"The client certificate of '{Certificate.Subject}' was refused, which is issued to '{commonName}', the name of a connection the other end makes: {refused}",
+                        "ocpp", "connections", "inbound", "tls");
+
+            return TLSValidationResult.Failed(refused);
+
+            #endregion
+
+        }
+
+        #endregion
+
+        #region (protected) IsInboundKeyPinned(Certificate)
+
+        /// <summary>
+        /// Whether the given client certificate holds a key an inbound
+        /// connection that is switched on pins: then its key is all that was
+        /// checked, and what is written around it - its common name - names
+        /// nobody. For the AcceptedByKeyPin of the OCPP server it comes in over.
+        /// </summary>
+        /// <param name="Certificate">A client certificate.</param>
+        protected Boolean IsInboundKeyPinned(X509Certificate2 Certificate)
+        {
+
+            var keyPin = KeyPin.FromCertificate(Certificate);
+
+            return Connections.Connections.Any(entry => entry.Inbound &&
+                                                        entry.AutoConnect &&
+                                                        entry.ClientKeyPins.Contains(keyPin));
+
+        }
+
+        #endregion
+
+        #region (protected) IsAnInboundCertificate(Certificate)
+
+        /// <summary>
+        /// Whether the given client certificate is one an inbound connection
+        /// that is switched on claims: its key is one it pins, or it is issued
+        /// to the name of one checked by the CA of its other end. Whether it
+        /// passes is not asked here - see <see cref="InboundCertificateCheck"/>.
+        /// </summary>
+        /// <remarks>
+        /// For the door of a server shared with others: a certificate that got
+        /// through the handshake as the one of an inbound connection has not
+        /// been held to anything the others are held to, and is to be judged
+        /// as theirs before it lets anybody in as one of them.
+        /// </remarks>
+        /// <param name="Certificate">A client certificate.</param>
+        protected Boolean IsAnInboundCertificate(X509Certificate2 Certificate)
+        {
+
+            var keyPin      = KeyPin.FromCertificate(Certificate);
+            var commonName  = CommonNameOf(Certificate);
+
+            return Connections.Connections.Any(entry => entry.Inbound &&
+                                                        entry.AutoConnect &&
+                                                        (entry.ClientKeyPins.Contains(keyPin) ||
+                                                         (entry.ClientPins is not null && commonName is not null && entry.InboundName == commonName)));
+
+        }
+
+        #endregion
+
+        #region (private) JudgeClient(...) / CommonNameOf(...) / KeepChain(...) / ChainKeptFor(...)
+
+        /// <summary>
+        /// What became of a client certificate held to what an inbound
+        /// connection names.
+        /// </summary>
+        private sealed record ClientJudgement(Boolean  Accepted,
+                                              String   Why,
+                                              String?  AnchoredBy);
+
+        /// <summary>
+        /// The client certificate of an inbound connection checked by its CA:
+        /// issued to the name the connection comes under, by its common name,
+        /// and its chain judged as this node judges the chain of a server -
+        /// held to the roots or the group of roots the connection names, and
+        /// asked whether it is revoked. Only asked: nothing is learned,
+        /// remembered or logged as the judgement of a server.
+        /// </summary>
+        /// <param name="Entry">The inbound connection.</param>
+        /// <param name="Name">The name it comes under.</param>
+        /// <param name="Pins">What its certificate is held to.</param>
+        /// <param name="Certificate">The certificate.</param>
+        /// <param name="Chain">The chain built for it at the handshake, or one built with the certificates kept from there; null to build one here.</param>
+        /// <param name="PolicyErrors">What building the chain at the handshake found; null where it is built here.</param>
+        private ClientJudgement JudgeClient(ConnectionEntry    Entry,
+                                            String             Name,
+                                            ServerPins         Pins,
+                                            X509Certificate2   Certificate,
+                                            X509Chain?         Chain,
+                                            SslPolicyErrors?   PolicyErrors)
+        {
+
+            if (CommonNameOf(Certificate) != Name)
+                return new ClientJudgement(false, $"it is issued to '{CommonNameOf(Certificate) ?? Certificate.Subject}', and '{Entry.Description}' comes under '{Name}'.", null);
+
+            // What .NET judges a client certificate by - a chain to a root this
+            // machine trusts - and nothing about a name: the name was asked above.
+            var built         = Chain;
+            var ownChain      = Chain is null || PolicyErrors is null;
+            var policyErrors  = PolicyErrors ?? SslPolicyErrors.None;
+
+            try
+            {
+
+                if (ownChain)
+                {
+
+                    built = new X509Chain();
+                    built.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+
+                    if (Chain is not null)
+                        built.ChainPolicy.ExtraStore.AddRange(Chain.ChainPolicy.ExtraStore);
+
+                    policyErrors = built.Build(Certificate)
+                                       ? SslPolicyErrors.None
+                                       : SslPolicyErrors.RemoteCertificateChainErrors;
+
+                }
+
+                var judgement = JudgeServer(ConnectionsCertificateUsage,
+                                            Name,
+                                            Pins,
+                                            Certificate,
+                                            built,
+                                            policyErrors & ~SslPolicyErrors.RemoteCertificateNameMismatch,
+                                            Evidence:  false,
+                                            Learn:     null,
+                                            Remember:  false);
+
+                return new ClientJudgement(judgement.Accepted,
+                                           judgement.Accepted ? "" : WhyRefused(judgement),
+                                           judgement.Accepted ? judgement.AnchoredBy : null);
+
+            }
+            finally
+            {
+                if (ownChain && !ReferenceEquals(built, Chain))
+                    built?.Dispose();
+            }
+
+        }
+
+        /// <summary>
+        /// The common name a certificate is issued to, or null.
+        /// </summary>
+        private static String? CommonNameOf(X509Certificate2 Certificate)
+        {
+            var name = Certificate.GetNameInfo(X509NameType.SimpleName, forIssuer: false);
+            return String.IsNullOrEmpty(name) ? null : name;
+        }
+
+        /// <summary>
+        /// The certificates sent beside client certificates that passed at the
+        /// handshake, by the thumbprint of the client certificate: what its
+        /// chain is built with again when it signs in. Kept for
+        /// <see cref="ChainKeptFor"/> a little while, and only so many.
+        /// </summary>
+        private readonly ConcurrentDictionary<String, (Byte[][] Certificates, DateTimeOffset Kept)>  inboundChains = new ();
+
+        private static readonly TimeSpan  InboundChainsKeptFor  = TimeSpan.FromMinutes(2);
+        private const           Int32     MaxInboundChainsKept  = 64;
+
+        private void KeepChain(X509Certificate2  Certificate,
+                               X509Chain?        Chain)
+        {
+
+            var now = TimeProvider.GetUtcNow();
+
+            foreach (var (thumbprint, kept) in inboundChains.ToArray())
+                if (now - kept.Kept > InboundChainsKeptFor || inboundChains.Count > MaxInboundChainsKept)
+                    inboundChains.TryRemove(thumbprint, out _);
+
+            var certificates = new List<Byte[]>();
+
+            if (Chain is not null)
+            {
+
+                foreach (var one in Chain.ChainPolicy.ExtraStore)
+                    certificates.Add(one.RawData);
+
+                foreach (var element in Chain.ChainElements.Skip(1))
+                    certificates.Add(element.Certificate.RawData);
+
+            }
+
+            inboundChains[Certificate.Thumbprint] = ([.. certificates], now);
+
+        }
+
+        /// <summary>
+        /// A chain for the given client certificate, with what was sent beside
+        /// it at its handshake where that is still kept - or null.
+        /// </summary>
+        private X509Chain? ChainKeptFor(X509Certificate2 Certificate)
+        {
+
+            if (!inboundChains.TryGetValue(Certificate.Thumbprint, out var kept) ||
+                TimeProvider.GetUtcNow() - kept.Kept > InboundChainsKeptFor)
+            {
+                return null;
+            }
+
+            var chain = new X509Chain();
+
+            foreach (var raw in kept.Certificates)
+                chain.ChainPolicy.ExtraStore.Add(X509CertificateLoader.LoadCertificate(raw));
+
+            return chain;
+
+        }
+
+        #endregion
 
         /// <summary>
         /// Whether the given connection is one somebody dialled who is written
@@ -484,8 +926,22 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                         var name = entry.InboundName;
 
+                        // By its client certificate, which the TLS handshake
+                        // asks for and nothing a server holds of logins does:
+                        // see InboundCertificateCheck. Never with credentials
+                        // beside it.
                         if (name is not null &&
                             entry.AutoConnect &&
+                            entry.IsSecure &&
+                            entry.SignsInWithACertificate &&
+                            entry.AuthenticationId is null)
+                        {
+                            letIn.Add(entry.Id);
+                        }
+
+                        else if (name is not null &&
+                            entry.AutoConnect &&
+                            !entry.SignsInWithACertificate &&
                             entry.AuthenticationId is not null &&
                             authentications.TryGetValue(entry.AuthenticationId, out var credentials) &&
                             credentials.Login == name)
@@ -497,7 +953,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                 letIn.Add(entry.Id);
                             }
 
-                            else if (credentials.Kind == AuthenticationKind.TOTP && !credentials.TLSChannelBinding &&
+                            // Bound to the TLS session or not: a bound one is
+                            // checked with the keying material of the session
+                            // it came over, which HTTP/3 exports, and refused
+                            // over a connection that exports none.
+                            else if (credentials.Kind == AuthenticationKind.TOTP &&
                                      credentials.ToTOTPConfig() is TOTPConfig totp)
                             {
                                 totps[name] = totp;

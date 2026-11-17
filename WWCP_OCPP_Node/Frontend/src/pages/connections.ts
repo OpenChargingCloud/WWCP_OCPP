@@ -11,6 +11,7 @@ import { errorMessage, field, formatTime, formatTimestamp, whileSaving } from '@
 import { anyFormTypedSinceDrawn, unsaved } from '@node/unsaved';
 import { html, nothing, render, repeat, type TemplateResult } from '@node/view';
 import { keysOf, pinsIn, saysAnything, type StoreOffers } from '@node/pages/pins';
+import type { PinKeys } from '@node/api/client';
 import { heldToView, judgementView, pinsFieldset, readPinsFieldset, storeOffers } from '@node/pages/pinViews';
 import { noLongerWrittenDown, stateLine, type StateLine } from './connectionStates';
 
@@ -351,10 +352,13 @@ export const connectionsPage: Page = {
                         For a CSMS or a local controller this ${nodeNoun()} cannot reach, and that can reach it.
                         The URL above is then the one the other end dials -
                         <code>wss://this-${nodeNoun().replace(/\s+/g, '-')}.example.org:9443/csms-01</code> - and its last part the
-                        name it comes under. What it proves itself with, below, is what the other end signs in
-                        with: a login of that name, with a password or a TOTP secret. Host keys, key pins, client
-                        certificates and the version of HTTP are the dialler's to say: leave them as they are.
-                        OCPP itself stays as it is - this ${nodeNoun()} says that it started, and is asked.
+                        name it comes under. The other end signs in with a client certificate or with credentials,
+                        never both: a certificate known by the key pins below, or checked by its CA - held to roots
+                        or a group of roots below, and issued to that name -, or else a login of that name, with a
+                        password or a TOTP secret. A TOTP secret bound to the TLS session lets it in over HTTP/3 only.
+                        Host keys, this ${nodeNoun()}'s own client certificates and the version of HTTP are the
+                        dialler's to say: leave them as they are. OCPP itself stays as it is - this ${nodeNoun()}
+                        says that it started, and is asked.
                     </span>
                 </label>
 
@@ -403,13 +407,14 @@ export const connectionsPage: Page = {
 
                 <label>Key pins of its server
                     <input type="text" name="serverKeyPins" class="mono"
-                           placeholder="64 hexadecimal digits, or sha256//..." value="${(entry?.serverKeyPins ?? []).join(', ')}"
+                           placeholder="64 hexadecimal digits, or sha256//..." value="${((entry?.inbound === true ? entry?.clientKeyPins : entry?.serverKeyPins) ?? []).join(', ')}"
                            ?disabled=${!mayManage} />
                     <span class="hint">
                         For a <code>wss://</code> URL only, typically a local controller that no CA issues a certificate for:
                         SHA-256 over the key of its server, at most four, separated by commas - two while it changes its key.
                         With one, the key is the whole check: no CA, no name and no validity period, so the ${nodeNoun()} needs no
                         clock to believe it. Without one, the certificate is checked by its CA. Testing says which key pin it shows.
+                        Where the other end dials, these are the keys of the client certificate it signs in with, by the same rules.
                     </span>
                 </label>
 
@@ -455,7 +460,7 @@ export const connectionsPage: Page = {
                         or the other: none of this goes with key pins above, which ask no CA.
                     </p>
 
-                    ${pinsFieldset(pinsIn(entry?.pins ?? {}), {
+                    ${pinsFieldset(pinsIn((entry?.inbound === true ? entry?.clientPins : entry?.pins) ?? {}), {
                           service:   'ocpp',
                           what:      'server',
                           evidence:  false,
@@ -900,11 +905,15 @@ export const connectionsPage: Page = {
                                                   ? html`<span class="hint" data-host-key="${entry.id}">none pinned yet - the first one its server shows is learned, on probation</span>`
                                                   : html`<span class="hint" data-host-key="${entry.id}">none pinned - not dialled</span>`}</dd>
                         ` : nothing}
-                        ${entry.secure ? html`
+                        ${entry.secure && entry.inbound === true ? html`
+                            <dt>Its certificate</dt>
+                            <dd data-client-certificate="${entry.id}">${clientCertificateView(entry)}</dd>
+                        ` : nothing}
+                        ${entry.secure && entry.inbound !== true ? html`
                             <dt>Its server</dt>
                             <dd data-key-pins="${entry.id}">${keyPinsView(entry)}</dd>
                         ` : nothing}
-                        ${entry.secure && entry.keyPinned !== true && saysAnything(pinsIn(entry.pins ?? {})) ? html`
+                        ${entry.secure && entry.inbound !== true && entry.keyPinned !== true && saysAnything(pinsIn(entry.pins ?? {})) ? html`
                             <dt>Held to</dt>
                             <dd data-pins="${entry.id}">${heldToView(pinsIn(entry.pins ?? {}), offers?.nameOf)}${(entry.pinsVersion ?? 0) > 0
                                 ? html` <span class="hint">its roots from the signed pin set of version ${entry.pinsVersion}</span>`
@@ -961,6 +970,23 @@ export const connectionsPage: Page = {
          * connection and on probation - or by its CA. A learned key pin is shown
          * here and not in the form: it is no pin until it is confirmed.
          */
+        /** How the other end of a connection it dials signs in with a client certificate, where it does. */
+        function clientCertificateView(entry: StationConnection): TemplateResult {
+
+            const pins = entry.clientKeyPins ?? [];
+
+            if (pins.length > 0)
+                return html`${pins.map(pin => html`<code class="wrap">${pin}</code> `)}<span class="hint">its key is the whole check - no CA, no name, no validity period</span>`;
+
+            const heldTo = pinsIn(entry.clientPins ?? {});
+
+            if (saysAnything(heldTo))
+                return html`${heldToView(heldTo, offers?.nameOf)} <span class="hint">and issued to <code>${entry.inboundName ?? ''}</code></span>`;
+
+            return html`<span class="hint">none - it signs in with credentials</span>`;
+
+        }
+
         function keyPinsView(entry: StationConnection): TemplateResult {
 
             const pins     = entry.serverKeyPins ?? [];
@@ -1328,19 +1354,30 @@ export const connectionsPage: Page = {
             // And what the page showed it held to, so that what the first
             // connection learned since, or a signed pin set brought, stays.
             const shown          = id !== undefined
-                                       ? store?.connections.find(one => one.id === id)?.pins ?? {}
+                                       ? shownPinsOf(store?.connections.find(one => one.id === id))
                                        : undefined;
 
+            // Where the other end dials, the key pins and what a certificate is
+            // held to are those of its client certificate, under names of their own.
+            const inbound        = form.querySelector<HTMLInputElement>('[name="inbound"]')?.checked ?? false;
+
+            const certificate    = inbound
+                                       ? { clientPins:     pins,
+                                           ...(shown !== undefined ? { clientPinsAsShown: keysOf(pinsIn(shown)) } : {}),
+                                           clientKeyPins:  pinsOf(keyPins?.value ?? ''),
+                                           ...(id !== undefined && keyPins !== null ? { clientKeyPinsAsShown: pinsOf(keyPins.defaultValue) } : {}) }
+                                       : { pins,
+                                           ...(shown !== undefined ? { pinsAsShown: keysOf(pinsIn(shown)) } : {}),
+                                           serverKeyPins:  pinsOf(keyPins?.value ?? ''),
+                                           ...(id !== undefined && keyPins !== null ? { serverKeyPinsAsShown: pinsOf(keyPins.defaultValue) } : {}) };
+
             return {
-                pins,
-                ...(shown !== undefined ? { pinsAsShown: keysOf(pinsIn(shown)) } : {}),
+                ...certificate,
                 sshHostKey:          hostKey?.value.trim() ?? '',
                 ...(id !== undefined && hostKey !== null ? { sshHostKeyAsShown: hostKey.defaultValue.trim() } : {}),
                 sshTrustOnFirstUse:  (form.querySelector<HTMLSelectElement>('[name="sshTrustOnFirstUse"]')?.value ?? 'None') as 'None' | 'HostKey',
                 sshOnPinMismatch:    (form.querySelector<HTMLSelectElement>('[name="sshOnPinMismatch"]')?.value ?? 'Refuse') as 'Refuse' | 'Record' | 'Accept',
                 sshProbationTime:    Number.isFinite(probation) ? probation : 600,
-                serverKeyPins:       pinsOf(keyPins?.value ?? ''),
-                ...(id !== undefined && keyPins !== null ? { serverKeyPinsAsShown: pinsOf(keyPins.defaultValue) } : {}),
                 trustOnFirstUse:     (form.querySelector<HTMLSelectElement>('[name="trustOnFirstUse"]')?.value ?? 'None') as 'None' | 'Key',
                 rawPublicKeys:       (form.querySelector<HTMLSelectElement>('[name="rawPublicKeys"]')?.value ?? 'Off') as 'Off' | 'Prefer' | 'Require',
                 serverKeyPinProbationTime: Number.isFinite(keyProbation) ? keyProbation : 600,
@@ -1353,7 +1390,7 @@ export const connectionsPage: Page = {
                 encoding:            (form.querySelector<HTMLSelectElement>('[name="encoding"]')?.value ?? 'json') as EncodingOfAConnection,
                 signatureFormats:    (form.querySelector<HTMLSelectElement>('[name="signatureFormats"]')?.value ?? 'policy') as SignatureFormatsOfAConnection,
                 autoConnect:  form.querySelector<HTMLInputElement>('[name="autoConnect"]')?.checked ?? false,
-                inbound:      form.querySelector<HTMLInputElement>('[name="inbound"]')?.checked ?? false,
+                inbound,
                 authenticationId:    proves.startsWith('auth:') ? proves.slice(5) : null,
                 certificateId:       null,
                 identities
@@ -1361,6 +1398,11 @@ export const connectionsPage: Page = {
 
         }
 
+
+        /** What the page showed a connection held to: its server's, or, where the other end dials, its client certificate's. */
+        function shownPinsOf(entry: StationConnection | undefined): PinKeys {
+            return (entry?.inbound === true ? entry.clientPins : entry?.pins) ?? {};
+        }
 
         /** The lines of one of the pin fields, as they were typed. */
         function linesOf(form: HTMLFormElement, name: string): string[] {

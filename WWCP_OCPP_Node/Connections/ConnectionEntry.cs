@@ -210,6 +210,34 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         public const String PinsKey              = "pins";
 
         /// <summary>
+        /// Where a connection the other end dials says which keys the client
+        /// certificate of the other end may hold, in the file and as a page
+        /// sends it - see <see cref="ClientKeyPins"/>.
+        /// </summary>
+        public const String ClientKeyPinsKey     = "clientKeyPins";
+
+        /// <summary>
+        /// Where a connection the other end dials says what the client
+        /// certificate of the other end is held to, in the file and as a page
+        /// sends it - see <see cref="ClientPins"/>.
+        /// </summary>
+        public const String ClientPinsKey        = "clientPins";
+
+        /// <summary>
+        /// Where a page that changes a connection the other end dials says
+        /// which key pins of its client certificate it showed - see
+        /// <see cref="ClientKeyPinsKey"/>.
+        /// </summary>
+        public const String ClientKeyPinsAsShownKey  = "clientKeyPinsAsShown";
+
+        /// <summary>
+        /// Where a page that changes a connection the other end dials says
+        /// what it showed its client certificate held to - see
+        /// <see cref="ClientPinsKey"/>.
+        /// </summary>
+        public const String ClientPinsAsShownKey     = "clientPinsAsShown";
+
+        /// <summary>
         /// The key the version of HTTP the WebSocket of a ws:// or wss://
         /// connection is opened over stands under: "auto", "1.1", "2" or "3".
         /// </summary>
@@ -433,8 +461,50 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// Controller, which no CA issues a certificate for, and before its
         /// clock is set. A set, so that a server about to change its key can be
         /// pinned with both for the time of the change.
+        ///
+        /// On a connection the other end dials (<see cref="Inbound"/>) the
+        /// same check is the other way round: the keys the client certificate
+        /// of the other end may hold - see <see cref="ClientKeyPins"/>, under
+        /// whose name it is written there.
         /// </remarks>
         public IReadOnlyList<KeyPin>  ServerKeyPins            { get; internal set; } = [];
+
+        /// <summary>
+        /// The keys the client certificate of the other end of a connection it
+        /// dials may hold, at most <see cref="MaxServerKeyPins"/>: the other
+        /// end signs in with that certificate, and its key is the whole check -
+        /// no chain, no name, no validity period. None for a connection this
+        /// node dials, and for one whose other end signs in otherwise.
+        /// </summary>
+        /// <remarks>
+        /// The key pins of <see cref="ServerKeyPins"/>, read the other way
+        /// round: a connection is dialled by one end, and only that end shows
+        /// a server certificate.
+        /// </remarks>
+        public IReadOnlyList<KeyPin>  ClientKeyPins
+            => Inbound ? ServerKeyPins : [];
+
+        /// <summary>
+        /// What the client certificate of the other end of a connection it
+        /// dials is held to: the roots its chain may end at, or the group of
+        /// roots of the certificate store, and the certificates it may be - and
+        /// its common name is the name the connection comes under. Null for a
+        /// connection this node dials, and for one whose other end signs in
+        /// otherwise.
+        /// </summary>
+        /// <remarks>
+        /// What <see cref="Pins"/> holds a server to, read the other way round.
+        /// </remarks>
+        public ServerPins?            ClientPins
+            => Inbound && Pins is { SaysAnything: true } ? Pins : null;
+
+        /// <summary>
+        /// Whether the other end of a connection it dials signs in with a
+        /// client certificate - known by its key, or by its CA - rather than
+        /// with credentials. One or the other, never both.
+        /// </summary>
+        public Boolean                SignsInWithACertificate
+            => ClientKeyPins.Count > 0 || ClientPins is not null;
 
         /// <summary>
         /// The version of the signed pin set the key pins came from; 0 where
@@ -508,10 +578,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// connection checks no chain, no name and no validity period, and does
         /// not fall back to the CA where the key matches no pin. One that is not
         /// key-pinned is checked by the CA as it always was.
+        ///
+        /// Never one the other end dials: this node is its server, and shows
+        /// the certificate - see <see cref="ClientKeyPins"/>.
         /// </remarks>
         public Boolean                IsKeyPinned
 
-            => IsSecure &&
+            => IsSecure && !Inbound &&
                (ServerKeyPins.Count > 0 || TrustOnFirstUse == KeyTrustOnFirstUse.Key);
 
         /// <summary>
@@ -531,6 +604,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         ///
         /// Never beside key pins: a connection is checked by its CA or known
         /// by its key - see <see cref="CheckOneWay"/>.
+        ///
+        /// On a connection the other end dials (<see cref="Inbound"/>) what
+        /// the client certificate of the other end is held to - see
+        /// <see cref="ClientPins"/>, under whose name it is written there.
         /// </remarks>
         public ServerPins?            Pins                     { get; internal set; }
 
@@ -1459,9 +1536,28 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             var learnedAt = WrittenAt(JSON["sshLearnedAt"]);
 
+            var inbound = JSON.Value<Boolean?>(InboundKey) ?? false;
+
+            // Which end shows the certificate the pins are about: the server
+            // of a connection this node dials, the client of one it is dialled
+            // by. Each under its own name, and the other one not at all.
+            var keyPinsKey  = inbound ? ClientKeyPinsKey : "serverKeyPins";
+            var pinsKey     = inbound ? ClientPinsKey    : PinsKey;
+
+            if (JSON[inbound ? "serverKeyPins" : ClientKeyPinsKey] is JToken { Type: not JTokenType.Null } ||
+                JSON[inbound ? PinsKey         : ClientPinsKey]    is JToken { Type: not JTokenType.Null })
+            {
+                Error = inbound
+                            ? $"connection '{id}': the other end dials it, so what its certificate is held to stands under '{ClientKeyPinsKey}' and '{ClientPinsKey}', " +
+                              $"and not under 'serverKeyPins' and '{PinsKey}', which are for a server this node dials."
+                            : $"connection '{id}': this node dials it, so what its server is held to stands under 'serverKeyPins' and '{PinsKey}', " +
+                              $"and not under '{ClientKeyPinsKey}' and '{ClientPinsKey}', which are for the other end of a connection it is dialled by.";
+                return false;
+            }
+
             // The key pins of a wss:// connection: a list, as they are written,
             // or one text of them, as somebody may write them by hand.
-            var pinsText = JSON["serverKeyPins"] switch {
+            var pinsText = JSON[keyPinsKey] switch {
                                JArray list  => String.Join(",", list.Select(pin => pin.Type == JTokenType.String ? pin.Value<String>() : pin.ToString())),
                                JValue value => value.Type == JTokenType.Null ? null : value.ToString(),
                                _            => null
@@ -1483,7 +1579,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (!CheckKeyPinned(serverKeyPins, rawPublicKeys, keyTrustOnFirstUse, out Error))
                 return false;
 
-            if (!ValidatePins(url, JSON[PinsKey], $"connection '{id}'.{PinsKey}", out var pins, out Error) ||
+            if (!ValidatePins(url, JSON[pinsKey], $"connection '{id}'.{pinsKey}", out var pins, out Error) ||
                 !CheckOneWay(serverKeyPins, keyTrustOnFirstUse, pins, out Error))
             {
                 return false;
@@ -1515,8 +1611,6 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 Error = $"connection '{id}': {wrongIdentities}";
                 return false;
             }
-
-            var inbound = JSON.Value<Boolean?>(InboundKey) ?? false;
 
             if (inbound && !ValidateInbound(url, out _, out var wrongInbound))
             {
@@ -1625,9 +1719,27 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             }
 
+            // How the other end of a TLS connection it is dialled by signs in,
+            // where it does so with a certificate: by the key pin of its key,
+            // or by its CA. Nothing of a server: this node is the server.
+            if (IsSecure && Inbound)
+            {
+
+                if (ServerKeyPins.Count > 0)
+                    json.Add(new JProperty(ClientKeyPinsKey, new JArray(ServerKeyPins.Select(pin => pin.ToHex()))));
+
+                if (ClientPins is ServerPins clientPins)
+                {
+                    var pins = new JObject();
+                    clientPins.WriteInto(pins);
+                    json.Add(new JProperty(ClientPinsKey, pins));
+                }
+
+            }
+
             // How the server of a TLS connection is known: by its CA, or by
             // the key pin of its key ("Key Pins and Raw Public Keys", 7.1).
-            if (IsSecure)
+            else if (IsSecure)
             {
 
                 json.Add(new JProperty("keyPinned",  IsKeyPinned));

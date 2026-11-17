@@ -121,6 +121,19 @@ export interface StationConnection {
     pins?:                       PinKeys;
     /** The version of the signed pin set the roots came from. */
     pinsVersion?:                number;
+    /**
+     * Where the other end dials and signs in with a client certificate: the
+     * keys that certificate may hold, 64 lowercase hexadecimal digits each.
+     * Its key is then the whole check. Never beside credentials.
+     */
+    clientKeyPins?:              string[];
+    /**
+     * Where the other end dials and signs in with a client certificate checked
+     * by its CA: the roots, or the group of roots, its chain may end at - and
+     * its common name is the name the connection comes under. Never beside
+     * credentials, and never beside key pins.
+     */
+    clientPins?:                 PinKeys;
     /** What the station made of the certificate its server showed last, where it is checked by its CA. */
     judgement?:                  ServerJudgement | null;
     /**
@@ -210,6 +223,12 @@ export interface ConnectionToSave {
     pins?:                       PinKeys;
     /** What the page showed it held to when it was drawn: what was learned since, or taken from a signed pin set, stays. */
     pinsAsShown?:                PinKeys;
+    /** Where the other end dials: the key pins of the client certificate it signs in with, in place of serverKeyPins. */
+    clientKeyPins?:              string[];
+    clientKeyPinsAsShown?:       string[];
+    /** Where the other end dials: what the client certificate it signs in with is held to, in place of pins. */
+    clientPins?:                 PinKeys;
+    clientPinsAsShown?:          PinKeys;
 }
 
 /** A key a signed pin set is believed of: the point of an elliptic curve, in base64, as an OCPP signature's keyId carries it. */

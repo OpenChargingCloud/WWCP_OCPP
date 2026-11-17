@@ -1139,7 +1139,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                      out var authenticationId, out var identities, out Error))
                     return false;
 
-                if (inbound && !CheckInboundReferences(null, url, version, authenticationId, identities, out Error))
+                if (inbound && !CheckInboundReferences(null, url, version, authenticationId, identities,
+                                                       serverKeyPins.Count > 0 || pins is not null, out Error))
                     return false;
 
                 var entry = new ConnectionEntry(
@@ -1349,15 +1350,25 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 if (keepsHostKey)
                     hostKey = url.Scheme == URIScheme.ssh ? entry.SshHostKey : null;
 
+                var inbound  = Inbound ?? entry.Inbound;
+
+                // Whether it is turned around: dialled by the other end where
+                // this node dialled, or the other way round. Then the key pins,
+                // and what a certificate is held to, were about the other end in
+                // the other direction - the key of its server, or of its client
+                // certificate - and what was kept of them is not kept: only what
+                // is written anew is about the end that shows a certificate now.
+                var turned   = inbound != entry.Inbound;
+
                 // So do key pins with a connection that is no longer wss://, and
                 // what it said of raw public keys and of trust on first use.
                 if (keepsKeyPins)
-                    keyPins = overTLS ? entry.ServerKeyPins : [];
+                    keyPins = overTLS && !turned ? entry.ServerKeyPins : [];
 
                 if (KeyPinTrust is null)
                 {
-                    rawPublicKeys        = overTLS ? entry.RawPublicKeys   : RawPublicKeyMode.Off;
-                    keyTrustOnFirstUse   = overTLS ? entry.TrustOnFirstUse : KeyTrustOnFirstUse.None;
+                    rawPublicKeys        = overTLS && !turned ? entry.RawPublicKeys   : RawPublicKeyMode.Off;
+                    keyTrustOnFirstUse   = overTLS && !turned ? entry.TrustOnFirstUse : KeyTrustOnFirstUse.None;
                     keyPinProbationTime  = entry.ServerKeyPinProbationTime;
                 }
 
@@ -1384,13 +1395,24 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
                 }
 
+                else if (turned)
+                {
+
+                    // Turned around: what the page showed was about the other
+                    // direction, and only what it changed is about this one.
+                    pins = Pins is null || (Pins.SaysWhatWasShown && SamePinsAsShown(Pins))
+                               ? null
+                               : Pins.Sent is { SaysAnything: true } sent ? sent : null;
+
+                }
+
                 else if (Pins is not null)
                 {
 
                     if (!Pins.SaysWhatWasShown)
                         pins = Pins.Sent is { SaysAnything: true } sent ? sent : null;
 
-                    else if (!ServerPins.TryAfterAPageSaved(entry.Pins, Pins.Shown, Pins.Sent, $"connection '{entry.Id}'.{ConnectionEntry.PinsKey}", out pins, out Error))
+                    else if (!ServerPins.TryAfterAPageSaved(entry.Pins, Pins.Shown, Pins.Sent, $"connection '{entry.Id}'.{(entry.Inbound ? ConnectionEntry.ClientPinsKey : ConnectionEntry.PinsKey)}", out pins, out Error))
                         return false;
 
                 }
@@ -1398,11 +1420,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 if (!ConnectionEntry.CheckOneWay(keyPins, keyTrustOnFirstUse, pins, out Error))
                     return false;
 
-                var inbound = Inbound ?? entry.Inbound;
-
                 if (inbound &&
                     (!CheckInbound(url, hostKey, keyPins, rawPublicKeys, keyTrustOnFirstUse, pins, httpVersion ?? entry.HTTPVersion, out Error) ||
-                     !CheckInboundReferences(entry.Id, url, version, authenticationId, identities, out Error)))
+                     !CheckInboundReferences(entry.Id, url, version, authenticationId, identities,
+                                             keyPins.Count > 0 || pins is { SaysAnything: true }, out Error)))
                     return false;
 
                 var peer = PeerOfUnlocked(entry.Id);
@@ -1906,6 +1927,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 if (!connections.TryGetValue(Id, out var entry)                     ||
                     entry.URL != URL                                                ||
                     !entry.IsSecure                                                 ||
+                    entry.Inbound                                                   ||
                     entry.TrustOnFirstUse != KeyTrustOnFirstUse.Key                 ||
                     entry.ServerKeyPins.Count > 0                                   ||
                     entry.ServerKeyPinLearned is not null)
@@ -2029,6 +2051,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                     return false;
                 }
 
+                if (entry.Inbound)
+                {
+                    Error = $"'{entry.Description}' is dialled by the other end, so this {NodeWording.Noun} is its server and has no server of it to pin. " +
+                             "The keys the other end signs in with are written down by hand.";
+                    return false;
+                }
+
                 if (!ConnectionEntry.ValidateServerKeyPins(entry.URL, Pins, out var pins, out Error))
                     return false;
 
@@ -2115,6 +2144,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 if (!connections.TryGetValue(Id, out var entry) ||
                     entry.URL != URL                            ||
                     !entry.IsSecure                             ||
+                    entry.Inbound                               ||
                     entry.IsKeyPinned                           ||
                     entry.Pins is not ServerPins pins           ||
                     pins.TrustOnFirstUse != What)
@@ -2190,6 +2220,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 if (!entry.IsSecure)
                 {
                     Error = $"'{entry.Description}' makes no TLS handshake, so there is no chain of its server to hold to a root.";
+                    return false;
+                }
+
+                if (entry.Inbound)
+                {
+                    Error = $"'{entry.Description}' is dialled by the other end, so this {NodeWording.Noun} is its server and has no server of it to hold to a root. " +
+                             "The roots the other end's certificate is held to are written down by hand.";
                     return false;
                 }
 
@@ -2315,6 +2352,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                     return false;
                 }
 
+                if (entry.Inbound)
+                {
+                    Error = $"'{entry.Description}' is dialled by the other end: raw public keys and learning a key on first use are for a server this {NodeWording.Noun} dials.";
+                    return false;
+                }
+
                 if (!ConnectionEntry.ValidateKeyPinTrust(entry.URL,
                                                          Settings.RawPublicKeys    ?? entry.RawPublicKeys.  ToString(),
                                                          Settings.TrustOnFirstUse  ?? entry.TrustOnFirstUse.ToString(),
@@ -2416,6 +2459,25 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 return connections.TryGetValue(Id, out var entry)
                            ? entry.Copy()
                            : null;
+        }
+
+        /// <summary>
+        /// Whether a page sent back what a certificate is held to as it showed
+        /// it: nothing of it changed.
+        /// </summary>
+        private static Boolean SamePinsAsShown(ServerPinsChange Change)
+        {
+
+            static JObject Written(ServerPins? Pins)
+            {
+                var json = new JObject();
+                if (Pins is { SaysAnything: true })
+                    Pins.WriteInto(json);
+                return json;
+            }
+
+            return JToken.DeepEquals(Written(Change.Sent), Written(Change.Shown));
+
         }
 
         /// <summary>
@@ -3231,9 +3293,26 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         #region (private) CheckInbound(...) / CheckInboundReferences(...)
 
         /// <summary>
-        /// What a connection the other end dials can not say: everything this
-        /// node holds a server to that it dials itself.
+        /// What a connection the other end dials can not say: what this node
+        /// holds a server to that it dials itself, beyond the key pins and the
+        /// roots its client certificate is held to the other way round.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The other end signs in with a client certificate where the
+        /// connection names its key pins or what its chain is held to: by its
+        /// key alone - no chain, no name, no validity period -, or by its CA,
+        /// which is then named - roots or a group of roots of the store - and
+        /// never left to whatever this machine trusts: a public CA issues a
+        /// certificate to anybody who owns a name, and a name is all the
+        /// connection would hold it to.
+        /// </para>
+        /// <para>
+        /// Nothing is learned on first use, and a certificate that does not
+        /// match is refused: whoever dials is let in by what is written down,
+        /// and not by what it showed first or might have shown.
+        /// </para>
+        /// </remarks>
         private static Boolean CheckInbound(URL                               URL,
                                             String?                           HostKey,
                                             IReadOnlyList<KeyPin>             ServerKeyPins,
@@ -3247,12 +3326,38 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             if (!ConnectionEntry.ValidateInbound(URL, out _, out Error))
                 return false;
 
-            if (HostKey is not null || ServerKeyPins.Count > 0 || Pins is not null ||
-                RawPublicKeys != RawPublicKeyMode.Off || TrustOnFirstUse != KeyTrustOnFirstUse.None)
+            if (HostKey is not null || RawPublicKeys != RawPublicKeyMode.Off || TrustOnFirstUse != KeyTrustOnFirstUse.None)
             {
-                Error = $"Host keys, key pins and what a server is held to are for a server this {NodeWording.Noun} dials. " +
+                Error = $"Host keys, raw public keys and learning a key on first use are for a server this {NodeWording.Noun} dials. " +
                         $"Here the other end dials, and this {NodeWording.Noun} is the server: leave them out.";
                 return false;
+            }
+
+            if (Pins is { SaysAnything: true } clientPins)
+            {
+
+                if (clientPins.TrustOnFirstUse != protocols.WWCP.Node.Configuration.TrustOnFirstUse.None)
+                {
+                    Error = "Nothing is learned from the first client certificate the other end shows: it is let in by what is written down here. " +
+                            "Name the roots, or the certificate, it is held to.";
+                    return false;
+                }
+
+                if (clientPins.OnMismatch != PinMismatch.Refuse)
+                {
+                    Error = "A client certificate that is not what the connection holds it to is refused: whoever shows it is not let in, " +
+                            "and is not let in all the same either.";
+                    return false;
+                }
+
+                if (clientPins.Roots.Count == 0 && clientPins.RootGroup is null)
+                {
+                    Error = "A client certificate checked by its CA is held to that CA: name the roots its chain may end at, or a group of roots " +
+                            $"of this {NodeWording.Noun}'s certificate store. Whatever root this machine trusts would let in anybody a public CA " +
+                            "issued a certificate under that name.";
+                    return false;
+                }
+
             }
 
             if (HTTPVersion is not null && HTTPVersion != WebSocketHTTPVersion.Auto)
@@ -3267,15 +3372,23 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
         /// <summary>
         /// What a connection the other end dials needs of the rest of the
-        /// store: credentials the other end signs in with, under the name it
-        /// comes under - and that name to itself, among the connections of its
-        /// OCPP version. Called under the lock.
+        /// store: what the other end signs in with - a client certificate,
+        /// or credentials under the name it comes under, and never both -,
+        /// and that name to itself, among the connections of its OCPP version.
+        /// Called under the lock.
         /// </summary>
+        /// <remarks>
+        /// One or the other, because a certificate is the better of the two
+        /// and a password beside it would be the way in that is easier to
+        /// steal: a connection that takes either is only as good as the weaker.
+        /// </remarks>
+        /// <param name="ByCertificate">Whether it names the key pins, or the roots, of a client certificate the other end signs in with.</param>
         private Boolean CheckInboundReferences(String?                               Id,
                                                URL                                   URL,
                                                OCPPVersion                           Version,
                                                String?                               AuthenticationId,
                                                IReadOnlyList<ConnectionIdentity>     Identities,
+                                               Boolean                               ByCertificate,
                                                [NotNullWhen(false)] out String?      Error)
         {
 
@@ -3283,28 +3396,40 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             if (Identities.Count > 0)
             {
-                Error = $"A client certificate is what this {NodeWording.Noun} shows where it dials. Here the other end dials: leave it out.";
+                Error = $"A client certificate of this {NodeWording.Noun}'s store is what it shows where it dials. Here the other end dials: " +
+                         "leave it out, and name the key pins or the roots of the certificate the other end shows instead.";
                 return false;
             }
 
-            if (AuthenticationId is null || !authentications.TryGetValue(AuthenticationId, out var credentials))
+            if (ByCertificate)
             {
-                Error = $"A connection the other end makes needs credentials: what '{name}' signs in with. Nothing gets in without.";
-                return false;
+
+                if (AuthenticationId is not null)
+                {
+                    Error = $"'{name}' signs in with a client certificate, so it does not sign in with credentials as well: a password or a one-time " +
+                             "password beside a certificate would be the easier way in. Take the credentials away, or what the certificate is held to.";
+                    return false;
+                }
+
             }
 
-            if (credentials.Login != name)
+            else
             {
-                Error = $"'{credentials.Description}' signs in as '{credentials.Login}', and the URL ends with '{name}'. " +
-                        "It is one name - the one the other end comes under - so the two have to agree.";
-                return false;
-            }
 
-            if (credentials.Kind == AuthenticationKind.TOTP && credentials.TLSChannelBinding)
-            {
-                Error = $"'{credentials.Description}' binds its password to the TLS session, which this {NodeWording.Noun}'s OCPP server does not check yet. " +
-                        "Name credentials without the binding.";
-                return false;
+                if (AuthenticationId is null || !authentications.TryGetValue(AuthenticationId, out var credentials))
+                {
+                    Error = $"A connection the other end makes needs something '{name}' signs in with: the key pins or the roots of its client " +
+                             "certificate, or credentials. Nothing gets in without.";
+                    return false;
+                }
+
+                if (credentials.Login != name)
+                {
+                    Error = $"'{credentials.Description}' signs in as '{credentials.Login}', and the URL ends with '{name}'. " +
+                            "It is one name - the one the other end comes under - so the two have to agree.";
+                    return false;
+                }
+
             }
 
             if (connections.Values.FirstOrDefault(other => other.Inbound &&
@@ -3372,8 +3497,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                      $"'{Entry.InboundName}': nothing is let in until the two agree.");
 
                     if (Entry.Inbound && credentials.Kind == AuthenticationKind.TOTP && credentials.TLSChannelBinding)
-                        warnings.Add($"'{credentials.Description}' binds its password to the TLS session, which this {NodeWording.Noun}'s OCPP server " +
-                                      "does not check yet: nothing is let in with it.");
+                        warnings.Add($"'{credentials.Description}' binds its password to the TLS session, and only the TLS of HTTP/3 exports the " +
+                                      "keying material to check one with: the other end is let in where it opens its WebSocket over HTTP/3, " +
+                                      $"to an OCPP server of this {NodeWording.Noun} that serves HTTP/3, and not over HTTP/1.1 or HTTP/2.");
+
+                    if (Entry.Inbound && Entry.SignsInWithACertificate)
+                        warnings.Add($"The other end signs in with a client certificate, and '{credentials.Description}' is named as well: " +
+                                      "nothing is let in until one of the two is taken away.");
 
                     if (credentials.Kind == AuthenticationKind.TOTP && Entry.IsSSH && !credentials.TLSChannelBinding)
                         warnings.Add($"'{credentials.Description}' is not bound to its session, so over SSH its one-time password is " +
@@ -3426,10 +3556,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                              $"{Entry.Identities.Min(identity => identity.From)!.Value.UtcDateTime:yyyy-MM-dd HH:mm} UTC. Until then it is not dialled.");
 
             // Over SSH this station always shows its own key.
-            if (Entry.AuthenticationId is null && Entry.CertificateId is null && !Entry.IsSSH)
+            if (Entry.AuthenticationId is null && Entry.CertificateId is null && !Entry.IsSSH && !Entry.SignsInWithACertificate)
                 warnings.Add(Entry.Inbound
-                                 ? "This connection names no credentials, so nothing is let in under its name."
+                                 ? "This connection names no credentials and no client certificate, so nothing is let in under its name."
                                  : "This connection proves nothing about who is dialling. A back end that asks will refuse it.");
+
+            if (Entry.Inbound && Entry.SignsInWithACertificate && !Entry.IsSecure)
+                warnings.Add("A client certificate is shown during a TLS handshake, and the other end makes none to this URL: nothing is let in.");
 
             if (Entry.IsSSH)
             {
