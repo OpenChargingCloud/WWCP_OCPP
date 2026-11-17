@@ -1790,6 +1790,82 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
+        #region (private) TakeEffectAfter(Answered, SwitchedOnOrOff, SSHOnOrOff, HTTP3OnOrOff)
+
+        /// <summary>
+        /// Switch the server, OCPP over SSH and HTTP/3 on or off as the settings
+        /// say by then, once the given task is done: what a change that came
+        /// over a connection of this server waits for, so that its answer is
+        /// out before the connection may go.
+        /// </summary>
+        /// <remarks>
+        /// By the settings at that time rather than those of the change: a
+        /// second change in between is what holds, and each step does nothing
+        /// where it is done already.
+        /// </remarks>
+        /// <param name="Answered">What it waits for.</param>
+        /// <param name="SwitchedOnOrOff">Whether the change switched the server on or off.</param>
+        /// <param name="SSHOnOrOff">Whether it switched OCPP over SSH on or off.</param>
+        /// <param name="HTTP3OnOrOff">Whether it switched HTTP/3 on or off.</param>
+        private async Task TakeEffectAfter(Task     Answered,
+                                           Boolean  SwitchedOnOrOff,
+                                           Boolean  SSHOnOrOff,
+                                           Boolean  HTTP3OnOrOff)
+        {
+
+            try
+            {
+
+                await Answered.ConfigureAwait(false);
+
+                await reconfigureLock.WaitAsync().ConfigureAwait(false);
+
+                try
+                {
+
+                    var settings = ocppServerSettings;
+
+                    if (SwitchedOnOrOff && ocppWebSocketServer is not null)
+                    {
+
+                        if (settings.Enabled == true)
+                            await StartOCPPServer().ConfigureAwait(false);
+
+                        else
+                            await StopOCPPServer(). ConfigureAwait(false);
+
+                    }
+
+                    else if (SSHOnOrOff && ocppServerStarted)
+                    {
+
+                        if (settings.SSH?.Enabled == true)
+                            ServeOCPPOverSSH();
+
+                        else
+                            StopServingOCPPOverSSH("it was switched off");
+
+                    }
+
+                    if (HTTP3OnOrOff && ocppServerStarted)
+                        TakeHTTP3OrNot(settings);
+
+                }
+                finally
+                {
+                    reconfigureLock.Release();
+                }
+
+            }
+            catch (Exception e)
+            {
+                Log.Warning($"The charging station server could not be switched as it was reconfigured: {e.Message}", "ocpp", "station", "config");
+            }
+
+        }
+
+        #endregion
+
         #region (private) WhyNoHTTP3(Settings)
 
         /// <summary>
@@ -1833,9 +1909,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// the configuration file's rather than the change's.
         /// </summary>
         /// <param name="NotSaved">True where the configuration file could not be read or written: nothing about the change was wrong, and nothing was changed.</param>
+        /// <param name="TakesEffectAfter">What switching the server, HTTP/3 or OCPP over SSH on or off waits for - the response to the request that asked for it, which a connection dropped before would take with it; at once where null. Everything else is written and in effect when this returns.</param>
         public Boolean TryUpdateOCPPServerConfiguration(JObject                           JSON,
                                                         [NotNullWhen(false)] out String?  Error,
-                                                        out Boolean                       NotSaved)
+                                                        out Boolean                       NotSaved,
+                                                        Task?                             TakesEffectAfter   = null)
         {
 
             NotSaved = false;
@@ -1881,9 +1959,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 ocppServerSettings = before.Merge(update).Effective();
 
+                #region What takes effect once the request that asked for it is answered
+
+                if (TakesEffectAfter is not null)
+                {
+
+                    var switchedOnOrOff  = before.Enabled      != ocppServerSettings.Enabled;
+                    var sshOnOrOff       = before.SSH?.Enabled != ocppServerSettings.SSH?.Enabled;
+                    var http3OnOrOff     = before.TakesHTTP3   != ocppServerSettings.TakesHTTP3;
+
+                    if (switchedOnOrOff || sshOnOrOff || http3OnOrOff)
+                        _ = TakeEffectAfter(TakesEffectAfter, switchedOnOrOff, sshOnOrOff, http3OnOrOff);
+
+                }
+
+                #endregion
+
                 #region What takes effect at once
 
-                if (ocppWebSocketServer is not null &&
+                else if (ocppWebSocketServer is not null &&
                     before.Enabled != ocppServerSettings.Enabled)
                 {
 
@@ -1911,7 +2005,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 // HTTP/3 on and off while the station server runs: the UDP
                 // port opens and closes, and what is on it goes with it.
-                if (ocppServerStarted &&
+                if (TakesEffectAfter is null &&
+                    ocppServerStarted        &&
                     before.Enabled    == ocppServerSettings.Enabled &&
                     before.TakesHTTP3 != ocppServerSettings.TakesHTTP3)
                 {
