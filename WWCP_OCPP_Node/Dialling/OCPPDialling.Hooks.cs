@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.WWCP.Node;
 using System.Security.Cryptography.X509Certificates;
 
 using Newtonsoft.Json.Linq;
@@ -43,10 +44,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// What a node that dials over OCPP does of its own with the device model
     /// of its OCPP 2.1 node: nothing, unless it says otherwise.
     /// </summary>
-    public abstract partial class OCPPDiallingNode
+    public partial class OCPPDialling
     {
 
-        #region (protected override) SubProtocolsOf(Connection)
+        #region (override) SubProtocolsOf(Connection)
 
         /// <summary>
         /// What this station offers for the given connection, in the WebSocket
@@ -59,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// one that says "auto" offers it first, and the others after it.
         /// OCPP 1.6 the same, with "ocpp1.6cbor".
         /// </remarks>
-        protected override String[] SubProtocolsOf(ConnectionEntry Connection)
+        public override String[] SubProtocolsOf(ConnectionEntry Connection)
 
             => Connection.OCPPVersion == OCPPVersion.OCPP1_6
                    ? [.. OCPPCommon.WebSockets.OCPPSubprotocols.Offer(
@@ -73,13 +74,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected override) CBORFrameOf(Text) / TryCBORAsJSON(Frame, out JSON, out Error) / IsCBORSubprotocol(Subprotocol)
+        #region (override) CBORFrameOf(Text) / TryCBORAsJSON(Frame, out JSON, out Error) / IsCBORSubprotocol(Subprotocol)
 
         /// <summary>
         /// The request of a connection test as the frame of a connection that
         /// agreed on CBOR: the same array, with nothing in its payload.
         /// </summary>
-        protected override Byte[] CBORFrameOf(String Text)
+        public override Byte[] CBORFrameOf(String Text)
 
             => OCPPCommon.WebSockets.OCPP_CBORFrame.Join(
                    JArray.Parse(Text),
@@ -91,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// What the given CBOR frame of OCPP stands for, as the JSON array.
         /// </summary>
-        protected override Boolean TryCBORAsJSON(Byte[]                                                     Frame,
+        public override Boolean TryCBORAsJSON(Byte[]                                                     Frame,
                                                  [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]  out Newtonsoft.Json.Linq.JArray?  JSON,
                                                  [System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out String?                       Error)
 
@@ -100,18 +101,18 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// Whether the given subprotocol is OCPP as CBOR.
         /// </summary>
-        protected override Boolean IsCBORSubprotocol(String? Subprotocol)
+        public override Boolean IsCBORSubprotocol(String? Subprotocol)
 
             => OCPPCommon.WebSockets.OCPPSubprotocols.IsCBOR(Subprotocol);
 
         #endregion
 
-        #region (protected override) SshSubsystem / ConnectOverSSH(Connection, Node, Login, SshConnection, CancellationToken)
+        #region (override) SshSubsystem / ConnectOverSSH(Connection, Node, Login, SshConnection, CancellationToken)
 
         /// <summary>
         /// OCPP goes over the SSH subsystem of the white paper "OCPP over SSH".
         /// </summary>
-        protected override String? SshSubsystem
+        public override String? SshSubsystem
 
             => OCPPCommon.SSH.OCPPSshServer.OCPPSubsystem;
 
@@ -119,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// Open the given connection over SSH by the OCPP node of its version,
         /// named as over a WebSocket - see Dial.
         /// </summary>
-        protected override async Task<(IWWCPClient? Client, Boolean IsConnected, Exception? Error)>
+        public override async Task<(IWWCPClient? Client, Boolean IsConnected, Exception? Error)>
 
             ConnectOverSSH(ConnectionEntry                                          Connection,
                            AWWCPNetworkingNode                                      Node,
@@ -131,13 +132,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var result = await NodeOf(Connection.OCPPVersion).ConnectOCPPClient(
                                    RemoteURL:                 Connection.URL,
-                                   NextHopNetworkingNodeId:   NextHopOf(Connection),
-                                   RoutingNetworkingNodeIds:  CSMSNamesOf(Connection),
+                                   NextHopNetworkingNodeId:   WWCPNode.NextHopOf(Connection),
+                                   RoutingNetworkingNodeIds:  WWCPNode.CSMSNamesOf(Connection),
                                    Ssh:                       Login,
                                    SshConnection:             SshConnection,
                                    Subprotocols:              SubProtocolsOf(Connection),
-                                   DNSClient:                 DNSClient,
-                                   PingEvery:                 SshPingEvery,
+                                   DNSClient:                 WWCPNode.DNSClient,
+                                   PingEvery:                 WWCPNode.SshPingEvery,
                                    CancellationToken:         CancellationToken
                                );
 
@@ -147,13 +148,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected override) ProbationRules(Probation, Action, Payload)
+        #region (override) ProbationRules(Probation, Action, Payload)
 
         /// <summary>
         /// While a learned key pin is on probation, nothing but a pin set of
         /// OCPP is executed - see KeyPinGate.
         /// </summary>
-        protected override String? ProbationRules(Probation                      Probation,
+        public override String? ProbationRules(Probation                      Probation,
                                                   String                         Action,
                                                   Newtonsoft.Json.Linq.JObject?  Payload)
 
@@ -161,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected override) ConnectOverWebSocket(Connection, Basic, Validator, Certificates, TOTP, TOTPLogin, CancellationToken)
+        #region (override) ConnectOverWebSocket(Connection, Basic, Validator, Certificates, TOTP, TOTPLogin, CancellationToken)
 
         /// <summary>
         /// Open the WebSocket of the given connection, by the OCPP node of
@@ -180,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="TOTP">The one-time password it signs in with, where it has one.</param>
         /// <param name="TOTPLogin">The login the one-time password is sent under.</param>
         /// <param name="CancellationToken">Ends the attempt.</param>
-        protected override Task<HTTPResponse> ConnectOverWebSocket(ConnectionEntry                                                 Connection,
+        public override Task<HTTPResponse> ConnectOverWebSocket(ConnectionEntry                                                 Connection,
                                                                   IHTTPAuthentication?                                            Basic,
                                                                   RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  Validator,
                                                                   X509Certificate2[]?                                             Certificates,
@@ -190,36 +191,36 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             => NodeOf(Connection.OCPPVersion).ConnectOCPPWebSocketClient(
                    RemoteURL:                   Connection.URL,
-                   NetworkingMode:              NetworkingModeOf(Connection),
-                   NextHopNetworkingNodeId:     NextHopOf(Connection),
-                   RoutingNetworkingNodeIds:    CSMSNamesOf(Connection),
+                   NetworkingMode:              WWCPNode.NetworkingModeOf(Connection),
+                   NextHopNetworkingNodeId:     WWCPNode.NextHopOf(Connection),
+                   RoutingNetworkingNodeIds:    WWCPNode.CSMSNamesOf(Connection),
                    SecWebSocketProtocols:       SubProtocolsOf(Connection),
                    HTTPAuthentication:          Basic,
                    RemoteCertificateValidator:  Validator,
-                   ClientCertificates:          CertificateShownAlone(Certificates),
-                   ClientCertificateChain:      CertificateWithItsChain(Certificates),
+                   ClientCertificates:          WWCPNode.CertificateShownAlone(Certificates),
+                   ClientCertificateChain:      WWCPNode.CertificateWithItsChain(Certificates),
                    TOTPConfig:                  TOTP,
                    TOTPLogin:                   TOTPLogin,
                    WebSocketOver:               Connection.HTTPVersion,
-                   DNSClient:                   DNSClient,
+                   DNSClient:                   WWCPNode.DNSClient,
                    CancellationToken:           CancellationToken
                );
 
         #endregion
 
-        #region (protected override) DiallingNodes / DiallingNodeOrNoneOf(Version)
+        #region (override) DiallingNodes / DiallingNodeOrNoneOf(Version)
 
         /// <summary>
         /// The OCPP nodes this one dials with.
         /// </summary>
-        protected override IEnumerable<AWWCPNetworkingNode> DiallingNodes
+        public override IEnumerable<AWWCPNetworkingNode> DiallingNodes
 
             => Nodes;
 
         /// <summary>
         /// The OCPP node that dials a connection of the given version.
         /// </summary>
-        protected override AWWCPNetworkingNode? DiallingNodeOrNoneOf(OCPPVersion Version)
+        public override AWWCPNetworkingNode? DiallingNodeOrNoneOf(OCPPVersion Version)
 
             => NodeOrNoneOf(Version);
 
@@ -230,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// The OCPP node that speaks the given version.
         /// </summary>
-        protected OCPPCommon.NetworkingNode.AOCPPNetworkingNode NodeOf(OCPPVersion Version)
+        public OCPPCommon.NetworkingNode.AOCPPNetworkingNode NodeOf(OCPPVersion Version)
 
             => NodeOrNoneOf(Version)
                    ?? throw new InvalidOperationException($"This {NodeWording.Noun} does not speak {ConnectionEntry.AsText(Version)}.");
@@ -239,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The OCPP node that speaks the given version, or none where this
         /// node does not speak it.
         /// </summary>
-        protected OCPPCommon.NetworkingNode.AOCPPNetworkingNode? NodeOrNoneOf(OCPPVersion Version)
+        public OCPPCommon.NetworkingNode.AOCPPNetworkingNode? NodeOrNoneOf(OCPPVersion Version)
 
             => Version == OCPPVersion.OCPP1_6
                    ? Node16
@@ -247,13 +248,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected override) SetSignatureFormatsOf(Connection, Client) / SignatureFormatsOf(Connection)
+        #region (override) SetSignatureFormatsOf(Connection, Client) / SignatureFormatsOf(Connection)
 
         /// <summary>
         /// Which signatures the messages over the given client get, said to
         /// the OCPP node of the connection's version.
         /// </summary>
-        protected override void SetSignatureFormatsOf(ConnectionEntry  Connection,
+        public override void SetSignatureFormatsOf(ConnectionEntry  Connection,
                                                       IWWCPClient      Client)
         {
             if (Connection.OCPPVersion == OCPPVersion.OCPP1_6)
@@ -269,8 +270,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
         public override cloud.charging.open.protocols.WWCP.SignatureFormats? SignatureFormatsOf(ConnectionEntry Connection)
 
             => Connection.OCPPVersion == OCPPVersion.OCPP1_6
-                   ? Node16!.OCPP.SignatureFormatsFor(NextHopOf(Connection))
-                   : Node21.OCPP.SignatureFormatsFor(NextHopOf(Connection));
+                   ? Node16!.OCPP.SignatureFormatsFor(WWCPNode.NextHopOf(Connection))
+                   : Node21.OCPP.SignatureFormatsFor(WWCPNode.NextHopOf(Connection));
 
         #endregion
 
@@ -283,47 +284,47 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="Old16">The OCPP 1.6 node replaced.</param>
         /// <param name="Old21">The OCPP 2.1 node replaced.</param>
         /// <param name="Because">Why, as a sentence without its full stop.</param>
-        protected Task DialAgain(OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?  Old16,
+        public Task DialAgain(OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?  Old16,
                                  OCPPv2_1.NetworkingNode.AOCPPNetworkingNode?  Old21,
                                  String                                        Because)
 
-            => DialAgain([ Old16, Old21 ], Because);
+            => WWCPNode.DialAgain([ Old16, Old21 ], Because);
 
         #endregion
 
-        #region (protected virtual) SSHClientControllersOf(Node) / AddComponentTo(Node, Component) / RemoveComponentFrom(Node, Name, Instance)
+        #region (virtual) SSHClientControllersOf(Node) / AddComponentTo(Node, Component) / RemoveComponentFrom(Node, Name, Instance)
 
         /// <summary>
         /// The SSHClientControllers the device model of the given node has.
         /// </summary>
-        protected virtual IEnumerable<OCPPv2_1.SSHClientController> SSHClientControllersOf(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode Node)
+        public virtual IEnumerable<OCPPv2_1.SSHClientController> SSHClientControllersOf(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode Node)
 
             => [];
 
         /// <summary>
         /// Give the device model of the given node a component.
         /// </summary>
-        protected virtual void AddComponentTo(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode  Node,
+        public virtual void AddComponentTo(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode  Node,
                                               OCPPv2_1.ComponentConfig                     Component)
         { }
 
         /// <summary>
         /// Take a component from the device model of the given node.
         /// </summary>
-        protected virtual void RemoveComponentFrom(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode  Node,
+        public virtual void RemoveComponentFrom(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode  Node,
                                                    String                                       Name,
                                                    String?                                      Instance)
         { }
 
         #endregion
 
-        #region (protected virtual) AnswerCustomTriggersOf(Node, Answer)
+        #region (virtual) AnswerCustomTriggersOf(Node, Answer)
 
         /// <summary>
         /// Have the given node answer a TriggerMessage for a custom trigger
         /// with what is given.
         /// </summary>
-        protected virtual void AnswerCustomTriggersOf(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode                                    Node,
+        public virtual void AnswerCustomTriggersOf(OCPPv2_1.NetworkingNode.AOCPPNetworkingNode                                    Node,
                                                       Func<OCPPv2_1.CSMS.TriggerMessageRequest, Task<OCPPv2_1.CS.TriggerMessageResponse?>>  Answer)
         { }
 

@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// server is, and switched on and off without a restart.
     ///
     /// <b>Moved here from the LocalController library</b>, as the dialling
-    /// moved into OCPPDiallingNode before it, so that a gateway has the same
+    /// moved into WWCP_Node before it, so that a gateway has the same
     /// server, stores, sections and pages as a local controller - see
     /// OCPPServingNode.cs for what a kind still says of its own.
     /// </remarks>

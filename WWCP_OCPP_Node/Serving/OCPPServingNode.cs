@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// <summary>
     /// A node that dials a CSMS and is dialled itself, by the charging stations
     /// - and the local controllers - below it: a local controller, and a
-    /// gateway. What it dials is OCPPDiallingNode's; the server those below it
+    /// gateway. What it dials is WWCPNode's, over OCPP (OCPPDialling); the server those below it
     /// connect to - its section "ocppServer", the charging stations that may
     /// sign in and their login groups, the chains a station's certificate may
     /// lead to, the keys and certificates it presents, OCPP over SSH and a CSMS
@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// </summary>
     /// <remarks>
     /// <para>
-    /// A class of its own between OCPPDiallingNode and the kinds, and not a
-    /// part of OCPPDiallingNode: a charging station dials and has an OCPP
+    /// A class of its own between WWCPNode and the kinds, and not a part of
+    /// OCPPDialling: a charging station dials and has an OCPP
     /// server of its own for a CSMS that cannot be dialled, with members of the
     /// same names that mean something else, and it has no stations below it.
     /// </para>
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// (<see cref="ServerKeySwitched"/>).
     /// </para>
     /// </remarks>
-    public abstract partial class OCPPServingNode : OCPPDiallingNode
+    public abstract partial class OCPPServingNode : WWCPNode
     {
 
         #region Data
@@ -77,6 +77,42 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// when it cannot be had.
         /// </summary>
         public static readonly NodePort  StationServerPort  = new ("The charging station server");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The node that speaks OCPP 1.6 for this one, where it has one.
+        /// </summary>
+        protected abstract OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?  Node16    { get; }
+
+        /// <summary>
+        /// The node that speaks OCPP 2.1 for this one.
+        /// </summary>
+        protected abstract OCPPv2_1.NetworkingNode.AOCPPNetworkingNode   Node21    { get; }
+
+        /// <summary>
+        /// What OCPP says of the connections of this node.
+        /// </summary>
+        public OCPPDialling  OCPPDialling
+            => (OCPPDialling) Dialling;
+
+        /// <summary>
+        /// The OCPP nodes this one has: the one for OCPP 2.1, and before it
+        /// the one for OCPP 1.6 where it speaks that.
+        /// </summary>
+        protected IEnumerable<OCPP.NetworkingNode.AOCPPNetworkingNode> Nodes
+            => OCPPDialling.Nodes;
+
+        /// <summary>
+        /// What OCPP says of the connections of this node - asked for once,
+        /// before anything of them is. A kind of node that says more of them
+        /// than every serving node gives itself one of its own.
+        /// </summary>
+        protected virtual OCPPDialling NewOCPPDialling()
+
+            => new (this, () => Node16, () => Node21);
 
         #endregion
 
@@ -156,7 +192,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    Web,
                    CertificateRequestKinds)
 
-        { }
+        {
+
+            // Its connections speak OCPP, dialled by the OCPP nodes it has
+            // at the time - asked for whenever they are needed.
+            Dialling = NewOCPPDialling();
+
+        }
 
         #endregion
 

@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// The node whose connections these are.
         /// </summary>
-        protected OCPPDiallingNode  Dialling               { get; }
+        protected WWCPNode          Dialling               { get; }
 
         /// <summary>
         /// The resource a user needs a right to for reading, changing and
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         /// <param name="ConnectionsResource">The resource a user needs a right to for the connections.</param>
         protected OCPPDiallingHTTPAPI(HTTPServer        HTTPServer,
-                                      OCPPDiallingNode  Node,
+                                      WWCPNode          Node,
                                       HTTPExtAPI        ExtAPI,
                                       EventLog          Log,
                                       String            ConnectionsResource,

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.WWCP.Node;
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
@@ -41,12 +42,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// SetVariables request a signer it believes signed (section 5.7).
     /// </summary>
     /// <remarks>
-    /// WWCP_OCPP_Node's TLSClientControllerSource, given the station's key pins (OCPPDiallingNode.KeyPins.cs),
-    /// the key pins of its client certificates, and the signature check of OCPPDiallingNode.SSHClient.cs:
+    /// WWCP_OCPP_Node's TLSClientControllerSource, given the station's key pins (WWCPNode.KeyPins.cs),
+    /// the key pins of its client certificates, and the signature check of OCPPDialling.SSHClient.cs:
     /// the same signers, without a time window for a pin set, whose version keeps an older one from
     /// coming back.
     /// </remarks>
-    public abstract partial class OCPPDiallingNode
+    public partial class OCPPDialling
     {
 
         #region Data
@@ -54,23 +55,31 @@ namespace cloud.charging.open.protocols.OCPP.Node
         // When the response to a SetVariables request is out: what a signed pin
         // set or a change of trust ends - a connection dropped, or dialled
         // again - waits for it, since it is the connection the answer goes over.
-        protected readonly ResponsesSent            responsesSent  = new ();
+        internal  readonly ResponsesSent            responsesSent  = new ();
 
         protected TLSClientControllerSource         tlsClientSource = default!;
 
         #endregion
 
 
-        #region (private) NewTLSClientSource()
+        #region (public) NewTLSClientSource()
 
         /// <summary>
         /// What TLSClientController reads and writes of this station.
         /// </summary>
-        protected TLSClientControllerSource NewTLSClientSource()
+        /// <summary>
+        /// Make what TLSClientController reads and writes of the connections:
+        /// once the key pinning of the node is there.
+        /// </summary>
+        public void MakeTLSClientSource()
 
-            => new (keyPinning,
+            => tlsClientSource = NewTLSClientSource();
+
+        public TLSClientControllerSource NewTLSClientSource()
+
+            => new (WWCPNode.keyPinning,
                     ClientKeyPins,
-                    (request, endpoint, withoutTimeWindow, out signer, out why) => SignedByPinSetSigner(request, EntryOf(endpoint), withoutTimeWindow, out signer, out why),
+                    (request, endpoint, withoutTimeWindow, out signer, out why) => SignedByPinSetSigner(request, WWCPNode.EntryOf(endpoint), withoutTimeWindow, out signer, out why),
                     responsesSent,
                     NodeWording.Noun);
 
@@ -88,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </remarks>
         public void FollowTLSClientComponents(OCPPv2_1.IDeviceModelNode? Node)
 
-            => tlsClientSource.FollowComponents(Node, warning => Log.Warning(warning, "ocpp", "connections", "keypins"));
+            => tlsClientSource.FollowComponents(Node, warning => WWCPNode.Log.Warning(warning, "ocpp", "connections", "keypins"));
 
         #endregion
 
@@ -112,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) ClientKeyPins()
+        #region (public) ClientKeyPins()
 
         /// <summary>
         /// The key pins of the TLS client keys this station presents: those of the identities its
@@ -127,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// dials by itself - first. A connection that names no certificate, or one whose certificate has
         /// not come back yet, shows no key, and adds none.
         /// </remarks>
-        protected virtual IEnumerable<KeyPin> ClientKeyPins()
+        public virtual IEnumerable<KeyPin> ClientKeyPins()
         {
 
             var pins = new List<KeyPin>();
@@ -135,13 +144,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // Every identity a connection names, the one that follows at a
             // time to come as well: a server that pins the key of its client
             // is told the next one before it is shown.
-            foreach (var named in Connections.Connections.Where     (entry => entry.IsSecure && entry.CertificateId is not null).
+            foreach (var named in WWCPNode.Connections.Connections.Where     (entry => entry.IsSecure && entry.CertificateId is not null).
                                                           OrderBy   (entry => entry.CreatedAt).
                                                           SelectMany(entry => entry.Identities))
             {
 
-                if (Certificates.Get(named.Id, CertificateKind.TLSIdentity) is not CertificateEntry identity ||
-                    !Certificates.TryLoad(identity, out var certificate, out _))
+                if (WWCPNode.Certificates.Get(named.Id, CertificateKind.TLSIdentity) is not CertificateEntry identity ||
+                    !WWCPNode.Certificates.TryLoad(identity, out var certificate, out _))
                 {
                     continue;
                 }

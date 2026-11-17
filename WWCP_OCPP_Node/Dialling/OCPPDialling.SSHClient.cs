@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// 10.4), one key per purpose and their rotation (sections 10.1 and 10.3), and the security events
     /// (section 9.4).
     /// </summary>
-    public abstract partial class OCPPDiallingNode
+    public partial class OCPPDialling
     {
 
         #region Data
@@ -67,22 +67,22 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         public SshClientKey SftpKey
 
-            => sftpKey ??= new SshClientKey(System.IO.Path.Combine(Connections.Path, SshClientKey.DirectoryName),
+            => sftpKey ??= new SshClientKey(System.IO.Path.Combine(WWCPNode.Connections.Path, SshClientKey.DirectoryName),
                                             $"chargingstation-sftp@{Environment.MachineName}",
                                             "id_ed25519_sftp");
 
         #endregion
 
 
-        #region (private) KeyOf(Purpose)
+        #region (public) KeyOf(Purpose)
 
         /// <summary>
         /// The station's key of the given purpose; null for NTS and DNS, whose keys are the node's.
         /// </summary>
-        protected SshClientKey? KeyOf(OCPPv2_1.SSHKeyPurpose Purpose)
+        public SshClientKey? KeyOf(OCPPv2_1.SSHKeyPurpose Purpose)
 
             => Purpose switch {
-                   OCPPv2_1.SSHKeyPurpose.Station  => SshKey,
+                   OCPPv2_1.SSHKeyPurpose.Station  => WWCPNode.SshKey,
                    OCPPv2_1.SSHKeyPurpose.SFTP  => SftpKey,
                    _                            => null
                };
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #endregion
 
 
-        #region (private) SignedByPinSetSigner(Request, Connection, WithoutTimeWindow, out Signer, out Why)
+        #region (public) SignedByPinSetSigner(Request, Connection, WithoutTimeWindow, out Signer, out Why)
 
         /// <summary>
         /// Whether a signer this station believes signed the given SetVariables request for the given
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="WithoutTimeWindow">Whether the signature's time is left out: for a pin set only.</param>
         /// <param name="Signer">Who signed it, as the Connections page says.</param>
         /// <param name="Why">Why it is not taken as signed.</param>
-        protected Boolean SignedByPinSetSigner(OCPPv2_1.CSMS.SetVariablesRequest?   Request,
+        public Boolean SignedByPinSetSigner(OCPPv2_1.CSMS.SetVariablesRequest?   Request,
                                              ConnectionEntry                      Connection,
                                              Boolean                              WithoutTimeWindow,
                                              [NotNullWhen(true)]  out String?     Signer,
@@ -186,12 +186,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             return PinSetSignatures.SignedBy(Request,
                                              json,
-                                             Connections.PinSetSigners,
+                                             WWCPNode.Connections.PinSetSigners,
                                              NodeIdentityOf(Connection) ?? Node21.Id,
                                              OCPPv2_1.Version.WebSocketSubProtocolId,
                                              Connection.IsSSH ? "SSH" : "TLS",
                                              WithoutTimeWindow,
-                                             () => TimeProvider.GetUtcNow(),
+                                             () => WWCPNode.TimeProvider.GetUtcNow(),
                                              out Signer,
                                              out Why,
                                              $"{NodeWording.Noun}");
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         {
 
             var login = Connection.AuthenticationId is String authenticationId
-                            ? Connections.Authentications.FirstOrDefault(entry => entry.Id == authenticationId)?.Login
+                            ? WWCPNode.Connections.Authentications.FirstOrDefault(entry => entry.Id == authenticationId)?.Login
                             : null;
 
             if (Connection.IsSSH)
@@ -252,8 +252,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
             // Who its identity says it is: the common name of the
             // certificate, which is what the store calls it by.
             if (Connection.CertificateId is String certificateId &&
-                Certificates.Get(certificateId, CertificateKind.TLSIdentity) is CertificateEntry identity &&
-                Certificates.TryLoad(identity, out var certificate, out _))
+                WWCPNode.Certificates.Get(certificateId, CertificateKind.TLSIdentity) is CertificateEntry identity &&
+                WWCPNode.Certificates.TryLoad(identity, out var certificate, out _))
             {
                 using (certificate)
                 {
@@ -270,57 +270,57 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) PinSetTaken(Connection, Learned, Confirmed, Version, Signer)
+        #region (public) PinSetTaken(Connection, Learned, Confirmed, Version, Signer)
 
         /// <summary>
         /// A signed pin set was taken for a connection: its trust is held to the pins at once, and a
         /// probation ends - confirmed, or with the server it learned refused.
         /// </summary>
-        protected void PinSetTaken(String   Connection,
+        public void PinSetTaken(String   Connection,
                                  String?  Learned,
                                  Boolean  Confirmed,
                                  UInt64   Version,
                                  String   Signer)
         {
 
-            var entry = Connections.Connections.FirstOrDefault(entry => entry.Id == Connection);
+            var entry = WWCPNode.Connections.Connections.FirstOrDefault(entry => entry.Id == Connection);
 
             if (entry is null)
                 return;
 
-            var onIt = probations.OfEndpoint(Connection);
+            var onIt = WWCPNode.probations.OfEndpoint(Connection);
 
             // A connection to a server refused is written down as not believed
             // before anything else: before its trust takes the pins, which ends
             // the probation, and before anything is said of it. In between a
             // request of that server would get through the gate.
             if (Learned is not null && !Confirmed)
-                probations.NoLongerBelieved(onIt, $"This {NodeWording.Noun} no longer believes its server by the host key {Learned} it learned on its first " +
+                WWCPNode.probations.NoLongerBelieved(onIt, $"This {NodeWording.Noun} no longer believes its server by the host key {Learned} it learned on its first " +
                                                   $"connection: the signed pin set of version {Version} does not have it, and the connection is closed.");
 
-            if (sshTrusts.TryGetValue(Connection, out var trust))
+            if (WWCPNode.sshTrusts.TryGetValue(Connection, out var trust))
                 trust.TakePins(entry.SshHostKeys);
 
-            probations.TryStopClock(Connection);
+            WWCPNode.probations.TryStopClock(Connection);
 
             foreach (var probation in onIt)
-                probations.Remove(probation);
+                WWCPNode.probations.Remove(probation);
 
             if (Learned is not null && Confirmed)
             {
-                Log.Notice($"'{entry.Description}': the signed pin set of version {Version}, signed by '{Signer}', confirms the host key " +
+                WWCPNode.Log.Notice($"'{entry.Description}': the signed pin set of version {Version}, signed by '{Signer}', confirms the host key " +
                            $"{Learned} it learned on its first connection; its probation ends.", "ocpp", "connections", "ssh", "security");
-                SshSecurityEvent(entry, "ReconfigurationOfSecurityParameters", $"Host key {Learned} of '{entry.Id}' confirmed by a signed pin set of version {Version}");
+                WWCPNode.SshSecurityEvent(entry, "ReconfigurationOfSecurityParameters", $"Host key {Learned} of '{entry.Id}' confirmed by a signed pin set of version {Version}");
             }
 
             else if (Learned is not null)
             {
 
-                Log.Warning($"'{entry.Description}': the signed pin set of version {Version}, signed by '{Signer}', does not have the host key " +
+                WWCPNode.Log.Warning($"'{entry.Description}': the signed pin set of version {Version}, signed by '{Signer}', does not have the host key " +
                             $"{Learned} it learned on its first connection - that server is not the one its CSMS knows. The connection is made anew, " +
                             $"held to the signed pins ({entry.SshHostKey}).", "ocpp", "connections", "ssh", "security");
 
-                SshSecurityEvent(entry, "InvalidCsmsHostKey", $"Learned host key {Learned} of '{entry.Id}' is not among the signed pins of version {Version}");
+                WWCPNode.SshSecurityEvent(entry, "InvalidCsmsHostKey", $"Learned host key {Learned} of '{entry.Id}' is not among the signed pins of version {Version}");
 
                 foreach (var probation in onIt)
                     if (probation is SshMessageConnection current)
@@ -329,20 +329,20 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
 
             else
-                SshSecurityEvent(entry, "ReconfigurationOfSecurityParameters", $"Host keys of '{entry.Id}' set by a signed pin set of version {Version}");
+                WWCPNode.SshSecurityEvent(entry, "ReconfigurationOfSecurityParameters", $"Host keys of '{entry.Id}' set by a signed pin set of version {Version}");
 
         }
 
         #endregion
 
-        #region (private) CustomTrigger(Request)
+        #region (public) CustomTrigger(Request)
 
         /// <summary>
         /// TriggerMessage of CustomTrigger "SignSSHKey" - "SignSSHKey:SFTP" for the key of SFTP: a new key
         /// is made, and shown to the CSMS in SignSSHKey (section 10.3). The keys of NTS and DNS are the
         /// node's, and are not rotated this way.
         /// </summary>
-        protected Task<OCPPv2_1.CS.TriggerMessageResponse?> CustomTrigger(OCPPv2_1.CSMS.TriggerMessageRequest Request)
+        public Task<OCPPv2_1.CS.TriggerMessageResponse?> CustomTrigger(OCPPv2_1.CSMS.TriggerMessageRequest Request)
         {
 
             var trigger = Request.CustomTrigger ?? "";
@@ -359,11 +359,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 var asked = trigger.Split(':');
 
                 var keys  = asked.Length == 4
-                                ? FileTransferLogins(asked[2]).Contains(asked[3], StringComparer.Ordinal)
+                                ? WWCPNode.FileTransferLogins(asked[2]).Contains(asked[3], StringComparer.Ordinal)
                                       ? [ (Peer: asked[2], Login: asked[3]) ]
                                       : []
                                 : asked.Length == 2
-                                      ? [.. FileServers.SelectMany(fileServer => FileTransferLogins(fileServer.Id).Select(login => (Peer: fileServer.Id, Login: login)))]
+                                      ? [.. WWCPNode.FileServers.SelectMany(fileServer => WWCPNode.FileTransferLogins(fileServer.Id).Select(login => (Peer: fileServer.Id, Login: login)))]
                                       : Array.Empty<(String Peer, String Login)>();
 
                 if (asked.Length != 2 || keys.Length > 0)
@@ -424,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                                    String  Why)
         {
 
-            if (FileTransferPublicKey(Peer, Login) is not String line)
+            if (WWCPNode.FileTransferPublicKey(Peer, Login) is not String line)
                 return null;
 
             try
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                                                    Peer,
                                                                                                    Login));
 
-                Log.Notice($"The key this {NodeWording.Noun} signs in with as '{Login}' at the file server '{Peer}' was shown to the CSMS in SignSSHKey, as {Why}: " +
+                WWCPNode.Log.Notice($"The key this {NodeWording.Noun} signs in with as '{Login}' at the file server '{Peer}' was shown to the CSMS in SignSSHKey, as {Why}: " +
                            $"it answered {OCPPv2_1.GenericStatusExtensions.AsText(response.Status)}{(response.StatusInfo is not null ? $" ({response.StatusInfo.ReasonCode})" : "")}.",
                            "ocpp", "ssh", "sftp", "security");
 
@@ -445,7 +445,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
             catch (Exception e)
             {
-                Log.Warning($"The key of '{Login}' at the file server '{Peer}' could not be shown to the CSMS: {e.Message}", "ocpp", "ssh", "sftp", "security");
+                WWCPNode.Log.Warning($"The key of '{Login}' at the file server '{Peer}' could not be shown to the CSMS: {e.Message}", "ocpp", "ssh", "sftp", "security");
                 return null;
             }
 
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                                                     Purpose,
                                                                                                     next));
 
-                Log.Notice($"The SSH key of {OCPPv2_1.SSHKeyPurposeExtensions.AsText(Purpose)} is rotated, as {Why}: the next one was shown to the CSMS in SignSSHKey, " +
+                WWCPNode.Log.Notice($"The SSH key of {OCPPv2_1.SSHKeyPurposeExtensions.AsText(Purpose)} is rotated, as {Why}: the next one was shown to the CSMS in SignSSHKey, " +
                            $"which answered {OCPPv2_1.GenericStatusExtensions.AsText(response.Status)}{(response.StatusInfo is not null ? $" ({response.StatusInfo.ReasonCode})" : "")}.",
                            "ocpp", "ssh", "security");
 
@@ -486,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             }
             catch (Exception e)
             {
-                Log.Warning($"The SSH key of {OCPPv2_1.SSHKeyPurposeExtensions.AsText(Purpose)} could not be rotated: {e.Message}", "ocpp", "ssh", "security");
+                WWCPNode.Log.Warning($"The SSH key of {OCPPv2_1.SSHKeyPurposeExtensions.AsText(Purpose)} could not be rotated: {e.Message}", "ocpp", "ssh", "security");
                 return null;
             }
 
@@ -494,19 +494,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) RotateIfOld()
+        #region (public) RotateIfOld()
 
         /// <summary>
         /// Rotate every key older than its maximum age, where none is pending yet.
         /// </summary>
-        protected async Task RotateIfOld()
+        public async Task RotateIfOld()
         {
             foreach (var purpose in new[] { OCPPv2_1.SSHKeyPurpose.Station, OCPPv2_1.SSHKeyPurpose.SFTP })
             {
                 if (KeyOf(purpose) is SshClientKey key                                       &&
                     key.MaxAgeDays > 0                                                       &&
                     key.MadeAt is DateTimeOffset madeAt                                      &&
-                    madeAt + TimeSpan.FromDays(key.MaxAgeDays) < TimeProvider.GetUtcNow()   &&
+                    madeAt + TimeSpan.FromDays(key.MaxAgeDays) < WWCPNode.TimeProvider.GetUtcNow()   &&
                     key.PendingPublicKeyLine is null)
                 {
                     await RotateSSHKey(purpose, $"it is older than {key.MaxAgeDays} day(s)");
@@ -516,14 +516,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (private) SSHKeySigned(...)
+        #region (public) SSHKeySigned(...)
 
         /// <summary>
         /// The CSMS confirms that a key is enrolled at every server the station dials for its purpose: the
         /// pending one becomes the key, and the old one's private half goes; the current one keeps the
         /// certificate that came with it.
         /// </summary>
-        protected async Task<OCPPv2_1.CS.SSHKeySignedResponse> SSHKeySigned(DateTimeOffset                        Timestamp,
+        public async Task<OCPPv2_1.CS.SSHKeySignedResponse> SSHKeySigned(DateTimeOffset                        Timestamp,
                                                                           IEventSender                          Sender,
                                                                           IMessageConnection                    Connection,
                                                                           OCPPv2_1.CSMS.SSHKeySignedRequest     Request,
@@ -539,11 +539,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     return new OCPPv2_1.CS.SSHKeySignedResponse(Request, OCPPv2_1.GenericStatus.Rejected,
                                                                 new OCPPv2_1.StatusInfo("InvalidValue", "A key of a file server is named by its peer and its login, both."));
 
-                if (ConfirmFileTransferKey(peer, login, Request.PublicKey) is String notConfirmed)
+                if (WWCPNode.ConfirmFileTransferKey(peer, login, Request.PublicKey) is String notConfirmed)
                     return new OCPPv2_1.CS.SSHKeySignedResponse(Request, OCPPv2_1.GenericStatus.Rejected,
                                                                 new OCPPv2_1.StatusInfo("UnknownKey", notConfirmed.Length > 1024 ? notConfirmed[..1024] : notConfirmed));
 
-                SshSecurityEvent(null, "ReconfigurationOfSecurityParameters", $"The key of '{login}' at the file server '{peer}' is confirmed as enrolled there, and used from now on.");
+                WWCPNode.SshSecurityEvent(null, "ReconfigurationOfSecurityParameters", $"The key of '{login}' at the file server '{peer}' is confirmed as enrolled there, and used from now on.");
 
                 return new OCPPv2_1.CS.SSHKeySignedResponse(Request, OCPPv2_1.GenericStatus.Accepted);
 
@@ -558,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 await key.Promote(Request.Certificate, CancellationToken);
 
-                SshSecurityEvent(null, "ReconfigurationOfSecurityParameters", $"SSH key of {OCPPv2_1.SSHKeyPurposeExtensions.AsText(Request.Purpose)} rotated: {key.Fingerprint}");
+                WWCPNode.SshSecurityEvent(null, "ReconfigurationOfSecurityParameters", $"SSH key of {OCPPv2_1.SSHKeyPurposeExtensions.AsText(Request.Purpose)} rotated: {key.Fingerprint}");
 
                 return new OCPPv2_1.CS.SSHKeySignedResponse(Request, OCPPv2_1.GenericStatus.Accepted);
 
@@ -579,7 +579,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// Whether two lines of authorized_keys name the same key: its type and its base64, whatever the
         /// comment.
         /// </summary>
-        protected static Boolean SameKey(String Line1, String Line2)
+        public static Boolean SameKey(String Line1, String Line2)
 
             => String.Join(' ', Line1.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2)) ==
                String.Join(' ', Line2.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2));
@@ -592,13 +592,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// What SSHClientController reads and writes of this station.
         /// </summary>
-        protected sealed class SSHClientSource(OCPPDiallingNode Station) : OCPPv2_1.ISSHClientControllerSource,
+        public sealed class SSHClientSource(OCPPDialling Station) : OCPPv2_1.ISSHClientControllerSource,
                                                                         OCPPv2_1.ISetVariablesSource
         {
 
             public IEnumerable<String> Connections
 
-                => [.. Station.Connections.Connections.Where(entry => entry.IsSSH).Select(entry => entry.Id)];
+                => [.. Station.WWCPNode.Connections.Connections.Where(entry => entry.IsSSH).Select(entry => entry.Id)];
 
             public IEnumerable<String> ConnectionVariables          => [ "HostKeyPins", "HostKeyPinsVersion", "TrustOnFirstUse", "ProbationTime", "OnPinMismatch", "HostKeyFingerprint", "LearnedHostKey" ];
             public IEnumerable<String> WritableConnectionVariables  => [ "HostKeyPins", "HostKeyPinsVersion", "TrustOnFirstUse", "ProbationTime", "OnPinMismatch" ];
@@ -609,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public String? ConnectionValue(String Connection, String Variable)
             {
 
-                if (Station.Connections.Connections.FirstOrDefault(entry => entry.Id == Connection) is not ConnectionEntry entry)
+                if (Station.WWCPNode.Connections.Connections.FirstOrDefault(entry => entry.Id == Connection) is not ConnectionEntry entry)
                     return null;
 
                 return Variable switch {
@@ -618,7 +618,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                            "TrustOnFirstUse"     => entry.SshTrustOnFirstUse.ToString(),
                            "ProbationTime"       => ((Int64) entry.SshProbationTime.TotalSeconds).ToString(),
                            "OnPinMismatch"       => entry.SshOnPinMismatch.ToString(),
-                           "HostKeyFingerprint"  => Station.sshTrusts.TryGetValue(Connection, out var trust) ? trust.Shown ?? "" : "",
+                           "HostKeyFingerprint"  => Station.WWCPNode.sshTrusts.TryGetValue(Connection, out var trust) ? trust.Shown ?? "" : "",
                            "LearnedHostKey"      => entry.SshLearnedHostKey ?? "",
                            _                     => null
                        };
@@ -641,8 +641,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (Station.KeyOf(purpose) is not SshClientKey key)
                     return Variable == "ClientPublicKey"
                                ? (purpose == OCPPv2_1.SSHKeyPurpose.DNS
-                                      ? Station.DNSSSHClientPublicKey
-                                      : Station.NTSKEClientPublicKey) ?? ""
+                                      ? Station.WWCPNode.DNSSSHClientPublicKey
+                                      : Station.WWCPNode.NTSKEClientPublicKey) ?? ""
                                : Variable == "ClientKeyMaxAge" ? "0" : "";
 
                 return Variable switch {
@@ -726,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     var connection = group.Key;
 
-                    if (Station.Connections.CopyOf(connection) is not ConnectionEntry connectionEntry)
+                    if (Station.WWCPNode.Connections.CopyOf(connection) is not ConnectionEntry connectionEntry)
                     {
                         foreach (var index in group)
                             Result(index, OCPPv2_1.SetVariableStatus.UnknownComponent, "NotFound", $"This {NodeWording.Noun} has no connection '{connection}' any more.");
@@ -773,7 +773,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                             Result(pins.Index,    OCPPv2_1.SetVariableStatus.Rejected, "InvalidValue", "The pin set has no version.");
                         }
 
-                        else if (!Station.Connections.TryTakeSignedHostKeys(connection, pins.Value, versionNumber, out var learned, out var confirmed, out var refused))
+                        else if (!Station.WWCPNode.Connections.TryTakeSignedHostKeys(connection, pins.Value, versionNumber, out var learned, out var confirmed, out var refused))
                         {
                             Result(pins.Index,    OCPPv2_1.SetVariableStatus.Rejected, "InvalidValue", refused);
                             Result(version.Index, OCPPv2_1.SetVariableStatus.Rejected, "InvalidValue", refused);
@@ -810,7 +810,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                             trustEntries.FirstOrDefault(one => one.Name == "OnPinMismatch").Value,
                                                             trustEntries.FirstOrDefault(one => one.Name == "ProbationTime").Value is String seconds && Int64.TryParse(seconds, out var s) ? s : null);
 
-                        var changed  = Station.Connections.TryChangeSshTrust(connection, settings, out var notChanged);
+                        var changed  = Station.WWCPNode.Connections.TryChangeSshTrust(connection, settings, out var notChanged);
 
                         foreach (var one in trustEntries)
                             if (changed)
@@ -819,7 +819,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                 Result(one.Index, OCPPv2_1.SetVariableStatus.Rejected, "InvalidValue", notChanged);
 
                         if (changed)
-                            Station.SshSecurityEvent(Station.Connections.Connections.FirstOrDefault(entry => entry.Id == connection),
+                            Station.WWCPNode.SshSecurityEvent(Station.WWCPNode.Connections.Connections.FirstOrDefault(entry => entry.Id == connection),
                                                      "ReconfigurationOfSecurityParameters", $"How '{connection}' believes its server, set by a signed pin set");
 
                     }

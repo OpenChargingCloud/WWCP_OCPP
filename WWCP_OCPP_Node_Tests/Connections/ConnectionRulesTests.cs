@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
+using cloud.charging.open.protocols.WWCP.Node;
 using cloud.charging.open.protocols.WWCP.Node.Connections;
 using cloud.charging.open.protocols.OCPP.Node.TestKit;
 
@@ -117,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             Assert.Multiple(() => {
                 Assert.That(entry.RemoteNodeId,                              Is.Null);
                 Assert.That(entry.ToJSON()[ConnectionEntry.RemoteNodeIdKey], Is.Null);
-                Assert.That(OCPPDiallingNode.NextHopOf(entry),               Is.EqualTo(NetworkingNode_Id.Parse($"connection-{id}")));
+                Assert.That(WWCPNode.NextHopOf(entry),               Is.EqualTo(NetworkingNode_Id.Parse($"connection-{id}")));
             });
 
         }
@@ -187,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             Assert.Multiple(() => {
                 Assert.That(entry.RemoteNodeId,                                                Is.EqualTo("cs007"));
                 Assert.That(entry.ToJSON().Value<String>(ConnectionEntry.RemoteNodeIdKey),     Is.EqualTo("cs007"));
-                Assert.That(OCPPDiallingNode.NextHopOf(entry),                                 Is.EqualTo(NetworkingNode_Id.Parse("cs007")));
+                Assert.That(WWCPNode.NextHopOf(entry),                                 Is.EqualTo(NetworkingNode_Id.Parse("cs007")));
             });
 
             // And read back as it was written.

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.WWCP.Node;
 using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -64,68 +65,25 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// from a server nobody vouched for yet.
     /// </para>
     /// </remarks>
-    public abstract partial class OCPPDiallingNode
+    public partial class OCPPDialling
     {
 
-        #region (protected override) SSHPeerClientKey, SSHPeerClientPublicKey, DefaultSSHPeerUser, SSHPeerHostsToBe
+        #region (override) SignsInAtSSHPeersWithItsKey / DefaultSSHPeerUser
 
         /// <summary>
-        /// The key this station signs in with at the SSH peers of its
-        /// configuration: its own, the one of the purpose "Station" - the key
-        /// it is known by wherever it signs in over SSH, and the one OCPP is a
-        /// channel under as well. Made at the first need.
+        /// A node of OCPP signs in at its SSH peers with the key of its
+        /// connections, as a peer it dialled over ssh:// shares it.
         /// </summary>
-        protected override ISshHostKey? SSHPeerClientKey
-        {
-            get
-            {
-                try
-                {
-                    return SshKey.MakeIfNeeded().GetAwaiter().GetResult();
-                }
-                catch (Exception e)
-                {
-                    Log.Error($"The SSH key of this {NodeWording.Noun} could not be had for its SSH peers: {e.Message}", "ocpp", "connections", "ssh", "security");
-                    return null;
-                }
-            }
-        }
+        public override Boolean SignsInAtSSHPeersWithItsKey
+
+            => true;
 
         /// <summary>
-        /// The public key this station signs in with at its SSH peers, as a
-        /// line of an authorized_keys file.
+        /// It signs in as its OCPP 2.1 node is named.
         /// </summary>
-        public override String? SSHPeerClientPublicKey
-
-            => SSHPeerClientKey is not null
-                   ? SshKey.PublicKeyLine
-                   : null;
-
-        /// <summary>
-        /// The user name this station signs in under at an SSH peer whose entry
-        /// names none: what it calls itself in OCPP.
-        /// </summary>
-        protected override String DefaultSSHPeerUser
+        public override String? DefaultSSHPeerUser
 
             => Node21.Id.ToString();
-
-        /// <summary>
-        /// The hosts of the connections this station dials over SSH: each
-        /// becomes an SSH peer when it is first dialled, and is one a name
-        /// server may be given to share the connection of before that - the
-        /// host of a network connection profile with an ssh:// URL, as section
-        /// 7.2 of the white paper "DNS over SSH" has it. A station that starts
-        /// cold has its names over that connection before OCPP went over it.
-        /// </summary>
-        protected override IEnumerable<String> SSHPeerHostsToBe
-
-            // Asked while the node is still being made, by what configures
-            // its name servers: a node that has no connections yet has none
-            // over SSH.
-            => Connections is null
-                   ? []
-                   : [.. Connections.Connections.Where (entry => entry.IsSSH).
-                                                 Select(entry => entry.URL.Host.ToString())];
 
         #endregion
 
