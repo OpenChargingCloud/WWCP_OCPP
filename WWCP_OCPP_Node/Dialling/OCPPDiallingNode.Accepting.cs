@@ -699,6 +699,54 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
+        #region (protected) InboundCertificateHint(Version, Certificate, Chain, PolicyErrors)
+
+        /// <summary>
+        /// For the log of a kind that refused a client certificate no inbound
+        /// connection claimed: whether it is one of the CA an inbound
+        /// connection of the given version checks the certificate of its other
+        /// end by, issued to another name than that connection comes under -
+        /// the certificate of that back end with a common name that was
+        /// mistyped, or one it was not issued for. Null where it is not.
+        /// </summary>
+        /// <remarks>
+        /// Only for a refusal: a charging station's certificate of the same CA
+        /// is one that passes as a station's, and nothing to say anything of.
+        /// </remarks>
+        /// <param name="Version">The version of OCPP the server of the handshake speaks.</param>
+        /// <param name="Certificate">The client certificate of the handshake, or null.</param>
+        /// <param name="Chain">The chain the machine built for it, with the certificates the other end sent beside it.</param>
+        /// <param name="PolicyErrors">What building that chain found.</param>
+        protected String? InboundCertificateHint(OCPPVersion        Version,
+                                                 X509Certificate2?  Certificate,
+                                                 X509Chain?         Chain,
+                                                 SslPolicyErrors    PolicyErrors)
+        {
+
+            if (Certificate is null)
+                return null;
+
+            var commonName = CommonNameOf(Certificate);
+
+            foreach (var entry in CertificateClaimantsOf(Version).Where(entry => entry.ClientPins is not null &&
+                                                                                 entry.InboundName is not null &&
+                                                                                 entry.InboundName != commonName))
+            {
+
+                var judgement = JudgeClient(entry, entry.InboundName!, entry.ClientPins!, Certificate, Chain, PolicyErrors, ByItsName: false);
+
+                if (judgement.Accepted)
+                    return $"It leads to the roots '{entry.Description}' holds the certificate of the back end that dials to, which comes under '{entry.InboundName}', " +
+                           $"and is issued to '{commonName ?? Certificate.Subject}': where it is that back end's, it has to be issued to '{entry.InboundName}'.";
+
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
         #region (private) CertificateClaimantsOf(Version)
 
         /// <summary>
@@ -744,15 +792,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="Certificate">The certificate.</param>
         /// <param name="Chain">The chain built for it at the handshake, or one built with the certificates kept from there; null to build one here.</param>
         /// <param name="PolicyErrors">What building the chain at the handshake found; null where it is built here.</param>
+        /// <param name="ByItsName">Whether its common name has to be the name: false to judge its chain alone.</param>
         private ClientJudgement JudgeClient(ConnectionEntry    Entry,
                                             String             Name,
                                             ServerPins         Pins,
                                             X509Certificate2   Certificate,
                                             X509Chain?         Chain,
-                                            SslPolicyErrors?   PolicyErrors)
+                                            SslPolicyErrors?   PolicyErrors,
+                                            Boolean            ByItsName = true)
         {
 
-            if (CommonNameOf(Certificate) != Name)
+            if (ByItsName && CommonNameOf(Certificate) != Name)
                 return new ClientJudgement(false, $"it is issued to '{CommonNameOf(Certificate) ?? Certificate.Subject}', and '{Entry.Description}' comes under '{Name}'.", null);
 
             // What .NET judges a client certificate by - a chain to a root this
