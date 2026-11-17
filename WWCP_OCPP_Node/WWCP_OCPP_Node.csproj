@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="WWCP_OCPP_Node_TestKit" />
+    <InternalsVisibleTo Include="WWCP_OCPP_Node_Tests" />
   </ItemGroup>
 
 </Project>
