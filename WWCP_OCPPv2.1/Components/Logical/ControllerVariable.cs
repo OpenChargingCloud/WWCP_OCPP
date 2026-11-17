@@ -42,6 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <param name="Writable">Whether the paper lets a CSMS write it.</param>
     /// <param name="MayBeEmpty">Whether "" is a value it may be set to: an unused slot, or the default.</param>
     /// <param name="MaxItems">The most entries of a comma separated list.</param>
+    /// <param name="WriteOnly">Whether it is written and never read out: a password, a shared secret.</param>
     internal sealed record ControllerVariable(String                Name,
                                        DataTypes             DataType,
                                        String                Description,
@@ -51,7 +52,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        Boolean               InSeconds    = false,
                                        Boolean               Writable     = false,
                                        Boolean               MayBeEmpty   = false,
-                                       Int32?                MaxItems     = null)
+                                       Int32?                MaxItems     = null,
+                                       Boolean               WriteOnly    = false)
     {
 
         #region ValuesOf(Supported)
@@ -111,7 +113,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Instance:         Instance,
                    Attributes:       new VariableAttribute(
                                          Mutability:  Writable && Writes
-                                                          ? MutabilityTypes.ReadWrite
+                                                          ? WriteOnly
+                                                                ? MutabilityTypes.WriteOnly
+                                                                : MutabilityTypes.ReadWrite
                                                           : MutabilityTypes.ReadOnly
                                      ),
                    Characteristics:  new VariableCharacteristics(
