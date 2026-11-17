@@ -10,6 +10,11 @@
  *   setConnectionsResource('csms');
  *   setNodeNoun('local controller');
  *   setNodeTraits({ oneNodePerOCPPVersion: false, isDialled: true });
+ *
+ * A node that dials downwards - a CSMS, dialling the charging stations and
+ * local controllers that cannot dial it - says that as well:
+ *
+ *   setNodeTraits({ oneNodePerOCPPVersion: false, isDialled: true, dialsDown: true });
  */
 
 /** What a kind of node is, where the pages say something that is not true of every kind. */
@@ -18,12 +23,18 @@ export interface NodeTraits {
     oneNodePerOCPPVersion:  boolean;
     /** Whether it is dialled itself, as a server, beside dialling its back ends. */
     isDialled:              boolean;
+    /**
+     * Whether what it dials is below it - charging stations, local
+     * controllers - and not its back end: then the pages speak of the node at
+     * the other end, and of no CSMS there.
+     */
+    dialsDown:              boolean;
 }
 
 let resource  = 'connections';
 let noun      = 'station';
 let inFull    = 'charging station';
-let traits: NodeTraits = { oneNodePerOCPPVersion: true, isDialled: false };
+let traits: NodeTraits = { oneNodePerOCPPVersion: true, isDialled: false, dialsDown: false };
 
 
 /** Name the resource a right to the connections is a right to: "connections" on a charging station, "csms" on a local controller. */
@@ -64,4 +75,12 @@ export function setNodeTraits(Traits: Partial<NodeTraits>): void {
 /** What is true of this kind of node. */
 export function nodeTraits(): NodeTraits {
     return traits;
+}
+
+/**
+ * What is at the other end of a connection, in a word: the "back end" of a
+ * node that dials upwards, the "node" a node that dials downwards reaches.
+ */
+export function farEnd(): string {
+    return traits.dialsDown ? 'node' : 'back end';
 }

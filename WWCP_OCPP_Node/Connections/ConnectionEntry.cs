@@ -66,7 +66,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// <summary>
         /// A local controller, normally in the same installation.
         /// </summary>
-        LocalController
+        LocalController,
+
+        /// <summary>
+        /// A charging station: what a node above the stations dials, a CSMS
+        /// that reaches one that cannot dial it.
+        /// </summary>
+        ChargingStation
 
     }
 
@@ -271,6 +277,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// </summary>
         public const String InboundKey           = "inbound";
 
+        /// <summary>
+        /// The key a connection says under which node is at its other end:
+        /// the name it is routed by, where this node dials downwards.
+        /// </summary>
+        public const String RemoteNodeIdKey      = "remoteNodeId";
+
+        /// <summary>
+        /// The longest the name of the node at the other end may be written.
+        /// </summary>
+        public const Int32  MaxRemoteNodeIdLength = 128;
+
         #endregion
 
         #region Properties
@@ -344,6 +361,19 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             => Inbound
                    ? InboundNameOf(URL)
                    : null;
+
+        /// <summary>
+        /// The node at the other end of a connection this node dials, by the
+        /// name it has in the routing table of the OCPP node - or null.
+        /// </summary>
+        /// <remarks>
+        /// A node that dials its back end needs none: whatever it dials is
+        /// its CSMS, and is spoken to as that. A node that dials downwards -
+        /// a CSMS dialling a charging station or a local controller - speaks
+        /// to each by its name, and nothing in the URL says it: the URL ends
+        /// with the name the dialling node comes under, as it always does.
+        /// </remarks>
+        public String?         RemoteNodeId         { get; internal set; }
 
         /// <summary>
         /// The credentials this connection proves itself with, by their
@@ -803,6 +833,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                     Type = ConnectionType.LocalController;
                     return true;
 
+                case "chargingstation":
+                    Type = ConnectionType.ChargingStation;
+                    return true;
+
                 default:
                     Type = ConnectionType.CSMS;
                     return false;
@@ -999,6 +1033,59 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
             {
                 Error = $"'{Name}' is a name this {NodeWording.Noun} keeps for itself. Whatever dials in comes under a name of its own - csms-01, say; " +
                         "the one in charge is spoken to as the CSMS all the same.";
+                Name  = null;
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region (static) ValidateRemoteNodeId(Text, out Name, out Error)
+
+        /// <summary>
+        /// What can be said to be wrong with the name of the node at the
+        /// other end of a connection: it names a networking node, and none
+        /// of the names an OCPP node keeps for itself.
+        /// </summary>
+        /// <param name="Text">The name as written; nothing for none.</param>
+        /// <param name="Name">The name, or null where none is written.</param>
+        public static Boolean ValidateRemoteNodeId(String?                           Text,
+                                                   out String?                       Name,
+                                                   [NotNullWhen(false)] out String?  Error)
+        {
+
+            Name   = Named(Text);
+            Error  = null;
+
+            if (Name is null)
+                return true;
+
+            if (Name.Length > MaxRemoteNodeIdLength)
+            {
+                Error = $"The name of the node at the other end may be at most {MaxRemoteNodeIdLength} characters.";
+                Name  = null;
+                return false;
+            }
+
+            if (Name.Any(Char.IsWhiteSpace) ||
+                !cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.TryParse(Name, out var node))
+            {
+                Error = $"'{Name}' can not name a networking node, and so nothing can be reached under it.";
+                Name  = null;
+                return false;
+            }
+
+            if (node == cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.CSMS          ||
+                node == cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.CentralSystem ||
+                node == cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.Broadcast     ||
+                node == cloud.charging.open.protocols.WWCP.NetworkingNode.NetworkingNode_Id.Zero          ||
+                Name.StartsWith("connection-", StringComparison.Ordinal))
+            {
+                Error = $"'{Name}' is a name this {NodeWording.Noun} keeps for itself. The node at the other end has a name of its own - " +
+                        "the one a charging station dials its CSMS under, say.";
                 Name  = null;
                 return false;
             }
@@ -1618,6 +1705,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 return false;
             }
 
+            if (!ValidateRemoteNodeId(JSON.Value<String>(RemoteNodeIdKey), out var remoteNodeId, out var wrongRemoteNodeId))
+            {
+                Error = $"connection '{id}': {wrongRemoteNodeId}";
+                return false;
+            }
+
             Entry = new ConnectionEntry(
                         id,
                         (JSON.Value<String>("description") ?? "").Trim(),
@@ -1628,6 +1721,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                         OCPPVersion         = version,
                         AutoConnect  = JSON.Value<Boolean?>("autoConnect") ?? false,
                         Inbound             = inbound,
+                        RemoteNodeId        = inbound ? null : remoteNodeId,
                         AuthenticationId    = Named(JSON.Value<String>("authenticationId")),
                         CertificateId       = Named(JSON.Value<String>("certificateId")),
                         SshHostKey          = hostKey,
@@ -1695,6 +1789,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 json.Add(new JProperty(InboundKey,    true));
                 json.Add(new JProperty("inboundName", InboundName));
             }
+
+            if (RemoteNodeId is not null)
+                json.Add(new JProperty(RemoteNodeIdKey, RemoteNodeId));
 
             if (AuthenticationId is not null)  json.Add(new JProperty("authenticationId",  AuthenticationId));
             if (CertificateId    is not null)  json.Add(new JProperty("certificateId",     CertificateId));
@@ -1886,6 +1983,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                    OCPPVersion       = OCPPVersion,
                    AutoConnect       = AutoConnect,
                    Inbound           = Inbound,
+                   RemoteNodeId        = RemoteNodeId,
                    AuthenticationId  = AuthenticationId,
                    Identities          = Identities,
                    SshHostKey          = SshHostKey,

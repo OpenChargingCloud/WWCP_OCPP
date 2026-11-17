@@ -171,6 +171,20 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         public Func<String, String?>?     WhyInboundNameIsTaken { get; set; }
 
         /// <summary>
+        /// What this kind of node writes down as a connection, and what
+        /// not. Untold, everything a node that dials its back end does.
+        /// </summary>
+        public ConnectionRules            Rules                 { get; set; } = new ();
+
+        /// <summary>
+        /// Why a connection can not lead to the node of the given name, or
+        /// null where it can: asked of a node that dials downwards and
+        /// knows what is below it - a CSMS, whose charging stations and
+        /// local controllers are written down with what they may do.
+        /// </summary>
+        public Func<String, String?>?     WhyItLeadsToNoSuchNode { get; set; }
+
+        /// <summary>
         /// Every set of credentials, newest first.
         /// </summary>
         public IReadOnlyList<AuthenticationEntry> Authentications
@@ -1042,10 +1056,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                         String?                          Encoding        = null,
                                         String?                          SignatureFormats = null,
                                         IEnumerable<ConnectionIdentity>? Identities      = null,
-                                        Boolean?                         Inbound         = null)
+                                        Boolean?                         Inbound         = null,
+                                        String?                          RemoteNodeId    = null)
 
             => TryAddConnection(Description, URL, ConnectionType, AutoConnect, AuthenticationId, CertificateId,
-                                out Id, out Error, out _, OCPPVersion, SshHostKey, SshTrust, ServerKeyPins, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats, Identities, Inbound);
+                                out Id, out Error, out _, OCPPVersion, SshHostKey, SshTrust, ServerKeyPins, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats, Identities, Inbound, RemoteNodeId);
 
         /// <summary>
         /// Write down one connection - and say whether a refusal was the
@@ -1061,6 +1076,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// <param name="Encoding">How its messages are written - "json", "cbor" or "auto"; none for "json".</param>
         /// <param name="SignatureFormats">Which signatures it writes - "jws", "cose" or "both"; none, or "policy", for what the signature policy says.</param>
         /// <param name="Inbound">Whether the other end dials, see <see cref="ConnectionEntry.Inbound"/>; none for a connection this node dials.</param>
+        /// <param name="RemoteNodeId">The node at the other end, see <see cref="ConnectionEntry.RemoteNodeId"/>; none where this node dials its back end.</param>
         public Boolean TryAddConnection(String?                          Description,
                                         String?                          URL,
                                         String?                          ConnectionType,
@@ -1080,7 +1096,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                         String?                          Encoding        = null,
                                         String?                          SignatureFormats = null,
                                         IEnumerable<ConnectionIdentity>? Identities      = null,
-                                        Boolean?                         Inbound         = null)
+                                        Boolean?                         Inbound         = null,
+                                        String?                          RemoteNodeId    = null)
         {
 
             Id        = null;
@@ -1129,6 +1146,22 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
 
             var inbound = Inbound ?? false;
 
+            if (!ConnectionEntry.ValidateRemoteNodeId(RemoteNodeId, out var remoteNodeId, out Error))
+                return false;
+
+            // What dials in is named by its URL, and by nothing else.
+            if (inbound)
+                remoteNodeId = null;
+
+            if (!Rules.Check(url, type, version, inbound, remoteNodeId, out Error))
+                return false;
+
+            if (remoteNodeId is not null && WhyItLeadsToNoSuchNode?.Invoke(remoteNodeId) is String noSuchNode)
+            {
+                Error = noSuchNode;
+                return false;
+            }
+
             if (inbound && !CheckInbound(url, hostKey, serverKeyPins, rawPublicKeys, keyTrustOnFirstUse, pins, httpVersion, out Error))
                 return false;
 
@@ -1153,6 +1186,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                 OCPPVersion         = version,
                                 AutoConnect  = AutoConnect ?? false,
                                 Inbound             = inbound,
+                                RemoteNodeId        = remoteNodeId,
                                 AuthenticationId    = authenticationId,
                                 Identities          = identities,
                                 SshHostKey          = hostKey,
@@ -1230,11 +1264,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                            String?                          HTTPVersion            = null,
                                            String?                          Encoding               = null,
                                            String?                          SignatureFormats       = null,
-                                           IEnumerable<ConnectionIdentity>? Identities             = null)
+                                           IEnumerable<ConnectionIdentity>? Identities             = null,
+                                           Boolean?                         Inbound                = null,
+                                           String?                          RemoteNodeId           = null)
 
             => TryUpdateConnection(Id, Description, URL, ConnectionType, AutoConnect, AuthenticationId, CertificateId,
                                    out Error, out _, OCPPVersion, SshHostKey, SshHostKeyAsShown, SshTrust,
-                                   ServerKeyPins, ServerKeyPinsAsShown, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats, Identities);
+                                   ServerKeyPins, ServerKeyPinsAsShown, KeyPinTrust, Pins, HTTPVersion, Encoding, SignatureFormats, Identities,
+                                   Inbound, RemoteNodeId);
 
         /// <summary>
         /// Change one connection - and say whether a refusal was the file's
@@ -1252,6 +1289,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         /// <param name="Encoding">How its messages are written - "json", "cbor" or "auto"; nothing to keep what it says.</param>
         /// <param name="SignatureFormats">Which signatures it writes - "jws", "cose", "both", or "policy" for what the signature policy says; nothing to keep what it says.</param>
         /// <param name="Inbound">Whether the other end dials, see <see cref="ConnectionEntry.Inbound"/>; nothing to keep what it says.</param>
+        /// <param name="RemoteNodeId">The node at the other end, see <see cref="ConnectionEntry.RemoteNodeId"/>; nothing to keep what it says, an empty text for none.</param>
         public Boolean TryUpdateConnection(String?                          Id,
                                            String?                          Description,
                                            String?                          URL,
@@ -1273,7 +1311,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                                            String?                          Encoding               = null,
                                            String?                          SignatureFormats       = null,
                                            IEnumerable<ConnectionIdentity>? Identities             = null,
-                                           Boolean?                         Inbound                = null)
+                                           Boolean?                         Inbound                = null,
+                                           String?                          RemoteNodeId           = null)
         {
 
             NotSaved = false;
@@ -1420,6 +1459,26 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 if (!ConnectionEntry.CheckOneWay(keyPins, keyTrustOnFirstUse, pins, out Error))
                     return false;
 
+                // Kept where the change does not say; an empty text says none.
+                String? remoteNodeId = entry.RemoteNodeId;
+
+                if (RemoteNodeId is not null &&
+                    !ConnectionEntry.ValidateRemoteNodeId(RemoteNodeId, out remoteNodeId, out Error))
+                    return false;
+
+                // What dials in is named by its URL, and by nothing else.
+                if (inbound)
+                    remoteNodeId = null;
+
+                if (!Rules.Check(url, type, version, inbound, remoteNodeId, out Error))
+                    return false;
+
+                if (remoteNodeId is not null && WhyItLeadsToNoSuchNode?.Invoke(remoteNodeId) is String noSuchNode)
+                {
+                    Error = noSuchNode;
+                    return false;
+                }
+
                 if (inbound &&
                     (!CheckInbound(url, hostKey, keyPins, rawPublicKeys, keyTrustOnFirstUse, pins, httpVersion ?? entry.HTTPVersion, out Error) ||
                      !CheckInboundReferences(entry.Id, url, version, authenticationId, identities,
@@ -1444,6 +1503,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                 entry.OCPPVersion         = version;
                 entry.AutoConnect  = AutoConnect ?? false;
                 entry.Inbound             = inbound;
+                entry.RemoteNodeId        = remoteNodeId;
                 entry.AuthenticationId    = authenticationId;
                 entry.Identities          = identities;
 
@@ -2591,6 +2651,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
         private static Boolean ChangesHowItIsDialled(ConnectionEntry Was, ConnectionEntry Now)
 
             => Was.URL                 != Now.URL                 ||
+               Was.RemoteNodeId        != Now.RemoteNodeId        ||
                Was.OCPPVersion         != Now.OCPPVersion         ||
                Was.AutoConnect         != Now.AutoConnect         ||
                Was.AuthenticationId    != Now.AuthenticationId    ||
@@ -3658,8 +3719,15 @@ namespace cloud.charging.open.protocols.OCPP.Node.Connections
                            new JProperty("pinSetSigners",          new JArray(
                                pinSetSigners.Select(signer => signer.ToJSON()))),
 
-                           new JProperty("connectionTypes",        new JArray("CSMS", "CSMSBackup", "LocalController")),
-                           new JProperty("ocppVersions",           new JArray("OCPP2.1", "OCPP1.6")),
+                           new JProperty("connectionTypes",        new JArray(Rules.Types.Select(type => type.ToString()))),
+                           new JProperty("ocppVersions",           Rules.OCPP1_6 ? new JArray("OCPP2.1", "OCPP1.6") : new JArray("OCPP2.1")),
+
+                           // What this kind of node writes down, for the page
+                           // that offers it.
+                           new JProperty("rules",                  new JObject(
+                               new JProperty("inbound",                Rules.Inbound),
+                               new JProperty("ssh",                    Rules.SSH),
+                               new JProperty("namesTheNodeItLeadsTo",  Rules.NamesTheNodeItLeadsTo))),
 
                            new JProperty("maxDescriptionLength",   AuthenticationEntry.MaxDescriptionLength),
                            new JProperty("minSharedSecretLength",  AuthenticationEntry.MinSharedSecretLength),

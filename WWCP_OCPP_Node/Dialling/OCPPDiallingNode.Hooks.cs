@@ -72,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             => NodeOf(Connection.OCPPVersion).ConnectOCPPWebSocketClient(
                    RemoteURL:                   Connection.URL,
+                   NetworkingMode:              NetworkingModeOf(Connection),
                    NextHopNetworkingNodeId:     NextHopOf(Connection),
                    RoutingNetworkingNodeIds:    CSMSNamesOf(Connection),
                    SecWebSocketProtocols:       SubProtocolsOf(Connection),
@@ -84,6 +85,47 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    DNSClient:                   DNSClient,
                    CancellationToken:           CancellationToken
                );
+
+        #endregion
+
+        #region (protected virtual) NetworkingModeOf(Connection)
+
+        /// <summary>
+        /// The networking mode the given connection is dialled in, or null
+        /// for what the OCPP node does where nothing is said: the plain
+        /// frame of OCPP.
+        /// </summary>
+        /// <remarks>
+        /// A node that dials downwards says it by what is at the other end:
+        /// a local controller is spoken to in the overlay network, so that
+        /// the stations behind it are reached through it; a charging station
+        /// in the plain frame.
+        /// </remarks>
+        protected virtual NetworkingMode? NetworkingModeOf(ConnectionEntry Connection)
+
+            => null;
+
+        #endregion
+
+        #region (protected virtual) WhatItIsDialledOn(Connection)
+
+        /// <summary>
+        /// What the dialling of the given connection depends on beyond what
+        /// is written of it, as a text that is another once it changed - or
+        /// null, where it depends on nothing else.
+        /// </summary>
+        /// <remarks>
+        /// Asked when a connection is dialled and again whenever the
+        /// connections are gone through (ApplyConnectionChanges): a
+        /// connection whose answer changed is let go of and dialled again,
+        /// as one that was written anew is. A node that dials downwards says
+        /// here what the login of the node at the other end says of it -
+        /// switched off, a local controller or not - and goes through its
+        /// connections when a login changes.
+        /// </remarks>
+        protected virtual String? WhatItIsDialledOn(ConnectionEntry Connection)
+
+            => null;
 
         #endregion
 

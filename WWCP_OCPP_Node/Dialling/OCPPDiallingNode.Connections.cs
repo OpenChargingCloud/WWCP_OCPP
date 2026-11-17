@@ -681,8 +681,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// for the second one went to that one too. A request is answered over
         /// the connection it came over, whatever the name.
         /// </remarks>
+        /// <remarks>
+        /// A connection that names the node at its other end - what a node
+        /// that dials downwards writes down, a CSMS dialling a charging
+        /// station - is routed by that name: the node speaks to it by it.
+        /// </remarks>
         public static NetworkingNode_Id NextHopOf(ConnectionEntry Connection)
-            => NetworkingNode_Id.Parse($"connection-{Connection.Id}");
+            => !Connection.Inbound && Connection.RemoteNodeId is String itsNode
+                   ? NetworkingNode_Id.Parse(itsNode)
+                   : NetworkingNode_Id.Parse($"connection-{Connection.Id}");
 
         #endregion
 
@@ -729,13 +736,20 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// which a node sends what it has to say, a security event, an event of
         /// a monitor, a heartbeat - for the primary, and none for any other.
         /// </summary>
-        protected NetworkingNode_Id[] CSMSNamesOf(ConnectionEntry Connection)
+        /// <remarks>
+        /// None either for a connection that names the node at its other
+        /// end: that is no back end of this node, and nothing this node
+        /// says by itself is for it.
+        /// </remarks>
+        protected virtual NetworkingNode_Id[] CSMSNamesOf(ConnectionEntry Connection)
 
-            => IsPrimary(Connection)
-                   ? [ Connection.OCPPVersion == OCPPVersion.OCPP1_6
-                           ? NetworkingNode_Id.CentralSystem
-                           : NetworkingNode_Id.CSMS ]
-                   : [];
+            => !Connection.Inbound && Connection.RemoteNodeId is not null
+                   ? []
+                   : IsPrimary(Connection)
+                         ? [ Connection.OCPPVersion == OCPPVersion.OCPP1_6
+                                 ? NetworkingNode_Id.CentralSystem
+                                 : NetworkingNode_Id.CSMS ]
+                         : [];
 
         #endregion
 

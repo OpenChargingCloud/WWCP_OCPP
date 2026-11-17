@@ -1,7 +1,7 @@
 import { connectionsAPI as api, type ConnectionIdentity, type ConnectionState, type ConnectionTest, type ConnectionTestAsks, type ConnectionToSave, type LoginToSave, type EncodingOfAConnection, type HTTPVersionOfAConnection, type SignatureFormatsOfAConnection, type StationConnection, type StationConnections } from '../api/connections';
 import { auth } from '../auth';
 import { credentialsPanel } from './authentication';
-import { connectionsResource, nodeNoun, nodeNounInFull, nodeTraits } from '../settings';
+import { connectionsResource, farEnd, nodeNoun, nodeNounInFull, nodeTraits } from '../settings';
 import { toURL } from '@node/basePath';
 import { must } from '@node/html';
 import type { Page } from '@node/router';
@@ -24,11 +24,19 @@ const httpVersions: ReadonlyArray<readonly [HTTPVersionOfAConnection, string]> =
 ];
 
 /** How the OCPP messages of a connection may be written, as the station names it. */
-const encodings: ReadonlyArray<readonly [EncodingOfAConnection, string]> = [
+const encodings = (): ReadonlyArray<readonly [EncodingOfAConnection, string]> => [
     [ 'json', 'JSON, as OCPP defines it' ],
     [ 'cbor', 'CBOR and nothing else' ],
-    [ 'auto', 'CBOR where the back end speaks it' ]
+    [ 'auto', `CBOR where the ${farEnd()} speaks it` ]
 ];
+
+/** What a kind of connection is called on the page. */
+const connectionTypeNames: Readonly<Record<string, string>> = {
+    CSMS:             'Charging station management system',
+    CSMSBackup:       'Management system, spare',
+    LocalController:  'Local controller',
+    ChargingStation:  'Charging station'
+};
 
 /** Which signatures a connection may write, as the station names them. */
 const signatureFormats: ReadonlyArray<readonly [SignatureFormatsOfAConnection, string]> = [
@@ -303,11 +311,16 @@ export const connectionsPage: Page = {
                                 <span id="add-error" class="form-error"  role="alert"></span>
                             </div>
                             <span class="hint">
-                                Testing does not write anything down: it makes the connection once, asks its back
-                                end for a Heartbeat, says what happened and when, and lets go. Worth doing before
-                                saving rather than after. A back end that is not to be asked anything - one that
+                                Testing does not write anything down: it makes the connection once, asks its
+                                ${farEnd()} for a Heartbeat, says what happened and when, and lets go. Worth doing before
+                                saving rather than after. A ${farEnd()} that is not to be asked anything - one that
                                 takes a Heartbeat for a station having come - is tested by asking nothing: then the
                                 test ends with the handshake.
+                                ${nodeTraits().dialsDown ? html`
+                                    A charging station answers a Heartbeat with an error, which is an answer: it
+                                    read a request and answered it in OCPP. And it lets in one connection under a
+                                    name: a test of a connection that is up takes its place for as long as it lasts.
+                                ` : nothing}
                             </span>
                         </form>
 
@@ -326,23 +339,43 @@ export const connectionsPage: Page = {
 
                 <label>What it is
                     <input type="text" name="description" maxlength="${state.maxDescriptionLength}"
-                           placeholder="CSMS, main" value="${entry?.description ?? ''}"
+                           placeholder="${nodeTraits().dialsDown ? 'Station 7, car park' : 'CSMS, main'}" value="${entry?.description ?? ''}"
                            ?disabled=${!mayManage} />
                 </label>
 
                 <label>Where it goes
                     <input type="text" name="url" class="mono"
-                           placeholder="wss://csms.example.org/cs001" value="${entry?.url ?? ''}"
+                           placeholder="${nodeTraits().dialsDown ? 'wss://station7.example.org:9443/csms-01' : 'wss://csms.example.org/cs001'}" value="${entry?.url ?? ''}"
                            ?disabled=${!mayManage}
                            @input=${(event: Event) => typedURL(id, entry, (event.target as HTMLInputElement).value)} />
                     <span class="hint">
                         Write the scheme. <code>wss://</code> is encrypted and <code>ws://</code> is not, and
                         this ${nodeNoun()} will not decide that for you - everything below depends on which it is.
-                        <code>ssh://cs001@csms.example.org:2222</code> speaks the same OCPP over SSH, signed in
-                        with this ${nodeNoun()}'s own key.
+                        ${state.rules?.ssh === false ? nothing : html`
+                            <code>ssh://cs001@csms.example.org:2222</code> speaks the same OCPP over SSH, signed in
+                            with this ${nodeNoun()}'s own key.
+                        `}
+                        ${state.rules?.namesTheNodeItLeadsTo === true ? html`
+                            The URL is the one the node at the other end serves, and ends with the name this
+                            ${nodeNoun()} comes under there - the name it signs in with as well.
+                        ` : nothing}
                     </span>
                 </label>
 
+                ${state.rules?.namesTheNodeItLeadsTo === true ? html`
+                    <label data-remote-node>Which node is there
+                        <input type="text" name="remoteNodeId" class="mono" maxlength="128"
+                               placeholder="cs007" value="${entry?.remoteNodeId ?? ''}"
+                               ?disabled=${!mayManage} />
+                        <span class="hint">
+                            The name of the charging station or the local controller at the other end: what
+                            this ${nodeNoun()} speaks to it by, as it would be known by the last part of its
+                            URL had it dialled itself. Nothing in the URL above says it.
+                        </span>
+                    </label>
+                ` : nothing}
+
+                ${state.rules?.inbound === false ? nothing : html`
                 <label class="checkbox" data-inbound>
                     <input type="checkbox" name="inbound"
                            ?checked=${entry?.inbound ?? false}
@@ -361,6 +394,7 @@ export const connectionsPage: Page = {
                         says that it started, and is asked.
                     </span>
                 </label>
+                `}
 
                 <label>Host keys of its server
                     <input type="text" name="sshHostKey" class="mono"
@@ -479,16 +513,18 @@ export const connectionsPage: Page = {
                     <label>What is at the other end
                         <select name="connectionType" ?disabled=${!mayManage}>
                             ${state.connectionTypes.map(one => html`
-                                <option value="${one}" ?selected=${one === (entry?.connectionType ?? 'CSMS')}>
-                                    ${one === 'CSMS'       ? 'Charging station management system'
-                                      : one === 'CSMSBackup' ? 'Management system, spare'
-                                      : 'Local controller'}
+                                <option value="${one}" ?selected=${one === (entry?.connectionType ?? state.connectionTypes[0] ?? 'CSMS')}>
+                                    ${connectionTypeNames[one] ?? one}
                                 </option>
                             `)}
                         </select>
                         <span class="hint">
-                            What it is, for whoever reads this page. Every connection is dialled on its own;
-                            nothing here waits for anything else.
+                            ${nodeTraits().dialsDown
+                                  ? html`What it is: a local controller is spoken to in the overlay network, so that
+                                         the charging stations behind it are reached through it, and a charging
+                                         station in the plain frame of OCPP.`
+                                  : html`What it is, for whoever reads this page.`}
+                            Every connection is dialled on its own; nothing here waits for anything else.
                         </span>
                     </label>
 
@@ -525,7 +561,7 @@ export const connectionsPage: Page = {
 
                     <label>Messages as
                         <select name="encoding" ?disabled=${!mayManage}>
-                            ${encodings.map(([value, text]) => html`
+                            ${encodings().map(([value, text]) => html`
                                 <option value="${value}" ?selected=${value === (entry?.encoding ?? 'json')}>
                                     ${text}
                                 </option>
@@ -534,9 +570,9 @@ export const connectionsPage: Page = {
                         <span class="hint">
                             How the OCPP messages of this connection are written. CBOR is the same
                             messages in binary frames, agreed on as the subprotocol "ocpp2.1cbor" or
-                            "ocpp1.6cbor": a back end that does not speak it is not connected to with
-                            "CBOR and nothing else", and is spoken to in JSON with "CBOR where the back
-                            end speaks it".
+                            "ocpp1.6cbor": a ${farEnd()} that does not speak it is not connected to with
+                            "CBOR and nothing else", and is spoken to in JSON with "CBOR where the
+                            ${farEnd()} speaks it".
                         </span>
                     </label>
 
@@ -551,7 +587,7 @@ export const connectionsPage: Page = {
                         <span class="hint">
                             Which signatures the messages this ${nodeNoun()} signs for this connection get.
                             A COSE signature signs the CBOR of a message whatever the connection
-                            carries, and is read by a back end that knows the message. What the
+                            carries, and is read by a ${farEnd()} that knows the message. What the
                             ${nodeNoun()} verifies is not a matter of this: every signature it can read.
                         </span>
                     </label>
@@ -618,7 +654,7 @@ export const connectionsPage: Page = {
                             @change=${(event: Event) => pickWay(id, (event.target as HTMLSelectElement).value)}>
 
                         <option value="" ?selected=${way === ''}>
-                            Nothing - the back end must not ask
+                            Nothing - the ${farEnd()} must not ask
                         </option>
 
                         <optgroup label="A login">
@@ -688,7 +724,7 @@ export const connectionsPage: Page = {
                     <legend>${way === 'new:basic' ? 'A new login and password' : 'A new TOTP secret'}</legend>
                     <label>What they are for
                         <input type="text" name="newDescription" maxlength="${state.maxDescriptionLength}"
-                               placeholder="CSMS login" ?disabled=${!mayManage} />
+                               placeholder="${nodeTraits().dialsDown ? 'Login at station 7' : 'CSMS login'}" ?disabled=${!mayManage} />
                         <span class="hint">Left empty, they are called what the connection is.</span>
                     </label>
                     <label>Login
@@ -858,6 +894,10 @@ export const connectionsPage: Page = {
                     <div class="key-head">
                         <strong>${entry.description}</strong>
                         <span class="chip">${entry.connectionType}</span>
+                        ${entry.remoteNodeId ? html`
+                            <span class="chip mono" data-remote-node="${entry.id}"
+                                  title="The node at its other end, as this ${nodeNoun()} speaks to it">${entry.remoteNodeId}</span>
+                        ` : nothing}
                         <span class="chip">${entry.ocppVersion}</span>
                         ${entry.httpVersionInUse ? html`
                             <span class="chip" data-http="${entry.id}"
@@ -868,7 +908,7 @@ export const connectionsPage: Page = {
                         ${entry.subprotocolInUse?.endsWith('cbor') ? html`
                             <span class="chip" data-encoding="${entry.id}"
                                   title="${(entry.encoding ?? 'json') === 'auto'
-                                              ? `It agreed on ${entry.subprotocolInUse}: its messages are CBOR, which its back end chose.`
+                                              ? `It agreed on ${entry.subprotocolInUse}: its messages are CBOR, which its ${farEnd()} chose.`
                                               : `It agreed on ${entry.subprotocolInUse}: its messages are CBOR.`}">CBOR</span>
                         ` : nothing}
                         ${entry.transport === 'ssh'
@@ -1289,7 +1329,7 @@ export const connectionsPage: Page = {
         function whatATestAsks(MayTest: boolean): TemplateResult {
             return html`
                 <select name="testAsks" class="test-asks" ?disabled=${!MayTest}
-                        aria-label="What the test asks the back end in OCPP">
+                        aria-label="What the test asks the ${farEnd()} in OCPP">
                     <option value="heartbeat" selected>and ask for a Heartbeat</option>
                     <option value="none">and ask nothing</option>
                 </select>
@@ -1391,6 +1431,7 @@ export const connectionsPage: Page = {
                 signatureFormats:    (form.querySelector<HTMLSelectElement>('[name="signatureFormats"]')?.value ?? 'policy') as SignatureFormatsOfAConnection,
                 autoConnect:  form.querySelector<HTMLInputElement>('[name="autoConnect"]')?.checked ?? false,
                 inbound,
+                ...(form.querySelector('[name="remoteNodeId"]') !== null ? { remoteNodeId: field(form, 'remoteNodeId') } : {}),
                 authenticationId:    proves.startsWith('auth:') ? proves.slice(5) : null,
                 certificateId:       null,
                 identities
@@ -1671,9 +1712,9 @@ export const connectionsPage: Page = {
                     <p class="hint" id="test-ocpp">
                         ${result.ocpp.answered
                               ? result.ocpp.error === true
-                                    ? html`Its back end answered the ${result.ocpp.request} with an error, within ${result.ocpp.roundTrip_ms} ms: it speaks OCPP on this connection.`
-                                    : html`Its back end answered the ${result.ocpp.request} within ${result.ocpp.roundTrip_ms} ms.`
-                              : html`Its back end did not answer the ${result.ocpp.request}: something took the connection, and nothing there speaks OCPP on it.`}
+                                    ? html`Its ${farEnd()} answered the ${result.ocpp.request} with an error, within ${result.ocpp.roundTrip_ms} ms: it speaks OCPP on this connection.`
+                                    : html`Its ${farEnd()} answered the ${result.ocpp.request} within ${result.ocpp.roundTrip_ms} ms.`
+                              : html`Its ${farEnd()} did not answer the ${result.ocpp.request}: something took the connection, and nothing there speaks OCPP on it.`}
                     </p>
                 `}
                 ${result.serverKeyPin === undefined ? nothing : html`

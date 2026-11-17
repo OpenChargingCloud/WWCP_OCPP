@@ -1,6 +1,6 @@
 import { connectionsAPI as api, type LoginToSave, type StationConnections, type StationLogin } from '../api/connections';
 import { auth } from '../auth';
-import { connectionsResource, nodeNoun, nodeNounInFull } from '../settings';
+import { connectionsResource, farEnd, nodeNoun, nodeNounInFull, nodeTraits } from '../settings';
 import { must } from '@node/html';
 import type { Page } from '@node/router';
 import { mayButNot, reloadButton, shell } from '@node/shell';
@@ -95,7 +95,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
 
                         <label>What they are for
                             <input type="text" name="description" maxlength="${state.maxDescriptionLength}"
-                                   placeholder="CSMS login" ?disabled=${!mayManage} />
+                                   placeholder="${nodeTraits().dialsDown ? 'Login at station 7' : 'CSMS login'}" ?disabled=${!mayManage} />
                             <span class="hint">
                                 The one field worth taking seriously. Six logins on a page a year from now are
                                 told apart by this and nothing else.
@@ -145,7 +145,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
                     ${state.authentications.length === 0
                           ? html`
                                 <p class="hint">
-                                    Nothing yet. This ${nodeNoun()} can only dial a back end that asks it for
+                                    Nothing yet. This ${nodeNoun()} can only dial a ${farEnd()} that asks it for
                                     nothing, or one it shows a client certificate to.
                                 </p>
                             `
@@ -228,8 +228,8 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
                         to the TLS session, on a connection that names HTTP/3 and nothing else: over HTTP/1.1
                         and HTTP/2 this ${nodeNoun()}'s TLS exports no keying material to bind one with, so any other
                         connection whose credentials ask for it is not dialled at all, rather than sent less
-                        than it was told. The Connections page says so where it applies. The back end has to
-                        verify it as bound, which is not every back end's to do.
+                        than it was told. The Connections page says so where it applies. The ${farEnd()} has to
+                        verify it as bound, which is not every ${farEnd()}'s to do.
                     </span>
 
                     <div class="form-row">
@@ -269,7 +269,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
                                ?disabled=${!mayManage} />
                         <span class="hint">
                             Left empty, the default. Both ends have to agree on every one of these, so
-                            changing any of them here means changing them at the back end too.
+                            changing any of them here means changing them at the ${farEnd()} too.
                         </span>
                     </label>
 
@@ -586,7 +586,7 @@ export const authenticationPage: Page = {
         const content = shell(root, {
             active:    '/configuration/authentication',
             title:     'Authentication',
-            subtitle:  `How this ${nodeNounInFull()} proves who it is when it dials a back end.`,
+            subtitle:  `How this ${nodeNounInFull()} proves who it is when it dials a ${farEnd()}.`,
             actions:   reloadButton(() => panel?.reload() ?? Promise.resolve())
         });
 

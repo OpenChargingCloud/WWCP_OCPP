@@ -69,6 +69,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             public required Int64            Revision     { get; init; }
             public required Boolean          Primary      { get; init; }
+
+            /// <summary>
+            /// What the node said the connection was dialled on when it was
+            /// dialled, beyond what is written of it - see WhatItIsDialledOn.
+            /// </summary>
+            public String?                   DialledOn    { get; init; }
             public required Int32            Index        { get; init; }
 
             /// <summary>
@@ -199,6 +205,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                            Dialled     = dialledAs,
                            Revision    = Connections.DialRevisionOf(entry.Id),
                            Primary     = IsPrimary(dialledAs),
+                           DialledOn   = WhatItIsDialledOn(dialledAs),
                            Index       = Index,
                            RoundStart  = RoundStart ?? Index,
                            Attempts    = 1
@@ -453,6 +460,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                     else if (IsPrimary(entry) != live.Primary)
                         why = $"which back end is in charge of OCPP {ConnectionEntry.AsText(entry.OCPPVersion)} changed";
+
+                    else if (WhatItIsDialledOn(entry) != live.DialledOn)
+                        why = $"what '{entry.Description}' is dialled on changed";
 
                     if (why is null)
                         continue;

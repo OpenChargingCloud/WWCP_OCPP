@@ -65,6 +65,8 @@ export interface StationConnection {
     inbound?:     boolean;
     /** The name the other end of an inbound connection comes under. */
     inboundName?: string;
+    /** The node at its other end, by the name it is spoken to: where this node dials downwards, and so routes by it. */
+    remoteNodeId?: string;
     /** Whether the URL makes a TLS connection, which decides what the rest can mean. */
     secure:              boolean;
     /** Over an HTTP WebSocket, or over the SSH subsystem ocpp@open.charging.cloud. */
@@ -197,6 +199,8 @@ export interface ConnectionToSave {
     autoConnect:  boolean;
     /** Whether the other end dials; left out, it stays as it is. */
     inbound?:     boolean;
+    /** The node at its other end; left out, it stays as it is. */
+    remoteNodeId?: string;
     authenticationId:    string | null;
     certificateId:       string | null;
     /** The identities it names; where they are sent, they go before "certificateId". */
@@ -371,6 +375,15 @@ export interface StationConnections extends ConnectionStates {
     pinSetSigners?:        PinSetSigner[];
     connectionTypes:       string[];
     ocppVersions:          string[];
+    /** What this kind of node writes down as a connection; left out, everything a node that dials its back end does. */
+    rules?: {
+        /** Whether a connection may be one the other end makes. */
+        inbound:                boolean;
+        /** Whether a connection may go over ssh://. */
+        ssh:                    boolean;
+        /** Whether a connection names the node at its other end, and has to. */
+        namesTheNodeItLeadsTo:  boolean;
+    };
     maxDescriptionLength:  number;
     minSharedSecretLength: number;
     /** Always false, and said out loud: a secret is written here and never read back. */

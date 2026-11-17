@@ -13,7 +13,7 @@ import { strict as assert }     from 'node:assert';
 import { after, describe, it }  from 'node:test';
 
 import type { StationConnections } from './api/connections.ts';
-import { connectionsResource, nodeNoun, nodeNounInFull, nodeTraits,
+import { connectionsResource, farEnd, nodeNoun, nodeNounInFull, nodeTraits,
          setConnectionsResource, setNodeNoun, setNodeTraits } from './settings.ts';
 
 const { connectionsPage }     = await import('./pages/connections.ts');
@@ -60,7 +60,8 @@ describe('the pages of the connections, untold', () => {
         assert.equal(connectionsResource(), 'connections');
         assert.equal(nodeNoun(),            'station');
         assert.equal(nodeNounInFull(),      'charging station');
-        assert.deepEqual(nodeTraits(),      { oneNodePerOCPPVersion: true, isDialled: false });
+        assert.deepEqual(nodeTraits(),      { oneNodePerOCPPVersion: true, isDialled: false, dialsDown: false });
+        assert.equal(farEnd(),              'back end');
 
     });
 
@@ -125,6 +126,85 @@ describe('the pages of the connections, told they are a local controller\'s', ()
         assert.match(text, /How this local controller proves who it is when it dials a back end\./);
         assert.match(text, /it is what the other end calls this local controller\./);
         assert.doesNotMatch(text, /[Tt]his (charging )?station/);
+
+    });
+
+});
+
+
+describe("the pages of the connections, told they are a CSMS's", () => {
+
+    after(() => {
+        leave();
+        // What the tests after these draw is a charging station's again.
+        setConnectionsResource('connections');
+        setNodeNoun('station', 'charging station');
+        setNodeTraits({ oneNodePerOCPPVersion: true, isDialled: false, dialsDown: false });
+    });
+
+    const told = () => {
+        setConnectionsResource('stations');
+        setNodeNoun('CSMS');
+        setNodeTraits({ oneNodePerOCPPVersion: false, isDialled: true, dialsDown: true });
+    };
+
+    /** What a CSMS writes down: what is below it, by its name, over ws:// and wss:// alone, and nothing that dials it. */
+    const below = ({ path }: Asked): unknown => {
+
+        if (path === '/configuration/connections' || path === '/configuration/authentications')
+            return {
+                ...nothingYet(),
+                connectionTypes:  [ 'ChargingStation', 'LocalController' ],
+                ocppVersions:     [ 'OCPP2.1' ],
+                rules:            { inbound: false, ssh: false, namesTheNodeItLeadsTo: true },
+                connections:      [ {
+                    id:              'c1',
+                    description:     'Station 7',
+                    url:             'wss://station7.example.org:9443/csms-01',
+                    connectionType:  'ChargingStation',
+                    ocppVersion:     'OCPP2.1',
+                    autoConnect:     true,
+                    secure:          true,
+                    transport:       'websocket',
+                    createdAt:       '2026-10-04T12:00:00Z',
+                    remoteNodeId:    'cs007'
+                } ]
+            };
+
+        return node({ path } as Asked);
+
+    };
+
+    it('offer what is below a CSMS, ask for the node at the other end, and offer nothing that dials it', async () => {
+
+        told();
+
+        const root  = await open(connectionsPage, '/configuration/connections', [ 'stations:read', 'stations:edit', 'stations:run' ],
+                                 below, root => root.querySelector('#add-form') !== null);
+        const form  = root.querySelector<HTMLFormElement>('#add-form')!;
+        const types = [ ...form.querySelectorAll<HTMLOptionElement>('[name="connectionType"] option') ];
+
+        assert.deepEqual(types.map(option => option.value),               [ 'ChargingStation', 'LocalController' ]);
+        assert.deepEqual(types.map(option => option.textContent!.trim()), [ 'Charging station', 'Local controller' ]);
+        assert.equal(types[0]!.selected, true);
+
+        assert.notEqual(form.querySelector('[name="remoteNodeId"]'), null);
+        assert.equal(form.querySelector('[name="inbound"]'),         null);
+
+        assert.equal(farEnd(), 'node');
+        assert.doesNotMatch(written(form), /ssh:\/\/cs001/);
+        assert.doesNotMatch(written(form), /back end/);
+
+    });
+
+    it('say which node a connection leads to', async () => {
+
+        told();
+
+        const root = await open(connectionsPage, '/configuration/connections', [ 'stations:read' ],
+                                below, root => root.querySelector('[data-remote-node="c1"]') !== null);
+
+        assert.equal(root.querySelector('[data-remote-node="c1"]')!.textContent!.trim(), 'cs007');
 
     });
 
