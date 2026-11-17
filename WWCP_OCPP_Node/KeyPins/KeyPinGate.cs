@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.WWCP.Node.KeyPins;
 using Newtonsoft.Json.Linq;
 
 #endregion

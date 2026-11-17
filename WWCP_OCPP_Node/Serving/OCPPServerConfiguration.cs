@@ -27,7 +27,7 @@ using cloud.charging.open.protocols.WWCP.Node.Configuration;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
-using cloud.charging.open.protocols.OCPP.Node.Connections;
+using cloud.charging.open.protocols.WWCP.Node.Connections;
 
 #endregion
 

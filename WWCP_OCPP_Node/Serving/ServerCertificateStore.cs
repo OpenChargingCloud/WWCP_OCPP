@@ -43,7 +43,7 @@ using org.GraphDefined.Vanaheimr.Hermod.PKI;
 
 using cloud.charging.open.protocols.WWCP.Node;
 using cloud.charging.open.protocols.WWCP.Node.Logging;
-using cloud.charging.open.protocols.OCPP.Node.Connections;
+using cloud.charging.open.protocols.WWCP.Node.Connections;
 
 #endregion
 

@@ -19,34 +19,12 @@
 
 using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
+using cloud.charging.open.protocols.WWCP.WebSockets;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.WebSockets
 {
-
-    /// <summary>
-    /// How the OCPP messages of a connection are written.
-    /// </summary>
-    public enum MessageEncodings
-    {
-
-        /// <summary>
-        /// JSON in text frames - what OCPP defines.
-        /// </summary>
-        JSON,
-
-        /// <summary>
-        /// CBOR in binary frames, and nothing else: a far end that does not speak it is not connected to.
-        /// </summary>
-        CBOR,
-
-        /// <summary>
-        /// CBOR where the far end speaks it, JSON where it does not.
-        /// </summary>
-        Auto
-
-    }
-
 
     /// <summary>
     /// The subprotocols OCPP connections agree on, and what they say about how messages are written.

@@ -29,7 +29,7 @@ using cloud.charging.open.protocols.WWCP.Node.Logging;
 using cloud.charging.open.protocols.WWCP.Node.Web;
 using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 
-using cloud.charging.open.protocols.OCPP.Node.Connections;
+using cloud.charging.open.protocols.WWCP.Node.Connections;
 
 using OCPPv1_6 = cloud.charging.open.protocols.OCPPv1_6;
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
@@ -56,52 +56,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
     {
 
         #region Properties
-
-        /// <summary>
-        /// The places this node dials, and the credentials it proves itself
-        /// with when it gets there.
-        /// </summary>
-        public ConnectionStore         Connections           { get; protected set; } = default!;
-
-        /// <summary>
-        /// The key this node signs in with when it dials an ssh://
-        /// connection - made the first time one needs it.
-        /// </summary>
-        public SshClientKey            SshKey                { get; protected set; } = default!;
-
-        private SshClientKeys? sshKeys;
-
-        /// <summary>
-        /// Every key this node signs in with over SSH: its own, and the ones
-        /// somebody made beside it - for one server and not the next, or to
-        /// follow another at a time its server was told.
-        /// </summary>
-        public SshClientKeys           SshKeys
-        {
-            get
-            {
-
-                if (sshKeys is SshClientKeys kept)
-                    return kept;
-
-                var keys = new SshClientKeys(SshKey,
-                                             $"This {NodeWording.Noun}'s own key",
-                                             SshKey.Comment,
-                                             TimeProvider);
-
-                keys.OnNotice += (level, message) => Log.Log(level, message, "ocpp", "connections", "ssh", "security");
-
-                if (Interlocked.CompareExchange(ref sshKeys, keys, null) is SshClientKeys before)
-                    return before;
-
-                // What an ssh:// connection may name, asked whenever one is
-                // written down: a key removed next door is gone from it too.
-                Connections.KnownSshKeyIds ??= () => keys.Ids;
-
-                return keys;
-
-            }
-        }
 
         /// <summary>
         /// The node that speaks OCPP 1.6 for this one, where it has one.

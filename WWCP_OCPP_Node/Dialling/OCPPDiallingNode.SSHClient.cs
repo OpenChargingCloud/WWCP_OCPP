@@ -31,9 +31,11 @@ using cloud.charging.open.protocols.WWCP.NetworkingNode;
 using OCPPv1_6 = cloud.charging.open.protocols.OCPPv1_6;
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
 
-using cloud.charging.open.protocols.OCPP.Node.Connections;
 
-using cloud.charging.open.protocols.OCPP.Node.KeyPins;
+using cloud.charging.open.protocols.WWCP.Node;
+using cloud.charging.open.protocols.WWCP.Node.Connections;
+
+using cloud.charging.open.protocols.WWCP.Node.KeyPins;
 
 using cloud.charging.open.protocols.WWCP.Node.Certificates;
 
@@ -52,10 +54,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
     {
 
         #region Data
-
-        // The trust each connection over SSH was dialled with last: what its
-        // server showed, and where a signed pin set puts its pins at once.
-        protected readonly ConcurrentDictionary<String, SshHostKeyTrust>  sshTrusts  = new ();
 
         protected SshClientKey? sftpKey;
 
@@ -336,37 +334,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         #endregion
-
-        #region (internal) SshSecurityEvent(Connection, Type, TechInfo)
-
-        /// <summary>
-        /// Report a security event of the white paper "OCPP over SSH" (section 9.4) through the OCPP node
-        /// of the connection's version - or of both, where it is the station's own.
-        /// </summary>
-        public void SshSecurityEvent(ConnectionEntry?  Connection,
-                                       String            Type,
-                                       String            TechInfo)
-        {
-
-            try
-            {
-
-                if (Connection is null || Connection.OCPPVersion == OCPPVersion.OCPP2_1)
-                    QueueSecurityEvent(OCPPVersion.OCPP2_1, Type, TechInfo.Length > 255 ? TechInfo[..255] : TechInfo);
-
-                if (Connection is null || Connection.OCPPVersion == OCPPVersion.OCPP1_6)
-                    QueueSecurityEvent(OCPPVersion.OCPP1_6, Type, TechInfo.Length > 255 ? TechInfo[..255] : TechInfo);
-
-            }
-            catch (Exception e)
-            {
-                Log.Warning($"The security event '{Type}' could not be queued: {e.Message}", "ocpp", "ssh", "security");
-            }
-
-        }
-
-        #endregion
-
 
         #region (private) CustomTrigger(Request)
 

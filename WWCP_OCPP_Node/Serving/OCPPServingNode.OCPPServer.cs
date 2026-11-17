@@ -32,11 +32,11 @@ using cloud.charging.open.protocols.WWCP.Node.Logging;
 using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 using cloud.charging.open.protocols.OCPP.SSH;
 
-using cloud.charging.open.protocols.OCPP.Node.Connections;
+using cloud.charging.open.protocols.WWCP.Node.Connections;
 using cloud.charging.open.protocols.OCPP.Node.Serving;
 
 using OCPPWebSockets = cloud.charging.open.protocols.OCPP.WebSockets;
-using OCPPVersion    = cloud.charging.open.protocols.OCPP.Node.Connections.OCPPVersion;
+using OCPPVersion    = cloud.charging.open.protocols.WWCP.Node.Connections.OCPPVersion;
 
 #endregion
 

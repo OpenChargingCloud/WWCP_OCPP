@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.WWCP.Node.Connections;
 using System.Collections.Concurrent;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;

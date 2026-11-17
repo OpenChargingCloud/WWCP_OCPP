@@ -19,17 +19,20 @@
 
 using System.Security.Cryptography.X509Certificates;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
+using cloud.charging.open.protocols.WWCP.Node.Connections;
+using cloud.charging.open.protocols.WWCP.Node.KeyPins;
+using cloud.charging.open.protocols.OCPP.Node.KeyPins;
 
-using cloud.charging.open.protocols.OCPP.Node.Connections;
-
-using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
-
-using cloud.charging.open.protocols.WWCP.Node.Certificates;
+using OCPPCommon = cloud.charging.open.protocols.OCPP;
+using OCPPv1_6   = cloud.charging.open.protocols.OCPPv1_6;
+using OCPPv2_1   = cloud.charging.open.protocols.OCPPv2_1;
 
 #endregion
 
@@ -37,13 +40,128 @@ namespace cloud.charging.open.protocols.OCPP.Node
 {
 
     /// <summary>
-    /// What a node that dials a CSMS does of its own where the dialling is
-    /// the same for all: nothing, unless it says otherwise.
+    /// What a node that dials over OCPP does of its own with the device model
+    /// of its OCPP 2.1 node: nothing, unless it says otherwise.
     /// </summary>
     public abstract partial class OCPPDiallingNode
     {
 
-        #region (protected virtual) ConnectOverWebSocket(Connection, Basic, Validator, Certificates, TOTP, TOTPLogin, CancellationToken)
+        #region (protected override) SubProtocolsOf(Connection)
+
+        /// <summary>
+        /// What this station offers for the given connection, in the WebSocket
+        /// handshake and over ssh:// alike.
+        /// </summary>
+        /// <remarks>
+        /// 2.1 offers 2.0.1 as well, which is what the OCPP node does and what
+        /// most back ends of that generation actually answer with. A
+        /// connection that says "cbor" offers "ocpp2.1cbor" and nothing else;
+        /// one that says "auto" offers it first, and the others after it.
+        /// OCPP 1.6 the same, with "ocpp1.6cbor".
+        /// </remarks>
+        protected override String[] SubProtocolsOf(ConnectionEntry Connection)
+
+            => Connection.OCPPVersion == OCPPVersion.OCPP1_6
+                   ? [.. OCPPCommon.WebSockets.OCPPSubprotocols.Offer(
+                             [ OCPPv1_6.Version.WebSocketSubProtocolId ],
+                             Connection.Encoding
+                         )]
+                   : [.. OCPPCommon.WebSockets.OCPPSubprotocols.Offer(
+                             [ OCPPv2_1.Version.WebSocketSubProtocolId, "ocpp2.0.1" ],
+                             Connection.Encoding
+                         )];
+
+        #endregion
+
+        #region (protected override) CBORFrameOf(Text) / TryCBORAsJSON(Frame, out JSON, out Error) / IsCBORSubprotocol(Subprotocol)
+
+        /// <summary>
+        /// The request of a connection test as the frame of a connection that
+        /// agreed on CBOR: the same array, with nothing in its payload.
+        /// </summary>
+        protected override Byte[] CBORFrameOf(String Text)
+
+            => OCPPCommon.WebSockets.OCPP_CBORFrame.Join(
+                   JArray.Parse(Text),
+                   org.GraphDefined.Vanaheimr.Illias.CBORValue.FromMap(
+                       Array.Empty<KeyValuePair<org.GraphDefined.Vanaheimr.Illias.CBORValue, org.GraphDefined.Vanaheimr.Illias.CBORValue>>()
+                   )
+               ).ToByteArray();
+
+        /// <summary>
+        /// What the given CBOR frame of OCPP stands for, as the JSON array.
+        /// </summary>
+        protected override Boolean TryCBORAsJSON(Byte[]                                                     Frame,
+                                                 [System.Diagnostics.CodeAnalysis.NotNullWhen(true)]  out Newtonsoft.Json.Linq.JArray?  JSON,
+                                                 [System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out String?                       Error)
+
+            => OCPPCommon.WebSockets.OCPP_CBORFrame.TryAsJSON(Frame, out JSON, out Error);
+
+        /// <summary>
+        /// Whether the given subprotocol is OCPP as CBOR.
+        /// </summary>
+        protected override Boolean IsCBORSubprotocol(String? Subprotocol)
+
+            => OCPPCommon.WebSockets.OCPPSubprotocols.IsCBOR(Subprotocol);
+
+        #endregion
+
+        #region (protected override) SshSubsystem / ConnectOverSSH(Connection, Node, Login, SshConnection, CancellationToken)
+
+        /// <summary>
+        /// OCPP goes over the SSH subsystem of the white paper "OCPP over SSH".
+        /// </summary>
+        protected override String? SshSubsystem
+
+            => OCPPCommon.SSH.OCPPSshServer.OCPPSubsystem;
+
+        /// <summary>
+        /// Open the given connection over SSH by the OCPP node of its version,
+        /// named as over a WebSocket - see Dial.
+        /// </summary>
+        protected override async Task<(IWWCPClient? Client, Boolean IsConnected, Exception? Error)>
+
+            ConnectOverSSH(ConnectionEntry                                          Connection,
+                           AWWCPNetworkingNode                                      Node,
+                           org.GraphDefined.Vanaheimr.Hermod.SSH.Client.SshClientOptions  Login,
+                           Func<CancellationToken, ValueTask<org.GraphDefined.Vanaheimr.Hermod.SSH.Client.SshClient>>?  SshConnection,
+                           CancellationToken                                        CancellationToken)
+
+        {
+
+            var result = await NodeOf(Connection.OCPPVersion).ConnectOCPPClient(
+                                   RemoteURL:                 Connection.URL,
+                                   NextHopNetworkingNodeId:   NextHopOf(Connection),
+                                   RoutingNetworkingNodeIds:  CSMSNamesOf(Connection),
+                                   Ssh:                       Login,
+                                   SshConnection:             SshConnection,
+                                   Subprotocols:              SubProtocolsOf(Connection),
+                                   DNSClient:                 DNSClient,
+                                   PingEvery:                 SshPingEvery,
+                                   CancellationToken:         CancellationToken
+                               );
+
+            return (result.Client, result.IsConnected, result.Error);
+
+        }
+
+        #endregion
+
+        #region (protected override) ProbationRules(Probation, Action, Payload)
+
+        /// <summary>
+        /// While a learned key pin is on probation, nothing but a pin set of
+        /// OCPP is executed - see KeyPinGate.
+        /// </summary>
+        protected override String? ProbationRules(Probation                      Probation,
+                                                  String                         Action,
+                                                  Newtonsoft.Json.Linq.JObject?  Payload)
+
+            => KeyPinGate.Rules(Probation, Action, Payload, $"{NodeWording.Noun}");
+
+        #endregion
+
+        #region (protected override) ConnectOverWebSocket(Connection, Basic, Validator, Certificates, TOTP, TOTPLogin, CancellationToken)
 
         /// <summary>
         /// Open the WebSocket of the given connection, by the OCPP node of
@@ -62,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="TOTP">The one-time password it signs in with, where it has one.</param>
         /// <param name="TOTPLogin">The login the one-time password is sent under.</param>
         /// <param name="CancellationToken">Ends the attempt.</param>
-        protected virtual Task<HTTPResponse> ConnectOverWebSocket(ConnectionEntry                                                 Connection,
+        protected override Task<HTTPResponse> ConnectOverWebSocket(ConnectionEntry                                                 Connection,
                                                                   IHTTPAuthentication?                                            Basic,
                                                                   RemoteTLSServerCertificateValidationHandler<IWebSocketClient>?  Validator,
                                                                   X509Certificate2[]?                                             Certificates,
@@ -89,137 +207,87 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected static) CertificateShownAlone(Certificates) / CertificateWithItsChain(Certificates)
+        #region (protected override) DiallingNodes / DiallingNodeOrNoneOf(Version)
 
         /// <summary>
-        /// What a connection proves itself with, as a client that shows one
-        /// certificate takes it: the certificate, where nothing travels with
-        /// it - and null where something does, see
-        /// <see cref="CertificateWithItsChain"/>.
+        /// The OCPP nodes this one dials with.
         /// </summary>
-        /// <remarks>
-        /// One or the other, never both: a client given its certificates and
-        /// a chain as well shows the certificates and sends no chain.
-        /// </remarks>
-        /// <param name="Certificates">The certificate with the key first, then what travels with it - as WhatItProvesItselfWith gives it.</param>
-        protected static X509Certificate2[]? CertificateShownAlone(X509Certificate2[]? Certificates)
-            => Certificates is { Length: > 1 }
-                   ? null
-                   : Certificates;
+        protected override IEnumerable<AWWCPNetworkingNode> DiallingNodes
+
+            => Nodes;
 
         /// <summary>
-        /// What a connection proves itself with, as a client that sends a
-        /// chain takes it: the certificate with the key first and the
-        /// certificates of the CAs above it after it - or null, where nothing
-        /// travels with the certificate.
+        /// The OCPP node that dials a connection of the given version.
         /// </summary>
-        /// <param name="Certificates">The certificate with the key first, then what travels with it - as WhatItProvesItselfWith gives it.</param>
-        protected static X509Certificate2[]? CertificateWithItsChain(X509Certificate2[]? Certificates)
-            => Certificates is { Length: > 1 }
-                   ? Certificates
-                   : null;
+        protected override AWWCPNetworkingNode? DiallingNodeOrNoneOf(OCPPVersion Version)
+
+            => NodeOrNoneOf(Version);
 
         #endregion
 
-        #region (protected virtual) NetworkingModeOf(Connection)
+        #region (protected) NodeOf(Version) / NodeOrNoneOf(Version)
 
         /// <summary>
-        /// The networking mode the given connection is dialled in, or null
-        /// for what the OCPP node does where nothing is said: the plain
-        /// frame of OCPP.
+        /// The OCPP node that speaks the given version.
         /// </summary>
-        /// <remarks>
-        /// A node that dials downwards says it by what is at the other end:
-        /// a local controller is spoken to in the overlay network, so that
-        /// the stations behind it are reached through it; a charging station
-        /// in the plain frame.
-        /// </remarks>
-        protected virtual NetworkingMode? NetworkingModeOf(ConnectionEntry Connection)
+        protected OCPPCommon.NetworkingNode.AOCPPNetworkingNode NodeOf(OCPPVersion Version)
 
-            => null;
+            => NodeOrNoneOf(Version)
+                   ?? throw new InvalidOperationException($"This {NodeWording.Noun} does not speak {ConnectionEntry.AsText(Version)}.");
+
+        /// <summary>
+        /// The OCPP node that speaks the given version, or none where this
+        /// node does not speak it.
+        /// </summary>
+        protected OCPPCommon.NetworkingNode.AOCPPNetworkingNode? NodeOrNoneOf(OCPPVersion Version)
+
+            => Version == OCPPVersion.OCPP1_6
+                   ? Node16
+                   : Node21;
 
         #endregion
 
-        #region (protected virtual) WhatItIsDialledOn(Connection)
+        #region (protected override) SetSignatureFormatsOf(Connection, Client) / SignatureFormatsOf(Connection)
 
         /// <summary>
-        /// What the dialling of the given connection depends on beyond what
-        /// is written of it, as a text that is another once it changed - or
-        /// null, where it depends on nothing else.
+        /// Which signatures the messages over the given client get, said to
+        /// the OCPP node of the connection's version.
         /// </summary>
-        /// <remarks>
-        /// Asked when a connection is dialled and again whenever the
-        /// connections are gone through (ApplyConnectionChanges): a
-        /// connection whose answer changed is let go of and dialled again,
-        /// as one that was written anew is. A node that dials downwards says
-        /// here what the login of the node at the other end says of it -
-        /// switched off, a local controller or not - and goes through its
-        /// connections when a login changes.
-        /// </remarks>
-        protected virtual String? WhatItIsDialledOn(ConnectionEntry Connection)
+        protected override void SetSignatureFormatsOf(ConnectionEntry  Connection,
+                                                      IWWCPClient      Client)
+        {
+            if (Connection.OCPPVersion == OCPPVersion.OCPP1_6)
+                Node16!.OCPP.SetSignatureFormats(Client, Connection.SignatureFormats);
+            else
+                Node21.OCPP.SetSignatureFormats(Client, Connection.SignatureFormats);
+        }
 
-            => null;
+        /// <summary>
+        /// Which signatures the OCPP node of this station writes for the given
+        /// connection now - or null, where its signature policy decides.
+        /// </summary>
+        public override cloud.charging.open.protocols.WWCP.SignatureFormats? SignatureFormatsOf(ConnectionEntry Connection)
+
+            => Connection.OCPPVersion == OCPPVersion.OCPP1_6
+                   ? Node16!.OCPP.SignatureFormatsFor(NextHopOf(Connection))
+                   : Node21.OCPP.SignatureFormatsFor(NextHopOf(Connection));
 
         #endregion
 
-        #region ConnectionsCertificateUsage
+        #region (protected) DialAgain(Old16, Old21, Because)
 
         /// <summary>
-        /// What the certificate of the server of a connection is judged
-        /// for, and remembered under: the use a root of this node's
-        /// certificate store is kept for where it vouches for one.
+        /// Hang up what the replaced OCPP nodes were connected to and dial it
+        /// again, through the nodes that replaced them.
         /// </summary>
-        public virtual String ConnectionsCertificateUsage
+        /// <param name="Old16">The OCPP 1.6 node replaced.</param>
+        /// <param name="Old21">The OCPP 2.1 node replaced.</param>
+        /// <param name="Because">Why, as a sentence without its full stop.</param>
+        protected Task DialAgain(OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?  Old16,
+                                 OCPPv2_1.NetworkingNode.AOCPPNetworkingNode?  Old21,
+                                 String                                        Because)
 
-            => OCPPCertificateUsage;
-
-        #endregion
-
-        #region (protected virtual) ConnectionIsUp(Connection)
-
-        /// <summary>
-        /// The given connection is up, now or again. A charging station
-        /// tells its CSMS that it started and sends what waited; a local
-        /// controller has nothing of the kind to say.
-        /// </summary>
-        protected virtual void ConnectionIsUp(ConnectionEntry Connection)
-        { }
-
-        #endregion
-
-        #region (protected virtual) EndRegistrations(Nodes) / EndRegistrationOf(Connection)
-
-        /// <summary>
-        /// Nothing more is asked of a CSMS for the given nodes, nor waited
-        /// for: they are let go of.
-        /// </summary>
-        protected virtual void EndRegistrations(params AWWCPNetworkingNode?[] Nodes)
-        { }
-
-        #endregion
-
-        #region (protected virtual) FlushOfflineQueueOf(Version)
-
-        /// <summary>
-        /// Send what the node of the given version of OCPP kept for its CSMS
-        /// while it was out of reach.
-        /// </summary>
-        protected virtual Task FlushOfflineQueueOf(OCPPVersion Version)
-
-            => Task.CompletedTask;
-
-        #endregion
-
-        #region (protected virtual) QueueSecurityEvent(Version, Type, TechInfo)
-
-        /// <summary>
-        /// Tell the CSMS of a security event, by the node of the given
-        /// version of OCPP, now or once it is in reach.
-        /// </summary>
-        protected virtual void QueueSecurityEvent(OCPPVersion  Version,
-                                                  String       Type,
-                                                  String       TechInfo)
-        { }
+            => DialAgain([ Old16, Old21 ], Because);
 
         #endregion
 
@@ -246,44 +314,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                    String                                       Name,
                                                    String?                                      Instance)
         { }
-
-        #endregion
-
-        #region (override) WhatUses(Handle, Kind)
-
-        /// <summary>
-        /// What of this node uses an identity of its certificate store: the
-        /// connections that show it when they are dialled.
-        /// </summary>
-        /// <remarks>
-        /// Deleted from under them, they would be dialled with an identity
-        /// that is not there, and refused at the next handshake rather than
-        /// here. Switching it off is what takes an identity out of service;
-        /// choosing another one for its connections is what lets it go.
-        /// </remarks>
-        public override String? WhatUses(String            Handle,
-                                         CertificateKind?  Kind)
-        {
-
-            if (Kind is null || Kind == CertificateKind.TLSIdentity)
-            {
-
-                var showing = Connections.Connections.
-                                  Where (connection => !connection.IsSSH && connection.Identities.Any(identity => identity.Id == Handle)).
-                                  Select(connection => connection.Description).
-                                  ToArray();
-
-                if (showing.Length > 0)
-                    return (showing.Length == 1
-                                ? $"The connection '{showing[0]}' shows it"
-                                : $"{showing.Length} connections show it ({String.Join(", ", showing.Select(name => $"'{name}'"))})") +
-                           $" when this {NodeWording.Noun} dials. Choose another identity on the Connections page first - or switch this one off, which keeps it.";
-
-            }
-
-            return base.WhatUses(Handle, Kind);
-
-        }
 
         #endregion
 

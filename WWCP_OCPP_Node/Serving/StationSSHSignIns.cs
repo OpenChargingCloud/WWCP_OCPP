@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.SSH;
 using cloud.charging.open.protocols.WWCP.Node.Logging;
 using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 
-using cloud.charging.open.protocols.OCPP.Node.Connections;
+using cloud.charging.open.protocols.WWCP.Node.Connections;
 
 #endregion
 

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.WWCP.WebSockets;
 using System.Diagnostics;
 
 using NUnit.Framework;
