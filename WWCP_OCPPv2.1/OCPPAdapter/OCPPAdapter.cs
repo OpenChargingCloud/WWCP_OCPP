@@ -1412,6 +1412,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         }
 
                     }
+                    catch (OperationCanceledException) when (JSONRequestMessage.CancellationToken.IsCancellationRequested)
+                    {
+
+                        // Called off. A delay on a token that is cancelled returns at once,
+                        // cancelled again: caught here and gone round again, it spun a thread
+                        // of the pool, throwing, until the request timed out - for every
+                        // request still waiting when its node was stopped, which starved the
+                        // pool of a four-core runner for seconds at a time. An answer that is
+                        // in already is still taken; otherwise it is said to have timed out.
+                        if (requests.TryGetValue(JSONRequestMessage.RequestId, out var calledOff) &&
+                           (calledOff?.JSONResponse   is not null ||
+                            calledOff?.BinaryResponse is not null ||
+                            calledOff?.HasErrors == true))
+                        {
+
+                            requests.TryRemove(JSONRequestMessage.RequestId, out _);
+
+                            return calledOff;
+
+                        }
+
+                        break;
+
+                    }
                     catch (Exception e)
                     {
                         DebugX.Log(String.Concat(nameof(OCPPWebSocketAdapterIN), ".", nameof(SendJSONRequestAndWait), " exception occured: ", e.Message));
@@ -1800,6 +1824,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             return sendRequestState;
 
                         }
+
+                    }
+                    catch (OperationCanceledException) when (BinaryRequestMessage.CancellationToken.IsCancellationRequested)
+                    {
+
+                        // Called off. A delay on a token that is cancelled returns at once,
+                        // cancelled again: caught here and gone round again, it spun a thread
+                        // of the pool, throwing, until the request timed out - for every
+                        // request still waiting when its node was stopped, which starved the
+                        // pool of a four-core runner for seconds at a time. An answer that is
+                        // in already is still taken; otherwise it is said to have timed out.
+                        if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var calledOff) &&
+                           (calledOff?.JSONResponse   is not null ||
+                            calledOff?.BinaryResponse is not null ||
+                            calledOff?.HasErrors == true))
+                        {
+
+                            requests.TryRemove(BinaryRequestMessage.RequestId, out _);
+
+                            return calledOff;
+
+                        }
+
+                        break;
 
                     }
                     catch (Exception e)
