@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         #endregion
 
-        #region ABoundPasswordIsNotDialledOverTLSEither()
+        #region ABoundPasswordIsNotConnectedOverTLSEither()
 
         /// <summary>
         /// Bound to the TLS session, a one-time password cannot be made over
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         /// it never connects.
         /// </summary>
         [Test]
-        public void ABoundPasswordIsNotDialledOverTLSEither()
+        public void ABoundPasswordIsNotConnectedOverTLSEither()
         {
 
             var bound = ATOTPLogin("Bound", ChannelBinding: true);
@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                         Is.True, error);
 
             Assert.That(store.Connections.Single(one => one.Id == id).Warnings,
-                        Has.Some.Contains("not dialled"),
+                        Has.Some.Contains("not connected"),
                         "A one-time password that cannot be sent as configured was not worth mentioning.");
 
         }

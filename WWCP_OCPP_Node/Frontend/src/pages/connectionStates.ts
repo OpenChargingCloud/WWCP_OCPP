@@ -71,11 +71,11 @@ export function stateLine(entry:  Pick<StationConnection, 'url' | 'ocppVersion' 
                    ? null
              : entry.autoConnect
                    ? {
-                         chip:   'not dialled',
+                         chip:   'not connected yet',
                          tone:   '',
                          when:   '',
-                         said:   'Not dialled yet: it was written down, or set to connect by itself, a moment ago, ' +
-                                 `and is dialled as soon as this ${nodeNoun()} has taken the change.`,
+                         said:   'Not connected yet: it was written down, or set to connect by itself, a moment ago, ' +
+                                 `and is connected as soon as this ${nodeNoun()} has taken the change.`,
                          notes:  []
                      }
                    : null;
@@ -94,7 +94,7 @@ export function stateLine(entry:  Pick<StationConnection, 'url' | 'ocppVersion' 
             case 'lost':        return [ 'lost',         'warn', `${since}, and tried again by itself${next}` ];
             case 'trying':      return [ 'not reached',  'warn', `${since}, and tried again by itself${next}` ];
             case 'refused':     return [ 'refused',      'bad',  `${since}, and not tried again` ];
-            case 'notDialled':  return [ 'not dialled',  'bad',  since ];
+            case 'notConnected':  return [ 'not connected',  'bad',  since ];
             case 'standby':     return [ 'in reserve',   '',     since ];
             case 'waiting':     return [ 'waiting',      '',     since ];
             default:            return [ 'failed',       'bad',  `${since}, and not tried again` ];

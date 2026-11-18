@@ -154,7 +154,7 @@ describe("the pages of the connections, told they are a CSMS's", () => {
         if (path === '/configuration/connections' || path === '/configuration/authentications')
             return {
                 ...nothingYet(),
-                connectionTypes:  [ 'ChargingStation', 'LocalController' ],
+                connectionTypes:  [ 'ChargingStation', 'LocalController', 'Gateway' ],
                 ocppVersions:     [ 'OCPP2.1' ],
                 rules:            { inbound: false, ssh: false, namesTheNodeItLeadsTo: true },
                 connections:      [ {
@@ -184,9 +184,16 @@ describe("the pages of the connections, told they are a CSMS's", () => {
         const form  = root.querySelector<HTMLFormElement>('#add-form')!;
         const types = [ ...form.querySelectorAll<HTMLOptionElement>('[name="connectionType"] option') ];
 
-        assert.deepEqual(types.map(option => option.value),               [ 'ChargingStation', 'LocalController' ]);
-        assert.deepEqual(types.map(option => option.textContent!.trim()), [ 'Charging station', 'Local controller' ]);
+        assert.deepEqual(types.map(option => option.value),               [ 'ChargingStation', 'LocalController', 'Gateway' ]);
+        assert.deepEqual(types.map(option => option.textContent!.trim()), [ 'Charging station', 'Local controller', 'Gateway' ]);
         assert.equal(types[0]!.selected, true);
+
+        // A gateway is named wherever what is below a CSMS is: as the node at
+        // the other end, and as one spoken to in the overlay network.
+        const hintOf = (selector: string) => form.querySelector(selector)!.closest('label')!.querySelector('.hint')!.textContent!.replace(/\s+/g, ' ');
+
+        assert.match(hintOf('[name="remoteNodeId"]'),   /the charging station, the local controller or the gateway at the other end/);
+        assert.match(hintOf('[name="connectionType"]'), /a local controller and a gateway are spoken to in the overlay network/);
 
         assert.notEqual(form.querySelector('[name="remoteNodeId"]'), null);
         assert.equal(form.querySelector('[name="inbound"]'),         null);

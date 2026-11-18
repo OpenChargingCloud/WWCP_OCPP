@@ -369,7 +369,7 @@ export const connectionsPage: Page = {
                                placeholder="cs007" value="${entry?.remoteNodeId ?? ''}"
                                ?disabled=${!mayManage} />
                         <span class="hint">
-                            The name of the charging station or the local controller at the other end: what
+                            The name of the charging station, the local controller or the gateway at the other end: what
                             this ${nodeNoun()} speaks to it by, as it would be known by the last part of its
                             URL had it dialled itself. Nothing in the URL above says it.
                         </span>
@@ -479,7 +479,7 @@ export const connectionsPage: Page = {
                         </select>
                         <span class="hint">
                             Only where the key is pinned or learned. This ${nodeNoun()}'s TLS stack cannot offer raw public keys yet:
-                            Prefer checks the key in a certificate, and Require is not dialled.
+                            Prefer checks the key in a certificate, and Require is not connected.
                         </span>
                     </label>
 
@@ -521,9 +521,9 @@ export const connectionsPage: Page = {
                         </select>
                         <span class="hint">
                             ${nodeTraits().dialsDown
-                                  ? html`What it is: a local controller is spoken to in the overlay network, so that
-                                         the charging stations behind it are reached through it, and a charging
-                                         station in the plain frame of OCPP.`
+                                  ? html`What it is: a local controller and a gateway are spoken to in the overlay
+                                         network, so that the charging stations behind them are reached through
+                                         them; a charging station in the plain frame of OCPP.`
                                   : html`What it is, for whoever reads this page.`}
                             Every connection is dialled on its own; nothing here waits for anything else.
                         </span>
@@ -944,7 +944,7 @@ export const connectionsPage: Page = {
                                                    <span class="hint">learned ${formatTimestamp(entry.sshLearnedAt ?? '')}, on probation</span>`
                                             : entry.sshTrustOnFirstUse === 'HostKey'
                                                   ? html`<span class="hint" data-host-key="${entry.id}">none pinned yet - the first one its server shows is learned, on probation</span>`
-                                                  : html`<span class="hint" data-host-key="${entry.id}">none pinned - not dialled</span>`}</dd>
+                                                  : html`<span class="hint" data-host-key="${entry.id}">none pinned - not connected</span>`}</dd>
                         ` : nothing}
                         ${entry.secure && entry.inbound === true ? html`
                             <dt>Its certificate</dt>

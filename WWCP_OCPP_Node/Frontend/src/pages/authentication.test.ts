@@ -139,7 +139,7 @@ describe('the Authentication page', () => {
     it('offers a new one-time password unbound, and writes it down so', async () => {
 
         // Bound, it could not be sent at all: the station's TLS exports no
-        // keying material to bind it with, and it is not dialled.
+        // keying material to bind it with, and it is not connected.
         const root = await opened();
 
         written = undefined;

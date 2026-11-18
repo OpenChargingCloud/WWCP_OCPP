@@ -227,7 +227,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
                         it is the answer to the server's prompt, or a password. Over <code>wss://</code> it is bound
                         to the TLS session, on a connection that names HTTP/3 and nothing else: over HTTP/1.1
                         and HTTP/2 this ${nodeNoun()}'s TLS exports no keying material to bind one with, so any other
-                        connection whose credentials ask for it is not dialled at all, rather than sent less
+                        connection whose credentials ask for it is not connected at all, rather than sent less
                         than it was told. The Connections page says so where it applies. The ${farEnd()} has to
                         verify it as bound, which is not every ${farEnd()}'s to do.
                     </span>

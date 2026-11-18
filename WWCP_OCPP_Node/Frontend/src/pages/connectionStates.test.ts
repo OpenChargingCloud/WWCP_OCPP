@@ -103,11 +103,11 @@ describe('where a connection stands', () => {
 
     });
 
-    it('one set to connect by itself that was not dialled yet is said to be dialled when the change is taken', () => {
+    it('one set to connect by itself that was not connected yet is said to be connected when the change is taken', () => {
 
         const line = stateLine(dialled, undefined, '2020-01-01T00:00:00.000Z');
 
-        assert.equal(line?.chip, 'not dialled');
+        assert.equal(line?.chip, 'not connected yet');
         assert.match(line?.said ?? '', /as soon as this station has taken the change/);
         assert.doesNotMatch(line?.said ?? '', /next start/);
 
@@ -182,7 +182,7 @@ describe('a connection removed since the start', () => {
 
         const inbound = { ...dialled, inbound: true };
 
-        assert.equal(stateLine(inbound, undefined, '2020-01-01T00:00:00.000Z'), null, 'not dialled yet, of something nobody dials');
+        assert.equal(stateLine(inbound, undefined, '2020-01-01T00:00:00.000Z'), null, 'not connected yet, of something nobody dials');
 
         const line = stateLine({ ...inbound, url: 'wss://elsewhere.example.org/csms-01', autoConnect: false },
                                state('waiting'), '2020-01-01T00:01:00.000Z');

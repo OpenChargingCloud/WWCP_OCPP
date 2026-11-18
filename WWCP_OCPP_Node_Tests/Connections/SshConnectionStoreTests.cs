@@ -111,8 +111,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                             "An ssh:// connection proves itself with this station's key, and a pinned one has nothing to warn of.");
 
                 Assert.That(withoutPin.SshHostKey,                          Is.Null);
-                Assert.That(withoutPin.Warnings,                            Has.Some.Contains("not dialled"),
-                            "That a connection without a pin and without trust on first use is not dialled was not said out loud.");
+                Assert.That(withoutPin.Warnings,                            Has.Some.Contains("not connected"),
+                            "That a connection without a pin and without trust on first use is not connected was not said out loud.");
 
             });
 
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(again.SshTrustOnFirstUse,  Is.EqualTo(SshTrustOnFirstUse.HostKey));
                 Assert.That(again.SshProbationTime,    Is.EqualTo(TimeSpan.FromSeconds(120)));
                 Assert.That(store.Connections.Single(entry => entry.Id == id).Warnings, Has.Some.Contains("on probation"));
-                Assert.That(store.Connections.Single(entry => entry.Id == withoutTOFU).Warnings, Has.Some.Contains("not dialled"));
+                Assert.That(store.Connections.Single(entry => entry.Id == withoutTOFU).Warnings, Has.Some.Contains("not connected"));
             });
 
             // A probation that ran out forgets it - only that one.

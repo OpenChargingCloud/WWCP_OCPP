@@ -241,9 +241,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests
         private (ServerKeyPinTrust Trust, KeyPin Learned) FirstHandshake()
         {
 
-            var trust = pinning!.TrustFor(endpoints!.CopyOf("csms")!, out var notDialled);
+            var trust = pinning!.TrustFor(endpoints!.CopyOf("csms")!, out var notConnected);
 
-            Assert.That(trust, Is.Not.Null, notDialled);
+            Assert.That(trust, Is.Not.Null, notConnected);
 
             using var key          = ECDsa.Create(ECCurve.NamedCurves.nistP256);
             using var certificate  = new CertificateRequest("CN=lc.test", key, HashAlgorithmName.SHA256).

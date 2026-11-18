@@ -330,7 +330,7 @@ describe('the Connections page', () => {
 
         assert.ok(chips.includes('SSH'),     'the connection does not say it goes over SSH');
         assert.ok(!chips.includes('no TLS'), 'a connection over SSH is said to be unencrypted');
-        assert.match(root.querySelector('[data-host-key="c1"]')?.textContent ?? '', /none pinned - not dialled/);
+        assert.match(root.querySelector('[data-host-key="c1"]')?.textContent ?? '', /none pinned - not connected/);
 
         // A key learned on first use is shown on probation, and is no pin.
         const learning = await opened(aStationOnProbation);
