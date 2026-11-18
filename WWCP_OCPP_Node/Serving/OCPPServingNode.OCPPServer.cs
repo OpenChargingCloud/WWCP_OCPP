@@ -721,10 +721,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// TCP is not touched, as TCP asks at every handshake.
         /// </para>
         /// <para>
-        /// Stopped and started by switching it off and on, which is what Hermod
-        /// offers of a running server. Its stop lets go of the UDP port in its
-        /// own time and says nothing of when, so the start is tried again a few
-        /// times, a little later each, where the port is not free yet.
+        /// Restarted by Hermod, which binds the UDP port again only once the old
+        /// QUIC listener has let go of it, and asks the selector of the port for
+        /// its certificate when it starts again.
         /// </para>
         /// </remarks>
         /// <param name="Shown">What the station port shows now, or null.</param>
@@ -742,28 +741,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 try
                 {
 
-                    server.AcceptHTTP3 = false;
-
-                    for (var attempt = 1; attempt <= 6; attempt++)
+                    if (await server.RestartHTTP3Async())
                     {
-
-                        await Task.Delay(TimeSpan.FromMilliseconds(100 * attempt));
-
-                        if (!ocppServerStarted || !ocppServerSettings.TakesHTTP3 || !ocppServerTLS)
-                            return;
-
-                        server.AcceptHTTP3 = true;
-
-                        if (server.HTTP3Port is not null)
-                        {
-                            Log.Notice($"HTTP/3 of the charging station port was started again, to show {(Shown is not null ? $"'{Shown.Label}' ({Shown.Id})" : "what the port shows now")}.",
-                                       "ocpp", "station", "tls");
-                            return;
-                        }
-
-                        server.AcceptHTTP3 = false;
-
+                        Log.Notice($"HTTP/3 of the charging station port was started again, to show {(Shown is not null ? $"'{Shown.Label}' ({Shown.Id})" : "what the port shows now")}.",
+                                   "ocpp", "station", "tls");
+                        return;
                     }
+
+                    // Switched off or stopped meanwhile: nothing to say.
+                    if (!ocppServerStarted || !server.AcceptHTTP3)
+                        return;
 
                     Log.Warning($"HTTP/3 of the charging station port could not be started again with its new certificate: {server.WhyNoHTTP3 ?? "the UDP port is not free"}. " +
                                  "Over TCP the stations are shown the new one; over HTTP/3 none is taken until the station server is started again.",
