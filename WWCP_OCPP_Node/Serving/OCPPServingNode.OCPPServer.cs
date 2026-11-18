@@ -153,11 +153,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
         public const String StationListener = "ocpp";
 
         /// <summary>
-        /// Whether HTTP/3 is being started again for another certificate - see
-        /// <see cref="ShowOverHTTP3Again"/> - so that two changes close together
-        /// start it once more rather than twice at once.
+        /// The restarts of HTTP/3 for another certificate - see
+        /// <see cref="ShowOverHTTP3Again"/> - one at a time, and once more
+        /// after one that runs where the port was shown another meanwhile.
         /// </summary>
-        private Int32                                      http3Restarting;
+        private readonly RestartsOneAtATime                http3Restarts;
+
+        /// <summary>
+        /// What the station port was last said to show, for the next restart
+        /// of HTTP/3 to name.
+        /// </summary>
+        private CertificateEntry?                          http3Shown;
 
         /// <summary>
         /// Where a connection keeps which charging station this controller let
@@ -733,40 +739,40 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (ocppWebSocketServer is not { } server || !ocppServerStarted || !server.AcceptHTTP3)
                 return;
 
-            if (Interlocked.Exchange(ref http3Restarting, 1) == 1)
+            Volatile.Write(ref http3Shown, Shown);
+
+            // One restart at a time; a change that comes while one runs is
+            // shown by one more after it, not left out.
+            http3Restarts.Ask();
+
+        }
+
+        /// <summary>
+        /// Start HTTP/3 of the station port again, so that it shows what the
+        /// port shows now - see <see cref="ShowOverHTTP3Again"/>.
+        /// </summary>
+        private async Task RestartHTTP3ToShowAgainAsync()
+        {
+
+            if (ocppWebSocketServer is not { } server || !ocppServerStarted || !server.AcceptHTTP3)
                 return;
 
-            _ = Task.Run(async () => {
+            var shown = Volatile.Read(ref http3Shown);
 
-                try
-                {
+            if (await server.RestartHTTP3Async())
+            {
+                Log.Notice($"HTTP/3 of the charging station port was started again, to show {(shown is not null ? $"'{shown.Label}' ({shown.Id})" : "what the port shows now")}.",
+                           "ocpp", "station", "tls");
+                return;
+            }
 
-                    if (await server.RestartHTTP3Async())
-                    {
-                        Log.Notice($"HTTP/3 of the charging station port was started again, to show {(Shown is not null ? $"'{Shown.Label}' ({Shown.Id})" : "what the port shows now")}.",
-                                   "ocpp", "station", "tls");
-                        return;
-                    }
+            // Switched off or stopped meanwhile: nothing to say.
+            if (!ocppServerStarted || !server.AcceptHTTP3)
+                return;
 
-                    // Switched off or stopped meanwhile: nothing to say.
-                    if (!ocppServerStarted || !server.AcceptHTTP3)
-                        return;
-
-                    Log.Warning($"HTTP/3 of the charging station port could not be started again with its new certificate: {server.WhyNoHTTP3 ?? "the UDP port is not free"}. " +
-                                 "Over TCP the stations are shown the new one; over HTTP/3 none is taken until the station server is started again.",
-                                "ocpp", "station", "tls");
-
-                }
-                catch (Exception e)
-                {
-                    Log.Exception(e, "HTTP/3 of the charging station port could not be started again with its new certificate.", "ocpp", "station", "tls");
-                }
-                finally
-                {
-                    Interlocked.Exchange(ref http3Restarting, 0);
-                }
-
-            });
+            Log.Warning($"HTTP/3 of the charging station port could not be started again with its new certificate: {server.WhyNoHTTP3 ?? "the UDP port is not free"}. " +
+                         "Over TCP the stations are shown the new one; over HTTP/3 none is taken until the station server is started again.",
+                        "ocpp", "station", "tls");
 
         }
 
