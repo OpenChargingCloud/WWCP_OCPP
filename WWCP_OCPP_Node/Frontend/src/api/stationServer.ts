@@ -1,4 +1,4 @@
-import { apiURL, request }  from '@node/api/client';
+import { request }  from '@node/api/client';
 
 
 // What a node that serves the charging stations below it keeps for them, and
@@ -10,11 +10,14 @@ import { apiURL, request }  from '@node/api/client';
 // both. A kind of node spreads the calls into its own api where it wants them
 // there as well.
 //
-// Two of its names are names of something else elsewhere, and stay so here: a
-// StationLogin is a charging station that may sign in to this node - not the
-// credentials a connection of "@ocpp/api/connections" signs in with - and a
-// KeyAlgorithm is a kind of key the node presents as a server. A module that
-// exports both modules' names names one of them under another name.
+// One of its names is the name of something else elsewhere, and stays so here:
+// a StationLogin is a charging station that may sign in to this node - not the
+// credentials a connection of "@ocpp/api/connections" signs in with. A module
+// that exports both modules' names names one of them under another name.
+//
+// What the station port presents is not here: it is the node's certificate
+// store's - TLS server identities told the listener "ocpp", and their server
+// keys - see "@node/api/client" and the Server identities page.
 
 
 /** What of the charging station server ends up in the event log. */
@@ -130,117 +133,6 @@ export interface OCPPServerUpdate {
         payloadsUntil?:   string | null;
         pings?:           boolean;
     };
-}
-
-/** A kind of key this local controller will make for itself. */
-export interface KeyAlgorithm {
-    id:           string;
-    name:         string;
-    /** What somebody choosing it should know. */
-    remark:       string;
-    /**
-     * Whether this platform is known to be able to present a certificate with
-     * such a key, or absent while nobody has tried. Found out by doing a TLS
-     * handshake, not from a list - it depends on the operating system, the
-     * runtime and the year.
-     */
-    presentable?: boolean;
-}
-
-/** One key of this local controller, and the certificate it was given. */
-export interface ServerCertificate {
-    /** Where the public key hashes to; what the signing request is filed under. */
-    id:              string;
-    algorithm:       string;
-    createdAt:       string;
-    subject:         string;
-    hasCertificate:  boolean;
-    /**
-     * Whether this machine can hold this certificate up to a charging station
-     * during a TLS handshake. A different question from whether the certificate
-     * is any good: an Ed448 or an ML-DSA key makes a perfectly valid one that
-     * this platform's TLS stack will not serve.
-     */
-    canBePresented:  boolean;
-    /** Whether this is the one being presented to the charging stations. */
-    inUse:           boolean;
-    warnings:        string[];
-    /** SHA-256 over the key's SubjectPublicKeyInfo, 64 lower-case hexadecimal digits: the same in every wrapper. */
-    keyPin?:         string;
-    /** Whether it is a server key, presented in a self-signed carrier certificate where no authority issued one. */
-    hasCarrier?:     boolean;
-    /** Whether it is the announced next key, presented only once somebody switches to it. */
-    next?:           boolean;
-    /** Since when it is the current server key, if it ever was. */
-    currentSince?:   string | null;
-    /** What it is presented in at the next handshake - or null where it is not. */
-    presented?:      'certificate' | 'carrier' | null;
-    carrier?: {
-        subject:     string;
-        thumbprint:  string;
-    };
-    certificate?: {
-        subject:          string;
-        issuer:           string;
-        serialNumber:     string;
-        thumbprint:       string;
-        notBefore:        string;
-        notAfter:         string;
-        subjectAltNames:  string[];
-        intermediates:    number;
-        /** "pending" before its window, "valid" inside it, "expired" after. */
-        state:            'pending' | 'valid' | 'expired';
-        daysRemaining:    number;
-    };
-}
-
-/** The keys and certificates this local controller presents. */
-export interface ServerCertificates {
-    directory:             string;
-    /** By the controller's own clock, which is what decides the windows below. */
-    now:                   string;
-    servedId:              string | null;
-    entries:               ServerCertificate[];
-    algorithms:            KeyAlgorithm[];
-    /** Always false, and said out loud: a private key is made here and never arrives. */
-    canImportPrivateKeys:  boolean;
-    /** The key pins a charging station pins: the current key's first, and the announced next one's. */
-    keyPins?: {
-        current:  ServerKeyPin & { presented: 'certificate' | 'carrier' | null } | null;
-        next:     ServerKeyPin | null;
-    };
-}
-
-/** The key pin of one key of this local controller, and the key it is of. */
-export interface ServerKeyPin {
-    id:         string;
-    keyPin:     string;
-    createdAt:  string;
-}
-
-/** One certificate found in a text or a file, and the key of this controller it is for. */
-export interface ServerCertificateFound {
-    id:             string;
-    thumbprint:     string;
-    label:          string;
-    subject:        string;
-    issuer:         string;
-    notBefore:      string;
-    notAfter:       string;
-    chainLength:    number;
-    /** Whether it came with its private key - which is refused: none arrives here. */
-    hasPrivateKey:  boolean;
-    /** The key of this controller it belongs to, by its public key; null for none. */
-    keyId:          string | null;
-    /** Why it would not be taken in, as far as can be said before trying; null where nothing speaks against it. */
-    refusal:        string | null;
-}
-
-/** What an upload of several certificates did, one by one. */
-export interface ServerCertificatesUploaded {
-    taken:    { id: string; label: string; warnings: string[] }[];
-    refused:  { label: string; error: string }[];
-    error?:   string;
 }
 
 /** One chain a charging station's certificate may lead to. */
@@ -401,66 +293,6 @@ export const stationServerAPI = {
         get:   ()                          => request<OCPPServerConfiguration>('GET', '/configuration/ocpp-server'),
         /** Only the fields given are changed; the answer is the whole thing as it now stands. */
         save:  (update: OCPPServerUpdate)  => request<OCPPServerConfiguration>('PUT', '/configuration/ocpp-server', update),
-
-        certificates: {
-
-            get:     ()  => request<ServerCertificates>('GET', '/configuration/ocpp-server/certificates'),
-
-            /**
-             * Generate a key and the signing request that goes with it; the key
-             * never leaves.
-             *
-             * Given three minutes rather than the half of one any other write
-             * gets, because an RSA key is a search for two primes that takes as
-             * long as it takes: measured here, an RSA 4096 key took between 0.4
-             * and 7 seconds on a desktop, and a local controller may well be a
-             * board many times slower than that.
-             */
-            create:  (subject: string, algorithm: string) =>
-                         request<{ id: string; csr: string }>('POST', '/configuration/ocpp-server/certificates',
-                                                              { subject, algorithm }, 3 * 60_000),
-
-            /** Where the signing request can be downloaded; a plain file, not JSON. */
-            csrURL:  (id: string) => apiURL(`/configuration/ocpp-server/certificates/${encodeURIComponent(id)}/csr`),
-
-            /** Take in the certificate that answers a request, with its intermediates. */
-            upload:  (id: string, pem: string) =>
-                         request<{ id: string; warnings: string[] }>('PUT',
-                             `/configuration/ocpp-server/certificates/${encodeURIComponent(id)}`, { pem }),
-
-            remove:  (id: string) =>
-                         request<ServerCertificates>('DELETE',
-                             `/configuration/ocpp-server/certificates/${encodeURIComponent(id)}`),
-
-            /** What a text or a file holds, and which key of this controller each certificate is for - nothing taken in. */
-            inspect: (what: { pem?: string; content?: string; password?: string }) =>
-                         request<{ certificates: ServerCertificateFound[]; pem: string }>('POST',
-                             '/configuration/ocpp-server/certificates/inspect', what),
-
-            /** Every certificate of a text or a file taken in under the key it is for. */
-            uploadAll: (what: { pem?: string; content?: string; password?: string }) =>
-                         request<ServerCertificatesUploaded>('POST',
-                             '/configuration/ocpp-server/certificates/upload', what)
-
-        },
-
-        /**
-         * The server key the charging stations pin, presented in a carrier
-         * certificate made from it: the first one where nothing is presented
-         * yet, or the next one, announced ahead of a rollover. Given the time
-         * a key takes to make, as above.
-         */
-        serverKeys: {
-
-            create:  (algorithm: string, next: boolean) =>
-                         request<{ id: string; keyPin: string; next: boolean; certificates: ServerCertificates }>(
-                             'POST', '/configuration/ocpp-server/serverKeys', { algorithm, next }, 3 * 60_000),
-
-            /** Present the next key from now on; stations that pinned only the key before are refused. */
-            switch:  () =>
-                         request<ServerCertificates>('POST', '/configuration/ocpp-server/serverKeys/switch', {})
-
-        },
 
         trust: {
 

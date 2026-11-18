@@ -247,8 +247,8 @@ export const ocppServerPage: Page = {
                                   <div class="notice warn">
                                       Profile 2 or 3 is allowed, but there is no server certificate - so this port is
                                       <strong>not encrypted</strong> and only profile 1 can be used on it.
-                                      <a href="${toURL('/configuration/ocpp-server/certificates')}">Make a signing request, or a server key
-                                      for the stations to pin</a>.
+                                      <a href="${toURL('/configuration/server-identities')}">Make a TLS server identity for the listener
+                                      "ocpp", or a server key of it for the stations to pin</a>.
                                   </div>
                               `
                               : nothing}

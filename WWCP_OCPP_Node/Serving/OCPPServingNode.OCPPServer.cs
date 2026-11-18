@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.WWCP.Node;
+using cloud.charging.open.protocols.WWCP.Node.Certificates;
 using cloud.charging.open.protocols.WWCP.Node.Logging;
 using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 using cloud.charging.open.protocols.OCPP.SSH;
@@ -123,14 +124,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private Boolean                                    ocppServerStarted;
 
         /// <summary>
-        /// What makes this controller look at its certificates without being
-        /// asked.
+        /// What makes this controller look at the chains it accepts without
+        /// being asked.
         /// </summary>
         /// <remarks>
-        /// The whole value of uploading a replacement weeks early is somebody
+        /// The whole value of naming a replacement weeks early is somebody
         /// being told weeks early. Checking only when a page is opened would
         /// mean the warning arrives when somebody was already looking - which
-        /// is the one moment it is not needed.
+        /// is the one moment it is not needed. What the station port presents
+        /// is looked at by the node - see ListenerCertificates.
         ///
         /// On this controller's own <see cref="TimeProvider"/> rather than a
         /// bare timer, so that a test which moves the clock moves this too.
@@ -138,10 +140,24 @@ namespace cloud.charging.open.protocols.OCPP.Node
         private ITimer?                                    certificateCheckTimer;
 
         /// <summary>
-        /// How often the certificates are looked at. Daily: what is being
-        /// watched for moves at the speed of a calendar.
+        /// How often the chains are looked at. Daily: what is being watched for
+        /// moves at the speed of a calendar.
         /// </summary>
         public static readonly TimeSpan CertificateCheckEvery = TimeSpan.FromHours(24);
+
+        /// <summary>
+        /// The listener of the node's certificate store the station port is:
+        /// what it presents is a TLS server identity told "ocpp", or the
+        /// carrier of the server key of "ocpp".
+        /// </summary>
+        public const String StationListener = "ocpp";
+
+        /// <summary>
+        /// Whether HTTP/3 is being started again for another certificate - see
+        /// <see cref="ShowOverHTTP3Again"/> - so that two changes close together
+        /// start it once more rather than twice at once.
+        /// </summary>
+        private Int32                                      http3Restarting;
 
         /// <summary>
         /// Where a connection keeps which charging station this controller let
@@ -183,10 +199,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region Properties
 
         /// <summary>
-        /// The keys and certificates this local controller presents to the
-        /// charging stations.
+        /// What the station port presents to the charging stations, out of the
+        /// node's certificate store: the listener "ocpp" - see
+        /// <see cref="StationListener"/> - which keeps serving the last
+        /// certificate it showed where nothing is valid, rather than lock every
+        /// station out.
         /// </summary>
-        public ServerCertificateStore   ServerCertificates    { get; private set; } = default!;
+        public ListenerCertificate      StationCertificate    { get; private set; } = default!;
 
         /// <summary>
         /// Which chains a charging station's own certificate may lead to.
@@ -244,15 +263,30 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// </summary>
         public KeyPin? OCPPServerKeyPin
             => ocppServerTLS
-                   ? ServerCertificates.CurrentKey?.KeyPin
+                   ? StationCertificate.Entry?.KeyPin
                    : null;
 
         /// <summary>
-        /// The key pin of the announced next key, to be handed to the charging
-        /// stations before the switch - or null where none was announced.
+        /// The key pin of the announced next server key of the station port, to
+        /// be handed to the charging stations before the switch - or null where
+        /// none was announced.
         /// </summary>
         public KeyPin? OCPPServerNextKeyPin
-            => ServerCertificates.NextKey?.KeyPin;
+        {
+            get
+            {
+                Certificates.GetCurrentAndNextKey(StationListener, out var next);
+                return next?.KeyPin;
+            }
+        }
+
+        /// <summary>
+        /// Whether the station port has anything to present: an identity of the
+        /// store for "ocpp" - or for every listener - or the carrier of a
+        /// server key of it.
+        /// </summary>
+        public Boolean OCPPServerHasCertificate
+            => StationCertificate.Choose() is not null;
 
         /// <summary>
         /// Where the charging stations are told to connect.
@@ -325,17 +359,32 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ocppServerSettings  = (Configuration ?? new OCPPServerConfiguration()).Effective();
             ocppServerAsBuilt   = ocppServerSettings;
 
-            #region The three stores, each saying what it finds
+            #region What it presents, out of the node's store
 
-            ServerCertificates = new ServerCertificateStore(
-                                     Path.Combine(directory, ServerCertificateStore.DefaultDirectoryName),
-                                     TimeProvider
-                                 );
+            // A station that cannot be given a new certificate without first
+            // connecting is better served by one that ran out than by none.
+            ListenerCertificates.KeepServingLast(StationListener);
 
-            ServerCertificates.OnNotice += (level, message) => Log.Log(level, message, "ocpp", "tls");
+            StationCertificate = ListenerCertificates.For(StationListener, "the charging station port");
 
-            // Every switch, from wherever it was asked for, told to the CSMS.
-            ServerCertificates.OnSwitched += ServerKeySwitched;
+            // Every switch, from wherever it was asked for - the node's page,
+            // its JSON API, the command line, OCPP - told to the kind of node:
+            // a local controller tells its CSMS.
+            Certificates.OnServerKeySwitched += (listener, before, after) => {
+                if (listener == StationListener)
+                    ServerKeySwitched(before, after);
+            };
+
+            // HTTP/3 takes its certificate once, when it starts: shown another,
+            // it is started again with it.
+            ListenerCertificates.OnShownChanged += (listener, before, after) => {
+                if (listener == StationListener)
+                    ShowOverHTTP3Again(after);
+            };
+
+            #endregion
+
+            #region The two stores, each saying what it finds
 
             ClientTrust        = new ClientTrustStore(
                                      Path.Combine(directory, ClientTrustStore.DefaultDirectoryName),
@@ -345,12 +394,10 @@ namespace cloud.charging.open.protocols.OCPP.Node
             ClientTrust.OnNotice += (level, message) => Log.Log(level, message, "ocpp", "tls", "trust");
 
             // Their owner's alone, as the node keeps its accounts and its own
-            // certificates: a key read by somebody else is somebody else's
-            // server, and a chain added by somebody else lets their charging
+            // certificates: a chain added by somebody else lets their charging
             // stations in. What an older controller left open is taken back
             // here, once somebody listens to what cannot be done.
-            ServerCertificates.KeepToItsOwner();
-            ClientTrust.       KeepToItsOwner();
+            ClientTrust.KeepToItsOwner();
 
             StationLogins      = new ChargingStationLogins(
                                      Path.Combine(directory, ChargingStationLogins.DefaultFileName),
@@ -511,12 +558,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             #region Encrypted or not, decided here and for good
 
-            ocppServerTLS = wantsTLS && ServerCertificates.HasCertificate;
+            ocppServerTLS = wantsTLS && OCPPServerHasCertificate;
 
             if (ocppServerTLS)
             {
 
-                ocppWebSocketServer.ServerCertificateChainSelector = (server, client) => ServerCertificates.Select();
+                // Chosen at every handshake, read once until the store changes.
+                ocppWebSocketServer.ServerCertificateChainSelector = (server, client) => StationCertificate.Current;
 
                 #region Can the chain that would be presented actually be presented?
 
@@ -531,7 +579,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 try
                 {
 
-                    var chain = ServerCertificates.Select();
+                    var chain = StationCertificate.Current;
 
                     if (chain is null)
                         Log.Critical(
@@ -570,12 +618,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 if (wantsTLS)
                     Log.Warning(
                         "Security profile 2 or 3 is configured, but there is no server certificate - so the charging station port is " +
-                        "unencrypted and only security profile 1 can be used on it. Make a signing request and upload the certificate " +
-                        "that answers it, or make a server key for the stations to pin; the port encrypts from the next start.",
+                        "unencrypted and only security profile 1 can be used on it. Make a TLS server identity for the listener " +
+                        $"'{StationListener}' on the Server identities page, or a server key of it for the stations to pin; the port " +
+                        "encrypts from the next start.",
                         "ocpp", "station", "tls"
                     );
 
-                else if (ServerCertificates.HasCertificate)
+                else if (OCPPServerHasCertificate)
                     Log.Notice(
                         "Only security profile 1 is allowed, so the charging station port is unencrypted and the server certificate is not presented.",
                         "ocpp", "station", "tls"
@@ -635,9 +684,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                         CertificateCheckEvery
                                     );
 
-            if (ocppServerTLS)
-                ServerCertificates.Select();
-
             #endregion
 
             #region The two ways to have a port nobody can come through
@@ -658,6 +704,82 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 );
 
             #endregion
+
+        }
+
+        /// <summary>
+        /// Start HTTP/3 again where the station port takes it, so that it shows
+        /// what the port shows now: QUIC is handed its certificate once, when it
+        /// starts, and goes on showing that one otherwise.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Asked whenever the station port shows another certificate - a server
+        /// key switched to, one issued for it put in, one that became valid or
+        /// ran out - see ListenerCertificates.OnShownChanged. A station over
+        /// HTTP/3 connected at the time is dropped and connects again; one over
+        /// TCP is not touched, as TCP asks at every handshake.
+        /// </para>
+        /// <para>
+        /// Stopped and started by switching it off and on, which is what Hermod
+        /// offers of a running server. Its stop lets go of the UDP port in its
+        /// own time and says nothing of when, so the start is tried again a few
+        /// times, a little later each, where the port is not free yet.
+        /// </para>
+        /// </remarks>
+        /// <param name="Shown">What the station port shows now, or null.</param>
+        private void ShowOverHTTP3Again(CertificateEntry? Shown)
+        {
+
+            if (ocppWebSocketServer is not { } server || !ocppServerStarted || !server.AcceptHTTP3)
+                return;
+
+            if (Interlocked.Exchange(ref http3Restarting, 1) == 1)
+                return;
+
+            _ = Task.Run(async () => {
+
+                try
+                {
+
+                    server.AcceptHTTP3 = false;
+
+                    for (var attempt = 1; attempt <= 6; attempt++)
+                    {
+
+                        await Task.Delay(TimeSpan.FromMilliseconds(100 * attempt));
+
+                        if (!ocppServerStarted || !ocppServerSettings.TakesHTTP3 || !ocppServerTLS)
+                            return;
+
+                        server.AcceptHTTP3 = true;
+
+                        if (server.HTTP3Port is not null)
+                        {
+                            Log.Notice($"HTTP/3 of the charging station port was started again, to show {(Shown is not null ? $"'{Shown.Label}' ({Shown.Id})" : "what the port shows now")}.",
+                                       "ocpp", "station", "tls");
+                            return;
+                        }
+
+                        server.AcceptHTTP3 = false;
+
+                    }
+
+                    Log.Warning($"HTTP/3 of the charging station port could not be started again with its new certificate: {server.WhyNoHTTP3 ?? "the UDP port is not free"}. " +
+                                 "Over TCP the stations are shown the new one; over HTTP/3 none is taken until the station server is started again.",
+                                "ocpp", "station", "tls");
+
+                }
+                catch (Exception e)
+                {
+                    Log.Exception(e, "HTTP/3 of the charging station port could not be started again with its new certificate.", "ocpp", "station", "tls");
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref http3Restarting, 0);
+                }
+
+            });
 
         }
 
@@ -876,14 +998,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region (private) CheckCertificates()
 
         /// <summary>
-        /// Look at every certificate and every accepted chain, and say what is
-        /// about to run out.
+        /// Look at every accepted chain, and say what is about to run out.
         /// </summary>
         /// <remarks>
-        /// Both sides, because both sides take a site down when they expire:
-        /// this controller's own certificate stops being believed by the
-        /// charging stations, and an expired trust anchor stops this controller
-        /// believing them.
+        /// An expired trust anchor stops this controller believing the
+        /// charging stations, which takes a site down as surely as its own
+        /// certificate running out would - which the node looks at, see
+        /// ListenerCertificates.
         ///
         /// Whatever goes wrong in here is caught: this runs on a timer, and a
         /// timer callback that throws takes the process with it. A controller
@@ -896,8 +1017,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             try
             {
-                ServerCertificates.CheckExpiry(ocppServerSettings.ReachableAs ?? []);
-                ClientTrust.       CheckExpiry();
+                ClientTrust.CheckExpiry();
             }
             catch (Exception e)
             {
@@ -1759,7 +1879,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     new JProperty("connections",             ocppWebSocketServer?.WebSocketConnections.Count() ?? 0),
                     new JProperty("stationLogins",           StationLogins.EnabledCount),
                     new JProperty("trustedChains",           ClientTrust.EnabledCount),
-                    new JProperty("hasCertificate",          ServerCertificates.HasCertificate),
+                    new JProperty("hasCertificate",          OCPPServerHasCertificate),
 
                     // What a charging station pins to reach this port, and what
                     // to hand it before a switch (EVQI Transport, key pins, 7.4).
@@ -1925,11 +2045,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             if (update.SecurityProfiles is { Count: > 0 } profiles &&
                 profiles.All(profile => profile > 1) &&
-                !ServerCertificates.HasCertificate)
+                !OCPPServerHasCertificate)
             {
                 Error = "Security profiles 2 and 3 both need TLS, and there is no server certificate yet. " +
-                        "Make a signing request and upload the certificate that answers it, or make a server key for the charging " +
-                        "stations to pin, or allow security profile 1 as well.";
+                        $"Make a TLS server identity for the listener '{StationListener}' on the Server identities page, or a server " +
+                        "key of it for the charging stations to pin, or allow security profile 1 as well.";
                 return false;
             }
 

@@ -176,9 +176,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    NTSClient,
                    Frontend,
                    CertificatesPath,
-                   CertificateKinds,
+                   WithStationPortKinds    (CertificateKinds),
                    CertificateUsages,
-                   CertificateListeners,
+                   WithStationPortListener (CertificateListeners),
                    Log,
                    LogToConsole,
                    ConsoleLogLevel,
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    SSH,
                    FrontendSecurityHeaders,
                    Web,
-                   CertificateRequestKinds)
+                   WithStationPortRequests (CertificateRequestKinds))
 
         {
 
@@ -202,6 +202,44 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
+
+        #region (private static) WithStationPortKinds(Kinds) / WithStationPortListener(Listeners) / WithStationPortRequests(RequestKinds)
+
+        /// <summary>
+        /// The kinds the node's store keeps, with the TLS server identity among
+        /// them: what the station port presents is one - every kind, where the
+        /// kind of node says nothing.
+        /// </summary>
+        private static IEnumerable<CertificateKind>? WithStationPortKinds(IEnumerable<CertificateKind>? Kinds)
+
+            => Kinds is null
+                   ? null
+                   : Kinds.Contains(CertificateKind.TLSServerIdentity)
+                         ? Kinds
+                         : [ .. Kinds, CertificateKind.TLSServerIdentity ];
+
+        /// <summary>
+        /// The listeners a TLS server identity of the store may be told, with
+        /// the station port's, "ocpp", among them - see <see cref="StationListener"/>.
+        /// </summary>
+        private static IEnumerable<String> WithStationPortListener(IEnumerable<String>? Listeners)
+
+            => (Listeners ?? []).Contains(StationListener, StringComparer.OrdinalIgnoreCase)
+                   ? Listeners!
+                   : [ .. Listeners ?? [], StationListener ];
+
+        /// <summary>
+        /// The kinds the node makes keys and signing requests for, with the TLS
+        /// server identity among them: a key the station port presents is best
+        /// made here, and never carried to the node.
+        /// </summary>
+        private static IEnumerable<CertificateKind> WithStationPortRequests(IEnumerable<CertificateKind>? RequestKinds)
+
+            => (RequestKinds ?? []).Contains(CertificateKind.TLSServerIdentity)
+                   ? RequestKinds!
+                   : [ .. RequestKinds ?? [], CertificateKind.TLSServerIdentity ];
+
+        #endregion
 
         #region (protected virtual) LetsBackEndsDialIn
 
@@ -267,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    new JProperty("securityProfiles", new JArray((ocppServerSettings.SecurityProfiles ?? []).Select(profile => (Int32) profile))),
                    new JProperty("stationLogins",    StationLogins.EnabledCount),
                    new JProperty("trustedChains",    ClientTrust.EnabledCount),
-                   new JProperty("certificates",     ServerCertificates.Entries.Count)
+                   new JProperty("certificates",     Certificates.ByKind(CertificateKind.TLSServerIdentity).Count(entry => entry.IsFor(StationListener)))
                );
 
         #endregion
@@ -299,8 +337,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 try
                 {
-                    ServerCertificates?.Dispose();
-                    ClientTrust?       .Dispose();
+                    ClientTrust?.Dispose();
                 }
                 finally
                 {
