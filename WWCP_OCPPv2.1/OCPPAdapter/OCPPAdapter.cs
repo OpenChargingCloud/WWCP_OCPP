@@ -1331,6 +1331,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #endregion
 
+        #region (private) OnTheWire(Message)
+
+        // Where a message goes, as written on the line: see Routing.OnTheWire.
+
+        private OCPP_JSONRequestMessage   OnTheWire(OCPP_JSONRequestMessage   Message)
+            => NetworkingNode.Routing.OnTheWire(Message.Destination) is var destination && destination != Message.Destination
+                   ? Message.ChangeNetworking(destination)
+                   : Message;
+
+        private OCPP_JSONSendMessage      OnTheWire(OCPP_JSONSendMessage      Message)
+            => NetworkingNode.Routing.OnTheWire(Message.Destination) is var destination && destination != Message.Destination
+                   ? Message.ChangeNetworking(destination)
+                   : Message;
+
+        private OCPP_BinaryRequestMessage OnTheWire(OCPP_BinaryRequestMessage Message)
+            => NetworkingNode.Routing.OnTheWire(Message.Destination) is var destination && destination != Message.Destination
+                   ? Message.ChangeNetworking(destination)
+                   : Message;
+
+        private OCPP_BinarySendMessage    OnTheWire(OCPP_BinarySendMessage    Message)
+            => NetworkingNode.Routing.OnTheWire(Message.Destination) is var destination && destination != Message.Destination
+                   ? Message.ChangeNetworking(destination)
+                   : Message;
+
+        #endregion
+
         #region (internal) SendJSONRequest          (JSONRequestMessage, SentMessageResultDelegate = null)
 
         internal async Task<SentMessageResult> SendJSONRequest(OCPP_JSONRequestMessage     JSONRequestMessage,
@@ -1342,8 +1368,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(JSONRequestMessage.Destination.Next, out var reachability))
             {
 
+                // Routed by the name of the route, written with the name its far end answers to.
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await SendRequest(ocppTransport, JSONRequestMessage);
+                    sentMessageResult = await SendRequest(ocppTransport, OnTheWire(JSONRequestMessage));
 
             }
 
@@ -1620,8 +1647,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             else if (NetworkingNode.Routing.LookupNetworkingNode(JSONSendMessage.Destination.Next, out var reachability))
             {
 
+                // Routed by the name of the route, written with the name its far end answers to.
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await SendSendMessage(ocppTransport, JSONSendMessage);
+                    sentMessageResult = await SendSendMessage(ocppTransport, OnTheWire(JSONSendMessage));
 
             }
 
@@ -1756,8 +1784,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinaryRequestMessage.Destination.Next, out var reachability))
             {
 
+                // Routed by the name of the route, written with the name its far end answers to.
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await SendRequest(ocppTransport, BinaryRequestMessage);
+                    sentMessageResult = await SendRequest(ocppTransport, OnTheWire(BinaryRequestMessage));
 
             }
 
@@ -1984,8 +2013,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             if (NetworkingNode.Routing.LookupNetworkingNode(BinarySendMessage.Destination.Next, out var reachability))
             {
 
+                // Routed by the name of the route, written with the name its far end answers to.
                 if (reachability.Transport is IOCPPMessageTransport ocppTransport)
-                    sentMessageResult = await SendSendMessage(ocppTransport, BinarySendMessage);
+                    sentMessageResult = await SendSendMessage(ocppTransport, OnTheWire(BinarySendMessage));
 
             }
 

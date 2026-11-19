@@ -150,19 +150,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
         protected sealed class Registration
         {
 
-            private readonly Func<ConnectionEntry, NetworkingNode_Id> destinationOf;
-
-            public Registration(Registrations                             Node,
-                                ConnectionEntry                           Connection,
-                                Boolean                                   Primary,
-                                Func<ConnectionEntry, NetworkingNode_Id>  DestinationOf)
+            public Registration(Registrations    Node,
+                                ConnectionEntry  Connection,
+                                Boolean          Primary)
             {
-                this.Version        = Node.Version;
-                this.Reason         = Node.Reason;
-                this.Ended          = Node.Ended;
-                this.Connection     = Connection;
-                this.Primary        = Primary;
-                this.destinationOf  = DestinationOf;
+                this.Version     = Node.Version;
+                this.Reason      = Node.Reason;
+                this.Ended       = Node.Ended;
+                this.Connection  = Connection;
+                this.Primary     = Primary;
             }
 
             public String                   Version      { get; }
@@ -180,10 +176,11 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             /// <summary>
             /// Where its BootNotification and its heartbeats go: the connection's own name,
-            /// or in the overlay network the CSMS's - see WWCPNode.DestinationOf.
+            /// which the frame of the overlay network carries as the name its far end
+            /// answers to - see WWCPNode.FarEndNameOf.
             /// </summary>
             public NetworkingNode_Id        Destination
-                => destinationOf(Connection);
+                => NextHopOf(Connection);
 
             public RegistrationState        State        { get; set; } = RegistrationState.NotAsked;
             public DateTimeOffset?          Since        { get; set; }
@@ -449,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             return nodeRegistrations.ByConnection.GetOrAdd(
                        Connection.Id,
-                       _ => new Registration(nodeRegistrations, Connection, IsPrimary(Connection), DestinationOf)
+                       _ => new Registration(nodeRegistrations, Connection, IsPrimary(Connection))
                    );
 
         }
