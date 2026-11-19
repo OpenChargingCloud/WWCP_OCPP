@@ -23,6 +23,7 @@ using NUnit.Framework;
 
 
 using cloud.charging.open.protocols.OCPP.Node.Serving;
+using cloud.charging.open.protocols.WWCP.Node.Logins;
 
 #endregion
 
@@ -39,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
         private String                 directory  = default!;
         private TestClock              clock      = default!;
-        private ChargingStationLogins  logins     = default!;
+        private WebSocketLogins  logins     = default!;
 
         private const String ThePassword = "a-password-long-enough-for-ocpp";
 
@@ -55,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             Directory.CreateDirectory(directory);
 
             clock     = TestClock.At(2026, 6, 1);
-            logins    = new ChargingStationLogins(Path.Combine(directory, "ocpp-stations.json"), clock);
+            logins    = new WebSocketLogins(Path.Combine(directory, "websocket-logins.json"), clock);
 
             if (!logins.TryLoad(out var error))
                 throw new InvalidOperationException($"The test's own login store was refused: {error}");
@@ -80,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void ThereIsAlwaysADefaultGroupAndItBehavesAsBefore()
         {
 
-            var group = logins.GetGroup(LoginGroup.DefaultId);
+            var group = logins.GetGroup(WebSocketLoginGroup.DefaultId);
 
             Assert.That(group, Is.Not.Null);
 
@@ -93,9 +94,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(group.Allows(AuthMethod.TOTP),         Is.True);
                 Assert.That(group.Allows(AuthMethod.Certificate),  Is.True);
 
-                Assert.That(group.Allows((Byte) 1),  Is.True);
-                Assert.That(group.Allows((Byte) 2),  Is.True);
-                Assert.That(group.Allows((Byte) 3),  Is.True);
+                Assert.That(group.Allows(WebSocketClientAuthentication.HTTPAuthWithoutTLS),  Is.True);
+                Assert.That(group.Allows(WebSocketClientAuthentication.HTTPAuthOverTLS),  Is.True);
+                Assert.That(group.Allows(WebSocketClientAuthentication.TLSClientCertificate),  Is.True);
 
             });
 
@@ -123,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(group!.Allows(AuthMethod.Basic),        Is.False);
                 Assert.That(group.Allows(AuthMethod.TOTP),          Is.False);
                 Assert.That(group.Allows(AuthMethod.Certificate),   Is.False);
-                Assert.That(group.Allows((Byte) 1),                 Is.False);
+                Assert.That(group.Allows(WebSocketClientAuthentication.HTTPAuthWithoutTLS),                 Is.False);
             });
 
         }
@@ -137,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             logins.TryAddOrUpdateGroup("field", "Field test", false,
-                                       [AuthMethod.Basic, AuthMethod.TOTP], [1, 2, 3], null, out _);
+                                       [AuthMethod.Basic, AuthMethod.TOTP], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS, WebSocketClientAuthentication.HTTPAuthOverTLS, WebSocketClientAuthentication.TLSClientCertificate ], null, out _);
 
             var group = logins.GetGroup("field");
 
@@ -145,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(group!.AuthMethods,               Has.Count.EqualTo(2),
                             "What it accepts is kept, so that switching it on again does not mean setting it up again.");
                 Assert.That(group.Allows(AuthMethod.Basic),   Is.False);
-                Assert.That(group.Allows((Byte) 2),           Is.False);
+                Assert.That(group.Allows(WebSocketClientAuthentication.HTTPAuthOverTLS),           Is.False);
             });
 
         }
@@ -189,8 +190,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void AnIdentificationIsTheSameGroupWhateverItsCase()
         {
 
-            logins.TryAddOrUpdateGroup("field", "First",  true, [AuthMethod.Basic], [1], null, out _);
-            logins.TryAddOrUpdateGroup("FIELD", "Second", true, [AuthMethod.TOTP],  [2], null, out _);
+            logins.TryAddOrUpdateGroup("field", "First",  true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
+            logins.TryAddOrUpdateGroup("FIELD", "Second", true, [AuthMethod.TOTP],  [ WebSocketClientAuthentication.HTTPAuthOverTLS ], null, out _);
 
             Assert.Multiple(() => {
                 Assert.That(logins.Groups.Count(group => group.Id == "field"),  Is.EqualTo(1));
@@ -201,15 +202,28 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
         #endregion
 
-        #region ANotASecurityProfileIsRefused()
+        #region NoWayToAuthenticate_AndNoSecurityProfileOfBefore_IsRead()
 
+        /// <summary>
+        /// A group says how its members may authenticate by the names of the
+        /// ways; a name that is none, and OCPP's security profiles a group
+        /// said before, are refused rather than read as nothing.
+        /// </summary>
         [Test]
-        public void ANotASecurityProfileIsRefused()
+        public void NoWayToAuthenticate_AndNoSecurityProfileOfBefore_IsRead()
         {
 
             Assert.Multiple(() => {
-                Assert.That(logins.TryAddOrUpdateGroup("odd", null, true, [], [4], null, out var error), Is.False);
-                Assert.That(error, Does.Contain("1, 2 and 3"));
+
+                Assert.That(WebSocketLoginGroup.TryParse(JObject.Parse("""{ "id": "odd", "clientAuthentication": [ "byLookingTrustworthy" ] }"""), out _, out var error), Is.False);
+                Assert.That(error, Does.Contain("is no way a client may authenticate"));
+
+                Assert.That(WebSocketLoginGroup.TryParse(JObject.Parse("""{ "id": "old", "securityProfiles": [ 1, 2 ] }"""), out _, out error), Is.False);
+                Assert.That(error, Does.Contain("'securityProfiles' of a login group is no more").And.Contain("clientAuthentication"));
+
+                Assert.That(WebSocketLoginGroup.TryParse(JObject.Parse("""{ "id": "new", "clientAuthentication": [ "httpAuthOverTLS" ] }"""), out var group, out error), Is.True, error);
+                Assert.That(group!.ClientAuthentication, Is.EquivalentTo(new[] { WebSocketClientAuthentication.HTTPAuthOverTLS }));
+
             });
 
         }
@@ -227,9 +241,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             Assert.Multiple(() => {
-                Assert.That(logins.TryRemoveGroup(LoginGroup.DefaultId, out var error),  Is.False);
+                Assert.That(logins.TryRemoveGroup(WebSocketLoginGroup.DefaultId, out var error),  Is.False);
                 Assert.That(error, Is.Not.Null);
-                Assert.That(logins.GetGroup(LoginGroup.DefaultId),                       Is.Not.Null);
+                Assert.That(logins.GetGroup(WebSocketLoginGroup.DefaultId),                       Is.Not.Null);
             });
 
         }
@@ -246,8 +260,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void AGroupWithMembersIsNotRemovedAndItsMembersAreNotQuietlyMoved()
         {
 
-            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [1], null, out _);
-            logins.TrySetPassword("cs001", ThePassword, "field", null, out _, out _);
+            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
+            logins.TrySetPassword("cs001", ThePassword, "field", null, out _);
 
             Assert.Multiple(() => {
 
@@ -269,10 +283,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void AGroupNobodyIsInGoesAway()
         {
 
-            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [1], null, out _);
-            logins.TrySetPassword("cs001", ThePassword, "field", null, out _, out _);
+            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
+            logins.TrySetPassword("cs001", ThePassword, "field", null, out _);
 
-            Assert.That(logins.TrySetGroup("cs001", LoginGroup.DefaultId, out var moved), Is.True, moved);
+            Assert.That(logins.TrySetGroup("cs001", WebSocketLoginGroup.DefaultId, out var moved), Is.True, moved);
             Assert.That(logins.TryRemoveGroup("field", out var error),                    Is.True, error);
 
             Assert.That(logins.GetGroup("field"), Is.Null);
@@ -290,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             Assert.Multiple(() => {
 
-                Assert.That(logins.TrySetPassword("cs001", ThePassword, "nowhere", null, out _, out var onAdding),
+                Assert.That(logins.TrySetPassword("cs001", ThePassword, "nowhere", null, out var onAdding),
                             Is.False);
                 Assert.That(onAdding, Does.Contain("nowhere"));
 
@@ -309,12 +323,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void MovingALoginToAGroupThatIsNotThereIsRefused()
         {
 
-            logins.TrySetPassword("cs001", ThePassword, null, null, out _, out _);
+            logins.TrySetPassword("cs001", ThePassword, null, null, out _);
 
             Assert.Multiple(() => {
                 Assert.That(logins.TrySetGroup("cs001", "nowhere", out var error),  Is.False);
                 Assert.That(error, Is.Not.Null);
-                Assert.That(logins.Logins.Single().GroupId,                        Is.EqualTo(LoginGroup.DefaultId));
+                Assert.That(logins.Logins.Single().GroupId,                        Is.EqualTo(WebSocketLoginGroup.DefaultId));
             });
 
         }
@@ -331,12 +345,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void ALoginOfAGroupThatIsSwitchedOffDoesNotCountAsAbleToSignIn()
         {
 
-            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [1], null, out _);
-            logins.TrySetPassword("cs001", ThePassword, "field", null, out _, out _);
+            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
+            logins.TrySetPassword("cs001", ThePassword, "field", null, out _);
 
             Assert.That(logins.EnabledCount, Is.EqualTo(1));
 
-            logins.TryAddOrUpdateGroup("field", "Field test", false, [AuthMethod.Basic], [1], null, out _);
+            logins.TryAddOrUpdateGroup("field", "Field test", false, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
 
             Assert.That(logins.EnabledCount, Is.EqualTo(0));
 
@@ -355,12 +369,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void AGroupThatDoesNotAcceptAPasswordTakesItsMembersOutOfTheServersList()
         {
 
-            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [1], null, out _);
-            logins.TrySetPassword("cs001", ThePassword, "field", null, out _, out _);
+            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.Basic], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
+            logins.TrySetPassword("cs001", ThePassword, "field", null, out _);
 
             Assert.That(logins.SecurePasswords(), Does.ContainKey("cs001"));
 
-            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.TOTP], [1], null, out _);
+            logins.TryAddOrUpdateGroup("field", "Field test", true, [AuthMethod.TOTP], [ WebSocketClientAuthentication.HTTPAuthWithoutTLS ], null, out _);
 
             Assert.That(logins.SecurePasswords(), Does.Not.ContainKey("cs001"));
 
@@ -376,11 +390,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             logins.TryAddOrUpdateGroup("field", "Field test", false,
-                                       [AuthMethod.TOTP, AuthMethod.Certificate], [2, 3], "the yard", out _);
+                                       [AuthMethod.TOTP, AuthMethod.Certificate], [ WebSocketClientAuthentication.HTTPAuthOverTLS, WebSocketClientAuthentication.TLSClientCertificate ], "the yard", out _);
 
-            logins.TrySetPassword("cs001", ThePassword, "field", "Ladepunkt 1", out _, out _);
+            logins.TrySetPassword("cs001", ThePassword, "field", "Ladepunkt 1", out _);
 
-            var again = new ChargingStationLogins(logins.Path, clock);
+            var again = new WebSocketLogins(logins.Path, clock);
 
             Assert.That(again.TryLoad(out var error), Is.True, error);
 
@@ -393,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(group.Enabled,           Is.False);
                 Assert.That(group.Note,              Is.EqualTo("the yard"));
                 Assert.That(group.AuthMethods,       Is.EquivalentTo(new[] { AuthMethod.TOTP, AuthMethod.Certificate }));
-                Assert.That(group.SecurityProfiles,  Is.EquivalentTo(new Byte[] { 2, 3 }));
+                Assert.That(group.ClientAuthentication,  Is.EquivalentTo(new[] { WebSocketClientAuthentication.HTTPAuthOverTLS, WebSocketClientAuthentication.TLSClientCertificate }));
 
                 Assert.That(again.Logins.Single().GroupId,  Is.EqualTo("field"));
 
@@ -419,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             File.WriteAllText(
                 logins.Path,
                 new JObject(
-                    new JProperty("stations", new JArray(
+                    new JProperty("logins", new JArray(
                         new JObject(
                             new JProperty("id",       "cs001"),
                             new JProperty("password", org.GraphDefined.Vanaheimr.Hermod.HTTP.SecurePassword.Create(ThePassword).ToString()),
@@ -431,12 +445,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 ).ToString()
             );
 
-            var again = new ChargingStationLogins(logins.Path, clock);
+            var again = new WebSocketLogins(logins.Path, clock);
 
             Assert.That(again.TryLoad(out var error), Is.True, error);
 
             Assert.Multiple(() => {
-                Assert.That(again.Logins.Single().GroupId,  Is.EqualTo(LoginGroup.DefaultId));
+                Assert.That(again.Logins.Single().GroupId,  Is.EqualTo(WebSocketLoginGroup.DefaultId));
                 Assert.That(again.Verify("cs001", ThePassword), Is.True,
                             "A charging station that could sign in before the update cannot sign in after it.");
                 Assert.That(again.EnabledCount,             Is.EqualTo(1));
@@ -460,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 logins.Path,
                 new JObject(
                     new JProperty("groups",   new JArray()),
-                    new JProperty("stations", new JArray(
+                    new JProperty("logins", new JArray(
                         new JObject(
                             new JProperty("id",       "cs001"),
                             new JProperty("group",    "gone"),
@@ -471,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 ).ToString()
             );
 
-            var again = new ChargingStationLogins(logins.Path, clock);
+            var again = new WebSocketLogins(logins.Path, clock);
 
             Assert.Multiple(() => {
                 Assert.That(again.TryLoad(out var error), Is.False);

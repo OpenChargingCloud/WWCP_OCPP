@@ -277,16 +277,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.TimeServer
                    !HTTPAPI_Disabled
                        ? new HTTPExtAPI(
                              new HTTPServer(
-                                 TCPPort:            HTTPAPI_Port               ?? IPPort.Auto,
-                                 HTTPServerName:     HTTPAPI_ServerName         ?? "GraphDefined OCPP Test TimeServer",
-                                 DNSClient:          DNSClient,
-                                 AutoStart:          true
+                                 TCPPort:             HTTPAPI_Port       ?? IPPort.Auto,
+                                 HTTPServerName:      HTTPAPI_ServerName ?? "GraphDefined OCPP Test TimeServer",
+                                 DNSClient:           DNSClient,
+                                 AutoStart:           true
                              ),
                              HTTPServerName:          "GraphDefined OCPP Test TimeServer",
                              HTTPServiceName:         "GraphDefined OCPP Test TimeServer Service",
                              APIRobotEMailAddress:    EMailAddress.Parse("GraphDefined OCPP Test TimeServer Robot <robot@charging.cloud>"),
                              APIRobotGPGPassphrase:   "test123",
-                             SMTPClient:              new NullMailer()
+                             SMTPSubmissionClient:    new NullMailer()
                          )
                        : null,
                    ControlWebSocketServer,

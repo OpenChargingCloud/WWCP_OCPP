@@ -161,17 +161,33 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
         #endregion
 
+        #region NodeNoun
+
+        /// <summary>
+        /// What the node calls itself in what this store says: "this station
+        /// cannot ..." - the node's own word, or the process's where none was
+        /// given.
+        /// </summary>
+        public String NodeNoun
+            => nodeNoun ?? NodeWording.Noun;
+
+        private readonly String? nodeNoun;
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>
         /// The accepted chains in the given directory; it need not exist yet.
         /// </summary>
         public ClientTrustStore(String?        Path          = null,
-                                TimeProvider?  TimeProvider  = null)
+                                TimeProvider?  TimeProvider  = null,
+                                String?        NodeNoun      = null)
         {
 
             this.Path          = System.IO.Path.GetFullPath(Path ?? DefaultDirectoryName);
             this.TimeProvider  = TimeProvider ?? System.TimeProvider.System;
+            this.nodeNoun      = NodeNoun;
 
             Reload();
 
@@ -405,7 +421,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
                 if (!TryLoadEntry(id, out var entry, out var problem))
                 {
-                    Error = $"The chain was written but cannot be read back: {problem}";
+                    NotSaved  = true;
+                    Error     = $"The chain was written but cannot be read back: {problem}";
                     return false;
                 }
 
@@ -677,7 +694,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                                false,
                                null,
                                Certificate.Subject,
-                               $"this {NodeWording.Noun} has not been told which certificate authorities to accept charging stations from"
+                               $"this {NodeNoun} has not been told which certificate authorities to accept charging stations from"
                            );
 
                 foreach (var entry in enabled)

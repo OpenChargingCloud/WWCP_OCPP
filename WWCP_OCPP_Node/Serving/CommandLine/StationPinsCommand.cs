@@ -21,6 +21,7 @@ using org.GraphDefined.Vanaheimr.CLI;
 
 using cloud.charging.open.protocols.WWCP.Node.Web;
 using cloud.charging.open.protocols.WWCP.Node.CommandLine;
+using cloud.charging.open.protocols.WWCP.Node.Logins;
 
 #endregion
 
@@ -180,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
 
             var lines = new List<String>();
 
-            foreach (var login in node.StationLogins.Logins.Where(login => login.HasKeyPin).OrderBy(login => login.Id, StringComparer.Ordinal))
+            foreach (var login in node.WebSocketLogins.Logins.Where(login => login.HasKeyPin).OrderBy(login => login.Id, StringComparer.Ordinal))
             {
                 lines.Add($"{login.Id}:");
                 lines.AddRange(login.Pins.Select(pin => "  " + Line(pin)));
@@ -199,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
         private String[] Listed(String Station)
         {
 
-            if (!node.StationLogins.TryGet(Station, out var login))
+            if (!node.WebSocketLogins.TryGet(Station, out var login))
                 return [ $"'{Station}' is no charging station of this {node.Kind.Name}." ];
 
             if (!login.HasKeyPin)
@@ -215,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
         /// One key pin, as a line: the pin, when and by whom it was given, and
         /// what it is called.
         /// </summary>
-        private static String Line(StationKeyPin Pin)
+        private static String Line(LoginKeyPin Pin)
 
             => $"{Pin.Pin}  {Pin.Added.ToLocalTime():yyyy-MM-dd HH:mm}" +
                (Pin.AddedBy is not null ? $" by {Pin.AddedBy}" : "") +
@@ -230,9 +231,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
                              String?  Label)
         {
 
-            var listed = node.StationLogins.TryGet(Station, out _);
+            var listed = node.WebSocketLogins.TryGet(Station, out _);
 
-            if (!node.StationLogins.TryAddKeyPin(Station,
+            if (!node.WebSocketLogins.TryAddKeyPin(Station,
                                                  Pin,
                                                  Label,
                                                  GroupId:  null,
@@ -250,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
                 cli.Caller.Tags("ocpp", "station", "auth", "tls")
             );
 
-            node.StationLogins.TryGet(Station, out var login);
+            node.WebSocketLogins.TryGet(Station, out var login);
 
             return [ listed
                          ? $"'{Station}' is let in by the key pin {keyPin.Pin} now."
@@ -268,14 +269,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
                                 String  Pin)
         {
 
-            if (!node.StationLogins.TryGet(Station, out var login))
+            if (!node.WebSocketLogins.TryGet(Station, out var login))
                 return [ $"'{Station}' is no charging station of this {node.Kind.Name}." ];
 
             if (!org.GraphDefined.Vanaheimr.Hermod.KeyPin.TryParse(Pin, out var pin) ||
                 login.FindKeyPin(pin) is null)
                 return [ $"'{login.Id}' has no key pin {Pin}." ];
 
-            if (!node.StationLogins.TryRemoveKeyPin(login.Id, pin.ToHex(), out var error, out _))
+            if (!node.WebSocketLogins.TryRemoveKeyPin(login.Id, pin.ToHex(), out var error, out _))
                 return [ $"The key pin was not taken away: {error}" ];
 
             node.Log.Notice(
@@ -296,13 +297,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
         /// What keeps this station out whatever pin it has - the station, or its
         /// group.
         /// </summary>
-        private IEnumerable<String> WhyNoPinLetsIn(ChargingStationLogin Login)
+        private IEnumerable<String> WhyNoPinLetsIn(WebSocketLogin Login)
         {
 
             if (!Login.Enabled)
                 yield return $"'{Login.Id}' is switched off: no key pin lets it in.";
 
-            var group = node.StationLogins.GroupOf(Login);
+            var group = node.WebSocketLogins.GroupOf(Login);
 
             if (group is null)
                 yield return $"The group '{Login.GroupId}' of '{Login.Id}' is gone: no key pin lets it in.";
@@ -313,8 +314,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
             else if (!group.Allows(AuthMethod.KeyPin))
                 yield return $"The group '{group.Id}' of '{Login.Id}' does not accept key pins: no key pin lets it in.";
 
-            else if (!group.Allows((Byte) 3))
-                yield return $"The group '{group.Id}' of '{Login.Id}' does not accept security profile 3, which a client key is: no key pin lets it in.";
+            else if (!group.Allows(WebSocketClientAuthentication.TLSClientCertificate))
+                yield return $"The group '{group.Id}' of '{Login.Id}' does not accept a TLS client certificate (security profile 3), which a client key is: no key pin lets it in.";
 
         }
 
@@ -324,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
         private IEnumerable<String> WhyNoStationSignsIn()
         {
 
-            var profiles = node.OCPPServerSettings.SecurityProfiles ?? [];
+            var profiles = ClientAuthenticationProfiles.SecurityProfiles(node.OCPPServerSettings.ClientAuthentication);
 
             if (!node.OCPPServerEnabled)
                 yield return "The charging station port is switched off: no charging station signs in.";

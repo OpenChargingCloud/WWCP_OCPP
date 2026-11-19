@@ -172,14 +172,14 @@ function aKeyPinnedStation(): StationConnections {
 }
 
 /**
- * A station whose CSMS dials it and signs in with a client certificate known
- * by its key: no credentials, and the key pins are those of the certificate.
+ * A station whose CSMS dials it and signs in with its WebSocket login: the
+ * connection names nothing it signs in with.
  */
 function aStationDialledByItsCSMS(): StationConnections {
     const station = aStation();
     return { ...station,
              connections: [ { ...station.connections[0]!, url: 'wss://this-station.example.org:9443/csms-01', inbound: true, inboundName: 'csms-01',
-                              authenticationId: undefined, clientKeyPins: [ pinnedKey ] },
+                              authenticationId: undefined },
                             station.connections[1]! ] };
 }
 
@@ -469,24 +469,23 @@ describe('the Connections page', () => {
 
     });
 
-    it('shows the key pins of the client certificate a CSMS that dials signs in with, and sends them under names of their own', async () => {
+    it('says that a CSMS that dials signs in with its WebSocket login, and sends nothing of a server for it', async () => {
 
         const root = await opened(aStationDialledByItsCSMS);
 
-        assert.match(root.querySelector('[data-client-certificate="c1"]')?.textContent ?? '', new RegExp(pinnedKey));
-        assert.match(root.querySelector('[data-client-certificate="c1"]')?.textContent ?? '', /whole check/);
-        assert.equal(root.querySelector('[data-key-pins="c1"]'), null, 'the key of its client certificate is shown as the key of a server');
-        assert.equal(field(root, 'form[data-edit="c1"]', 'serverKeyPins').value, pinnedKey, 'the key pins are not in the form');
+        const signsIn = root.querySelector('[data-proves="c1"]');
+
+        assert.match(signsIn?.textContent ?? '', /WebSocket login\s+csms-01/);
+        assert.match(signsIn?.querySelector('a')?.getAttribute('href') ?? '', /\/configuration\/ocpp-server\/logins$/);
+        assert.equal(root.querySelector('[data-key-pins="c1"]'), null, 'a key of a server is shown for it');
+        assert.equal(field(root, 'form[data-edit="c1"]', 'serverKeyPins').value, '', 'key pins are in the form');
 
         submit(root, 'form[data-edit="c1"]');
         await until(() => lastSaved !== null, 'the connection was not saved');
 
-        assert.equal    (lastSaved!.inbound,               true);
-        assert.deepEqual(lastSaved!.clientKeyPins,         [ pinnedKey ], 'the key pins shown were not sent as those of the client certificate');
-        assert.deepEqual(lastSaved!.clientKeyPinsAsShown,  [ pinnedKey ], 'what the page showed was not sent beside them');
-        assert.equal    (lastSaved!.serverKeyPins,         undefined,     'sent as the key pins of a server');
-        assert.equal    (lastSaved!.pins,                  undefined,     'sent as what a server is held to');
-        assert.notEqual (lastSaved!.clientPins,            undefined,     'what its certificate is held to was not sent');
+        assert.equal(lastSaved!.inbound,        true);
+        assert.equal(lastSaved!.serverKeyPins,  undefined, 'sent as the key pins of a server');
+        assert.equal(lastSaved!.pins,           undefined, 'sent as what a server is held to');
 
     });
 

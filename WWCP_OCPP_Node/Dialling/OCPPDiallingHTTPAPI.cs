@@ -199,20 +199,38 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
-            if (!Dialling.Connections.TryAddAuthentication(json.Value<String>("description"),
-                                                           json.Value<String>("kind"),
-                                                           json.Value<String>("login"),
-                                                           json.Value<String>("secret"),
-                                                           out var id,
-                                                           out var error,
-                                                           out var notSaved,
-                                                           json.Value<Double?> ("validitySeconds"),
-                                                           json.Value<UInt32?>("length"),
-                                                           json.Value<String> ("alphabet"),
-                                                           json.Value<String> ("hashAlgorithm"),
-                                                           json.Value<Boolean?>("tlsChannelBinding")))
+            var description  = json.Value<String>("description");
+            var kind         = json.Value<String>("kind");
+            var login        = json.Value<String>("login");
+            var secret       = json.Value<String>("secret");
+
+            String? id       = null;
+            String? error;
+            var notSaved     = false;
+
+            var added        = kind?.Trim().ToLowerInvariant() switch {
+
+                                   "basic"  => Dialling.Connections.TryAddBasicAuthentication(login, secret, description,
+                                                                                               out id, out error, out notSaved),
+
+                                   "totp"   => Dialling.Connections.TryAddTOTPAuthentication (login, secret, description,
+                                                                                               out id, out error, out notSaved,
+                                                                                               json.Value<Double?> ("validitySeconds"),
+                                                                                               json.Value<UInt32?> ("length"),
+                                                                                               json.Value<String>  ("alphabet"),
+                                                                                               json.Value<String>  ("hashAlgorithm"),
+                                                                                               json.Value<Boolean?>("tlsChannelBinding")),
+
+                                   "token"  => Dialling.Connections.TryAddTokenAuthentication(secret, description,
+                                                                                               out id, out error, out notSaved),
+
+                                   _        => NotAKind(kind, out error)
+
+                               };
+
+            if (!added)
             {
-                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
+                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error ?? "The credentials were not written down.", notSaved));
             }
 
             return Task.FromResult(
@@ -243,26 +261,54 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
-            if (!Dialling.Connections.TryUpdateAuthentication(json.Value<String>("id"),
-                                                              json.Value<String>("description"),
-                                                              json.Value<String>("kind"),
-                                                              json.Value<String>("login"),
-                                                              json.Value<String>("secret"),
-                                                              out var error,
-                                                              out var notSaved,
-                                                              json.Value<Double?> ("validitySeconds"),
-                                                              json.Value<UInt32?>("length"),
-                                                              json.Value<String> ("alphabet"),
-                                                              json.Value<String> ("hashAlgorithm"),
-                                                              json.Value<Boolean?>("tlsChannelBinding")))
+            var id           = json.Value<String>("id");
+            var description  = json.Value<String>("description");
+            var kind         = json.Value<String>("kind");
+            var login        = json.Value<String>("login");
+            var secret       = json.Value<String>("secret");
+
+            String? error;
+            var notSaved     = false;
+
+            var changed      = kind?.Trim().ToLowerInvariant() switch {
+
+                                   "basic"  => Dialling.Connections.TryUpdateBasicAuthentication(id, login, secret, description,
+                                                                                                  out error, out notSaved),
+
+                                   "totp"   => Dialling.Connections.TryUpdateTOTPAuthentication (id, login, secret, description,
+                                                                                                  out error, out notSaved,
+                                                                                                  json.Value<Double?> ("validitySeconds"),
+                                                                                                  json.Value<UInt32?> ("length"),
+                                                                                                  json.Value<String>  ("alphabet"),
+                                                                                                  json.Value<String>  ("hashAlgorithm"),
+                                                                                                  json.Value<Boolean?>("tlsChannelBinding")),
+
+                                   "token"  => Dialling.Connections.TryUpdateTokenAuthentication(id, secret, description,
+                                                                                                  out error, out notSaved),
+
+                                   _        => NotAKind(kind, out error)
+
+                               };
+
+            if (!changed)
             {
-                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
+                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error ?? "The credentials were not changed.", notSaved));
             }
 
             return Task.FromResult(
                        JSONResponse(Request, HTTPStatusCode.OK, ConnectionsJSON())
                    );
 
+        }
+
+        /// <summary>
+        /// Why credentials of the given kind are not taken: it is not one of
+        /// "basic", "totp" and "token".
+        /// </summary>
+        private Boolean NotAKind(String? Kind, out String? Error)
+        {
+            Error = $"'{Kind}' is not a kind of authentication this {Node.NodeNoun} knows.";
+            return false;
         }
 
         /// <summary>
@@ -384,8 +430,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                           json.Value<String>("sshHostKey"),
                                                           json.Value<String>("sshHostKeyAsShown"),
                                                           ConnectionFields.SshTrustOf(json),
-                                                          ConnectionFields.KeyPinsOf(json, ConnectionEntry.ClientKeyPinsKey)            ?? ConnectionFields.KeyPinsOf(json, "serverKeyPins"),
-                                                          ConnectionFields.KeyPinsOf(json, ConnectionEntry.ClientKeyPinsAsShownKey)     ?? ConnectionFields.KeyPinsOf(json, "serverKeyPinsAsShown"),
+                                                          ConnectionFields.KeyPinsOf(json, "serverKeyPins"),
+                                                          ConnectionFields.KeyPinsOf(json, "serverKeyPinsAsShown"),
                                                           ConnectionFields.KeyPinTrustOf(json),
                                                           pins,
                                                           json.Value<String>(ConnectionEntry.HTTPVersionKey),
@@ -535,11 +581,19 @@ namespace cloud.charging.open.protocols.OCPP.Node
             Error  = null;
 
             // What the client certificate of the other end of a connection it
-            // is dialled by is held to comes under names of its own, and is
-            // read the same way.
-            var client     = JSON[ConnectionEntry.ClientPinsKey] is not null || JSON[ConnectionEntry.ClientPinsAsShownKey] is not null;
-            var sentKey    = client ? ConnectionEntry.ClientPinsKey        : ConnectionEntry.PinsKey;
-            var shownKey   = client ? ConnectionEntry.ClientPinsAsShownKey : ConnectionEntry.PinsAsShownKey;
+            // is dialled by was held to, while the connection said it: the
+            // other end signs in with its WebSocket login now.
+            if (JSON[ConnectionEntry.ClientPinsKey]    is JToken { Type: not JTokenType.Null } ||
+                JSON[ConnectionEntry.ClientKeyPinsKey] is JToken { Type: not JTokenType.Null })
+            {
+                Error = $"'{ConnectionEntry.ClientKeyPinsKey}' and '{ConnectionEntry.ClientPinsKey}' are no more: the other end of a connection it makes " +
+                         "signs in with the WebSocket login of the name it comes under - its key pins are said there, and the chains its " +
+                         "certificate may lead to under Accepted chains.";
+                return false;
+            }
+
+            var sentKey    = ConnectionEntry.PinsKey;
+            var shownKey   = ConnectionEntry.PinsAsShownKey;
 
             var sent   = JSON[sentKey];
             var shown  = JSON[shownKey];

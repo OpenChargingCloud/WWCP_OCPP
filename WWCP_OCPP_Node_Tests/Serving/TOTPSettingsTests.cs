@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 
 using cloud.charging.open.protocols.OCPP.Node.Serving;
+using cloud.charging.open.protocols.WWCP.Node.Logins;
 
 #endregion
 
@@ -401,8 +402,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             var bound  = (Settings() with { TLSChannelBinding = true }).ToTOTPConfig();
 
             Assert.Multiple(() => {
-                Assert.That(raw.  UseTLSExporterMaterial,  Is.False);
-                Assert.That(bound.UseTLSExporterMaterial,  Is.True);
+                Assert.That(raw.  TLSChannelBinding,  Is.False);
+                Assert.That(bound.TLSChannelBinding,  Is.True);
                 Assert.That(raw.  SharedSecret,            Is.EqualTo(TheSecret));
             });
 

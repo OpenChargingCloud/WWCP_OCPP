@@ -21,6 +21,9 @@ using System.Globalization;
 
 using Newtonsoft.Json.Linq;
 
+using cloud.charging.open.protocols.OCPP.Node.Serving;
+using cloud.charging.open.protocols.WWCP.Node.Logins;
+
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
 
 #endregion
@@ -118,7 +121,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                            "Enabled"                     => Bool   (json ["enabled"]),
                            "Address"                     => Text   (json ["address"]),
                            "Port"                        => Number (json ["port"]),
-                           "SecurityProfiles"            => List   (json ["securityProfiles"]),
+                           // OCPP's words for how a client may authenticate.
+                           "SecurityProfiles"            => String.Join(",", Node.OCPPSecurityProfiles),
                            "Subprotocols"                => List   (json ["subprotocols"]),
                            "ReachableAs"                 => List   (json ["reachableAs"]),
                            "MinimumTLSVersion"           => Text   (json ["minTLSVersion"]),
@@ -247,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
                 }
 
-                // The given entries as one change of the section "ocppServer".
+                // The given entries as one change of the section "webSocketServer".
                 Boolean TrySet(IReadOnlyList<Int32> Indices, Task Answered, out String? Error, out Boolean NotSaved)
                 {
 
@@ -276,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             /// <summary>
             /// The given variable, set to the given value, as the section
-            /// "ocppServer" of the configuration file writes it.
+            /// "webSocketServer" of the configuration file writes it.
             /// </summary>
             private static void Add(JObject  Update,
                                     String   Variable,
@@ -289,7 +293,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     case "Enabled":                     Update["enabled"]                     = Boolean.Parse(Value);           break;
                     case "Address":                     Update["address"]                     = Value.Trim();                   break;
                     case "Port":                        Update["port"]                        = Int64.Parse(Value, CultureInfo.InvariantCulture); break;
-                    case "SecurityProfiles":            Update["securityProfiles"]            = new JArray(Members(Value).Select(profile => Int32.Parse(profile, CultureInfo.InvariantCulture))); break;
+                    // A security profile of OCPP is a way a client may
+                    // authenticate; what is none is handed on as it was
+                    // written, for the section to refuse in its own words.
+                    case "SecurityProfiles":            Update["clientAuthentication"]        = new JArray(Members(Value).Select(profile => Byte.TryParse(profile, CultureInfo.InvariantCulture, out var number) &&
+                                                                                                                                         ClientAuthenticationProfiles.OfSecurityProfile(number, out var authentication)
+                                                                                                                                             ? authentication.ToText()
+                                                                                                                                             : profile)); break;
                     case "Subprotocols":                Update["subprotocols"]                = new JArray(Members(Value));     break;
                     case "ReachableAs":                 Update["reachableAs"]                 = new JArray(Members(Value));     break;
                     case "MinimumTLSVersion":           Update["minTLSVersion"]               = Value.Trim();                   break;

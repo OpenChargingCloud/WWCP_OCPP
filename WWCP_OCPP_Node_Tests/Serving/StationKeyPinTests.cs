@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 
 using cloud.charging.open.protocols.OCPP.Node.Serving;
+using cloud.charging.open.protocols.WWCP.Node.Logins;
 
 #endregion
 
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
         private String                 directory  = default!;
         private TestClock              clock      = default!;
-        private ChargingStationLogins  logins     = default!;
+        private WebSocketLogins  logins     = default!;
 
         #endregion
 
@@ -59,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             Directory.CreateDirectory(directory);
 
             clock     = TestClock.At(2026, 6, 1);
-            logins    = new ChargingStationLogins(Path.Combine(directory, "ocpp-stations.json"), clock);
+            logins    = new WebSocketLogins(Path.Combine(directory, "websocket-logins.json"), clock);
 
             Assert.That(logins.TryLoad(out var error), Is.True, error);
 
@@ -101,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             Assert.That(logins.TryAddKeyPin("cs001", pin.ToHex(), "bay 1", null, "Ladepunkt 1", "admin", out var added, out var error),
                         Is.True, error);
 
-            var restarted = new ChargingStationLogins(Path.Combine(directory, "ocpp-stations.json"), clock);
+            var restarted = new WebSocketLogins(Path.Combine(directory, "websocket-logins.json"), clock);
 
             Assert.That(restarted.TryLoad(out var loadError), Is.True, loadError);
 
@@ -109,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             Assert.Multiple(() => {
                 Assert.That(added!.Pin,                               Is.EqualTo(pin));
-                Assert.That(login!.GroupId,                           Is.EqualTo(LoginGroup.DefaultId));
+                Assert.That(login!.GroupId,                           Is.EqualTo(WebSocketLoginGroup.DefaultId));
                 Assert.That(login.Note,                               Is.EqualTo("Ladepunkt 1"));
                 Assert.That(login.Pins.Select(one => one.Pin),        Is.EqualTo(new[] { pin }));
                 Assert.That(login.Pins.Single().Label,                Is.EqualTo("bay 1"));
@@ -149,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
                 Assert.That(twiceColons,                 Does.Contain("has the key pin"));
                 Assert.That(upperCase,                   Is.False);
                 Assert.That(twiceUpper,                  Does.Contain("has the key pin"));
-                Assert.That(logins.ToJSON()["stations"]?[0]?["keyPins"]?[0]?.Value<String>("pin"), Is.EqualTo(pin.ToHex()));
+                Assert.That(logins.ToJSON()["logins"]?[0]?["keyPins"]?[0]?.Value<String>("pin"), Is.EqualTo(pin.ToHex()));
             });
 
         }
@@ -191,16 +192,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         {
 
             var pin  = APin().ToHex();
-            var path = Path.Combine(directory, "ocpp-stations.json");
+            var path = Path.Combine(directory, "websocket-logins.json");
 
             File.WriteAllText(path, new JObject(
-                new JProperty("stations", new JArray(
+                new JProperty("logins", new JArray(
                     new JObject(new JProperty("id", "cs001"), new JProperty("keyPins", new JArray(new JObject(new JProperty("pin", pin))))),
                     new JObject(new JProperty("id", "cs002"), new JProperty("keyPins", new JArray(new JObject(new JProperty("pin", pin)))))
                 ))
             ).ToString());
 
-            var shared = new ChargingStationLogins(path, clock);
+            var shared = new WebSocketLogins(path, clock);
 
             Assert.Multiple(() => {
                 Assert.That(shared.TryLoad(out var error), Is.False);
@@ -217,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void AtMostFourPinsAStation()
         {
 
-            for (var i = 0; i < ChargingStationLogin.MaxKeyPins; i++)
+            for (var i = 0; i < WebSocketLogin.MaxKeyPins; i++)
                 Assert.That(logins.TryAddKeyPin("cs001", APin().ToHex(), null, null, null, null, out _, out var error), Is.True, error);
 
             var fifth = logins.TryAddKeyPin("cs001", APin().ToHex(), null, null, null, null, out _, out var refused);
@@ -302,18 +303,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
         public void ADefaultGroupOfAnOlderFileKeepsWhatItLists()
         {
 
-            var path = Path.Combine(directory, "ocpp-stations.json");
+            var path = Path.Combine(directory, "websocket-logins.json");
 
             File.WriteAllText(path, new JObject(
                 new JProperty("groups", new JArray(
                     new JObject(new JProperty("id", "default"), new JProperty("name", "Default"),
                                 new JProperty("authMethods", new JArray("basic", "certificate")),
-                                new JProperty("securityProfiles", new JArray(1, 2, 3)))
+                                new JProperty("clientAuthentication", new JArray("httpAuthWithoutTLS", "httpAuthOverTLS", "tlsClientCertificate")))
                 )),
-                new JProperty("stations", new JArray())
+                new JProperty("logins", new JArray())
             ).ToString());
 
-            var older = new ChargingStationLogins(path, clock);
+            var older = new WebSocketLogins(path, clock);
 
             Assert.That(older.TryLoad(out var error), Is.True, error);
 

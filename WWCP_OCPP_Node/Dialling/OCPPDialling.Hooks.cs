@@ -158,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                   String                         Action,
                                                   Newtonsoft.Json.Linq.JObject?  Payload)
 
-            => KeyPinGate.Rules(Probation, Action, Payload, $"{NodeWording.Noun}");
+            => KeyPinGate.Rules(Probation, Action, Payload, $"{WWCPNode.NodeNoun}");
 
         #endregion
 
@@ -234,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         public OCPPCommon.NetworkingNode.AOCPPNetworkingNode NodeOf(OCPPVersion Version)
 
             => NodeOrNoneOf(Version)
-                   ?? throw new InvalidOperationException($"This {NodeWording.Noun} does not speak {ConnectionEntry.AsText(Version)}.");
+                   ?? throw new InvalidOperationException($"This {WWCPNode.NodeNoun} does not speak {ConnectionEntry.AsText(Version)}.");
 
         /// <summary>
         /// The OCPP node that speaks the given version, or none where this

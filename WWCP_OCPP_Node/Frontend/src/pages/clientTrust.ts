@@ -62,16 +62,16 @@ export const clientTrustPage: Page = {
                     </div>
                 `}
 
-                ${configuration.securityProfiles.includes(3) ? nothing : html`
+                ${configuration.clientAuthentication.includes('tlsClientCertificate') ? nothing : html`
                     <div class="notice">
-                        <a href="${toURL('/configuration/ocpp-server')}">Security profile 3</a> is not allowed at the moment,
+                        <a href="${toURL('/configuration/ocpp-server')}">A TLS client certificate</a> (security profile 3) is not allowed at the moment,
                         so nothing here is being used: no charging station is asked for a certificate.
                     </div>
                 `}
 
-                ${configuration.securityProfiles.includes(3) && store.enabled === 0 ? html`
+                ${configuration.clientAuthentication.includes('tlsClientCertificate') && store.enabled === 0 ? html`
                     <div class="notice warn">
-                        Security profile 3 is allowed and no chain is accepted, so no charging station can connect
+                        A TLS client certificate (security profile 3) is allowed and no chain is accepted, so no charging station can connect
                         with a certificate. An empty list is "nobody", not "everybody".
                     </div>
                 ` : nothing}

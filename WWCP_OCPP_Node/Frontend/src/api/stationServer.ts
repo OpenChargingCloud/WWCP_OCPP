@@ -11,7 +11,7 @@ import { request }  from '@node/api/client';
 // there as well.
 //
 // One of its names is the name of something else elsewhere, and stays so here:
-// a StationLogin is a charging station that may sign in to this node - not the
+// a WebSocketLogin is a charging station that may sign in to this node - not the
 // credentials a connection of "@ocpp/api/connections" signs in with. A module
 // that exports both modules' names names one of them under another name.
 //
@@ -33,13 +33,20 @@ export interface OCPPServerLogging {
     pings:           boolean;
 }
 
+/**
+ * How a client may authenticate at a WebSocket server: by HTTP authentication
+ * without TLS or over it, or by its TLS client certificate - OCPP's security
+ * profiles 1, 2 and 3.
+ */
+export type ClientAuthentication = 'httpAuthWithoutTLS' | 'httpAuthOverTLS' | 'tlsClientCertificate';
+
 /** The server the charging stations below this local controller connect to. */
 export interface OCPPServerConfiguration {
     enabled:                     boolean;
     address:                     string | null;
     port:                        number;
-    /** 1, 2 and 3 - the OCPP security profiles a station may connect with. */
-    securityProfiles:            number[];
+    /** How a client may authenticate: what OCPP calls its security profiles 1, 2 and 3. */
+    clientAuthentication:        ClientAuthentication[];
     subprotocols:                string[];
     /** The names and addresses the stations dial; what a certificate must cover. */
     reachableAs:                 string[];
@@ -61,7 +68,7 @@ export interface OCPPServerConfiguration {
         /** Why none are, although they were asked for. */
         http3Problem?:      string | null;
         connections:        number;
-        stationLogins:      number;
+        webSocketLogins:      number;
         trustedChains:      number;
         hasCertificate:     boolean;
         /** What a station pins to reach this port: 64 hexadecimal digits, or null on an unencrypted one. */
@@ -77,7 +84,7 @@ export interface OCPPServerConfiguration {
     };
     limits: {
         subprotocols:                   string[];
-        securityProfiles:               number[];
+        clientAuthentication:           ClientAuthentication[];
         tlsVersions:                    string[];
         maxConnections:                 number;
         maxReachableAs:                 number;
@@ -114,7 +121,7 @@ export interface OCPPServerUpdate {
     enabled?:                     boolean;
     address?:                     string;
     port?:                        number;
-    securityProfiles?:            number[];
+    clientAuthentication?:        ClientAuthentication[];
     subprotocols?:                string[];
     reachableAs?:                 string[];
     minTLSVersion?:               string;
@@ -208,7 +215,7 @@ export interface TOTPSettings {
 }
 
 /** One charging station that may sign in. */
-export interface StationLogin {
+export interface WebSocketLogin {
     id:           string;
     group:        string;
     enabled:      boolean;
@@ -231,7 +238,8 @@ export interface LoginGroup {
     builtIn:           boolean;
     addedAt:           string;
     authMethods:       AuthMethod[];
-    securityProfiles:  number[];
+    /** How its members may authenticate - OCPP's security profiles 1, 2 and 3. */
+    clientAuthentication:  ClientAuthentication[];
     /** What its stations have over their SSH connection besides OCPP: the names of SSH subsystems. */
     sshChannels?:      string[];
     members:           number;
@@ -239,16 +247,16 @@ export interface LoginGroup {
 }
 
 /** Which charging stations may sign in, and with what. */
-export interface StationLogins {
+export interface WebSocketLogins {
     file:               string;
     enabled:            number;
-    maxStations:        number;
+    maxLogins:        number;
     maxGroups:          number;
     minPasswordLength:  number;
     minSecretLength:    number;
     defaultGroup:       string;
     groups:             LoginGroup[];
-    stations:           StationLogin[];
+    logins:             WebSocketLogin[];
 }
 
 /** What a group may be changed to. */
@@ -257,7 +265,8 @@ export interface LoginGroupUpdate {
     name:              string;
     enabled:           boolean;
     authMethods:       AuthMethod[];
-    securityProfiles:  number[];
+    /** How its members may authenticate - OCPP's security profiles 1, 2 and 3. */
+    clientAuthentication:  ClientAuthentication[];
     /** Replaced like everything else about a group: left out, its stations have OCPP alone. */
     sshChannels?:      string[];
     note?:             string;
@@ -309,9 +318,9 @@ export const stationServerAPI = {
 
         },
 
-        stations: {
+        logins: {
 
-            get:      ()  => request<StationLogins>('GET', '/configuration/ocpp-server/stations'),
+            get:      ()  => request<WebSocketLogins>('GET', '/configuration/ocpp-server/logins'),
 
             /**
              * Add a station or give one a new password. An empty password means
@@ -319,17 +328,17 @@ export const stationServerAPI = {
              * else: it is kept only as a hash.
              */
             save:     (id: string, password: string, group: string, note: string) =>
-                          request<{ id: string; password?: string; stations: StationLogins }>(
-                              'POST', '/configuration/ocpp-server/stations', { id, password, group, note }),
+                          request<{ id: string; password?: string; logins: WebSocketLogins }>(
+                              'POST', '/configuration/ocpp-server/logins', { id, password, group, note }),
 
             enable:   (id: string, enabled: boolean) =>
-                          request<StationLogins>('PUT', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}`, { enabled }),
+                          request<WebSocketLogins>('PUT', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}`, { enabled }),
 
             move:     (id: string, group: string) =>
-                          request<StationLogins>('PUT', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}`, { group }),
+                          request<WebSocketLogins>('PUT', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}`, { group }),
 
             remove:   (id: string) =>
-                          request<StationLogins>('DELETE', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}`),
+                          request<WebSocketLogins>('DELETE', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}`),
 
             /**
              * Give a station what it needs to be let in with a one-time token.
@@ -337,23 +346,23 @@ export const stationServerAPI = {
              * here - the only place it is ever handed out.
              */
             saveTOTP: (id: string, update: TOTPUpdate) =>
-                          request<{ id: string; sharedSecret?: string; stations: StationLogins }>(
-                              'PUT', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}/totp`, update),
+                          request<{ id: string; sharedSecret?: string; logins: WebSocketLogins }>(
+                              'PUT', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/totp`, update),
 
             /**
              * Whether a station's token has to be bound to the TLS session of
              * its connection. Its secret stays as it is.
              */
             bindTOTP:       (id: string, bound: boolean) =>
-                          request<StationLogins>(
-                              'PUT', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}/totp/binding`,
+                          request<WebSocketLogins>(
+                              'PUT', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/totp/binding`,
                               { tlsChannelBinding: bound }),
 
             removeTOTP:     (id: string) =>
-                          request<StationLogins>('DELETE', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}/totp`),
+                          request<WebSocketLogins>('DELETE', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/totp`),
 
             removePassword: (id: string) =>
-                          request<StationLogins>('DELETE', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}/password`),
+                          request<WebSocketLogins>('DELETE', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/password`),
 
             /**
              * Give a station an SSH key for OCPP over SSH - one line of an
@@ -361,13 +370,13 @@ export const stationServerAPI = {
              * yet. A public key: nothing secret goes either way.
              */
             addSSHKey: (id: string, line: string, label: string, group: string, note: string) =>
-                          request<{ id: string; fingerprint: string; stations: StationLogins }>(
-                              'POST', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}/sshKeys`, { line, label, group, note }),
+                          request<{ id: string; fingerprint: string; logins: WebSocketLogins }>(
+                              'POST', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/sshKeys`, { line, label, group, note }),
 
             /** Take a key away; a session it opened ends. */
             removeSSHKey: (id: string, fingerprint: string) =>
-                          request<StationLogins>('DELETE',
-                              `/configuration/ocpp-server/stations/${encodeURIComponent(id)}/sshKeys/${fingerprintInURL(fingerprint)}`),
+                          request<WebSocketLogins>('DELETE',
+                              `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/sshKeys/${fingerprintInURL(fingerprint)}`),
 
             /**
              * Let a station in by the key pin of its TLS client key - 64
@@ -375,13 +384,13 @@ export const stationServerAPI = {
              * base64 - adding the station where it is not listed yet.
              */
             addKeyPin: (id: string, pin: string, label: string, group: string, note: string) =>
-                          request<{ id: string; keyPin: string; stations: StationLogins }>(
-                              'POST', `/configuration/ocpp-server/stations/${encodeURIComponent(id)}/keyPins`, { pin, label, group, note }),
+                          request<{ id: string; keyPin: string; logins: WebSocketLogins }>(
+                              'POST', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/keyPins`, { pin, label, group, note }),
 
             /** Stop letting a station in by a key pin; the pin as the list has it, 64 hexadecimal digits. */
             removeKeyPin: (id: string, pin: string) =>
-                          request<StationLogins>('DELETE',
-                              `/configuration/ocpp-server/stations/${encodeURIComponent(id)}/keyPins/${encodeURIComponent(pin)}`)
+                          request<WebSocketLogins>('DELETE',
+                              `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/keyPins/${encodeURIComponent(pin)}`)
 
         },
 
@@ -390,11 +399,11 @@ export const stationServerAPI = {
             /** Everything about the group is replaced, not merged. */
             save:     (update: LoginGroupUpdate) =>
                           update.id === undefined
-                              ? request<StationLogins>('POST', '/configuration/ocpp-server/groups', update)
-                              : request<StationLogins>('PUT',  `/configuration/ocpp-server/groups/${encodeURIComponent(update.id)}`, update),
+                              ? request<WebSocketLogins>('POST', '/configuration/ocpp-server/groups', update)
+                              : request<WebSocketLogins>('PUT',  `/configuration/ocpp-server/groups/${encodeURIComponent(update.id)}`, update),
 
             remove:   (id: string) =>
-                          request<StationLogins>('DELETE', `/configuration/ocpp-server/groups/${encodeURIComponent(id)}`)
+                          request<WebSocketLogins>('DELETE', `/configuration/ocpp-server/groups/${encodeURIComponent(id)}`)
 
         }
 

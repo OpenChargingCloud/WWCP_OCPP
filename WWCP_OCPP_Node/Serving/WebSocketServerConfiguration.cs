@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.WWCP.Node.Connections;
+using cloud.charging.open.protocols.WWCP.Node.Logins;
 
 #endregion
 
@@ -35,17 +36,21 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 {
 
     /// <summary>
-    /// The "ocppServer" section of the configuration file: the HTTP WebSocket
-    /// server the charging stations below a node connect to, and the back ends
-    /// above it that dial it.
+    /// The "webSocketServer" section of the configuration file: the HTTP
+    /// WebSocket server the charging stations below a node connect to, and the
+    /// back ends above it that dial it.
     /// </summary>
     /// <remarks>
-    /// One section for every node that serves OCPP - a local controller, a
-    /// gateway, a charging station - and each reads what it has: a charging
-    /// station is two nodes, one per version of OCPP, with a port each, and
-    /// reads 'enabled', 'port', 'port16' and 'http3'; a node with one server
-    /// for every version refuses 'port16' and offers OCPP 1.6 by
-    /// 'subprotocols' on its one port.
+    /// One section for every node that serves WebSockets - a local controller,
+    /// a gateway, a CSMS, a charging station - and each reads what it has.
+    ///
+    /// <b>One port for every subprotocol.</b> The server listens on one port,
+    /// authenticates whoever connects as the section says, and hands each
+    /// WebSocket by the subprotocol its client asks for to the node that
+    /// speaks it: OCPP 1.6 to the node of OCPP 1.6, OCPP 2.0.1 and 2.1 to the
+    /// node of OCPP 2.1 - and whatever else may come to whatever speaks it.
+    /// Nothing in here is a subprotocol's: how a client authenticates is said
+    /// by 'clientAuthentication', which OCPP calls its security profiles.
     ///
     /// As in the DNS and NTS sections, null means "the file does not say": what
     /// is missing keeps whatever the local controller was given at
@@ -65,11 +70,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
     /// may read - see the configuration file. They live beside it
     /// in files of their own, with permissions of their own.
     /// </remarks>
-    /// <param name="Enabled">Whether this local controller listens for charging stations at all.</param>
+    /// <param name="Enabled">Whether this node listens for WebSockets at all.</param>
     /// <param name="Address">Which interface it listens on; every one unless said otherwise.</param>
-    /// <param name="TCPPort">Which TCP port it listens on.</param>
-    /// <param name="SecurityProfiles">Which OCPP security profiles a charging station may connect with.</param>
-    /// <param name="Subprotocols">Which OCPP versions are offered, as WebSocket subprotocols.</param>
+    /// <param name="TCPPort">Which TCP port it listens on, for every subprotocol.</param>
+    /// <param name="ClientAuthentication">How a client may authenticate: by HTTP authentication without TLS or over it, or by its TLS client certificate.</param>
+    /// <param name="Subprotocols">Which subprotocols are offered, e.g. the versions of OCPP.</param>
     /// <param name="ReachableAs">The names and addresses the charging stations reach this controller under - what a certificate has to be valid for.</param>
     /// <param name="MinimumTLSVersion">The oldest version of TLS accepted.</param>
     /// <param name="CheckCertificateRevocation">Whether a charging station's certificate is checked against its issuer's revocation list.</param>
@@ -77,22 +82,20 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
     /// <param name="PingEvery">How often a silent connection is pinged, which is how a station that went away is noticed.</param>
     /// <param name="Logging">What of this server ends up in the event log.</param>
     /// <param name="SSH">Whether, and how, the charging stations may connect over SSH as well.</param>
-    /// <param name="Port16">The TCP port OCPP 1.6 is served on, where a node serves it on a port of its own - a charging station; not served there where not said.</param>
     /// <param name="HTTP3">Whether WebSockets are taken over HTTP/3 as well, on the UDP port of the same number; not where not said.</param>
-    public sealed record OCPPServerConfiguration(Boolean?                 Enabled                      = null,
-                                                 IIPAddress?              Address                      = null,
-                                                 IPPort?                  TCPPort                      = null,
-                                                 IReadOnlyList<Byte>?     SecurityProfiles             = null,
-                                                 IReadOnlyList<String>?   Subprotocols                 = null,
-                                                 IReadOnlyList<String>?   ReachableAs                  = null,
-                                                 SslProtocols?            MinimumTLSVersion            = null,
-                                                 Boolean?                 CheckCertificateRevocation   = null,
-                                                 UInt32?                  MaxConnections               = null,
-                                                 TimeSpan?                PingEvery                    = null,
-                                                 OCPPServerLogging?       Logging                      = null,
-                                                 OCPPServerSSH?           SSH                          = null,
-                                                 IPPort?                  Port16                       = null,
-                                                 Boolean?                 HTTP3                        = null)
+    public sealed record WebSocketServerConfiguration(Boolean?                                         Enabled                      = null,
+                                                      IIPAddress?                                      Address                      = null,
+                                                      IPPort?                                          TCPPort                      = null,
+                                                      IReadOnlyList<WebSocketClientAuthentication>?    ClientAuthentication         = null,
+                                                      IReadOnlyList<String>?                           Subprotocols                 = null,
+                                                      IReadOnlyList<String>?                           ReachableAs                  = null,
+                                                      SslProtocols?                                    MinimumTLSVersion            = null,
+                                                      Boolean?                                         CheckCertificateRevocation   = null,
+                                                      UInt32?                                          MaxConnections               = null,
+                                                      TimeSpan?                                        PingEvery                    = null,
+                                                      WebSocketServerLogging?                          Logging                      = null,
+                                                      WebSocketServerSSH?                              SSH                          = null,
+                                                      Boolean?                                         HTTP3                        = null)
     {
 
         #region Data
@@ -100,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// <summary>
         /// The name of this section in the configuration file.
         /// </summary>
-        public const String  SectionName  = "ocppServer";
+        public const String  SectionName  = "webSocketServer";
 
         /// <summary>
         /// The TCP port the charging stations connect to, unless another is
@@ -115,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         public static readonly IPPort         DefaultTCPPort             = IPPort.Parse(2351);
 
         /// <summary>
-        /// Which OCPP versions are offered when nothing says otherwise.
+        /// Which subprotocols are offered when nothing says otherwise.
         /// </summary>
         /// <remarks>
         /// Not OCPP 1.6: a local controller that offers it can be talked to by
@@ -126,22 +129,22 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         public static readonly String[]       DefaultSubprotocols        = [ "ocpp2.1", "ocpp2.0.1" ];
 
         /// <summary>
-        /// The OCPP versions that may be offered at all.
+        /// The subprotocols that may be offered at all: the versions of OCPP
+        /// a node speaks.
         /// </summary>
         public static readonly String[]       KnownSubprotocols          = [ "ocpp1.6", "ocpp2.0.1", "ocpp2.1" ];
 
         /// <summary>
-        /// Which OCPP security profiles a charging station may connect with,
-        /// when nothing says otherwise.
+        /// How a client may authenticate, when nothing says otherwise.
         /// </summary>
         /// <remarks>
-        /// All three, which sounds laxer than it is: a profile is only usable
-        /// if the rest of the configuration supports it. Without a server
-        /// certificate there is no TLS and only profile 1 can be spoken at all,
-        /// and profile 3 needs a charging station holding a certificate from an
-        /// issuer this controller was told to trust.
+        /// Every way, which sounds laxer than it is: a way is only usable if
+        /// the rest of the configuration supports it. Without a server
+        /// certificate there is no TLS and only HTTP authentication without it
+        /// can be spoken at all, and a client certificate has to be one from
+        /// an issuer this node was told to trust.
         /// </remarks>
-        public static readonly Byte[]         DefaultSecurityProfiles    = [ 1, 2, 3 ];
+        public static readonly WebSocketClientAuthentication[]  DefaultClientAuthentication  = WebSocketClientAuthentications.All;
 
         /// <summary>
         /// How many charging stations may be connected at once, when nothing
@@ -221,14 +224,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
             => !Enabled.HasValue                     &&
                 Address                   is null    &&
                !TCPPort.HasValue                     &&
-                SecurityProfiles          is null    &&
+                ClientAuthentication      is null    &&
                 Subprotocols              is null    &&
                 ReachableAs               is null    &&
                !MinimumTLSVersion.HasValue           &&
                !CheckCertificateRevocation.HasValue  &&
                !MaxConnections.HasValue              &&
                !PingEvery.HasValue                   &&
-               !Port16.HasValue                      &&
                !HTTP3.HasValue                       &&
                (Logging is null || Logging.IsEmpty)  &&
                (SSH     is null || SSH.    IsEmpty);
@@ -239,20 +241,41 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         #region (static) TryParse(JSON, out Configuration, out Error)
 
         /// <summary>
-        /// The "ocppServer" section, or the one sentence that says what is
-        /// wrong with it.
+        /// The "webSocketServer" section, or the one sentence that says what
+        /// is wrong with it.
         /// </summary>
-        public static Boolean TryParse(JObject                                          JSON,
-                                       [NotNullWhen(true)]  out OCPPServerConfiguration? Configuration,
-                                       [NotNullWhen(false)] out String?                  Error)
+        public static Boolean TryParse(JObject                                               JSON,
+                                       [NotNullWhen(true)]  out WebSocketServerConfiguration? Configuration,
+                                       [NotNullWhen(false)] out String?                       Error,
+                                       String?                                                NodeNoun   = null)
         {
 
             Configuration  = null;
             Error          = null;
 
+            #region What this section said before
+
+            // A port of its own for OCPP 1.6 and OCPP's security profiles were
+            // fields of this section's former self, "ocppServer": what reads
+            // them now would believe they were obeyed.
+            if (JSON.ContainsKey("port16"))
+            {
+                Error = $"'{SectionName}.port16' is no more: every subprotocol is served on '{SectionName}.port', " +
+                        $"OCPP 1.6 where '{SectionName}.subprotocols' names \"ocpp1.6\".";
+                return false;
+            }
+
+            if (JSON.ContainsKey("securityProfiles"))
+            {
+                Error = $"'{SectionName}.securityProfiles' is no more: say how a client may authenticate in '{SectionName}.clientAuthentication', " +
+                        $"by {String.Join(", ", WebSocketClientAuthentications.Names.Select(name => $"\"{name}\""))} - OCPP's security profiles 1, 2 and 3.";
+                return false;
+            }
+
+            #endregion
+
             if (!ConfigurationReader.TryReadBoolean(JSON, "enabled",                     SectionName, out var enabled,     out Error) ||
                 !ConfigurationReader.TryReadPort   (JSON, "port",                        SectionName, out var port,        out Error) ||
-                !ConfigurationReader.TryReadPort   (JSON, "port16",                      SectionName, out var port16,      out Error) ||
                 !ConfigurationReader.TryReadBoolean(JSON, "http3",                       SectionName, out var http3,       out Error) ||
                 !ConfigurationReader.TryReadBoolean(JSON, "checkCertificateRevocation",  SectionName, out var checkCRL,    out Error) ||
                 !ConfigurationReader.TryReadUInt32 (JSON, "maxConnections",              SectionName, 1, MaxMaxConnections, out var maxConnections, out Error) ||
@@ -264,17 +287,6 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
             {
                 return false;
             }
-
-            #region One port for one server
-
-            if (port.HasValue && port16.HasValue && port.Value == port16.Value)
-            {
-                Error = $"'{SectionName}.port' and '{SectionName}.port16' are the same port, and a port is one server's: " +
-                        $"OCPP 2.1 and OCPP 1.6 are two nodes of this {NodeWording.Noun}, each with a server of its own.";
-                return false;
-            }
-
-            #endregion
 
             #region The interface to listen on
 
@@ -318,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
                 if (subprotocols.Count == 0)
                 {
-                    Error = $"'{SectionName}.subprotocols' must name at least one OCPP version, or a charging station has nothing to ask for.";
+                    Error = $"'{SectionName}.subprotocols' must name at least one subprotocol, or a client has nothing to ask for.";
                     return false;
                 }
 
@@ -326,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
                 if (unknown is not null)
                 {
-                    Error = $"'{SectionName}.subprotocols': '{unknown}' is not an OCPP version this {NodeWording.Noun} speaks ({String.Join(", ", KnownSubprotocols)}).";
+                    Error = $"'{SectionName}.subprotocols': '{unknown}' is not a subprotocol this {NodeNoun ?? NodeWording.Noun} speaks ({String.Join(", ", KnownSubprotocols)}).";
                     return false;
                 }
 
@@ -336,50 +348,45 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
             #endregion
 
-            #region Which security profiles a charging station may connect with
+            #region How a client may authenticate
 
-            IReadOnlyList<Byte>? securityProfiles = null;
+            IReadOnlyList<WebSocketClientAuthentication>? clientAuthentication = null;
 
-            if (JSON["securityProfiles"] is JToken profilesToken && profilesToken.Type != JTokenType.Null)
+            if (JSON["clientAuthentication"] is JToken authenticationToken && authenticationToken.Type != JTokenType.Null)
             {
 
-                if (profilesToken is not JArray profilesArray)
+                var ways = $"{String.Join(", ", WebSocketClientAuthentications.Names.Select(name => $"\"{name}\""))}";
+
+                if (authenticationToken is not JArray authenticationArray)
                 {
-                    Error = $"'{SectionName}.securityProfiles' must be an array of OCPP security profiles, e.g. [ 2, 3 ].";
+                    Error = $"'{SectionName}.clientAuthentication' must be an array of the ways a client may authenticate: {ways}.";
                     return false;
                 }
 
-                var profiles = new List<Byte>();
+                var authentications = new List<WebSocketClientAuthentication>();
 
-                foreach (var token in profilesArray)
+                foreach (var token in authenticationArray)
                 {
 
-                    if (token.Type != JTokenType.Integer)
+                    if (token.Type != JTokenType.String ||
+                        !WebSocketClientAuthentications.TryParse(token.Value<String>(), out var authentication))
                     {
-                        Error = $"'{SectionName}.securityProfiles' must contain nothing but the numbers 1, 2 and 3.";
+                        Error = $"'{SectionName}.clientAuthentication': {token.ToString(Newtonsoft.Json.Formatting.None)} is no way a client may authenticate; they are {ways}.";
                         return false;
                     }
 
-                    var profile = token.Value<Int64>();
-
-                    if (profile < 1 || profile > 3)
-                    {
-                        Error = $"'{SectionName}.securityProfiles': {profile} is not an OCPP security profile; they are 1, 2 and 3.";
-                        return false;
-                    }
-
-                    if (!profiles.Contains((Byte) profile))
-                        profiles.Add((Byte) profile);
+                    if (!authentications.Contains(authentication))
+                        authentications.Add(authentication);
 
                 }
 
-                if (profiles.Count == 0)
+                if (authentications.Count == 0)
                 {
-                    Error = $"'{SectionName}.securityProfiles' must allow at least one profile, or no charging station can connect at all. Switch the server off instead.";
+                    Error = $"'{SectionName}.clientAuthentication' must allow at least one way, or no client can connect at all. Switch the server off instead.";
                     return false;
                 }
 
-                securityProfiles = profiles;
+                clientAuthentication = [.. authentications.Order()];
 
             }
 
@@ -406,18 +413,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
             #region What of this server ends up in the event log
 
-            OCPPServerLogging? logging = null;
+            WebSocketServerLogging? logging = null;
 
-            if (JSON[OCPPServerLogging.FieldName] is JToken loggingToken && loggingToken.Type != JTokenType.Null)
+            if (JSON[WebSocketServerLogging.FieldName] is JToken loggingToken && loggingToken.Type != JTokenType.Null)
             {
 
                 if (loggingToken is not JObject loggingJSON)
                 {
-                    Error = $"'{SectionName}.{OCPPServerLogging.FieldName}' must be a JSON object.";
+                    Error = $"'{SectionName}.{WebSocketServerLogging.FieldName}' must be a JSON object.";
                     return false;
                 }
 
-                if (!OCPPServerLogging.TryParse(loggingJSON, out logging, out Error))
+                if (!WebSocketServerLogging.TryParse(loggingJSON, out logging, out Error))
                     return false;
 
             }
@@ -426,29 +433,29 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
             #region OCPP over SSH
 
-            OCPPServerSSH? ssh = null;
+            WebSocketServerSSH? ssh = null;
 
-            if (JSON[OCPPServerSSH.FieldName] is JToken sshToken && sshToken.Type != JTokenType.Null)
+            if (JSON[WebSocketServerSSH.FieldName] is JToken sshToken && sshToken.Type != JTokenType.Null)
             {
 
                 if (sshToken is not JObject sshJSON)
                 {
-                    Error = $"'{OCPPServerSSH.Path}' must be a JSON object.";
+                    Error = $"'{WebSocketServerSSH.Path}' must be a JSON object.";
                     return false;
                 }
 
-                if (!OCPPServerSSH.TryParse(sshJSON, out ssh, out Error))
+                if (!WebSocketServerSSH.TryParse(sshJSON, out ssh, out Error, NodeNoun))
                     return false;
 
             }
 
             #endregion
 
-            Configuration = new OCPPServerConfiguration(
+            Configuration = new WebSocketServerConfiguration(
                                 enabled,
                                 address,
                                 port,
-                                securityProfiles,
+                                clientAuthentication,
                                 subprotocols,
                                 reachableAs,
                                 minimumTLSVersion,
@@ -457,57 +464,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                                 pingEvery,
                                 logging,
                                 ssh,
-                                port16,
                                 http3
                             );
 
             return true;
 
         }
-
-        #endregion
-
-        #region (static) TryParseForOneServer(JSON, out Configuration, out Error)
-
-        /// <summary>
-        /// The "ocppServer" section as a node reads it that has one server for
-        /// every version of OCPP - a local controller, a gateway: what
-        /// <see cref="TryParse"/> reads, and nothing it cannot serve.
-        /// </summary>
-        public static Boolean TryParseForOneServer(JObject                                          JSON,
-                                                   [NotNullWhen(true)]  out OCPPServerConfiguration? Configuration,
-                                                   [NotNullWhen(false)] out String?                  Error)
-        {
-
-            if (!TryParse(JSON, out Configuration, out Error))
-                return false;
-
-            if (Configuration.WhatOneServerCannotServe() is String why)
-            {
-                Configuration = null;
-                Error         = why;
-                return false;
-            }
-
-            return true;
-
-        }
-
-        #endregion
-
-        #region WhatOneServerCannotServe()
-
-        /// <summary>
-        /// What of this section a node with one server for every version of
-        /// OCPP cannot serve, or null: a port of its own for OCPP 1.6 is a
-        /// charging station's, which is a node per version.
-        /// </summary>
-        public String? WhatOneServerCannotServe()
-
-            => Port16.HasValue
-                   ? $"'{SectionName}.port16' is a charging station's, whose OCPP 1.6 is a node of its own on a port of its own: " +
-                     $"this {NodeWording.Noun} serves every version of OCPP on its one port, OCPP 1.6 where '{SectionName}.subprotocols' names \"ocpp1.6\"."
-                   : null;
 
         #endregion
 
@@ -522,24 +484,23 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// offers three checkboxes sends three checkboxes, and must not be able
         /// to take the port with it.
         /// </remarks>
-        public OCPPServerConfiguration Merge(OCPPServerConfiguration? Update)
+        public WebSocketServerConfiguration Merge(WebSocketServerConfiguration? Update)
 
             => Update is null
                    ? this
-                   : new OCPPServerConfiguration(
+                   : new WebSocketServerConfiguration(
                          Update.Enabled                    ?? Enabled,
                          Update.Address                    ?? Address,
                          Update.TCPPort                    ?? TCPPort,
-                         Update.SecurityProfiles           ?? SecurityProfiles,
+                         Update.ClientAuthentication       ?? ClientAuthentication,
                          Update.Subprotocols               ?? Subprotocols,
                          Update.ReachableAs                ?? ReachableAs,
                          Update.MinimumTLSVersion          ?? MinimumTLSVersion,
                          Update.CheckCertificateRevocation ?? CheckCertificateRevocation,
                          Update.MaxConnections             ?? MaxConnections,
                          Update.PingEvery                  ?? PingEvery,
-                         (Logging ?? new OCPPServerLogging()).Merge(Update.Logging),
-                         (SSH     ?? new OCPPServerSSH())    .Merge(Update.SSH),
-                         Update.Port16                     ?? Port16,
+                         (Logging ?? new WebSocketServerLogging()).Merge(Update.Logging),
+                         (SSH     ?? new WebSocketServerSSH())    .Merge(Update.SSH),
                          Update.HTTP3                      ?? HTTP3
                      );
 
@@ -550,22 +511,21 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// Switched off is the default, and the only default here that is a
         /// decision rather than a number - see the remarks on this record.
         /// </remarks>
-        public OCPPServerConfiguration Effective()
+        public WebSocketServerConfiguration Effective()
 
             => new (
                    Enabled                    ?? false,
                    Address                    ?? IPv4Address.Any,
                    TCPPort                    ?? DefaultTCPPort,
-                   SecurityProfiles           ?? DefaultSecurityProfiles,
+                   ClientAuthentication       ?? DefaultClientAuthentication,
                    Subprotocols               ?? DefaultSubprotocols,
                    ReachableAs                ?? [],
                    MinimumTLSVersion          ?? DefaultMinimumTLSVersion,
                    CheckCertificateRevocation ?? false,
                    MaxConnections             ?? DefaultMaxConnections,
                    PingEvery                  ?? DefaultPingEvery,
-                   (Logging ?? new OCPPServerLogging()).Effective(),
-                   (SSH     ?? new OCPPServerSSH())    .Effective(),
-                   Port16,
+                   (Logging ?? new WebSocketServerLogging()).Effective(),
+                   (SSH     ?? new WebSocketServerSSH())    .Effective(),
                    HTTP3                      ?? false
                );
 
@@ -590,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// Saying which is which is the point: a page that quietly does nothing
         /// is worse than one that says "at the next start".
         /// </remarks>
-        public IReadOnlyList<String> NeedsARestartFor(OCPPServerConfiguration Update)
+        public IReadOnlyList<String> NeedsARestartFor(WebSocketServerConfiguration Update)
         {
 
             var fields = new List<String>();
@@ -617,14 +577,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
             if (Update.CheckCertificateRevocation.HasValue && Update.CheckCertificateRevocation != CheckCertificateRevocation)
                 fields.Add("checkCertificateRevocation");
 
-            // The security profiles are deliberately not in this list. A
-            // charging station is asked for a certificate on every connection
-            // whether or not profile 3 is allowed, and what is done with the
-            // one it sends - or does not send - is decided per connection. So
-            // narrowing or widening them is in effect as soon as it is saved.
+            // How a client may authenticate is deliberately not in this list.
+            // A client is asked for a certificate on every connection whether
+            // or not one is a way in, and what is done with the one it sends -
+            // or does not send - is decided per connection. So narrowing or
+            // widening the ways is in effect as soon as it is saved.
 
             if (Update.SSH is not null)
-                fields.AddRange((SSH ?? new OCPPServerSSH()).NeedsARestartFor(Update.SSH));
+                fields.AddRange((SSH ?? new WebSocketServerSSH()).NeedsARestartFor(Update.SSH));
 
             return fields;
 
@@ -646,9 +606,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
             if (Enabled.HasValue)                     json.Add("enabled",                     Enabled.Value);
             if (Address is not null)                  json.Add("address",                     Address.ToString());
             if (TCPPort.HasValue)                     json.Add("port",                        TCPPort.Value.ToUInt16());
-            if (Port16.HasValue)                      json.Add("port16",                      Port16.Value.ToUInt16());
             if (HTTP3.HasValue)                       json.Add("http3",                       HTTP3.Value);
-            if (SecurityProfiles is not null)         json.Add("securityProfiles",            new JArray(SecurityProfiles.Select(profile => (Int32) profile)));
+            if (ClientAuthentication is not null)     json.Add("clientAuthentication",        new JArray(ClientAuthentication.Select(authentication => authentication.ToText())));
             if (Subprotocols is not null)             json.Add("subprotocols",                new JArray(Subprotocols));
             if (ReachableAs is not null)              json.Add("reachableAs",                 new JArray(ReachableAs));
             if (MinimumTLSVersion.HasValue)           json.Add("minTLSVersion",               TLSVersionText(MinimumTLSVersion.Value));
@@ -657,10 +616,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
             if (PingEvery.HasValue)                   json.Add("pingEverySeconds",            PingEvery.Value.TotalSeconds);
 
             if (Logging is not null && !Logging.IsEmpty)
-                json.Add(OCPPServerLogging.FieldName, Logging.ToJSON());
+                json.Add(WebSocketServerLogging.FieldName, Logging.ToJSON());
 
             if (SSH is not null && !SSH.IsEmpty)
-                json.Add(OCPPServerSSH.FieldName, SSH.ToJSON());
+                json.Add(WebSocketServerSSH.FieldName, SSH.ToJSON());
 
             return json;
 
@@ -686,11 +645,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         public override String ToString()
 
             => !IsEnabled
-                   ? "OCPP server off"
-                   : $"OCPP server on {Address?.ToString() ?? "every interface"}" +
-                     (TCPPort.HasValue ? $":{TCPPort}"                    : "") +
-                     (Port16.HasValue  ? $", OCPP 1.6 on port {Port16}"  : "") +
-                     (TakesHTTP3       ? ", over HTTP/3 as well"          : "");
+                   ? "WebSocket server off"
+                   : $"WebSocket server on {Address?.ToString() ?? "every interface"}" +
+                     (TCPPort.HasValue ? $":{TCPPort}"            : "") +
+                     (TakesHTTP3       ? ", over HTTP/3 as well"  : "");
 
         #endregion
 

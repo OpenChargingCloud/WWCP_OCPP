@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     ClientKeyPins,
                     (request, endpoint, withoutTimeWindow, out signer, out why) => SignedByPinSetSigner(request, WWCPNode.EntryOf(endpoint), withoutTimeWindow, out signer, out why),
                     responsesSent,
-                    NodeWording.Noun);
+                    WWCPNode.NodeNoun);
 
         #endregion
 

@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 reachability.Client is null &&
                 !LeadsToInbound(Destination.Next))
             {
-                var why = $"'{Action}' from the charging station '{station}' is not sent on to '{Destination.Next}': a charging station's requests go to the CSMS, not to another station of this {NodeWording.Noun}.";
+                var why = $"'{Action}' from the charging station '{station}' is not sent on to '{Destination.Next}': a charging station's requests go to the CSMS, not to another station of this {NodeNoun}.";
                 Log.Warning(why, "ocpp", "station", "security");
                 return (false, why);
             }
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                    String              Action)
 
             => probations.Gate(Connection, Action, null, (probation, action, payload) =>
-                   $"This {NodeWording.Noun} believes its CSMS by the key pin {(probation.Trust as ServerKeyPinTrust)?.Learned}, which it learned on its first " +
+                   $"This {NodeNoun} believes its CSMS by the key pin {(probation.Trust as ServerKeyPinTrust)?.Learned}, which it learned on its first " +
                    $"connection and which is on probation: until a signed pin set confirms it, nothing it sends is passed on to a station ('{action}').");
 
         #endregion
@@ -287,7 +287,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// Why a request addressed to this node itself is not processed: where it is one of the
         /// <see cref="CSMSOnlyActions"/> and came over a connection this node accepted rather than over
         /// the one it dialled - or null. A connection the CSMS dialled itself, written down as a
-        /// connection of this node, is its line up as much as one the node dialled.
+        /// connection of this node, is its line up as much as one the node dialled - and a commissioning
+        /// tool's, an account let in to speak to this node as its CSMS would (see
+        /// OCPPServingNode.Commissioning.cs).
         /// </summary>
         protected String? OnlyTheCSMS(IMessageConnection  Connection,
                                       String              Action,
@@ -295,8 +297,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             => Connection.Role == ConnectionRole.Server &&
                !IsInbound(Connection) &&
+               !IsACommissioningTool(Connection) &&
                CSMSOnlyActions.Contains(Action)
-                   ? $"'{Action}' is for this {NodeWording.Noun}'s CSMS to ask, over the {NodeWording.Noun}'s own connection to it - not for a charging station connected to the {NodeWording.Noun}."
+                   ? $"'{Action}' is for this {NodeNoun}'s CSMS to ask, over the {NodeNoun}'s own connection to it - not for a charging station connected to the {NodeNoun}."
                    : null;
 
         #endregion

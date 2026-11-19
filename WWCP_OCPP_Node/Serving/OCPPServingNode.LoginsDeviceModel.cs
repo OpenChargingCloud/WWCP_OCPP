@@ -22,6 +22,7 @@ using System.Globalization;
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPP.Node.Serving;
+using cloud.charging.open.protocols.WWCP.Node.Logins;
 
 using OCPPv2_1 = cloud.charging.open.protocols.OCPPv2_1;
 
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             // The page, the command line and OCPP itself change the list: the
             // instances follow every change, before the next read.
-            StationLogins.OnChanged += () => FollowStationLogins(deviceModel);
+            WebSocketLogins.OnChanged += () => FollowStationLogins(deviceModel);
 
         }
 
@@ -111,8 +112,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 lock (loginComponentsLock)
                 {
 
-                    var stations  = StationLogins.Logins.Select(login => login.Id).ToHashSet(StringComparer.Ordinal);
-                    var groups    = StationLogins.Groups.Select(group => group.Id).ToHashSet(StringComparer.Ordinal);
+                    var stations  = WebSocketLogins.Logins.Select(login => login.Id).ToHashSet(StringComparer.Ordinal);
+                    var groups    = WebSocketLogins.Groups.Select(group => group.Id).ToHashSet(StringComparer.Ordinal);
 
                     var shownStations = Node.GetComponentConfigs(nameof(OCPPv2_1.StationLoginController)).     OfType<OCPPv2_1.StationLoginController>().     ToArray();
                     var shownGroups   = Node.GetComponentConfigs(nameof(OCPPv2_1.StationLoginGroupController)).OfType<OCPPv2_1.StationLoginGroupController>().ToArray();
@@ -155,8 +156,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                          OCPPv2_1.INewInstancesSource
         {
 
-            private ChargingStationLogins Logins
-                => Node.StationLogins;
+            private WebSocketLogins Logins
+                => Node.WebSocketLogins;
 
             #region IStationLoginsSource
 
@@ -198,14 +199,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
             public String? GroupValue(String Group, String Variable)
             {
 
-                if (Logins.GetGroup(Group) is not LoginGroup group)
+                if (Logins.GetGroup(Group) is not WebSocketLoginGroup group)
                     return null;
 
                 return Variable switch {
                            "Name"              => group.Name,
                            "Enabled"           => Bool(group.Enabled),
                            "AuthMethods"       => String.Join(",", group.AuthMethods.Order().Select(method => method.AsText())),
-                           "SecurityProfiles"  => String.Join(",", group.SecurityProfiles.Order()),
+                           // OCPP's words for how its members may authenticate.
+                           "SecurityProfiles"  => String.Join(",", ClientAuthenticationProfiles.SecurityProfiles(group.ClientAuthentication)),
                            "SSHChannels"       => String.Join(",", (group.SSHChannels ?? new HashSet<String>()).Order(StringComparer.Ordinal)),
                            "Note"              => group.Note ?? "",
                            "Members"           => Logins.Logins.Count(login => login.GroupId == group.Id).ToString(CultureInfo.InvariantCulture),
@@ -386,8 +388,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                               : existing?.AuthMethods.ToArray();
 
                         var profiles    = taken.TryGetValue("SecurityProfiles", out var profile)
-                                              ? Members(profile.Value).Select(member => Byte.Parse(member, CultureInfo.InvariantCulture)).ToArray()
-                                              : existing?.SecurityProfiles.ToArray();
+                                              ? Members(profile.Value).Select(member => ClientAuthenticationProfiles.OfProfile(Byte.Parse(member, CultureInfo.InvariantCulture))).ToArray()
+                                              : existing?.ClientAuthentication.ToArray();
 
                         var channels    = taken.TryGetValue("SSHChannels", out var channel)
                                               ? Members(channel.Value)
@@ -474,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         if (password.Value.Length == 0)
                             done = Logins.TryClearPassword(Station, out error, out notSaved);
                         else
-                            done = Logins.TrySetPassword(Station, password.Value, GroupWhileNew(), null, out _, out error, out notSaved);
+                            done = Logins.TrySetPassword(Station, password.Value, GroupWhileNew(), null, out error, out notSaved);
 
                         Done(password.Index, done, error, notSaved);
                         if (done) said.Add(password.Value.Length == 0 ? "its password taken away" : "a password");

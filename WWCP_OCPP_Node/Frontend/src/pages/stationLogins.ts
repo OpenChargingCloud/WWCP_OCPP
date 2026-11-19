@@ -1,6 +1,6 @@
-import { stationServerAPI as api, type AuthMethod, type LoginGroup, type StationLogin, type StationLogins } from '../api/stationServer';
+import { stationServerAPI as api, type AuthMethod, type ClientAuthentication, type LoginGroup, type WebSocketLogin, type WebSocketLogins } from '../api/stationServer';
 import { auth } from '../auth';
-import { nodeNoun } from '../settings';
+import { nodeNoun, stationsResource } from '../settings';
 import { must } from '@node/html';
 import { toURL } from '@node/basePath';
 import type { Page } from '@node/router';
@@ -8,6 +8,13 @@ import { mayButNot, reloadButton, shell } from '@node/shell';
 import { errorMessage, field, formatTimestamp } from '@node/ui';
 import { anyFormTypedSinceDrawn, unsaved } from '@node/unsaved';
 import { html, keyed, live, nothing, render, repeat, type TemplateResult } from '@node/view';
+
+
+/** How a client may authenticate, by OCPP's security profile 1, 2 and 3. */
+const BY_PROFILE: ClientAuthentication[] = [ 'httpAuthWithoutTLS', 'httpAuthOverTLS', 'tlsClientCertificate' ];
+
+/** OCPP's security profile of each way a client may authenticate. */
+const PROFILE_OF: Record<ClientAuthentication, number> = { httpAuthWithoutTLS: 1, httpAuthOverTLS: 2, tlsClientCertificate: 3 };
 
 /** NTS key establishment over SSH: a station's time over the connection it has anyway. */
 const channelNTSKE = 'ntske/1@open.charging.cloud';
@@ -39,23 +46,23 @@ function channelName(channel: string): string {
  */
 export const stationLoginsPage: Page = {
 
-    title: 'Logins and groups',
+    title: 'WebSocket logins',
 
     render({ root }) {
 
         const content = shell(root, {
             active:    '/configuration/ocpp-server/logins',
-            title:     'Logins and groups',
-            subtitle:  'Which charging stations may sign in, with what, and what their group allows them.',
+            title:     'WebSocket logins',
+            subtitle:  'Who may sign in at the WebSocket server - a charging station, a local controller, a gateway - with what, and what their group allows them.',
             actions:   reloadButton(() => reload())
         });
 
         render(content, html`<div class="loading">Loading ...</div>`);
 
-        const mayChange = auth.can('stations', 'edit');
+        const mayChange = auth.can(stationsResource(), 'edit');
 
         let cancelled = false;
-        let store: StationLogins | null = null;
+        let store: WebSocketLogins | null = null;
 
         /** The credential that was just set, offered once and then gone. */
         let justMade: { id: string; what: string; secret: string } | null = null;
@@ -98,7 +105,7 @@ export const stationLoginsPage: Page = {
 
 
         // What a group allows its members, said once for a whole site.
-        function groupsCard(logins: StationLogins): TemplateResult {
+        function groupsCard(logins: WebSocketLogins): TemplateResult {
 
             return html`
                 <section class="card wide">
@@ -106,8 +113,8 @@ export const stationLoginsPage: Page = {
                     <h2><i class="fa-solid fa-layer-group"></i> Login groups</h2>
 
                     <p class="hint">
-                        A group says how its members may prove who they are and which OCPP security profiles they
-                        may come in on. It can only narrow what
+                        A group says how its members may prove who they are and how they may authenticate at the
+                        server - OCPP's security profiles. It can only narrow what
                         <a href="${toURL('/configuration/ocpp-server')}">the server itself</a> allows, never widen it - and a
                         group with nothing ticked lets nobody in, which is how a whole site is stopped in one move.
                     </p>
@@ -170,9 +177,9 @@ export const stationLoginsPage: Page = {
                     </td>
 
                     <td>
-                        ${group.securityProfiles.length === 0
+                        ${group.clientAuthentication.length === 0
                               ? html`<span class="badge warn">none</span>`
-                              : group.securityProfiles.map(profile => html`<span class="badge">${profile}</span> `)}
+                              : group.clientAuthentication.map(authentication => html`<span class="badge" title="${authentication}">${PROFILE_OF[authentication]}</span> `)}
                     </td>
 
                     <td>${group.members}</td>
@@ -205,7 +212,7 @@ export const stationLoginsPage: Page = {
 
             // A grant of its own: a new group gives neither until somebody says so.
             const given  = (channel: string) => group?.sshChannels?.includes(channel) ?? false;
-            const onProfile = (profile: number) => group?.securityProfiles.includes(profile) ?? true;
+            const onProfile = (profile: number) => group?.clientAuthentication.includes(BY_PROFILE[profile - 1]!) ?? true;
 
             return html`
                 <form id="group-form" class="form-stack" data-id="${group?.id ?? ''}" @submit=${saveGroup}>
@@ -267,14 +274,14 @@ export const stationLoginsPage: Page = {
                     </fieldset>
 
                     <fieldset>
-                        <legend>OCPP security profiles it accepts</legend>
+                        <legend>How its members may authenticate (OCPP's security profiles)</legend>
                         <label class="check">
                             <input type="checkbox" name="profile1" ?checked=${onProfile(1)} />
-                            <span>1 - a password on an unencrypted port</span>
+                            <span>1 - HTTP authentication without TLS: a password on an unencrypted port</span>
                         </label>
                         <label class="check">
                             <input type="checkbox" name="profile2" ?checked=${onProfile(2)} />
-                            <span>2 - a password over TLS</span>
+                            <span>2 - HTTP authentication over TLS: a password over TLS</span>
                         </label>
                         <label class="check">
                             <input type="checkbox" name="profile3" ?checked=${onProfile(3)} />
@@ -300,12 +307,12 @@ export const stationLoginsPage: Page = {
 
 
         // Who may sign in, and with what.
-        function loginsCard(logins: StationLogins): TemplateResult {
+        function loginsCard(logins: WebSocketLogins): TemplateResult {
 
             return html`
                 <section class="card wide">
 
-                    <h2><i class="fa-solid fa-charging-station"></i> Charging station logins</h2>
+                    <h2><i class="fa-solid fa-charging-station"></i> WebSocket logins</h2>
 
                     <p class="hint">
                         A charging station that is not in this list cannot sign in with a password or a token,
@@ -314,7 +321,7 @@ export const stationLoginsPage: Page = {
                         about it. Kept in ${logins.file}.
                     </p>
 
-                    ${logins.stations.length === 0
+                    ${logins.logins.length === 0
                           ? html`<p class="muted">No charging station may sign in yet.</p>`
                           : html`
                               <div class="table-scroll">
@@ -331,7 +338,7 @@ export const stationLoginsPage: Page = {
                                           </tr>
                                       </thead>
                                       <tbody>
-                                          ${repeat(logins.stations, station => station.id, station => loginRow(station, logins))}
+                                          ${repeat(logins.logins, station => station.id, station => loginRow(station, logins))}
                                       </tbody>
                                   </table>
                               </div>
@@ -453,7 +460,7 @@ export const stationLoginsPage: Page = {
         }
 
 
-        function loginRow(station: StationLogin, logins: StationLogins): TemplateResult {
+        function loginRow(station: WebSocketLogin, logins: WebSocketLogins): TemplateResult {
 
             const group = logins.groups.find(one => one.id === station.group);
 
@@ -533,7 +540,7 @@ export const stationLoginsPage: Page = {
                         ${station.hasKeyPin && !usable('keypin')
                               ? html`<div class="small warn">its group does not accept key pins</div>`
                               : nothing}
-                        ${station.hasKeyPin && usable('keypin') && group?.securityProfiles.includes(3) === false
+                        ${station.hasKeyPin && usable('keypin') && group?.clientAuthentication.includes('tlsClientCertificate') === false
                               ? html`<div class="small warn">its group does not accept security profile 3, which a client key is</div>`
                               : nothing}
                     </td>
@@ -641,7 +648,7 @@ export const stationLoginsPage: Page = {
                     name:              field(form, 'name', false),
                     enabled:           ticked('enabled'),
                     authMethods:       methods,
-                    securityProfiles:  profiles,
+                    clientAuthentication:  profiles.map(profile => BY_PROFILE[profile - 1]!),
                     sshChannels:       channels,
                     note:              field(form, 'note', false)
                 });
@@ -692,12 +699,12 @@ export const stationLoginsPage: Page = {
             try
             {
 
-                const answer = await api.ocppServer.stations.save(id, password, group, note);
+                const answer = await api.ocppServer.logins.save(id, password, group, note);
 
                 if (cancelled)
                     return;
 
-                store     = answer.stations;
+                store     = answer.logins;
                 justMade  = answer.password === undefined
                                 ? null
                                 : { id, what: 'password', secret: answer.password };
@@ -737,13 +744,13 @@ export const stationLoginsPage: Page = {
 
                 // The group and the note are the station form's business; a key
                 // is given to a station as it is.
-                const answer = await api.ocppServer.stations.addSSHKey(
+                const answer = await api.ocppServer.logins.addSSHKey(
                                    field(form, 'id'), field(form, 'line'), field(form, 'label', false), '', '');
 
                 if (cancelled)
                     return;
 
-                store     = answer.stations;
+                store     = answer.logins;
                 justMade  = null;
 
                 draw();
@@ -779,13 +786,13 @@ export const stationLoginsPage: Page = {
 
                 // As for an SSH key: the group and the note are the station
                 // form's business.
-                const answer = await api.ocppServer.stations.addKeyPin(
+                const answer = await api.ocppServer.logins.addKeyPin(
                                    field(form, 'id'), field(form, 'pin'), field(form, 'label', false), '', '');
 
                 if (cancelled)
                     return;
 
-                store     = answer.stations;
+                store     = answer.logins;
                 justMade  = null;
 
                 draw();
@@ -807,7 +814,7 @@ export const stationLoginsPage: Page = {
             if (!window.confirm(`Take the key pin ${pin} away from '${id}'?\n\nA connection it let in stays open; the next one is refused.`))
                 return;
 
-            await change(() => api.ocppServer.stations.removeKeyPin(id, pin));
+            await change(() => api.ocppServer.logins.removeKeyPin(id, pin));
 
         }
 
@@ -817,7 +824,7 @@ export const stationLoginsPage: Page = {
             if (!window.confirm(`Take the SSH key ${fingerprint} away from '${id}'?\n\nA session it opened ends now.`))
                 return;
 
-            await change(() => api.ocppServer.stations.removeSSHKey(id, fingerprint));
+            await change(() => api.ocppServer.logins.removeSSHKey(id, fingerprint));
 
         }
 
@@ -835,12 +842,12 @@ export const stationLoginsPage: Page = {
                 // Everything but the secret is left at what both ends already
                 // agree on. A page that asked for the alphabet before it asked
                 // for anything else would be a page nobody gets through.
-                const answer = await api.ocppServer.stations.saveTOTP(id, {});
+                const answer = await api.ocppServer.logins.saveTOTP(id, {});
 
                 if (cancelled)
                     return;
 
-                store     = answer.stations;
+                store     = answer.logins;
                 justMade  = answer.sharedSecret === undefined
                                 ? null
                                 : { id, what: 'TOTP shared secret', secret: answer.sharedSecret };
@@ -864,7 +871,7 @@ export const stationLoginsPage: Page = {
                                          'One that does not is turned away.'))
                 return;
 
-            await change(() => api.ocppServer.stations.bindTOTP(id, bound));
+            await change(() => api.ocppServer.logins.bindTOTP(id, bound));
 
         }
 
@@ -873,7 +880,7 @@ export const stationLoginsPage: Page = {
             if (!window.confirm(`Stop letting '${id}' in with a one-time token?`))
                 return;
 
-            await change(() => api.ocppServer.stations.removeTOTP(id));
+            await change(() => api.ocppServer.logins.removeTOTP(id));
 
         }
 
@@ -883,7 +890,7 @@ export const stationLoginsPage: Page = {
             if (!window.confirm(`Stop letting '${id}' in with a password?`))
                 return;
 
-            await change(() => api.ocppServer.stations.removePassword(id));
+            await change(() => api.ocppServer.logins.removePassword(id));
 
         }
 
@@ -893,20 +900,20 @@ export const stationLoginsPage: Page = {
             if (!window.confirm(`Remove the charging station '${id}'? It will no longer be able to sign in.`))
                 return;
 
-            await change(() => api.ocppServer.stations.remove(id));
+            await change(() => api.ocppServer.logins.remove(id));
 
         }
 
 
         const enable = (id: string, wanted: boolean) =>
-            change(() => api.ocppServer.stations.enable(id, wanted));
+            change(() => api.ocppServer.logins.enable(id, wanted));
 
         const move = (id: string, group: string) =>
-            change(() => api.ocppServer.stations.move(id, group));
+            change(() => api.ocppServer.logins.move(id, group));
 
 
         /** Every change that answers with the whole list and has nothing to hand out. */
-        async function change(what: () => Promise<StationLogins>): Promise<void> {
+        async function change(what: () => Promise<WebSocketLogins>): Promise<void> {
 
             try
             {
@@ -946,7 +953,7 @@ export const stationLoginsPage: Page = {
             try
             {
 
-                const logins = await api.ocppServer.stations.get();
+                const logins = await api.ocppServer.logins.get();
 
                 if (cancelled)
                     return;

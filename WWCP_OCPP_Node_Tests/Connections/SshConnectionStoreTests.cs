@@ -174,10 +174,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ACertificateIsRefusedOverSSH_AndAPasswordOrAOneTimePasswordIsTaken()
         {
 
-            Assert.That(store.TryAddAuthentication("A TOTP login", "totp", "cs001", "shared-secret-not-the-real-one", out var totp, out var error),
+            Assert.That(store.TryAddTOTPAuthentication("cs001", "shared-secret-not-the-real-one", "A TOTP login", out var totp, out var error),
                         Is.True, error);
 
-            Assert.That(store.TryAddAuthentication("A Basic login", "basic", "cs001", "not-the-real-one", out var basic, out error),
+            Assert.That(store.TryAddBasicAuthentication("cs001", "not-the-real-one", "A Basic login", out var basic, out error),
                         Is.True, error);
 
             Assert.Multiple(() => {
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionThatOffersNoKey_NamesNothingBesideThat_AndHasAPassword()
         {
 
-            Assert.That(store.TryAddAuthentication("A Basic login", "basic", "cs001", "not-the-real-one", out var basic, out var error),
+            Assert.That(store.TryAddBasicAuthentication("cs001", "not-the-real-one", "A Basic login", out var basic, out var error),
                         Is.True, error);
 
             store.KnownSshKeyIds = () => [ SshClientKeys.OwnId ];

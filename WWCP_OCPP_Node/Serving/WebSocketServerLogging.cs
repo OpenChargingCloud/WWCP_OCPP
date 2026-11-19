@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 {
 
     /// <summary>
-    /// The "logging" object inside the "ocppServer" section: what of the
+    /// The "logging" object inside the "webSocketServer" section: what of the
     /// charging station server ends up in the event log.
     /// </summary>
     /// <remarks>
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
     /// <param name="Payloads">Whether the contents of those messages are logged as well.</param>
     /// <param name="PayloadsUntil">When the contents stop being logged again.</param>
     /// <param name="Pings">Whether the WebSocket pings that keep a connection open are logged.</param>
-    public sealed record OCPPServerLogging(Boolean?         Connections      = null,
+    public sealed record WebSocketServerLogging(Boolean?         Connections      = null,
                                            Boolean?         Authentication   = null,
                                            Boolean?         Messages         = null,
                                            Boolean?         Payloads         = null,
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         #region Data
 
         /// <summary>
-        /// The name of this object inside the "ocppServer" section.
+        /// The name of this object inside the "webSocketServer" section.
         /// </summary>
         public const String   FieldName               = "logging";
 
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// Where the section sits in the document, for the messages of the
         /// reader.
         /// </summary>
-        public const String   Path                    = OCPPServerConfiguration.SectionName + "." + FieldName;
+        public const String   Path                    = WebSocketServerConfiguration.SectionName + "." + FieldName;
 
         /// <summary>
         /// Whether charging stations connecting and disconnecting are logged,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// with it.
         /// </summary>
         public static Boolean TryParse(JObject                                     JSON,
-                                       [NotNullWhen(true)]  out OCPPServerLogging? Logging,
+                                       [NotNullWhen(true)]  out WebSocketServerLogging? Logging,
                                        [NotNullWhen(false)] out String?            Error)
         {
 
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                 return false;
             }
 
-            Logging = new OCPPServerLogging(
+            Logging = new WebSocketServerLogging(
                           connections,
                           authentication,
                           messages,
@@ -185,11 +185,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// This object with the fields the update mentions written over it, and
         /// the ones it does not mention left as they are.
         /// </summary>
-        public OCPPServerLogging Merge(OCPPServerLogging? Update)
+        public WebSocketServerLogging Merge(WebSocketServerLogging? Update)
 
             => Update is null
                    ? this
-                   : new OCPPServerLogging(
+                   : new WebSocketServerLogging(
                          Update.Connections    ?? Connections,
                          Update.Authentication ?? Authentication,
                          Update.Messages       ?? Messages,
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// This object with every field filled in, so that whoever reads it
         /// never has to know what the defaults are.
         /// </summary>
-        public OCPPServerLogging Effective()
+        public WebSocketServerLogging Effective()
 
             => new (
                    Connections    ?? DefaultConnections,

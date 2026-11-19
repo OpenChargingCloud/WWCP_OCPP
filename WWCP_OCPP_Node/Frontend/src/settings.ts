@@ -11,6 +11,10 @@
  *   setNodeNoun('local controller');
  *   setNodeTraits({ oneNodePerOCPPVersion: false, isDialled: true });
  *
+ * A charging station, whose station port is the connections' as well:
+ *
+ *   setStationsResource('connections');
+ *
  * A node that dials downwards - a CSMS, dialling the charging stations and
  * local controllers that cannot dial it - says that as well:
  *
@@ -32,6 +36,7 @@ export interface NodeTraits {
 }
 
 let resource  = 'connections';
+let stations  = 'stations';
 let noun      = 'station';
 let inFull    = 'charging station';
 let traits: NodeTraits = { oneNodePerOCPPVersion: true, isDialled: false, dialsDown: false };
@@ -45,6 +50,21 @@ export function setConnectionsResource(Name: string): void {
 /** The resource a right to the connections is a right to. */
 export function connectionsResource(): string {
     return resource;
+}
+
+/**
+ * Name the resource a right to the station port and its WebSocket logins is a
+ * right to: "stations" on a local controller, a gateway and a CSMS,
+ * "connections" on a charging station - whoever may change where it dials may
+ * change who dials it.
+ */
+export function setStationsResource(Name: string): void {
+    stations = Name;
+}
+
+/** The resource a right to the station port and its WebSocket logins is a right to. */
+export function stationsResource(): string {
+    return stations;
 }
 
 /**

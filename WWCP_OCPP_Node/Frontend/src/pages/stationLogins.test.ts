@@ -12,84 +12,84 @@ import { asked, change, field, open, refused, said, settled, submit, until, type
 import { strict as assert }  from 'node:assert';
 import { describe, it }      from 'node:test';
 
-import type { LoginGroup, StationLogin, StationLogins } from '../api/stationServer.ts';
+import type { LoginGroup, WebSocketLogin, WebSocketLogins } from '../api/stationServer.ts';
 
 const { stationLoginsPage } = await import('./stationLogins.ts');
 
 
 function aGroup(id: string, builtIn = false): LoginGroup {
     return { id, name: `Group ${id}`, enabled: true, builtIn, addedAt: '2026-10-01T00:00:00Z',
-             authMethods: [ 'basic', 'totp', 'certificate' ], securityProfiles: [ 1, 2, 3 ], members: 0 };
+             authMethods: [ 'basic', 'totp', 'certificate' ], clientAuthentication: [ 'httpAuthWithoutTLS', 'httpAuthOverTLS', 'tlsClientCertificate' ], members: 0 };
 }
 
-function aStation(id: string, group = 'default'): StationLogin {
+function aStation(id: string, group = 'default'): WebSocketLogin {
     return { id, group, enabled: true, addedAt: '2026-10-01T00:00:00Z', hasPassword: true, hasTOTP: false };
 }
 
-let held: StationLogins;
+let held: WebSocketLogins;
 
 /** Refuses every change to a station where told to. */
 let refuseChanges = false;
 
 function controller({ method, path, body }: Asked): unknown {
 
-    if (path === '/configuration/ocpp-server/stations' && method === 'GET')
+    if (path === '/configuration/ocpp-server/logins' && method === 'GET')
         return held;
 
-    if (path === '/configuration/ocpp-server/stations' && method === 'POST') {
+    if (path === '/configuration/ocpp-server/logins' && method === 'POST') {
         const added = body as { id: string; group: string; note: string };
-        held = { ...held, stations: [ ...held.stations, { ...aStation(added.id, added.group), note: added.note } ] };
-        return { id: added.id, password: 'made up, shown once', stations: held };
+        held = { ...held, logins: [ ...held.logins, { ...aStation(added.id, added.group), note: added.note } ] };
+        return { id: added.id, password: 'made up, shown once', logins: held };
     }
 
-    const keys = /^\/configuration\/ocpp-server\/stations\/([^/]+)\/sshKeys(?:\/([^/]+))?$/.exec(path);
+    const keys = /^\/configuration\/ocpp-server\/logins\/([^/]+)\/sshKeys(?:\/([^/]+))?$/.exec(path);
 
     if (keys && method === 'POST') {
         const given = body as { line: string; label: string };
         const key   = { fingerprint: 'SHA256:ab+cd/ef', line: given.line, label: given.label, created: '2026-11-07T00:00:00Z' };
-        held = { ...held, stations: held.stations.some(station => station.id === keys[1])
-                                        ? held.stations.map(station => station.id === keys[1] ? { ...station, hasSSHKey: true, sshKeys: [ key ] } : station)
-                                        : [ ...held.stations, { ...aStation(keys[1]!), hasPassword: false, hasSSHKey: true, sshKeys: [ key ] } ] };
-        return { id: keys[1], fingerprint: key.fingerprint, stations: held };
+        held = { ...held, logins: held.logins.some(station => station.id === keys[1])
+                                        ? held.logins.map(station => station.id === keys[1] ? { ...station, hasSSHKey: true, sshKeys: [ key ] } : station)
+                                        : [ ...held.logins, { ...aStation(keys[1]!), hasPassword: false, hasSSHKey: true, sshKeys: [ key ] } ] };
+        return { id: keys[1], fingerprint: key.fingerprint, logins: held };
     }
 
     if (keys && method === 'DELETE') {
-        held = { ...held, stations: held.stations.map(station => station.id === keys[1] ? { ...station, hasSSHKey: false, sshKeys: [] } : station) };
+        held = { ...held, logins: held.logins.map(station => station.id === keys[1] ? { ...station, hasSSHKey: false, sshKeys: [] } : station) };
         return held;
     }
 
-    const pins = /^\/configuration\/ocpp-server\/stations\/([^/]+)\/keyPins(?:\/([^/]+))?$/.exec(path);
+    const pins = /^\/configuration\/ocpp-server\/logins\/([^/]+)\/keyPins(?:\/([^/]+))?$/.exec(path);
 
     if (pins && method === 'POST') {
         const given  = body as { pin: string; label: string };
         const keyPin = { pin: given.pin.replace(/:/g, '').toLowerCase(), label: given.label, added: '2026-11-11T00:00:00Z' };
-        held = { ...held, stations: held.stations.some(station => station.id === pins[1])
-                                        ? held.stations.map(station => station.id === pins[1] ? { ...station, hasKeyPin: true, keyPins: [ keyPin ] } : station)
-                                        : [ ...held.stations, { ...aStation(pins[1]!), hasPassword: false, hasKeyPin: true, keyPins: [ keyPin ] } ] };
-        return { id: pins[1], keyPin: keyPin.pin, stations: held };
+        held = { ...held, logins: held.logins.some(station => station.id === pins[1])
+                                        ? held.logins.map(station => station.id === pins[1] ? { ...station, hasKeyPin: true, keyPins: [ keyPin ] } : station)
+                                        : [ ...held.logins, { ...aStation(pins[1]!), hasPassword: false, hasKeyPin: true, keyPins: [ keyPin ] } ] };
+        return { id: pins[1], keyPin: keyPin.pin, logins: held };
     }
 
     if (pins && method === 'DELETE') {
-        held = { ...held, stations: held.stations.map(station => station.id === pins[1] ? { ...station, hasKeyPin: false, keyPins: [] } : station) };
+        held = { ...held, logins: held.logins.map(station => station.id === pins[1] ? { ...station, hasKeyPin: false, keyPins: [] } : station) };
         return held;
     }
 
-    const binding = /^\/configuration\/ocpp-server\/stations\/([^/]+)\/totp\/binding$/.exec(path);
+    const binding = /^\/configuration\/ocpp-server\/logins\/([^/]+)\/totp\/binding$/.exec(path);
 
     if (binding && method === 'PUT') {
         const bound = (body as { tlsChannelBinding: boolean }).tlsChannelBinding;
-        held = { ...held, stations: held.stations.map(station => station.id === binding[1]
+        held = { ...held, logins: held.logins.map(station => station.id === binding[1]
                                                                      ? { ...station, totp: { ...station.totp!, tlsChannelBinding: bound } }
                                                                      : station) };
         return held;
     }
 
-    const one = /^\/configuration\/ocpp-server\/stations\/([^/]+)$/.exec(path);
+    const one = /^\/configuration\/ocpp-server\/logins\/([^/]+)$/.exec(path);
 
     if (one && method === 'PUT') {
         if (refuseChanges)
             return refused(409, 'the group is full');
-        held = { ...held, stations: held.stations.map(station => station.id === one[1] ? { ...station, ...(body as object) } : station) };
+        held = { ...held, logins: held.logins.map(station => station.id === one[1] ? { ...station, ...(body as object) } : station) };
         return held;
     }
 
@@ -98,9 +98,9 @@ function controller({ method, path, body }: Asked): unknown {
 }
 
 async function opened(): Promise<HTMLElement> {
-    held = { file: 'stations.json', enabled: 2, maxStations: 100, maxGroups: 8, minPasswordLength: 16, minSecretLength: 20,
+    held = { file: 'stations.json', enabled: 2, maxLogins: 100, maxGroups: 8, minPasswordLength: 16, minSecretLength: 20,
              defaultGroup: 'default', groups: [ aGroup('default', true), aGroup('field-test') ],
-             stations: [ aStation('cs001'), aStation('cs002') ] };
+             logins: [ aStation('cs001'), aStation('cs002') ] };
     refuseChanges = false;
     return open(stationLoginsPage, '/configuration/ocpp-server/logins', [ 'stations:read', 'stations:edit' ],
                 controller, root => root.querySelector('#station-form') !== null);
@@ -124,7 +124,7 @@ describe('the logins and groups', () => {
         note.focus();
 
         change(switchOf(root, 'cs001'), false);
-        await until(() => held.stations[0]!.enabled === false && root.querySelector('tr.dimmed') !== null,
+        await until(() => held.logins[0]!.enabled === false && root.querySelector('tr.dimmed') !== null,
                     'the station switched off was not drawn so');
 
         assert.ok(field(root, '#station-form', 'note') === note, 'the field was made anew');
@@ -196,7 +196,7 @@ describe('the logins and groups', () => {
 
         assert.equal(root.querySelector('.station-totp-binding[data-id="cs001"]'), null, 'a station without a token is offered its binding');
 
-        held = { ...held, stations: held.stations.map(station => station.id === 'cs002'
+        held = { ...held, logins: held.logins.map(station => station.id === 'cs002'
                                                                      ? { ...station, hasTOTP: true,
                                                                          totp: { validitySeconds: 30, length: 12, alphabet: 'ab', hashAlgorithm: 'SHA256' as const } }
                                                                      : station) };
@@ -223,7 +223,7 @@ describe('the logins and groups', () => {
             const sent = asked.find(one => one.path.endsWith('/totp/binding'));
 
             assert.equal(sent?.method, 'PUT');
-            assert.equal(sent?.path,   '/configuration/ocpp-server/stations/cs002/totp/binding');
+            assert.equal(sent?.path,   '/configuration/ocpp-server/logins/cs002/totp/binding');
             assert.deepEqual(sent?.body, { tlsChannelBinding: true });
             assert.match(root.querySelector('.station-totp-bound')!.textContent!, /over HTTP\/3 only/);
             assert.equal(button().textContent!.trim(), 'Unbind token');
@@ -263,7 +263,7 @@ describe('the logins and groups', () => {
         root.querySelector<HTMLButtonElement>('.station-sshkey-remove[data-id="cs003"]')!.click();
         await until(() => root.querySelector('.station-sshkey[data-id="cs003"]') === null, 'the key taken away was still drawn');
 
-        assert.equal(asked.find(one => one.method === 'DELETE')?.path, '/configuration/ocpp-server/stations/cs003/sshKeys/ab-cd_ef');
+        assert.equal(asked.find(one => one.method === 'DELETE')?.path, '/configuration/ocpp-server/logins/cs003/sshKeys/ab-cd_ef');
 
     });
 
@@ -290,7 +290,7 @@ describe('the logins and groups', () => {
         root.querySelector<HTMLButtonElement>('.station-keypin-remove[data-id="cs003"]')!.click();
         await until(() => root.querySelector('.station-keypin[data-id="cs003"]') === null, 'the key pin taken away was still drawn');
 
-        assert.equal(asked.find(one => one.method === 'DELETE')?.path, `/configuration/ocpp-server/stations/cs003/keyPins/${pin}`);
+        assert.equal(asked.find(one => one.method === 'DELETE')?.path, `/configuration/ocpp-server/logins/cs003/keyPins/${pin}`);
 
     });
 

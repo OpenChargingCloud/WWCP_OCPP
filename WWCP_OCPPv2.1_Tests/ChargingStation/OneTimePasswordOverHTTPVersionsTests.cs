@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             };
 
             // Known by its secret, and by nothing else: it has no password.
-            server.ClientTOTPConfig[Station] = new TOTPConfig(sharedSecret, UseTLSExporterMaterial: false);
+            server.ClientTOTPConfig[Station] = new TOTPConfig(sharedSecret, TLSChannelBinding: false);
 
         }
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                              NextHopNetworkingNodeId:     NetworkingNode_Id.CSMS,
                              DisableWebSocketPings:       true,
                              WebSocketOver:               Over,
-                             TOTPConfig:                  new TOTPConfig(Secret ?? sharedSecret, UseTLSExporterMaterial: BoundToTLS),
+                             TOTPConfig:                  new TOTPConfig(Secret ?? sharedSecret, TLSChannelBinding: BoundToTLS),
                              TOTPLogin:                   Login,
                              RemoteCertificateValidator:  (sender, certificate, certificateChain, tlsClient, policyErrors) =>
                                                               certificate is not null && certificate.Thumbprint == serverCertificate!.Thumbprint
@@ -402,22 +402,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
         #endregion
 
-        #region AOneTimePasswordBoundToItsConnectionIsLetInOverHTTP3(TheCSMSAsksForIt)
+        #region AOneTimePasswordBoundToItsConnectionIsLetInOverHTTP3()
 
         /// <summary>
         /// Over HTTP/3 the TLS of the connection exports what a password is
-        /// bound with: the station binds it, the CSMS verifies it with its
-        /// side of the same connection - whether it asks for the binding or
-        /// would have taken a raw password too - and OCPP goes both ways.
+        /// bound with: the station binds it, the CSMS - whose login of the
+        /// station asks for the binding - verifies it with its side of the
+        /// same connection, and OCPP goes both ways.
         /// </summary>
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task AOneTimePasswordBoundToItsConnectionIsLetInOverHTTP3(Boolean TheCSMSAsksForIt)
+        [Test]
+        public async Task AOneTimePasswordBoundToItsConnectionIsLetInOverHTTP3()
         {
 
             ACSMS(WithTLS: true);
 
-            server!.ClientTOTPConfig[Station] = new TOTPConfig(sharedSecret, UseTLSExporterMaterial: TheCSMSAsksForIt);
+            server!.ClientTOTPConfig[Station] = new TOTPConfig(sharedSecret, TLSChannelBinding: true);
 
             var sent = new ConcurrentQueue<HTTPTOTPAuthentication>();
 
@@ -447,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             Assert.Multiple(() => {
                 Assert.That(openedOver,               Is.EqualTo(new[] { HTTPVersion.HTTP_3_0 }));
-                Assert.That(sent.First().Type,        Is.EqualTo(TOTPHTTPHeaderType.TLSChannelBinding),  "the password does not say it is bound");
+                Assert.That(sent.First().HTTPText,    Does.Not.Contain("tlscb"),                         "the header said whether the password is bound: that is for the CSMS's login of the station to say");
                 Assert.That(new[] { before, now, next },  Has.None.EqualTo(sent.First().TOTP),            "the password sent as bound is the unbound one");
                 Assert.That(boot. Result.ResultCode,  Is.EqualTo(ResultCode.OK),                         "the station's BootNotification: " + boot. Result.Description);
                 Assert.That(boot. Status,             Is.EqualTo(RegistrationStatus.Accepted));
@@ -473,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             ACSMS(WithTLS: true);
 
-            server!.ClientTOTPConfig[Station] = new TOTPConfig(sharedSecret, UseTLSExporterMaterial: true);
+            server!.ClientTOTPConfig[Station] = new TOTPConfig(sharedSecret, TLSChannelBinding: true);
 
             var response = await Dial(Over);
 

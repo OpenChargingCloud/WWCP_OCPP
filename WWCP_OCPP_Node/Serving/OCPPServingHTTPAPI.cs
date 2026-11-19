@@ -30,7 +30,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// The HTTP API of a node that dials a CSMS and serves the nodes below it:
     /// what every node that dials has - see <see cref="OCPPDiallingHTTPAPI"/> -
     /// and the routes of its charging station server, under
-    /// /v1/configuration/ocpp-server - see OCPPServingHTTPAPI.OCPPServer.cs.
+    /// /v1/configuration/ocpp-server - see OCPPServingHTTPAPI.OCPPServer.cs -
+    /// and of commissioning over SSH, under /v1/configuration/commissioning -
+    /// see OCPPServingHTTPAPI.Commissioning.cs.
     /// The same routes for a local controller and for a gateway, each of
     /// which adds what else it has.
     /// </summary>
@@ -85,6 +87,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             this.StationsResource  = StationsResource;
 
             RegisterOCPPServerRoutes();
+            RegisterCommissioningRoutes();
 
         }
 

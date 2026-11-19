@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 {
 
     /// <summary>
-    /// The "ssh" field of the "ocppServer" section: OCPP over SSH, which the
+    /// The "ssh" field of the "webSocketServer" section: OCPP over SSH, which the
     /// charging stations may speak beside the HTTP WebSocket port - on the SSH
     /// server of this local controller, as the subsystem
     /// "ocpp@open.charging.cloud".
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
     /// <param name="Subprotocols">Which OCPP versions are offered over SSH; those of the WebSocket port where null.</param>
     /// <param name="MaxMessageSize">The largest OCPP message taken and sent over SSH, in bytes.</param>
     /// <param name="PingEvery">How often a connection is pinged over SSH, which is how a station that went away is noticed.</param>
-    public sealed record OCPPServerSSH(Boolean?                Enabled          = null,
+    public sealed record WebSocketServerSSH(Boolean?                Enabled          = null,
                                        IReadOnlyList<String>?  Subprotocols     = null,
                                        UInt32?                 MaxMessageSize   = null,
                                        TimeSpan?               PingEvery        = null)
@@ -67,14 +67,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         #region Data
 
         /// <summary>
-        /// The name of this field in the "ocppServer" section.
+        /// The name of this field in the "webSocketServer" section.
         /// </summary>
         public const String  FieldName              = "ssh";
 
         /// <summary>
         /// Where it is in the configuration file, as an error names it.
         /// </summary>
-        public const String  Path                   = OCPPServerConfiguration.SectionName + "." + FieldName;
+        public const String  Path                   = WebSocketServerConfiguration.SectionName + "." + FieldName;
 
         /// <summary>
         /// The largest OCPP message, when nothing says otherwise: 64 MiB, what
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// How often a connection is pinged, when nothing says otherwise: as
         /// often as over the WebSocket port, for the same reason.
         /// </summary>
-        public static readonly TimeSpan DefaultPingEvery = OCPPServerConfiguration.DefaultPingEvery;
+        public static readonly TimeSpan DefaultPingEvery = WebSocketServerConfiguration.DefaultPingEvery;
 
         #endregion
 
@@ -121,16 +121,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// The "ssh" field, or the one sentence that says what is wrong with it.
         /// </summary>
         public static Boolean TryParse(JObject                                 JSON,
-                                       [NotNullWhen(true)]  out OCPPServerSSH? SSH,
-                                       [NotNullWhen(false)] out String?        Error)
+                                       [NotNullWhen(true)]  out WebSocketServerSSH? SSH,
+                                       [NotNullWhen(false)] out String?        Error,
+                                       String?                                 NodeNoun   = null)
         {
 
             SSH = null;
 
             if (!ConfigurationReader.TryReadBoolean(JSON, "enabled",           Path, out var enabled, out Error) ||
-                !ConfigurationReader.TryReadStrings(JSON, "subprotocols",      Path, OCPPServerConfiguration.KnownSubprotocols.Length, 32, out var subprotocols, out Error) ||
+                !ConfigurationReader.TryReadStrings(JSON, "subprotocols",      Path, WebSocketServerConfiguration.KnownSubprotocols.Length, 32, out var subprotocols, out Error) ||
                 !ConfigurationReader.TryReadUInt32 (JSON, "maxMessageSize",    Path, MinMaxMessageSize, MaxMaxMessageSize, out var maxMessageSize, out Error) ||
-                !ConfigurationReader.TryReadSeconds(JSON, "pingEverySeconds",  Path, OCPPServerConfiguration.MinPingEverySeconds, OCPPServerConfiguration.MaxPingEverySeconds, out var pingEvery, out Error))
+                !ConfigurationReader.TryReadSeconds(JSON, "pingEverySeconds",  Path, WebSocketServerConfiguration.MinPingEverySeconds, WebSocketServerConfiguration.MaxPingEverySeconds, out var pingEvery, out Error))
             {
                 return false;
             }
@@ -144,11 +145,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
                     return false;
                 }
 
-                var unknown = subprotocols.FirstOrDefault(subprotocol => !OCPPServerConfiguration.KnownSubprotocols.Contains(subprotocol));
+                var unknown = subprotocols.FirstOrDefault(subprotocol => !WebSocketServerConfiguration.KnownSubprotocols.Contains(subprotocol));
 
                 if (unknown is not null)
                 {
-                    Error = $"'{Path}.subprotocols': '{unknown}' is not an OCPP version this {NodeWording.Noun} speaks ({String.Join(", ", OCPPServerConfiguration.KnownSubprotocols)}).";
+                    Error = $"'{Path}.subprotocols': '{unknown}' is not an OCPP version this {NodeNoun ?? NodeWording.Noun} speaks ({String.Join(", ", WebSocketServerConfiguration.KnownSubprotocols)}).";
                     return false;
                 }
 
@@ -156,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
             }
 
-            SSH = new OCPPServerSSH(
+            SSH = new WebSocketServerSSH(
                       enabled,
                       subprotocols,
                       maxMessageSize,
@@ -174,11 +175,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// <summary>
         /// This field with what the update mentions written over it.
         /// </summary>
-        public OCPPServerSSH Merge(OCPPServerSSH? Update)
+        public WebSocketServerSSH Merge(WebSocketServerSSH? Update)
 
             => Update is null
                    ? this
-                   : new OCPPServerSSH(
+                   : new WebSocketServerSSH(
                          Update.Enabled         ?? Enabled,
                          Update.Subprotocols    ?? Subprotocols,
                          Update.MaxMessageSize  ?? MaxMessageSize,
@@ -190,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// stay null where nothing says them: then they are the WebSocket
         /// port's, whatever those are.
         /// </summary>
-        public OCPPServerSSH Effective()
+        public WebSocketServerSSH Effective()
 
             => new (
                    Enabled         ?? false,
@@ -213,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
         /// size and the pings are those of the server of the subsystem, which
         /// is built at the start, as the WebSocket port's are.
         /// </remarks>
-        public IReadOnlyList<String> NeedsARestartFor(OCPPServerSSH Update)
+        public IReadOnlyList<String> NeedsARestartFor(WebSocketServerSSH Update)
         {
 
             var fields = new List<String>();

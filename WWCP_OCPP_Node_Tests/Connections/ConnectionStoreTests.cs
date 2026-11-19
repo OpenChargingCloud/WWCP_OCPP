@@ -61,6 +61,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         /// </summary>
         private const String  ASharedSecret  = "shared-secret-not-the-real-one";
 
+        private const String  AToken         = "a-token-not-the-real-one";
+
         private String            directory  = "";
         private ConnectionStore   store      = default!;
         private MovableClock clock = default!;
@@ -92,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         private String ABasicLogin(String Description = "CSMS login")
         {
 
-            Assert.That(store.TryAddAuthentication(Description, "basic", "cs001", APassword, out var id, out var error),
+            Assert.That(store.TryAddBasicAuthentication("cs001", APassword, Description, out var id, out var error),
                         Is.True, error);
 
             return id!;
@@ -102,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         private String ATOTPLogin(String Description = "Local controller login", Boolean ChannelBinding = true)
         {
 
-            Assert.That(store.TryAddAuthentication(Description, "totp", "cs001", ASharedSecret,
+            Assert.That(store.TryAddTOTPAuthentication("cs001", ASharedSecret, Description,
                                                    out var id, out var error,
                                                    TLSChannelBinding: ChannelBinding),
                         Is.True, error);
@@ -203,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var id = ABasicLogin("CSMS lgoin");
 
-            Assert.That(store.TryUpdateAuthentication(id, "CSMS login", "basic", "cs001", "", out var error),
+            Assert.That(store.TryUpdateBasicAuthentication(id, "cs001", "", "CSMS login", out var error),
                         Is.True, error);
 
             var entry = store.Authentications.Single(one => one.Id == id);
@@ -229,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var id = ABasicLogin();
 
-            Assert.That(store.TryUpdateAuthentication(id, "CSMS login", "totp", "cs001", "", out var refused),
+            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", "", "CSMS login", out var refused),
                         Is.False,
                         "A password was quietly kept on as a shared secret.");
 
@@ -237,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             // With one, it goes through - and the password is gone, because
             // nothing can use it any more.
-            Assert.That(store.TryUpdateAuthentication(id, "CSMS login", "totp", "cs001", ASharedSecret, out var error),
+            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", ASharedSecret, "CSMS login", out var error),
                         Is.True, error);
 
             var entry = store.Authentications.Single(one => one.Id == id);
@@ -432,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void NewOneTimePasswordsAreUnboundByDefault()
         {
 
-            Assert.That(store.TryAddAuthentication("Said nothing", "totp", "cs001", ASharedSecret,
+            Assert.That(store.TryAddTOTPAuthentication("cs001", ASharedSecret, "Said nothing",
                                                    out var id, out var error),
                         Is.True, error);
 
@@ -455,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var id = ATOTPLogin("Before", ChannelBinding: Bound);
 
-            Assert.That(store.TryUpdateAuthentication(id, "After", "totp", "cs001", null, out var error),
+            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", null, "After", out var error),
                         Is.True, error);
 
             Assert.That(store.Authentications.Single(one => one.Id == id).TLSChannelBinding, Is.EqualTo(Bound),
@@ -599,7 +601,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void CredentialsWithoutASecretAreRefused(String Kind, String Secret, String Says)
         {
 
-            Assert.That(store.TryAddAuthentication("Somewhere", Kind, "cs001", Secret, out _, out var refused),
+            var added = Kind == "basic"
+                            ? store.TryAddBasicAuthentication("cs001", Secret, "Somewhere", out _, out var refused)
+                            : store.TryAddTOTPAuthentication ("cs001", Secret, "Somewhere", out _, out refused);
+
+            Assert.That(added,
                         Is.False,
                         $"A {Kind} login with '{Secret}' was written down.");
 
@@ -624,7 +630,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddAuthentication("  ", "basic", "cs001", APassword, out _, out var noLogin),
+                Assert.That(store.TryAddBasicAuthentication("cs001", APassword, "  ", out _, out var noLogin),
                             Is.False, "A login without a description was written down.");
                 Assert.That(noLogin, Does.Contain("what these credentials are for"));
 
@@ -650,7 +656,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var login = ATOTPLogin("Local controller", ChannelBinding: false);
 
-            Assert.That(store.TryAddAuthentication("CSMS login", "basic", "cs001", APassword, out var basic, out var error),
+            Assert.That(store.TryAddBasicAuthentication("cs001", APassword, "CSMS login", out var basic, out var error),
                         Is.True, error);
 
             Assert.That(store.TryAddConnection("Local controller", "wss://lc.example.org/cs001", "LocalController",
@@ -723,11 +729,143 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
                 Assert.That(asTOTP,               Is.Not.Null, "TOTP credentials did not become a TOTP config.");
                 Assert.That(asTOTP!.SharedSecret, Is.EqualTo(ASharedSecret));
-                Assert.That(asTOTP.UseTLSExporterMaterial, Is.True);
+                Assert.That(asTOTP.TLSChannelBinding, Is.True);
 
                 // And neither pretends to be the other.
                 Assert.That(basic.ToTOTPConfig(),          Is.Null);
                 Assert.That(totp. ToBasicAuthentication(), Is.Null);
+
+            });
+
+        }
+
+        #endregion
+
+        #region ATokenIsWrittenDownAndSurvivesARestart()
+
+        /// <summary>
+        /// HTTP Token credentials: a token and no login, kept out of what the
+        /// page is shown, and back after a restart.
+        /// </summary>
+        [Test]
+        public void ATokenIsWrittenDownAndSurvivesARestart()
+        {
+
+            Assert.That(store.TryAddTokenAuthentication(AToken, "CSMS token", out var id, out var error),
+                        Is.True, error);
+
+            var token = store.Authentications.Single(one => one.Id == id);
+            var again = new ConnectionStore(store.Path, clock).Authentications.Single(one => one.Id == id);
+
+            Assert.Multiple(() => {
+
+                Assert.That(token.Kind,                                       Is.EqualTo(AuthenticationKind.Token));
+                Assert.That(token.Login,                                      Is.Null);
+                Assert.That(token.HasSecret,                                  Is.True);
+                Assert.That(token.ToTokenAuthentication()?.Token,             Is.EqualTo(AToken));
+                Assert.That(token.ToJSON().ToString(),                        Does.Not.Contain(AToken),
+                            "The token is in what the page is shown.");
+                Assert.That(token.ToJSON().Value<String>("kind"),             Is.EqualTo("token"));
+
+                Assert.That(again.Kind,                                       Is.EqualTo(AuthenticationKind.Token));
+                Assert.That(again.Token,                                      Is.EqualTo(AToken),
+                            "The token did not come back after a restart.");
+
+            });
+
+        }
+
+        #endregion
+
+        #region ATokenIsOnePieceAndNeedsToBeThere(Token, Says)
+
+        /// <summary>
+        /// A token is sent as "Authorization: Token ...", which ends at the
+        /// first space.
+        /// </summary>
+        [Test]
+        [TestCase("",                  "token is needed")]
+        [TestCase("   ",               "token is needed")]
+        [TestCase("has a space in it", "spaces")]
+        public void ATokenIsOnePieceAndNeedsToBeThere(String Token, String Says)
+        {
+
+            Assert.That(store.TryAddTokenAuthentication(Token, "CSMS token", out _, out var refused),
+                        Is.False,
+                        $"A token '{Token}' was written down.");
+
+            Assert.That(refused, Does.Contain(Says).IgnoreCase);
+
+        }
+
+        #endregion
+
+        #region ChangingToATokenNeedsAToken()
+
+        /// <summary>
+        /// A password is not a token: changing HTTP Basic credentials into a
+        /// token needs one, and leaves no password behind.
+        /// </summary>
+        [Test]
+        public void ChangingToATokenNeedsAToken()
+        {
+
+            var id = ABasicLogin();
+
+            Assert.That(store.TryUpdateTokenAuthentication(id, "", "CSMS token", out var refused),
+                        Is.False, "Changed to a token without one.");
+
+            Assert.That(refused, Does.Contain("needs a token").IgnoreCase);
+
+            Assert.That(store.TryUpdateTokenAuthentication(id, AToken, "CSMS token", out var error),
+                        Is.True, error);
+
+            var token = store.Authentications.Single(one => one.Id == id);
+
+            Assert.Multiple(() => {
+                Assert.That(token.Kind,      Is.EqualTo(AuthenticationKind.Token));
+                Assert.That(token.Token,     Is.EqualTo(AToken));
+                Assert.That(token.Password,  Is.Null, "The password stayed behind.");
+            });
+
+        }
+
+        #endregion
+
+        #region AChangeIsWrittenDownWithItsTime()
+
+        /// <summary>
+        /// When credentials were written down stays what it was; when they
+        /// were last changed is the time of the change, and both come back
+        /// after a restart.
+        /// </summary>
+        [Test]
+        public void AChangeIsWrittenDownWithItsTime()
+        {
+
+            var written  = new DateTimeOffset(2026, 11, 18, 10, 0, 0, TimeSpan.Zero);
+            var changed  = written.AddHours(2);
+
+            clock.Now = written;
+
+            var id = ABasicLogin();
+
+            clock.Now = changed;
+
+            Assert.That(store.TryUpdateBasicAuthentication(id, "cs001", "", "CSMS login, renamed", out var error),
+                        Is.True, error);
+
+            var now   = store.Authentications.Single(one => one.Id == id);
+            var again = new ConnectionStore(store.Path, clock).Authentications.Single(one => one.Id == id);
+
+            Assert.Multiple(() => {
+
+                Assert.That(now.  CreatedAt,     Is.EqualTo(written));
+                Assert.That(now.  LastChangeAt,  Is.EqualTo(changed));
+                Assert.That(now.  Password,      Is.EqualTo(APassword), "The password was not kept.");
+
+                Assert.That(again.CreatedAt,     Is.EqualTo(written));
+                Assert.That(again.LastChangeAt,  Is.EqualTo(changed),  "When they were changed was not remembered.");
 
             });
 

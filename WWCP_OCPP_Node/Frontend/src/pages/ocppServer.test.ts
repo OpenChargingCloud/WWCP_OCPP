@@ -10,7 +10,7 @@ import { anOCPPServer, asked, change, field, open, refused, settled, submit, unt
 import { strict as assert }  from 'node:assert';
 import { describe, it }      from 'node:test';
 
-import type { OCPPServerConfiguration, OCPPServerUpdate, StationLogins } from '../api/stationServer.ts';
+import type { OCPPServerConfiguration, OCPPServerUpdate, WebSocketLogins } from '../api/stationServer.ts';
 
 const { ocppServerPage } = await import('./ocppServer.ts');
 
@@ -25,9 +25,9 @@ let sshServerOn = true;
 
 function controller({ method, path, body }: Asked): unknown {
 
-    if (path === '/configuration/ocpp-server/stations')
-        return { file: 'stations.json', enabled: 0, maxStations: 100, maxGroups: 8, minPasswordLength: 16, minSecretLength: 20,
-                 defaultGroup: 'default', groups: [], stations: [] } satisfies StationLogins;
+    if (path === '/configuration/ocpp-server/logins')
+        return { file: 'stations.json', enabled: 0, maxLogins: 100, maxGroups: 8, minPasswordLength: 16, minSecretLength: 20,
+                 defaultGroup: 'default', groups: [], logins: [] } satisfies WebSocketLogins;
 
     if (path === '/configuration/ocpp-server' && method === 'PUT') {
         if (refuseChanges)

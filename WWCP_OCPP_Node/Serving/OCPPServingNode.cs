@@ -33,6 +33,7 @@ using cloud.charging.open.protocols.WWCP.Node.SecureShell;
 
 using cloud.charging.open.protocols.OCPP.SSH;
 using cloud.charging.open.protocols.OCPP.Node.Serving;
+using cloud.charging.open.protocols.WWCP.Node.Logins;
 
 using OCPPWebSockets = cloud.charging.open.protocols.OCPP.WebSockets;
 
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// A node that dials a CSMS and is dialled itself, by the charging stations
     /// - and the local controllers - below it: a local controller, and a
     /// gateway. What it dials is WWCPNode's, over OCPP (OCPPDialling); the server those below it
-    /// connect to - its section "ocppServer", the charging stations that may
+    /// connect to - its section "webSocketServer", the charging stations that may
     /// sign in and their login groups, the chains a station's certificate may
     /// lead to, the keys and certificates it presents, OCPP over SSH and a CSMS
     /// that dials it on the same port - is here, the same for both.
@@ -103,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// The OCPP nodes this one has: the one for OCPP 2.1, and before it
         /// the one for OCPP 1.6 where it speaks that.
         /// </summary>
-        protected IEnumerable<OCPP.NetworkingNode.AOCPPNetworkingNode> Nodes
+        protected IEnumerable<NetworkingNode.AOCPPNetworkingNode> Nodes
             => OCPPDialling.Nodes;
 
         /// <summary>
@@ -260,6 +261,40 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
+        #region (protected virtual) ServesStations / ServesOCPPOverSSH / MaxFailedSignInsPerMinute
+
+        /// <summary>
+        /// Whether charging stations sign in at the station port. Yes, unless
+        /// the kind says otherwise: a charging station serves no stations, and
+        /// what it lets in is a back end that dials it - a connection the other
+        /// end makes - and nothing else.
+        /// </summary>
+        protected virtual Boolean ServesStations
+            => true;
+
+        /// <summary>
+        /// Whether OCPP over SSH is offered beside the station port, as the
+        /// subsystem "ocpp@open.charging.cloud" of the node's SSH server. Yes,
+        /// unless the kind says otherwise - a charging station, whose tools
+        /// commission it over that subsystem, and which nothing dials over SSH.
+        /// </summary>
+        protected virtual Boolean ServesOCPPOverSSH
+            => true;
+
+        /// <summary>
+        /// How many sign-ins that were wrong one address is given within a
+        /// minute before the station port tells it to wait - or null, where
+        /// the kind sets no limit.
+        /// </summary>
+        /// <remarks>
+        /// A sign-in with a client certificate is no guess, and is neither
+        /// counted nor held back.
+        /// </remarks>
+        protected virtual UInt32? MaxFailedSignInsPerMinute
+            => null;
+
+        #endregion
+
         #region (protected virtual) FollowStationsSeen(Server)
 
         /// <summary>
@@ -308,8 +343,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
                    new JProperty("tls",              ocppServerTLS),
                    new JProperty("url",              OCPPServerURL),
                    new JProperty("sshUrl",           OCPPOverSSHServed ? OCPPServerSSHURL : null),
-                   new JProperty("securityProfiles", new JArray((ocppServerSettings.SecurityProfiles ?? []).Select(profile => (Int32) profile))),
-                   new JProperty("stationLogins",    StationLogins.EnabledCount),
+                   new JProperty("clientAuthentication", new JArray((ocppServerSettings.ClientAuthentication ?? []).Select(authentication => authentication.ToText()))),
+                   new JProperty("webSocketLogins",    WebSocketLogins.EnabledCount),
                    new JProperty("trustedChains",    ClientTrust.EnabledCount),
                    new JProperty("certificates",     Certificates.ByKind(CertificateKind.TLSServerIdentity).Count(entry => entry.IsFor(StationListener)))
                );

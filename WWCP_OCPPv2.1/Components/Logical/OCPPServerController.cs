@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// OCPP 2.1 has no component for this: a charging station is a client and
     /// has no stations below it. So this is a controller of its own, named as
     /// the controllers of the white papers are, and its variables are the
-    /// section "ocppServer" of the node's configuration file, its OCPP over SSH
+    /// section "webSocketServer" of the node's configuration file, its OCPP over SSH
     /// and its logging, as the node's page shows them - besides what the server
     /// is doing, read-only.
     /// </para>
