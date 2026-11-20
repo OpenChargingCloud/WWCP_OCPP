@@ -20,6 +20,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.SSH;
 using org.GraphDefined.Vanaheimr.Hermod.Messaging;
@@ -309,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             if (Learned is not null && Confirmed)
             {
-                WWCPNode.Log.Notice($"'{entry.Description}': the signed pin set of version {Version}, signed by '{Signer}', confirms the host key " +
+                WWCPNode.Log.Notice($"'{entry.Description.FirstText()}': the signed pin set of version {Version}, signed by '{Signer}', confirms the host key " +
                            $"{Learned} it learned on its first connection; its probation ends.", "ocpp", "connections", "ssh", "security");
                 WWCPNode.SshSecurityEvent(entry, "ReconfigurationOfSecurityParameters", $"Host key {Learned} of '{entry.Id}' confirmed by a signed pin set of version {Version}");
             }
@@ -317,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             else if (Learned is not null)
             {
 
-                WWCPNode.Log.Warning($"'{entry.Description}': the signed pin set of version {Version}, signed by '{Signer}', does not have the host key " +
+                WWCPNode.Log.Warning($"'{entry.Description.FirstText()}': the signed pin set of version {Version}, signed by '{Signer}', does not have the host key " +
                             $"{Learned} it learned on its first connection - that server is not the one its CSMS knows. The connection is made anew, " +
                             $"held to the signed pins ({entry.SshHostKey}).", "ocpp", "connections", "ssh", "security");
 

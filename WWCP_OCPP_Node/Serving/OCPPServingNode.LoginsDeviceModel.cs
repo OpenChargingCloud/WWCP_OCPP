@@ -19,6 +19,7 @@
 
 using System.Globalization;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPP.Node.Serving;
@@ -188,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                            "HasTOTP"             => Bool(login.HasTOTP),
                            "SSHKeys"             => String.Join(",", login.Keys.Select(key => key.Fingerprint)),
                            "KeyPins"             => String.Join(",", login.Pins.Select(pin => pin.Pin.ToHex())),
-                           "Note"                => login.Note ?? "",
+                           "Description"         => login.Description?.FirstText() ?? "",
                            "AddedAt"             => login.AddedAt.ToUniversalTime().ToString("o"),
                            "Listed"              => "true",
                            _                     => null
@@ -209,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                            // OCPP's words for how its members may authenticate.
                            "SecurityProfiles"  => String.Join(",", ClientAuthenticationProfiles.SecurityProfiles(group.ClientAuthentication)),
                            "SSHChannels"       => String.Join(",", (group.SSHChannels ?? new HashSet<String>()).Order(StringComparer.Ordinal)),
-                           "Note"              => group.Note ?? "",
+                           "Description"       => group.Description?.FirstText() ?? "",
                            "Members"           => Logins.Logins.Count(login => login.GroupId == group.Id).ToString(CultureInfo.InvariantCulture),
                            "AddedAt"           => group.AddedAt.ToUniversalTime().ToString("o"),
                            "Listed"            => "true",
@@ -400,7 +401,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                                      taken.TryGetValue("Enabled", out var enabled) ? Boolean.Parse(enabled.Value) : existing?.Enabled ?? true,
                                                                      authMethods,
                                                                      profiles,
-                                                                     taken.TryGetValue("Note",    out var note)    ? (note.Value.Length > 0 ? note.Value : null) : existing?.Note,
+                                                                     taken.TryGetValue("Description", out var description)
+                                                                         ? (description.Value.Length > 0 ? I18NString.Create(description.Value) : null)
+                                                                         : existing?.Description,
                                                                      channels,
                                                                      out var error,
                                                                      out var notSaved);
@@ -476,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                         if (password.Value.Length == 0)
                             done = Logins.TryClearPassword(Station, out error, out notSaved);
                         else
-                            done = Logins.TrySetPassword(Station, password.Value, GroupWhileNew(), null, out error, out notSaved);
+                            done = Logins.TrySetPasswordAuthentication(Station, password.Value, GroupWhileNew(), null, out error, out notSaved);
 
                         Done(password.Index, done, error, notSaved);
                         if (done) said.Add(password.Value.Length == 0 ? "its password taken away" : "a password");
@@ -496,7 +499,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                       ? Enum.Parse<TOTPHashAlgorithm>(algorithm.Value, ignoreCase: true)
                                                       : null;
 
-                        var done = Logins.TrySetTOTP(Station,
+                        var done = Logins.TrySetTOTPAuthentication(Station,
                                                      secret.Value,
                                                      taken.TryGetValue("TOTPValidity", out var validity) ? TimeSpan.FromSeconds(Int64.Parse(validity.Value, CultureInfo.InvariantCulture)) : null,
                                                      taken.TryGetValue("TOTPLength",   out var length)   ? UInt32.Parse(length.Value, CultureInfo.InvariantCulture)                     : null,
@@ -504,7 +507,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                                      hash,
                                                      GroupWhileNew(),
                                                      null,
-                                                     out _,
                                                      out var error,
                                                      out var notSaved);
 

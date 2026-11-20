@@ -199,7 +199,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
-            var description  = json.Value<String>("description");
+            if (!ConnectionFields.TryDescriptionOf(json, out var description, out var wrongDescription))
+                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, wrongDescription, false));
+
             var kind         = json.Value<String>("kind");
             var login        = json.Value<String>("login");
             var secret       = json.Value<String>("secret");
@@ -262,7 +264,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(errorResponse);
 
             var id           = json.Value<String>("id");
-            var description  = json.Value<String>("description");
+            if (!ConnectionFields.TryDescriptionOf(json, out var description, out var wrongDescription))
+                return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, wrongDescription, false));
+
             var kind         = json.Value<String>("kind");
             var login        = json.Value<String>("login");
             var secret       = json.Value<String>("secret");
@@ -357,8 +361,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!ConnectionIdentity.TryParse(json["identities"], out var identities, out var wrongIdentities))
                 return NotChanged(Request, HTTPStatusCode.BadRequest, wrongIdentities, false);
 
-            if (!Dialling.Connections.TryAddConnection(json.Value<String>("description"),
-                                                       json.Value<String>("url"),
+            if (!TryURLOf(json, out var url, out var wrongURL))
+                return NotChanged(Request, HTTPStatusCode.BadRequest, wrongURL, false);
+
+            if (!ConnectionFields.TryDescriptionOf(json, out var description, out var wrongDescription))
+                return NotChanged(Request, HTTPStatusCode.BadRequest, wrongDescription, false);
+
+            if (!Dialling.Connections.TryAddConnection(description,
+                                                       url,
                                                        json.Value<String>("connectionType"),
                                                        json.Value<Boolean?>("autoConnect"),
                                                        json.Value<String>("authenticationId"),
@@ -417,9 +427,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!ConnectionIdentity.TryParse(json["identities"], out var identities, out var wrongIdentities))
                 return NotChanged(Request, HTTPStatusCode.BadRequest, wrongIdentities, false);
 
+            if (!TryURLOf(json, out var url, out var wrongURL))
+                return NotChanged(Request, HTTPStatusCode.BadRequest, wrongURL, false);
+
+            if (!ConnectionFields.TryDescriptionOf(json, out var description, out var wrongDescription))
+                return NotChanged(Request, HTTPStatusCode.BadRequest, wrongDescription, false);
+
             if (!Dialling.Connections.TryUpdateConnection(json.Value<String>("id"),
-                                                          json.Value<String>("description"),
-                                                          json.Value<String>("url"),
+                                                          description,
+                                                          url,
                                                           json.Value<String>("connectionType"),
                                                           json.Value<Boolean?>("autoConnect"),
                                                           json.Value<String>("authenticationId"),
@@ -557,6 +573,36 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return Task.FromResult(NotChanged(Request, HTTPStatusCode.BadRequest, error, notSaved));
 
             return Task.FromResult(JSONResponse(Request, HTTPStatusCode.OK, ConnectionsJSON()));
+
+        }
+
+        /// <summary>
+        /// Where a connection goes, as it was sent under "url" - or null, where
+        /// nothing was sent.
+        /// </summary>
+        /// <remarks>
+        /// What is wrong with the URL as it was typed is said here. That there
+        /// is none is said by the store, after what is wrong with the
+        /// description, and so in the same order as before there was a URL.
+        /// </remarks>
+        protected static Boolean TryURLOf(JObject                           JSON,
+                                          out URL?                          URL,
+                                          [NotNullWhen(false)] out String?  Error)
+        {
+
+            URL    = null;
+            Error  = null;
+
+            var text = JSON.Value<String>("url");
+
+            if (String.IsNullOrWhiteSpace(text))
+                return true;
+
+            if (!ConnectionEntry.TryParseURL(text, out var url, out Error))
+                return false;
+
+            URL = url;
+            return true;
 
         }
 
@@ -791,7 +837,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var naming  = Dialling.Connections.Connections.
                               Where (connection => connection.IsSSH && connection.Identities.Any(identity => identity.Id == id)).
-                              Select(connection => $"'{connection.Description}'").
+                              Select(connection => $"'{connection.Description.FirstText()}'").
                               ToArray();
 
             if (naming.Length > 0)

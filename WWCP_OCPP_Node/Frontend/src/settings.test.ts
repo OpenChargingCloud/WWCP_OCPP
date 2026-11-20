@@ -159,7 +159,7 @@ describe("the pages of the connections, told they are a CSMS's", () => {
                 rules:            { inbound: false, ssh: false, namesTheNodeItLeadsTo: true },
                 connections:      [ {
                     id:              'c1',
-                    description:     'Station 7',
+                    description:     { en: 'Station 7' },
                     url:             'wss://station7.example.org:9443/csms-01',
                     connectionType:  'ChargingStation',
                     ocppVersion:     'OCPP2.1',

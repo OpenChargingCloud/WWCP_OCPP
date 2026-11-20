@@ -23,7 +23,7 @@ const state = (status: ConnectionState['status'], more: Partial<ConnectionState>
         status,
         since:        '2020-01-01T00:00:00.000Z',
         said:         `What the station said when it became ${status}.`,
-        description:  'CSMS',
+        description:  { en: 'CSMS' },
         url:          dialled.url,
         ocppVersion:  dialled.ocppVersion,
         ...more

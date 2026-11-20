@@ -16,7 +16,7 @@ import { chromeTakesTheFocus } from '@node/../test/dom.ts';
 import { strict as assert }  from 'node:assert';
 import { describe, it }      from 'node:test';
 
-import type { LoginToSave, StationConnections, StationLogin } from '../api/connections.ts';
+import { textOf, type LoginToSave, type StationConnections, type StationLogin } from '../api/connections.ts';
 
 const { authenticationPage } = await import('./authentication.ts');
 
@@ -27,7 +27,7 @@ let held: StationConnections;
 let written: LoginToSave | undefined;
 
 function aLogin(id: string, more: Partial<StationLogin> = {}): StationLogin {
-    return { id, description: `login ${id}`, kind: 'basic', login: `cs-${id}`, createdAt: '2026-10-01T10:00:00Z', hasSecret: true, ...more };
+    return { id, description: { en: `login ${id}` }, kind: 'basic', login: `cs-${id}`, createdAt: '2026-10-01T10:00:00Z', hasSecret: true, ...more };
 }
 
 function aStation(): StationConnections {
@@ -55,7 +55,7 @@ function station({ method, path, body }: Asked): unknown {
         // AuthenticationEntry.TryParse
         if (entry.login.trim() === '')
             return refused(400, 'A login is needed: it is the name the other end knows this station by.');
-        const made = aLogin('a3', { description: entry.description, kind: entry.kind, login: entry.login });
+        const made = aLogin('a3', { description: entry.description ?? {}, kind: entry.kind, login: entry.login });
         held = { ...held, authentications: [ made, ...held.authentications ] };
         return { id: made.id, connections: held };
     }
@@ -64,7 +64,7 @@ function station({ method, path, body }: Asked): unknown {
         const entry = body as LoginToSave;
         // A station takes what it takes: a description as it writes it down.
         held = { ...held, authentications: held.authentications.map(one => one.id === entry.id
-                                                                            ? { ...one, description: entry.description.replace(/\s+/g, ' '), login: entry.login, kind: entry.kind }
+                                                                            ? { ...one, description: { en: (textOf(entry.description) ?? '').replace(/\s+/g, ' ') }, login: entry.login, kind: entry.kind }
                                                                             : one) };
         return held;
     }

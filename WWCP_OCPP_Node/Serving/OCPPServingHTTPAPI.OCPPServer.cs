@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
@@ -279,7 +280,17 @@ namespace cloud.charging.open.protocols.OCPP.Node
         }
 
         /// <summary>
-        /// POST .../logins with {"id", "password", "group", "note"}: add a
+        /// What a charging station or a login group is, as it was sent under
+        /// "description": see <see cref="ConnectionFields.TryDescriptionOf"/>.
+        /// </summary>
+        private static Boolean TryDescriptionOf(JObject                           JSON,
+                                                out I18NString?                   Description,
+                                                [NotNullWhen(false)] out String?  Error)
+
+            => ConnectionFields.TryDescriptionOf(JSON, out Description, out Error);
+
+        /// <summary>
+        /// POST .../logins with {"id", "password", "group", "description"}: add a
         /// charging station, or give one a new password.
         /// </summary>
         /// <remarks>
@@ -298,11 +309,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             var id = json.Value<String>("id") ?? "";
 
-            if (!Serving.WebSocketLogins.TrySetPassword(
+            if (!TryDescriptionOf(json, out var description, out var wrongDescription))
+                return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, wrongDescription));
+
+            if (!Serving.WebSocketLogins.TrySetPasswordAuthentication(
                      id,
                      json.Value<String>("password"),
                      json.Value<String>("group"),
-                     json.Value<String>("note"),
+                     description,
                      out var error,
                      out var notSaved))
             {
@@ -417,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// PUT .../logins/{id}/totp with {"sharedSecret", "validitySeconds",
-        /// "length", "alphabet", "hashAlgorithm", "group", "note"}: let a
+        /// "length", "alphabet", "hashAlgorithm", "group", "description"}: let a
         /// charging station in with a one-time token.
         /// </summary>
         /// <remarks>
@@ -457,18 +471,21 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             }
 
-            var seconds = json.Value<Double?>("validitySeconds");
+            if (!TryDescriptionOf(json, out var description, out var wrongDescription))
+                return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, wrongDescription));
 
-            if (!Serving.WebSocketLogins.TrySetTOTP(
+            var seconds      = json.Value<Double?>("validitySeconds");
+            var sharedSecret = json.Value<String>("sharedSecret");
+
+            if (!Serving.WebSocketLogins.TrySetTOTPAuthentication(
                      id,
-                     json.Value<String>("sharedSecret"),
+                     sharedSecret,
                      seconds.HasValue ? TimeSpan.FromSeconds(seconds.Value) : null,
                      json.Value<UInt32?>("length"),
                      json.Value<String>("alphabet"),
                      hash,
                      json.Value<String>("group"),
-                     json.Value<String>("note"),
-                     out var generated,
+                     description,
                      out var error,
                      out var notSaved))
             {
@@ -482,8 +499,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                new JProperty("logins",    Serving.WebSocketLogins.ToJSON())
                            );
 
-            if (generated is not null)
-                response.Add("sharedSecret", generated);
+            // None was sent, so one was made up: shown once here, as somebody
+            // is standing in front of the charging station now.
+            if (String.IsNullOrWhiteSpace(sharedSecret) &&
+                Serving.WebSocketLogins.TryGet(id, out var login) &&
+                login.TOTP is TOTPSettings totp)
+            {
+                response.Add("sharedSecret", totp.SharedSecret);
+            }
 
             return Task.FromResult(JSONResponse(Request, HTTPStatusCode.OK, response));
 
@@ -549,7 +572,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// POST .../logins/{id}/sshKeys with {"line", "label", "group",
-        /// "note"}: give a charging station an SSH key for OCPP over SSH,
+        /// "description"}: give a charging station an SSH key for OCPP over SSH,
         /// adding the station where it is not listed yet.
         /// </summary>
         /// <remarks>
@@ -569,12 +592,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
+            if (!TryDescriptionOf(json, out var description, out var wrongDescription))
+                return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, wrongDescription));
+
             if (!Serving.TryAddStationSSHKey(
                      id,
                      json.Value<String>("line"),
                      json.Value<String>("label"),
                      json.Value<String>("group"),
-                     json.Value<String>("note"),
+                     description,
                      user.Id.ToString(),
                      out var key,
                      out var error,
@@ -631,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// POST .../logins/{id}/keyPins with {"pin", "label", "group",
-        /// "note"}: let a charging station in by the key pin of its TLS client
+        /// "description"}: let a charging station in by the key pin of its TLS client
         /// key, adding the station where it is not listed yet.
         /// </summary>
         /// <remarks>
@@ -651,12 +677,15 @@ namespace cloud.charging.open.protocols.OCPP.Node
             if (!TryParseJSONObject(Request, out var json, out var errorResponse))
                 return Task.FromResult(errorResponse);
 
+            if (!TryDescriptionOf(json, out var description, out var wrongDescription))
+                return Task.FromResult(ErrorJSON(Request, HTTPStatusCode.BadRequest, wrongDescription));
+
             if (!Serving.WebSocketLogins.TryAddKeyPin(
                      id,
                      json.Value<String>("pin"),
                      json.Value<String>("label"),
                      json.Value<String>("group"),
-                     json.Value<String>("note"),
+                     description,
                      user.Id.ToString(),
                      out var keyPin,
                      out var error,
@@ -774,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         /// <summary>
         /// POST .../groups with {"id", "name", "enabled", "authMethods",
-        /// "securityProfiles", "sshChannels", "note"}: make a login group.
+        /// "securityProfiles", "sshChannels", "description"}: make a login group.
         /// </summary>
         private Task<HTTPResponse> PostGroup(HTTPRequest Request)
         {
@@ -895,13 +924,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             #endregion
 
+            if (!TryDescriptionOf(JSON, out var description, out var wrongDescription))
+                return ErrorJSON(Request, HTTPStatusCode.BadRequest, wrongDescription);
+
             if (!Serving.WebSocketLogins.TryAddOrUpdateGroup(
                      Id,
                      JSON.Value<String>("name"),
                      JSON.Value<Boolean?>("enabled") ?? true,
                      methods,
                      authentications,
-                     JSON.Value<String>("note"),
+                     description,
                      channels,
                      out var error,
                      out var notSaved))

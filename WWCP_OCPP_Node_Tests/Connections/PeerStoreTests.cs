@@ -18,6 +18,8 @@
 #region Usings
 
 using NUnit.Framework;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using Newtonsoft.Json.Linq;
 
@@ -79,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             => new JObject(
                    new JProperty("id",              Id),
-                   new JProperty("description",     $"The {Id}"),
+                   new JProperty("description",     new JObject(new JProperty("en", $"The {Id}"))),
                    new JProperty("url",             Url ?? $"wss://{Id}.example.org/ocpp/CS001"),
                    new JProperty("connectionType",  Type),
                    new JProperty("ocppVersion",     Version),
@@ -320,18 +322,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             File.WriteAllText(file, """
                 { "peers": [
-                  { "id": "a", "description": "A", "kind": "CSMS", "role": "Primary", "ocppVersion": "OCPP2.1",
+                  { "id": "a", "description": { "en": "A" }, "kind": "CSMS", "role": "Primary", "ocppVersion": "OCPP2.1",
                     "rights": { "outbound": [ "MeterValues" ], "inbound": [] },
                     "createdAt": "2026-11-01T10:00:00.000Z",
-                    "endpoints": [ { "id": "a1", "description": "A", "url": "wss://a.example.org/", "connectionType": "CSMS",
+                    "endpoints": [ { "id": "a1", "description": { "en": "A" }, "url": "wss://a.example.org/", "connectionType": "CSMS",
                                      "autoConnect": true, "createdAt": "2026-11-01T10:00:00.000Z" } ] },
-                  { "id": "b", "description": "B", "kind": "CSMS", "role": "Primary", "ocppVersion": "OCPP2.1",
+                  { "id": "b", "description": { "en": "B" }, "kind": "CSMS", "role": "Primary", "ocppVersion": "OCPP2.1",
                     "createdAt": "2026-11-01T11:00:00.000Z",
-                    "endpoints": [ { "id": "b1", "description": "B", "url": "wss://b.example.org/", "connectionType": "CSMS",
+                    "endpoints": [ { "id": "b1", "description": { "en": "B" }, "url": "wss://b.example.org/", "connectionType": "CSMS",
                                      "autoConnect": true, "createdAt": "2026-11-01T11:00:00.000Z" } ] },
-                  { "id": "c", "description": "C", "kind": "EnergyManager", "role": "Service", "ocppVersion": "OCPP2.1",
+                  { "id": "c", "description": { "en": "C" }, "kind": "EnergyManager", "role": "Service", "ocppVersion": "OCPP2.1",
                     "createdAt": "2026-11-01T12:00:00.000Z",
-                    "endpoints": [ { "id": "c1", "description": "C", "url": "ws://c.example.org/", "connectionType": "CSMS",
+                    "endpoints": [ { "id": "c1", "description": { "en": "C" }, "url": "ws://c.example.org/", "connectionType": "CSMS",
                                      "autoConnect": true, "createdAt": "2026-11-01T12:00:00.000Z" } ] }
                 ] }
                 """);
@@ -362,9 +364,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            Assert.That(store.TryAddConnection("First",  "wss://one.example.org/",   "CSMS",            true,  null, null, out var first,  out var error), Is.True, error);
-            Assert.That(store.TryAddConnection("Second", "wss://two.example.org/",   "LocalController", true,  null, null, out var second, out error),     Is.True, error);
-            Assert.That(store.TryAddConnection("Spare",  "wss://three.example.org/", "CSMSBackup",      false, null, null, out var spare,  out error),     Is.True, error);
+            Assert.That(store.TryAddConnection(I18NString.Create("First"),  URL.Parse("wss://one.example.org/"),   "CSMS",            true,  null, null, out var first,  out var error), Is.True, error);
+            Assert.That(store.TryAddConnection(I18NString.Create("Second"), URL.Parse("wss://two.example.org/"),   "LocalController", true,  null, null, out var second, out error),     Is.True, error);
+            Assert.That(store.TryAddConnection(I18NString.Create("Spare"),  URL.Parse("wss://three.example.org/"), "CSMSBackup",      false, null, null, out var spare,  out error),     Is.True, error);
 
             var reloaded = AStore();
 
@@ -389,9 +391,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            store.TryAddConnection("First",  "wss://one.example.org/", "CSMS", true, null, null, out var first,  out _);
+            store.TryAddConnection(I18NString.Create("First"),  URL.Parse("wss://one.example.org/"), "CSMS", true, null, null, out var first,  out _);
             clock.Now = clock.Now.AddMinutes(1);
-            store.TryAddConnection("Second", "wss://two.example.org/", "CSMS", true, null, null, out var second, out _);
+            store.TryAddConnection(I18NString.Create("Second"), URL.Parse("wss://two.example.org/"), "CSMS", true, null, null, out var second, out _);
 
             var notices = new List<String>();
             store.OnNotice += (level, message) => notices.Add(message);
@@ -416,18 +418,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            store.TryAddConnection("First",  "wss://one.example.org/", "CSMS", true, null, null, out var first,  out _);
+            store.TryAddConnection(I18NString.Create("First"),  URL.Parse("wss://one.example.org/"), "CSMS", true, null, null, out var first,  out _);
             clock.Now = clock.Now.AddMinutes(1);
-            store.TryAddConnection("Second", "wss://two.example.org/", "CSMS", true, null, null, out var second, out _);
+            store.TryAddConnection(I18NString.Create("Second"), URL.Parse("wss://two.example.org/"), "CSMS", true, null, null, out var second, out _);
 
-            Assert.That(store.TryUpdateConnection(first, "First", "wss://one.example.org/", "CSMS", false, null, null, out var error), Is.True, error);
+            Assert.That(store.TryUpdateConnection(first, I18NString.Create("First"), URL.Parse("wss://one.example.org/"), "CSMS", false, null, null, out var error), Is.True, error);
 
             Assert.Multiple(() => {
                 Assert.That(PeerOf(store, first).Role,   Is.EqualTo(PeerRole.Service));
                 Assert.That(PeerOf(store, second).Role,  Is.EqualTo(PeerRole.Primary), "the oldest still dialled");
             });
 
-            Assert.That(store.TryUpdateConnection(first, "First", "wss://one.example.org/", "CSMS", true, null, null, out error), Is.True, error);
+            Assert.That(store.TryUpdateConnection(first, I18NString.Create("First"), URL.Parse("wss://one.example.org/"), "CSMS", true, null, null, out error), Is.True, error);
 
             Assert.That(PeerOf(store, first).Role, Is.EqualTo(PeerRole.Observer), "dialled again, and the primary is another now");
 
@@ -443,9 +445,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            store.TryAddConnection("First", "wss://one.example.org/", "CSMS", true, null, null, out var first, out _, OCPPVersion: "OCPP2.1");
+            store.TryAddConnection(I18NString.Create("First"), URL.Parse("wss://one.example.org/"), "CSMS", true, null, null, out var first, out _, OCPPVersion: "OCPP2.1");
 
-            Assert.That(store.TryUpdateConnection(first, "Renamed", "wss://one.example.org/", "LocalController", true, null, null, out var error, OCPPVersion: "OCPP1.6"),
+            Assert.That(store.TryUpdateConnection(first, I18NString.Create("Renamed"), URL.Parse("wss://one.example.org/"), "LocalController", true, null, null, out var error, OCPPVersion: "OCPP1.6"),
                         Is.True, error);
 
             var peer = PeerOf(AStore(), first);
@@ -453,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             Assert.Multiple(() => {
                 Assert.That(peer.OCPPVersion,  Is.EqualTo(OCPPVersion.OCPP1_6));
                 Assert.That(peer.Kind,         Is.EqualTo(PeerKind.LocalController));
-                Assert.That(peer.Description,  Is.EqualTo("Renamed"));
+                Assert.That(peer.Description.FirstText(),  Is.EqualTo("Renamed"));
             });
 
         }
@@ -468,16 +470,16 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            store.TryAddConnection("Main",  "wss://one.example.org/",   "CSMS",       true,  null, null, out var main,  out _, OCPPVersion: "OCPP2.1");
-            store.TryAddConnection("Spare", "wss://two.example.org/",   "CSMSBackup", false, null, null, out var spare, out _, OCPPVersion: "OCPP2.1");
-            store.TryAddConnection("Old",   "wss://three.example.org/", "CSMS",       false, null, null, out var old,   out _, OCPPVersion: "OCPP1.6");
+            store.TryAddConnection(I18NString.Create("Main"),  URL.Parse("wss://one.example.org/"),   "CSMS",       true,  null, null, out var main,  out _, OCPPVersion: "OCPP2.1");
+            store.TryAddConnection(I18NString.Create("Spare"), URL.Parse("wss://two.example.org/"),   "CSMSBackup", false, null, null, out var spare, out _, OCPPVersion: "OCPP2.1");
+            store.TryAddConnection(I18NString.Create("Old"),   URL.Parse("wss://three.example.org/"), "CSMS",       false, null, null, out var old,   out _, OCPPVersion: "OCPP1.6");
 
             Assert.That(store.TryMoveEndpoint(spare, PeerOf(store, main).Id, null, out var error), Is.True, error);
             Assert.That(store.TryMoveEndpoint(old,   PeerOf(store, main).Id, null, out error),     Is.False);
 
             Assert.That(error, Does.Contain("one OCPP version"));
 
-            Assert.That(store.TryUpdateConnection(spare, "Spare", "wss://two.example.org/", "CSMSBackup", false, null, null, out error, OCPPVersion: "OCPP1.6"),
+            Assert.That(store.TryUpdateConnection(spare, I18NString.Create("Spare"), URL.Parse("wss://two.example.org/"), "CSMSBackup", false, null, null, out error, OCPPVersion: "OCPP1.6"),
                         Is.False);
 
             Assert.That(error, Does.Contain("one OCPP version"));
@@ -494,8 +496,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            store.TryAddConnection("Main",  "wss://one.example.org/", "CSMS",       true, null, null, out var main,  out _);
-            store.TryAddConnection("Spare", "wss://two.example.org/", "CSMSBackup", true, null, null, out var spare, out _);
+            store.TryAddConnection(I18NString.Create("Main"),  URL.Parse("wss://one.example.org/"), "CSMS",       true, null, null, out var main,  out _);
+            store.TryAddConnection(I18NString.Create("Spare"), URL.Parse("wss://two.example.org/"), "CSMSBackup", true, null, null, out var spare, out _);
 
             var before = AsDialled(store.Connections);
 
@@ -521,9 +523,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            store.TryAddConnection("Old CSMS",   "wss://old.example.org/",   "CSMS", true,  null, null, out var old,  out _);
-            store.TryAddConnection("New CSMS",   "wss://new.example.org/",   "CSMS", true,  null, null, out var @new, out _);
-            store.TryAddConnection("Diagnosis",  "wss://diag.example.org/",  "CSMS", false, null, null, out var diag, out _);
+            store.TryAddConnection(I18NString.Create("Old CSMS"),   URL.Parse("wss://old.example.org/"),   "CSMS", true,  null, null, out var old,  out _);
+            store.TryAddConnection(I18NString.Create("New CSMS"),   URL.Parse("wss://new.example.org/"),   "CSMS", true,  null, null, out var @new, out _);
+            store.TryAddConnection(I18NString.Create("Diagnosis"),  URL.Parse("wss://diag.example.org/"),  "CSMS", false, null, null, out var diag, out _);
 
             var oldPeer   = PeerOf(store, old). Id;
             var newPeer   = PeerOf(store, @new).Id;
@@ -540,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(store.TryUpdatePeer(oldPeer,  null, null, null, null, JObject.Parse("""{ "outbound": [ "MeterValues" ] }"""), out error), Is.False);
                 Assert.That(error, Does.Contain("every right"));
 
-                Assert.That(store.TryUpdatePeer(newPeer,  "The new operator", "CSMS", "Successor", "DE*NEW*E000123",
+                Assert.That(store.TryUpdatePeer(newPeer,  I18NString.Create("The new operator"), "CSMS", "Successor", "DE*NEW*E000123",
                                                 JObject.Parse("""{ "outbound": [ "MeterValues", "StatusNotification" ], "inbound": [ "GetVariables" ] }"""),
                                                 out error), Is.True, error);
 
@@ -573,8 +575,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            store.TryAddConnection("Main", "wss://one.example.org/",  "CSMS", true, null, null, out _,       out _);
-            store.TryAddConnection("EMS",  "ws://ems.example.org/",   "CSMS", true, null, null, out var ems, out _);
+            store.TryAddConnection(I18NString.Create("Main"), URL.Parse("wss://one.example.org/"),  "CSMS", true, null, null, out _,       out _);
+            store.TryAddConnection(I18NString.Create("EMS"),  URL.Parse("ws://ems.example.org/"),   "CSMS", true, null, null, out var ems, out _);
 
             Assert.That(store.TryUpdatePeer(PeerOf(store, ems).Id, null, "EnergyManager", "EnergyManager", null,
                                             JObject.Parse("""{ "outbound": [ "MeterValues" ], "inbound": [ "SetChargingProfile:ChargingStationExternalConstraints", "GetCompositeSchedule" ] }"""),
@@ -606,7 +608,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var store = AStore();
 
-            Assert.That(store.TryAddConnection("Over SSH", "ssh://cs001@csms.example.org:2222", "CSMS", true, null, null, out var id, out var error,
+            Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse("ssh://cs001@csms.example.org:2222"), "CSMS", true, null, null, out var id, out var error,
                                                SshTrust: new SshTrustSettings("HostKey", null, null)), Is.True, error);
 
             var key = "SHA256:" + Convert.ToBase64String(new Byte[32]).TrimEnd('=');

@@ -130,9 +130,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving
 
         /// <summary>
         /// The subprotocols that may be offered at all: the versions of OCPP
-        /// a node speaks.
+        /// a node speaks - OCPP 2.1 as JSON and as CBOR, which the node of
+        /// OCPP 2.1 reads as it reads JSON.
         /// </summary>
-        public static readonly String[]       KnownSubprotocols          = [ "ocpp1.6", "ocpp2.0.1", "ocpp2.1" ];
+        public static readonly String[]       KnownSubprotocols          = [ "ocpp1.6", "ocpp2.0.1", "ocpp2.1", OCPPv2_1.Version.WebSocketSubProtocolIdCBOR ];
 
         /// <summary>
         /// How a client may authenticate, when nothing says otherwise.

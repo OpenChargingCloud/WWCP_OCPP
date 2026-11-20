@@ -18,6 +18,8 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using NUnit.Framework;
 
@@ -161,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionNamesSeveral_AndKeepsThemOverARestart()
         {
 
-            Assert.That(store.TryAddConnection("CSMS", AWssURL, "CSMS", true, null, null, out var id, out var error,
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse(AWssURL), "CSMS", true, null, null, out var id, out var error,
                                                Identities: [ new ("aaaa"), new ("bbbb", Start.AddDays(30)) ]),
                         Is.True, error);
 
@@ -191,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AFileOfBeforeNamesOneCertificate_AndIsReadAsOneIdentity()
         {
 
-            Assert.That(store.TryAddConnection("CSMS", AWssURL, "CSMS", true, null, "aaaa", out var id, out var error), Is.True, error);
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse(AWssURL), "CSMS", true, null, "aaaa", out var id, out var error), Is.True, error);
 
             // As a store of before wrote it: "certificateId", and no list.
             var written = store.Connections.Single(one => one.Id == id).ToJSON();
@@ -223,27 +225,27 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void WhatAConnectionMayNotName()
         {
 
-            Assert.That(store.TryAddBasicAuthentication("cs001", "not-the-real-one", "CSMS login", out var login, out var noLogin), Is.True, noLogin);
+            Assert.That(store.TryAddPasswordAuthentication("cs001", "not-the-real-one", I18NString.Create("CSMS login"), out var login, out var noLogin), Is.True, noLogin);
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("CSMS", AWssURL, "CSMS", true, null, null, out _, out var noCertificate,
+                Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse(AWssURL), "CSMS", true, null, null, out _, out var noCertificate,
                                                    Identities: [ new ("aaaa"), new ("zzzz") ]),                                  Is.False);
                 Assert.That(noCertificate,                                                                                       Does.Contain("not on this"));
 
-                Assert.That(store.TryAddConnection("CSMS", AWssURL, "CSMS", true, null, null, out _, out var twice,
+                Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse(AWssURL), "CSMS", true, null, null, out _, out var twice,
                                                    Identities: [ new ("aaaa"), new ("aaaa", Start.AddDays(1)) ]),                Is.False);
                 Assert.That(twice,                                                                                               Does.Contain("twice"));
 
-                Assert.That(store.TryAddConnection("CSMS", AWssURL, "CSMS", true, login, null, out _, out var twoWays,
+                Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse(AWssURL), "CSMS", true, login, null, out _, out var twoWays,
                                                    Identities: [ new ("aaaa") ]),                                                Is.False);
                 Assert.That(twoWays,                                                                                             Does.Contain("one way"));
 
-                Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, null, null, out _, out var noKey,
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, null, null, out _, out var noKey,
                                                    SshHostKey: AHostKey, Identities: [ new ("99990000") ]),                      Is.False);
                 Assert.That(noKey,                                                                                               Does.Contain("no SSH key"));
 
-                Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, login, null, out var overSSH, out var refused,
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, login, null, out var overSSH, out var refused,
                                                    SshHostKey: AHostKey, Identities: [ new (SshClientKeys.OwnId), new ("11112222", Start.AddDays(7)) ]),
                             Is.True, refused);
 
@@ -270,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ACertificateThatIsSetIsShownNow_AndWhatFollowsLaterStillFollows()
         {
 
-            Assert.That(store.TryAddConnection("CSMS", AWssURL, "CSMS", true, null, null, out var id, out var error,
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse(AWssURL), "CSMS", true, null, null, out var id, out var error,
                                                Identities: [ new ("aaaa"), new ("bbbb", Start.AddDays(30)) ]),
                         Is.True, error);
 
@@ -293,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionWhoseIdentitiesAllFollowLaterSaysSo()
         {
 
-            Assert.That(store.TryAddConnection("CSMS", AWssURL, "CSMS", true, null, null, out var id, out var error,
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse(AWssURL), "CSMS", true, null, null, out var id, out var error,
                                                Identities: [ new ("aaaa", Start.AddDays(3)) ]),
                         Is.True, error);
 

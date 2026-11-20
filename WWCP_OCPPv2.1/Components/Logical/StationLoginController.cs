@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             new ("KeyPins",             DataTypes.String,      "The key pins of the TLS client keys it signs in with, comma separated - SHA-256 over the SubjectPublicKeyInfo, 64 hexadecimal digits. What the list no longer names is taken away.", MaxItems: 4, Writable: true, MayBeEmpty: true),
 
-            new ("Note",                DataTypes.String,      "What the station is, for whoever reads the list later."),
+            new ("Description",         DataTypes.String,      "What the station is, for whoever reads the list later - in the first language it is said in."),
             new ("AddedAt",             DataTypes.DateTime,    "When it was listed."),
             new ("Listed",              DataTypes.Boolean,     "Whether it is listed; false takes it off the list, with all it signs in with.",                                                                                          Writable: true)
 
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             new ("AuthMethods",       DataTypes.MemberList,  "The ways its members may prove who they are.",                                                                                             ValuesList: [ "basic", "totp", "certificate", "sshkey", "keypin" ], Writable: true),
             new ("SecurityProfiles",  DataTypes.MemberList,  "The OCPP security profiles its members may come in on.",                                                                                   ValuesList: [ "1", "2", "3" ],        Writable: true),
             new ("SSHChannels",       DataTypes.MemberList,  "What its members have over their SSH connection besides OCPP: their time, their names; empty for OCPP alone.",                                     ValuesList: [ "ntske/1@open.charging.cloud", "dns@open.charging.cloud" ], Writable: true, MayBeEmpty: true),
-            new ("Note",              DataTypes.String,      "What the group is for, for whoever reads the list later.",                                                                                 MaxLimit: 200,                        Writable: true, MayBeEmpty: true),
+            new ("Description",       DataTypes.String,      "What the group is for, for whoever reads the list later - read in the first language it is said in, written in English.",                                                                                 MaxLimit: 200,                        Writable: true, MayBeEmpty: true),
             new ("Members",           DataTypes.Integer,     "How many charging stations it has."),
             new ("AddedAt",           DataTypes.DateTime,    "When it was made."),
             new ("Listed",            DataTypes.Boolean,     "Whether it is there; false takes it away - not the default group, and not one with members.",                                                                                     Writable: true)

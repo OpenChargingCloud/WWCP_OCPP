@@ -18,6 +18,8 @@
 #region Usings
 
 using NUnit.Framework;
+using org.GraphDefined.Vanaheimr.Illias;
+using URL = org.GraphDefined.Vanaheimr.Hermod.HTTP.URL;
 
 using Newtonsoft.Json.Linq;
 
@@ -109,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ItsConnectionsAreRoutedUnderANameOfTheirOwn()
         {
 
-            Assert.That(store.TryAddConnection("The CSMS", "wss://csms.example.org/cs001", "CSMS", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("The CSMS"), URL.Parse("wss://csms.example.org/cs001"), "CSMS", true, null, null,
                                                out var id, out var error),
                         Is.True, error);
 
@@ -127,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ItsConnectionsNameNoNodeAtTheirOtherEnd()
         {
 
-            Assert.That(store.TryAddConnection("The CSMS", "wss://csms.example.org/cs001", "CSMS", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("The CSMS"), URL.Parse("wss://csms.example.org/cs001"), "CSMS", true, null, null,
                                                out _, out var error,
                                                RemoteNodeId: "csms-01"),
                         Is.False);
@@ -140,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AChargingStationIsNothingItDials()
         {
 
-            Assert.That(store.TryAddConnection("A station", "wss://station.example.org/cs001", "ChargingStation", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("A station"), URL.Parse("wss://station.example.org/cs001"), "ChargingStation", true, null, null,
                                                out _, out var error),
                         Is.False);
 
@@ -178,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             store.Rules = DiallingDownwards;
 
-            Assert.That(store.TryAddConnection("Station 7", "wss://station7.example.org:9443/csms-01", "ChargingStation", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("Station 7"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                out var id, out var error,
                                                RemoteNodeId: "  cs007 "),
                         Is.True, error);
@@ -204,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             store.Rules = DiallingDownwards;
 
-            Assert.That(store.TryAddConnection("Station 7", "wss://station7.example.org:9443/csms-01", "ChargingStation", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("Station 7"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                out _, out var error),
                         Is.False);
 
@@ -221,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             store.Rules = DiallingDownwards;
 
-            Assert.That(store.TryAddConnection("Station 7", "wss://station7.example.org:9443/csms-01", "ChargingStation", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("Station 7"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                out _, out var error,
                                                RemoteNodeId: Name),
                         Is.False);
@@ -238,22 +240,22 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("A CSMS", "wss://csms.example.org/csms-01", "CSMS", true, null, null,
+                Assert.That(store.TryAddConnection(I18NString.Create("A CSMS"), URL.Parse("wss://csms.example.org/csms-01"), "CSMS", true, null, null,
                                                    out _, out var notBelow, RemoteNodeId: "cs007"),
                             Is.False);
                 Assert.That(notBelow, Does.Contain("CSMS"));
 
-                Assert.That(store.TryAddConnection("Over SSH", "ssh://csms-01@station7.example.org", "ChargingStation", true, null, null,
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse("ssh://csms-01@station7.example.org"), "ChargingStation", true, null, null,
                                                    out _, out var overSSH, RemoteNodeId: "cs007"),
                             Is.False);
                 Assert.That(overSSH, Does.Contain("ssh://"));
 
-                Assert.That(store.TryAddConnection("An old one", "wss://station7.example.org:9443/csms-01", "ChargingStation", true, null, null,
+                Assert.That(store.TryAddConnection(I18NString.Create("An old one"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                    out _, out var old, OCPPVersion: "OCPP1.6", RemoteNodeId: "cs007"),
                             Is.False);
                 Assert.That(old, Does.Contain("OCPP 1.6"));
 
-                Assert.That(store.TryAddConnection("Dialled", "wss://csms.example.org:9443/cs007", "ChargingStation", true, null, null,
+                Assert.That(store.TryAddConnection(I18NString.Create("Dialled"), URL.Parse("wss://csms.example.org:9443/cs007"), "ChargingStation", true, null, null,
                                                    out _, out var dialled, Inbound: true),
                             Is.False);
                 Assert.That(dialled, Does.Contain("is one it dials"));
@@ -270,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             store.Rules = DiallingDownwards;
 
-            Assert.That(store.TryAddConnection("Station 7", "wss://station7.example.org:9443/csms-01", "ChargingStation", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("Station 7"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                out var id, out var error,
                                                RemoteNodeId: "cs007"),
                         Is.True, error);
@@ -278,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             var revision = store.DialRevisionOf(id!);
 
             // Nothing said of it: kept.
-            Assert.That(store.TryUpdateConnection(id, "Station seven", "wss://station7.example.org:9443/csms-01", "ChargingStation", true, null, null,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Station seven"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                   out error),
                         Is.True, error);
 
@@ -286,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             Assert.That(store.DialRevisionOf(id!),               Is.EqualTo(revision));
 
             // Another one: dialled again, under the other name.
-            Assert.That(store.TryUpdateConnection(id, "Station seven", "wss://station7.example.org:9443/csms-01", "ChargingStation", true, null, null,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Station seven"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                   out error,
                                                   RemoteNodeId: "cs008"),
                         Is.True, error);
@@ -295,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             Assert.That(store.DialRevisionOf(id!),               Is.GreaterThan(revision));
 
             // None at all: not for a node that routes by it.
-            Assert.That(store.TryUpdateConnection(id, "Station seven", "wss://station7.example.org:9443/csms-01", "ChargingStation", true, null, null,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Station seven"), URL.Parse("wss://station7.example.org:9443/csms-01"), "ChargingStation", true, null, null,
                                                   out error,
                                                   RemoteNodeId: ""),
                         Is.False);
@@ -323,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             Assert.That(ConnectionEntry.TryParseType("Gateway", out var type), Is.True);
             Assert.That(type,                                                  Is.EqualTo(ConnectionType.Gateway));
 
-            Assert.That(store.TryAddConnection("The gateway above", "wss://gateway.example.org:2354/cs001", "Gateway", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("The gateway above"), URL.Parse("wss://gateway.example.org:2354/cs001"), "Gateway", true, null, null,
                                                out var up, out var error),
                         Is.True, error);
 
@@ -331,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             store.Rules = DiallingDownwards;
 
-            Assert.That(store.TryAddConnection("A gateway below", "wss://gateway7.example.org:9443/csms-01", "Gateway", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("A gateway below"), URL.Parse("wss://gateway7.example.org:9443/csms-01"), "Gateway", true, null, null,
                                                out var down, out error,
                                                RemoteNodeId: "gw007"),
                         Is.True, error);

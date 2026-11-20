@@ -236,9 +236,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
             if (!node.WebSocketLogins.TryAddKeyPin(Station,
                                                  Pin,
                                                  Label,
-                                                 GroupId:  null,
-                                                 Note:     null,
-                                                 AddedBy:  cli.Caller.Account?.Id.ToString() ?? "the console",
+                                                 GroupId:      null,
+                                                 Description:  null,
+                                                 AddedBy:      cli.Caller.Account?.Id.ToString() ?? "the console",
                                                  out var keyPin,
                                                  out var error,
                                                  out _))

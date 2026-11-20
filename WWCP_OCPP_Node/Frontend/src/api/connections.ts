@@ -2,6 +2,9 @@ import { afterAsking,
          request,
          type PinKeys,
          type ServerJudgement }  from '@node/api/client';
+import type { I18NString }      from './i18n';
+
+export { inEnglish, textOf, type I18NString } from './i18n';
 
 
 // What a node that dials its back ends keeps for it, and how it is asked: the
@@ -23,7 +26,7 @@ import { afterAsking,
 export interface StationLogin {
     id:                  string;
     /** What somebody wrote down that it is for, e.g. "CSMS login". */
-    description:         string;
+    description:         I18NString;
     kind:                'basic' | 'totp';
     /** The name the other end knows this station by. */
     login:               string;
@@ -40,7 +43,7 @@ export interface StationLogin {
 /** What goes in when credentials are written down or changed. */
 export interface LoginToSave {
     id?:                 string;
-    description:         string;
+    description?:        I18NString;
     kind:                'basic' | 'totp';
     login:               string;
     /** Empty means "keep whatever is already there". */
@@ -55,7 +58,7 @@ export interface LoginToSave {
 /** One place this station dials. */
 export interface StationConnection {
     id:                  string;
-    description:         string;
+    description:         I18NString;
     url:                 string;
     connectionType:      string;
     /** Which OCPP is spoken here, and so which of this station's two nodes dials. */
@@ -179,7 +182,7 @@ export interface ConnectionToSave {
     /** Which signatures it writes; left out, the station keeps what it says, and "policy" is saying nothing. */
     signatureFormats?:   SignatureFormatsOfAConnection;
     id?:                 string;
-    description:         string;
+    description?:        I18NString;
     url:                 string;
     connectionType:      string;
     ocppVersion:         string;
@@ -266,7 +269,7 @@ export const connectionTestAnswerWithin = 10;
 
 /** What came of testing one connection. */
 export interface ConnectionTest {
-    description:  string;
+    description?: I18NString;
     url:          string;
     ok:           boolean;
     runtime_ms:   number;
@@ -305,7 +308,7 @@ export interface ConnectionState {
     /** The sentence the station logged when it came to stand there. */
     said:            string;
     /** What was dialled - which is what is written down now only until something is changed. */
-    description:     string;
+    description:     I18NString;
     url:             string;
     ocppVersion:     string;
     /** While it is tried again: which attempt comes next, and when. */

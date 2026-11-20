@@ -23,7 +23,9 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Node.Configuration;
 using cloud.charging.open.protocols.WWCP.Node.Connections;
@@ -89,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         private String ALogin()
         {
 
-            Assert.That(store.TryAddBasicAuthentication(Name, APassword, "What this node signs in with", out var id, out var error),
+            Assert.That(store.TryAddPasswordAuthentication(Name, APassword, I18NString.Create("What this node signs in with"), out var id, out var error),
                         Is.True, error);
 
             return id!;
@@ -103,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                                       ServerPins?        Pins     = null,
                                       String             URL      = InboundURL)
 
-            => store.TryAddConnection("The CSMS, dialling in", URL, "CSMS", true, AuthenticationId, null,
+            => store.TryAddConnection(I18NString.Create("The CSMS, dialling in"), org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(URL), "CSMS", true, AuthenticationId, null,
                                       out Id, out Error,
                                       ServerKeyPins:  KeyPins,
                                       Pins:           Pins is null ? null : new ServerPinsChange(Pins),
@@ -175,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.That(TryAddInbound(null, out var id, out error), Is.True, error);
 
-            Assert.That(store.TryUpdateConnection(id, "The CSMS, dialling in", InboundURL, "CSMS", true, login, null, out var changed),
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("The CSMS, dialling in"), URL.Parse(InboundURL), "CSMS", true, login, null, out var changed),
                         Is.False, "credentials given to it afterwards");
 
             Assert.That(changed, Does.Contain("signs in with its WebSocket login"));
@@ -223,18 +225,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var login = ALogin();
 
-            Assert.That(store.TryAddConnection("The CSMS", "wss://csms.example.org/" + Name, "CSMS", true, login, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("The CSMS"), URL.Parse("wss://csms.example.org/" + Name), "CSMS", true, login, null,
                                                out var id, out var error,
                                                ServerKeyPins: csmsPin),
                         Is.True, error);
 
-            Assert.That(store.TryUpdateConnection(id, "The CSMS", InboundURL, "CSMS", true, login, null, out error, out _,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("The CSMS"), URL.Parse(InboundURL), "CSMS", true, login, null, out error, out _,
                                                   ServerKeyPins:         csmsPin,
                                                   ServerKeyPinsAsShown:  csmsPin,
                                                   Inbound:               true),
                         Is.False, "turned around with its credentials and the key pin of its server");
 
-            Assert.That(store.TryUpdateConnection(id, "The CSMS", InboundURL, "CSMS", true, null, null, out error, out _,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("The CSMS"), URL.Parse(InboundURL), "CSMS", true, null, null, out error, out _,
                                                   Inbound: true),
                         Is.True, error);
 
@@ -295,9 +297,9 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         {
 
             JObject Inbound(String Says)
-                => JObject.Parse($$"""{ "id": "c1", "description": "in", "url": "{{InboundURL}}", "connectionType": "CSMS", "inbound": true, {{Says}} }""");
+                => JObject.Parse($$"""{ "id": "c1", "description": { "en": "in" }, "url": "{{InboundURL}}", "connectionType": "CSMS", "inbound": true, {{Says}} }""");
 
-            var outbound = JObject.Parse($$"""{ "id": "c2", "description": "out", "url": "wss://csms.example.org/x", "connectionType": "CSMS", "clientKeyPins": [ "{{csmsPin}}" ] }""");
+            var outbound = JObject.Parse($$"""{ "id": "c2", "description": { "en": "out" }, "url": "wss://csms.example.org/x", "connectionType": "CSMS", "clientKeyPins": [ "{{csmsPin}}" ] }""");
 
             Assert.Multiple(() => {
 

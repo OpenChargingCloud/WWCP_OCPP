@@ -51,7 +51,7 @@ const pinnedKey   = '6a1f0c3e'.repeat(8);
 const learnedKey  = 'c47d1803'.repeat(8);
 
 function aConnection(id: string, more: Partial<StationConnection> = {}): StationConnection {
-    return { id, description: `CSMS ${id}`, url: `wss://csms.example.org/${id}`, connectionType: 'CSMS', ocppVersion: 'OCPP2.1',
+    return { id, description: { en: `CSMS ${id}` }, url: `wss://csms.example.org/${id}`, connectionType: 'CSMS', ocppVersion: 'OCPP2.1',
              autoConnect: true, secure: true, createdAt: '2026-10-01T10:00:00Z', ...more };
 }
 
@@ -86,7 +86,7 @@ function station({ method, path, body }: Asked): unknown {
         // ConnectionEntry.TryParse
         if (entry.url.trim() === '')
             return refused(400, 'A connection needs somewhere to go.');
-        const made = aConnection('c3', { description: entry.description, url: entry.url });
+        const made = aConnection('c3', { description: entry.description ?? {}, url: entry.url });
         held = { ...held, connections: [ made, ...held.connections ] };
         return { id: made.id, connections: held };
     }
@@ -96,7 +96,7 @@ function station({ method, path, body }: Asked): unknown {
         lastSaved   = entry;
         // A station takes what it takes: a URL as it writes it.
         held = { ...held, connections: held.connections.map(one => one.id === entry.id
-                                                                   ? { ...one, description: entry.description, url: entry.url.toLowerCase() }
+                                                                   ? { ...one, description: entry.description ?? one.description, url: entry.url.toLowerCase() }
                                                                    : one) };
         return held;
     }

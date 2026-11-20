@@ -23,7 +23,9 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Node.Connections;
 using cloud.charging.open.protocols.OCPP.Node.TestKit;
@@ -81,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
         private String Added(String URL, String? Pins = null, ServerKeyPinSettings? Trust = null)
         {
-            Assert.That(store.TryAddConnection("The local controller", URL, "LocalController", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("The local controller"), org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(URL), "LocalController", true, null, null,
                                                out var id, out var error, ServerKeyPins: Pins, KeyPinTrust: Trust),
                         Is.True, error);
             return id!;
@@ -149,17 +151,17 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("Pinned", URL, "LocalController", true, null, null, out _, out var error,
+                Assert.That(store.TryAddConnection(I18NString.Create("Pinned"), org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(URL), "LocalController", true, null, null, out _, out var error,
                                                    ServerKeyPins: pinA.ToHex()),
                             Is.False);
                 Assert.That(error, Does.Contain("key pin"));
 
-                Assert.That(store.TryAddConnection("Learning", URL, "LocalController", true, null, null, out _, out error,
+                Assert.That(store.TryAddConnection(I18NString.Create("Learning"), org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(URL), "LocalController", true, null, null, out _, out error,
                                                    KeyPinTrust: new ServerKeyPinSettings(null, "Key", null)),
                             Is.False);
                 Assert.That(error, Does.Contain("Trust on first use of a key pin"));
 
-                Assert.That(store.TryAddConnection("Raw", URL, "LocalController", true, null, null, out _, out error,
+                Assert.That(store.TryAddConnection(I18NString.Create("Raw"), org.GraphDefined.Vanaheimr.Hermod.HTTP.URL.Parse(URL), "LocalController", true, null, null, out _, out error,
                                                    KeyPinTrust: new ServerKeyPinSettings("Prefer", null, null)),
                             Is.False);
                 Assert.That(error, Does.Contain("Raw public keys are a way of a TLS handshake"));
@@ -197,21 +199,21 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("x", AWssURL, "CSMS", true, null, null, out _, out var error, ServerKeyPins: "SHA256:notapin"), Is.False);
+                Assert.That(store.TryAddConnection(I18NString.Create("x"), URL.Parse(AWssURL), "CSMS", true, null, null, out _, out var error, ServerKeyPins: "SHA256:notapin"), Is.False);
                 Assert.That(error, Does.Contain("is not a key pin"));
 
-                Assert.That(store.TryAddConnection("x", AWssURL, "CSMS", true, null, null, out _, out error, ServerKeyPins: pinA.ToHex()[..62]), Is.False);
+                Assert.That(store.TryAddConnection(I18NString.Create("x"), URL.Parse(AWssURL), "CSMS", true, null, null, out _, out error, ServerKeyPins: pinA.ToHex()[..62]), Is.False);
                 Assert.That(error, Does.Contain("is not a key pin"));
 
-                Assert.That(store.TryAddConnection("x", AWssURL, "CSMS", true, null, null, out _, out error, ServerKeyPins: five), Is.False);
+                Assert.That(store.TryAddConnection(I18NString.Create("x"), URL.Parse(AWssURL), "CSMS", true, null, null, out _, out error, ServerKeyPins: five), Is.False);
                 Assert.That(error, Does.Contain("at most 4"));
 
                 // A CA-checked connection never accepts a raw key.
-                Assert.That(store.TryAddConnection("x", AWssURL, "CSMS", true, null, null, out _, out error,
+                Assert.That(store.TryAddConnection(I18NString.Create("x"), URL.Parse(AWssURL), "CSMS", true, null, null, out _, out error,
                                                    KeyPinTrust: new ServerKeyPinSettings("Require", "None", null)), Is.False);
                 Assert.That(error, Does.Contain("only where the server is known by its key"));
 
-                Assert.That(store.TryAddConnection("x", AWssURL, "CSMS", true, null, null, out _, out error,
+                Assert.That(store.TryAddConnection(I18NString.Create("x"), URL.Parse(AWssURL), "CSMS", true, null, null, out _, out error,
                                                    KeyPinTrust: new ServerKeyPinSettings("Off", "Key", 0)), Is.False);
                 Assert.That(error, Does.Contain("is not one"));
 
@@ -235,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var json = new JObject(
                            new JProperty("id",              "old"),
-                           new JProperty("description",     "The CSMS"),
+                           new JProperty("description",     new JObject(new JProperty("en", "The CSMS"))),
                            new JProperty("url",             "wss://csms.example.org/cs001"),
                            new JProperty("connectionType",  "CSMS"),
                            new JProperty("createdAt",       "2026-01-01T00:00:00.000Z")
@@ -394,18 +396,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.That(store.TryTakeSignedServerKeyPins(id, pinB.ToHex(), 7, out _, out _, out var error), Is.True, error);
 
-            Assert.That(store.TryUpdateConnection(id, "Renamed", AWssURL, "LocalController", true, null, null, out error,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Renamed"), URL.Parse(AWssURL), "LocalController", true, null, null, out error,
                                                   ServerKeyPins: pinA.ToHex(), ServerKeyPinsAsShown: pinA.ToHexWithColons(),
                                                   KeyPinTrust: new ServerKeyPinSettings("Off", "None", 600)),
                         Is.True, error);
 
             Assert.Multiple(() => {
-                Assert.That(Entry.Description,           Is.EqualTo("Renamed"));
+                Assert.That(Entry.Description.FirstText(),           Is.EqualTo("Renamed"));
                 Assert.That(Entry.ServerKeyPins,         Is.EqualTo(new[] { pinB }), "a signed pin set was undone by a save of something else");
                 Assert.That(Entry.ServerKeyPinsVersion,  Is.EqualTo(7));
             });
 
-            Assert.That(store.TryUpdateConnection(id, "Renamed", AWssURL, "LocalController", true, null, null, out error,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Renamed"), URL.Parse(AWssURL), "LocalController", true, null, null, out error,
                                                   ServerKeyPins: pinA.ToHex(), ServerKeyPinsAsShown: pinB.ToHex()),
                         Is.True, error);
 
@@ -414,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Assert.That(Entry.ServerKeyPinsVersion,  Is.Zero, "the version of a signed pin set stayed with pins somebody typed");
             });
 
-            Assert.That(store.TryUpdateConnection(id, "Renamed", "ws://192.168.10.5/ocpp/cs001", "LocalController", true, null, null, out error),
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Renamed"), URL.Parse("ws://192.168.10.5/ocpp/cs001"), "LocalController", true, null, null, out error),
                         Is.True, error);
 
             Assert.Multiple(() => {

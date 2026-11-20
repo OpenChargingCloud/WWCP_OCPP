@@ -1,4 +1,4 @@
-import { connectionsAPI as api, type LoginToSave, type StationConnections, type StationLogin } from '../api/connections';
+import { connectionsAPI as api, type LoginToSave, type StationConnections, type StationLogin, inEnglish, textOf } from '../api/connections';
 import { auth } from '../auth';
 import { connectionsResource, farEnd, nodeNoun, nodeNounInFull, nodeTraits } from '../settings';
 import { must } from '@node/html';
@@ -286,7 +286,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
                 <div class="card">
 
                     <div class="key-head">
-                        <strong>${entry.description}</strong>
+                        <strong>${textOf(entry.description)}</strong>
                         <span class="chip">${entry.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'}</span>
                         ${entry.hasSecret ? nothing : html`<span class="chip warn">no secret</span>`}
                     </div>
@@ -297,7 +297,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
                         <dt>Used by</dt> <dd>
                             ${usedBy.length === 0
                                   ? html`<span class="hint">nothing yet</span>`
-                                  : usedBy.map(one => one.description).join(', ')}
+                                  : usedBy.map(one => textOf(one.description)).join(', ')}
                         </dd>
                     </dl>
 
@@ -311,7 +311,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
 
                             <label>What they are for
                                 <input type="text" name="description" maxlength="${state.maxDescriptionLength}"
-                                       value="${entry.description}" ?disabled=${!mayManage} />
+                                       value="${textOf(entry.description) ?? ''}" ?disabled=${!mayManage} />
                             </label>
 
                             <label>How
@@ -383,7 +383,7 @@ export function credentialsPanel(content: HTMLElement, host: CredentialsHost = {
 
             const written: LoginToSave = {
                 id,
-                description:  field(form, 'description'),
+                description:  inEnglish(field(form, 'description')),
                 kind,
                 login:        field(form, 'login'),
                 // Not trimmed: a password may legitimately start or end with a

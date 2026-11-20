@@ -12,7 +12,7 @@ import { asked, change, field, open, refused, said, settled, submit, until, type
 import { strict as assert }  from 'node:assert';
 import { describe, it }      from 'node:test';
 
-import type { LoginGroup, WebSocketLogin, WebSocketLogins } from '../api/stationServer.ts';
+import type { I18NString, LoginGroup, WebSocketLogin, WebSocketLogins } from '../api/stationServer.ts';
 
 const { stationLoginsPage } = await import('./stationLogins.ts');
 
@@ -37,8 +37,8 @@ function controller({ method, path, body }: Asked): unknown {
         return held;
 
     if (path === '/configuration/ocpp-server/logins' && method === 'POST') {
-        const added = body as { id: string; group: string; note: string };
-        held = { ...held, logins: [ ...held.logins, { ...aStation(added.id, added.group), note: added.note } ] };
+        const added = body as { id: string; group: string; description?: I18NString };
+        held = { ...held, logins: [ ...held.logins, { ...aStation(added.id, added.group), description: added.description } ] };
         return { id: added.id, password: 'made up, shown once', logins: held };
     }
 
@@ -117,20 +117,20 @@ describe('the logins and groups', () => {
 
         const root = await opened();
         const id   = field(root, '#station-form', 'id');
-        const note = field(root, '#station-form', 'note');
+        const description = field(root, '#station-form', 'description');
 
         id.value   = 'cs003';
-        note.value = 'Ladepunkt 3';
-        note.focus();
+        description.value = 'Ladepunkt 3';
+        description.focus();
 
         change(switchOf(root, 'cs001'), false);
         await until(() => held.logins[0]!.enabled === false && root.querySelector('tr.dimmed') !== null,
                     'the station switched off was not drawn so');
 
-        assert.ok(field(root, '#station-form', 'note') === note, 'the field was made anew');
+        assert.ok(field(root, '#station-form', 'description') === description, 'the field was made anew');
         assert.equal(id.value,                'cs003');
-        assert.equal(note.value,              'Ladepunkt 3');
-        assert.ok(document.activeElement === note, 'the focus went');
+        assert.equal(description.value,       'Ladepunkt 3');
+        assert.ok(document.activeElement === description, 'the focus went');
 
     });
 
@@ -176,16 +176,16 @@ describe('the logins and groups', () => {
         const root = await opened();
 
         field(root, '#station-form', 'id').value   = 'cs003';
-        field(root, '#station-form', 'note').value = 'Ladepunkt 3';
+        field(root, '#station-form', 'description').value = 'Ladepunkt 3';
         change(field<HTMLSelectElement>(root, '#station-form', 'group'), 'field-test');
 
         submit(root, '#station-form');
         await until(() => root.querySelector('.station-enabled[data-id="cs003"]') !== null, 'the station added was not drawn');
 
-        assert.deepEqual(asked.find(one => one.method === 'POST')?.body, { id: 'cs003', password: '', group: 'field-test', note: 'Ladepunkt 3' });
+        assert.deepEqual(asked.find(one => one.method === 'POST')?.body, { id: 'cs003', password: '', group: 'field-test', description: { en: 'Ladepunkt 3' } });
         assert.equal(root.querySelector('code.password')?.textContent, 'made up, shown once');
         assert.equal(field(root, '#station-form', 'id').value,                          '', 'the station added is still in the form');
-        assert.equal(field(root, '#station-form', 'note').value,                        '');
+        assert.equal(field(root, '#station-form', 'description').value,                 '');
         assert.equal(field<HTMLSelectElement>(root, '#station-form', 'group').value,    'default');
 
     });
@@ -254,7 +254,7 @@ describe('the logins and groups', () => {
         await until(() => root.querySelector('.station-sshkey[data-id="cs003"]') !== null, 'the key given was not drawn');
 
         assert.deepEqual(asked.find(one => one.method === 'POST')?.body,
-                         { line: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA cs003', label: 'bay 3', group: '', note: '' });
+                         { line: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA cs003', label: 'bay 3', group: '' });
         assert.match(root.querySelector('.station-sshkey[data-id="cs003"]')!.textContent!, /SHA256:ab\+cd\/ef - bay 3/);
         assert.equal(field(root, '#sshkey-form', 'line').value, '', 'the key given is still in the form');
         assert.match(root.querySelector('.station-sshkey[data-id="cs003"]')!.closest('td')!.textContent!, /does not accept SSH keys/,
@@ -280,7 +280,7 @@ describe('the logins and groups', () => {
         await until(() => root.querySelector('.station-keypin[data-id="cs003"]') !== null, 'the key pin given was not drawn');
 
         assert.deepEqual(asked.find(one => one.method === 'POST')?.body,
-                         { pin: '0A:'.repeat(31) + '0A', label: 'bay 3', group: '', note: '' });
+                         { pin: '0A:'.repeat(31) + '0A', label: 'bay 3', group: '' });
         assert.match(root.querySelector('.station-keypin[data-id="cs003"]')!.textContent!, new RegExp(`${pin} - bay 3`));
         assert.equal(field(root, '#keypin-form', 'pin').value, '', 'the key pin given is still in the form');
         assert.match(root.querySelector('.station-keypin[data-id="cs003"]')!.closest('td')!.textContent!, /key pin/);

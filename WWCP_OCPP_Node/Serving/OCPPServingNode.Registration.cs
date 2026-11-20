@@ -27,6 +27,7 @@ using cloud.charging.open.protocols.WWCP.Node;
 using cloud.charging.open.protocols.WWCP.Node.Connections;
 
 using OCPPVersion    = cloud.charging.open.protocols.WWCP.Node.Connections.OCPPVersion;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -805,7 +806,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
             => Registration.Primary
                    ? "the CSMS"
-                   : $"the back end of '{Registration.Connection.Description}'";
+                   : $"the back end of '{Registration.Connection.Description.FirstText()}'";
 
         #endregion
 

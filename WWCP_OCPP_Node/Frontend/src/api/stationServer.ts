@@ -1,4 +1,5 @@
 import { request }  from '@node/api/client';
+import type { I18NString } from './i18n';
 
 
 // What a node that serves the charging stations below it keeps for them, and
@@ -214,6 +215,8 @@ export interface TOTPSettings {
     tlsChannelBinding?: boolean;
 }
 
+export { inEnglish, textOf, type I18NString } from './i18n';
+
 /** One charging station that may sign in. */
 export interface WebSocketLogin {
     id:           string;
@@ -227,7 +230,7 @@ export interface WebSocketLogin {
     sshKeys?:     StationSSHKey[];
     hasKeyPin?:   boolean;
     keyPins?:     StationKeyPin[];
-    note?:        string;
+    description?: I18NString;
 }
 
 /** A group of logins, and what its members are allowed to do. */
@@ -243,7 +246,7 @@ export interface LoginGroup {
     /** What its stations have over their SSH connection besides OCPP: the names of SSH subsystems. */
     sshChannels?:      string[];
     members:           number;
-    note?:             string;
+    description?:      I18NString;
 }
 
 /** Which charging stations may sign in, and with what. */
@@ -269,7 +272,7 @@ export interface LoginGroupUpdate {
     clientAuthentication:  ClientAuthentication[];
     /** Replaced like everything else about a group: left out, its stations have OCPP alone. */
     sshChannels?:      string[];
-    note?:             string;
+    description?:      I18NString;
 }
 
 /** What a one-time token may be set to. */
@@ -280,7 +283,7 @@ export interface TOTPUpdate {
     alphabet?:         string;
     hashAlgorithm?:    string;
     group?:            string;
-    note?:             string;
+    description?:      I18NString;
 }
 
 
@@ -327,9 +330,9 @@ export const stationServerAPI = {
              * "make one up", and the made-up one comes back here and nowhere
              * else: it is kept only as a hash.
              */
-            save:     (id: string, password: string, group: string, note: string) =>
+            save:     (id: string, password: string, group: string, description?: I18NString) =>
                           request<{ id: string; password?: string; logins: WebSocketLogins }>(
-                              'POST', '/configuration/ocpp-server/logins', { id, password, group, note }),
+                              'POST', '/configuration/ocpp-server/logins', { id, password, group, description }),
 
             enable:   (id: string, enabled: boolean) =>
                           request<WebSocketLogins>('PUT', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}`, { enabled }),
@@ -369,9 +372,9 @@ export const stationServerAPI = {
              * authorized_keys file - adding the station where it is not listed
              * yet. A public key: nothing secret goes either way.
              */
-            addSSHKey: (id: string, line: string, label: string, group: string, note: string) =>
+            addSSHKey: (id: string, line: string, label: string, group: string, description?: I18NString) =>
                           request<{ id: string; fingerprint: string; logins: WebSocketLogins }>(
-                              'POST', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/sshKeys`, { line, label, group, note }),
+                              'POST', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/sshKeys`, { line, label, group, description }),
 
             /** Take a key away; a session it opened ends. */
             removeSSHKey: (id: string, fingerprint: string) =>
@@ -383,9 +386,9 @@ export const stationServerAPI = {
              * hexadecimal digits, with or without colons, or "sha256//" and
              * base64 - adding the station where it is not listed yet.
              */
-            addKeyPin: (id: string, pin: string, label: string, group: string, note: string) =>
+            addKeyPin: (id: string, pin: string, label: string, group: string, description?: I18NString) =>
                           request<{ id: string; keyPin: string; logins: WebSocketLogins }>(
-                              'POST', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/keyPins`, { pin, label, group, note }),
+                              'POST', `/configuration/ocpp-server/logins/${encodeURIComponent(id)}/keyPins`, { pin, label, group, description }),
 
             /** Stop letting a station in by a key pin; the pin as the list has it, 64 hexadecimal digits. */
             removeKeyPin: (id: string, pin: string) =>

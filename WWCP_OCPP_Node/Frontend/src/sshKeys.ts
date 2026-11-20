@@ -1,4 +1,4 @@
-import { connectionsAPI as api, type SshKey, type StationConnections } from './api/connections';
+import { connectionsAPI as api, type SshKey, type StationConnections, textOf } from './api/connections';
 import { auth } from './auth';
 import { nodeNoun } from './settings';
 import { toURL } from '@node/basePath';
@@ -55,7 +55,7 @@ export function sshKeysSection(context: SectionContext): CertificatesSection {
                    filter(connection => connection.transport === 'ssh' &&
                                         ((connection.identities ?? []).some(one => one.id === key.id) ||
                                          (key.own && (connection.identities ?? []).length === 0))).
-                   map   (connection => connection.description);
+                   map   (connection => textOf(connection.description) ?? '');
     }
 
     function copy(key: SshKey): void {

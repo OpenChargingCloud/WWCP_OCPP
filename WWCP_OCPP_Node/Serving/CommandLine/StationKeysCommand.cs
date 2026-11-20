@@ -248,10 +248,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Serving.CommandLine
 
             if (!node.TryAddStationSSHKey(Station,
                                           Line,
-                                          Label:      null,
-                                          GroupId:    null,
-                                          Note:       null,
-                                          CreatedBy:  cli.Caller.Account?.Id.ToString() ?? "the console",
+                                          Label:        null,
+                                          GroupId:      null,
+                                          Description:  null,
+                                          CreatedBy:    cli.Caller.Account?.Id.ToString() ?? "the console",
                                           out var key,
                                           out var error,
                                           out _))

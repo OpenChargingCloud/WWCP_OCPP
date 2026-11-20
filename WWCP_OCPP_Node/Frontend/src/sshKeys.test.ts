@@ -47,7 +47,7 @@ const aKey = (id: string, label: string, more: Partial<SshKey> = {}): SshKey => 
 });
 
 const overSSH = (id: string, more: Partial<StationConnection> = {}): StationConnection => ({
-    id, description: `CSMS ${id}`, url: 'ssh://cs001@csms.example.org:2222', connectionType: 'CSMS', ocppVersion: 'OCPP2.1',
+    id, description: { en: `CSMS ${id}` }, url: 'ssh://cs001@csms.example.org:2222', connectionType: 'CSMS', ocppVersion: 'OCPP2.1',
     autoConnect: true, secure: false, transport: 'ssh', createdAt: '2026-10-01T10:00:00Z', ...more
 });
 

@@ -35,14 +35,14 @@ let logins: LoginToSave[] = [];
 let refuseTheConnection = false;
 
 function aConnection(id: string, more: Partial<StationConnection> = {}): StationConnection {
-    return { id, description: `CSMS ${id}`, url: `wss://csms.example.org/${id}`, connectionType: 'CSMS', ocppVersion: 'OCPP2.1',
+    return { id, description: { en: `CSMS ${id}` }, url: `wss://csms.example.org/${id}`, connectionType: 'CSMS', ocppVersion: 'OCPP2.1',
              autoConnect: true, secure: true, createdAt: '2026-10-01T10:00:00Z', ...more };
 }
 
 function aStation(more: Partial<StationConnections> = {}): StationConnections {
     return {
         directory:              'connections',
-        authentications:        [ { id: 'l1', description: 'CSMS login', kind: 'basic', login: 'cs001', createdAt: '2026-10-01T10:00:00Z', hasSecret: true } ],
+        authentications:        [ { id: 'l1', description: { en: 'CSMS login' }, kind: 'basic', login: 'cs001', createdAt: '2026-10-01T10:00:00Z', hasSecret: true } ],
         connections:            [ aConnection('c1', { identities: [ { id: 'aaaa' }, { id: 'bbbb', from: '2027-01-31T00:00:00Z' } ], certificateId: 'aaaa' }),
                                   aConnection('c2', { url: 'ssh://cs001@csms.example.org:2222', secure: false, transport: 'ssh',
                                                       identities: [ { id: 'k1' } ] }) ],
@@ -70,7 +70,7 @@ function station({ method, path, body }: Asked): unknown {
         const login = body as LoginToSave;
         logins.push(login);
         const id = `l${held.authentications.length + 1}`;
-        held = { ...held, authentications: [ { id, description: login.description, kind: login.kind, login: login.login,
+        held = { ...held, authentications: [ { id, description: login.description ?? {}, kind: login.kind, login: login.login,
                                                createdAt: '2026-11-15T10:00:00Z', hasSecret: login.secret !== '' },
                                              ...held.authentications ] };
         return { id, connections: held };
@@ -80,7 +80,7 @@ function station({ method, path, body }: Asked): unknown {
         lastAdded = body as ConnectionToSave;
         if (refuseTheConnection)
             return refused(400, 'A connection needs somewhere to go.');
-        const made = aConnection('c9', { description: lastAdded.description, url: lastAdded.url });
+        const made = aConnection('c9', { description: lastAdded.description ?? {}, url: lastAdded.url });
         held = { ...held, connections: [ made, ...held.connections ] };
         return { id: made.id, connections: held };
     }
@@ -221,8 +221,8 @@ describe('what a connection proves itself with', () => {
     it('writes down the password an ssh:// connection signs in with, one that is there or one typed with it, and takes it away again', async () => {
 
         const root = await opened(undefined, () => aStation({
-                                      authentications: [ { id: 'l1', description: 'CSMS login', kind: 'basic', login: 'cs001', createdAt: '2026-10-01T10:00:00Z', hasSecret: true },
-                                                         { id: 't1', description: 'One-time',   kind: 'totp',  login: 'cs001', createdAt: '2026-10-01T10:00:00Z', hasSecret: true } ]
+                                      authentications: [ { id: 'l1', description: { en: 'CSMS login' }, kind: 'basic', login: 'cs001', createdAt: '2026-10-01T10:00:00Z', hasSecret: true },
+                                                         { id: 't1', description: { en: 'One-time' },   kind: 'totp',  login: 'cs001', createdAt: '2026-10-01T10:00:00Z', hasSecret: true } ]
                                   }));
         const ssh  = editOf(root, 'c2');
 
@@ -268,7 +268,7 @@ describe('what a connection proves itself with', () => {
         submit(withOne, '#panel-new #add-form');
         await until(() => lastAdded !== null, 'the connection was not written down');
 
-        assert.deepEqual(logins, [ { description: 'CSMS over SSH', kind: 'basic', login: 'cs002', secret: 'a password' } ]);
+        assert.deepEqual(logins, [ { description: { en: 'CSMS over SSH' }, kind: 'basic', login: 'cs002', secret: 'a password' } ]);
         assert.equal(lastAdded!.authenticationId, 'l2');
         assert.deepEqual(lastAdded!.identities, []);
 
@@ -277,7 +277,7 @@ describe('what a connection proves itself with', () => {
     it('writes down that an ssh:// connection offers no key, and a one-time password as what it signs in with', async () => {
 
         const root = await opened(undefined, () => aStation({
-                                      authentications: [ { id: 't1', description: 'One-time', kind: 'totp', login: 'cs001', createdAt: '2026-10-01T10:00:00Z',
+                                      authentications: [ { id: 't1', description: { en: 'One-time' }, kind: 'totp', login: 'cs001', createdAt: '2026-10-01T10:00:00Z',
                                                            hasSecret: true, tlsChannelBinding: true } ],
                                       connections:     [ aConnection('c2', { url: 'ssh://cs001@csms.example.org:2222', secure: false, transport: 'ssh',
                                                                              identities: [ { id: 'k1' } ] }),
@@ -326,7 +326,7 @@ describe('what a connection proves itself with', () => {
         submit(root, '#panel-new #add-form');
         await until(() => root.querySelector('#panel-new #add-error')?.textContent !== '', 'why the connection was refused is not said');
 
-        assert.deepEqual(logins, [ { description: 'The spare', kind: 'basic', login: 'cs001', secret: 'a password' } ],
+        assert.deepEqual(logins, [ { description: { en: 'The spare' }, kind: 'basic', login: 'cs001', secret: 'a password' } ],
                          'the login was not written down as it was typed, called what the connection is');
         assert.equal(lastAdded!.authenticationId, 'l2');
         assert.equal(form.querySelector<HTMLSelectElement>('select[name="proves"]')!.value, 'auth:l2', 'the login written down is not the one chosen now');
@@ -386,7 +386,7 @@ describe('what a connection proves itself with', () => {
     it('writes down a connection the other end makes, and says of one that it dials in', async () => {
 
         const root = await opened(undefined, () => aStation({
-                                      authentications: [ { id: 'l1', description: 'What the CSMS signs in with', kind: 'basic', login: 'csms-01',
+                                      authentications: [ { id: 'l1', description: { en: 'What the CSMS signs in with' }, kind: 'basic', login: 'csms-01',
                                                            createdAt: '2026-10-01T10:00:00Z', hasSecret: true } ],
                                       connections:     [ aConnection('c1', { url: 'wss://station.example.org:9443/csms-01', authenticationId: 'l1',
                                                                              inbound: true, inboundName: 'csms-01' }),

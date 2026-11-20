@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 
 
@@ -99,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
 
             var pin = APin();
 
-            Assert.That(logins.TryAddKeyPin("cs001", pin.ToHex(), "bay 1", null, "Ladepunkt 1", "admin", out var added, out var error),
+            Assert.That(logins.TryAddKeyPin("cs001", pin.ToHex(), "bay 1", null, I18NString.Create("Ladepunkt 1"), "admin", out var added, out var error),
                         Is.True, error);
 
             var restarted = new WebSocketLogins(Path.Combine(directory, "websocket-logins.json"), clock);
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Serving
             Assert.Multiple(() => {
                 Assert.That(added!.Pin,                               Is.EqualTo(pin));
                 Assert.That(login!.GroupId,                           Is.EqualTo(WebSocketLoginGroup.DefaultId));
-                Assert.That(login.Note,                               Is.EqualTo("Ladepunkt 1"));
+                Assert.That(login.Description?.FirstText(),                               Is.EqualTo("Ladepunkt 1"));
                 Assert.That(login.Pins.Select(one => one.Pin),        Is.EqualTo(new[] { pin }));
                 Assert.That(login.Pins.Single().Label,                Is.EqualTo("bay 1"));
                 Assert.That(login.Pins.Single().AddedBy,              Is.EqualTo("admin"));

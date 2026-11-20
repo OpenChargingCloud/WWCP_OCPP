@@ -19,6 +19,7 @@
 
 using NUnit.Framework;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SSH;
 
@@ -91,11 +92,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AnSSHURLIsTakenAndSaysSo()
         {
 
-            Assert.That(store.TryAddConnection("Over SSH, pinned", AnSshURL, "CSMS", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("Over SSH, pinned"), URL.Parse(AnSshURL), "CSMS", true, null, null,
                                                out var pinned, out var error, SshHostKey: $"  {Fingerprint} "),
                         Is.True, error);
 
-            Assert.That(store.TryAddConnection("Over SSH, not pinned", AnSshURL, "CSMS", true, null, null,
+            Assert.That(store.TryAddConnection(I18NString.Create("Over SSH, not pinned"), URL.Parse(AnSshURL), "CSMS", true, null, null,
                                                out var notPinned, out error),
                         Is.True, error);
 
@@ -138,18 +139,18 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, null, null,
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, null, null,
                                                    out _, out var notAKey, SshHostKey: "the one from last week"),
                             Is.False);
                 Assert.That(notAKey, Does.Contain("neither a fingerprint"));
 
-                Assert.That(store.TryAddConnection("Over a WebSocket", "wss://csms.example.org/cs001", "CSMS", true, null, null,
+                Assert.That(store.TryAddConnection(I18NString.Create("Over a WebSocket"), URL.Parse("wss://csms.example.org/cs001"), "CSMS", true, null, null,
                                                    out _, out var notSSH, SshHostKey: Fingerprint),
                             Is.False);
                 Assert.That(notSSH, Does.Contain("TLS certificate"));
 
                 // A public-key line is a pin as well.
-                Assert.That(store.TryAddConnection("Over SSH, by its key", AnSshURL, "CSMS", true, null, null,
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH, by its key"), URL.Parse(AnSshURL), "CSMS", true, null, null,
                                                    out _, out var error,
                                                    SshHostKey: SshPublicKey.FromHostKey(hostKey).ToAuthorizedKeyLine()),
                             Is.True, error);
@@ -174,26 +175,26 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ACertificateIsRefusedOverSSH_AndAPasswordOrAOneTimePasswordIsTaken()
         {
 
-            Assert.That(store.TryAddTOTPAuthentication("cs001", "shared-secret-not-the-real-one", "A TOTP login", out var totp, out var error),
+            Assert.That(store.TryAddTOTPAuthentication("cs001", "shared-secret-not-the-real-one", I18NString.Create("A TOTP login"), out var totp, out var error),
                         Is.True, error);
 
-            Assert.That(store.TryAddBasicAuthentication("cs001", "not-the-real-one", "A Basic login", out var basic, out error),
+            Assert.That(store.TryAddPasswordAuthentication("cs001", "not-the-real-one", I18NString.Create("A Basic login"), out var basic, out error),
                         Is.True, error);
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("Over SSH, with a one-time password", AnSshURL, "CSMS", true, totp, null, out var withTOTP, out error),
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH, with a one-time password"), URL.Parse(AnSshURL), "CSMS", true, totp, null, out var withTOTP, out error),
                             Is.True, error);
 
                 Assert.That(store.Connections.Single(entry => entry.Id == withTOTP).Warnings,
                             Has.Some.Contains("totp@open.charging.cloud").And.Contains("not bound"),
                             "That an unbound one-time password can be read and used is not said.");
 
-                Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, null, "some-certificate", out _, out var refusedCertificate),
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, null, "some-certificate", out _, out var refusedCertificate),
                             Is.False);
                 Assert.That(refusedCertificate, Does.Contain("TLS handshake"));
 
-                Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, basic, null, out var withPassword, out error),
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, basic, null, out var withPassword, out error),
                             Is.True, error);
 
                 Assert.That(store.Connections.Single(entry => entry.Id == withPassword).Warnings,
@@ -216,29 +217,29 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionThatOffersNoKey_NamesNothingBesideThat_AndHasAPassword()
         {
 
-            Assert.That(store.TryAddBasicAuthentication("cs001", "not-the-real-one", "A Basic login", out var basic, out var error),
+            Assert.That(store.TryAddPasswordAuthentication("cs001", "not-the-real-one", I18NString.Create("A Basic login"), out var basic, out var error),
                         Is.True, error);
 
             store.KnownSshKeyIds = () => [ SshClientKeys.OwnId ];
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("No key, no password", AnSshURL, "CSMS", true, null, null, out _, out var nothingAtAll,
+                Assert.That(store.TryAddConnection(I18NString.Create("No key, no password"), URL.Parse(AnSshURL), "CSMS", true, null, null, out _, out var nothingAtAll,
                                                    Identities: [ new ConnectionIdentity(SshClientKeys.NoneId) ]),
                             Is.False);
                 Assert.That(nothingAtAll, Does.Contain("needs a password"));
 
-                Assert.That(store.TryAddConnection("No key and a key", AnSshURL, "CSMS", true, basic, null, out _, out var both,
+                Assert.That(store.TryAddConnection(I18NString.Create("No key and a key"), URL.Parse(AnSshURL), "CSMS", true, basic, null, out _, out var both,
                                                    Identities: [ new ConnectionIdentity(SshClientKeys.NoneId), new ConnectionIdentity(SshClientKeys.OwnId) ]),
                             Is.False);
                 Assert.That(both, Does.Contain("nothing beside that"));
 
-                Assert.That(store.TryAddConnection("No key from a time on", AnSshURL, "CSMS", true, basic, null, out _, out var fromATime,
+                Assert.That(store.TryAddConnection(I18NString.Create("No key from a time on"), URL.Parse(AnSshURL), "CSMS", true, basic, null, out _, out var fromATime,
                                                    Identities: [ new ConnectionIdentity(SshClientKeys.NoneId, DateTimeOffset.UtcNow.AddDays(1)) ]),
                             Is.False);
                 Assert.That(fromATime, Does.Contain("no time"));
 
-                Assert.That(store.TryAddConnection("The password alone", AnSshURL, "CSMS", true, basic, null, out var id, out error,
+                Assert.That(store.TryAddConnection(I18NString.Create("The password alone"), URL.Parse(AnSshURL), "CSMS", true, basic, null, out var id, out error,
                                                    Identities: [ new ConnectionIdentity(SshClientKeys.NoneId) ]),
                             Is.True, error);
 
@@ -276,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
                 System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo(Culture);
 
-                Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, null, null, out var id, out var error,
+                Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, null, null, out var id, out var error,
                                                    SshTrust: new SshTrustSettings("HostKey", null, 120)),
                             Is.True, error);
 
@@ -324,10 +325,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ALearnedHostKeyIsWrittenDownOnlyWhereItTrustsOnFirstUse()
         {
 
-            Assert.That(store.TryAddConnection("Over SSH, no trust on first use", AnSshURL, "CSMS", true, null, null, out var withoutTOFU, out var error),
+            Assert.That(store.TryAddConnection(I18NString.Create("Over SSH, no trust on first use"), URL.Parse(AnSshURL), "CSMS", true, null, null, out var withoutTOFU, out var error),
                         Is.True, error);
 
-            Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, null, null, out var id, out error,
+            Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, null, null, out var id, out error,
                                                SshTrust: new SshTrustSettings("HostKey", null, 120)),
                         Is.True, error);
 
@@ -382,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var other = SshFingerprint.Sha256(SshHostKey.GenerateEd25519().PublicKeyBlob);
 
-            Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, null, null, out var id, out var error,
+            Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, null, null, out var id, out var error,
                                                SshTrust: new SshTrustSettings("HostKey", null, null)),
                         Is.True, error);
 
@@ -434,13 +435,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ASaveAsShownKeepsThePinSetTakenMeanwhile()
         {
 
-            Assert.That(store.TryAddConnection("Over SSH", AnSshURL, "CSMS", true, null, null, out var id, out var error,
+            Assert.That(store.TryAddConnection(I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, null, null, out var id, out var error,
                                                SshTrust: new SshTrustSettings("HostKey", null, null)),
                         Is.True, error);
 
             Assert.That(store.TryTakeSignedHostKeys(id!, Fingerprint, 1, out _, out _, out error), Is.True, error);
 
-            Assert.That(store.TryUpdateConnection(id, "Over SSH, renamed", AnSshURL, "CSMS", true, null, null, out error,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Over SSH, renamed"), URL.Parse(AnSshURL), "CSMS", true, null, null, out error,
                                                   SshHostKey: "", SshHostKeyAsShown: ""),
                         Is.True, error);
 
@@ -448,7 +449,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                         "A save of the description took away the pins taken meanwhile.");
 
             // Left out altogether, as by somebody using the API without it.
-            Assert.That(store.TryUpdateConnection(id, "Over SSH, renamed again", AnSshURL, "CSMS", true, null, null, out error),
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Over SSH, renamed again"), URL.Parse(AnSshURL), "CSMS", true, null, null, out error),
                         Is.True, error);
 
             Assert.That(store.Connections.Single().SshHostKey,          Is.EqualTo(Fingerprint));
@@ -456,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                         "Left out, how it trusts on first use was changed.");
 
             // Emptied on purpose: the version goes with the pins.
-            Assert.That(store.TryUpdateConnection(id, "Over SSH", AnSshURL, "CSMS", true, null, null, out error,
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Over SSH"), URL.Parse(AnSshURL), "CSMS", true, null, null, out error,
                                                   SshHostKey: "", SshHostKeyAsShown: Fingerprint),
                         Is.True, error);
 
@@ -466,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             // And a connection that is no longer ssh:// keeps none.
             Assert.That(store.TryTakeSignedHostKeys(id!, Fingerprint, 1, out _, out _, out error), Is.True, error);
 
-            Assert.That(store.TryUpdateConnection(id, "Over a WebSocket now", "wss://csms.example.org/cs001", "CSMS", true, null, null, out error),
+            Assert.That(store.TryUpdateConnection(id, I18NString.Create("Over a WebSocket now"), URL.Parse("wss://csms.example.org/cs001"), "CSMS", true, null, null, out error),
                         Is.True, error);
 
             Assert.That(store.Connections.Single().SshHostKey,          Is.Null,
@@ -493,32 +494,32 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddConnection("Two pins", AnSshURL, "CSMS", true, null, null, out var two, out var error,
+                Assert.That(store.TryAddConnection(I18NString.Create("Two pins"), URL.Parse(AnSshURL), "CSMS", true, null, null, out var two, out var error,
                                                    SshHostKey: $"{Fingerprint} ,\n {keyLine}"),
                             Is.True, error);
                 Assert.That(store.Connections.Single(entry => entry.Id == two).SshHostKeys, Is.EqualTo(new[] { Fingerprint, keyLine }));
 
-                Assert.That(store.TryAddConnection("MD5", AnSshURL, "CSMS", true, null, null, out _, out var md5,
+                Assert.That(store.TryAddConnection(I18NString.Create("MD5"), URL.Parse(AnSshURL), "CSMS", true, null, null, out _, out var md5,
                                                    SshHostKey: "MD5:16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48"),
                             Is.False);
                 Assert.That(md5, Does.Contain("MD5 fingerprints are no longer taken").And.Contain("SHA-256"));
 
-                Assert.That(store.TryAddConnection("Too many", AnSshURL, "CSMS", true, null, null, out _, out var tooMany, SshHostKey: many),
+                Assert.That(store.TryAddConnection(I18NString.Create("Too many"), URL.Parse(AnSshURL), "CSMS", true, null, null, out _, out var tooMany, SshHostKey: many),
                             Is.False);
                 Assert.That(tooMany, Does.Contain("at most 16"));
 
-                Assert.That(store.TryAddConnection("Mismatch", AnSshURL, "CSMS", true, null, null, out var tolerant, out error,
+                Assert.That(store.TryAddConnection(I18NString.Create("Mismatch"), URL.Parse(AnSshURL), "CSMS", true, null, null, out var tolerant, out error,
                                                    SshHostKey: Fingerprint, SshTrust: new SshTrustSettings(null, "record", null)),
                             Is.True, error);
                 Assert.That(store.Connections.Single(entry => entry.Id == tolerant).SshOnPinMismatch, Is.EqualTo(SshOnPinMismatch.Record));
                 Assert.That(store.Connections.Single(entry => entry.Id == tolerant).Warnings,         Has.Some.Contains("believed all the same"));
 
-                Assert.That(store.TryAddConnection("Nonsense", AnSshURL, "CSMS", true, null, null, out _, out var nonsense,
+                Assert.That(store.TryAddConnection(I18NString.Create("Nonsense"), URL.Parse(AnSshURL), "CSMS", true, null, null, out _, out var nonsense,
                                                    SshTrust: new SshTrustSettings("Always", null, null)),
                             Is.False);
                 Assert.That(nonsense, Does.Contain("'None' or 'HostKey'"));
 
-                Assert.That(store.TryAddConnection("Short", AnSshURL, "CSMS", true, null, null, out _, out var tooShort,
+                Assert.That(store.TryAddConnection(I18NString.Create("Short"), URL.Parse(AnSshURL), "CSMS", true, null, null, out _, out var tooShort,
                                                    SshTrust: new SshTrustSettings("HostKey", null, 0)),
                             Is.False);
                 Assert.That(tooShort, Does.Contain("from 1 s"));
@@ -534,7 +535,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                 Directory.CreateDirectory(md5Store);
 
                 File.WriteAllText(Path.Combine(md5Store, ConnectionStore.ConnectionsFileName),
-                                  $$"""[ { "id": "old", "description": "From before", "url": "{{AnSshURL}}", "connectionType": "CSMS", "sshHostKey": "MD5:16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48" } ]""");
+                                  $$"""[ { "id": "old", "description": { "en": "From before" }, "url": "{{AnSshURL}}", "connectionType": "CSMS", "sshHostKey": "MD5:16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48" } ]""");
 
                 var old = new ConnectionStore(md5Store).Connections.Single();
 

@@ -1,4 +1,4 @@
-import { connectionsAPI as api, type ConnectionIdentity, type ConnectionState, type ConnectionTest, type ConnectionTestAsks, type ConnectionToSave, type LoginToSave, type EncodingOfAConnection, type HTTPVersionOfAConnection, type SignatureFormatsOfAConnection, type StationConnection, type StationConnections } from '../api/connections';
+import { connectionsAPI as api, type ConnectionIdentity, type ConnectionState, type ConnectionTest, type ConnectionTestAsks, type ConnectionToSave, type LoginToSave, type EncodingOfAConnection, type HTTPVersionOfAConnection, type SignatureFormatsOfAConnection, type StationConnection, type StationConnections, inEnglish, textOf } from '../api/connections';
 import { auth } from '../auth';
 import { credentialsPanel } from './authentication';
 import { connectionsResource, farEnd, nodeNoun, nodeNounInFull, nodeTraits } from '../settings';
@@ -340,7 +340,7 @@ export const connectionsPage: Page = {
 
                 <label>What it is
                     <input type="text" name="description" maxlength="${state.maxDescriptionLength}"
-                           placeholder="${nodeTraits().dialsDown ? 'Station 7, car park' : 'CSMS, main'}" value="${entry?.description ?? ''}"
+                           placeholder="${nodeTraits().dialsDown ? 'Station 7, car park' : 'CSMS, main'}" value="${textOf(entry?.description) ?? ''}"
                            ?disabled=${!mayManage} />
                 </label>
 
@@ -662,7 +662,7 @@ export const connectionsPage: Page = {
                         <optgroup label="A login">
                             ${state.authentications.map(one => html`
                                 <option value="auth:${one.id}" ?selected=${way === `auth:${one.id}`}>
-                                    ${one.description} (${one.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})${one.hasSecret ? '' : ' - no secret set'}
+                                    ${textOf(one.description)} (${one.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})${one.hasSecret ? '' : ' - no secret set'}
                                 </option>
                             `)}
                             <option value="new:basic" ?selected=${way === 'new:basic'}>New login and password ...</option>
@@ -793,7 +793,7 @@ export const connectionsPage: Page = {
                         <optgroup label="A login">
                             ${logins.map(one => html`
                                 <option value="auth:${one.id}" ?selected=${way === `auth:${one.id}`}>
-                                    ${one.description} (${one.login}${one.kind === 'totp'
+                                    ${textOf(one.description)} (${one.login}${one.kind === 'totp'
                                         ? `, one-time password${one.tlsChannelBinding === true ? ', bound to the session' : ''}`
                                         : ''})${one.hasSecret ? '' : ' - no secret set'}
                                 </option>
@@ -867,14 +867,14 @@ export const connectionsPage: Page = {
                           : identities.length === 0
                                 ? html`This ${nodeNoun()}'s SSH key`
                                 : html`${identities.length === 1 ? 'The SSH key ' : 'The SSH keys '}${list(one => keys.find(key => key.id === one.id)?.label ?? `${one.id} (no longer here)`)}`}${credentials !== undefined
-                          ? html`, and the ${credentials.kind === 'totp' ? 'one-time password' : 'password'} of ${credentials.description}`
+                          ? html`, and the ${credentials.kind === 'totp' ? 'one-time password' : 'password'} of ${textOf(credentials.description)}`
                           : entry.authenticationId !== undefined ? html`, and a password that is no longer here` : nothing}
                 `;
 
             }
 
             if (credentials !== undefined)
-                return html`${credentials.description} (${credentials.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})`;
+                return html`${textOf(credentials.description)} (${credentials.kind === 'basic' ? 'HTTP Basic' : 'HTTP TOTP'})`;
 
             if (identities.length > 0)
                 return html`${identities.length === 1 ? 'TLS identity ' : 'TLS identities '}${list(one => {
@@ -894,7 +894,7 @@ export const connectionsPage: Page = {
                 <div class="card">
 
                     <div class="key-head">
-                        <strong>${entry.description}</strong>
+                        <strong>${textOf(entry.description)}</strong>
                         <span class="chip">${entry.connectionType}</span>
                         ${entry.remoteNodeId ? html`
                             <span class="chip mono" data-remote-node="${entry.id}"
@@ -1251,7 +1251,7 @@ export const connectionsPage: Page = {
                         const line = stateLine({ url: state.url, ocppVersion: state.ocppVersion, autoConnect: true }, state, timestamp);
                         return html`
                             <div class="removed-state">
-                                <strong>${state.description}</strong> <code>${state.url}</code>
+                                <strong>${textOf(state.description)}</strong> <code>${state.url}</code>
                                 ${line === null ? nothing : lineView(line)}
                             </div>
                         `;
@@ -1414,7 +1414,7 @@ export const connectionsPage: Page = {
                 rawPublicKeys:       (form.querySelector<HTMLSelectElement>('[name="rawPublicKeys"]')?.value ?? 'Off') as 'Off' | 'Prefer' | 'Require',
                 serverKeyPinProbationTime: Number.isFinite(keyProbation) ? keyProbation : 600,
                 id,
-                description:         field(form, 'description'),
+                description:         inEnglish(field(form, 'description')),
                 url:                 field(form, 'url'),
                 connectionType:      field(form, 'connectionType'),
                 ocppVersion:         field(form, 'ocppVersion'),
@@ -1478,7 +1478,7 @@ export const connectionsPage: Page = {
             const way = form.querySelector<HTMLSelectElement>('[name="proves"]')?.value ?? '';
 
             return way.startsWith('new:')
-                       ? { description:  field(form, 'newDescription') || written.description,
+                       ? { description:  inEnglish(field(form, 'newDescription')) ?? written.description,
                            kind:         way === 'new:totp' ? 'totp' : 'basic',
                            login:        field(form, 'newLogin'),
                            secret:       field(form, 'newSecret', false) }
@@ -1642,7 +1642,7 @@ export const connectionsPage: Page = {
              * goes when the answer comes.
              */
             const drawDialog = (Steps: TemplateResult, Waiting: boolean): void => render(dialog, html`
-                <h2>Testing ${entry.description || 'this connection'}</h2>
+                <h2>Testing ${textOf(entry.description) || 'this connection'}</h2>
                 <p class="hint"><code>${entry.url || 'no URL given'}</code></p>
                 <div class="test-steps" id="test-steps">${Steps}</div>
                 <div class="form-actions">

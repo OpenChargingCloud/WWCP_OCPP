@@ -18,6 +18,8 @@
 #region Usings
 
 using NUnit.Framework;
+using org.GraphDefined.Vanaheimr.Illias;
+using URL = org.GraphDefined.Vanaheimr.Hermod.HTTP.URL;
 
 using cloud.charging.open.protocols.WWCP.Node.Connections;
 using cloud.charging.open.protocols.OCPP.Node.TestKit;
@@ -94,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         private String ABasicLogin(String Description = "CSMS login")
         {
 
-            Assert.That(store.TryAddBasicAuthentication("cs001", APassword, Description, out var id, out var error),
+            Assert.That(store.TryAddPasswordAuthentication("cs001", APassword, I18NString.Create(Description), out var id, out var error),
                         Is.True, error);
 
             return id!;
@@ -104,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         private String ATOTPLogin(String Description = "Local controller login", Boolean ChannelBinding = true)
         {
 
-            Assert.That(store.TryAddTOTPAuthentication("cs001", ASharedSecret, Description,
+            Assert.That(store.TryAddTOTPAuthentication("cs001", ASharedSecret, I18NString.Create(Description),
                                                    out var id, out var error,
                                                    TLSChannelBinding: ChannelBinding),
                         Is.True, error);
@@ -205,13 +207,13 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var id = ABasicLogin("CSMS lgoin");
 
-            Assert.That(store.TryUpdateBasicAuthentication(id, "cs001", "", "CSMS login", out var error),
+            Assert.That(store.TryUpdateBasicAuthentication(id, "cs001", "", I18NString.Create("CSMS login"), out var error),
                         Is.True, error);
 
             var entry = store.Authentications.Single(one => one.Id == id);
 
             Assert.Multiple(() => {
-                Assert.That(entry.Description, Is.EqualTo("CSMS login"), "The correction did not take.");
+                Assert.That(entry.Description.FirstText(), Is.EqualTo("CSMS login"), "The correction did not take.");
                 Assert.That(entry.Password,    Is.EqualTo(APassword),    "The password was thrown away by a change that was not about it.");
             });
 
@@ -231,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var id = ABasicLogin();
 
-            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", "", "CSMS login", out var refused),
+            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", "", I18NString.Create("CSMS login"), out var refused),
                         Is.False,
                         "A password was quietly kept on as a shared secret.");
 
@@ -239,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             // With one, it goes through - and the password is gone, because
             // nothing can use it any more.
-            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", ASharedSecret, "CSMS login", out var error),
+            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", ASharedSecret, I18NString.Create("CSMS login"), out var error),
                         Is.True, error);
 
             var entry = store.Authentications.Single(one => one.Id == id);
@@ -266,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var login = ABasicLogin();
 
-            Assert.That(store.TryAddConnection("CSMS, main", "wss://csms.example.org/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS, main"), URL.Parse("wss://csms.example.org/cs001"), "CSMS",
                                                true, login, null, out _, out var error),
                         Is.True, error);
 
@@ -279,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             // Point the connection elsewhere, and it goes.
             var other = store.Connections.Single();
 
-            Assert.That(store.TryUpdateConnection(other.Id, other.Description, other.URL.ToString(),
+            Assert.That(store.TryUpdateConnection(other.Id, other.Description, other.URL,
                                                   "CSMS", true, null, null, out error),
                         Is.True, error);
 
@@ -299,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionCannotNameCredentialsThatAreNotHere()
         {
 
-            Assert.That(store.TryAddConnection("CSMS", "wss://csms.example.org/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse("wss://csms.example.org/cs001"), "CSMS",
                                                false, "no-such-login", null, out _, out var refused),
                         Is.False,
                         "A connection was written down pointing at credentials that do not exist.");
@@ -323,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             store.KnownCertificateIds = () => [ "abc123" ];
 
-            Assert.That(store.TryAddConnection("CSMS", "wss://csms.example.org/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse("wss://csms.example.org/cs001"), "CSMS",
                                                false, login, "abc123", out _, out var refused),
                         Is.False,
                         "A connection was given two ways of proving itself and nobody can say which is used.");
@@ -355,7 +357,10 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void WhatIsWrongWithAURLIsSaidWhileSomebodyIsLooking(String URL, String Says)
         {
 
-            Assert.That(store.TryAddConnection("CSMS", URL, "CSMS", false, null, null, out _, out var refused),
+            // Read as it was typed, and then written down: what is wrong with
+            // the text is said by the one, what is wrong with the URL by the other.
+            Assert.That(ConnectionEntry.TryParseURL(URL, out var url, out var refused) &&
+                        store.TryAddConnection(I18NString.Create("CSMS"), url, "CSMS", false, null, null, out _, out refused),
                         Is.False,
                         $"'{URL}' was accepted as somewhere to dial.");
 
@@ -377,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void EveryKindOfConnectionCanBeWrittenDown(String Type)
         {
 
-            Assert.That(store.TryAddConnection($"A {Type}", "wss://somewhere.example.org/cs001", Type,
+            Assert.That(store.TryAddConnection(I18NString.Create($"A {Type}"), URL.Parse("wss://somewhere.example.org/cs001"), Type,
                                                true, null, null, out var id, out var error),
                         Is.True, error);
 
@@ -411,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var login = ABasicLogin();
 
-            Assert.That(store.TryAddConnection("Test back end", "ws://127.0.0.1:9000/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("Test back end"), URL.Parse("ws://127.0.0.1:9000/cs001"), "CSMS",
                                                false, login, null, out var id, out var error),
                         Is.True, error);
 
@@ -434,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void NewOneTimePasswordsAreUnboundByDefault()
         {
 
-            Assert.That(store.TryAddTOTPAuthentication("cs001", ASharedSecret, "Said nothing",
+            Assert.That(store.TryAddTOTPAuthentication("cs001", ASharedSecret, I18NString.Create("Said nothing"),
                                                    out var id, out var error),
                         Is.True, error);
 
@@ -457,7 +462,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var id = ATOTPLogin("Before", ChannelBinding: Bound);
 
-            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", null, "After", out var error),
+            Assert.That(store.TryUpdateTOTPAuthentication(id, "cs001", null, I18NString.Create("After"), out var error),
                         Is.True, error);
 
             Assert.That(store.Authentications.Single(one => one.Id == id).TLSChannelBinding, Is.EqualTo(Bound),
@@ -480,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var bound = ATOTPLogin("Bound", ChannelBinding: true);
 
-            Assert.That(store.TryAddConnection("Over wss", "wss://csms.example.org/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("Over wss"), URL.Parse("wss://csms.example.org/cs001"), "CSMS",
                                                false, bound, null, out var id, out var error),
                         Is.True, error);
 
@@ -504,11 +509,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
             var bound    = ATOTPLogin("Bound",   ChannelBinding: true);
             var unbound  = ATOTPLogin("Unbound", ChannelBinding: false);
 
-            Assert.That(store.TryAddConnection("Over ws", "ws://127.0.0.1:9000/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("Over ws"), URL.Parse("ws://127.0.0.1:9000/cs001"), "CSMS",
                                                false, bound, null, out var withBinding, out var error),
                         Is.True, error);
 
-            Assert.That(store.TryAddConnection("Over ws too", "ws://127.0.0.1:9001/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("Over ws too"), URL.Parse("ws://127.0.0.1:9001/cs001"), "CSMS",
                                                false, unbound, null, out var withoutBinding, out error),
                         Is.True, error);
 
@@ -539,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void AConnectionThatProvesNothingSaysSo()
         {
 
-            Assert.That(store.TryAddConnection("Bench", "ws://127.0.0.1:9000/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("Bench"), URL.Parse("ws://127.0.0.1:9000/cs001"), "CSMS",
                                                false, null, null, out var id, out var error),
                         Is.True, error);
 
@@ -570,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             store.KnownCertificateIds = () => here;
 
-            Assert.That(store.TryAddConnection("CSMS", "wss://csms.example.org/cs001", "CSMS",
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS"), URL.Parse("wss://csms.example.org/cs001"), "CSMS",
                                                false, null, "abc123", out var id, out var error),
                         Is.True, error);
 
@@ -602,8 +607,8 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         {
 
             var added = Kind == "basic"
-                            ? store.TryAddBasicAuthentication("cs001", Secret, "Somewhere", out _, out var refused)
-                            : store.TryAddTOTPAuthentication ("cs001", Secret, "Somewhere", out _, out refused);
+                            ? store.TryAddPasswordAuthentication("cs001", Secret, I18NString.Create("Somewhere"), out _, out var refused)
+                            : store.TryAddTOTPAuthentication ("cs001", Secret, I18NString.Create("Somewhere"), out _, out refused);
 
             Assert.That(added,
                         Is.False,
@@ -630,11 +635,11 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             Assert.Multiple(() => {
 
-                Assert.That(store.TryAddBasicAuthentication("cs001", APassword, "  ", out _, out var noLogin),
+                Assert.That(store.TryAddPasswordAuthentication("cs001", APassword, I18NString.Create("  "), out _, out var noLogin),
                             Is.False, "A login without a description was written down.");
                 Assert.That(noLogin, Does.Contain("what these credentials are for"));
 
-                Assert.That(store.TryAddConnection("", "wss://csms.example.org/cs001", "CSMS",
+                Assert.That(store.TryAddConnection(I18NString.Create(""), URL.Parse("wss://csms.example.org/cs001"), "CSMS",
                                                    false, null, null, out _, out var noConnection),
                             Is.False, "A connection without a description was written down.");
                 Assert.That(noConnection, Does.Contain("what this connection is"));
@@ -656,14 +661,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var login = ATOTPLogin("Local controller", ChannelBinding: false);
 
-            Assert.That(store.TryAddBasicAuthentication("cs001", APassword, "CSMS login", out var basic, out var error),
+            Assert.That(store.TryAddPasswordAuthentication("cs001", APassword, I18NString.Create("CSMS login"), out var basic, out var error),
                         Is.True, error);
 
-            Assert.That(store.TryAddConnection("Local controller", "wss://lc.example.org/cs001", "LocalController",
+            Assert.That(store.TryAddConnection(I18NString.Create("Local controller"), URL.Parse("wss://lc.example.org/cs001"), "LocalController",
                                                true, login, null, out var connection, out error),
                         Is.True, error);
 
-            Assert.That(store.TryAddConnection("CSMS, spare", "wss://spare.example.org/cs001", "CSMSBackup",
+            Assert.That(store.TryAddConnection(I18NString.Create("CSMS, spare"), URL.Parse("wss://spare.example.org/cs001"), "CSMSBackup",
                                                false, basic, null, out _, out error),
                         Is.True, error);
 
@@ -751,7 +756,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ATokenIsWrittenDownAndSurvivesARestart()
         {
 
-            Assert.That(store.TryAddTokenAuthentication(AToken, "CSMS token", out var id, out var error),
+            Assert.That(store.TryAddTokenAuthentication(AToken, I18NString.Create("CSMS token"), out var id, out var error),
                         Is.True, error);
 
             var token = store.Authentications.Single(one => one.Id == id);
@@ -790,7 +795,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         public void ATokenIsOnePieceAndNeedsToBeThere(String Token, String Says)
         {
 
-            Assert.That(store.TryAddTokenAuthentication(Token, "CSMS token", out _, out var refused),
+            Assert.That(store.TryAddTokenAuthentication(Token, I18NString.Create("CSMS token"), out _, out var refused),
                         Is.False,
                         $"A token '{Token}' was written down.");
 
@@ -812,12 +817,12 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             var id = ABasicLogin();
 
-            Assert.That(store.TryUpdateTokenAuthentication(id, "", "CSMS token", out var refused),
+            Assert.That(store.TryUpdateTokenAuthentication(id, "", I18NString.Create("CSMS token"), out var refused),
                         Is.False, "Changed to a token without one.");
 
             Assert.That(refused, Does.Contain("needs a token").IgnoreCase);
 
-            Assert.That(store.TryUpdateTokenAuthentication(id, AToken, "CSMS token", out var error),
+            Assert.That(store.TryUpdateTokenAuthentication(id, AToken, I18NString.Create("CSMS token"), out var error),
                         Is.True, error);
 
             var token = store.Authentications.Single(one => one.Id == id);
@@ -852,7 +857,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 
             clock.Now = changed;
 
-            Assert.That(store.TryUpdateBasicAuthentication(id, "cs001", "", "CSMS login, renamed", out var error),
+            Assert.That(store.TryUpdateBasicAuthentication(id, "cs001", "", I18NString.Create("CSMS login, renamed"), out var error),
                         Is.True, error);
 
             var now   = store.Authentications.Single(one => one.Id == id);

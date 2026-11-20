@@ -1159,7 +1159,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region TryAddStationSSHKey(Id, Line, Label, GroupId, Note, CreatedBy, out Key, out Error, out NotSaved)
+        #region TryAddStationSSHKey(Id, Line, Label, GroupId, Description, CreatedBy, out Key, out Error, out NotSaved)
 
         /// <summary>
         /// Give a charging station an SSH key for OCPP over SSH - adding the
@@ -1175,7 +1175,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="Line">Its public key, as one line of an authorized_keys file.</param>
         /// <param name="Label">What the key is called, if anything.</param>
         /// <param name="GroupId">The group it should belong to, or null for the one it is in already.</param>
-        /// <param name="Note">What this station is, for whoever reads the list later.</param>
+        /// <param name="Description">What this station is, for whoever reads the list later - in as many languages as it is said in.</param>
         /// <param name="CreatedBy">Who added the key, if anybody said.</param>
         /// <param name="Key">The key, as it was added.</param>
         /// <param name="Error">Why it was refused.</param>
@@ -1184,7 +1184,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                                            String?                               Line,
                                            String?                               Label,
                                            String?                               GroupId,
-                                           String?                               Note,
+                                           I18NString?                           Description,
                                            String?                               CreatedBy,
                                            [NotNullWhen(true)]  out UserSSHKey?  Key,
                                            [NotNullWhen(false)] out String?      Error,
@@ -1205,7 +1205,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 return false;
             }
 
-            return WebSocketLogins.TryAddSSHKey(id, Line, Label, GroupId, Note, CreatedBy, out Key, out Error, out NotSaved);
+            return WebSocketLogins.TryAddSSHKey(id, Line, Label, GroupId, Description, CreatedBy, out Key, out Error, out NotSaved);
 
         }
 
@@ -1693,14 +1693,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
                 {
 
                     if (backEnd.InboundName != LoginId)
-                        return Refuse(Connection, $"'{path}' is the name '{backEnd.Description}' comes under, and it signed in as '{LoginId}'");
+                        return Refuse(Connection, $"'{path}' is the name '{backEnd.Description.FirstText()}' comes under, and it signed in as '{LoginId}'");
 
                     if (path != LoginId)
                         return Refuse(Connection, $"'{LoginId}' is a back end that dials this {NodeNoun}, and asked to connect as " +
                                                   (path is null ? "nobody in particular" : $"'{path}'"));
 
                     if (!backEnd.AutoConnect)
-                        return Refuse(Connection, $"'{LoginId}' is the name '{backEnd.Description}' comes under, a connection that is switched off");
+                        return Refuse(Connection, $"'{LoginId}' is the name '{backEnd.Description.FirstText()}' comes under, a connection that is switched off");
 
                     LetInAsInbound(Connection, backEnd);
 
