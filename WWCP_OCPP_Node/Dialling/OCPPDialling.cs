@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="WWCPNode">The node whose connections these are.</param>
         /// <param name="Node16">The node that speaks OCPP 1.6 for it, where it has one.</param>
         /// <param name="Node21">The node that speaks OCPP 2.1 for it.</param>
-        public OCPPDialling(WWCPNode                                              WWCPNode,
+        public OCPPDialling(WWCPNode                                            WWCPNode,
                             Func<OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?>  Node16,
                             Func<OCPPv2_1.NetworkingNode.AOCPPNetworkingNode>   Node21)
 

@@ -97,8 +97,9 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// and never because a connection came up: a BootNotification says the
     /// node was rebooted, and is sent where it can expect a CSMS, or a node
     /// that forwards it to one, at the other end - over a connection it
-    /// dialled or over one the other end made alike. What is to ask for it
-    /// after a reboot is not decided yet.
+    /// dialled or over one the other end made alike. A kind asks for it where
+    /// it knows of a reboot - a charging station after a reset; what else is
+    /// to ask for it is not decided yet.
     /// </para>
     /// <para>
     /// Each connection registers on its own. Once asked, it is asked again as
