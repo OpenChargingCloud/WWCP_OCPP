@@ -35,14 +35,14 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
 {
 
     /// <summary>
-    /// What a kind of node writes down as a connection: a node that dials
-    /// its back end as it always did, and a node that dials downwards - a
-    /// CSMS dialling a charging station or a local controller - by rules of
-    /// its own.
+    /// What a node writes down as a connection: one rule for every kind of
+    /// node - any kind of node at the other end, a back end spoken to as
+    /// that, a node named spoken to by its name, a charging station only by
+    /// its name - and rules narrowed for a node, as for one that dials
+    /// downwards alone.
     /// </summary>
     /// <remarks>
-    /// The first half is the one that must not move: a charging station and
-    /// a local controller say nothing of any rules, and what they wrote down
+    /// The first half is the rule every node has: what a node wrote down
     /// before is written down, read and routed as before.
     /// </remarks>
     [TestFixture]
@@ -87,22 +87,22 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         #endregion
 
 
-        #region A node that dials its back end: as it always was
+        #region One rule for every node
 
         [Test]
-        public void ANodeThatSaysNothingOffersItsBackEnds()
+        public void ANodeThatSaysNothingOffersEveryKindOfNode()
         {
 
             var json = store.ToJSON();
 
             Assert.Multiple(() => {
                 Assert.That(json["connectionTypes"]!.Select(type => type.Value<String>()),
-                            Is.EqualTo(new[] { "CSMS", "CSMSBackup", "LocalController", "Gateway" }));
+                            Is.EqualTo(new[] { "CSMS", "CSMSBackup", "LocalController", "Gateway", "ChargingStation" }));
                 Assert.That(json["ocppVersions"]!.Select(version => version.Value<String>()),
                             Is.EqualTo(new[] { "OCPP2.1", "OCPP1.6" }));
                 Assert.That(json["rules"]!.Value<Boolean>("inbound"),                Is.True);
                 Assert.That(json["rules"]!.Value<Boolean>("ssh"),                    Is.True);
-                Assert.That(json["rules"]!.Value<Boolean>("namesTheNodeItLeadsTo"),  Is.False);
+                Assert.That(json["rules"]!.Value<Boolean>("namesTheNodeItLeadsTo"),  Is.True);
             });
 
         }
@@ -126,33 +126,40 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
         }
 
         [Test]
-        public void ItsConnectionsNameNoNodeAtTheirOtherEnd()
+        public void AConnectionMayNameTheNodeAtItsOtherEnd()
         {
 
             Assert.That(store.TryAddConnection(I18NString.Create("The CSMS"), URL.Parse("wss://csms.example.org/cs001"), "CSMS", true, null, null,
                                                out _, out var error,
                                                RemoteNodeId: "csms-01"),
-                        Is.False);
+                        Is.True, error);
 
-            Assert.That(error, Does.Contain("names no node at its other end"));
+            Assert.That(WWCPNode.NextHopOf(store.Connections.Single()), Is.EqualTo(NetworkingNode_Id.Parse("csms-01")));
 
         }
 
         [Test]
-        public void AChargingStationIsNothingItDials()
+        public void AChargingStationItDialsHasToBeNamed()
         {
 
             Assert.That(store.TryAddConnection(I18NString.Create("A station"), URL.Parse("wss://station.example.org/cs001"), "ChargingStation", true, null, null,
                                                out _, out var error),
                         Is.False);
 
-            Assert.That(error, Does.Contain("ChargingStation"));
+            Assert.That(error, Does.Contain("which charging station is at the other end"));
+
+            Assert.That(store.TryAddConnection(I18NString.Create("A station"), URL.Parse("wss://station.example.org/cs001"), "ChargingStation", true, null, null,
+                                               out _, out error,
+                                               RemoteNodeId: "cs007"),
+                        Is.True, error);
+
+            Assert.That(WWCPNode.NextHopOf(store.Connections.Single()), Is.EqualTo(NetworkingNode_Id.Parse("cs007")));
 
         }
 
         #endregion
 
-        #region A node that dials downwards
+        #region A node narrowed to dialling downwards
 
         [Test]
         public void ItOffersWhatIsBelowIt()
@@ -210,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPP.Node.Tests.Connections
                                                out _, out var error),
                         Is.False);
 
-            Assert.That(error, Does.Contain("which node is at the other end"));
+            Assert.That(error, Does.Contain("which charging station is at the other end"));
 
         }
 

@@ -371,7 +371,8 @@ export const connectionsPage: Page = {
                         <span class="hint">
                             The name of the charging station, the local controller or the gateway at the other end: what
                             this ${nodeNoun()} speaks to it by, as it would be known by the last part of its
-                            URL had it dialled itself. Nothing in the URL above says it.
+                            URL had it dialled itself. Nothing in the URL above says it.${state.connectionTypes.includes('CSMS') ? html` Left empty, the
+                            other end is this ${nodeNoun()}'s back end; a charging station has to be named.` : nothing}
                         </span>
                     </label>
                 ` : nothing}

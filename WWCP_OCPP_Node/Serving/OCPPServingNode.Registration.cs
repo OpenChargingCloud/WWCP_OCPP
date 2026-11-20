@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
     {
 
         /// <summary>
-        /// No BootNotification sent yet: no connection was up.
+        /// No BootNotification sent yet: none was asked for.
         /// </summary>
         NotAsked,
 
@@ -78,8 +78,8 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
     /// <summary>
     /// Registering with the back end: the BootNotification each OCPP node of
-    /// this node sends once a connection is up - whoever dialled it - and what
-    /// it may say before and after. The same for a charging station, a local
+    /// this node sends over a connection - whoever dialled it - and what it may
+    /// say before and after. The same for a charging station, a local
     /// controller and a gateway: what is a kind's own is asked of it.
     /// </summary>
     /// <remarks>
@@ -93,8 +93,16 @@ namespace cloud.charging.open.protocols.OCPP.Node
     /// here otherwise.
     /// </para>
     /// <para>
-    /// Each connection registers on its own: after the start, when it is first
-    /// up, and again when it comes back only where it was not accepted yet -
+    /// <b>Sent when it is asked for</b> (<see cref="SendBootNotifications"/>),
+    /// and never because a connection came up: a BootNotification says the
+    /// node was rebooted, and is sent where it can expect a CSMS, or a node
+    /// that forwards it to one, at the other end - over a connection it
+    /// dialled or over one the other end made alike. What is to ask for it
+    /// after a reboot is not decided yet.
+    /// </para>
+    /// <para>
+    /// Each connection registers on its own. Once asked, it is asked again as
+    /// OCPP has it, and when the connection comes back before it was accepted -
     /// one that went unanswered asks at once, one told to wait waits. A node
     /// with two connections of its version - a CSMS and its successor, during a
     /// migration - is registered with both, and each back end that accepted it
@@ -137,6 +145,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
             /// By the identification of the connection.
             /// </summary>
             public ConcurrentDictionary<String, Registration>        ByConnection    { get; } = new();
+
+            /// <summary>
+            /// Whether its BootNotification was asked for: a connection that
+            /// comes up after that, and was never registered, registers then.
+            /// </summary>
+            public Boolean                                           BootAsked       { get; set; }
 
         }
 
@@ -541,7 +555,14 @@ namespace cloud.charging.open.protocols.OCPP.Node
                     when registration.NextTry > TimeProvider.GetUtcNow():
                     return;
 
-                // Not asked yet, not answered - or asked over a connection that
+                // Never asked for: a connection coming up is no reason to
+                // send a BootNotification. Asked for before this connection
+                // was up, it is sent now.
+                case RegistrationState.NotAsked
+                    when !RegistrationsOf(node).BootAsked:
+                    return;
+
+                // Asked for, and not answered - or asked over a connection that
                 // was lost before the answer came, which is not waited for.
                 default:
                     _ = RegisterAsync(node, registration, ByTheClock: false);
@@ -553,7 +574,63 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected) RegisterAsync(Node, Registration, ByTheClock, Triggered = false)
+        #region SendBootNotifications(ConnectionId = null)
+
+        /// <summary>
+        /// Send the BootNotification of each OCPP node of this node over its
+        /// connections - all of those that were up, or the given one - and do
+        /// what the answers say: as after a reboot, whether the back end had
+        /// accepted this node before or not.
+        /// </summary>
+        /// <remarks>
+        /// Returns once every BootNotification was answered, or went
+        /// unanswered. Nothing is sent on a kind that registers with nobody,
+        /// a CSMS. Asked for all connections, it is remembered: one that is
+        /// not up yet sends it once it comes up.
+        /// </remarks>
+        /// <param name="ConnectionId">The connection to send it over; all of them, where none is given.</param>
+        /// <returns>Where each OCPP node stands with its back end then, see <see cref="RegistrationJSON()"/>.</returns>
+        public async Task<JObject> SendBootNotifications(String? ConnectionId = null)
+        {
+
+            if (!RegistersWithABackEnd)
+                return RegistrationJSON();
+
+            var asked = new List<Task>();
+
+            foreach (var node in new AWWCPNetworkingNode?[] { Node16, Node21 })
+            {
+
+                if (node is null)
+                    continue;
+
+                var ofNode = RegistrationsOf(node);
+
+                if (ofNode.Ended.IsCancellationRequested)
+                    continue;
+
+                if (ConnectionId is null)
+                    ofNode.BootAsked = true;
+
+                foreach (var registration in ofNode.ByConnection.Values)
+                    if (!registration.Ended.IsCancellationRequested &&
+                        !registration.Gone &&
+                        (ConnectionId is null || registration.Connection.Id == ConnectionId))
+                    {
+                        asked.Add(RegisterAsync(node, registration, ByTheClock: false, Asked: true));
+                    }
+
+            }
+
+            await Task.WhenAll(asked);
+
+            return RegistrationJSON();
+
+        }
+
+        #endregion
+
+        #region (protected) RegisterAsync(Node, Registration, ByTheClock, Triggered = false, Asked = false)
 
         /// <summary>
         /// Send the node's BootNotification, and do what the answer says.
@@ -569,10 +646,12 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <param name="Registration">Where it stands.</param>
         /// <param name="ByTheClock">Whether the time to ask again is up, rather than a connection having come up.</param>
         /// <param name="Triggered">Whether it was asked for - a TriggerMessage, the page, the command line: sent although the back end accepted this node already, and with that reason.</param>
+        /// <param name="Asked">Whether it was asked for as after a reboot, see <see cref="SendBootNotifications"/>: sent although the back end accepted this node already, with the reason of the registration.</param>
         protected async Task RegisterAsync(AWWCPNetworkingNode  Node,
                                            Registration         Registration,
                                            Boolean              ByTheClock,
-                                           Boolean              Triggered = false)
+                                           Boolean              Triggered = false,
+                                           Boolean              Asked     = false)
         {
 
             CancellationTokenSource asking;
@@ -582,7 +661,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
             {
 
                 if (Registration.Ended.IsCancellationRequested ||
-                    (Registration.State == RegistrationState.Accepted && !Triggered) ||
+                    (Registration.State == RegistrationState.Accepted && !Triggered && !Asked) ||
                     (ByTheClock && Registration.State == RegistrationState.Asking))
                     return;
 

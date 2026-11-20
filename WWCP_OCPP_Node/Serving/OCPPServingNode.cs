@@ -261,40 +261,6 @@ namespace cloud.charging.open.protocols.OCPP.Node
 
         #endregion
 
-        #region (protected virtual) ServesStations / ServesOCPPOverSSH / MaxFailedSignInsPerMinute
-
-        /// <summary>
-        /// Whether charging stations sign in at the station port. Yes, unless
-        /// the kind says otherwise: a charging station serves no stations, and
-        /// what it lets in is a back end that dials it - a connection the other
-        /// end makes - and nothing else.
-        /// </summary>
-        protected virtual Boolean ServesStations
-            => true;
-
-        /// <summary>
-        /// Whether OCPP over SSH is offered beside the station port, as the
-        /// subsystem "ocpp@open.charging.cloud" of the node's SSH server. Yes,
-        /// unless the kind says otherwise - a charging station, whose tools
-        /// commission it over that subsystem, and which nothing dials over SSH.
-        /// </summary>
-        protected virtual Boolean ServesOCPPOverSSH
-            => true;
-
-        /// <summary>
-        /// How many sign-ins that were wrong one address is given within a
-        /// minute before the station port tells it to wait - or null, where
-        /// the kind sets no limit.
-        /// </summary>
-        /// <remarks>
-        /// A sign-in with a client certificate is no guess, and is neither
-        /// counted nor held back.
-        /// </remarks>
-        protected virtual UInt32? MaxFailedSignInsPerMinute
-            => null;
-
-        #endregion
-
         #region (protected virtual) FollowStationsSeen(Server)
 
         /// <summary>
