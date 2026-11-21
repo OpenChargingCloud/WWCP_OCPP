@@ -686,8 +686,15 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             sshServer.OnJSONMessageReceived   += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, jsonMessage,   cancellationToken) =>
                                                      ProcessIncomingJSONMessage  (connection, messageTimestamp, sourceNodeId, jsonMessage,   eventTrackingId, cancellationToken);
 
+            // A binary message that is not CBOR - of the binary format of the BinaryDataStreams extension: CBOR
+            // is told of as CBOR, after it.
             sshServer.OnBinaryMessageReceived += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) =>
-                                                     ProcessIncomingBinaryMessage(connection, messageTimestamp, sourceNodeId, binaryMessage, eventTrackingId, cancellationToken);
+                                                     cloud.charging.open.protocols.OCPP.WebSockets.OCPPSubprotocols.SpeaksCBOR(connection)
+                                                         ? Task.CompletedTask
+                                                         : ProcessIncomingBinaryMessage(connection, messageTimestamp, sourceNodeId, binaryMessage, eventTrackingId, cancellationToken);
+
+            sshServer.OnCBORMessageReceived   += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, cborMessage,   cancellationToken) =>
+                                                     ProcessIncomingCBORMessage  (connection, messageTimestamp, sourceNodeId, cborMessage,   eventTrackingId, cancellationToken);
 
             AttachSshServer(sshServer);
 
@@ -723,8 +730,15 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             sshClient.OnJSONMessageReceived   += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, jsonMessage,   cancellationToken) =>
                                                      ProcessIncomingJSONMessage  (connection, messageTimestamp, sourceNodeId, jsonMessage,   eventTrackingId, cancellationToken);
 
+            // A binary message that is not CBOR - of the binary format of the BinaryDataStreams extension: CBOR
+            // is told of as CBOR, after it.
             sshClient.OnBinaryMessageReceived += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) =>
-                                                     ProcessIncomingBinaryMessage(connection, messageTimestamp, sourceNodeId, binaryMessage, eventTrackingId, cancellationToken);
+                                                     cloud.charging.open.protocols.OCPP.WebSockets.OCPPSubprotocols.SpeaksCBOR(connection)
+                                                         ? Task.CompletedTask
+                                                         : ProcessIncomingBinaryMessage(connection, messageTimestamp, sourceNodeId, binaryMessage, eventTrackingId, cancellationToken);
+
+            sshClient.OnCBORMessageReceived   += (timestamp, transport, connection, messageTimestamp, eventTrackingId, sourceNodeId, cborMessage,   cancellationToken) =>
+                                                     ProcessIncomingCBORMessage  (connection, messageTimestamp, sourceNodeId, cborMessage,   eventTrackingId, cancellationToken);
 
             return sshClient;
 
@@ -741,6 +755,22 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
                                                           DateTimeOffset      MessageTimestamp,
                                                           NetworkingNode_Id   SourceNodeId,
                                                           JArray              JSONMessage,
+                                                          EventTracking_Id    EventTrackingId,
+                                                          CancellationToken   CancellationToken)
+
+            => Task.CompletedTask;
+
+        #endregion
+
+        #region (protected) ProcessIncomingCBORMessage  (Connection, MessageTimestamp, SourceNodeId, CBORMessage,   EventTrackingId, CancellationToken)
+
+        /// <summary>
+        /// A CBOR message that came over SSH, decoded, for this node's OCPP adapter: each OCPP version hands it to its own.
+        /// </summary>
+        protected virtual Task ProcessIncomingCBORMessage(IMessageConnection  Connection,
+                                                          DateTimeOffset      MessageTimestamp,
+                                                          NetworkingNode_Id   SourceNodeId,
+                                                          CBORValue           CBORMessage,
                                                           EventTracking_Id    EventTrackingId,
                                                           CancellationToken   CancellationToken)
 

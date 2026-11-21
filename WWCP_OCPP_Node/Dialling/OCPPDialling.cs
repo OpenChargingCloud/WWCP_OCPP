@@ -66,13 +66,13 @@ namespace cloud.charging.open.protocols.OCPP.Node
         #region Properties
 
         /// <summary>
-        /// The node that speaks OCPP 1.6 for the node, where it has one.
+        /// The node that speaks OCPP v1.6 for the node, where it has one.
         /// </summary>
         public OCPPv1_6.NetworkingNode.AOCPPNetworkingNode?  Node16
             => node16();
 
         /// <summary>
-        /// The node that speaks OCPP 2.1 for the node.
+        /// The node that speaks OCPP v2.1 for the node.
         /// </summary>
         public OCPPv2_1.NetworkingNode.AOCPPNetworkingNode   Node21
             => node21();

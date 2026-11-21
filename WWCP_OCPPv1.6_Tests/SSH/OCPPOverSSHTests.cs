@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.SSH.Server;
 using org.GraphDefined.Vanaheimr.Hermod.Messaging;
 
 using cloud.charging.open.protocols.WWCP;
+using cloud.charging.open.protocols.WWCP.WebSockets;
 using cloud.charging.open.protocols.WWCP.NetworkingNode;
 
 using cloud.charging.open.protocols.OCPP;
@@ -199,6 +200,81 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.SSH
                                      );
 
             Assert.That(state.JSONResponse, Is.Not.Null, $"The charge point was not reached: '{state.JSONRequestErrorMessage?.ErrorCode}'.");
+
+        }
+
+        #endregion
+
+        #region EachMessageIsToldOfAsWhatItIs()
+
+        /// <summary>
+        /// What crosses SSH is told of as what it is, when it is sent and when it is received, at both
+        /// ends: a text message as JSON; a binary message as a binary message and then - over a connection
+        /// that agreed on CBOR - as CBOR, decoded, as a WebSocket tells of it.
+        /// </summary>
+        [Test]
+        public async Task EachMessageIsToldOfAsWhatItIs()
+        {
+
+            var chargePoint  = await ConnectedChargePoint("GD-SSH16-3");
+
+            Assert.That(chargePoint.Routing.LookupNetworkingNode(NetworkingNode_Id.CentralSystem, out var toCentralSystem), Is.True);
+
+            var client       = (OCPPSshClient) toCentralSystem!.Client!;
+            var atTheCharger = new List<String>();
+            var atTheServer  = new List<String>();
+
+            static Task Note(List<String> Log, String What)
+            {
+                lock (Log)
+                    Log.Add(What);
+                return Task.CompletedTask;
+            }
+
+            static List<String> Of(List<String> Log, String Direction)
+            {
+                lock (Log)
+                    return [.. Log.Where(what => what.EndsWith(Direction))];
+            }
+
+            client.    OnJSONMessageSent       += (_, _, _, _, _, _, _, _) => Note(atTheCharger, "JSON sent");
+            client.    OnBinaryMessageSent     += (_, _, _, _, _, _, _, _) => Note(atTheCharger, "binary sent");
+            client.    OnCBORMessageSent       += (_, _, _, _, _, _, _, _) => Note(atTheCharger, "CBOR sent");
+            client.    OnJSONMessageReceived   += (_, _, _, _, _, _, _, _) => Note(atTheCharger, "JSON received");
+            client.    OnBinaryMessageReceived += (_, _, _, _, _, _, _, _) => Note(atTheCharger, "binary received");
+            client.    OnCBORMessageReceived   += (_, _, _, _, _, _, _, _) => Note(atTheCharger, "CBOR received");
+
+            sshServer!.OnJSONMessageSent       += (_, _, _, _, _, _, _, _) => Note(atTheServer,  "JSON sent");
+            sshServer. OnBinaryMessageSent     += (_, _, _, _, _, _, _, _) => Note(atTheServer,  "binary sent");
+            sshServer. OnCBORMessageSent       += (_, _, _, _, _, _, _, _) => Note(atTheServer,  "CBOR sent");
+            sshServer. OnJSONMessageReceived   += (_, _, _, _, _, _, _, _) => Note(atTheServer,  "JSON received");
+            sshServer. OnBinaryMessageReceived += (_, _, _, _, _, _, _, _) => Note(atTheServer,  "binary received");
+            sshServer. OnCBORMessageReceived   += (_, _, _, _, _, _, _, _) => Note(atTheServer,  "CBOR received");
+
+            var boot         = await chargePoint.SendBootNotification();
+
+            Assert.That(boot.Status, Is.EqualTo(RegistrationStatus.Accepted));
+
+            String[] sent     = Encoding == MessageEncodings.JSON ? [ "JSON sent"     ] : [ "binary sent",     "CBOR sent"     ];
+            String[] received = Encoding == MessageEncodings.JSON ? [ "JSON received" ] : [ "binary received", "CBOR received" ];
+
+            var until = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(5);
+
+            while ((Of(atTheCharger, " sent").Count < sent.Length || Of(atTheCharger, " received").Count < received.Length ||
+                    Of(atTheServer,  " sent").Count < sent.Length || Of(atTheServer,  " received").Count < received.Length) &&
+                   DateTimeOffset.UtcNow < until)
+            {
+                await Task.Delay(10);
+            }
+
+            Assert.Multiple(() => {
+                // The request ...
+                Assert.That(Of(atTheCharger, " sent"),     Is.EqualTo(sent),     "sent by the charge point");
+                Assert.That(Of(atTheServer,  " received"), Is.EqualTo(received), "received by the central system");
+                // ... and the answer.
+                Assert.That(Of(atTheServer,  " sent"),     Is.EqualTo(sent),     "sent by the central system");
+                Assert.That(Of(atTheCharger, " received"), Is.EqualTo(received), "received by the charge point");
+            });
 
         }
 

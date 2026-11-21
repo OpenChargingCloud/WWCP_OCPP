@@ -1285,6 +1285,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                    CancellationToken
                );
 
+        /// <summary>
+        /// Process a message that was received as CBOR, decoded already: as the WebSocket
+        /// server and client hand it on.
+        /// </summary>
+        public Task ProcessCBORMessage(DateTimeOffset        MessageTimestamp,
+                                       IMessageConnection    WebSocketConnection,
+                                       NetworkingNode_Id?    sourceNodeId,
+                                       CBORValue             CBORMessage,
+                                       EventTracking_Id      EventTrackingId,
+                                       CancellationToken     CancellationToken)
+
+            => parentNetworkingNode.OCPP.CBOR.ProcessCBORMessage(
+                   MessageTimestamp,
+                   WebSocketConnection,
+                   sourceNodeId,
+                   CBORMessage,
+                   EventTrackingId,
+                   CancellationToken
+               );
+
         #endregion
 
         #region ProcessBinaryMessage (MessageTimestamp, WebSocketConnection, BinaryMessage, EventTrackingId, CancellationToken)

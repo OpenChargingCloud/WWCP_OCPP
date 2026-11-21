@@ -254,11 +254,30 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
             JSON = null;
 
-            if (!TryParse(Frame,     out var cborArray, out ErrorResponse) ||
-                !TrySplit(cborArray, out var header, out var last, out ErrorResponse))
-            {
+            if (!TryParse(Frame, out var cborArray, out ErrorResponse))
                 return false;
-            }
+
+            return TryAsJSON(cborArray, out JSON, out ErrorResponse);
+
+        }
+
+        /// <summary>
+        /// The given CBOR of a frame of a CBOR connection, decoded already - as
+        /// OnCBORMessageReceived and OnCBORMessageSent tell of it - as the JSON array
+        /// it stands for: what a log shows, and what somebody reads.
+        /// </summary>
+        /// <param name="CBORArray">The CBOR array of an OCPP message.</param>
+        /// <param name="JSON">The JSON array the CBOR stands for.</param>
+        /// <param name="ErrorResponse">Why the CBOR is no OCPP message.</param>
+        public static Boolean TryAsJSON(CBORValue                         CBORArray,
+                                        [NotNullWhen(true)]  out JArray?  JSON,
+                                        [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            JSON = null;
+
+            if (!TrySplit(CBORArray, out var header, out var last, out ErrorResponse))
+                return false;
 
             try
             {

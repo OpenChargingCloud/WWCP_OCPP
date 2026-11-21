@@ -39,23 +39,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
     {
 
         /// <summary>
-        /// The given binary frame as a JSON array, where its connection speaks CBOR
-        /// and the frame is an OCPP message.
+        /// The given CBOR message - as OnCBORMessageReceived and OnCBORMessageSent tell
+        /// of it, over a connection that speaks CBOR - as a JSON array, where it is an
+        /// OCPP message.
         /// </summary>
-        /// <param name="Connection">The connection of the frame.</param>
-        /// <param name="Frame">The bytes of the frame.</param>
+        /// <param name="CBORMessage">The CBOR of the frame.</param>
         /// <param name="JSON">The JSON array the frame stands for.</param>
-        internal static Boolean TryAsJSON(IMessageConnection?  Connection,
-                                          Byte[]               Frame,
-                                          out JArray           JSON)
+        internal static Boolean TryAsJSON(CBORValue   CBORMessage,
+                                          out JArray  JSON)
         {
 
             JSON = [];
 
-            if (!Connection.SpeaksCBOR())
-                return false;
-
-            if (!OCPP_CBORFrame.TryAsJSON(Frame, out var json, out _))
+            if (!OCPP_CBORFrame.TryAsJSON(CBORMessage, out var json, out _))
                 return false;
 
             JSON = json;

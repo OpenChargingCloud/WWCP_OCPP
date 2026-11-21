@@ -297,20 +297,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                 );
 
 
-            ocppWebSocketClient.OnBinaryMessageReceived += (requestTimestamp,
-                                                            wwcpWebSocketClient,
+            // A binary frame that is not CBOR - of the binary format of the BinaryDataStreams
+            // extension - as the WebSocket client has it: CBOR is told of as CBOR, below.
+            ocppWebSocketClient.OnBinaryMessageReceived += (timestamp,
+                                                            webSocketClient,
                                                             webSocketClientConnection,
+                                                            frame,
                                                             eventTrackingId,
-                                                            messageTimestamp,
-                                                            sourceNodeId,
                                                             binaryMessage,
                                                             cancellationToken) =>
 
-                OCPP.IN.ProcessBinaryMessage(
+                cloud.charging.open.protocols.OCPP.WebSockets.OCPPSubprotocols.SpeaksCBOR(webSocketClientConnection) || binaryMessage.Length == 0
+
+                    ? Task.CompletedTask
+
+                    : OCPP.IN.ProcessBinaryMessage(
+                          timestamp,
+                          webSocketClientConnection,
+                          webSocketClientConnection.TryGetCustomDataAs<NetworkingNode_Id>(WWCP.WebSockets.WebSocketKeys.NetworkingNodeId) ?? NetworkingNode_Id.Zero,
+                          binaryMessage,
+                          eventTrackingId,
+                          cancellationToken
+                      );
+
+
+            ocppWebSocketClient.OnCBORMessageReceived += (requestTimestamp,
+                                                          wwcpWebSocketClient,
+                                                          webSocketClientConnection,
+                                                          eventTrackingId,
+                                                          messageTimestamp,
+                                                          sourceNodeId,
+                                                          cborMessage,
+                                                          cancellationToken) =>
+
+                OCPP.IN.ProcessCBORMessage(
                     messageTimestamp,
                     webSocketClientConnection,
                     sourceNodeId,
-                    binaryMessage,
+                    cborMessage,
                     eventTrackingId,
                     cancellationToken
                 );
@@ -482,20 +506,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                 );
 
 
-            ocppWebSocketServer.OnBinaryMessageReceived += (requestTimestamp,
-                                                            wwcpWebSocketServer,
+            // A binary frame that is not CBOR - of the binary format of the BinaryDataStreams
+            // extension - as the WebSocket server has it: CBOR is told of as CBOR, below.
+            ocppWebSocketServer.OnBinaryMessageReceived += (timestamp,
+                                                            webSocketServer,
                                                             webSocketServerConnection,
-                                                            messageTimestamp,
+                                                            frame,
                                                             eventTrackingId,
-                                                            sourceNodeId,
                                                             binaryMessage,
                                                             cancellationToken) =>
 
-                OCPP.IN.ProcessBinaryMessage(
+                cloud.charging.open.protocols.OCPP.WebSockets.OCPPSubprotocols.SpeaksCBOR(webSocketServerConnection) || binaryMessage.Length == 0
+
+                    ? Task.CompletedTask
+
+                    : OCPP.IN.ProcessBinaryMessage(
+                          timestamp,
+                          webSocketServerConnection,
+                          webSocketServerConnection.TryGetCustomDataAs<NetworkingNode_Id>(WWCP.WebSockets.WebSocketKeys.NetworkingNodeId) ?? NetworkingNode_Id.Zero,
+                          binaryMessage,
+                          eventTrackingId,
+                          cancellationToken
+                      );
+
+
+            ocppWebSocketServer.OnCBORMessageReceived += (requestTimestamp,
+                                                          wwcpWebSocketServer,
+                                                          webSocketServerConnection,
+                                                          messageTimestamp,
+                                                          eventTrackingId,
+                                                          sourceNodeId,
+                                                          cborMessage,
+                                                          cancellationToken) =>
+
+                OCPP.IN.ProcessCBORMessage(
                     messageTimestamp,
                     webSocketServerConnection,
                     sourceNodeId,
-                    binaryMessage,
+                    cborMessage,
                     eventTrackingId,
                     cancellationToken
                 );
@@ -569,6 +617,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6.NetworkingNode
                    Connection,
                    SourceNodeId,
                    BinaryMessage,
+                   EventTrackingId,
+                   CancellationToken
+               );
+
+        #endregion
+
+        #region (protected override) ProcessIncomingCBORMessage(Connection, MessageTimestamp, SourceNodeId, CBORMessage, EventTrackingId, CancellationToken)
+
+        /// <summary>
+        /// A CBOR message that came over SSH, decoded: for this node's OCPP adapter.
+        /// </summary>
+        protected override Task ProcessIncomingCBORMessage(IMessageConnection  Connection,
+                                                           DateTimeOffset      MessageTimestamp,
+                                                           NetworkingNode_Id   SourceNodeId,
+                                                           CBORValue           CBORMessage,
+                                                           EventTracking_Id    EventTrackingId,
+                                                           CancellationToken   CancellationToken)
+
+            => OCPP.IN.ProcessCBORMessage(
+                   MessageTimestamp,
+                   Connection,
+                   SourceNodeId,
+                   CBORMessage,
                    EventTrackingId,
                    CancellationToken
                );

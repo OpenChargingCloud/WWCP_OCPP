@@ -138,6 +138,9 @@ namespace cloud.charging.open.protocols.OCPP.WebSockets
 
         {
 
+            // Its binary frames are CBOR, where the subprotocol says so - "ocpp2.1cbor".
+            SubprotocolIsCBOR = OCPPSubprotocols.IsCBOR;
+
             //this.Logger       = new ChargePointwebsocketClient.CPClientLogger(this,
             //                                                                  LoggingPath,
             //                                                                  LoggingContext,

@@ -75,6 +75,16 @@ namespace cloud.charging.open.protocols.OCPP.SSH
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Its binary messages are CBOR where the subprotocol says so - "ocpp2.1cbor".
+        /// </summary>
+        public override Func<String?, Boolean>  SubprotocolIsCBOR    { get; set; }
+            = OCPPSubprotocols.IsCBOR;
+
+        #endregion
+
 
         #region (private) SendJSON  (Destination, Build, MessageTimestamp, EventTrackingId, CancellationToken)
 

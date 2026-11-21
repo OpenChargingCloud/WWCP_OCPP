@@ -331,17 +331,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
-            testBackendWebSockets1.OnBinaryMessageSent   += (timestamp,
+            testBackendWebSockets1.OnCBORMessageSent     += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
                                                              messageTimestamp,
                                                              eventTrackingId,
-                                                             binaryMessage,
+                                                             cborMessage,
                                                              sentStatus,
                                                              cancellationToken) => {
 
                 // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
-                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                if (!CBORFrames.TryAsJSON(cborMessage, out var message))
                     return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())
@@ -411,17 +411,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
-            testBackendWebSockets1.OnBinaryMessageReceived += (timestamp,
+            testBackendWebSockets1.OnCBORMessageReceived   += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
                                                              messageTimestamp,
                                                              eventTrackingId,
                                                              sourceNodeId,
-                                                             binaryMessage,
+                                                             cborMessage,
                                                              cancellationToken) => {
 
                 // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
-                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                if (!CBORFrames.TryAsJSON(cborMessage, out var message))
                     return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())
@@ -618,17 +618,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
-            testBackendWebSockets2.OnBinaryMessageSent   += (timestamp,
+            testBackendWebSockets2.OnCBORMessageSent     += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
                                                              messageTimestamp,
                                                              eventTrackingId,
-                                                             binaryMessage,
+                                                             cborMessage,
                                                              sentStatus,
                                                              cancellationToken) => {
 
                 // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
-                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                if (!CBORFrames.TryAsJSON(cborMessage, out var message))
                     return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())
@@ -698,17 +698,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
-            testBackendWebSockets2.OnBinaryMessageReceived += (timestamp,
+            testBackendWebSockets2.OnCBORMessageReceived   += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
                                                              messageTimestamp,
                                                              eventTrackingId,
                                                              sourceNodeId,
-                                                             binaryMessage,
+                                                             cborMessage,
                                                              cancellationToken) => {
 
                 // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
-                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                if (!CBORFrames.TryAsJSON(cborMessage, out var message))
                     return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())
@@ -899,17 +899,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
-            testBackendWebSockets3.OnBinaryMessageSent   += (timestamp,
+            testBackendWebSockets3.OnCBORMessageSent     += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
                                                              messageTimestamp,
                                                              eventTrackingId,
-                                                             binaryMessage,
+                                                             cborMessage,
                                                              sentStatus,
                                                              cancellationToken) => {
 
                 // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
-                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                if (!CBORFrames.TryAsJSON(cborMessage, out var message))
                     return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())
@@ -979,17 +979,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             };
 
-            testBackendWebSockets3.OnBinaryMessageReceived += (timestamp,
+            testBackendWebSockets3.OnCBORMessageReceived   += (timestamp,
                                                              webSocketServer,
                                                              webSocketConnection,
                                                              messageTimestamp,
                                                              eventTrackingId,
                                                              sourceNodeId,
-                                                             binaryMessage,
+                                                             cborMessage,
                                                              cancellationToken) => {
 
                 // What a connection that agreed on CBOR carries, shown as the JSON it stands for.
-                if (!CBORFrames.TryAsJSON(webSocketConnection, binaryMessage, out var message))
+                if (!CBORFrames.TryAsJSON(cborMessage, out var message))
                     return Task.CompletedTask;
 
                 switch (message[0].Value<Byte>())

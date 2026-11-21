@@ -723,10 +723,47 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
         /// <param name="CBORMessage">The bytes of the frame.</param>
         /// <param name="EventTrackingId">An event tracking identification.</param>
         /// <param name="CancellationToken">A cancellation token.</param>
+        public Task ProcessCBORMessage(DateTimeOffset        MessageTimestamp,
+                                       IMessageConnection    WebSocketConnection,
+                                       NetworkingNode_Id?    sourceNodeId,
+                                       Byte[]                CBORMessage,
+                                       EventTracking_Id      EventTrackingId,
+                                       CancellationToken     CancellationToken)
+        {
+
+            // Without a request identification there is nobody to tell.
+            if (!CBORValue.TryParse(CBORMessage, out var cbor, out var frameError))
+            {
+                DebugX.Log($"{nameof(OCPPCBOREdge)}: A binary frame of a CBOR connection could not be read: {frameError}");
+                return Task.CompletedTask;
+            }
+
+            return ProcessCBORMessage(
+                       MessageTimestamp,
+                       WebSocketConnection,
+                       sourceNodeId,
+                       cbor,
+                       EventTrackingId,
+                       CancellationToken
+                   );
+
+        }
+
+        /// <summary>
+        /// Process the CBOR of a binary frame of a connection that agreed on a CBOR
+        /// subprotocol, decoded already - as the WebSocket server and client of WWCP hand
+        /// it on (OnCBORMessageReceived).
+        /// </summary>
+        /// <param name="MessageTimestamp">When the frame arrived.</param>
+        /// <param name="WebSocketConnection">The connection it arrived over.</param>
+        /// <param name="sourceNodeId">The networking node at the far end of that connection.</param>
+        /// <param name="CBORMessage">The CBOR of the frame.</param>
+        /// <param name="EventTrackingId">An event tracking identification.</param>
+        /// <param name="CancellationToken">A cancellation token.</param>
         public async Task ProcessCBORMessage(DateTimeOffset        MessageTimestamp,
                                              IMessageConnection    WebSocketConnection,
                                              NetworkingNode_Id?    sourceNodeId,
-                                             Byte[]                CBORMessage,
+                                             CBORValue             CBORMessage,
                                              EventTracking_Id      EventTrackingId,
                                              CancellationToken     CancellationToken)
         {
@@ -734,10 +771,12 @@ namespace cloud.charging.open.protocols.OCPP.NetworkingNode
             try
             {
 
+                var cborArray = CBORMessage;
+
                 // Without a request identification there is nobody to tell.
-                if (!OCPP_CBORFrame.TryParse(CBORMessage, out var cborArray, out var frameError))
+                if (cborArray.Kind != CBORValueKind.Array)
                 {
-                    DebugX.Log($"{nameof(OCPPCBOREdge)}: A binary frame of a CBOR connection could not be read: {frameError}");
+                    DebugX.Log($"{nameof(OCPPCBOREdge)}: A binary frame of a CBOR connection is CBOR, but not an array!");
                     return;
                 }
 

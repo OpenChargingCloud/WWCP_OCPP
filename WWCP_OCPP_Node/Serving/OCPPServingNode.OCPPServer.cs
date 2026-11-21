@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPP.Node
         /// <summary>
         /// Which charging stations may sign in, and with what.
         /// </summary>
-        public WebSocketLogins    WebSocketLogins         { get; private set; } = default!;
+        public WebSocketLogins          WebSocketLogins       { get; private set; } = default!;
 
         /// <summary>
         /// The server itself, or null when this controller was built without

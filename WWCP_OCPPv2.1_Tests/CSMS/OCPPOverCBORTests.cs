@@ -262,12 +262,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         /// <summary>
         /// Count the frames between the charging station and the given server, by kind.
         /// </summary>
-        private (Func<Int32> Text, Func<List<Byte[]>> AtTheCSMS, Func<List<Byte[]>> AtTheStation) Frames(OCPPWebSocketServer Server)
+        private (Func<Int32> Text, Func<List<CBORValue>> AtTheCSMS, Func<List<CBORValue>> AtTheStation) Frames(OCPPWebSocketServer Server)
         {
 
             var text          = 0;
-            var atTheCSMS     = new List<Byte[]>();
-            var atTheStation  = new List<Byte[]>();
+            var atTheCSMS     = new List<CBORValue>();
+            var atTheStation  = new List<CBORValue>();
             var client        = chargingStation!.OCPPWebSocketClients.Single();
 
             Server.OnJSONMessageReceived   += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, jsonMessage, cancellationToken) => {
@@ -280,15 +280,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 return Task.CompletedTask;
             };
 
-            Server.OnBinaryMessageReceived += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) => {
+            Server.OnCBORMessageReceived   += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, cborMessage, cancellationToken) => {
                 lock (atTheCSMS)
-                    atTheCSMS.Add(binaryMessage);
+                    atTheCSMS.Add(cborMessage);
                 return Task.CompletedTask;
             };
 
-            client.OnBinaryMessageReceived += (timestamp, webSocketClient, connection, eventTrackingId, messageTimestamp, sourceNodeId, binaryMessage, cancellationToken) => {
+            client.OnCBORMessageReceived   += (timestamp, webSocketClient, connection, eventTrackingId, messageTimestamp, sourceNodeId, cborMessage, cancellationToken) => {
                 lock (atTheStation)
-                    atTheStation.Add(binaryMessage);
+                    atTheStation.Add(cborMessage);
                 return Task.CompletedTask;
             };
 
@@ -343,11 +343,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.That(atTheStation,          Has.Count.EqualTo(1));
             });
 
-            Assert.That(OCPP_CBORFrame.TryParse(atTheCSMS[0],    out var requestArray,  out var e1),  Is.True, e1);
-            Assert.That(OCPP_CBORRequestMessage. TryParse(requestArray,  out var request,     out var e2), Is.True, e2);
-
-            Assert.That(OCPP_CBORFrame.TryParse(atTheStation[0], out var responseArray, out var e3),  Is.True, e3);
-            Assert.That(OCPP_CBORResponseMessage.TryParse(responseArray, out var cborResponse, out var e4), Is.True, e4);
+            // Told of as CBOR already, decoded: no bytes to read.
+            Assert.That(OCPP_CBORRequestMessage. TryParse(atTheCSMS[0],    out var request,      out var e2), Is.True, e2);
+            Assert.That(OCPP_CBORResponseMessage.TryParse(atTheStation[0], out var cborResponse, out var e4), Is.True, e4);
 
             Assert.Multiple(() => {
                 Assert.That(request!.Action,           Is.EqualTo("BootNotification"));
@@ -355,6 +353,103 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 // What CBOR says better than JSON is said that way: the time of the CSMS
                 // is a tagged point in time, not a text.
                 Assert.That(cborResponse.Payload.ToDiagnosticString(), Does.Not.Contain("\"20"));
+            });
+
+        }
+
+        #endregion
+
+        #region ACBORConnection_TellsOfItsFramesAsBinaryThenAsCBOR()
+
+        /// <summary>
+        /// What crosses a CBOR connection is told of as a binary frame first, by the
+        /// WebSocket server and client underneath, and then as CBOR, decoded - as a text
+        /// frame is told of as text first and then as JSON. Both when it is sent and when
+        /// it is received, at both ends.
+        /// </summary>
+        [Test]
+        public async Task ACBORConnection_TellsOfItsFramesAsBinaryThenAsCBOR()
+        {
+
+            var server        = ACSMSThatSpeaksCBOR();
+            var upgrade       = await Connect("GD-CBOR-010", server, MessageEncodings.CBOR);
+
+            Assert.That(upgrade.HTTPStatusCode, Is.EqualTo(HTTPStatusCode.SwitchingProtocols));
+
+            var client        = chargingStation!.OCPPWebSocketClients.Single();
+            var atTheStation  = new List<String>();
+            var atTheCSMS     = new List<String>();
+
+            static Task Note(List<String> Log, String What)
+            {
+                lock (Log)
+                    Log.Add(What);
+                return Task.CompletedTask;
+            }
+
+            static List<String> Read(List<String> Log)
+            {
+                lock (Log)
+                    return [.. Log];
+            }
+
+            client.OnBinaryMessageSent     += (timestamp, webSocketClient, connection, frame, eventTrackingId, binaryMessage, sentStatus, cancellationToken)
+                                                  => Note(atTheStation, $"binary sent: {binaryMessage.Length} bytes");
+
+            client.OnCBORMessageSent       += (timestamp, webSocketClient, connection, eventTrackingId, messageTimestamp, cborMessage, sentStatus, cancellationToken)
+                                                  => Note(atTheStation, $"CBOR sent: {cborMessage.AsArray()[2].ToDiagnosticString()}");
+
+            client.OnBinaryMessageReceived += (timestamp, webSocketClient, connection, frame, eventTrackingId, binaryMessage, cancellationToken)
+                                                  => Note(atTheStation, $"binary received: {binaryMessage.Length} bytes");
+
+            client.OnCBORMessageReceived   += (timestamp, webSocketClient, connection, eventTrackingId, messageTimestamp, sourceNodeId, cborMessage, cancellationToken)
+                                                  => Note(atTheStation, $"CBOR received: {cborMessage.AsArray()[0].ToDiagnosticString()}");
+
+            server.OnBinaryMessageReceived += (timestamp, webSocketServer, connection, frame, eventTrackingId, binaryMessage, cancellationToken)
+                                                  => Note(atTheCSMS,    $"binary received: {binaryMessage.Length} bytes");
+
+            server.OnCBORMessageReceived   += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, cborMessage, cancellationToken)
+                                                  => Note(atTheCSMS,    $"CBOR received: {cborMessage.AsArray()[2].ToDiagnosticString()}");
+
+            server.OnBinaryMessageSent     += (timestamp, webSocketServer, connection, frame, eventTrackingId, binaryMessage, sentStatus, cancellationToken)
+                                                  => Note(atTheCSMS,    $"binary sent: {binaryMessage.Length} bytes");
+
+            server.OnCBORMessageSent       += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, cborMessage, sentStatus, cancellationToken)
+                                                  => Note(atTheCSMS,    $"CBOR sent: {cborMessage.AsArray()[0].ToDiagnosticString()}");
+
+            var response      = await chargingStation.SendBootNotification(BootReason.PowerUp);
+
+            Assert.That(response.Result.ResultCode, Is.EqualTo(ResultCode.OK), response.Result.Description);
+
+            var until = Timestamp.Now + TimeSpan.FromSeconds(5);
+
+            while ((Read(atTheStation).Count < 4 || Read(atTheCSMS).Count < 4) && Timestamp.Now < until)
+                await Task.Delay(10);
+
+            var station       = Read(atTheStation);
+            var csms          = Read(atTheCSMS);
+
+            // The request, with its action third, and the answer to it: message type 3.
+            Assert.That(station.Where(what => what.StartsWith("CBOR")), Is.EquivalentTo(new[] { "CBOR sent: \"BootNotification\"", "CBOR received: 3" }));
+            Assert.That(csms,                                           Is.EqualTo     (new[] { csms[0], "CBOR received: \"BootNotification\"", csms[2], "CBOR sent: 3" }));
+
+            Assert.Multiple(() => {
+
+                // Each frame as a binary frame first, then as CBOR - at both ends, which
+                // tell of a frame before they read it.
+                Assert.That(csms[0],    Does.StartWith("binary received: "));
+                Assert.That(csms[2],    Does.StartWith("binary sent: "));
+
+                Assert.That(station.FindIndex(what => what.StartsWith("binary sent: ")),
+                            Is.LessThan(station.IndexOf("CBOR sent: \"BootNotification\"")).And.Not.Negative);
+
+                Assert.That(station.FindIndex(what => what.StartsWith("binary received: ")),
+                            Is.LessThan(station.IndexOf("CBOR received: 3")).And.Not.Negative);
+
+                // And of the same bytes: what one end sent, the other received.
+                Assert.That(csms[0]["binary received: ".Length..], Is.EqualTo(station.Single(what => what.StartsWith("binary sent: "))    ["binary sent: ".Length..]));
+                Assert.That(csms[2]["binary sent: ".Length..],     Is.EqualTo(station.Single(what => what.StartsWith("binary received: "))["binary received: ".Length..]));
+
             });
 
         }
@@ -460,8 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             foreach (var frame in frames.AtTheStation())
             {
-                Assert.That(OCPP_CBORFrame.TryParse(frame, out var array, out var e1), Is.True, e1);
-                Assert.That(OCPP_CBORRequestErrorMessage.TryParse(array, out var error, out var e2), Is.True, e2);
+                Assert.That(OCPP_CBORRequestErrorMessage.TryParse(frame, out var error, out var e2), Is.True, e2);
                 errors[error!.RequestId] = error;
             }
 
@@ -491,7 +585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
             var binaryFrames = 0;
 
-            server.OnBinaryMessageReceived += (timestamp, webSocketServer, connection, messageTimestamp, eventTrackingId, sourceNodeId, binaryMessage, cancellationToken) => {
+            server.OnBinaryMessageReceived += (timestamp, webSocketServer, connection, frame, eventTrackingId, binaryMessage, cancellationToken) => {
                 Interlocked.Increment(ref binaryFrames);
                 return Task.CompletedTask;
             };
